@@ -29,12 +29,11 @@
 
 #include <string>
 #include <map>
-#include <memory>
 
 #include "BESContainer.h"
 
-namespace http {
-class RemoteResource;
+namespace bes {
+    class AWS_SDK;
 }
 
 namespace ngap {
@@ -75,7 +74,9 @@ class NgapOwnedContainer: public BESContainer {
     static bool get_opendap_content_filters(std::map<std::string, std::string, std::less<>> &content_filters);
     static void filter_response(const std::map<std::string, std::string, std::less<>> &content_filters, std::string &content);
 
-    static std::string build_dmrpp_url_to_owned_bucket(const std::string &rest_path, const std::string &data_source);
+    static std::string build_dmrpp_object_key_in_owned_bucket(const std::string &rest_path);
+    bool dmrpp_probe_opendap_bucket(bes::AWS_SDK &aws_sdk, const std::string &bucket, const std::string &object_key) const;
+    static std::string build_dmrpp_url_to_owned_bucket(const std::string &rest_path, const std::string &data_source); // TODO Remove jhrg 3/7/25
     static std::string build_data_url_to_daac_bucket(const std::string &rest_path);
 
     bool dmrpp_read_from_opendap_bucket(std::string &dmrpp_string) const;

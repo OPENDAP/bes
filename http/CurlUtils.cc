@@ -132,7 +132,7 @@ static string http_code_to_string(long code) {
 /**
  * @brief Translate a cURL authentication type value (int) into a human readable string.
  * @param auth_type The cURL authentication type value to convert
- * @return The human readable string associated with auth_type.
+ * @return The human-readable string associated with auth_type.
  */
 static string getCurlAuthTypeName(unsigned long auth_type) {
 
@@ -712,7 +712,6 @@ bool is_retryable(const string &target_url) {
  *
  *  If the curl_code is another value a BESInternalError is thrown.
  *
- * @param ceh The cURL easy handle used in the request.
  * @param eff_req_url The requested URL - This should be the 'effective URL'.
  * @param curl_code The CURLcode value to evaluate.
  * @param error_buffer The CURLOPT_ERRORBUFFER used in the request.
@@ -1186,6 +1185,88 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
 }
 
 /**
+ * @brief Perform an HTTP HEAD request.
+ * @param target_url
+ * @param http_code HTTP status code
+ * @return True if the HEAD request was successful, false otherwise.
+ */
+bool http_head(const string &target_url, long &http_code) {
+    curl_slist *request_headers = nullptr;
+    try {
+        // Add the authorization headers
+        request_headers = add_edl_auth_headers(request_headers);
+
+        auto const url = std::make_shared<http::url>(target_url);
+        request_headers = sign_url_for_s3_if_possible(url, request_headers);
+
+#if 0
+        AccessCredentials *credentials = CredentialsManager::theCM()->get(url);
+        if (credentials) {
+            INFO_LOG(prolog + "Looking for EDL Token for URL: " + target_url + '\n');
+            string edl_token = credentials->get("edl_token");
+            if (!edl_token.empty()) {
+                INFO_LOG(prolog + "Using EDL Token for URL: " + target_url + '\n');
+                request_headers = curl::append_http_header(request_headers, "Authorization", edl_token);
+            }
+        }
+#endif
+
+        vector<string> response_headers;
+        CURL *ceh = curl::init(target_url, request_headers, &response_headers);
+        if (!ceh)
+            throw BESInternalError("Failed to acquire cURL Easy Handle!", __FILE__, __LINE__);
+
+        vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
+        set_error_buffer(ceh, error_buffer.data());
+
+        curl_easy_setopt(ceh, CURLOPT_VERBOSE, 1L);
+        curl_easy_setopt(ceh, CURLOPT_NOBODY, 1L);
+
+        const int tries = 3;
+        int attempts = 0;
+        bool status = false;
+        do {
+            const CURLcode curl_code = curl_easy_perform(ceh);
+            bool curl_success = eval_curl_easy_perform_code(target_url, curl_code, error_buffer.data(), attempts);
+            if (curl_success)
+                http_code = get_http_code(ceh);
+            else
+                http_code = 0;
+
+            if (curl_success && http_code == 200) {
+                status = true;
+                break;
+            }
+
+            if (curl_success && (http_code / 100 == 5)) {   // retry any '500' error (501, ...)
+                const int wait_time_us = 500'000;
+                usleep(wait_time_us);
+                continue;
+            }
+
+            if (!curl_success || http_code != 200) {
+                ERROR_LOG(string("Problem with HEAD request, HTTP response: ") + to_string(http_code) + '\n');
+                break;
+            }
+        } while (attempts++ < tries);
+
+        if (attempts >= tries) {
+            ERROR_LOG(string("HEAD request, failed after ") + to_string(tries) + " attempts.\n");
+            status = false;
+        }
+
+        unset_error_buffer(ceh);
+        curl_easy_cleanup(ceh);
+        curl_slist_free_all(request_headers);
+        return status;
+    }
+    catch (...) {
+        curl_slist_free_all(request_headers);
+        throw;
+    }
+}
+
+/**
  * Dereference the target URL and put the response in buf.
  *
  * @note The intent here is to read data and store it directly into the string.
@@ -1458,7 +1539,7 @@ curl_slist *add_edl_auth_headers(curl_slist *request_headers) {
  * because some of the methods used modify internal state).
  * @param req_headers The header list that will hold the Authorization, etc.,
  * headers.
- * @param The modified list of request headers
+ * @return The modified list of request headers
  */
 curl_slist *
 sign_s3_url(const string &target_url, AccessCredentials *ac, curl_slist *req_headers) {
@@ -1564,7 +1645,6 @@ static CURL *init_no_follow_redirects_handle(const string &target_url, const cur
     unset_error_buffer(ceh);
     return ceh;
 }
-
 
 /**
  *
@@ -1794,7 +1874,6 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
  * an http code of 2xx, 4xx, or 5xx is considered an error.
  *
  * @param origin_url The origin url for the request
- * @param redirect_url Returned value parameter for the redirect url.
  * @return The redirect URL string.
  */
 std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http::url> &origin_url) {
@@ -1802,9 +1881,8 @@ std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http:
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     // Before we do anything, make sure that the URL is OK to pursue.
     if (!http::AllowedHosts::theHosts()->is_allowed(origin_url)) {
-        string err = (string) "The specified URL " + origin_url->str()
-                     + " does not match any of the accessible services in"
-                     + " the allowed hosts list.";
+        const string err = "The specified URL " + origin_url->str()
+            + " does not match any of the accessible services in the allowed hosts list.";
         BESDEBUG(MODULE, prolog << err << endl);
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }

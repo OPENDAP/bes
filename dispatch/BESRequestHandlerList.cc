@@ -117,7 +117,7 @@ BESRequestHandlerList::find_handler(const string &handler_name)
  * list
  * @see BESRequestHandler
  */
-BESRequestHandlerList::Handler_citer BESRequestHandlerList::get_first_handler()
+BESRequestHandlerList::handler_citer BESRequestHandlerList::get_first_handler()
 {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
@@ -129,7 +129,7 @@ BESRequestHandlerList::Handler_citer BESRequestHandlerList::get_first_handler()
  * @return a constant iterator pointing to the end of the list
  * @see BESRequestHandler
  */
-BESRequestHandlerList::Handler_citer BESRequestHandlerList::get_last_handler()
+BESRequestHandlerList::handler_citer BESRequestHandlerList::get_last_handler()
 {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
