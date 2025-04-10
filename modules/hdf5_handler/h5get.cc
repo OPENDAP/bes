@@ -1252,9 +1252,10 @@ BaseType *Get_bt_enhanced(D4Group *d4_grp,
             case H5T_ENUM: {
                     // retrieve enum information
                     D4EnumDef* enum_def = map_hdf5_enum_to_dap4(d4_grp,pid,datatype);
-                    auto hdf5_enum= make_unique<HDF5D4Enum>(vname, vpath, dataset, enum_def->type());
+                    auto hdf5_enum_unique= make_unique<HDF5D4Enum>(vname, vpath, dataset, enum_def->type());
+                    auto hdf5_enum = hdf5_enum_unique.get();
                     hdf5_enum->set_enumeration(enum_def);
-                    btp = hdf5_enum.release();
+                    btp = hdf5_enum_unique.release();
             }
                 break;
 

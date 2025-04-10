@@ -122,6 +122,7 @@ private:
     static void build_basetype_chain(libdap::BaseType *btp, std::stack<libdap::BaseType*> &bt);
 
     static void process_group(libdap::DMR *dmr, libdap::D4Group *parent, const pugi::xml_node &var_node);
+    static void process_enum_def(libdap::D4Group *parent, const pugi::xml_node &var_node);
     static void process_dimension(libdap::D4Group *grp, const pugi::xml_node &dimension_node);
     static void process_variable(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Constructor *parent, const pugi::xml_node &var_node);
     static void process_dim(libdap::DMR *dmr, libdap::D4Group *grp, libdap::Array *array, const pugi::xml_node &dim_node);

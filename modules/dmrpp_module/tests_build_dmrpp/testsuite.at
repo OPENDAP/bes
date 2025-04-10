@@ -119,6 +119,11 @@ AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/comp_array2_udf_nfv_chunk_c
 # Test vlen float/int data.
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/vlen.h5])
 
+# Test enum data.
+AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/t_enum_name_scalar.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/t_enum_grp.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/t_enum_name_chunk_array.h5])
+
 # Test build_dmrpp with the -M option
 # AT_BUILD_DMRPP_M([modules/dmrpp_module/data/dmrpp/chunked_compound.h5])
 AT_BUILD_DMRPP_M([modules/dmrpp_module/data/dmrpp/chunked_enum.h5])

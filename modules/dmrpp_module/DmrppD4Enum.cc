@@ -61,9 +61,10 @@ DmrppD4Enum::read()
     if (read_p())
         return true;
 
-    set_value(*reinterpret_cast<dods_enum*>(read_atomic(name())));
-
+    char *enum_buf = read_atomic(name());
+    val2buf((void*)enum_buf,true);
     set_read_p(true);
+     
 
     return true;
 

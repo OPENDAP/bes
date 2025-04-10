@@ -36,6 +36,9 @@
 #include <libdap/Str.h>
 #include <libdap/Byte.h>
 #include <libdap/D4Attributes.h>
+#include <libdap/D4Enum.h>
+#include <libdap/D4EnumDefs.h>
+#include <libdap/D4Group.h>
 #include <libdap/XMLWriter.h>
 #include <libdap/util.h>
 
@@ -764,6 +767,17 @@ void DmrppCommon::print_dmrpp(XMLWriter &xml, bool constrained /*false*/)
             throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
     }
 
+    if (bt.type() == dods_enum_c) {
+        auto e = dynamic_cast<D4Enum *>(this);
+        string path = e->enumeration()->name();
+        if (e->enumeration()->parent()) {
+            // print the FQN for the enum def; D4Group::FQN() includes the trailing '/'
+            path = static_cast<D4Group *>(e->enumeration()->parent()->parent())->FQN() + path;
+        }
+        if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "enum", (const xmlChar *) path.c_str()) < 0)
+            throw InternalErr(__FILE__, __LINE__, "Could not write attribute for enum");
+    }
+
     if (bt.is_dap4())
         bt.attributes()->print_dap4(xml);
 
@@ -872,7 +886,10 @@ void DmrppCommon::dump(ostream & strm) const
  */
 void
 DmrppCommon::load_chunks(BaseType *btp) {
-    d_dmz->load_chunks(btp);
+    if(d_dmz) 
+        d_dmz->load_chunks(btp);
+    else 
+        throw InternalErr(__FILE__, __LINE__, "d_dmz cannot be null.");
 }
 
 /**
