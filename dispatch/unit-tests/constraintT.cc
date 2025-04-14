@@ -37,6 +37,7 @@
 using namespace CppUnit;
 
 #include <iostream>
+#include <memory>
 #include <cstdlib>
 
 using std::cerr;
@@ -57,50 +58,49 @@ static bool debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
-class constraintT: public TestFixture {
+class constraintT : public TestFixture {
 private:
 
 public:
-    constraintT()
-    {
-    }
-    ~constraintT()
-    {
+    constraintT() {
     }
 
-    void setUp()
-    {
+    ~constraintT() {
+    }
+
+    void setUp() {
         string bes_conf = (string) TEST_SRC_DIR + "/empty.ini";
         TheBESKeys::ConfigFile = bes_conf;
     }
 
-    void tearDown()
-    {
+    void tearDown() {
     }
 
-CPPUNIT_TEST_SUITE( constraintT );
+    CPPUNIT_TEST_SUITE(constraintT);
 
-    CPPUNIT_TEST( do_test );
+        CPPUNIT_TEST(do_test);
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 
-    void do_test()
-    {
+    void do_test() {
         cout << "*****************************************" << endl;
         cout << "Running constraintT tests" << endl;
-
+#if 1
         {
             cout << "*****************************************" << endl;
             cout << "Build the data and build the post constraint" << endl;
             BESDataHandlerInterface dhi;
-            BESContainer *d1 = new BESFileContainer("sym1", "real1", "type1");
+            // BESContainer *d1 = new BESFileContainer("sym1", "real1", "type1");                                                                                                                                                  
+            auto d1 = std::make_unique<BESFileContainer>("sym1", "real1", "type1");
             d1->set_constraint("var1");
-            dhi.containers.push_back(d1);
+            // dhi.containers.push_back(d1);                                                                                                                                                                                       
+            dhi.containers.push_back(d1.get());
 
-            BESContainer *d2 = new BESFileContainer("sym2", "real2", "type2");
+            // BESContainer *d2 = new BESFileContainer("sym2", "real2", "type2");                                                                                                                                                  
+            auto d2 = std::make_unique<BESFileContainer>("sym2", "real2", "type2");
             d2->set_constraint("var2");
-            dhi.containers.push_back(d2);
+            // dhi.containers.push_back(d2);                                                                                                                                                                                       
+            dhi.containers.push_back(d2.get());
 
             dhi.first_container();
             BESConstraintFuncs::post_append(dhi);
@@ -110,18 +110,18 @@ CPPUNIT_TEST_SUITE( constraintT );
             string should_be = "sym1.var1,sym2.var2";
             cout << "    post constraint = " << dhi.data[POST_CONSTRAINT] << endl;
             cout << "    should be = " << should_be << endl;
-            CPPUNIT_ASSERT( dhi.data[POST_CONSTRAINT] == should_be );
+            CPPUNIT_ASSERT(dhi.data[POST_CONSTRAINT] == should_be);
         }
         {
             cout << "*****************************************" << endl;
             cout << "Only first container has constraint" << endl;
             BESDataHandlerInterface dhi;
-            BESContainer *d1 = new BESFileContainer("sym1", "real1", "type1");
-            dhi.containers.push_back(d1);
+            auto d1 = std::make_unique<BESFileContainer>("sym1", "real1", "type1");
+            dhi.containers.push_back(d1.get());
 
-            BESContainer *d2 = new BESFileContainer("sym2", "real2", "type2");
+            auto d2 = std::make_unique<BESFileContainer>("sym2", "real2", "type2");
             d2->set_constraint("var2");
-            dhi.containers.push_back(d2);
+            dhi.containers.push_back(d2.get());
 
             dhi.first_container();
             BESConstraintFuncs::post_append(dhi);
@@ -131,18 +131,18 @@ CPPUNIT_TEST_SUITE( constraintT );
             string should_be = "sym1,sym2.var2";
             cout << "    post constraint = " << dhi.data[POST_CONSTRAINT] << endl;
             cout << "    should be = " << should_be << endl;
-            CPPUNIT_ASSERT( dhi.data[POST_CONSTRAINT] == should_be );
+            CPPUNIT_ASSERT(dhi.data[POST_CONSTRAINT] == should_be);
         }
         {
             cout << "*****************************************" << endl;
             cout << "Only second container has constraint" << endl;
             BESDataHandlerInterface dhi;
-            BESContainer *d1 = new BESFileContainer("sym1", "real1", "type1");
+            auto d1 = std::make_unique<BESFileContainer>("sym1", "real1", "type1");
             d1->set_constraint("var1");
-            dhi.containers.push_back(d1);
+            dhi.containers.push_back(d1.get());
 
-            BESContainer *d2 = new BESFileContainer("sym2", "real2", "type2");
-            dhi.containers.push_back(d2);
+            auto d2 = std::make_unique<BESFileContainer>("sym2", "real2", "type2");
+            dhi.containers.push_back(d2.get());
 
             dhi.first_container();
             BESConstraintFuncs::post_append(dhi);
@@ -152,35 +152,37 @@ CPPUNIT_TEST_SUITE( constraintT );
             string should_be = "sym1.var1,sym2";
             cout << "    post constraint = " << dhi.data[POST_CONSTRAINT] << endl;
             cout << "    should be = " << should_be << endl;
-            CPPUNIT_ASSERT( dhi.data[POST_CONSTRAINT] == should_be );
+            CPPUNIT_ASSERT(dhi.data[POST_CONSTRAINT] == should_be);
         }
+#endif
+
 
         cout << "*****************************************" << endl;
         cout << "Done running constraintT tests" << endl;
     }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( constraintT );
+CPPUNIT_TEST_SUITE_REGISTRATION(constraintT);
 
-int main(int argc, char*argv[])
-{
+int main(int argc, char *argv[]) {
     int option_char;
     while ((option_char = getopt(argc, argv, "dh")) != EOF)
         switch (option_char) {
-        case 'd':
-            debug = 1;  // debug is a static global
-            break;
-        case 'h': {     // help - show test names
-            cerr << "Usage: constraintT has the following tests:" << endl;
-            const std::vector<Test*> &tests = constraintT::suite()->getTests();
-            unsigned int prefix_len = constraintT::suite()->getName().append("::").size();
-            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            case 'd':
+                debug = 1; // debug is a static global
+                break;
+            case 'h': {
+                // help - show test names
+                cerr << "Usage: constraintT has the following tests:" << endl;
+                const std::vector<Test *> &tests = constraintT::suite()->getTests();
+                unsigned int prefix_len = constraintT::suite()->getName().append("::").size();
+                for (std::vector<Test *>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+                    cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+                }
+                break;
             }
-            break;
-        }
-        default:
-            break;
+            default:
+                break;
         }
 
     argc -= optind;
@@ -206,4 +208,3 @@ int main(int argc, char*argv[])
 
     return wasSuccessful ? 0 : 1;
 }
-
