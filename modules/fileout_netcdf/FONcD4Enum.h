@@ -35,6 +35,8 @@ public:
     virtual string 		name() ;
     //virtual nc_type		type() ;
 
+    virtual void                dump( ostream &strm ) const ;
+
 } ;
 
 #endif // FONcD4Enum_h_

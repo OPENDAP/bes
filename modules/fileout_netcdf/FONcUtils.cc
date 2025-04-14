@@ -48,6 +48,7 @@
 #include "FONcUInt64.h"
 #include "FONcFloat.h"
 #include "FONcDouble.h"
+#include "FONcD4Enum.h"
 #include "FONcStructure.h"
 #include "FONcArrayStructure.h"
 #include "FONcArrayStructureField.h"
@@ -338,6 +339,9 @@ FONcUtils::convert(BaseType *v,
                 break;
             case dods_float64_c:
                 b = new FONcDouble(v);
+                break;
+            case dods_enum_c:
+                b = new FONcD4Enum(v);
                 break;
             case dods_grid_c:
                 b = new FONcGrid(v);

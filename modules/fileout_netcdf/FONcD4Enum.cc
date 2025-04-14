@@ -42,8 +42,8 @@
  * This constructor takes a DAP BaseType and makes sure that it is a DAP
  * D4Enum32 instance. If not, it throws an exception
  *
- * @param b A DAP BaseType that should be a float32
- * @throws BESInternalError if the BaseType is not a D4Enum32
+ * @param b A DAP BaseType that should be a D4Enum
+ * @throws BESInternalError if the BaseType is not a D4Enum
  */
 FONcD4Enum::FONcD4Enum( BaseType *b )
     : FONcBaseType(), _f( 0 )
@@ -52,7 +52,7 @@ FONcD4Enum::FONcD4Enum( BaseType *b )
     if( !_f )
     {
 	string s = (string)"File out netcdf, FONcD4Enum was passed a "
-		   + "variable that is not a DAP D4Enum32" ;
+		   + "variable that is not a DAP D4Enum" ;
 	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
 }
@@ -163,7 +163,6 @@ FONcD4Enum::type()
 }
 #endif
 
-#if 0
 /** @brief dumps information about this object for debugging purposes
  *
  * Displays the pointer value of this instance plus instance data
@@ -173,11 +172,12 @@ FONcD4Enum::type()
 void
 FONcD4Enum::dump( ostream &strm ) const
 {
+#if 0
     strm << BESIndent::LMarg << "FONcD4Enum::dump - ("
 			     << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
     strm << BESIndent::LMarg << "name = " << _f->name()  << endl ;
     BESIndent::UnIndent() ;
-}
 #endif
+}
 
