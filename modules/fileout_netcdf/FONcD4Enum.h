@@ -25,6 +25,7 @@ class FONcD4Enum : public FONcBaseType
 {
 private:
     libdap::D4Enum *			_f ;
+    nc_type                             basetype;
 public:
     				FONcD4Enum( libdap::BaseType *b ) ;
     virtual			~FONcD4Enum() ;
@@ -34,6 +35,8 @@ public:
 
     virtual string 		name() ;
     //virtual nc_type		type() ;
+    nc_type                     obtain_basetype();
+    
 
     virtual void                dump( ostream &strm ) const ;
 

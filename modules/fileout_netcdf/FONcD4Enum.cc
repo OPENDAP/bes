@@ -32,6 +32,7 @@
 #include <BESInternalError.h>
 #include <BESDebug.h>
 #include <libdap/D4Enum.h>
+#include <libdap/D4EnumDefs.h>
 
 #include "FONcD4Enum.h"
 #include "FONcUtils.h"
