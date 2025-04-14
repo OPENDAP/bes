@@ -5,6 +5,8 @@
 
 // Copyright (c) 2004-2009 University Corporation for Atmospheric Research
 // Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
+// Refactored for C++14: Google Gemini (2025)
+// Adapted to use bes_run_tests: Google Gemini (2025)
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -13,12 +15,12 @@
 //
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
 // Lesser General Public License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
@@ -27,184 +29,156 @@
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
 // Authors:
-//      pwest       Patrick West <pwest@ucar.edu>
-//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+// pwest Patrick West <pwest@ucar.edu>
+// jgarcia Jose Garcia <jgarcia@ucar.edu>
 
-#include <cppunit/TextTestRunner.h>
+// CppUnit includes are now likely handled by bes_run_tests_cppunit.h,
+// but keeping them doesn't hurt for clarity or if used directly elsewhere.
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit;
-
 #include <iostream>
-#include <memory>
-#include <cstdlib>
+#include <memory> // Required for std::unique_ptr, std::make_unique
+#include <string> // Required for std::string
+#include <vector> // Required for std::vector
+#include <cstdlib> // Required for exit codes
 
-using std::cerr;
-using std::cout;
-using std::endl;
-using std::string;
-
+// Include necessary BES headers
 #include "BESFileContainer.h"
 #include "BESDataHandlerInterface.h"
 #include "BESConstraintFuncs.h"
 #include "BESDataNames.h"
 #include "TheBESKeys.h"
-#include <test_config.h>
-#include <unistd.h>
+#include <test_config.h> // Assumed to define TEST_SRC_DIR
 
-static bool debug = false;
+#include "modules/common/run_tests_cppunit.h"
 
-#undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
+// Using directives kept from original for style consistency
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::string;
+// Note: We don't need 'using namespace CppUnit' if TextTestRunner etc. are
+// only used inside run_tests_cppunit.h, but keep TestFixture for the class.
+using CppUnit::TestFixture;
 
-class constraintT : public TestFixture {
-private:
+class constraintT final : public TestFixture {
 
 public:
-    constraintT() {
-    }
+    // Constructor and Destructor remain simple
+    constraintT() = default;
+    ~constraintT() override = default; // Use override for virtual destructor
 
-    ~constraintT() {
-    }
-
-    void setUp() {
-        string bes_conf = (string) TEST_SRC_DIR + "/empty.ini";
+    // setUp remains the same
+    void setUp() override {
+        const string bes_conf = static_cast<string>(TEST_SRC_DIR) + "/empty.ini";
         TheBESKeys::ConfigFile = bes_conf;
     }
 
-    void tearDown() {
-    }
+    // tearDown remains empty
+    void tearDown() override {}
 
     CPPUNIT_TEST_SUITE(constraintT);
 
-        CPPUNIT_TEST(do_test);
+    // Register the specific test methods
+    CPPUNIT_TEST(testPostAppend_BothContainersConstrained);
+    CPPUNIT_TEST(testPostAppend_OnlySecondContainerConstrained);
+    CPPUNIT_TEST(testPostAppend_OnlyFirstContainerConstrained);
 
     CPPUNIT_TEST_SUITE_END();
 
-    void do_test() {
-        cout << "*****************************************" << endl;
-        cout << "Running constraintT tests" << endl;
-#if 1
-        {
-            cout << "*****************************************" << endl;
-            cout << "Build the data and build the post constraint" << endl;
-            BESDataHandlerInterface dhi;
-            // BESContainer *d1 = new BESFileContainer("sym1", "real1", "type1");                                                                                                                                                  
-            auto d1 = std::make_unique<BESFileContainer>("sym1", "real1", "type1");
-            d1->set_constraint("var1");
-            // dhi.containers.push_back(d1);                                                                                                                                                                                       
-            dhi.containers.push_back(d1.get());
+    /**
+     * @brief Tests BESConstraintFuncs::post_append when both containers have constraints.
+     */
+    void testPostAppend_BothContainersConstrained() {
+        DBG(cout << "Running testPostAppend_BothContainersConstrained" << endl);
+        BESDataHandlerInterface dhi;
 
-            // BESContainer *d2 = new BESFileContainer("sym2", "real2", "type2");                                                                                                                                                  
-            auto d2 = std::make_unique<BESFileContainer>("sym2", "real2", "type2");
-            d2->set_constraint("var2");
-            // dhi.containers.push_back(d2);                                                                                                                                                                                       
-            dhi.containers.push_back(d2.get());
+        auto d1 = std::make_unique<BESFileContainer>("sym1", "real1", "type1");
+        d1->set_constraint("var1");
+        dhi.containers.push_back(d1.get());
 
-            dhi.first_container();
-            BESConstraintFuncs::post_append(dhi);
-            dhi.next_container();
-            BESConstraintFuncs::post_append(dhi);
+        auto d2 = std::make_unique<BESFileContainer>("sym2", "real2", "type2");
+        d2->set_constraint("var2");
+        dhi.containers.push_back(d2.get());
 
-            string should_be = "sym1.var1,sym2.var2";
-            cout << "    post constraint = " << dhi.data[POST_CONSTRAINT] << endl;
-            cout << "    should be = " << should_be << endl;
-            CPPUNIT_ASSERT(dhi.data[POST_CONSTRAINT] == should_be);
-        }
-        {
-            cout << "*****************************************" << endl;
-            cout << "Only first container has constraint" << endl;
-            BESDataHandlerInterface dhi;
-            auto d1 = std::make_unique<BESFileContainer>("sym1", "real1", "type1");
-            dhi.containers.push_back(d1.get());
+        dhi.first_container();
+        BESConstraintFuncs::post_append(dhi);
+        dhi.next_container();
+        BESConstraintFuncs::post_append(dhi);
 
-            auto d2 = std::make_unique<BESFileContainer>("sym2", "real2", "type2");
-            d2->set_constraint("var2");
-            dhi.containers.push_back(d2.get());
+        const string should_be = "sym1.var1,sym2.var2";
+        const string actual = dhi.data[POST_CONSTRAINT];
 
-            dhi.first_container();
-            BESConstraintFuncs::post_append(dhi);
-            dhi.next_container();
-            BESConstraintFuncs::post_append(dhi);
-
-            string should_be = "sym1,sym2.var2";
-            cout << "    post constraint = " << dhi.data[POST_CONSTRAINT] << endl;
-            cout << "    should be = " << should_be << endl;
-            CPPUNIT_ASSERT(dhi.data[POST_CONSTRAINT] == should_be);
-        }
-        {
-            cout << "*****************************************" << endl;
-            cout << "Only second container has constraint" << endl;
-            BESDataHandlerInterface dhi;
-            auto d1 = std::make_unique<BESFileContainer>("sym1", "real1", "type1");
-            d1->set_constraint("var1");
-            dhi.containers.push_back(d1.get());
-
-            auto d2 = std::make_unique<BESFileContainer>("sym2", "real2", "type2");
-            dhi.containers.push_back(d2.get());
-
-            dhi.first_container();
-            BESConstraintFuncs::post_append(dhi);
-            dhi.next_container();
-            BESConstraintFuncs::post_append(dhi);
-
-            string should_be = "sym1.var1,sym2";
-            cout << "    post constraint = " << dhi.data[POST_CONSTRAINT] << endl;
-            cout << "    should be = " << should_be << endl;
-            CPPUNIT_ASSERT(dhi.data[POST_CONSTRAINT] == should_be);
-        }
-#endif
-
-
-        cout << "*****************************************" << endl;
-        cout << "Done running constraintT tests" << endl;
+        DBG(cout << "  post constraint = " << actual << endl);
+        DBG(cout << "  should be       = " << should_be << endl);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Post constraint mismatch when both containers have constraints",
+                                     should_be, actual);
     }
-};
+
+    /**
+     * @brief Tests BESConstraintFuncs::post_append when only the second container has a constraint.
+     */
+    void testPostAppend_OnlySecondContainerConstrained() {
+        DBG(cout << "Running testPostAppend_OnlySecondContainerConstrained" << endl);
+        BESDataHandlerInterface dhi;
+
+        auto d1 = std::make_unique<BESFileContainer>("sym1", "real1", "type1");
+        dhi.containers.push_back(d1.get());
+
+        auto d2 = std::make_unique<BESFileContainer>("sym2", "real2", "type2");
+        d2->set_constraint("var2");
+        dhi.containers.push_back(d2.get());
+
+        dhi.first_container();
+        BESConstraintFuncs::post_append(dhi);
+        dhi.next_container();
+        BESConstraintFuncs::post_append(dhi);
+
+        const string should_be = "sym1,sym2.var2";
+        const string actual = dhi.data[POST_CONSTRAINT];
+
+        DBG(cout << "  post constraint = " << actual << endl);
+        DBG(cout << "  should be       = " << should_be << endl);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Post constraint mismatch when only second container has constraint",
+                                     should_be, actual);
+    }
+
+    /**
+     * @brief Tests BESConstraintFuncs::post_append when only the first container has a constraint.
+     */
+    void testPostAppend_OnlyFirstContainerConstrained() {
+        DBG(cout << "Running testPostAppend_OnlyFirstContainerConstrained" << endl);
+        BESDataHandlerInterface dhi;
+
+        auto d1 = std::make_unique<BESFileContainer>("sym1", "real1", "type1");
+        d1->set_constraint("var1");
+        dhi.containers.push_back(d1.get());
+
+        auto d2 = std::make_unique<BESFileContainer>("sym2", "real2", "type2");
+        dhi.containers.push_back(d2.get());
+
+        dhi.first_container();
+        BESConstraintFuncs::post_append(dhi);
+        dhi.next_container();
+        BESConstraintFuncs::post_append(dhi);
+
+        const string should_be = "sym1.var1,sym2";
+        const string actual = dhi.data[POST_CONSTRAINT];
+
+        DBG(cout << "  post constraint = " << actual << endl);
+        DBG(cout << "  should be       = " << should_be << endl);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Post constraint mismatch when only first container has constraint",
+                                     should_be, actual);
+    }
+
+}; // End class constraintT
 
 CPPUNIT_TEST_SUITE_REGISTRATION(constraintT);
 
-int main(int argc, char *argv[]) {
-    int option_char;
-    while ((option_char = getopt(argc, argv, "dh")) != EOF)
-        switch (option_char) {
-            case 'd':
-                debug = 1; // debug is a static global
-                break;
-            case 'h': {
-                // help - show test names
-                cerr << "Usage: constraintT has the following tests:" << endl;
-                const std::vector<Test *> &tests = constraintT::suite()->getTests();
-                unsigned int prefix_len = constraintT::suite()->getName().append("::").size();
-                for (std::vector<Test *>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                    cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
-                }
-                break;
-            }
-            default:
-                break;
-        }
+int main(const int argc, char *argv[]) {
+    const bool success = bes_run_tests<constraintT>(argc, argv, ""); // Using empty context string
 
-    argc -= optind;
-    argv += optind;
-
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
-    bool wasSuccessful = true;
-    string test = "";
-    if (0 == argc) {
-        // run them all
-        wasSuccessful = runner.run("");
-    }
-    else {
-        int i = 0;
-        while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
-            test = constraintT::suite()->getName().append("::").append(argv[i]);
-            wasSuccessful = wasSuccessful && runner.run(test);
-        }
-    }
-
-    return wasSuccessful ? 0 : 1;
+    // Return 0 for success (true from bes_run_tests), 1 for failure (false).
+    return success ? 0 : 1;
 }
