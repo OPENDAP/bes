@@ -91,7 +91,7 @@ BESContainerStorageFile::BESContainerStorageFile(const string &n) :
     string key = "BES.Container.Persistence.File." + n;
     bool found = false;
     TheBESKeys::TheKeys()->get_value(key, _file, found);
-    if (_file == "") {
+    if (_file.empty()) {
         string s = key + " not defined in BES configuration file";
         throw BESSyntaxUserError(s, __FILE__, __LINE__);
     }

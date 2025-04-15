@@ -52,7 +52,7 @@
 #include "modules/common/run_tests_cppunit.h"
 
 class PlistT : public CppUnit::TestFixture {
-    BESContainerStorageList *cpl = BESContainerStorageList::TheList();
+    BESContainerStorageList *csl_ = BESContainerStorageList::TheList();
 
 public:
     PlistT() = default;
@@ -68,24 +68,25 @@ public:
 
     // Test: Adding persistence objects works for File1 and File2.
     void testAddPersistence() {
-        auto keys = TheBESKeys::TheKeys();
+        const auto keys = TheBESKeys::TheKeys();
         keys->set_key("BES.Container.Persistence.File.File1=" + std::string(TEST_SRC_DIR) + "/persistence_file1.txt");
         keys->set_key("BES.Container.Persistence.File.File2=" + std::string(TEST_SRC_DIR) + "/persistence_file2.txt");
 
         //auto* cpl = BESContainerStorageList::TheList();
 
         auto* cpf1 = new BESContainerStorageFile("File1");
-        CPPUNIT_ASSERT(cpl->add_persistence(cpf1));
+        CPPUNIT_ASSERT(csl_->add_persistence(cpf1));
 
         auto* cpf2 = new BESContainerStorageFile("File2");
-        CPPUNIT_ASSERT(cpl->add_persistence(cpf2));
+        CPPUNIT_ASSERT(csl_->add_persistence(cpf2));
     }
 
     // Test: Attempting to add a duplicate persistence (File2) fails.
     void testDuplicateAddPersistence() {
         //auto* cpl = BESContainerStorageList::TheList();
-        auto* duplicateCpf = new BESContainerStorageFile("File2");
-        CPPUNIT_ASSERT(!cpl->add_persistence(duplicateCpf));
+
+        const auto duplicate_cpf = std::make_unique<BESContainerStorageFile>("File1");
+        CPPUNIT_ASSERT_MESSAGE("Should not be able to add a duplicate storage", !csl_->add_persistence(duplicate_cpf.get()));
     }
 
     // Test: Existing containers (sym1 to sym10) are found with the expected properties.
@@ -98,7 +99,7 @@ public:
             const std::string expected_type = "type" + std::to_string(i);
             DBG(std::cerr << "Looking for container: " << sym << '\n');
             try {
-                std::unique_ptr<BESContainer> container(cpl->look_for(sym));
+                std::unique_ptr<BESContainer> container(csl_->look_for(sym));
                 CPPUNIT_ASSERT(container != nullptr);
                 CPPUNIT_ASSERT_EQUAL(expected_real, container->get_real_name());
                 CPPUNIT_ASSERT_EQUAL(expected_type, container->get_container_type());
@@ -113,7 +114,7 @@ public:
     void testLookupNonExistentContainer() {
         //auto* cpl = BESContainerStorageList::TheList();
         try {
-            std::unique_ptr<BESContainer> container(cpl->look_for("notthere"));
+            std::unique_ptr<BESContainer> container(csl_->look_for("notthere"));
             CPPUNIT_FAIL("Expected exception for non-existent container");
         }
         catch (BESError &e) {
@@ -125,17 +126,17 @@ public:
     void testShowContainers() {
         //auto* cpl = BESContainerStorageList::TheList();
         BESTextInfo info;
-        CPPUNIT_ASSERT_NO_THROW(cpl->show_containers(info));
+        CPPUNIT_ASSERT_NO_THROW(csl_->show_containers(info));
         CPPUNIT_ASSERT_NO_THROW(info.print(std::cerr));
     }
 
     // Test: Removing persistence for "File1" succeeds.
     void testRemovePersistence() {
         //auto* cpl = BESContainerStorageList::TheList();
-        CPPUNIT_ASSERT(cpl->deref_persistence("File1"));
+        CPPUNIT_ASSERT(csl_->deref_persistence("File1"));
 
         try {
-            std::unique_ptr<BESContainer> container(cpl->look_for("sym2"));
+            std::unique_ptr<BESContainer> container(csl_->look_for("sym2"));
             CPPUNIT_FAIL("Expected exception after removal");
         }
         catch (BESError &e) {
@@ -143,7 +144,7 @@ public:
         }
 
         try {
-            std::unique_ptr<BESContainer> container7(cpl->look_for("sym7"));
+            std::unique_ptr<BESContainer> container7(csl_->look_for("sym7"));
             CPPUNIT_ASSERT(container7 != nullptr);
             CPPUNIT_ASSERT_EQUAL(std::string("real7"), container7->get_real_name());
             CPPUNIT_ASSERT_EQUAL(std::string("type7"), container7->get_container_type());
