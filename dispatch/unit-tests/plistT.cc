@@ -30,6 +30,158 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <cppunit/extensions/HelperMacros.h>
+#include <iostream>
+#include <cstdlib>
+#include <string>
+#include <unistd.h>
+
+// Application headers.
+#include "BESContainerStorageList.h"
+#include "BESContainerStorageFile.h"
+#include "BESContainer.h"
+#include "BESError.h"
+#include "BESTextInfo.h"
+#include "TheBESKeys.h"
+#include <test_config.h>
+
+// Include the header-only test runner.
+#include "modules/common/run_tests_cppunit.h"
+
+// The global debug flags defined by the included header are used, so no local redefinition here.
+
+class PlistT : public CppUnit::TestFixture {
+public:
+    PlistT() = default;
+    ~PlistT() override = default;
+
+    // Configure common state before each test.
+    void setUp() override {
+        std::string bes_conf = std::string(TEST_SRC_DIR) + "/persistence_file_test.ini";
+        TheBESKeys::ConfigFile = bes_conf;
+    }
+
+    void tearDown() override {}
+
+    // Test: Adding persistence objects works for File1 and File2.
+    void testAddPersistence() {
+        auto keys = TheBESKeys::TheKeys();
+        keys->set_key("BES.Container.Persistence.File.File1=" + std::string(TEST_SRC_DIR) + "/persistence_file1.txt");
+        keys->set_key("BES.Container.Persistence.File.File2=" + std::string(TEST_SRC_DIR) + "/persistence_file2.txt");
+
+        auto* cpl = BESContainerStorageList::TheList();
+
+        auto* cpf1 = new BESContainerStorageFile("File1");
+        CPPUNIT_ASSERT(cpl->add_persistence(cpf1));
+
+        auto* cpf2 = new BESContainerStorageFile("File2");
+        CPPUNIT_ASSERT(cpl->add_persistence(cpf2));
+    }
+
+    // Test: Attempting to add a duplicate persistence (File2) fails.
+    void testDuplicateAddPersistence() {
+        auto* cpl = BESContainerStorageList::TheList();
+        auto* duplicateCpf = new BESContainerStorageFile("File2");
+        CPPUNIT_ASSERT(!cpl->add_persistence(duplicateCpf));
+    }
+
+    // Test: Existing containers (sym1 to sym10) are found with the expected properties.
+    void testLookupExistingContainers() {
+        auto* cpl = BESContainerStorageList::TheList();
+
+        for (int i = 1; i <= 10; ++i) {
+            std::string sym = "sym" + std::to_string(i);
+            std::string expectedReal = "real" + std::to_string(i);
+            std::string expectedType = "type" + std::to_string(i);
+            if (debug) {
+                std::cout << "Looking for container: " << sym << std::endl;
+            }
+            try {
+                BESContainer* container = cpl->look_for(sym);
+                CPPUNIT_ASSERT(container != nullptr);
+                CPPUNIT_ASSERT_EQUAL(expectedReal, container->get_real_name());
+                CPPUNIT_ASSERT_EQUAL(expectedType, container->get_container_type());
+            }
+            catch (BESError &e) {
+                CPPUNIT_FAIL(("Exception while looking for " + sym).c_str());
+            }
+        }
+    }
+
+    // Test: Looking up a non-existent container ("notthere") behaves as expected.
+    void testLookupNonExistentContainer() {
+        auto* cpl = BESContainerStorageList::TheList();
+        try {
+            BESContainer* container = cpl->look_for("notthere");
+            CPPUNIT_ASSERT(container == nullptr);
+        }
+        catch (BESError &e) {
+            if (debug) {
+                std::cout << "Expected exception for non-existent container: "
+                          << e.get_message() << std::endl;
+            }
+        }
+    }
+
+    // Test: Showing containers does not throw errors.
+    void testShowContainers() {
+        auto* cpl = BESContainerStorageList::TheList();
+        BESTextInfo info;
+        CPPUNIT_ASSERT_NO_THROW(cpl->show_containers(info));
+        CPPUNIT_ASSERT_NO_THROW(info.print(std::cout));
+    }
+
+    // Test: Removing persistence for "File1" succeeds.
+    void testRemovePersistence() {
+        auto* cpl = BESContainerStorageList::TheList();
+        CPPUNIT_ASSERT(cpl->deref_persistence("File1"));
+    }
+
+    // Test: Container lookup after removal behaves correctly.
+    void testLookupAfterRemoval() {
+        auto* cpl = BESContainerStorageList::TheList();
+
+        try {
+            BESContainer* container = cpl->look_for("sym2");
+            CPPUNIT_ASSERT(container == nullptr);
+        }
+        catch (BESError &e) {
+            if (debug) {
+                std::cout << "Expected exception after removal: "
+                          << e.get_message() << std::endl;
+            }
+        }
+
+        try {
+            BESContainer* container7 = cpl->look_for("sym7");
+            CPPUNIT_ASSERT(container7 != nullptr);
+            CPPUNIT_ASSERT_EQUAL(std::string("real7"), container7->get_real_name());
+            CPPUNIT_ASSERT_EQUAL(std::string("type7"), container7->get_container_type());
+        }
+        catch (BESError &e) {
+            CPPUNIT_FAIL("Exception while looking for container sym7");
+        }
+    }
+
+    CPPUNIT_TEST_SUITE(PlistT);
+    CPPUNIT_TEST(testAddPersistence);
+    CPPUNIT_TEST(testDuplicateAddPersistence);
+    CPPUNIT_TEST(testLookupExistingContainers);
+    CPPUNIT_TEST(testLookupNonExistentContainer);
+    CPPUNIT_TEST(testShowContainers);
+    CPPUNIT_TEST(testRemovePersistence);
+    CPPUNIT_TEST(testLookupAfterRemoval);
+    CPPUNIT_TEST_SUITE_END();
+};
+
+CPPUNIT_TEST_SUITE_REGISTRATION(PlistT);
+
+// The main function now leverages the header-only template.
+int main(int argc, char* argv[]) {
+    return bes_run_tests<PlistT>(argc, argv, "dDh") ? 0 : 1;
+}
+
+#if 0
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -227,4 +379,4 @@ int main(int argc, char*argv[])
 
     return wasSuccessful ? 0 : 1;
 }
-
+#endif
