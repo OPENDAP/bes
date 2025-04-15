@@ -71,7 +71,10 @@ class BESInfo;
  */
 class BESContainerStorageList: public BESObj {
 private:
-    static BESContainerStorageList * d_instance;
+#if 0
+      static BESContainerStorageList * d_instance;
+#endif
+
     mutable std::recursive_mutex d_cache_lock_mutex;
 
     using persistence_list = struct _persistence_list {
@@ -82,20 +85,24 @@ private:
 
     BESContainerStorageList::persistence_list *_first;
 
-    static void initialize_instance();
+#if 0
+      static void initialize_instance();
     static void delete_instance();
+#endif
+
 
     friend class PlistT;
 
 public:
     BESContainerStorageList();
-    virtual ~BESContainerStorageList();
 
-    virtual bool add_persistence(BESContainerStorage *p);
+    ~BESContainerStorageList() override;
+
+    virtual bool add_persistence(BESContainerStorage *cp);
     virtual bool ref_persistence(const std::string &persist_name);
     virtual bool deref_persistence(const std::string &persist_name);
     virtual BESContainerStorage *find_persistence(const std::string &persist_name);
-    virtual bool isnice();
+    virtual bool is_nice();
 
     // These methods scan all the container stores. Currently, this is used
     // by both <setContainer> and <define>. However, a better design would disentangle
@@ -105,7 +112,7 @@ public:
 
     virtual void show_containers(BESInfo &info);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static BESContainerStorageList *TheList();
 };

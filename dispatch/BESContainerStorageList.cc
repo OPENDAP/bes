@@ -49,22 +49,22 @@ using std::endl;
 using std::string;
 using std::ostream;
 
-BESContainerStorageList *BESContainerStorageList::d_instance = nullptr;
+#if 0
+  BESContainerStorageList *BESContainerStorageList::d_instance = nullptr;
 static std::once_flag d_euc_init_once;
+#endif
 
-BESContainerStorageList::BESContainerStorageList() :
-        _first(0)
+
+BESContainerStorageList::BESContainerStorageList() : _first(nullptr)
 {
 }
 
 BESContainerStorageList::~BESContainerStorageList()
 {
-    BESContainerStorageList::persistence_list *pl = _first;
+    const BESContainerStorageList::persistence_list *pl = _first;
     while (pl) {
-        if (pl->_persistence_obj) {
-            delete pl->_persistence_obj;
-        }
-        BESContainerStorageList::persistence_list *next = pl->_next;
+        delete pl->_persistence_obj;
+        const BESContainerStorageList::persistence_list *next = pl->_next;
         delete pl;
         pl = next;
     }
@@ -91,7 +91,7 @@ bool BESContainerStorageList::add_persistence(BESContainerStorage *cp)
         _first = new BESContainerStorageList::persistence_list;
         _first->_persistence_obj = cp;
         _first->_reference = 1;
-        _first->_next = 0;
+        _first->_next = nullptr;
         ret = true;
     }
     else {
@@ -106,7 +106,7 @@ bool BESContainerStorageList::add_persistence(BESContainerStorage *cp)
                     pl->_next = new BESContainerStorageList::persistence_list;
                     pl->_next->_reference = 1;
                     pl->_next->_persistence_obj = cp;
-                    pl->_next->_next = 0;
+                    pl->_next->_next = nullptr;
                     done = true;
                     ret = true;
                 }
@@ -174,7 +174,7 @@ bool BESContainerStorageList::deref_persistence(const string &persist_name)
 
     bool ret = false;
     BESContainerStorageList::persistence_list *pl = _first;
-    BESContainerStorageList::persistence_list *last = 0;
+    BESContainerStorageList::persistence_list *last = nullptr;
 
     bool done = false;
     while (done == false) {
@@ -223,7 +223,7 @@ BESContainerStorageList::find_persistence(const string &persist_name)
 {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    BESContainerStorage *ret = NULL;
+    BESContainerStorage *ret = nullptr;
     BESContainerStorageList::persistence_list *pl = _first;
     bool done = false;
     while (done == false) {
@@ -243,7 +243,7 @@ BESContainerStorageList::find_persistence(const string &persist_name)
     return ret;
 }
 
-bool BESContainerStorageList::isnice()
+bool BESContainerStorageList::is_nice()
 {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
@@ -305,9 +305,9 @@ BESContainerStorageList::look_for(const string &sym_name)
         }
     }
     if (!ret_container) {
-        string msg = (string) "Could not find the symbolic name " + sym_name;
+        string msg = "Could not find the symbolic name " + sym_name;
         ERROR_LOG(msg);
-        if (!isnice()) {
+        if (!is_nice()) {
             throw BESSyntaxUserError(msg, __FILE__, __LINE__);
         }
     }
@@ -401,11 +401,17 @@ void BESContainerStorageList::dump(ostream &strm) const
 BESContainerStorageList *
 BESContainerStorageList::TheList()
 {
-    std::call_once(d_euc_init_once,BESContainerStorageList::initialize_instance);
+    static BESContainerStorageList instance;
+    return &instance;
+#if 0
+     std::call_once(d_euc_init_once,BESContainerStorageList::initialize_instance);
     return d_instance;
+
+#endif
 }
 
-void BESContainerStorageList::initialize_instance() {
+#if 0
+  void BESContainerStorageList::initialize_instance() {
     d_instance = new BESContainerStorageList;
 #ifdef HAVE_ATEXIT
     atexit(delete_instance);
@@ -416,4 +422,6 @@ void BESContainerStorageList::delete_instance() {
     delete d_instance;
     d_instance = nullptr;
 }
+#endif
+
 

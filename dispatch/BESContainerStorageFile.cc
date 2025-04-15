@@ -117,19 +117,19 @@ BESContainerStorageFile::BESContainerStorageFile(const string &n) :
             persistence_file.getline(cline, 80);
             if (!persistence_file.eof()) {
                 strm << cline;
-                BESContainerStorageFile::container *c = new BESContainerStorageFile::container;
+                auto *c = new BESContainerStorageFile::container;
                 strm >> c->_symbolic_name;
                 strm >> c->_real_name;
                 strm >> c->_container_type;
                 string dummy;
                 strm >> dummy;
-                if (c->_symbolic_name == "" || c->_real_name == "" || c->_container_type == "") {
+                if (c->_symbolic_name.empty() || c->_real_name.empty() || c->_container_type.empty()) {
                     delete c;
                     persistence_file.close();
                     string s = "Incomplete container persistence line in file " + _file;
                     throw BESInternalError(s, __FILE__, __LINE__);
                 }
-                if (dummy != "") {
+                if (!dummy.empty()) {
                     persistence_file.close();
                     delete c;
                     string s = "Too many fields in persistence file " + _file;
@@ -150,7 +150,7 @@ BESContainerStorageFile::~BESContainerStorageFile()
 {
     BESContainerStorageFile::Container_citer i = _container_list.begin();
     BESContainerStorageFile::Container_citer ie = _container_list.end();
-    for (; i != ie; i++) {
+    for (; i != ie; ++i) {
         BESContainerStorageFile::container *c = (*i).second;
         delete c;
     }
