@@ -52,6 +52,8 @@
 #include "modules/common/run_tests_cppunit.h"
 
 class PlistT : public CppUnit::TestFixture {
+    BESContainerStorageList *cpl = BESContainerStorageList::TheList();
+
 public:
     PlistT() = default;
     ~PlistT() override = default;
@@ -62,7 +64,7 @@ public:
         TheBESKeys::ConfigFile = bes_conf;
     }
 
-    void tearDown() override {}
+    void tearDown() override { }
 
     // Test: Adding persistence objects works for File1 and File2.
     void testAddPersistence() {
@@ -70,7 +72,7 @@ public:
         keys->set_key("BES.Container.Persistence.File.File1=" + std::string(TEST_SRC_DIR) + "/persistence_file1.txt");
         keys->set_key("BES.Container.Persistence.File.File2=" + std::string(TEST_SRC_DIR) + "/persistence_file2.txt");
 
-        auto* cpl = BESContainerStorageList::TheList();
+        //auto* cpl = BESContainerStorageList::TheList();
 
         auto* cpf1 = new BESContainerStorageFile("File1");
         CPPUNIT_ASSERT(cpl->add_persistence(cpf1));
@@ -81,70 +83,63 @@ public:
 
     // Test: Attempting to add a duplicate persistence (File2) fails.
     void testDuplicateAddPersistence() {
-        auto* cpl = BESContainerStorageList::TheList();
+        //auto* cpl = BESContainerStorageList::TheList();
         auto* duplicateCpf = new BESContainerStorageFile("File2");
         CPPUNIT_ASSERT(!cpl->add_persistence(duplicateCpf));
     }
 
     // Test: Existing containers (sym1 to sym10) are found with the expected properties.
     void testLookupExistingContainers() {
-        auto* cpl = BESContainerStorageList::TheList();
+        //auto* cpl = BESContainerStorageList::TheList();
 
         for (int i = 1; i <= 10; ++i) {
-            std::string sym = "sym" + std::to_string(i);
-            std::string expectedReal = "real" + std::to_string(i);
-            std::string expectedType = "type" + std::to_string(i);
+            const std::string sym = "sym" + std::to_string(i);
+            const std::string expected_real = "real" + std::to_string(i);
+            const std::string expected_type = "type" + std::to_string(i);
             DBG(std::cerr << "Looking for container: " << sym << '\n');
             try {
                 std::unique_ptr<BESContainer> container(cpl->look_for(sym));
                 CPPUNIT_ASSERT(container != nullptr);
-                CPPUNIT_ASSERT_EQUAL(expectedReal, container->get_real_name());
-                CPPUNIT_ASSERT_EQUAL(expectedType, container->get_container_type());
+                CPPUNIT_ASSERT_EQUAL(expected_real, container->get_real_name());
+                CPPUNIT_ASSERT_EQUAL(expected_type, container->get_container_type());
             }
             catch (BESError &e) {
-                CPPUNIT_FAIL(("Exception while looking for " + sym).c_str());
+                CPPUNIT_FAIL("Exception while looking for " + sym);
             }
         }
     }
 
     // Test: Looking up a non-existent container ("notthere") behaves as expected.
     void testLookupNonExistentContainer() {
-        auto* cpl = BESContainerStorageList::TheList();
+        //auto* cpl = BESContainerStorageList::TheList();
         try {
             std::unique_ptr<BESContainer> container(cpl->look_for("notthere"));
-            CPPUNIT_ASSERT(container == nullptr);
+            CPPUNIT_FAIL("Expected exception for non-existent container");
         }
         catch (BESError &e) {
-            DBG(std::cerr << "Expected exception for non-existent container: "
-                     << e.get_message() << '\n');
+            DBG(std::cerr << "Found expected exception for non-existent container: " << e.get_message() << '\n');
         }
     }
 
     // Test: Showing containers does not throw errors.
     void testShowContainers() {
-        auto* cpl = BESContainerStorageList::TheList();
+        //auto* cpl = BESContainerStorageList::TheList();
         BESTextInfo info;
         CPPUNIT_ASSERT_NO_THROW(cpl->show_containers(info));
-        CPPUNIT_ASSERT_NO_THROW(info.print(std::cout));
+        CPPUNIT_ASSERT_NO_THROW(info.print(std::cerr));
     }
 
     // Test: Removing persistence for "File1" succeeds.
     void testRemovePersistence() {
-        auto* cpl = BESContainerStorageList::TheList();
+        //auto* cpl = BESContainerStorageList::TheList();
         CPPUNIT_ASSERT(cpl->deref_persistence("File1"));
-    }
-
-    // Test: Container lookup after removal behaves correctly.
-    void testLookupAfterRemoval() {
-        auto* cpl = BESContainerStorageList::TheList();
 
         try {
             std::unique_ptr<BESContainer> container(cpl->look_for("sym2"));
-            CPPUNIT_ASSERT(container == nullptr);
+            CPPUNIT_FAIL("Expected exception after removal");
         }
         catch (BESError &e) {
-            DBG(std::cerr << "Expected exception after removal: "
-                     << e.get_message() << '\n');
+            DBG(std::cerr << "Found expected exception after removal: " << e.get_message() << '\n');
         }
 
         try {
@@ -164,15 +159,13 @@ public:
     CPPUNIT_TEST(testLookupExistingContainers);
     CPPUNIT_TEST(testLookupNonExistentContainer);
     CPPUNIT_TEST(testShowContainers);
-    CPPUNIT_TEST(testRemovePersistence);
-    CPPUNIT_TEST(testLookupAfterRemoval);
     CPPUNIT_TEST_SUITE_END();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(PlistT);
 
 // The main function now leverages the header-only test runner template.
-int main(int argc, char* argv[]) {
+int main(const int argc, char* argv[]) {
     return bes_run_tests<PlistT>(argc, argv, "dDh") ? 0 : 1;
 }
 

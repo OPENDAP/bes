@@ -74,16 +74,18 @@ private:
     static BESContainerStorageList * d_instance;
     mutable std::recursive_mutex d_cache_lock_mutex;
 
-    typedef struct _persistence_list {
+    using persistence_list = struct _persistence_list {
         BESContainerStorage *_persistence_obj;
         unsigned int _reference;
         BESContainerStorageList::_persistence_list *_next;
-    } persistence_list;
+    };
 
     BESContainerStorageList::persistence_list *_first;
 
     static void initialize_instance();
     static void delete_instance();
+
+    friend class PlistT;
 
 public:
     BESContainerStorageList();
@@ -95,7 +97,7 @@ public:
     virtual BESContainerStorage *find_persistence(const std::string &persist_name);
     virtual bool isnice();
 
-    // These methods scan all of the container stores. Currently, this is used
+    // These methods scan all the container stores. Currently, this is used
     // by both <setContainer> and <define>. However, a better design would disentangle
     // the ContainerStorage from the Container creation. jhrg 1/8/19
     virtual BESContainer *look_for(const std::string &sym_name);

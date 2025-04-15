@@ -120,7 +120,7 @@ bool BESContainerStorageList::add_persistence(BESContainerStorage *cp)
     return ret;
 }
 
-/** @brief refence the specified persistent store if in the list
+/** @brief reference the specified persistent store if in the list
  *
  * Increments the reference count of the persistent store in the
  * list. This lets the system know that there is a module that is
@@ -414,6 +414,6 @@ void BESContainerStorageList::initialize_instance() {
 
 void BESContainerStorageList::delete_instance() {
     delete d_instance;
-    d_instance = 0;
+    d_instance = nullptr;
 }
 
