@@ -41,6 +41,7 @@
 #include <vector>   // Needed for TestFactoryRegistry access if done manually
 #include <cstdio>   // For sprintf (kept from original)
 #include <cstdlib>  // For EXIT_SUCCESS in bes_run_tests
+#include <sstream>
 
 // Include necessary BES headers
 #include "BESContainerStorageFile.h"
@@ -95,7 +96,6 @@ public:
     // tearDown remains empty
     void tearDown() override {}
 
-    // --- Test Suite Definition ---
     CPPUNIT_TEST_SUITE(connT);
 
     // Register the new, specific test methods
@@ -179,29 +179,40 @@ public:
     }
 
     /**
-     * @brief Tests finding existing containers using look_for.
+     * @brief Tests finding existing containers using look_for (using std::ostringstream).
      */
     void testLookFor_FindsExistingContainers() {
+
         DBG(cout << "Running testLookFor_FindsExistingContainers" << endl);
+
         BESContainerStorageFile cpf("File1"); // Assumes File1 is valid (tested above)
 
-        char s[10];
-        char r[10];
-        char c[10];
-        for (int i = 1; i < 6; i++) {
-            // Using sprintf as in original, consider std::ostringstream for more C++ style
-            sprintf(s, "sym%d", i);
-            sprintf(r, "real%d", i);
-            sprintf(c, "type%d", i);
-            DBG(cout << "    looking for " << s << endl);
+        for (int i = 1; i < 6; ++i) {
+            std::ostringstream ss_sym, ss_real, ss_type;
+
+            ss_sym << "sym" << i;
+            string sym_key = ss_sym.str();
+
+            ss_real << "real" << i;
+            string expected_real_name = ss_real.str();
+
+            ss_type << "type" << i;
+            string expected_type = ss_type.str();
+
+            DBG(cout << "    looking for " << sym_key << endl);
 
             // look_for returns a non-owning raw pointer. Do NOT delete 'd'.
-            BESContainer *d = cpf.look_for(s);
+            BESContainer *d = cpf.look_for(sym_key);
 
-            CPPUNIT_ASSERT_MESSAGE(string("Should find container for key: ") + s, d != nullptr);
-            if (d) { // Check pointer before dereferencing
-                CPPUNIT_ASSERT_EQUAL_MESSAGE(string("Real name mismatch for key: ") + s, string(r), d->get_real_name());
-                CPPUNIT_ASSERT_EQUAL_MESSAGE(string("Container type mismatch for key: ") + s, string(c), d->get_container_type());
+            std::string find_msg = "Should find container for key: " + sym_key;
+            CPPUNIT_ASSERT_MESSAGE(find_msg, d != nullptr);
+
+            if (d) {
+                std::string real_name_msg = "Real name mismatch for key: " + sym_key;
+                std::string type_msg = "Container type mismatch for key: " + sym_key;
+
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(real_name_msg, expected_real_name, d->get_real_name());
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(type_msg, expected_type, d->get_container_type());
             }
         }
     }
@@ -237,17 +248,11 @@ public:
 
 }; // End class connT
 
-// --- Test Suite Registration (Unchanged) ---
+
 CPPUNIT_TEST_SUITE_REGISTRATION(connT);
 
-// --- Main Function ---
-// Uses the bes_run_tests template function from the included header.
 int main(int argc, char *argv[]) {
-    // Call the templated test runner function.
-    // Pass the test fixture class (connT) as the template parameter.
-    // Pass argc and argv directly.
-    // Provide relevant BES debug contexts (e.g., "bes,container"). Adjust as needed.
-    bool success = bes_run_tests<connT>(argc, argv, "bes,container");
+    const bool success = bes_run_tests<connT>(argc, argv, "bes,container");
 
     // Return 0 for success (true from bes_run_tests), 1 for failure (false).
     return success ? 0 : 1;
