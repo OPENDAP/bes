@@ -51,10 +51,9 @@ using std::vector;
 using std::ostream;
 using std::map;
 
-BESXMLDefineCommand::BESXMLDefineCommand(const BESDataHandlerInterface &base_dhi) :
-    BESXMLCommand(base_dhi), _default_constraint(""), _default_dap4_constraint(""), _default_dap4_function("")
-{
-}
+#ifndef DEFAULT
+#define DEFAULT "default"
+#endif
 
 /** @brief parse a define command.
  *
@@ -84,11 +83,10 @@ BESXMLDefineCommand::BESXMLDefineCommand(const BESDataHandlerInterface &base_dhi
  *
  * @param node xml2 element node pointer
  */
-void BESXMLDefineCommand::parse_request(xmlNode *node)
-{
-    string value;		// element value, should not be any
-    string action;		// element name, which is the request action
-    map<string, string> props;	// element attributes; 'name' and maybe 'space'
+void BESXMLDefineCommand::parse_request(xmlNode *node) {
+    string value; // element value, should not be any
+    string action; // element name, which is the request action
+    map<string, string> props; // element attributes; 'name' and maybe 'space'
 
     BESXMLUtils::GetNodeInfo(node, action, value, props);
     if (action != DEFINE_RESPONSE_STR) {
@@ -105,7 +103,7 @@ void BESXMLDefineCommand::parse_request(xmlNode *node)
     d_xmlcmd_dhi.data[DEF_NAME] = def_name;
     d_cmd_log_info = (string) "define " + def_name;
 
-    d_xmlcmd_dhi.data[STORE_NAME] = props["space"].empty() ? DEFAULT: props["space"];
+    d_xmlcmd_dhi.data[STORE_NAME] = props["space"].empty() ? DEFAULT : props["space"];
     d_cmd_log_info += " in " + d_xmlcmd_dhi.data[STORE_NAME];
 
     int num_containers = 0;
@@ -147,7 +145,8 @@ void BESXMLDefineCommand::parse_request(xmlNode *node)
     }
 
     if (num_containers < 1)
-        throw BESSyntaxUserError(string(action) + " The define element must contain at least one container element", __FILE__, __LINE__);
+        throw BESSyntaxUserError(string(action) + " The define element must contain at least one container element",
+                                 __FILE__, __LINE__);
 
     d_cmd_log_info += " as ";
     bool first = true;
@@ -159,7 +158,8 @@ void BESXMLDefineCommand::parse_request(xmlNode *node)
         first = false;
     }
 
-    if (container_constraints.size() || container_dap4constraints.size() || container_dap4functions.size() || container_attributes.size()) {
+    if (container_constraints.size() || container_dap4constraints.size() || container_dap4functions.size() ||
+        container_attributes.size()) {
         d_cmd_log_info += " with ";
         first = true;
         i = container_names.begin();
@@ -218,8 +218,7 @@ void BESXMLDefineCommand::parse_request(xmlNode *node)
  * @param props properties of the container element
  */
 void BESXMLDefineCommand::handle_container_element(const string &action, xmlNode *node, const string &/*value*/,
-    map<string, string> &props)
-{
+                                                   map<string, string> &props) {
     string name = props["name"];
     if (name.empty()) {
         string err = action + " command: container element missing name prop";
@@ -363,8 +362,7 @@ void BESXMLDefineCommand::handle_aggregate_element(const string &action, xmlNode
  * called by XMLInterface::execute_data_request_plan(), after all the elements
  * have been parsed. jhrg 2/11/18
  */
-void BESXMLDefineCommand::prep_request()
-{
+void BESXMLDefineCommand::prep_request() {
     vector<string>::iterator i = container_names.begin();
     vector<string>::iterator e = container_names.end();
     for (; i != e; i++) {
@@ -415,8 +413,7 @@ void BESXMLDefineCommand::prep_request()
  * @param strm C++ i/o stream to dump the information to
  */
 
-void BESXMLDefineCommand::dump(ostream &strm) const
-{
+void BESXMLDefineCommand::dump(ostream &strm) const {
     strm << BESIndent::LMarg << "BESXMLDefineCommand::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     BESXMLCommand::dump(strm);
@@ -424,8 +421,6 @@ void BESXMLDefineCommand::dump(ostream &strm) const
 }
 
 BESXMLCommand *
-BESXMLDefineCommand::CommandBuilder(const BESDataHandlerInterface &base_dhi)
-{
+BESXMLDefineCommand::CommandBuilder(const BESDataHandlerInterface &base_dhi) {
     return new BESXMLDefineCommand(base_dhi);
 }
-
