@@ -31,10 +31,13 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/ui/text/TestRunner.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
 #include <iostream>
 #include <cstdlib>
 #include <string>
 #include <unistd.h>
+#include <memory>
 
 // Application headers.
 #include "BESContainerStorageList.h"
@@ -45,10 +48,8 @@
 #include "TheBESKeys.h"
 #include <test_config.h>
 
-// Include the header-only test runner.
+// Include the header-only test runner and its debug macros.
 #include "modules/common/run_tests_cppunit.h"
-
-// The global debug flags defined by the included header are used, so no local redefinition here.
 
 class PlistT : public CppUnit::TestFixture {
 public:
@@ -93,11 +94,9 @@ public:
             std::string sym = "sym" + std::to_string(i);
             std::string expectedReal = "real" + std::to_string(i);
             std::string expectedType = "type" + std::to_string(i);
-            if (debug) {
-                std::cout << "Looking for container: " << sym << std::endl;
-            }
+            DBG(std::cerr << "Looking for container: " << sym << '\n');
             try {
-                BESContainer* container = cpl->look_for(sym);
+                std::unique_ptr<BESContainer> container(cpl->look_for(sym));
                 CPPUNIT_ASSERT(container != nullptr);
                 CPPUNIT_ASSERT_EQUAL(expectedReal, container->get_real_name());
                 CPPUNIT_ASSERT_EQUAL(expectedType, container->get_container_type());
@@ -112,14 +111,12 @@ public:
     void testLookupNonExistentContainer() {
         auto* cpl = BESContainerStorageList::TheList();
         try {
-            BESContainer* container = cpl->look_for("notthere");
+            std::unique_ptr<BESContainer> container(cpl->look_for("notthere"));
             CPPUNIT_ASSERT(container == nullptr);
         }
         catch (BESError &e) {
-            if (debug) {
-                std::cout << "Expected exception for non-existent container: "
-                          << e.get_message() << std::endl;
-            }
+            DBG(std::cerr << "Expected exception for non-existent container: "
+                     << e.get_message() << '\n');
         }
     }
 
@@ -142,18 +139,16 @@ public:
         auto* cpl = BESContainerStorageList::TheList();
 
         try {
-            BESContainer* container = cpl->look_for("sym2");
+            std::unique_ptr<BESContainer> container(cpl->look_for("sym2"));
             CPPUNIT_ASSERT(container == nullptr);
         }
         catch (BESError &e) {
-            if (debug) {
-                std::cout << "Expected exception after removal: "
-                          << e.get_message() << std::endl;
-            }
+            DBG(std::cerr << "Expected exception after removal: "
+                     << e.get_message() << '\n');
         }
 
         try {
-            BESContainer* container7 = cpl->look_for("sym7");
+            std::unique_ptr<BESContainer> container7(cpl->look_for("sym7"));
             CPPUNIT_ASSERT(container7 != nullptr);
             CPPUNIT_ASSERT_EQUAL(std::string("real7"), container7->get_real_name());
             CPPUNIT_ASSERT_EQUAL(std::string("type7"), container7->get_container_type());
@@ -176,7 +171,7 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(PlistT);
 
-// The main function now leverages the header-only template.
+// The main function now leverages the header-only test runner template.
 int main(int argc, char* argv[]) {
     return bes_run_tests<PlistT>(argc, argv, "dDh") ? 0 : 1;
 }
