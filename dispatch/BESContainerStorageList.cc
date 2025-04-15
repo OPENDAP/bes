@@ -49,27 +49,6 @@ using std::endl;
 using std::string;
 using std::ostream;
 
-#if 0
-  BESContainerStorageList *BESContainerStorageList::d_instance = nullptr;
-static std::once_flag d_euc_init_once;
-#endif
-
-
-BESContainerStorageList::BESContainerStorageList() : _first(nullptr)
-{
-}
-
-BESContainerStorageList::~BESContainerStorageList()
-{
-    const BESContainerStorageList::persistence_list *pl = _first;
-    while (pl) {
-        delete pl->_persistence_obj;
-        const BESContainerStorageList::persistence_list *next = pl->_next;
-        delete pl;
-        pl = next;
-    }
-}
-
 /** @brief Add a persistent store to the list
  *
  * Each persistent store has a name. If a persistent store already exists in
@@ -316,9 +295,9 @@ BESContainerStorageList::look_for(const string &sym_name)
 }
 
 /**
- * @brief scan all of the container stores and remove any containers called \arg syn_name
+ * @brief scan all the container stores and remove any containers called \arg syn_name
  *
- * Scan all of the Container Storage objects and looking for containers
+ * Scan all the Container Storage objects and looking for containers
  * called \arg sym_name and delete those. This method was added as a fix
  * for a bug where containers in one store were used because the <define>
  * command did not have the information it needed to search a particular
@@ -397,31 +376,3 @@ void BESContainerStorageList::dump(ostream &strm) const
     }
     BESIndent::UnIndent();
 }
-
-BESContainerStorageList *
-BESContainerStorageList::TheList()
-{
-    static BESContainerStorageList instance;
-    return &instance;
-#if 0
-     std::call_once(d_euc_init_once,BESContainerStorageList::initialize_instance);
-    return d_instance;
-
-#endif
-}
-
-#if 0
-  void BESContainerStorageList::initialize_instance() {
-    d_instance = new BESContainerStorageList;
-#ifdef HAVE_ATEXIT
-    atexit(delete_instance);
-#endif
-}
-
-void BESContainerStorageList::delete_instance() {
-    delete d_instance;
-    d_instance = nullptr;
-}
-#endif
-
-

@@ -37,11 +37,13 @@
 #include <mutex>
 
 #include "BESObj.h"
+#include "BESContainerStorage.h"
 
-class BESContainerStorage;
+//class BESContainerStorage;
 class BESContainer;
 class BESInfo;
 
+#if 0
 #ifndef DEFAULT
 #define DEFAULT "default"
 #endif
@@ -49,6 +51,8 @@ class BESInfo;
 #ifndef CATALOG
 #define CATALOG "catalog"
 #endif
+#endif
+
 
 /** @brief Provides a mechanism for accessing container information from
  * different container stores registered with this server.
@@ -71,32 +75,35 @@ class BESInfo;
  */
 class BESContainerStorageList: public BESObj {
 private:
-#if 0
-      static BESContainerStorageList * d_instance;
-#endif
-
     mutable std::recursive_mutex d_cache_lock_mutex;
 
     using persistence_list = struct _persistence_list {
         BESContainerStorage *_persistence_obj;
         unsigned int _reference;
-        BESContainerStorageList::_persistence_list *_next;
+        _persistence_list *_next;
     };
 
-    BESContainerStorageList::persistence_list *_first;
-
-#if 0
-      static void initialize_instance();
-    static void delete_instance();
-#endif
-
+    persistence_list *_first = nullptr;
 
     friend class PlistT;
 
 public:
-    BESContainerStorageList();
+    BESContainerStorageList() = default;
+    ~BESContainerStorageList() override {
+        const persistence_list *pl = _first;
+        while (pl) {
+            delete pl->_persistence_obj;
+            const persistence_list *next = pl->_next;
+            delete pl;
+            pl = next;
+        }
+    }
 
-    ~BESContainerStorageList() override;
+    static BESContainerStorageList *TheList() {
+        static BESContainerStorageList instance;
+        return &instance;
+    }
+
 
     virtual bool add_persistence(BESContainerStorage *cp);
     virtual bool ref_persistence(const std::string &persist_name);
@@ -113,8 +120,6 @@ public:
     virtual void show_containers(BESInfo &info);
 
     void dump(std::ostream &strm) const override;
-
-    static BESContainerStorageList *TheList();
 };
 
 #endif // I_BESContainerStorageList_H
