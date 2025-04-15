@@ -7,6 +7,8 @@
 #define FONcD4Enum_h_ 1
 
 #include <libdap/D4Enum.h>
+#include <libdap/D4EnumDefs.h>
+#include <libdap/D4Group.h>
 
 namespace libdap {
     class BaseType;
@@ -25,9 +27,10 @@ class FONcD4Enum : public FONcBaseType
 {
 private:
     libdap::D4Enum *			_f ;
-    nc_type                             basetype;
+    nc_type                             basetype = NC_NAT;
+    int                                 nc_enum_type_id = 0;
 public:
-    				FONcD4Enum( libdap::BaseType *b ) ;
+    				FONcD4Enum( libdap::BaseType *b, nc_type d4_enum_basetype, int nc_type_id ) ;
     virtual			~FONcD4Enum() ;
 
     virtual void		define( int ncid ) ;

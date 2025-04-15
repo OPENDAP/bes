@@ -46,16 +46,23 @@
  * @param b A DAP BaseType that should be a D4Enum
  * @throws BESInternalError if the BaseType is not a D4Enum
  */
-FONcD4Enum::FONcD4Enum( BaseType *b )
+FONcD4Enum::FONcD4Enum( BaseType *b, nc_type d4_enum_basetype, int nc_type_id )
     : FONcBaseType(), _f( 0 )
 {
     _f = dynamic_cast<D4Enum *>(b) ;
-    if( !_f )
+    if ( !_f )
     {
 	string s = (string)"File out netcdf, FONcD4Enum was passed a "
 		   + "variable that is not a DAP D4Enum" ;
 	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
+    if (d4_enum_basetype == NC_NAT || d4_enum_basetype == NC_FLOAT || d4_enum_basetype == NC_DOUBLE) {
+	string s = "File out netcdf, FONcD4Enum base type must be an integer ";
+	throw BESInternalError( s, __FILE__, __LINE__ ) ;
+    }
+    basetype = d4_enum_basetype;
+    nc_enum_type_id = nc_type_id;
+    
 }
 
 /** @brief Destructor that cleans up this instance

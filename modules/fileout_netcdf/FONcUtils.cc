@@ -164,6 +164,54 @@ nc_type FONcUtils::get_nc_type(BaseType *element,bool IsNC4_ENHANCED)
     return x_type;
 }
 
+nc_type FONcUtils::dap4_int_float_type_to_nc4_type(libdap::Type d4_type)
+{
+    nc_type x_type = NC_NAT; // the constant netcdf uses to define simple type
+
+    BESDEBUG("fonc", "FONcUtils() - dap4_atomic_type_to_nc4_type - dap4_type: "<< d4_type <<endl);
+
+    switch(d4_type) {
+        case dods_byte_c: 
+        case dods_uint8_c:
+        case dods_char_c:
+            x_type = NC_UBYTE;
+            break; 
+        case dods_int8_c:
+            x_type = NC_BYTE;
+            break; 
+        case dods_uint16_c:
+            x_type = NC_USHORT;    
+            break;
+        case dods_int16_c:
+            x_type = NC_SHORT;    
+            break;
+        case dods_uint32_c:
+            x_type = NC_UINT;
+            break; 
+        case dods_int32_c:
+            x_type = NC_INT;    
+            break;
+        case dods_uint64_c:
+            x_type = NC_UINT64;    
+            break;
+        case dods_int64_c:
+            x_type = NC_INT64;    
+            break;
+        case dods_float32_c:
+            x_type = NC_FLOAT;    
+            break;
+        case dods_float64_c:
+            x_type = NC_DOUBLE;    
+            break;   
+        default:
+            x_type = NC_NAT;
+    }
+
+    BESDEBUG("fonc", "FONcUtils() - dap4_atomic_type_to_nc4_type -  returned nc_type: "<< x_type <<endl);
+    return x_type;
+}
+
+
 /** @brief generate a new name for the embedded variable
  *
  * This function takes the name of a variable as it exists in a data
@@ -219,7 +267,8 @@ FONcBaseType *
 FONcUtils::convert(BaseType *v, const string &ncdf_version, const bool is_classic_model) {
     map<string,int>fdimname_to_id;
     vector<int>rds_nums;
-    return convert(v, ncdf_version, is_classic_model,fdimname_to_id,rds_nums);
+    unordered_map<string,vector<pair<string,int>>> GFQN_to_en_typeid_vec;
+    return convert(v, ncdf_version, is_classic_model,fdimname_to_id,rds_nums, GFQN_to_en_typeid_vec);
 }
 
 /** @brief Creates a FONc object for the given DAP object
@@ -259,7 +308,8 @@ FONcUtils::convert(BaseType *v,
                    const string &ncdf_version, 
                    const bool is_classic_model, 
                    map<string,int>&fdimname_to_id,
-                   vector<int>&rds_nums)
+                   vector<int>&rds_nums,
+                   unordered_map<string,vector<pair<string,int>>> & GFQN_to_en_typeid_vec)
 {
     FONcBaseType *b = nullptr;
 
@@ -341,7 +391,32 @@ FONcUtils::convert(BaseType *v,
                 b = new FONcDouble(v);
                 break;
             case dods_enum_c:
-                b = new FONcD4Enum(v);
+            {
+                D4Enum *d4_enum = dynamic_cast<D4Enum *>(v);
+                Type base_type = d4_enum->element_type();
+                nc_type nc_enum_base_type = FONcUtils::dap4_int_float_type_to_nc4_type(base_type);
+                D4EnumDef *d4_enum_def = d4_enum->enumeration();
+                string d4_enum_def_name = d4_enum_def->name();
+                D4EnumDefs * d4_enum_defs = d4_enum_def->parent();
+                D4Group *d4_grp = d4_enum_defs->parent();
+                
+cerr<<"D4Enum base_type: "<<base_type<<endl;
+cerr<<"d4_enum_def_name: "<<d4_enum_def_name <<endl;
+cerr<<"d4_grp full path: "<<d4_grp->FQN() <<endl;
+                string enum_def_fqn = d4_grp->FQN() + d4_enum_def_name;
+                vector<pair<string,int>> enum_name_nc_type_id_vec = GFQN_to_en_typeid_vec[d4_grp->FQN()];
+                int nc4_enum_type_id = 0;
+                string enum_name;
+                for (const auto & en_typeid:enum_name_nc_type_id_vec) {
+                    enum_name = en_typeid.first;
+                    nc4_enum_type_id = en_typeid.second;
+                    if (enum_name == d4_enum_def_name)
+                        break;
+                }
+cerr<<"final enum name: "<<enum_name <<endl;
+
+                b = new FONcD4Enum(v,nc_enum_base_type, nc4_enum_type_id);
+            }
                 break;
             case dods_grid_c:
                 b = new FONcGrid(v);
