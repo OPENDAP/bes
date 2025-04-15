@@ -201,8 +201,7 @@ public:
 
             DBG(cout << "    looking for " << sym_key << endl);
 
-            // look_for returns a non-owning raw pointer. Do NOT delete 'd'.
-            BESContainer *d = cpf.look_for(sym_key);
+            std::unique_ptr<BESContainer> d(cpf.look_for(sym_key));
 
             std::string find_msg = "Should find container for key: " + sym_key;
             CPPUNIT_ASSERT_MESSAGE(find_msg, d != nullptr);
@@ -225,8 +224,7 @@ public:
         BESContainerStorageFile cpf("File1"); // Assumes File1 is valid
 
         DBG(cout << "    looking for notthere" << endl);
-        BESContainer *d = cpf.look_for("notthere"); // Non-owning raw pointer
-
+        std::unique_ptr<BESContainer> d(cpf.look_for("notthere"));
         CPPUNIT_ASSERT_MESSAGE("Should return nullptr for non-existent key 'notthere'", d == nullptr);
     }
 

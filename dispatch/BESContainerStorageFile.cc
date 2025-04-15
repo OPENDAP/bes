@@ -160,17 +160,20 @@ BESContainerStorageFile::~BESContainerStorageFile()
  * from the file.
  *
  * If a match is made with the specified symbolic name then a BESFileContainer
- * instance is created using the the information found (real name and
- * container type). If not found then NULL is returned.
+ * instance is created using the information found (real name and
+ * container type). If not found then nullptr is returned.
+ *
+ * @note It is the caller's responsibility to delete this raw pointer. This would
+ * be a place where a shared_ptr or weak_ptr could be used. jhrg 4/15/25
  *
  * @param sym_name name of the container to look for
- * @return a new BESFileContainer if the sym_name is found in the file, else 0
+ * @return a new BESFileContainer if the sym_name is found in the file, else nullptr.
  * @see BESFileContainer
  */
 BESContainer *
 BESContainerStorageFile::look_for(const string &sym_name)
 {
-    BESFileContainer *ret_container = 0;
+    BESFileContainer *ret_container = nullptr;
     BESContainerStorageFile::Container_citer i;
     i = _container_list.find(sym_name);
     if (i != _container_list.end()) {
