@@ -9,3 +9,4 @@ dnl - writer - build_dmrpp tests ------------------------------------------
 # AT_BESCMD_RESPONSE_SCRUB_DATES_TEST([builddmrpp/ghrsst_cmr_dmrpp.dap])
 
 AT_BESCMD_RESPONSE_SCRUB_BES_CONF_LINES_TEST([builddmrpp/ghrsst_cmr_dmrpp.dap])
+AT_BESCMD_RESPONSE_SCRUB_BES_CONF_LINES_TEST([builddmrpp/ghrsst_cmr_dmrpp_ngap_space.dap])
