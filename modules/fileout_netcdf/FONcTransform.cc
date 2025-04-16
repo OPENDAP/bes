@@ -777,7 +777,39 @@ void FONcTransform::transform_dap4() {
  */
 void FONcTransform::transform_dap4_no_group() {
 
+    // Open the file for writing
+    int stax = -1;
+    if (FONcTransform::_returnAs == FONC_RETURN_AS_NETCDF4) {
+        if (FONcRequestHandler::classic_model) {
+            BESDEBUG(MODULE, prolog << "Opening NetCDF-4 cache file in classic mode. fileName:  "
+                             << _localfile << endl);
+            stax = nc_create(_localfile.c_str(), NC_CLOBBER | NC_NETCDF4 | NC_CLASSIC_MODEL, &_ncid);
+        }
+        else {
+            BESDEBUG(MODULE, prolog << "Opening NetCDF-4 cache file. fileName:  " << _localfile
+                                                                                                           << endl);
+            stax = nc_create(_localfile.c_str(), NC_CLOBBER | NC_NETCDF4, &_ncid);
+        }
+    }
+    else {
+        BESDEBUG(MODULE, prolog << "Opening NetCDF-3 cache file. fileName:  " << _localfile
+                                                                                                       << endl);
+        if (FONcRequestHandler::nc3_classic_format)                                                    
+            stax = nc_create(_localfile.c_str(), NC_CLOBBER, &_ncid);
+        else 
+            stax = nc_create(_localfile.c_str(), NC_CLOBBER | NC_64BIT_OFFSET, &_ncid);
+    }
+
+    if (stax != NC_NOERR) {
+        FONcUtils::handle_error(stax, prolog + "Call to nc_create() failed for file: " + _localfile, __FILE__, __LINE__);
+    }
+
+
     D4Group *root_grp = _dmr->root();
+
+    if(root_grp->has_enum_defs()) 
+        gen_nc4_enum_type(root_grp,_ncid);
+ 
 #if !NDEBUG
     D4Dimensions *root_dims = root_grp->dims();
     for (D4Dimensions::D4DimensionsIter di = root_dims->dim_begin(), de = root_dims->dim_end(); di != de; ++di) {
@@ -787,6 +819,7 @@ void FONcTransform::transform_dap4_no_group() {
         BESDEBUG(MODULE,  prolog << "transform_dap4() - fully_qualfied_dim name is: " << (*di)->fully_qualified_name() << endl);
     }
 #endif
+
     Constructor::Vars_iter vi = root_grp->var_begin();
     Constructor::Vars_iter ve = root_grp->var_end();
 
@@ -800,7 +833,7 @@ void FONcTransform::transform_dap4_no_group() {
                 BESDEBUG(MODULE, prolog << "Converting variable '" << v->name() << "'" << endl);
     
                 // This is a factory class call, and 'fg' is specialized for 'v'
-                FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model);
+                FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model, GFQN_to_en_typeid_vec);
                 
                 _fonc_vars.push_back(fb);
     
@@ -847,6 +880,7 @@ void FONcTransform::transform_dap4_no_group() {
 
     fonc_history_util::updateHistoryAttributes(_dmr, d_dhi->data[POST_CONSTRAINT]);
 
+#if 0
     // Open the file for writing
     int stax = -1;
     if (FONcTransform::_returnAs == FONC_RETURN_AS_NETCDF4) {
@@ -873,6 +907,8 @@ void FONcTransform::transform_dap4_no_group() {
     if (stax != NC_NOERR) {
         FONcUtils::handle_error(stax, prolog + "Call to nc_create() failed for file: " + _localfile, __FILE__, __LINE__);
     }
+#endif
+
 
     try {
         // Here we will be defining the variables of the netcdf and
@@ -992,8 +1028,11 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
 
     fonc_history_util::updateHistoryAttributes(_dmr, d_dhi->data[POST_CONSTRAINT]);
 
-    if (is_root_grp == true)
+    if (is_root_grp == true) { 
         nc4_grp_id = _ncid;
+        if(d4_grp->has_enum_defs()) 
+            gen_nc4_enum_type(d4_grp,nc4_grp_id);
+    }
     else {
         // Here we need to check if there is any special character inside the group name.
         // If yes, we will replace that character to _ since nc_def_grp will fail if
@@ -1564,8 +1603,8 @@ void FONcTransform::gen_nc4_enum_type(libdap::D4Group *d4_grp,int nc4_grp_id) {
     vector<pair<string,int>> en_type_id_vec;
 
     for (D4EnumDefs::D4EnumDefIter ed_i = d4enum_defs->enum_begin(), ed_e= d4enum_defs->enum_end(); ed_i != ed_e; ++ed_i) {
-cout<<"d4enumdef name: "<<(*ed_i)->name()<<endl;
-cout <<"d4enumdef type: "<<(*ed_i)->type()<<endl;
+//cout<<"d4enumdef name: "<<(*ed_i)->name()<<endl;
+//cout <<"d4enumdef type: "<<(*ed_i)->type()<<endl;
         int nc4_type_id = 0;
         nc_type nc4_enum_type = FONcUtils::dap4_int_float_type_to_nc4_type((*ed_i)->type());
         string nc4_enum_name = (*ed_i)->name();
@@ -1576,8 +1615,8 @@ cout <<"d4enumdef type: "<<(*ed_i)->type()<<endl;
         for (D4EnumDef::D4EnumValueIter edv_i = (*ed_i)->value_begin(), edv_e = (*ed_i)->value_end(); edv_i != edv_e; ++edv_i) {
             string edv_label = (*ed_i)->label(edv_i);
             long long edv_value = (*ed_i)->value(edv_i);
-            cout <<"edv_label: "<<edv_label<<endl;
-            cout<<"edv_value: "<<edv_value<<endl;
+//            cout <<"edv_label: "<<edv_label<<endl;
+//            cout<<"edv_value: "<<edv_value<<endl;
             switch(nc4_enum_type) {
                 case NC_UBYTE:
                 {

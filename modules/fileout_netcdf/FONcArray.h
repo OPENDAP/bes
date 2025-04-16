@@ -100,6 +100,11 @@ private:
     // if DAP4 dim. is defined
     bool d4_def_dim = false;
 
+    // For Enum handling
+    bool is_dap4_enum = false;
+    nc_type nc_enum_base_type = NC_NAT;
+    int nc4_enum_type_id = 0;
+
 #if 0
     // direct io flag, used in the define mode,the default is false. It should be set to true when direct io is supported.
     // TODO: This is for the temporary memory usage optimization. Once we can support the define() with or without dio for individual array.
@@ -107,6 +112,8 @@ private:
     bool farray_dio_flag = false;
 #endif
 
+    // enum define internal method
+    //void define_enum(int ncid);
 
     FONcDim * find_dim(const std::vector<std::string> &embed, const std::string &name, int64_t size, bool ignore_size = false);
 
@@ -117,6 +124,7 @@ private:
     static bool equal_length(vector<string> &the_strings);
     void write_string_array(int ncid);
     void write_equal_length_string_array(int ncid);
+    void write_enum_array(int ncid);
 
     void define_dio_filters(int ncid, int d_varid);
     void obtain_dio_filters_order(const string&,bool &,bool &, bool &, bool &, bool &) const;
@@ -139,6 +147,9 @@ public:
     std::string name() override;
 
     virtual libdap::Array *array() { return d_a; }
+    void set_nc4_enum_type_id(int enum_type_id) { nc4_enum_type_id = enum_type_id;}
+    void set_nc4_enum_basetype (nc_type enum_basetype) { nc_enum_base_type = enum_basetype;}
+    void set_enum_flag(bool is_enum) {is_dap4_enum = is_enum; }
 
     virtual void dump(std::ostream &strm) const override;
 

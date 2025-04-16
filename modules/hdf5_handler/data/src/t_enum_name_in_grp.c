@@ -1,5 +1,5 @@
 #include "hdf5.h"
-#define H5FILE_NAME "t_enum_name_in_grp.h5"
+#define H5FILE_NAME "t_enum_name_in_grp2.h5"
 #define SIZE 4
 
 int main(void)  {
@@ -44,11 +44,11 @@ int main(void)  {
     space = H5Screate_simple(1,size,NULL);
     type = H5Tenum_create(H5T_STD_U8LE);
     val = 0;
-    H5Tenum_insert(type, "RED",   (const void*) &val);
+    H5Tenum_insert(type, "WHITE",   (const void*) &val);
     val = 1;
-    H5Tenum_insert(type, "GREEN",   (const void*) &val);
+    H5Tenum_insert(type, "GRAY",   (const void*) &val);
     val = 2;
-    H5Tenum_insert(type, "BLUE",   (const void*) &val);
+    H5Tenum_insert(type, "BLACK",   (const void*) &val);
     H5Tcommit2(grp,"Color",type,H5P_DEFAULT,H5P_DEFAULT,H5P_DEFAULT);
 
     dset = H5Dcreate2(grp, "enum_array", type, space, H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
