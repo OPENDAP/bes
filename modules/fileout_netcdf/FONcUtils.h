@@ -38,6 +38,7 @@
 
 #include <libdap/BaseType.h>
 #include <map>
+#include <unordered_map>
 
 namespace libdap{
     class BaseType;
