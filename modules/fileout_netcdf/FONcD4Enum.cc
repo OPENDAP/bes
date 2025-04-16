@@ -87,11 +87,18 @@ FONcD4Enum::~FONcD4Enum()
 void
 FONcD4Enum::define( int ncid )
 {
-    FONcBaseType::define( ncid ) ;
 
-#if 0
     if( !d_defined )
     {
+
+        d_varname = FONcUtils::gen_name(d_embed, d_varname, d_orig_varname);
+        BESDEBUG("fonc", "FONcBaseType::define - defining '" << d_varname << "'" << endl);
+        int stax = nc_def_var(ncid, d_varname.c_str(), nc_enum_type_id, 0, nullptr, &d_varid);
+        if (stax != NC_NOERR) {
+            string err = (string) "fileout.netcdf - " + "Failed to define variable " + d_varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        }
+
         if(d_is_dap4) {
             D4Attributes *d4_attrs = _f->attributes();                                                     
             updateD4AttrType(d4_attrs,NC_FLOAT);   
@@ -108,7 +115,6 @@ FONcD4Enum::define( int ncid )
 
         d_defined = true ;
     }
-#endif
 }
 
 /** @brief Write the float out to the netcdf file
@@ -124,29 +130,86 @@ void
 FONcD4Enum::write( int ncid )
 {
 
-#if 0
     BESDEBUG( "fonc", "FONcD4Enum::write for var " << d_varname << endl ) ;
-    size_t var_index[] = {0} ;
-    float *data = new float ;
 
     if (d_is_dap4)
         _f->intern_data();
     else
         _f->intern_data(*get_eval(), *get_dds());
 
-    _f->buf2val( (void**)&data ) ;
-    int stax = nc_put_var1_float(ncid, d_varid, var_index, data ) ;
-    ncopts = NC_VERBOSE ;
-    if( stax != NC_NOERR )
+    int stat = NC_NOERR;
+    switch(basetype) {
+        case NC_UBYTE:
+        {
+            uint8_t enum_val = 0;
+            _f->value(&enum_val);
+            stat = nc_put_var(ncid,d_varid,&enum_val);
+        }
+            break;
+        case NC_BYTE:
+        {
+            int8_t enum_val = 0;
+            _f->value(&enum_val);
+            stat = nc_put_var(ncid,d_varid,&enum_val);
+ 
+        }
+            break;
+        case NC_USHORT:
+        { 
+            unsigned short enum_val = 0;
+            _f->value(&enum_val);
+            stat = nc_put_var(ncid,d_varid,&enum_val);
+ 
+        }
+            break;
+        case NC_SHORT:
+        {
+            short enum_val = 0;
+            _f->value(&enum_val);
+            stat = nc_put_var(ncid,d_varid,&enum_val);
+        }
+            break;
+        case NC_UINT:
+        {
+            unsigned int enum_val = 0;
+            _f->value(&enum_val);
+            stat = nc_put_var(ncid,d_varid,&enum_val);
+        }
+            break;
+        case NC_INT: 
+        {   
+            int enum_val = 0;
+            _f->value(&enum_val);
+            stat = nc_put_var(ncid,d_varid,&enum_val);
+        }
+            break;
+            
+        case NC_UINT64:
+        {   
+            uint64_t enum_val = 0;
+            _f->value(&enum_val);
+            stat = nc_put_var(ncid,d_varid,&enum_val);
+        }
+            break; 
+        case NC_INT64:
+        {
+            int64_t enum_val = 0;
+            _f->value(&enum_val);
+            stat = nc_put_var(ncid,d_varid,&enum_val);
+        }
+            break;
+        default:
+            throw BESInternalError("Unsupported enum base type", __FILE__, __LINE__);
+    }       
+
+    if( stat != NC_NOERR )
     {
 	string err = (string)"fileout.netcdf - "
-                 + "Failed to write float data for "
+                 + "Failed to write enum data for "
                  + d_varname ;
-	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
+	FONcUtils::handle_error( stat, err, __FILE__, __LINE__ ) ;
     }
-    delete data ;
     BESDEBUG( "fonc", "FONcD4Enum::done write for var " << d_varname << endl ) ;
-#endif
 }
 
 /** @brief returns the name of the DAP D4Enum32
