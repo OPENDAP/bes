@@ -49,6 +49,69 @@ using std::endl;
 using std::string;
 using std::ostream;
 
+/**
+ * @brief Add a persistent store pointer to the list.
+ *
+ * Each persistent store has a name (retrieved via getPersistenceName()).
+ * If a persistent store pointer is already in the list with that name,
+ * the new pointer is not added. Otherwise, the pointer is added to the
+ * end of the list with a reference count of 1.
+ *
+ * The list does NOT take ownership of the pointer 'cp'. Caller manages lifetime.
+ * The persistent stores are searched in the order in which they were added.
+ *
+ * @param cp Non-owning pointer to the persistent store to add to the list.
+ * @return True if successfully added, false otherwise (e.g., cp is null,
+ * or a store with the same name already exists).
+ * @see BESContainerStorage
+ * @see BESContainerStorageList::StorageEntry
+ */
+bool BESContainerStorageList::add_persistence(BESContainerStorage *cp)
+{
+    // Lock the mutex for thread safety during access and modification
+    std::lock_guard<std::recursive_mutex> lock(d_cache_lock_mutex);
+
+    // --- Pre-conditions ---
+    // 1. Check for null input pointer. Cannot add a null store.
+    if (!cp) {
+        return false;
+    }
+
+    // 2. Get the name from the provided storage object.
+    // This assumes cp is valid and getPersistenceName() returns a valid reference.
+    // Handle potential exceptions from getPersistenceName if necessary.
+    const std::string& new_name = cp->get_name();
+
+    // --- Check for Duplicates ---
+    // 3. Iterate through the existing entries to find if a store with the
+    //    same name already exists.
+    //    We use the findEntryIterator helper or std::find_if directly.
+    const auto it = find_entry_iterator(new_name); // Use the private helper for consistency
+
+    // If the iterator is not the end iterator, a store with this name was found.
+    if (it != d_storage_entries.end()) {
+        // Store with this name already exists, do not add.
+        return false;
+    }
+
+    // --- Add New Entry ---
+    // 4. If no store with the same name exists, add the new pointer to the
+    //    end of the vector.
+    //    Use emplace_back to construct the StorageEntry directly in the vector.
+    //    The StorageEntry constructor takes the raw pointer 'cp'.
+    d_storage_entries.emplace_back(cp);
+
+    // 5. Set the reference count for the newly added entry to 1.
+    //    This follows the logic of the original linked-list implementation.
+    //    Access the newly added element using back().
+    d_storage_entries.back().reference_count = 1;
+
+    // 6. Return true to indicate the store was successfully added.
+    return true;
+}
+
+#if 0
+////// old
 /** @brief Add a persistent store to the list
  *
  * Each persistent store has a name. If a persistent store already exists in
@@ -99,6 +162,28 @@ bool BESContainerStorageList::add_persistence(BESContainerStorage *cp)
     return ret;
 }
 
+#endif
+
+/**
+ * @brief Increments the reference count for a persistence store by name.
+ * @param persist_name The name of the persistence store to reference.
+ * @return True if the store was found and referenced, false otherwise.
+ */
+bool BESContainerStorageList::ref_persistence(const std::string &persist_name) {
+    std::lock_guard<std::recursive_mutex> lock(d_cache_lock_mutex);
+
+    auto it = find_entry_iterator(persist_name);
+
+    if (it != d_storage_entries.end()) {
+        it->reference_count++;
+        return true;
+    }
+
+    return false;
+}
+
+#if 0
+
 /** @brief reference the specified persistent store if in the list
  *
  * Increments the reference count of the persistent store in the
@@ -134,6 +219,32 @@ bool BESContainerStorageList::ref_persistence(const string &persist_name)
     }
     return ret;
 }
+
+#endif
+/**
+ * @brief Decrements the reference count for a persistence store by name.
+ * @param persist_name The name of the persistence store to dereference.
+ * @return True if the store was found and dereferenced, false otherwise.
+ */
+bool BESContainerStorageList::deref_persistence(const std::string &persist_name) {
+    std::lock_guard<std::recursive_mutex> lock(d_cache_lock_mutex);
+
+    auto it = find_entry_iterator(persist_name);
+
+    if (it != d_storage_entries.end()) {
+        if (it->reference_count > 0) {
+            it->reference_count--;
+            if (it->reference_count == 0) {
+                // If reference count reaches zero, remove the entry.
+                d_storage_entries.erase(it);
+            }
+            return true;
+        }
+    }
+    return false;
+}
+
+#if 0
 
 /** @brief dereference a persistent store in the list.
  *
@@ -189,6 +300,42 @@ bool BESContainerStorageList::deref_persistence(const string &persist_name)
     return ret;
 }
 
+#endif
+/**
+ * @brief Finds a persistence store by name.
+ * @param persist_name The name of the persistence store to find.
+ * @return Raw pointer to the found BESContainerStorage, or nullptr if not found.
+ * The returned pointer is non-owning; its lifetime is managed externally by the caller.
+ */
+BESContainerStorage* BESContainerStorageList::find_persistence(const std::string& persist_name) {
+    std::lock_guard<std::recursive_mutex> lock(d_cache_lock_mutex);
+
+    const auto it = find_entry_iterator(persist_name);
+
+    if (it != d_storage_entries.end()) {
+        return it->storage_obj;
+    }
+
+    return nullptr;
+}
+
+/**
+ * @brief Checks some condition (unclear from original name/context).
+ * @return Boolean result based on the check.
+ */
+bool BESContainerStorageList::is_nice() {
+    std::lock_guard<std::recursive_mutex> lock(d_cache_lock_mutex);
+
+    std::string key = "BES.Container.Persistence";
+    bool found = false;
+    std::string is_nice;
+    TheBESKeys::TheKeys()->get_value(key, is_nice, found);
+
+    return (is_nice == "Nice" || is_nice == "nice" || is_nice == "NICE");
+}
+
+#if 0
+
 /** @brief find the persistence store with the given name
  *
  * Returns the persistence store with the given name
@@ -237,6 +384,70 @@ bool BESContainerStorageList::is_nice()
         ret = false;
     return ret;
 }
+
+#endif
+
+/**
+ * @brief Scans all container stores in order to find a container by symbolic name.
+ * @param sym_name The symbolic name of the container to find.
+ * @return Pointer to the found BESContainer, or nullptr if not found in any store.
+ * Ownership likely belongs to the BESContainerStorage that provided it.
+ */
+BESContainer* BESContainerStorageList::look_for(const std::string& sym_name) {
+    std::lock_guard<std::recursive_mutex> lock(d_cache_lock_mutex);
+
+    for (const auto& entry : d_storage_entries) {
+        if (entry.storage_obj) {
+            BESContainer* container = entry.storage_obj->look_for(sym_name);
+            if (container) {
+                return container;
+            }
+        }
+    }
+
+    std::string msg = "Could not find the symbolic name " + sym_name;
+    ERROR_LOG(msg);
+    if (!is_nice()) {
+        throw BESSyntaxUserError(msg, __FILE__, __LINE__);
+    }
+
+    return nullptr;
+}
+
+/**
+ * @brief Requests deletion of a container by symbolic name across all stores.
+ * Iterates through stores and asks each to delete the container if found.
+ * @param sym_name The symbolic name of the container to delete.
+ */
+void BESContainerStorageList::delete_container(const std::string& sym_name) {
+    std::lock_guard<std::recursive_mutex> lock(d_cache_lock_mutex);
+
+    for (const auto& entry : d_storage_entries) {
+        if (entry.storage_obj) {
+            entry.storage_obj->del_container(sym_name);
+        }
+    }
+}
+
+/**
+ * @brief Populates BESInfo with details about the registered containers/stores.
+ * @param info The BESInfo object to populate.
+ */
+void BESContainerStorageList::show_containers(BESInfo& info) {
+    std::lock_guard<std::recursive_mutex> lock(d_cache_lock_mutex);
+
+    for (const auto& entry : d_storage_entries) {
+        if (entry.storage_obj) {
+            std::map<std::string, std::string, std::less<>> props;
+            props["name"] = entry.storage_obj->get_name();
+            info.begin_tag("store", &props);
+            entry.storage_obj->show_containers(info);
+            info.end_tag("store");
+        }
+    }
+}
+
+#if 0
 
 /** @brief look for the specified container information in the list of
  * persistent stores.
@@ -348,6 +559,37 @@ void BESContainerStorageList::show_containers(BESInfo &info)
     }
 }
 
+#endif
+
+/**
+ * @brief Dumps the state of the storage list to an output stream.
+ * @param strm The output stream.
+ */
+void BESContainerStorageList::dump(std::ostream& strm) const {
+    std::lock_guard<std::recursive_mutex> lock(d_cache_lock_mutex);
+
+    strm << BESIndent::LMarg << "BESContainerStorageList::dump - (" << (void*)this << ")" << std::endl;
+    BESIndent::Indent();
+
+    if (!d_storage_entries.empty()) {
+        strm << BESIndent::LMarg << "container storage:" << std::endl;
+        BESIndent::Indent();
+        for (const auto& entry : d_storage_entries) {
+            if (entry.storage_obj) {
+                entry.storage_obj->dump(strm);
+            } else {
+                strm << BESIndent::LMarg << "Storage entry with null pointer" << std::endl;
+            }
+        }
+        BESIndent::UnIndent();
+    } else {
+        strm << BESIndent::LMarg << "container storage: empty" << std::endl;
+    }
+    BESIndent::UnIndent();
+}
+
+#if 0
+
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance along with information about
@@ -376,3 +618,5 @@ void BESContainerStorageList::dump(ostream &strm) const
     }
     BESIndent::UnIndent();
 }
+
+#endif
