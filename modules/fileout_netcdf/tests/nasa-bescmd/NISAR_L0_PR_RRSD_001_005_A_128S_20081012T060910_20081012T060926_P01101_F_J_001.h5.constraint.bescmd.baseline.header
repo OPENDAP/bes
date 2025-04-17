@@ -1,0 +1,41 @@
+netcdf test {
+
+// global attributes:
+		:history = "removed date-timex NISAR_L0_PR_RRSD_001_005_A_128S_20081012T060910_20081012T060926_P01101_F_J_001.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"NISAR_L0_PR_RRSD_001_005_A_128S_20081012T060910_20081012T060926_P01101_F_J_001.h5\"}]}]" ;
+
+group: science {
+
+  group: LSAR {
+
+    group: RRSD {
+
+      group: swaths {
+
+        group: frequencyA {
+
+          group: txH {
+            types:
+              ubyte enum NoNameEnum0 {BYPASS = 2, HPA = 0, LNA = 1} ;
+            dimensions:
+            	dim1 = 30540 ;
+            variables:
+            	NoNameEnum0 calType(dim1) ;
+
+            group: rxH {
+              dimensions:
+              	sdim1 = 4 ;
+              	sdim2 = 3 ;
+              	sdim3 = 4 ;
+              	sdim4 = 3 ;
+              variables:
+              	ushort HH.r(sdim1, sdim2) ;
+              	ushort HH.i(sdim3, sdim4) ;
+              } // group rxH
+            } // group txH
+          } // group frequencyA
+        } // group swaths
+      } // group RRSD
+    } // group LSAR
+  } // group science
+}
