@@ -398,7 +398,7 @@ FONcUtils::convert(BaseType *v,
                 break;
             case dods_enum_c:
             {
-                D4Enum *d4_enum = dynamic_cast<D4Enum *>(v);
+                auto d4_enum = dynamic_cast<D4Enum *>(v);
                 Type base_type = d4_enum->element_type();
                 nc_type nc_enum_base_type = FONcUtils::dap4_int_float_type_to_nc4_type(base_type);
                 D4EnumDef *d4_enum_def = d4_enum->enumeration();
@@ -436,14 +436,14 @@ cerr<<"d4_grp full path: "<<d4_grp->FQN() <<endl;
                 // Since netCDF-4 creates an enum type and pass the enum type as an enum type id,
                 // For array of enum we need to obtain that enum type id, we also need to remember the 
                 // enum basetype. 
-                Array *dap_a = dynamic_cast<Array *>(v);
+                auto dap_a = dynamic_cast<Array *>(v);
                 bool is_enum = false;
                 nc_type enum_basetype = NC_NAT;
                 int nc4_enum_type_id = 0;
 
                 if (dap_a->var()->type() == dods_enum_c) {
 
-                    D4Enum *d4_enum = dynamic_cast<D4Enum *>(dap_a->var());
+                    auto d4_enum = dynamic_cast<D4Enum *>(dap_a->var());
                     Type base_type = d4_enum->element_type();
                     enum_basetype = FONcUtils::dap4_int_float_type_to_nc4_type(base_type);
                     D4EnumDef *d4_enum_def = d4_enum->enumeration();

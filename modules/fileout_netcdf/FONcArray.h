@@ -112,9 +112,6 @@ private:
     bool farray_dio_flag = false;
 #endif
 
-    // enum define internal method
-    //void define_enum(int ncid);
-
     FONcDim * find_dim(const std::vector<std::string> &embed, const std::string &name, int64_t size, bool ignore_size = false);
 
     // Used in write()

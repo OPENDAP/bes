@@ -4,18 +4,18 @@
 
 
 #ifndef FONcD4Enum_h_
-#define FONcD4Enum_h_ 1
+#define FONcD4Enum_h_ 
 
 #include <libdap/D4Enum.h>
 #include <libdap/D4EnumDefs.h>
 #include <libdap/D4Group.h>
+#include "FONcBaseType.h"
 
 namespace libdap {
     class BaseType;
     class D4Enum;
 }
 
-#include "FONcBaseType.h"
 
 /** @brief A DAP4 Enum with file out netcdf information included
  *
@@ -26,22 +26,19 @@ namespace libdap {
 class FONcD4Enum : public FONcBaseType
 {
 private:
-    libdap::D4Enum *			_f ;
+    libdap::D4Enum *			_f = nullptr;
     nc_type                             basetype = NC_NAT;
-    int                                 nc_enum_type_id = 0;
+    int                                 nc_enum_type_id = NC_EBADTYPID;
 public:
-    				FONcD4Enum( libdap::BaseType *b, nc_type d4_enum_basetype, int nc_type_id ) ;
-    virtual			~FONcD4Enum() ;
+    FONcD4Enum( libdap::BaseType *b, nc_type d4_enum_basetype, int nc_type_id ) ;
+    ~FONcD4Enum() override = default;
 
-    virtual void		define( int ncid ) ;
-    virtual void		write( int ncid ) ;
+    void define(int ncid) override;
+    void write( int ncid ) override;
 
-    virtual string 		name() ;
-    //virtual nc_type		type() ;
-    nc_type                     obtain_basetype();
+    string name() override;
     
-
-    virtual void                dump( ostream &strm ) const ;
+    void dump( ostream &strm ) const override;
 
 } ;
 

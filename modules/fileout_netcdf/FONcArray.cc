@@ -619,7 +619,7 @@ void FONcArray::define(int ncid) {
             }
         }
     
-        int stax = nc_def_var_fill(ncid, d_varid, NC_NOFILL, NULL );
+        int stax = nc_def_var_fill(ncid, d_varid, NC_NOFILL, nullptr );
         if (stax != NC_NOERR) {
                 string err = (string) "fileout.netcdf - " + "Failed to clear fill value for " + d_varname;
                 FONcUtils::handle_error(stax, err, __FILE__, __LINE__);

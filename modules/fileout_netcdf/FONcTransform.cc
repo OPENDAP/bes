@@ -1044,12 +1044,6 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to define group: " + _localfile, __FILE__, __LINE__);
 
-        // Temp: use the current libdap4 to check the enum constants. TODO: we should use the updated one since enum is rare.
-        
-#if 0
-        D4EnumDefs * d4enum_defs = d4_grp->enum_defs();
-        if (d4enum_defs->empty() == false) {
-#endif
         if(d4_grp->has_enum_defs()) {
             gen_nc4_enum_type(d4_grp,nc4_grp_id);
 
@@ -1620,44 +1614,44 @@ void FONcTransform::gen_nc4_enum_type(libdap::D4Group *d4_grp,int nc4_grp_id) {
             switch(nc4_enum_type) {
                 case NC_UBYTE:
                 {
-                    uint8_t nc_enum_const = (uint8_t)edv_value;
+                    auto nc_enum_const = (uint8_t)edv_value;
                     stat = nc_insert_enum(nc4_grp_id,nc4_type_id,edv_label.c_str(),(const void*)&nc_enum_const);
                 }
                     break;
                 case NC_BYTE:
                 {
-                    int8_t nc_enum_const = (int8_t)edv_value;
+                    auto nc_enum_const = (int8_t)edv_value;
                     stat = nc_insert_enum(nc4_grp_id,nc4_type_id,edv_label.c_str(),(const void*)&nc_enum_const);
                 }
                     break;
                 case NC_USHORT:
                 {
-                    unsigned short nc_enum_const = (unsigned short)edv_value;
+                    auto nc_enum_const = (unsigned short)edv_value;
                     stat = nc_insert_enum(nc4_grp_id,nc4_type_id,edv_label.c_str(),(const void*)&nc_enum_const);
                 }
                     break;
                 case NC_SHORT:
                 {
-                    short nc_enum_const = (short)edv_value;
+                    auto nc_enum_const = (short)edv_value;
                     stat = nc_insert_enum(nc4_grp_id,nc4_type_id,edv_label.c_str(),(const void*)&nc_enum_const);
                 }
                     break;
                 case NC_UINT:
                 {
-                    unsigned int nc_enum_const = (unsigned int)edv_value;
+                    auto nc_enum_const = (unsigned int)edv_value;
                     stat = nc_insert_enum(nc4_grp_id,nc4_type_id,edv_label.c_str(),(const void*)&nc_enum_const);
                 }
                     break;
                 case NC_INT:
                 {
-                    int nc_enum_const = (int)edv_value;
+                    auto nc_enum_const = (int)edv_value;
                     stat = nc_insert_enum(nc4_grp_id,nc4_type_id,edv_label.c_str(),(const void*)&nc_enum_const);
                 }
                     break;
 
                 case NC_UINT64:
                 {
-                    uint64_t nc_enum_const = (uint64_t)edv_value;
+                    auto nc_enum_const = (uint64_t)edv_value;
                     stat = nc_insert_enum(nc4_grp_id,nc4_type_id,edv_label.c_str(),(const void*)&nc_enum_const);
                 }
 

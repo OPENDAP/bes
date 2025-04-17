@@ -47,7 +47,7 @@
  * @throws BESInternalError if the BaseType is not a D4Enum
  */
 FONcD4Enum::FONcD4Enum( BaseType *b, nc_type d4_enum_basetype, int nc_type_id )
-    : FONcBaseType(), _f( 0 )
+    : FONcBaseType()
 {
     _f = dynamic_cast<D4Enum *>(b) ;
     if ( !_f )
@@ -65,6 +65,7 @@ FONcD4Enum::FONcD4Enum( BaseType *b, nc_type d4_enum_basetype, int nc_type_id )
     
 }
 
+#if 0
 /** @brief Destructor that cleans up this instance
  *
  * The DAP D4Enum32 instance does not belong to the FONcD4Enum instance, so it
@@ -73,6 +74,7 @@ FONcD4Enum::FONcD4Enum( BaseType *b, nc_type d4_enum_basetype, int nc_type_id )
 FONcD4Enum::~FONcD4Enum()
 {
 }
+#endif
 
 /** @brief define the DAP D4Enum32 in the netcdf file
  *
