@@ -50,20 +50,15 @@ class BESInfo;
 /** @brief Provides a mechanism for accessing container information from
  * different container stores registered with this server.
  *
- * This class manages a list of non-owning pointers to BESContainerStorage instances.
- * Callers are responsible for managing the lifetime of the registered
- * BESContainerStorage objects. The list only stores pointers and reference counts.
+ * This class provides a mechanism for users to access container information
+ * from different container stores, such as from a MySQL database, a file, or
+ * volatile stores.
  *
- * Uses a list (vector) to manage pointers to different BESContainerStorage instances.
+ * Uses a list (vector) to manage different BESContainerStorage instances.
  * Searches for symbolic names proceed through the list of persistent stores in order.
  *
  * If a symbolic name is not found then a flag is checked (logic within methods)
  * to determine whether to simply log the fact or throw an exception.
- *
- * @warning This class stores raw pointers to BESContainerStorage objects
- * and does **not** manage their lifetime. The caller must ensure that
- * pointers remain valid for the duration they are registered in this list.
- * Using a dangling pointer will result in undefined behavior.
  *
  * @see BESContainerStorage
  * @see BESContainer
@@ -71,37 +66,46 @@ class BESInfo;
  */
 class BESContainerStorageList : public BESObj {
 private:
-    // Structure to hold a non-owning pointer to the storage object
-    // and its application-level reference count.
+    // Structure to hold the managed storage object and its application-level reference count.
     struct StorageEntry {
-        BESContainerStorage* storage_obj; // Non-owning raw pointer
-        unsigned int reference_count;   // Application-level ref count
+        std::unique_ptr<BESContainerStorage> storage_obj; // Manages ownership
+        unsigned int reference_count;                   // Application-level ref count
 
-        // Constructor stores the raw pointer.
+        // Constructor takes ownership of the provided storage object
+        // Note: Prefer passing unique_ptr directly if possible in add_persistence.
         explicit StorageEntry(BESContainerStorage* obj)
-                : storage_obj(obj), reference_count(0) // Store pointer, starts with 0 refs
+                : storage_obj(obj), reference_count(0) // Takes ownership, starts with 0 refs
         {
-            // No ownership transfer or null check mandated here, relies on caller.
+            if (!obj) {
+                // Handle null input if necessary, perhaps throw?
+                // For now, allowing it, but unique_ptr will be null.
+            }
         }
 
-        // Default copy/move operations are suitable for this simple struct.
-        // Copying copies the pointer value (shallow copy of the pointer itself).
-        StorageEntry(const StorageEntry&) = default;
-        StorageEntry& operator=(const StorageEntry&) = default;
+        // Constructor for moving a unique_ptr in (preferred)
+        explicit StorageEntry(std::unique_ptr<BESContainerStorage> obj_ptr)
+                : storage_obj(std::move(obj_ptr)), reference_count(0) {}
+
+
+        // Deleted copy operations because unique_ptr is not copyable
+        StorageEntry(const StorageEntry&) = delete;
+        StorageEntry& operator=(const StorageEntry&) = delete;
+
+        // Default move operations are fine
         StorageEntry(StorageEntry&&) = default;
         StorageEntry& operator=(StorageEntry&&) = default;
 
-
         // Helper to get the name from the storage object.
-        // Assumes BESContainerStorage has a method like getPersistenceName() const.
-        // Replace 'getPersistenceName' with the actual method name if different.
+        // Assumes BESContainerStorage has a method like get_name() const.
+        // Replace 'get_name' with the actual method name if different.
         const std::string& get_name() const {
             if (storage_obj) {
-                // Ensure the method exists and is const correct in BESContainerStorage.
+                // return storage_obj->get_name(); // Hypothetical method call
+                // If get_name() is not const, you might need a const_cast or redesign.
+                // Let's assume a hypothetical getPersistenceName() const method exists:
                 return storage_obj->get_name();
             }
-            // Return a reference to a static empty string if pointer is null
-            static const std::string empty_name = "";
+            static const std::string empty_name = ""; // Return empty if no object
             return empty_name;
         }
     };
@@ -115,7 +119,7 @@ private:
     auto find_entry_iterator(const std::string& persist_name) {
         return std::find_if(d_storage_entries.begin(), d_storage_entries.end(),
                             [&persist_name](const StorageEntry& entry) {
-                                // Check if storage_obj is non-null before calling getName()
+                                // Check if storage_obj is valid before calling get_name()
                                 return entry.storage_obj && entry.get_name() == persist_name;
                             });
     }
@@ -124,19 +128,18 @@ private:
     auto find_entry_iterator(const std::string& persist_name) const {
         return std::find_if(d_storage_entries.begin(), d_storage_entries.end(),
                             [&persist_name](const StorageEntry& entry) {
-                                // Check if storage_obj is non-null before calling getName()
                                 return entry.storage_obj && entry.get_name() == persist_name;
                             });
     }
+
 
 public:
     // Default constructor is acceptable
     BESContainerStorageList() = default;
 
     // Destructor is implicitly defaulted.
-    // std::vector will destroy its StorageEntry elements.
-    // StorageEntry's destructor does nothing with the raw storage_obj pointer,
-    // correctly reflecting non-ownership as requested.
+    // std::vector will destroy its elements.
+    // StorageEntry's destructor calls std::unique_ptr's destructor, which deletes the object.
     ~BESContainerStorageList() override = default;
 
     // --- Singleton Pattern ---
@@ -156,6 +159,8 @@ public:
         return &instance;
     }
 
+    // It might make better sense to call these methods add_storage(), ref_storage(), ...
+    // jhrg 4/17/25
     virtual bool add_persistence(BESContainerStorage *cp);
     virtual bool ref_persistence(const std::string &persist_name);
     virtual bool deref_persistence(const std::string &persist_name);
@@ -163,8 +168,11 @@ public:
 
     virtual bool is_nice(); // Implementation depends on its original purpose
 
+    // These methods look through every BESContainerStorage object in the list
+    // looking for sym_name and return/delete the first one found. jhrg 4//17/25
     virtual BESContainer *look_for(const std::string &sym_name);
     virtual void delete_container(const std::string &sym_name);
+    // This method also operates on all the containers in all the Storages. jhrg 4/17/25
     virtual void show_containers(BESInfo &info);
 
     /**
