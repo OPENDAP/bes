@@ -54,8 +54,10 @@ private:
 
     std::map<std::string, std::string> container_attributes{};
 
-    void handle_container_element(const std::string &action, xmlNode *node, const std::string &values,
+    void m_handle_container_element(const std::string &action, xmlNode *node, const std::string &values,
                                   std::map<std::string, std::string> &props);
+    void m_process_child_nodes(xmlNode* node, const std::string& action);
+    void m_process_container_constraints();
 
 public:
     explicit BESXMLDefineCommand(const BESDataHandlerInterface &base_dhi) : BESXMLCommand(base_dhi) { }

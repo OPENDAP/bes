@@ -39,20 +39,8 @@
 #include "BESObj.h"
 #include "BESContainerStorage.h"
 
-//class BESContainerStorage;
 class BESContainer;
 class BESInfo;
-
-#if 0
-#ifndef DEFAULT
-#define DEFAULT "default"
-#endif
-
-#ifndef CATALOG
-#define CATALOG "catalog"
-#endif
-#endif
-
 
 /** @brief Provides a mechanism for accessing container information from
  * different container stores registered with this server.

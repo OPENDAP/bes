@@ -76,7 +76,7 @@ bool BESContainerStorageList::add_persistence(BESContainerStorage *cp)
     else {
         BESContainerStorageList::persistence_list *pl = _first;
         bool done = false;
-        while (done == false) {
+        while (!done) {
             if (pl->_persistence_obj->get_name() != cp->get_name()) {
                 if (pl->_next) {
                     pl = pl->_next;

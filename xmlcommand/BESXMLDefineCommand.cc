@@ -34,10 +34,8 @@
 
 #include "BESXMLDefineCommand.h"
 #include "BESContainerStorageList.h"
-#include "BESContainerStorage.h"
 
 #include "BESXMLUtils.h"
-#include "BESUtil.h"
 #include "BESResponseNames.h"
 #include "BESDataNames.h"
 
@@ -51,9 +49,7 @@ using std::vector;
 using std::ostream;
 using std::map;
 
-#ifndef DEFAULT
-#define DEFAULT "default"
-#endif
+constexpr auto DEFAULT= "default";
 
 /** @brief parse a define command.
  *
@@ -83,6 +79,203 @@ using std::map;
  *
  * @param node xml2 element node pointer
  */
+void BESXMLDefineCommand::parse_request(xmlNode *node) {
+    string value;
+    string action;
+    map<string, string> props;
+
+    BESXMLUtils::GetNodeInfo(node, action, value, props);
+    if (action != DEFINE_RESPONSE_STR) {
+        string err = "The specified command " + action + " is not a set context command";
+        throw BESInternalFatalError(err, __FILE__, __LINE__);
+    }
+
+    d_xmlcmd_dhi.action = DEFINE_RESPONSE;
+
+    string def_name = props["name"];
+    if (def_name.empty()) {
+        throw BESSyntaxUserError(string(action) + " command: definition name missing", __FILE__, __LINE__);
+    }
+
+    d_xmlcmd_dhi.data[DEF_NAME] = def_name;
+    d_cmd_log_info = "define " + def_name;
+
+    d_xmlcmd_dhi.data[STORE_NAME] = props["space"].empty() ? DEFAULT : props["space"];
+    d_cmd_log_info += " in " + d_xmlcmd_dhi.data[STORE_NAME];
+
+    m_process_child_nodes(node, action);
+
+    if (container_names.empty()) {
+        throw BESSyntaxUserError(string(action) + " The define element must contain at least one container element",
+                                 __FILE__, __LINE__);
+    }
+
+    d_cmd_log_info += " as ";
+    bool first = true;
+    for (const auto& container_name : container_names) {
+        if (!first) d_cmd_log_info += ",";
+        d_cmd_log_info += container_name;
+        first = false;
+    }
+
+    m_process_container_constraints();
+
+    d_cmd_log_info += ";";
+
+    BESXMLCommand::set_response();
+}
+
+void BESXMLDefineCommand::m_process_child_nodes(xmlNode* node, const string& action) {
+    string child_name;
+    string child_value;
+    map<string, string> props;
+    xmlNode* child_node = BESXMLUtils::GetFirstChild(node, child_name, child_value, props);
+
+    while (child_node) {
+        if (child_name == "constraint") {
+            _default_constraint = child_value;
+        } else if (child_name == "dap4constraint") {
+            _default_dap4_constraint = child_value;
+        } else if (child_name == "dap4function") {
+            _default_dap4_function = child_value;
+        } else if (child_name == "container") {
+            m_handle_container_element(action, child_node, child_value, props);
+        } else {
+            throw BESSyntaxUserError(string(action) + " Unrecognized child element: " + child_name, __FILE__, __LINE__);
+        }
+
+        props.clear();
+        child_name.clear();
+        child_value.clear();
+        child_node = BESXMLUtils::GetNextChild(child_node, child_name, child_value, props);
+    }
+}
+
+void BESXMLDefineCommand::m_process_container_constraints() {
+    if (!container_constraints.empty() || !container_dap4constraints.empty() ||
+        !container_dap4functions.empty() || !container_attributes.empty()) {
+        d_cmd_log_info += " with ";
+        bool first = true;
+        for (const auto& container_name : container_names) {
+            if (container_constraints.count(container_name)) {
+                if (!first) d_cmd_log_info += ",";
+                first = false;
+                d_cmd_log_info += container_name + ".constraint=\"" + container_constraints[container_name] + "\"";
+            }
+            if (container_dap4constraints.count(container_name)) {
+                if (!first) d_cmd_log_info += ",";
+                first = false;
+                d_cmd_log_info += container_name + ".dap4constraint=\"" + container_dap4constraints[container_name] + "\"";
+            }
+            if (container_dap4functions.count(container_name)) {
+                if (!first) d_cmd_log_info += ",";
+                first = false;
+                d_cmd_log_info += container_name + ".dap4function=\"" + container_dap4functions[container_name] + "\"";
+            }
+            if (container_attributes.count(container_name)) {
+                if (!first) d_cmd_log_info += ",";
+                first = false;
+                d_cmd_log_info += container_name + ".attributes=\"" + container_attributes[container_name] + "\"";
+            }
+        }
+    }
+}
+#if 0
+void BESXMLDefineCommand::parse_request(xmlNode *node) {
+    string value;
+    string action;
+    map<string, string> props;
+
+    BESXMLUtils::GetNodeInfo(node, action, value, props);
+    if (action != DEFINE_RESPONSE_STR) {
+        string err = "The specified command " + action + " is not a set context command";
+        throw BESInternalFatalError(err, __FILE__, __LINE__);
+    }
+
+    d_xmlcmd_dhi.action = DEFINE_RESPONSE;
+
+    string def_name = props["name"];
+    if (def_name.empty()) {
+        throw BESSyntaxUserError(string(action) + " command: definition name missing", __FILE__, __LINE__);
+    }
+
+    d_xmlcmd_dhi.data[DEF_NAME] = def_name;
+    d_cmd_log_info = "define " + def_name;
+
+    d_xmlcmd_dhi.data[STORE_NAME] = props["space"].empty() ? DEFAULT : props["space"];
+    d_cmd_log_info += " in " + d_xmlcmd_dhi.data[STORE_NAME];
+
+    int num_containers = 0;
+    string child_name;
+    string child_value;
+    props.clear();
+    xmlNode *child_node = BESXMLUtils::GetFirstChild(node, child_name, child_value, props);
+    while (child_node) {
+        if (child_name == "constraint") {
+            _default_constraint = child_value;
+        } else if (child_name == "dap4constraint") {
+            _default_dap4_constraint = child_value;
+        } else if (child_name == "dap4function") {
+            _default_dap4_function = child_value;
+        } else if (child_name == "container") {
+            handle_container_element(action, child_node, child_value, props);
+            num_containers++;
+        } else {
+            throw BESSyntaxUserError(string(action) + " Unrecognized child element: " + child_name, __FILE__, __LINE__);
+        }
+
+        props.clear();
+        child_name.clear();
+        child_value.clear();
+        child_node = BESXMLUtils::GetNextChild(child_node, child_name, child_value, props);
+    }
+
+    if (num_containers < 1) {
+        throw BESSyntaxUserError(string(action) + " The define element must contain at least one container element",
+                                 __FILE__, __LINE__);
+    }
+
+    d_cmd_log_info += " as ";
+    bool first = true;
+    for (const auto& container_name : container_names) {
+        if (!first) d_cmd_log_info += ",";
+        d_cmd_log_info += container_name;
+        first = false;
+    }
+
+    if (!container_constraints.empty() || !container_dap4constraints.empty() ||
+        !container_dap4functions.empty() || !container_attributes.empty()) {
+        d_cmd_log_info += " with ";
+        first = true;
+        for (const auto& container_name : container_names) {
+            if (container_constraints.count(container_name)) {
+                if (!first) d_cmd_log_info += ",";
+                first = false;
+                d_cmd_log_info += container_name + ".constraint=\"" + container_constraints[container_name] + "\"";
+            }
+            if (container_dap4constraints.count(container_name)) {
+                if (!first) d_cmd_log_info += ",";
+                first = false;
+                d_cmd_log_info += container_name + ".dap4constraint=\"" + container_dap4constraints[container_name] + "\"";
+            }
+            if (container_dap4functions.count(container_name)) {
+                if (!first) d_cmd_log_info += ",";
+                first = false;
+                d_cmd_log_info += container_name + ".dap4function=\"" + container_dap4functions[container_name] + "\"";
+            }
+            if (container_attributes.count(container_name)) {
+                if (!first) d_cmd_log_info += ",";
+                first = false;
+                d_cmd_log_info += container_name + ".attributes=\"" + container_attributes[container_name] + "\"";
+            }
+        }
+    }
+
+    d_cmd_log_info += ";";
+
+    BESXMLCommand::set_response();
+}
+//////////// end version 1 refactor jhrg 4/17/25
 void BESXMLDefineCommand::parse_request(xmlNode *node) {
     string value; // element value, should not be any
     string action; // element name, which is the request action
@@ -193,7 +386,7 @@ void BESXMLDefineCommand::parse_request(xmlNode *node) {
     // now that we've set the action, go get the response handler for the action
     BESXMLCommand::set_response();
 }
-
+#endif
 /** @brief handle a container element of the define element
  *
  * There are two possible cases: a <constraint> element with no child nodes
@@ -217,7 +410,7 @@ void BESXMLDefineCommand::parse_request(xmlNode *node) {
  * @param value a value of the container element, should be empty
  * @param props properties of the container element
  */
-void BESXMLDefineCommand::handle_container_element(const string &action, xmlNode *node, const string &/*value*/,
+void BESXMLDefineCommand::m_handle_container_element(const string &action, xmlNode *node, const string &/*value*/,
                                                    map<string, string> &props) {
     string name = props["name"];
     if (name.empty()) {
@@ -363,6 +556,49 @@ void BESXMLDefineCommand::handle_aggregate_element(const string &action, xmlNode
  * have been parsed. jhrg 2/11/18
  */
 void BESXMLDefineCommand::prep_request() {
+    for (const auto& container_name : container_names) {
+        BESContainer* c = nullptr;
+
+        const string& store = container_store_names[container_name];
+        if (!store.empty()) {
+            if (auto cs = BESContainerStorageList::TheList()->find_persistence(store)) {
+                c = cs->look_for(container_name);
+            }
+        } else {
+            c = BESContainerStorageList::TheList()->look_for(container_name);
+        }
+
+        if (!c) {
+            throw BESSyntaxUserError(string("Could not find the container ") + container_name, __FILE__, __LINE__);
+        }
+
+        string constraint = container_constraints[container_name];
+        if (constraint.empty()) {
+            constraint = _default_constraint;
+        }
+        c->set_constraint(constraint);
+
+        string dap4constraint = container_dap4constraints[container_name];
+        if (dap4constraint.empty()) {
+            dap4constraint = _default_dap4_constraint;
+        }
+        c->set_dap4_constraint(dap4constraint);
+
+        string function = container_dap4functions[container_name];
+        if (function.empty()) {
+            function = _default_dap4_function;
+        }
+        c->set_dap4_function(function);
+
+        string attrs = container_attributes[container_name];
+        c->set_attributes(attrs);
+        d_xmlcmd_dhi.containers.push_back(c);
+
+        BESDEBUG("xml", "BESXMLDefineCommand::prep_request() - define using container: " << endl << *c << endl);
+    }
+}
+#if 0
+void BESXMLDefineCommand::prep_request() {
     vector<string>::iterator i = container_names.begin();
     vector<string>::iterator e = container_names.end();
     for (; i != e; i++) {
@@ -405,6 +641,7 @@ void BESXMLDefineCommand::prep_request() {
         BESDEBUG("xml", "BESXMLDefineCommand::prep_request() - define using container: " << endl << *c << endl);
     }
 }
+#endif
 
 /** @brief dumps information about this object
  *
