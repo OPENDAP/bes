@@ -117,7 +117,7 @@ bool BESContainerStorageList::ref_persistence(const string &persist_name)
     BESContainerStorageList::persistence_list *pl = _first;
 
     bool done = false;
-    while (done == false) {
+    while (!done) {
         if (pl) {
             if (pl->_persistence_obj && pl->_persistence_obj->get_name() == persist_name) {
                 done = true;
@@ -156,7 +156,7 @@ bool BESContainerStorageList::deref_persistence(const string &persist_name)
     BESContainerStorageList::persistence_list *last = nullptr;
 
     bool done = false;
-    while (done == false) {
+    while (!done) {
         if (pl) {
             if (pl->_persistence_obj && pl->_persistence_obj->get_name() == persist_name) {
                 ret = true;
@@ -173,7 +173,7 @@ bool BESContainerStorageList::deref_persistence(const string &persist_name)
                     }
                     delete pl->_persistence_obj;
                     delete pl;
-                    pl = 0;
+                    pl = nullptr;
                 }
             }
             else {
@@ -205,7 +205,7 @@ BESContainerStorageList::find_persistence(const string &persist_name)
     BESContainerStorage *ret = nullptr;
     BESContainerStorageList::persistence_list *pl = _first;
     bool done = false;
-    while (done == false) {
+    while (!done) {
         if (pl) {
             if (persist_name == pl->_persistence_obj->get_name()) {
                 ret = pl->_persistence_obj;
