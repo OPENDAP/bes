@@ -86,7 +86,6 @@ private:
         explicit StorageEntry(std::unique_ptr<BESContainerStorage> obj_ptr)
                 : storage_obj(std::move(obj_ptr)), reference_count(0) {}
 
-
         // Deleted copy operations because unique_ptr is not copyable
         StorageEntry(const StorageEntry&) = delete;
         StorageEntry& operator=(const StorageEntry&) = delete;
