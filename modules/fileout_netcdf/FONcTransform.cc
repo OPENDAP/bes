@@ -1597,20 +1597,17 @@ void FONcTransform::gen_nc4_enum_type(libdap::D4Group *d4_grp,int nc4_grp_id) {
     vector<pair<string,int>> en_type_id_vec;
 
     for (D4EnumDefs::D4EnumDefIter ed_i = d4enum_defs->enum_begin(), ed_e= d4enum_defs->enum_end(); ed_i != ed_e; ++ed_i) {
-//cout<<"d4enumdef name: "<<(*ed_i)->name()<<endl;
-//cout <<"d4enumdef type: "<<(*ed_i)->type()<<endl;
+
         int nc4_type_id = 0;
         nc_type nc4_enum_type = FONcUtils::dap4_int_float_type_to_nc4_type((*ed_i)->type());
         string nc4_enum_name = (*ed_i)->name();
         int stat = nc_def_enum(nc4_grp_id, nc4_enum_type,nc4_enum_name.c_str(), &nc4_type_id);
-
-        // TODO: add error handling to check stat
+        if (stat != NC_NOERR)
+            throw BESInternalError("nc_def_enum failed.", __FILE__, __LINE__);
 
         for (D4EnumDef::D4EnumValueIter edv_i = (*ed_i)->value_begin(), edv_e = (*ed_i)->value_end(); edv_i != edv_e; ++edv_i) {
             string edv_label = (*ed_i)->label(edv_i);
             long long edv_value = (*ed_i)->value(edv_i);
-//            cout <<"edv_label: "<<edv_label<<endl;
-//            cout<<"edv_value: "<<edv_value<<endl;
             switch(nc4_enum_type) {
                 case NC_UBYTE:
                 {
@@ -1662,10 +1659,10 @@ void FONcTransform::gen_nc4_enum_type(libdap::D4Group *d4_grp,int nc4_grp_id) {
                 default:
                     throw BESInternalError("Unsupported enum base type", __FILE__, __LINE__);
             }
+            if (stat !=NC_NOERR)
+                throw BESInternalError("nc_insert_enum failed.", __FILE__, __LINE__);
 
         }
-
-        // TODO: Add error handing to check stat
 
         pair<string,int> en_type_id = make_pair(nc4_enum_name, nc4_type_id);
         en_type_id_vec.emplace_back(en_type_id);

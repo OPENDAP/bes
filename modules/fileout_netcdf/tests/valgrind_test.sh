@@ -238,10 +238,19 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_group_
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple_scalar_vlen_str.h5.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple_scalar_memb_str_array.h5.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_array_fix_vlen_str.h5.bescmd>test.nc
+
 #VLEN support
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vlen.h5.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vlen.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vlen_dim.h5.dmrpp.bescmd>test.nc
+
+#ENUM support
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_enum_grp.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_enum_name_in_grp2.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_enum2_mt_array.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_enum_grp.h5.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_enum_name_in_grp2.h5.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_enum2_mt_array.h5.bescmd>test.nc
 
 
 #HDF4 support

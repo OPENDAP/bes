@@ -401,10 +401,10 @@ FONcUtils::convert(BaseType *v,
                 auto d4_enum = dynamic_cast<D4Enum *>(v);
                 Type base_type = d4_enum->element_type();
                 nc_type nc_enum_base_type = FONcUtils::dap4_int_float_type_to_nc4_type(base_type);
-                D4EnumDef *d4_enum_def = d4_enum->enumeration();
+                const D4EnumDef *d4_enum_def = d4_enum->enumeration();
                 string d4_enum_def_name = d4_enum_def->name();
-                D4EnumDefs * d4_enum_defs = d4_enum_def->parent();
-                D4Group *d4_grp = d4_enum_defs->parent();
+                const D4EnumDefs * d4_enum_defs = d4_enum_def->parent();
+                const D4Group *d4_grp = d4_enum_defs->parent();
                 
 #if 0
 cerr<<"D4Enum base_type: "<<base_type<<endl;
@@ -422,7 +422,6 @@ cerr<<"d4_grp full path: "<<d4_grp->FQN() <<endl;
                         break;
                     }
                 }
-//cerr<<"final enum name: "<<enum_name <<endl;
 
                 b = new FONcD4Enum(v,nc_enum_base_type, nc4_enum_type_id);
             }
@@ -446,10 +445,10 @@ cerr<<"d4_grp full path: "<<d4_grp->FQN() <<endl;
                     auto d4_enum = dynamic_cast<D4Enum *>(dap_a->var());
                     Type base_type = d4_enum->element_type();
                     enum_basetype = FONcUtils::dap4_int_float_type_to_nc4_type(base_type);
-                    D4EnumDef *d4_enum_def = d4_enum->enumeration();
+                    const D4EnumDef *d4_enum_def = d4_enum->enumeration();
                     string d4_enum_def_name = d4_enum_def->name();
-                    D4EnumDefs * d4_enum_defs = d4_enum_def->parent();
-                    D4Group *d4_grp = d4_enum_defs->parent();
+                    const D4EnumDefs * d4_enum_defs = d4_enum_def->parent();
+                    const D4Group *d4_grp = d4_enum_defs->parent();
                     
 #if 0
     cerr<<"D4Enum base_type array : "<<base_type<<endl;
@@ -467,8 +466,6 @@ cerr<<"d4_grp full path: "<<d4_grp->FQN() <<endl;
                             break;
                         }
                     }
-  //  cerr<<"final enum name: "<<enum_name <<endl;
-   
 
                 }
                 // This "if block" is only true for the netCDF-4 enhanced/DAP4 case.
@@ -487,7 +484,7 @@ cerr<<"d4_grp full path: "<<d4_grp->FQN() <<endl;
                     // When dim_id is 0, a dimension name will be created for this dimension.
                     for (; di != de; di++) {
 
-                        D4Dimension *d4_dim = dap_a->dimension_D4dim(di);
+                       const D4Dimension *d4_dim = dap_a->dimension_D4dim(di);
                         if (d4_dim) {
                             BESDEBUG("fonc",
                                      "FONcArray() - constructor is dap4: dimension name is " << d4_dim->name() << endl);
