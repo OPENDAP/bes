@@ -69,12 +69,12 @@ private:
     // Structure to hold the managed storage object and its application-level reference count.
     struct StorageEntry {
         std::unique_ptr<BESContainerStorage> storage_obj; // Manages ownership
-        unsigned int reference_count;                   // Application-level ref count
+        unsigned int reference_count = 0;                   // Application-level ref count
 
         // Constructor takes ownership of the provided storage object
         // Note: Prefer passing unique_ptr directly if possible in add_persistence.
         explicit StorageEntry(BESContainerStorage* obj)
-                : storage_obj(obj), reference_count(0) // Takes ownership, starts with 0 refs
+                : storage_obj(obj)  // Takes ownership, starts with 0 refs
         {
             if (!obj) {
                 // Handle null input if necessary, perhaps throw?
@@ -84,7 +84,7 @@ private:
 
         // Constructor for moving a unique_ptr in (preferred)
         explicit StorageEntry(std::unique_ptr<BESContainerStorage> obj_ptr)
-                : storage_obj(std::move(obj_ptr)), reference_count(0) {}
+                : storage_obj(std::move(obj_ptr)) {}
 
         // Deleted copy operations because unique_ptr is not copyable
         StorageEntry(const StorageEntry&) = delete;
