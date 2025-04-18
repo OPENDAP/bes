@@ -1,0 +1,19 @@
+netcdf test {
+types:
+  ubyte enum Color {RED = 0, GREEN = 1, BLUE = 2} ;
+variables:
+	Color enum_scalar ;
+
+// global attributes:
+		:history = "removed date-timex t_enum_name_in_grp2.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"t_enum_name_in_grp2.h5\"}]}]" ;
+
+group: g {
+  types:
+    ubyte enum Color {WHITE = 0, GRAY = 1, BLACK = 2} ;
+  dimensions:
+  	dim1 = 4 ;
+  variables:
+  	Color enum_array(dim1) ;
+  } // group g
+}

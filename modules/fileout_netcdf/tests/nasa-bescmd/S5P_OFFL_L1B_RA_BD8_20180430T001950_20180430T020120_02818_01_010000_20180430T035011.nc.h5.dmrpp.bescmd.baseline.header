@@ -19,7 +19,7 @@ netcdf test {
 		:build_dmrpp_metadata.build_dmrpp = "3.21.1" ;
 		:build_dmrpp_metadata.bes = "3.21.1" ;
 		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
-		:build_dmrpp_metadata.invocation = "build_dmrpp -f /scr/kent/opendap/hyrax-dev/hyrax-new/hyrax-1655/bes/modules/fileout_netcdf/data/S5P_OFFL_L1B_RA_BD8_20180430T001950_20180430T020120_02818_01_010000_20180430T035011.nc.h5 -r S5P_OFFL_L1B_RA_BD8_20180430T001950_20180430T020120_02818_01_010000_20180430T035011.nc.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -f /scr/kent/opendap/hyrax-dev/hyrax-new/hyrax-1490/bes/modules/fileout_netcdf/data/S5P_OFFL_L1B_RA_BD8_20180430T001950_20180430T020120_02818_01_010000_20180430T035011.nc.h5 -r S5P_OFFL_L1B_RA_BD8_20180430T001950_20180430T020120_02818_01_010000_20180430T035011.nc.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M" ;
 		:history = "removed date-timex S5P_OFFL_L1B_RA_BD8_20180430T001950_20180430T020120_02818_01_010000_20180430T035011.nc.h5.dmrpp\n" ;
 		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"S5P_OFFL_L1B_RA_BD8_20180430T001950_20180430T020120_02818_01_010000_20180430T035011.nc.h5.dmrpp\"}]}]" ;
 
@@ -263,6 +263,7 @@ group: BAND8_RADIANCE {
       		small_pixel_radiance:units = "mol.m-2.nm-1.sr-1.s-1" ;
       		small_pixel_radiance:smallpixel_column_index = "375" ;
       		small_pixel_radiance:orig_datatype = "VLEN" ;
+      		small_pixel_radiance:vlen_description = "The original variable-length array data is stored as the regular array data that has an extra dimension. The data gap is filled with 0. The actual length of each original variable-length element is stored in another array. The variable name of this array is small_pixel_radiance_vlen_index." ;
       	int small_pixel_radiance_vlen_index(time, scanline, ground_pixel) ;
       		small_pixel_radiance_vlen_index:orig_datatype = "VLEN_INDEX" ;
       	ushort measurement_quality(time, scanline) ;

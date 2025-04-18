@@ -1,0 +1,20 @@
+netcdf test {
+
+// global attributes:
+		:history = "removed date-timex t_enum_grp.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"t_enum_grp.h5.dmrpp\"}]}]" ;
+
+group: g1 {
+  types:
+    byte enum NoNameEnum0 {FALSE = 0, TRUE = 1} ;
+  variables:
+  	NoNameEnum0 g1_enum ;
+
+  group: g2 {
+    types:
+      byte enum NoNameEnum0 {FALSE = 0, TRUE = 1} ;
+    variables:
+    	NoNameEnum0 g2_enum ;
+    } // group g2
+  } // group g1
+}

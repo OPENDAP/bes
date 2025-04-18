@@ -38,6 +38,7 @@
 
 #include <libdap/BaseType.h>
 #include <map>
+#include <unordered_map>
 
 namespace libdap{
     class BaseType;
@@ -61,9 +62,11 @@ public:
     static void reset();
     static string id2netcdf(string in);
     static nc_type get_nc_type(libdap::BaseType *element,bool isNC4_ENHANCED);
+    static nc_type dap4_int_float_type_to_nc4_type(libdap::Type);
     static string gen_name(const vector<string> &embed, const string &name, string &original);
     static FONcBaseType * convert(libdap::BaseType *v,const string & version, const bool classic_model);
-    static FONcBaseType * convert(libdap::BaseType *v,const string & version, const bool classic_model, map<string,int>&,vector<int>&);
+    static FONcBaseType * convert(libdap::BaseType *v,const string & version, const bool classic_model,unordered_map<string,vector<pair<string,int>>> & );
+    static FONcBaseType * convert(libdap::BaseType *v,const string & version, const bool classic_model, map<string,int>&,vector<int>&, unordered_map<string,vector<pair<string,int>>> & );
     static void handle_error(int stax, const string &err, const string &file, int line);
 };
 

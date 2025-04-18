@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="t_enum_name_in_grp2.h5" dmrpp:href="data/t_enum_name_in_grp2.h5">
+    <Enumeration name="Color" basetype="Byte">
+        <EnumConst name="RED" value="0"/>
+        <EnumConst name="GREEN" value="1"/>
+        <EnumConst name="BLUE" value="2"/>
+    </Enumeration>
+    <Enum name="enum_scalar" enum="/Color">
+        <dmrpp:chunks byteOrder="LE">
+            <dmrpp:chunk offset="2048" nBytes="1"/>
+        </dmrpp:chunks>
+    </Enum>
+    <Group name="g">
+        <Enumeration name="Color" basetype="Byte">
+            <EnumConst name="WHITE" value="0"/>
+            <EnumConst name="GRAY" value="1"/>
+            <EnumConst name="BLACK" value="2"/>
+        </Enumeration>
+        <Enum name="enum_array" enum="/g/Color">
+            <Dim size="4"/>
+            <dmrpp:chunks byteOrder="LE">
+                <dmrpp:chunk offset="2049" nBytes="4"/>
+            </dmrpp:chunks>
+        </Enum>
+    </Group>
+</Dataset>
