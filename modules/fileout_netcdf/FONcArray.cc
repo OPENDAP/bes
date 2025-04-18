@@ -528,17 +528,6 @@ FONcArray::find_dim(const vector<string> &embed, const string &name, int64_t siz
     return ret_dim;
 }
 
-#if 0
-void FONcArray::define_enum(int ncid) {
-
-    int stax = nc_def_var(ncid, d_varname.c_str(), nc4_enum_type_id, d_ndims, d_dim_ids.data(), &d_varid);
-    if (stax != NC_NOERR) {
-        string err = (string) "fileout.netcdf - Failed to define variable " + d_varname;
-        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-    }
-
-}
-#endif
 
 /** @brief define the DAP Array in the netcdf file
  *
@@ -921,7 +910,7 @@ void FONcArray::write(int ncid) {
     }
 
     // Writing out array is complex. There are four cases:
-    // 1. Array of Enum, we need to figure out the basetype of enum and then write out.
+    // 1. Array of Enum, we need to use a different netCDF-4 API to write the data.
     // 2. Arrays of NC_CHAR, which are written the same for both the netCDF
     // classic and enhanced data models;
     // 3. All the other types, written for the enhanced data model

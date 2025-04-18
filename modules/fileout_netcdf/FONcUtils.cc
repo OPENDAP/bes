@@ -168,7 +168,7 @@ nc_type FONcUtils::dap4_int_float_type_to_nc4_type(libdap::Type d4_type)
 {
     nc_type x_type = NC_NAT; // the constant netcdf uses to define simple type
 
-    BESDEBUG("fonc", "FONcUtils() - dap4_atomic_type_to_nc4_type - dap4_type: "<< d4_type <<endl);
+    BESDEBUG("fonc", "FONcUtils() - dap4_int_float_type_to_nc4_type - dap4_type: "<< d4_type <<endl);
 
     switch(d4_type) {
         case dods_byte_c: 
@@ -207,7 +207,7 @@ nc_type FONcUtils::dap4_int_float_type_to_nc4_type(libdap::Type d4_type)
             x_type = NC_NAT;
     }
 
-    BESDEBUG("fonc", "FONcUtils() - dap4_atomic_type_to_nc4_type -  returned nc_type: "<< x_type <<endl);
+    BESDEBUG("fonc", "FONcUtils() - dap4_int_float_type_to_nc4_type -  returned nc_type: "<< x_type <<endl);
     return x_type;
 }
 
@@ -305,7 +305,11 @@ FONcUtils::convert(BaseType *v, const string &ncdf_version, const bool is_classi
  *                  dimension name, so the module generated dimension names(if any) will start from
  *                  'dim2', then 'dim3' etc.
  *                  This parameter is only used when the incoming object is DAP4 DMR.
- * TODO: add enum_type_id
+ *@param GFQN_to_en_typeid_vec This unordered map maps a Group Fully Qualified Name(GFQN) to 
+                               a vector of pair enum constant name and netCDF-4 enum type id.
+                               This parameter is used to pass the netCDF enum type id to the
+                               final netCDF write API that writes the enum data.
+
  * @returns The FONc object created via the DAP object
  * @throws BESInternalError if the DAP object is not an expected type
  */
@@ -406,12 +410,6 @@ FONcUtils::convert(BaseType *v,
                 const D4EnumDefs * d4_enum_defs = d4_enum_def->parent();
                 const D4Group *d4_grp = d4_enum_defs->parent();
                 
-#if 0
-cerr<<"D4Enum base_type: "<<base_type<<endl;
-cerr<<"d4_enum_def_name: "<<d4_enum_def_name <<endl;
-cerr<<"d4_grp full path: "<<d4_grp->FQN() <<endl;
-#endif
-                string enum_def_fqn = d4_grp->FQN() + d4_enum_def_name;
                 vector<pair<string,int>> enum_name_nc_type_id_vec = GFQN_to_en_typeid_vec[d4_grp->FQN()];
                 int nc4_enum_type_id = 0;
                 string enum_name;
@@ -449,13 +447,6 @@ cerr<<"d4_grp full path: "<<d4_grp->FQN() <<endl;
                     string d4_enum_def_name = d4_enum_def->name();
                     const D4EnumDefs * d4_enum_defs = d4_enum_def->parent();
                     const D4Group *d4_grp = d4_enum_defs->parent();
-                    
-#if 0
-    cerr<<"D4Enum base_type array : "<<base_type<<endl;
-    cerr<<"d4_enum_def_name array : "<<d4_enum_def_name <<endl;
-    cerr<<"d4_grp full path array : "<<d4_grp->FQN() <<endl;
-#endif
-                    string enum_def_fqn = d4_grp->FQN() + d4_enum_def_name;
                     vector<pair<string,int>> enum_name_nc_type_id_vec = GFQN_to_en_typeid_vec[d4_grp->FQN()];
                     string enum_name;
                     for (const auto & en_typeid:enum_name_nc_type_id_vec) {

@@ -2,32 +2,28 @@
 
 // This file is part of BES Netcdf File Out Module
 
-// Copyright (c) 2004,2005 University Corporation for Atmospheric Research
-// Author: Patrick West <pwest@ucar.edu> and Jose Garcia <jgarcia@ucar.edu>
+// Author: Kent Yang
+// <myang6@hdfgroup.org> 
+
+// Copyright (c)  The HDF Group, Inc. and OPeNDAP, Inc.
 //
-// This library is free software; you can redistribute it and/or
-// modify it under the terms of the GNU Lesser General Public
-// License as published by the Free Software Foundation; either
-// version 2.1 of the License, or (at your option) any later version.
+// This is free software; you can redistribute it and/or modify it under the
+// terms of the GNU Lesser General Public License as published by the Free
+// Software Foundation; either version 2.1 of the License, or (at your
+// option) any later version.
 //
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-// Lesser General Public License for more details.
+// This software is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+// or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public
+// License for more details.
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
-// You can contact University Corporation for Atmospheric Research at
-// 3080 Center Green Drive, Boulder, CO 80301
-
-// (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
-// Please read the full copyright statement in the file COPYRIGHT_UCAR.
-//
-// Authors:
-//      pwest       Patrick West <pwest@ucar.edu>
-//      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+// You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+// You can contact The HDF Group, Inc. at 410 E University Ave,
+// Suite 200, Champaign, IL 61820
 
 #include <BESInternalError.h>
 #include <BESDebug.h>
@@ -65,26 +61,13 @@ FONcD4Enum::FONcD4Enum( BaseType *b, nc_type d4_enum_basetype, int nc_type_id )
     
 }
 
-#if 0
-/** @brief Destructor that cleans up this instance
+/** @brief define the DAP D4Enum in the netcdf file
  *
- * The DAP D4Enum32 instance does not belong to the FONcD4Enum instance, so it
- * is not deleted up.
- */
-FONcD4Enum::~FONcD4Enum()
-{
-}
-#endif
-
-/** @brief define the DAP D4Enum32 in the netcdf file
- *
- * The definition actually takes place in FONcBaseType. This function
- * adds the attributes for the D4Enum32 instance as well as an attribute if
- * the name of the D4Enum32 had to be modified.
+ * This method adds the attributes for the D4Enum instance as well as an attribute if
+ * the name of the D4Enum had to be modified.
  *
  * @param ncid The id of the NetCDF file
- * @throws BESInternalError if there is a problem defining the
- * D4Enum32
+ * @throws BESInternalError if there is a problem defining the D4Enum.
  */
 void
 FONcD4Enum::define( int ncid )
@@ -110,7 +93,6 @@ FONcD4Enum::define( int ncid )
             updateAttrType(attrs,NC_FLOAT); 
         }
 
-
 	FONcAttributes::add_variable_attributes(ncid, d_varid, _f, isNetCDF4_ENHANCED() , d_is_dap4) ;
 	FONcAttributes::add_original_name(ncid, d_varid,
                                       d_varname, d_orig_varname ) ;
@@ -119,9 +101,9 @@ FONcD4Enum::define( int ncid )
     }
 }
 
-/** @brief Write the float out to the netcdf file
+/** @brief Write the D4Enum out to the netcdf file
  *
- * Once the float is defined, the value of the float can be written out
+ * Once the D4Enum is defined, the value of the D4Enum can be written out
  * as well.
  *
  * @param ncid The id of the netcdf file
@@ -224,17 +206,6 @@ FONcD4Enum::name()
     return _f->name() ;
 }
 
-#if 0
-/** @brief returns the netcdf type of the DAP D4Enum32
- *
- * @returns The nc_type of NC_FLOAT
- */
-nc_type
-FONcD4Enum::type()
-{
-    return NC_FLOAT ;
-}
-#endif
 
 /** @brief dumps information about this object for debugging purposes
  *
@@ -245,10 +216,6 @@ FONcD4Enum::type()
 void
 FONcD4Enum::dump( ostream &strm ) const
 {
-#if 0
-    strm << BESIndent::LMarg << "FONcD4Enum::dump - ("
-			     << (void *)this << ")" << endl ;
-#endif
     strm << BESIndent::LMarg << "FONcD4Enum::dump - ("
                              << "Currently not implemented yet." <<")"<<endl;
     BESIndent::Indent() ;

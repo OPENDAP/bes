@@ -880,35 +880,6 @@ void FONcTransform::transform_dap4_no_group() {
 
     fonc_history_util::updateHistoryAttributes(_dmr, d_dhi->data[POST_CONSTRAINT]);
 
-#if 0
-    // Open the file for writing
-    int stax = -1;
-    if (FONcTransform::_returnAs == FONC_RETURN_AS_NETCDF4) {
-        if (FONcRequestHandler::classic_model) {
-            BESDEBUG(MODULE, prolog << "Opening NetCDF-4 cache file in classic mode. fileName:  "
-                             << _localfile << endl);
-            stax = nc_create(_localfile.c_str(), NC_CLOBBER | NC_NETCDF4 | NC_CLASSIC_MODEL, &_ncid);
-        }
-        else {
-            BESDEBUG(MODULE, prolog << "Opening NetCDF-4 cache file. fileName:  " << _localfile
-                                                                                                           << endl);
-            stax = nc_create(_localfile.c_str(), NC_CLOBBER | NC_NETCDF4, &_ncid);
-        }
-    }
-    else {
-        BESDEBUG(MODULE, prolog << "Opening NetCDF-3 cache file. fileName:  " << _localfile
-                                                                                                       << endl);
-        if (FONcRequestHandler::nc3_classic_format)                                                    
-            stax = nc_create(_localfile.c_str(), NC_CLOBBER, &_ncid);
-        else 
-            stax = nc_create(_localfile.c_str(), NC_CLOBBER | NC_64BIT_OFFSET, &_ncid);
-    }
-
-    if (stax != NC_NOERR) {
-        FONcUtils::handle_error(stax, prolog + "Call to nc_create() failed for file: " + _localfile, __FILE__, __LINE__);
-    }
-#endif
-
 
     try {
         // Here we will be defining the variables of the netcdf and
@@ -1047,15 +1018,20 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
         if(d4_grp->has_enum_defs()) {
             gen_nc4_enum_type(d4_grp,nc4_grp_id);
 
-#if 0
+#if !NDEBUG 
+            auto d4enum_defs= d4_grp->enum_defs();
             for (D4EnumDefs::D4EnumDefIter ed_i = d4enum_defs->enum_begin(), ed_e= d4enum_defs->enum_end(); ed_i != ed_e; ++ed_i) {
-cout<<"d4enumdef name: "<<(*ed_i)->name()<<endl;
-cout <<"d4enumdef type: "<<(*ed_i)->type()<<endl;
+
+                BESDEBUG(MODULE, prolog <<"d4enumdef name: "<<(*ed_i)->name()<<endl);
+                BESDEBUG(MODULE, prolog <<"d4enumdef type: "<<(*ed_i)->type()<<endl);
+
                 for (D4EnumDef::D4EnumValueIter edv_i = (*ed_i)->value_begin(), edv_e = (*ed_i)->value_end(); edv_i != edv_e; ++edv_i) {
+
                     string edv_label = (*ed_i)->label(edv_i);
                     long long edv_value = (*ed_i)->value(edv_i);
-cout<<"edv_label: "<<edv_label<<endl;
-cout<<"edv_value: "<<edv_value<<endl;
+
+                    BESDEBUG(MODULE, prolog <<"edv_label: "<<edv_label <<endl);
+                    BESDEBUG(MODULE, prolog <<"edv_value: "<<edv_value<<endl);
 
                 }
             } 
