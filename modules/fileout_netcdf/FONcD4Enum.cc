@@ -248,9 +248,11 @@ FONcD4Enum::dump( ostream &strm ) const
 #if 0
     strm << BESIndent::LMarg << "FONcD4Enum::dump - ("
 			     << (void *)this << ")" << endl ;
+#endif
+    strm << BESIndent::LMarg << "FONcD4Enum::dump - ("
+                             << "Currently not implemented yet." <<")"<<endl;
     BESIndent::Indent() ;
     strm << BESIndent::LMarg << "name = " << _f->name()  << endl ;
     BESIndent::UnIndent() ;
-#endif
 }
 
