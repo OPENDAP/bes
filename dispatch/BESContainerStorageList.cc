@@ -29,6 +29,8 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+//
+// Updated to C++14 using Google Gemini jhrg 4/18/25
 
 #include "config.h"
 
@@ -68,45 +70,26 @@ using std::ostream;
  */
 bool BESContainerStorageList::add_persistence(BESContainerStorage *cp)
 {
-    // Lock the mutex for thread safety during access and modification
     std::lock_guard<std::recursive_mutex> lock(d_cache_lock_mutex);
 
-    // --- Pre-conditions ---
-    // 1. Check for null input pointer. Cannot add a null store.
     if (!cp) {
         return false;
     }
 
-    // 2. Get the name from the provided storage object.
-    // This assumes cp is valid and getPersistenceName() returns a valid reference.
-    // Handle potential exceptions from getPersistenceName if necessary.
     const std::string& new_name = cp->get_name();
 
     // --- Check for Duplicates ---
-    // 3. Iterate through the existing entries to find if a store with the
-    //    same name already exists.
-    //    We use the findEntryIterator helper or std::find_if directly.
-    const auto it = find_entry_iterator(new_name); // Use the private helper for consistency
-
-    // If the iterator is not the end iterator, a store with this name was found.
+    const auto it = find_entry_iterator(new_name);
     if (it != d_storage_entries.end()) {
         // Store with this name already exists, do not add.
         return false;
     }
 
     // --- Add New Entry ---
-    // 4. If no store with the same name exists, add the new pointer to the
-    //    end of the vector.
-    //    Use emplace_back to construct the StorageEntry directly in the vector.
-    //    The StorageEntry constructor takes the raw pointer 'cp'.
+    // StorageEntry ctor sets reference_count to zero
     d_storage_entries.emplace_back(cp);
-
-    // 5. Set the reference count for the newly added entry to 1.
-    //    This follows the logic of the original linked-list implementation.
-    //    Access the newly added element using back().
     d_storage_entries.back().reference_count = 1;
 
-    // 6. Return true to indicate the store was successfully added.
     return true;
 }
 
