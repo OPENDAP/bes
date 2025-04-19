@@ -34,10 +34,8 @@
 
 #include "BESXMLDefineCommand.h"
 #include "BESContainerStorageList.h"
-#include "BESContainerStorage.h"
 
 #include "BESXMLUtils.h"
-#include "BESUtil.h"
 #include "BESResponseNames.h"
 #include "BESDataNames.h"
 
@@ -51,10 +49,7 @@ using std::vector;
 using std::ostream;
 using std::map;
 
-BESXMLDefineCommand::BESXMLDefineCommand(const BESDataHandlerInterface &base_dhi) :
-    BESXMLCommand(base_dhi), _default_constraint(""), _default_dap4_constraint(""), _default_dap4_function("")
-{
-}
+constexpr auto DEFAULT= "default";
 
 /** @brief parse a define command.
  *
@@ -84,11 +79,10 @@ BESXMLDefineCommand::BESXMLDefineCommand(const BESDataHandlerInterface &base_dhi
  *
  * @param node xml2 element node pointer
  */
-void BESXMLDefineCommand::parse_request(xmlNode *node)
-{
-    string value;		// element value, should not be any
-    string action;		// element name, which is the request action
-    map<string, string> props;	// element attributes; 'name' and maybe 'space'
+void BESXMLDefineCommand::parse_request(xmlNode *node) {
+    string value;
+    string action;
+    map<string, string> props;
 
     BESXMLUtils::GetNodeInfo(node, action, value, props);
     if (action != DEFINE_RESPONSE_STR) {
@@ -99,99 +93,92 @@ void BESXMLDefineCommand::parse_request(xmlNode *node)
     d_xmlcmd_dhi.action = DEFINE_RESPONSE;
 
     string def_name = props["name"];
-    if (def_name.empty())
+    if (def_name.empty()) {
         throw BESSyntaxUserError(string(action) + " command: definition name missing", __FILE__, __LINE__);
+    }
 
     d_xmlcmd_dhi.data[DEF_NAME] = def_name;
-    d_cmd_log_info = (string) "define " + def_name;
+    d_cmd_log_info = "define " + def_name;
 
-    d_xmlcmd_dhi.data[STORE_NAME] = props["space"].empty() ? DEFAULT: props["space"];
+    d_xmlcmd_dhi.data[STORE_NAME] = props["space"].empty() ? DEFAULT : props["space"];
     d_cmd_log_info += " in " + d_xmlcmd_dhi.data[STORE_NAME];
 
-    int num_containers = 0;
+    m_process_child_nodes(node, action);
+
+    if (container_names.empty()) {
+        throw BESSyntaxUserError(string(action) + " The define element must contain at least one container element",
+                                 __FILE__, __LINE__);
+    }
+
+    d_cmd_log_info += " as ";
+    bool first = true;
+    for (const auto& container_name : container_names) {
+        if (!first) d_cmd_log_info += ",";
+        d_cmd_log_info += container_name;
+        first = false;
+    }
+
+    m_process_container_constraints();
+
+    d_cmd_log_info += ";";
+
+    BESXMLCommand::set_response();
+}
+
+void BESXMLDefineCommand::m_process_child_nodes(xmlNode* node, const string& action) {
     string child_name;
     string child_value;
-    props.clear();
-    xmlNode *child_node = BESXMLUtils::GetFirstChild(node, child_name, child_value, props);
+    map<string, string> props;
+    xmlNode* child_node = BESXMLUtils::GetFirstChild(node, child_name, child_value, props);
+
     while (child_node) {
         if (child_name == "constraint") {
-            // default constraint for all containers
             _default_constraint = child_value;
-        }
-        else if (child_name == "dap4constraint") {
-            // default function for all containers
+        } else if (child_name == "dap4constraint") {
             _default_dap4_constraint = child_value;
-        }
-        else if (child_name == "dap4function") {
-            // default function for all containers
+        } else if (child_name == "dap4function") {
             _default_dap4_function = child_value;
-        }
-        else if (child_name == "container") {
-            handle_container_element(action, child_node, child_value, props);
-            num_containers++;
-        }
-        else {
+        } else if (child_name == "container") {
+            m_handle_container_element(action, child_node, child_value, props);
+        } else {
             throw BESSyntaxUserError(string(action) + " Unrecognized child element: " + child_name, __FILE__, __LINE__);
         }
-#if 0
-        else if (child_name == "aggregate") {
-            handle_aggregate_element(action, child_node, child_value, props);
-        }
-#endif
 
-        // get the next child element
         props.clear();
         child_name.clear();
         child_value.clear();
         child_node = BESXMLUtils::GetNextChild(child_node, child_name, child_value, props);
     }
+}
 
-    if (num_containers < 1)
-        throw BESSyntaxUserError(string(action) + " The define element must contain at least one container element", __FILE__, __LINE__);
-
-    d_cmd_log_info += " as ";
-    bool first = true;
-    vector<string>::iterator i = container_names.begin();
-    vector<string>::iterator e = container_names.end();
-    for (; i != e; i++) {
-        if (!first) d_cmd_log_info += ",";
-        d_cmd_log_info += (*i);
-        first = false;
-    }
-
-    if (container_constraints.size() || container_dap4constraints.size() || container_dap4functions.size() || container_attributes.size()) {
+void BESXMLDefineCommand::m_process_container_constraints() {
+    if (!container_constraints.empty() || !container_dap4constraints.empty() ||
+        !container_dap4functions.empty() || !container_attributes.empty()) {
         d_cmd_log_info += " with ";
-        first = true;
-        i = container_names.begin();
-        e = container_names.end();
-        for (; i != e; i++) {
-            if (container_constraints.count((*i))) {
+        bool first = true;
+        for (const auto& container_name : container_names) {
+            if (container_constraints.count(container_name)) {
                 if (!first) d_cmd_log_info += ",";
                 first = false;
-                d_cmd_log_info += (*i) + ".constraint=\"" + container_constraints[(*i)] + "\"";
+                d_cmd_log_info += container_name + ".constraint=\"" + container_constraints[container_name] + "\"";
             }
-            if (container_dap4constraints.count((*i))) {
+            if (container_dap4constraints.count(container_name)) {
                 if (!first) d_cmd_log_info += ",";
                 first = false;
-                d_cmd_log_info += (*i) + ".dap4constraint=\"" + container_dap4constraints[(*i)] + "\"";
+                d_cmd_log_info += container_name + ".dap4constraint=\"" + container_dap4constraints[container_name] + "\"";
             }
-            if (container_dap4functions.count((*i))) {
+            if (container_dap4functions.count(container_name)) {
                 if (!first) d_cmd_log_info += ",";
                 first = false;
-                d_cmd_log_info += (*i) + ".dap4function=\"" + container_dap4functions[(*i)] + "\"";
+                d_cmd_log_info += container_name + ".dap4function=\"" + container_dap4functions[container_name] + "\"";
             }
-            if (container_attributes.count((*i))) {
+            if (container_attributes.count(container_name)) {
                 if (!first) d_cmd_log_info += ",";
                 first = false;
-                d_cmd_log_info += (*i) + ".attributes=\"" + container_attributes[(*i)] + "\"";
+                d_cmd_log_info += container_name + ".attributes=\"" + container_attributes[container_name] + "\"";
             }
         }
     }
-
-    d_cmd_log_info += ";";
-
-    // now that we've set the action, go get the response handler for the action
-    BESXMLCommand::set_response();
 }
 
 /** @brief handle a container element of the define element
@@ -217,9 +204,8 @@ void BESXMLDefineCommand::parse_request(xmlNode *node)
  * @param value a value of the container element, should be empty
  * @param props properties of the container element
  */
-void BESXMLDefineCommand::handle_container_element(const string &action, xmlNode *node, const string &/*value*/,
-    map<string, string> &props)
-{
+void BESXMLDefineCommand::m_handle_container_element(const string &action, xmlNode *node, const string &/*value*/,
+                                                   map<string, string> &props) {
     string name = props["name"];
     if (name.empty()) {
         string err = action + " command: container element missing name prop";
@@ -242,17 +228,11 @@ void BESXMLDefineCommand::handle_container_element(const string &action, xmlNode
     xmlNode *child_node = BESXMLUtils::GetFirstChild(node, child_name, child_value, child_props);
     while (child_node) {
         if (child_name == "constraint") {
-            if (child_props.size()) {
+            if (!child_props.empty()) {
                 string err = action + " command: constraint element " + "should not contain properties";
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
             // HYRAX-316, the empty constraint now is legal. It is used to transfer the whole file.
-#if 0
-            if (child_value.empty()) {
-                string err = action + " command: constraint element " + "missing value";
-                throw BESSyntaxUserError(err, __FILE__, __LINE__);
-            }
-#endif
             if (have_constraint) {
                 string err = action + " command: container element " + "contains multiple constraint elements";
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
@@ -261,17 +241,11 @@ void BESXMLDefineCommand::handle_container_element(const string &action, xmlNode
             container_constraints[name] = child_value;
         }
         else if (child_name == "dap4constraint") {
-            if (child_props.size()) {
+            if (!child_props.empty()) {
                 string err = action + " command: constraint element " + "should not contain properties";
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
             // HYRAX-316, the empty constraint now is legal. It is used to transfer the whole file.
-#if 0
-            if (child_value.empty()) {
-                string err = action + " command: constraint element " + "missing value";
-                throw BESSyntaxUserError(err, __FILE__, __LINE__);
-            }
-#endif
             if (have_dap4constraint) {
                 string err = action + " command: container element " + "contains multiple constraint elements";
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
@@ -280,7 +254,7 @@ void BESXMLDefineCommand::handle_container_element(const string &action, xmlNode
             container_dap4constraints[name] = child_value;
         }
         else if (child_name == "dap4function") {
-            if (child_props.size()) {
+            if (!child_props.empty()) {
                 string err = action + " command: dap4_function element " + "should not contain properties";
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
@@ -296,7 +270,7 @@ void BESXMLDefineCommand::handle_container_element(const string &action, xmlNode
             container_dap4functions[name] = child_value;
         }
         else if (child_name == "attributes") {
-            if (child_props.size()) {
+            if (!child_props.empty()) {
                 string err = action + " command: attributes element " + "should not contain properties";
                 throw BESSyntaxUserError(err, __FILE__, __LINE__);
             }
@@ -363,44 +337,42 @@ void BESXMLDefineCommand::handle_aggregate_element(const string &action, xmlNode
  * called by XMLInterface::execute_data_request_plan(), after all the elements
  * have been parsed. jhrg 2/11/18
  */
-void BESXMLDefineCommand::prep_request()
-{
-    vector<string>::iterator i = container_names.begin();
-    vector<string>::iterator e = container_names.end();
-    for (; i != e; i++) {
-        // look for the specified container
-        BESContainer *c = 0;
+void BESXMLDefineCommand::prep_request() {
+    for (const auto& container_name : container_names) {
+        BESContainer* c = nullptr;
 
-        // Is a particular store is being used - this is container store
-        // not the definition store. If no store is named, search them all.
-        string store = container_store_names[(*i)];
+        const string& store = container_store_names[container_name];
         if (!store.empty()) {
-            BESContainerStorage *cs = BESContainerStorageList::TheList()->find_persistence(store);
-            if (cs) c = cs->look_for((*i));
-        }
-        else {
-            c = BESContainerStorageList::TheList()->look_for((*i));
+            if (auto cs = BESContainerStorageList::TheList()->find_persistence(store)) {
+                c = cs->look_for(container_name);
+            }
+        } else {
+            c = BESContainerStorageList::TheList()->look_for(container_name);
         }
 
-        if (c == 0)
-            throw BESSyntaxUserError(string("Could not find the container ") + (*i), __FILE__, __LINE__);
+        if (!c) {
+            throw BESSyntaxUserError(string("Could not find the container ") + container_name, __FILE__, __LINE__);
+        }
 
-        // What use case do we have in which the "default" value of the constraint is not an empty string?
-        string constraint = container_constraints[(*i)];
-        if (constraint.empty()) constraint = _default_constraint;
+        string constraint = container_constraints[container_name];
+        if (constraint.empty()) {
+            constraint = _default_constraint;
+        }
         c->set_constraint(constraint);
 
-        // What use case do we have in which the "default" value of the dap4constraint is not an empty string?
-        string dap4constraint = container_dap4constraints[(*i)];
-        if (dap4constraint.empty()) dap4constraint = _default_dap4_constraint;
+        string dap4constraint = container_dap4constraints[container_name];
+        if (dap4constraint.empty()) {
+            dap4constraint = _default_dap4_constraint;
+        }
         c->set_dap4_constraint(dap4constraint);
 
-        // What use case do we have in which the "default" value of the dap4function is not an empty string?
-        string function = container_dap4functions[(*i)];
-        if (function.empty()) function = _default_dap4_function;
+        string function = container_dap4functions[container_name];
+        if (function.empty()) {
+            function = _default_dap4_function;
+        }
         c->set_dap4_function(function);
 
-        string attrs = container_attributes[(*i)];
+        string attrs = container_attributes[container_name];
         c->set_attributes(attrs);
         d_xmlcmd_dhi.containers.push_back(c);
 
@@ -415,8 +387,7 @@ void BESXMLDefineCommand::prep_request()
  * @param strm C++ i/o stream to dump the information to
  */
 
-void BESXMLDefineCommand::dump(ostream &strm) const
-{
+void BESXMLDefineCommand::dump(ostream &strm) const {
     strm << BESIndent::LMarg << "BESXMLDefineCommand::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     BESXMLCommand::dump(strm);
@@ -424,8 +395,6 @@ void BESXMLDefineCommand::dump(ostream &strm) const
 }
 
 BESXMLCommand *
-BESXMLDefineCommand::CommandBuilder(const BESDataHandlerInterface &base_dhi)
-{
+BESXMLDefineCommand::CommandBuilder(const BESDataHandlerInterface &base_dhi) {
     return new BESXMLDefineCommand(base_dhi);
 }
-

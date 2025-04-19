@@ -30,200 +30,222 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <cppunit/TextTestRunner.h>
+// connT.cc - Refactored
+
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit;
-
 #include <iostream>
-#include <cstdlib>
+#include <string>   // Include <string> explicitly
+#include <memory>   // Although not using unique_ptr for 'd', good practice
+#include <vector>   // Needed for TestFactoryRegistry access if done manually
+#include <cstdio>   // For sprintf (kept from original)
+#include <cstdlib>  // For EXIT_SUCCESS in bes_run_tests
+#include <sstream>
 
-using std::cerr;
-using std::cout;
-using std::endl;
-using std::string;
-
+// Include necessary BES headers
 #include "BESContainerStorageFile.h"
 #include "BESContainer.h"
 #include "BESError.h"
 #include "BESTextInfo.h"
 #include "TheBESKeys.h"
-#include <test_config.h>
-#include <unistd.h>
+#include <test_config.h> // Assumed to define TEST_SRC_DIR
 
-static bool debug = false;
+#include "modules/common/run_tests_cppunit.h"
+// **************************************************
 
-#undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
+// Using directives - std namespace
+using std::cerr;
+using std::cout;
+using std::endl;
+using std::string;
+// Using directives - CppUnit namespace
+using CppUnit::TestFixture;
 
-class connT: public TestFixture {
-private:
+// The global 'debug', 'debug2', DBG, and DBG2 macros are now expected
+// to be defined in "bes_run_tests_cppunit.h".
+
+class connT final : public TestFixture {
 
 public:
-    connT()
-    {
-    }
-    ~connT()
-    {
-    }
+    connT() = default;  // Use default constructor
+    ~connT() override = default; // Use default virtual destructor
 
-    void setUp()
-    {
-        string bes_conf = (string) TEST_SRC_DIR + "/persistence_file_test.ini";
+    // setUp now configures the necessary keys before each test
+    void setUp() override {
+        const string bes_conf = string(TEST_SRC_DIR) + "/persistence_file_test.ini";
         TheBESKeys::ConfigFile = bes_conf;
+
+        // Get singleton instance
+        auto* keys = TheBESKeys::TheKeys(); // Use auto
+
+        // Set up file paths for various test cases
+        // Using string() constructor for clarity, though implicit conversion often works
+        keys->set_key(string("BES.Container.Persistence.File.FileNot=") + TEST_SRC_DIR + "/persistence_filenot.txt");
+        keys->set_key(string("BES.Container.Persistence.File.FileTooMany=") + TEST_SRC_DIR + "/persistence_file3.txt");
+        keys->set_key(string("BES.Container.Persistence.File.FileTooFew=") + TEST_SRC_DIR + "/persistence_file4.txt");
+        keys->set_key(string("BES.Container.Persistence.File.File1=") + TEST_SRC_DIR + "/persistence_file1.txt");
+        keys->set_key(string("BES.Container.Persistence.File.File2=") + TEST_SRC_DIR + "/persistence_file2.txt");
+
+        // Note: The key "BES.Container.Persistence.File.File" (used in the incomplete test)
+        // is intentionally NOT fully set here, simulating the incomplete state.
     }
 
-    void tearDown()
-    {
-    }
+    // tearDown remains empty
+    void tearDown() override {}
 
-    CPPUNIT_TEST_SUITE( connT );
+    CPPUNIT_TEST_SUITE(connT);
 
-    CPPUNIT_TEST( do_test );
+    // Register the new, specific test methods
+    CPPUNIT_TEST(testConstructor_IncompleteKeyInfo_Throws);
+    CPPUNIT_TEST(testConstructor_NonExistentFile_Throws);
+    CPPUNIT_TEST(testConstructor_FileTooManyColumns_Throws);
+    CPPUNIT_TEST(testConstructor_FileTooFewColumns_Throws);
+    CPPUNIT_TEST(testConstructor_ValidFile_Opens);
+    CPPUNIT_TEST(testLookFor_FindsExistingContainers);
+    CPPUNIT_TEST(testLookFor_NonExistentKey_ReturnsNull);
+    CPPUNIT_TEST(testShowContainers_RunsWithoutError); // Basic check
 
     CPPUNIT_TEST_SUITE_END();
 
-    void do_test()
-    {
-        TheBESKeys *keys = TheBESKeys::TheKeys();
-        keys->set_key((string) "BES.Container.Persistence.File.FileNot=" + TEST_SRC_DIR + "/persistence_filenot.txt");
-        keys->set_key((string) "BES.Container.Persistence.File.FileTooMany=" + TEST_SRC_DIR + "/persistence_file3.txt");
-        keys->set_key((string) "BES.Container.Persistence.File.FileTooFew=" + TEST_SRC_DIR + "/persistence_file4.txt");
-        keys->set_key((string) "BES.Container.Persistence.File.File1=" + TEST_SRC_DIR + "/persistence_file1.txt");
-        keys->set_key((string) "BES.Container.Persistence.File.File2=" + TEST_SRC_DIR + "/persistence_file2.txt");
-
-        cout << "*****************************************" << endl;
-        cout << "Entered pfileT::run" << endl;
-
-        cout << "*****************************************" << endl;
-        cout << "Open File, incomplete key information" << endl;
-        try {
-            BESContainerStorageFile cpf("File");
-            CPPUNIT_ASSERT( !"opened file File, shouldn't have" );
-        }
-        catch (BESError &ex) {
-            cout << "couldn't get File, good, because" << endl;
-            cout << ex.get_message() << endl;
-        }
-
-        cout << "*****************************************" << endl;
-        cout << "Open FileNot, doesn't exist" << endl;
-        try {
-            BESContainerStorageFile cpf("FileNot");
-            CPPUNIT_ASSERT( !"opened file FileNot, shouldn't have" );
-        }
-        catch (BESError &ex) {
-            cout << "couldn't get FileNot, good, because" << endl;
-            cout << ex.get_message() << endl;
-        }
-
-        cout << "*****************************************" << endl;
-        cout << "Open FileTooMany, too many values on line" << endl;
-        try {
-            BESContainerStorageFile cpf("FileTooMany");
-            CPPUNIT_ASSERT( ! "opened file FileTooMany, shouldn't have" );
-        }
-        catch (BESError &ex) {
-            cout << "couldn't get FileTooMany, good, because" << endl;
-            cout << ex.get_message() << endl;
-        }
-
-        cout << "*****************************************" << endl;
-        cout << "Open FileTooFew, too few values on line" << endl;
-        try {
-            BESContainerStorageFile cpf("FileTooFew");
-            CPPUNIT_ASSERT( !"opened file FileTooFew, shouldn't have" );
-        }
-        catch (BESError &ex) {
-            cout << "couldn't get FileTooFew, good, because" << endl;
-            cout << ex.get_message() << endl;
-        }
-
-        cout << "*****************************************" << endl;
-        cout << "Open File1" << endl;
-        try {
-            BESContainerStorageFile cpf("File1");
-        }
-        catch (BESError &ex) {
-            cerr << ex.get_message() << endl;
-            CPPUNIT_ASSERT( !"couldn't open File1" );
-        }
-
-        BESContainerStorageFile cpf("File1");
-        char s[10];
-        char r[10];
-        char c[10];
-        for (int i = 1; i < 6; i++) {
-            sprintf(s, "sym%d", i);
-            sprintf(r, "real%d", i);
-            sprintf(c, "type%d", i);
-            cout << "    looking for " << s << endl;
-            BESContainer *d = cpf.look_for(s);
-            CPPUNIT_ASSERT( d );
-            CPPUNIT_ASSERT( d->get_real_name() == r );
-            CPPUNIT_ASSERT( d->get_container_type() == c );
-        }
-
-        cout << "    looking for notthere" << endl;
-        BESContainer *d = cpf.look_for("notthere");
-        CPPUNIT_ASSERT( !d );
-
-        cout << "*****************************************" << endl;
-        cout << "show containers" << endl;
-        BESTextInfo info;
-        cpf.show_containers(info);
-        info.print(cout);
-
-        cout << "*****************************************" << endl;
-        cout << "Returning from pfileT::run" << endl;
+    /**
+     * @brief Tests BESContainerStorageFile constructor with incomplete key info.
+     */
+    void testConstructor_IncompleteKeyInfo_Throws() {
+        DBG(cout << "Running testConstructor_IncompleteKeyInfo_Throws" << endl);
+        // Expecting BESError because "BES.Container.Persistence.File.File" key is not fully defined in setUp.
+        CPPUNIT_ASSERT_THROW_MESSAGE(
+            "Should throw BESError for incomplete key 'File'",
+            BESContainerStorageFile cpf("File"), // Action that should throw
+            BESError                       // Expected exception type
+        );
     }
-};
 
-CPPUNIT_TEST_SUITE_REGISTRATION( connT );
+    /**
+     * @brief Tests BESContainerStorageFile constructor with a non-existent file path.
+     */
+    void testConstructor_NonExistentFile_Throws() {
+        DBG(cout << "Running testConstructor_NonExistentFile_Throws" << endl);
+        // Expecting BESError because the file specified by "FileNot" key doesn't exist.
+         CPPUNIT_ASSERT_THROW_MESSAGE(
+            "Should throw BESError for non-existent file 'FileNot'",
+            BESContainerStorageFile cpf("FileNot"),
+            BESError
+        );
+    }
 
-int main(int argc, char*argv[])
-{
-    int option_char;
-    while ((option_char = getopt(argc, argv, "dh")) != EOF)
-        switch (option_char) {
-        case 'd':
-            debug = 1;  // debug is a static global
-            break;
-        case 'h': {     // help - show test names
-            cerr << "Usage: connT has the following tests:" << endl;
-            const std::vector<Test*> &tests = connT::suite()->getTests();
-            unsigned int prefix_len = connT::suite()->getName().append("::").size();
-            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+    /**
+     * @brief Tests BESContainerStorageFile constructor with too many values on a line.
+     */
+    void testConstructor_FileTooManyColumns_Throws() {
+         DBG(cout << "Running testConstructor_FileTooManyColumns_Throws" << endl);
+         // Expecting BESError due to format error in the file specified by "FileTooMany".
+         CPPUNIT_ASSERT_THROW_MESSAGE(
+            "Should throw BESError for file with too many columns 'FileTooMany'",
+            BESContainerStorageFile cpf("FileTooMany"),
+            BESError
+        );
+    }
+
+    /**
+     * @brief Tests BESContainerStorageFile constructor with too few values on a line.
+     */
+    void testConstructor_FileTooFewColumns_Throws() {
+        DBG(cout << "Running testConstructor_FileTooFewColumns_Throws" << endl);
+        // Expecting BESError due to format error in the file specified by "FileTooFew".
+        CPPUNIT_ASSERT_THROW_MESSAGE(
+            "Should throw BESError for file with too few columns 'FileTooFew'",
+            BESContainerStorageFile cpf("FileTooFew"),
+            BESError
+        );
+    }
+
+   /**
+    * @brief Tests successful construction of BESContainerStorageFile with a valid file.
+    */
+    void testConstructor_ValidFile_Opens() {
+        DBG(cout << "Running testConstructor_ValidFile_Opens" << endl);
+        // Expecting no exception for a valid file configuration "File1".
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE(
+            "Should successfully open valid file 'File1'",
+            BESContainerStorageFile cpf("File1")
+        );
+    }
+
+    /**
+     * @brief Tests finding existing containers using look_for (using std::ostringstream).
+     */
+    void testLookFor_FindsExistingContainers() {
+
+        DBG(cout << "Running testLookFor_FindsExistingContainers" << endl);
+
+        BESContainerStorageFile cpf("File1"); // Assumes File1 is valid (tested above)
+
+        for (int i = 1; i < 6; ++i) {
+            std::ostringstream ss_sym, ss_real, ss_type;
+
+            ss_sym << "sym" << i;
+            string sym_key = ss_sym.str();
+
+            ss_real << "real" << i;
+            string expected_real_name = ss_real.str();
+
+            ss_type << "type" << i;
+            string expected_type = ss_type.str();
+
+            DBG(cout << "    looking for " << sym_key << endl);
+
+            std::unique_ptr<BESContainer> d(cpf.look_for(sym_key));
+
+            std::string find_msg = "Should find container for key: " + sym_key;
+            CPPUNIT_ASSERT_MESSAGE(find_msg, d != nullptr);
+
+            if (d) {
+                std::string real_name_msg = "Real name mismatch for key: " + sym_key;
+                std::string type_msg = "Container type mismatch for key: " + sym_key;
+
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(real_name_msg, expected_real_name, d->get_real_name());
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(type_msg, expected_type, d->get_container_type());
             }
-            break;
-        }
-        default:
-            break;
-        }
-
-    argc -= optind;
-    argv += optind;
-
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
-    bool wasSuccessful = true;
-    string test = "";
-    if (0 == argc) {
-        // run them all
-        wasSuccessful = runner.run("");
-    }
-    else {
-        int i = 0;
-        while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
-            test = connT::suite()->getName().append("::").append(argv[i]);
-            wasSuccessful = wasSuccessful && runner.run(test);
         }
     }
 
-    return wasSuccessful ? 0 : 1;
+   /**
+    * @brief Tests that look_for returns null for a non-existent key.
+    */
+    void testLookFor_NonExistentKey_ReturnsNull() {
+        DBG(cout << "Running testLookFor_NonExistentKey_ReturnsNull" << endl);
+        BESContainerStorageFile cpf("File1"); // Assumes File1 is valid
+
+        DBG(cout << "    looking for notthere" << endl);
+        std::unique_ptr<BESContainer> d(cpf.look_for("notthere"));
+        CPPUNIT_ASSERT_MESSAGE("Should return nullptr for non-existent key 'notthere'", d == nullptr);
+    }
+
+    /**
+     * @brief Basic test for show_containers - ensures it runs without throwing.
+     * Note: This doesn't verify the output content.
+     */
+    void testShowContainers_RunsWithoutError() {
+         DBG(cout << "Running testShowContainers_RunsWithoutError" << endl);
+         BESContainerStorageFile cpf("File1"); // Assumes File1 is valid
+         BESTextInfo info;
+
+         CPPUNIT_ASSERT_NO_THROW_MESSAGE(
+             "show_containers should run without throwing exceptions",
+             cpf.show_containers(info)
+         );
+         // info.print(cout); // Optionally print for manual inspection if needed during debug
+    }
+
+}; // End class connT
+
+
+CPPUNIT_TEST_SUITE_REGISTRATION(connT);
+
+int main(int argc, char *argv[]) {
+    const bool success = bes_run_tests<connT>(argc, argv, "bes,container");
+
+    // Return 0 for success (true from bes_run_tests), 1 for failure (false).
+    return success ? 0 : 1;
 }
-
