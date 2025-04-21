@@ -1,0 +1,15 @@
+netcdf test {
+types:
+  uint64 enum NoNameEnum0 {RED = 0, GREEN = 1, BLUE = 2} ;
+  int enum NoNameEnum1 {TRUE = 1000, FALSE = 2000} ;
+dimensions:
+	dim1 = 4 ;
+	dim2 = 4 ;
+variables:
+	NoNameEnum0 enum_array(dim1) ;
+	NoNameEnum1 enum_array2(dim2) ;
+
+// global attributes:
+		:history = "removed date-timex t_enum2_mt_array.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"t_enum2_mt_array.h5.dmrpp\"}]}]" ;
+}

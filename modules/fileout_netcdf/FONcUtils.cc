@@ -48,6 +48,7 @@
 #include "FONcUInt64.h"
 #include "FONcFloat.h"
 #include "FONcDouble.h"
+#include "FONcD4Enum.h"
 #include "FONcStructure.h"
 #include "FONcArrayStructure.h"
 #include "FONcArrayStructureField.h"
@@ -163,6 +164,54 @@ nc_type FONcUtils::get_nc_type(BaseType *element,bool IsNC4_ENHANCED)
     return x_type;
 }
 
+nc_type FONcUtils::dap4_int_float_type_to_nc4_type(libdap::Type d4_type)
+{
+    nc_type x_type = NC_NAT; // the constant netcdf uses to define simple type
+
+    BESDEBUG("fonc", "FONcUtils() - dap4_int_float_type_to_nc4_type - dap4_type: "<< d4_type <<endl);
+
+    switch(d4_type) {
+        case dods_byte_c: 
+        case dods_uint8_c:
+        case dods_char_c:
+            x_type = NC_UBYTE;
+            break; 
+        case dods_int8_c:
+            x_type = NC_BYTE;
+            break; 
+        case dods_uint16_c:
+            x_type = NC_USHORT;    
+            break;
+        case dods_int16_c:
+            x_type = NC_SHORT;    
+            break;
+        case dods_uint32_c:
+            x_type = NC_UINT;
+            break; 
+        case dods_int32_c:
+            x_type = NC_INT;    
+            break;
+        case dods_uint64_c:
+            x_type = NC_UINT64;    
+            break;
+        case dods_int64_c:
+            x_type = NC_INT64;    
+            break;
+        case dods_float32_c:
+            x_type = NC_FLOAT;    
+            break;
+        case dods_float64_c:
+            x_type = NC_DOUBLE;    
+            break;   
+        default:
+            x_type = NC_NAT;
+    }
+
+    BESDEBUG("fonc", "FONcUtils() - dap4_int_float_type_to_nc4_type -  returned nc_type: "<< x_type <<endl);
+    return x_type;
+}
+
+
 /** @brief generate a new name for the embedded variable
  *
  * This function takes the name of a variable as it exists in a data
@@ -201,7 +250,13 @@ string FONcUtils::gen_name(const vector<string> &embed, const string &name, stri
 
     return FONcUtils::id2netcdf(new_name);
 }
-
+FONcBaseType *
+FONcUtils::convert(BaseType *v, const string &ncdf_version, const bool is_classic_model) {
+    map<string,int>fdimname_to_id;
+    vector<int>rds_nums;
+    unordered_map<string,vector<pair<string,int>>>  GFQN_to_en_typeid_vec;
+    return convert(v, ncdf_version, is_classic_model,fdimname_to_id,rds_nums, GFQN_to_en_typeid_vec);
+}
 /** @brief Creates a FONc object for the given DAP object
  *
  * This is a simple factory for FONcBaseType objects that maps the
@@ -215,10 +270,11 @@ string FONcUtils::gen_name(const vector<string> &embed, const string &name, stri
  * @throws BESInternalError if the DAP object is not an expected type
  */
 FONcBaseType *
-FONcUtils::convert(BaseType *v, const string &ncdf_version, const bool is_classic_model) {
+FONcUtils::convert(BaseType *v, const string &ncdf_version, const bool is_classic_model,
+                   unordered_map<string,vector<pair<string,int>>> & GFQN_to_en_typeid_vec) {
     map<string,int>fdimname_to_id;
     vector<int>rds_nums;
-    return convert(v, ncdf_version, is_classic_model,fdimname_to_id,rds_nums);
+    return convert(v, ncdf_version, is_classic_model,fdimname_to_id,rds_nums, GFQN_to_en_typeid_vec);
 }
 
 /** @brief Creates a FONc object for the given DAP object
@@ -249,7 +305,11 @@ FONcUtils::convert(BaseType *v, const string &ncdf_version, const bool is_classi
  *                  dimension name, so the module generated dimension names(if any) will start from
  *                  'dim2', then 'dim3' etc.
  *                  This parameter is only used when the incoming object is DAP4 DMR.
- *
+ *@param GFQN_to_en_typeid_vec This unordered map maps a Group Fully Qualified Name(GFQN) to 
+                               a vector of pair enum constant name and netCDF-4 enum type id.
+                               This parameter is used to pass the netCDF enum type id to the
+                               final netCDF write API that writes the enum data.
+
  * @returns The FONc object created via the DAP object
  * @throws BESInternalError if the DAP object is not an expected type
  */
@@ -258,7 +318,8 @@ FONcUtils::convert(BaseType *v,
                    const string &ncdf_version, 
                    const bool is_classic_model, 
                    map<string,int>&fdimname_to_id,
-                   vector<int>&rds_nums)
+                   vector<int>&rds_nums,
+                   unordered_map<string,vector<pair<string,int>>> & GFQN_to_en_typeid_vec)
 {
     FONcBaseType *b = nullptr;
 
@@ -339,19 +400,72 @@ FONcUtils::convert(BaseType *v,
             case dods_float64_c:
                 b = new FONcDouble(v);
                 break;
+            case dods_enum_c:
+            {
+                auto d4_enum = dynamic_cast<D4Enum *>(v);
+                Type base_type = d4_enum->element_type();
+                nc_type nc_enum_base_type = FONcUtils::dap4_int_float_type_to_nc4_type(base_type);
+                const D4EnumDef *d4_enum_def = d4_enum->enumeration();
+                string d4_enum_def_name = d4_enum_def->name();
+                const D4EnumDefs * d4_enum_defs = d4_enum_def->parent();
+                const D4Group *d4_grp = d4_enum_defs->parent();
+                
+                vector<pair<string,int>> enum_name_nc_type_id_vec = GFQN_to_en_typeid_vec[d4_grp->FQN()];
+                int nc4_enum_type_id = 0;
+                string enum_name;
+                for (const auto & en_typeid:enum_name_nc_type_id_vec) {
+                    enum_name = en_typeid.first;
+                    if (enum_name == d4_enum_def_name) {
+                        nc4_enum_type_id = en_typeid.second;
+                        break;
+                    }
+                }
+
+                b = new FONcD4Enum(v,nc_enum_base_type, nc4_enum_type_id);
+            }
+                break;
             case dods_grid_c:
                 b = new FONcGrid(v);
                 break;
             case dods_array_c:
 
+            {
+                // Since netCDF-4 creates an enum type and pass the enum type as an enum type id,
+                // For array of enum we need to obtain that enum type id, we also need to remember the 
+                // enum basetype. 
+                auto dap_a = dynamic_cast<Array *>(v);
+                bool is_enum = false;
+                nc_type enum_basetype = NC_NAT;
+                int nc4_enum_type_id = 0;
+
+                if (dap_a->var()->type() == dods_enum_c) {
+
+                    auto d4_enum = dynamic_cast<D4Enum *>(dap_a->var());
+                    Type base_type = d4_enum->element_type();
+                    enum_basetype = FONcUtils::dap4_int_float_type_to_nc4_type(base_type);
+                    const D4EnumDef *d4_enum_def = d4_enum->enumeration();
+                    string d4_enum_def_name = d4_enum_def->name();
+                    const D4EnumDefs * d4_enum_defs = d4_enum_def->parent();
+                    const D4Group *d4_grp = d4_enum_defs->parent();
+                    vector<pair<string,int>> enum_name_nc_type_id_vec = GFQN_to_en_typeid_vec[d4_grp->FQN()];
+                    string enum_name;
+                    for (const auto & en_typeid:enum_name_nc_type_id_vec) {
+                        enum_name = en_typeid.first;
+                        if (enum_name == d4_enum_def_name){
+                            nc4_enum_type_id = en_typeid.second;
+                            is_enum = true;
+                            break;
+                        }
+                    }
+
+                }
                 // This "if block" is only true for the netCDF-4 enhanced/DAP4 case.
                 // fdimname_to_id is obtained in FONcTransform:transform_dap4_group_internal().
                 if (fdimname_to_id.size() > 0) {
                     vector<int> dim_ids;
                     vector<bool> use_d4_dim_ids;
-                    Array *t_a = dynamic_cast<Array *>(v);
-                    Array::Dim_iter di = t_a->dim_begin();
-                    Array::Dim_iter de = t_a->dim_end();
+                    Array::Dim_iter di = dap_a->dim_begin();
+                    Array::Dim_iter de = dap_a->dim_end();
                     // Here we want to check if this array has DAP4 dimension.
                     // If yes, we want to check if this DAP4 dimension is defined in the DAP4 group.
                     // A DAP4 dimension fully_qualified name is used as a key.
@@ -361,7 +475,7 @@ FONcUtils::convert(BaseType *v,
                     // When dim_id is 0, a dimension name will be created for this dimension.
                     for (; di != de; di++) {
 
-                        D4Dimension *d4_dim = t_a->dimension_D4dim(di);
+                       const D4Dimension *d4_dim = dap_a->dimension_D4dim(di);
                         if (d4_dim) {
                             BESDEBUG("fonc",
                                      "FONcArray() - constructor is dap4: dimension name is " << d4_dim->name() << endl);
@@ -380,10 +494,23 @@ FONcUtils::convert(BaseType *v,
 
                     }
                     b = new FONcArray(v, dim_ids, use_d4_dim_ids, rds_nums);
+                    if (is_enum) {
+                       auto fonc_a = dynamic_cast<FONcArray *>(b); 
+                       fonc_a->set_enum_flag(is_enum);
+                       fonc_a->set_nc4_enum_type_id(nc4_enum_type_id);
+                       fonc_a->set_nc4_enum_basetype(enum_basetype);
+                    }
 
                 } else {
                     b = new FONcArray(v);
+                    if (is_enum) {
+                       auto fonc_a = dynamic_cast<FONcArray *>(b); 
+                       fonc_a->set_enum_flag(is_enum);
+                       fonc_a->set_nc4_enum_type_id(nc4_enum_type_id);
+                       fonc_a->set_nc4_enum_basetype(enum_basetype);
+                    }
                 }
+            }
                 break;
             case dods_structure_c:
                 b = new FONcStructure(v);

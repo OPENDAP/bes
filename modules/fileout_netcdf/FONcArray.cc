@@ -37,6 +37,9 @@
 #include <netcdf.h>
 
 #include <libdap/Array.h>
+#include <libdap/D4Enum.h>
+#include <libdap/D4EnumDefs.h>
+#include <libdap/D4Group.h>
 #include <libdap/AttrTable.h>
 #include <libdap/D4Attributes.h>
 
@@ -145,18 +148,20 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
 
     BESDEBUG("fonc", "FONcArray::convert() - converting array " << d_varname << endl);
 
-    d_array_type = FONcUtils::get_nc_type(d_a->var(), isNetCDF4_ENHANCED());
-
-    if(d_array_type == NC_NAT) {
-
-        string err = "fileout_netcdf: The datatype of this variable '" + d_varname;
-        err += "' is not supported. It is very possible that you try to obtain ";
-        err += "a netCDF file that follows the netCDF classic model. ";
-        err += "The unsigned 32-bit integer and signed/unsigned 64-bit integer ";
-        err += "are not supported by the netCDF classic model. Downloading this file as the netCDF-4 file that ";
-        err += "follows the netCDF enhanced model should solve the problem.";
-
-        throw BESInternalError(err, __FILE__, __LINE__);
+    if (!d_is_dap4_enum) {
+        d_array_type = FONcUtils::get_nc_type(d_a->var(), isNetCDF4_ENHANCED());
+    
+        if(d_array_type == NC_NAT) {
+    
+            string err = "fileout_netcdf: The datatype of this variable '" + d_varname;
+            err += "' is not supported. It is very possible that you try to obtain ";
+            err += "a netCDF file that follows the netCDF classic model. ";
+            err += "The unsigned 32-bit integer and signed/unsigned 64-bit integer ";
+            err += "are not supported by the netCDF classic model. Downloading this file as the netCDF-4 file that ";
+            err += "follows the netCDF enhanced model should solve the problem.";
+    
+            throw BESInternalError(err, __FILE__, __LINE__);
+        }
     }
 
 #if !NDEBUG
@@ -523,6 +528,7 @@ FONcArray::find_dim(const vector<string> &embed, const string &name, int64_t siz
     return ret_dim;
 }
 
+
 /** @brief define the DAP Array in the netcdf file
  *
  * This includes creating the dimensions, if they haven't already been
@@ -587,17 +593,27 @@ void FONcArray::define(int ncid) {
             }
         }
 
-        int stax = nc_def_var(ncid, d_varname.c_str(), d_array_type, d_ndims, d_dim_ids.data(), &d_varid);
-        if (stax != NC_NOERR) {
-            string err = (string) "fileout.netcdf - Failed to define variable " + d_varname;
-            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        if (d_is_dap4_enum) {
+            int stax = nc_def_var(ncid, d_varname.c_str(), d_fa_nc4_enum_type_id, d_ndims, d_dim_ids.data(), &d_varid);
+            if (stax != NC_NOERR) {
+                string err = (string) "fileout.netcdf - Failed to define enum variable " + d_varname;
+                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+            }  
+        } 
+        else {
+            int stax = nc_def_var(ncid, d_varname.c_str(), d_array_type, d_ndims, d_dim_ids.data(), &d_varid);
+            if (stax != NC_NOERR) {
+                string err = (string) "fileout.netcdf - Failed to define variable " + d_varname;
+                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+            }
         }
-
-        stax = nc_def_var_fill(ncid, d_varid, NC_NOFILL, NULL );
+    
+        int stax = nc_def_var_fill(ncid, d_varid, NC_NOFILL, nullptr );
         if (stax != NC_NOERR) {
-            string err = (string) "fileout.netcdf - " + "Failed to clear fill value for " + d_varname;
-            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                string err = (string) "fileout.netcdf - " + "Failed to clear fill value for " + d_varname;
+                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
         }
+        
 #ifndef NBEBUG
 
         if (fdio_flag) {
@@ -821,6 +837,34 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
 #endif
 }
 
+void FONcArray::write_enum_array(int ncid) {
+
+    if (d_is_dap4 || get_eval() == nullptr || get_dds() == nullptr)
+        d_a->intern_data();
+    else
+        d_a->intern_data(*get_eval(), *get_dds());
+
+    vector<size_t> var_count(d_ndims);
+    vector<size_t> var_start(d_ndims);
+    for (int dim = 0; dim < d_ndims; dim++) 
+        var_count[dim] = d_dim_sizes[dim];
+    int stax = nc_put_vara(ncid, d_varid, var_start.data(),var_count.data(),d_a->get_buf());
+    if (stax != NC_NOERR) {
+        string err = "fileout.netcdf - Failed to create array of " + d_a->var()->type_name() + " for " + d_varname;
+        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+    }
+
+   
+ 
+
+#if CLEAR_LOCAL_DATA
+    if (!FONcGrid::InMaps(d_a))
+        d_a->clear_local_data();
+#endif
+
+    return;
+}
+
 /**
  * @brief Are all of the strings the same length?
  *
@@ -865,13 +909,15 @@ void FONcArray::write(int ncid) {
         return;
     }
 
-    // Writing out array is complex. There are three cases:
-    // 1. Arrays of NC_CHAR, which are written the same for both the netCDF
+    // Writing out array is complex. There are four cases:
+    // 1. Array of Enum, we need to use a different netCDF-4 API to write the data.
+    // 2. Arrays of NC_CHAR, which are written the same for both the netCDF
     // classic and enhanced data models;
-    // 2. All the other types, written for the enhanced data model
-    // 3. All the other types, written for the classic data model
-
-    if (d_array_type == NC_CHAR) {
+    // 3. All the other types, written for the enhanced data model
+    // 4. All the other types, written for the classic data model
+    if (d_is_dap4_enum) 
+        write_enum_array(ncid);
+    else if (d_array_type == NC_CHAR) {
         // Note that String data are not read here but in FONcArray::convert() because
         // that code needs to know that actual length of the individual strings in the
         // array. jhrg 6/4/21
