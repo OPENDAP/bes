@@ -101,9 +101,9 @@ private:
     bool d4_def_dim = false;
 
     // For Enum handling
-    bool is_dap4_enum = false;
-    nc_type nc_enum_base_type = NC_NAT;
-    int nc4_enum_type_id = 0;
+    bool d_is_dap4_enum = false;
+    nc_type d_fa_nc_enum_base_type = NC_NAT;
+    int d_fa_nc4_enum_type_id = 0;
 
 #if 0
     // direct io flag, used in the define mode,the default is false. It should be set to true when direct io is supported.
@@ -144,9 +144,9 @@ public:
     std::string name() override;
 
     virtual libdap::Array *array() { return d_a; }
-    void set_nc4_enum_type_id(int enum_type_id) { nc4_enum_type_id = enum_type_id;}
-    void set_nc4_enum_basetype (nc_type enum_basetype) { nc_enum_base_type = enum_basetype;}
-    void set_enum_flag(bool is_enum) {is_dap4_enum = is_enum; }
+    void set_nc4_enum_type_id(int enum_type_id) { d_fa_nc4_enum_type_id = enum_type_id;}
+    void set_nc4_enum_basetype (nc_type enum_basetype) { d_fa_nc_enum_base_type = enum_basetype;}
+    void set_enum_flag(bool is_enum) {d_is_dap4_enum = is_enum; }
 
     virtual void dump(std::ostream &strm) const override;
 

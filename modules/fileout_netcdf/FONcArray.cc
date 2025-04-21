@@ -148,7 +148,7 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
 
     BESDEBUG("fonc", "FONcArray::convert() - converting array " << d_varname << endl);
 
-    if (!is_dap4_enum) {
+    if (!d_is_dap4_enum) {
         d_array_type = FONcUtils::get_nc_type(d_a->var(), isNetCDF4_ENHANCED());
     
         if(d_array_type == NC_NAT) {
@@ -593,8 +593,8 @@ void FONcArray::define(int ncid) {
             }
         }
 
-        if (is_dap4_enum) {
-            int stax = nc_def_var(ncid, d_varname.c_str(), nc4_enum_type_id, d_ndims, d_dim_ids.data(), &d_varid);
+        if (d_is_dap4_enum) {
+            int stax = nc_def_var(ncid, d_varname.c_str(), d_fa_nc4_enum_type_id, d_ndims, d_dim_ids.data(), &d_varid);
             if (stax != NC_NOERR) {
                 string err = (string) "fileout.netcdf - Failed to define enum variable " + d_varname;
                 FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
@@ -915,7 +915,7 @@ void FONcArray::write(int ncid) {
     // classic and enhanced data models;
     // 3. All the other types, written for the enhanced data model
     // 4. All the other types, written for the classic data model
-    if (is_dap4_enum) 
+    if (d_is_dap4_enum) 
         write_enum_array(ncid);
     else if (d_array_type == NC_CHAR) {
         // Note that String data are not read here but in FONcArray::convert() because
