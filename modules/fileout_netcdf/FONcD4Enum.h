@@ -50,9 +50,9 @@ namespace libdap {
 class FONcD4Enum : public FONcBaseType
 {
 private:
-    libdap::D4Enum *			_f = nullptr;
-    nc_type                             basetype = NC_NAT;
-    int                                 nc_enum_type_id = NC_EBADTYPID;
+    libdap::D4Enum *			d_f = nullptr;
+    nc_type                             d_basetype = NC_NAT;
+    int                                 d_nc_enum_type_id = NC_EBADTYPID;
 public:
     FONcD4Enum( libdap::BaseType *b, nc_type d4_enum_basetype, int nc_type_id ) ;
     ~FONcD4Enum() override = default;
