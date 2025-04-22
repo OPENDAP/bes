@@ -451,6 +451,19 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
         // set the chunk sizes then tried to access data that had never been set.
         // jhrg 11/25/15
         d_chunksizes.push_back(max_length <= MAX_CHUNK_SIZE ? max_length : MAX_CHUNK_SIZE);
+
+        
+        //int64_t total_num_elems = d_a->length_ll() *max_length;
+#if 0
+        size_t total_chunksizes = 1;
+        for (const auto& chunk_size:d_chunksizes)
+            total_chunksizes *= chunk_size;
+        if (total_chunksizes  >4194304) {
+            size_t cache_size = 67108864;
+            nc_set_var_chunk_cache(ncid, d_varid, cache_size,521,1);
+        }
+#endif
+        
     }
 
     // If this array has a single dimension, and the name of the array
@@ -731,6 +744,13 @@ void FONcArray::define(int ncid) {
                         FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
                     }
                 }
+                        size_t total_chunksizes = 1;
+        for (const auto& chunk_size:d_chunksizes)
+            total_chunksizes *= chunk_size;
+        if (total_chunksizes  >4194304) {
+            size_t cache_size = 67108864;
+            nc_set_var_chunk_cache(ncid, d_varid, cache_size,521,1);
+        }
             }
         }
 
@@ -931,6 +951,7 @@ void FONcArray::write(int ncid) {
 
         // Can we optimize for a special case where all strings are the same length?
         // jhrg 10/3/22
+        
         if (equal_length(d_a->get_str())) {
 #if STRING_ARRAY_OPT
             write_equal_length_string_array(ncid);
