@@ -120,6 +120,7 @@ private:
     void write_nc_variable(int ncid, nc_type var_type);
     static bool equal_length(vector<string> &the_strings);
     void write_string_array(int ncid);
+    void write_temp_string_array(int ncid);
     void write_equal_length_string_array(int ncid);
     void write_enum_array(int ncid);
 

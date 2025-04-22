@@ -951,7 +951,8 @@ void FONcArray::write(int ncid) {
 
         // Can we optimize for a special case where all strings are the same length?
         // jhrg 10/3/22
-        
+        write_temp_string_array(ncid);
+return;        
         if (equal_length(d_a->get_str())) {
 #if STRING_ARRAY_OPT
             write_equal_length_string_array(ncid);
@@ -1076,11 +1077,46 @@ void FONcArray::write_for_nc3_types(int ncid) {
     }
 }
 
+void FONcArray::write_temp_string_array(int ncid) {
+    vector<size_t> var_count(d_ndims);
+    vector<size_t> var_start(d_ndims);
+
+    vector<char> text_data;
+    size_t last_dim_size = d_dim_sizes[d_ndims-1];
+    text_data.resize(d_a->length_ll()*last_dim_size);
+    
+    size_t buffer_counter = 0;
+    size_t str_element_counter = 0;
+    char * temp_buffer = text_data.data();
+    auto const &d_a_str = d_a->get_str();
+    for (int64_t  i = 0; i <d_a->length_ll();i++) {
+        memcpy(temp_buffer,d_a_str[i].c_str(),d_a_str[i].size()+1);
+        temp_buffer +=last_dim_size;
+    }
+
+    for (int dim = 0; dim < d_ndims; dim++) {
+        var_start[dim] = 0;
+    }
+    for (int dim = 0; dim < d_ndims; dim++) {
+        var_count[dim] = d_dim_sizes[dim];
+    }
+
+    int stax = nc_put_vara_text(ncid, d_varid, var_start.data(), var_count.data(), text_data.data());
+
+    if (stax != NC_NOERR) {
+        string err = (string) "fileout.netcdf - Failed to create array of strings for " + d_varname;
+        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+    }
+
+    d_a->get_str().clear();
+}
+
 /**
  * @note This may not work for 'ragged arrays' of strings.
  * @param ncid
  */
 void FONcArray::write_string_array(int ncid) {
+return;
     vector<size_t> var_count(d_ndims);
     vector<size_t> var_start(d_ndims);
     int dim = 0;
@@ -1140,6 +1176,7 @@ void FONcArray::write_string_array(int ncid) {
  * @param ncid
  */
 void FONcArray::write_equal_length_string_array(int ncid) {
+return;
     vector<size_t> var_count(d_ndims);
     vector<size_t> var_start(d_ndims);
     // The flattened n-dim array as a vector of strings, row major order
