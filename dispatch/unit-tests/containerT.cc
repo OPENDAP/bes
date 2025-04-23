@@ -36,32 +36,31 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit;
-
 #include <iostream>
 #include <cstdlib>
-#include <dirent.h>
-#include <cerrno>
-
 #include <unistd.h>
+
+#include "modules/common/run_tests_cppunit.h"
 
 #include "TheBESKeys.h"
 #include "BESContainerStorageList.h"
 #include "BESFileContainer.h"
-#include "BESContainerStorage.h"
 #include "BESContainerStorageFile.h"
 #include "BESUncompressCache.h"
 #include "BESError.h"
 #include "BESUtil.h"
 #include "BESDebug.h"
-#include <test_config.h>
+#include "test_config.h"
 
 using namespace std;
+using namespace CppUnit;
 
+#if 0
 static bool debug = false;
 static bool bes_debug = false;
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
+#endif
 
 static const string CACHE_DIR = BESUtil::assemblePath(TEST_SRC_DIR, "cache");
 static const string CACHE_FILE_NAME = BESUtil::assemblePath(CACHE_DIR, "template.txt");
@@ -78,51 +77,21 @@ int clean_dir(const string &cache_dir, const string &cache_prefix)
     return status;
 }
 
-#if 0 // replaced with shell based version above. concurrency. woot. ndp-05/3017
-int clean_dir(string dirname, string prefix) {
-    DIR *dp;
-    struct dirent *dirp;
-    if((dp = opendir(dirname.c_str())) == NULL) {
-        DBG( cerr << __func__ << "() - Error(" << errno << ") opening " << dirname << endl);
-        return errno;
-    }
-
-    while ((dirp = readdir(dp)) != NULL) {
-        string name(dirp->d_name);
-        if (name.find(prefix) == 0) {
-            string abs_name = BESUtil::assemblePath(dirname, name, true);
-            DBG( cerr << __func__ << "() - Purging file: " << abs_name << endl);
-            remove(abs_name.c_str());
-        }
-
-    }
-    closedir(dp);
-    return 0;
-}
-#endif
-
 class containerT: public TestFixture {
 private:
 
 public:
-    containerT()
-    {
-    }
-    ~containerT()
-    {
-    }
+    containerT() = default;
 
-    void setUp()
+    ~containerT() override = default;
+
+    void setUp() override
     {
         string bes_conf = (string) TEST_SRC_DIR + "/empty.ini";
         TheBESKeys::ConfigFile = bes_conf;
-        if (bes_debug) {
-            BESDebug::SetUp("cerr,cache,cache2");
-            DBG(cerr << __func__ << "() - setup() - BESDEBUG Enabled " << endl);
-        }
     }
 
-    void tearDown()
+    void tearDown() override
     {
         clean_dir(CACHE_DIR, CACHE_PREFIX);
     }
@@ -143,7 +112,7 @@ public:
 
         DBG(cerr << __func__ << "() - try to find symbolic name that doesn't exist, default" << endl);
         try {
-            BESContainer *c = BESContainerStorageList::TheList()->look_for("nosym");
+            std::unique_ptr<BESContainer> c(BESContainerStorageList::TheList()->look_for("nosym"));
             if (c) {
                 DBG(cerr << __func__ << "() - container is valid, should not be" << endl);
                 DBG(cerr << __func__ << "() -  real_name = " << c->get_real_name() << endl);
@@ -165,12 +134,11 @@ public:
         DBG(cerr << endl << __func__ << "() - BEGIN" << endl);
         DBG(cerr << __func__ << "() - try to find symbolic name that does exist, default" << endl);
         try {
-            BESContainer *c = BESContainerStorageList::TheList()->look_for("sym1");
+            std::unique_ptr<BESContainer> c(BESContainerStorageList::TheList()->look_for("sym1"));
             CPPUNIT_ASSERT(c);
             CPPUNIT_ASSERT(c->get_symbolic_name() == "sym1");
             CPPUNIT_ASSERT(c->get_real_name() == "real1");
             CPPUNIT_ASSERT(c->get_container_type() == "type1");
-            delete c;
         }
         catch (BESError &e) {
             DBG(cerr << __func__ << "() - Caught BESError, message: " << e.get_message() << endl);
@@ -211,7 +179,7 @@ public:
         DBG(cerr << endl << __func__ << "() - BEGIN" << endl);
         DBG(cerr << __func__ << "() - try to find symbolic name that does exist, strict" << endl);
         try {
-            BESContainer *c = BESContainerStorageList::TheList()->look_for("sym1");
+            std::unique_ptr<BESContainer> c(BESContainerStorageList::TheList()->look_for("sym1"));
             CPPUNIT_ASSERT(c);
             CPPUNIT_ASSERT(c->get_symbolic_name() == "sym1");
             CPPUNIT_ASSERT(c->get_real_name() == "real1");
@@ -232,7 +200,7 @@ public:
 
         DBG(cerr << __func__ << "() - try to find symbolic name that doesn't exist, nice" << endl);
         try {
-            BESContainer *c = BESContainerStorageList::TheList()->look_for("nosym");
+            std::unique_ptr<BESContainer> c(BESContainerStorageList::TheList()->look_for("nosym"));
             if (c) {
                 DBG(cerr << __func__ << "() -  real_name = " << c->get_real_name() << endl);
                 DBG(cerr << __func__ << "() -  constraint = " << c->get_constraint() << endl);
@@ -255,7 +223,7 @@ public:
 
         DBG(cerr << __func__ << "() - try to find symbolic name that does exist, nice" << endl);
         try {
-            BESContainer *c = BESContainerStorageList::TheList()->look_for("sym1");
+            std::unique_ptr<BESContainer> c(BESContainerStorageList::TheList()->look_for("sym1"));
             CPPUNIT_ASSERT(c);
             CPPUNIT_ASSERT(c->get_symbolic_name() == "sym1");
             CPPUNIT_ASSERT(c->get_real_name() == "real1");
@@ -373,7 +341,7 @@ public:
         DBG(cerr << __func__ << "() - END" << endl);
     }
 
-CPPUNIT_TEST_SUITE( containerT );
+    CPPUNIT_TEST_SUITE( containerT );
 
     CPPUNIT_TEST(test_default_cannot_find);
     CPPUNIT_TEST(test_default_can_find);
@@ -383,16 +351,21 @@ CPPUNIT_TEST_SUITE( containerT );
     CPPUNIT_TEST(test_nice_can_find);
     CPPUNIT_TEST(test_compressed);
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
-
+    CPPUNIT_TEST_SUITE_END();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(containerT);
 
-int main(int argc, char*argv[])
+int main(const int argc, char*argv[])
 {
-    int option_char;
+    const bool success = bes_run_tests<containerT>(argc, argv, "cache,cache2"); // Using empty context string
+
+    // Return 0 for success (true from bes_run_tests), 1 for failure (false).
+    return success ? 0 : 1;
+}
+
+#if 0
+int option_char;
     while ((option_char = getopt(argc, argv, "dbh")) != -1)
         switch (option_char) {
         case 'd':
@@ -445,3 +418,4 @@ int main(int argc, char*argv[])
 
     return wasSuccessful ? 0 : 1;
 }
+#endif
