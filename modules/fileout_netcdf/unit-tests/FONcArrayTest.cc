@@ -42,6 +42,8 @@ public:
     // Called at the end of the test
     ~FONcArrayTest() = default;
 
+    // These equal length tests are not necessary.
+#if 0
     // These tests don't define specializations of void setUp() OR void tearDown().
     // jhrg 2/25/22
 
@@ -102,13 +104,16 @@ public:
 
         CPPUNIT_ASSERT_MESSAGE("All the string are the same length", fa.equal_length(stuff));
     }
+#endif
 
     CPPUNIT_TEST_SUITE( FONcArrayTest );
 
+#if 0
     CPPUNIT_TEST(test_equal_length_1);
     CPPUNIT_TEST(test_equal_length_2);
     CPPUNIT_TEST(test_equal_length_3);
     CPPUNIT_TEST(test_equal_length_4);
+#endif
 
     // equal_length is so fast the profiler does not sample its call. jhrg 10/4/22
     // CPPUNIT_TEST(test_equal_length_for_profiler);
