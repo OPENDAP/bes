@@ -737,15 +737,17 @@ void FONcArray::define(int ncid) {
                         FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
                     }
                 }
-                        size_t total_chunksizes = 1;
-        for (const auto& chunk_size:d_chunksizes)
-            total_chunksizes *= chunk_size;
-        // If the chunk size is greater than 4M, we increase the chunk cache size to be 64M.
-        if (total_chunksizes  >NORMAL_CHUNK_CACHE_SIZE) {
-            size_t cache_size = MAXIMUM_CHUNK_CACHE_SIZE;
-            // The number 521 is HDF5's default value for this parameter.
-            nc_set_var_chunk_cache(ncid, d_varid, cache_size,521,1);
-        }
+
+                size_t total_chunksizes = 1;
+                for (const auto& chunk_size:d_chunksizes)
+                    total_chunksizes *= chunk_size;
+
+                // If the chunk size is greater than 4M, we increase the chunk cache size to be 64M.
+                if (total_chunksizes  >NORMAL_CHUNK_CACHE_SIZE) {
+                    size_t cache_size = MAXIMUM_CHUNK_CACHE_SIZE;
+                    // The number 521 is HDF5's default value for this parameter.
+                    nc_set_var_chunk_cache(ncid, d_varid, cache_size,521,1);
+                }
             }
         }
 
@@ -1041,6 +1043,7 @@ void FONcArray::write_for_nc3_types(int ncid) {
 }
 
 void FONcArray::write_string_array(int ncid) {
+
     vector<size_t> var_count(d_ndims);
     vector<size_t> var_start(d_ndims);
 
