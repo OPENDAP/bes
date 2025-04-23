@@ -60,7 +60,7 @@ using namespace libdap;
 // This controls whether variables' data values are deleted as soon
 // as they are written (except for DAP2 Grid Maps, which may be shared).
 #define CLEAR_LOCAL_DATA 1
-#define STRING_ARRAY_OPT 1
+//#define STRING_ARRAY_OPT 1
 
 vector<FONcDim *> FONcArray::Dimensions;
 
@@ -747,8 +747,10 @@ void FONcArray::define(int ncid) {
                         size_t total_chunksizes = 1;
         for (const auto& chunk_size:d_chunksizes)
             total_chunksizes *= chunk_size;
+        // If the chunk size is greater than 4M, we increase the chunk cache size to be 64M.
         if (total_chunksizes  >4194304) {
             size_t cache_size = 67108864;
+            // The number 521 is HDF5's default value for this parameter.
             nc_set_var_chunk_cache(ncid, d_varid, cache_size,521,1);
         }
             }
@@ -885,6 +887,7 @@ void FONcArray::write_enum_array(int ncid) {
     return;
 }
 
+#if 0
 /**
  * @brief Are all of the strings the same length?
  *
@@ -909,6 +912,7 @@ bool FONcArray::equal_length(vector<string> &the_strings)
             return false;
     }
 }
+#endif
 
 /**
  * @brief Write the array out to the netcdf file
@@ -951,18 +955,24 @@ void FONcArray::write(int ncid) {
 
         // Can we optimize for a special case where all strings are the same length?
         // jhrg 10/3/22
-        write_temp_string_array(ncid);
-return;        
+        // We don't need to consider the above special case after we optimize the general
+        // string write routine with one netcdf write call. In fact, the calculation
+        // of the equal_length increases the execution time.
+        write_string_array(ncid);
+#if 0
         if (equal_length(d_a->get_str())) {
 #if STRING_ARRAY_OPT
             write_equal_length_string_array(ncid);
 #else
-            write_string_array(ncid);
+            write_temp_string_array(ncid);
+            //write_string_array(ncid);
 #endif
         }
         else {
-            write_string_array(ncid);
+            write_temp_string_array(ncid);
+            //write_string_array(ncid);
         }
+#endif
     }
     else if (isNetCDF4_ENHANCED()) {
         // If we support the netCDF-4 enhanced model, the unsigned integer
@@ -1077,7 +1087,7 @@ void FONcArray::write_for_nc3_types(int ncid) {
     }
 }
 
-void FONcArray::write_temp_string_array(int ncid) {
+void FONcArray::write_string_array(int ncid) {
     vector<size_t> var_count(d_ndims);
     vector<size_t> var_start(d_ndims);
 
@@ -1085,8 +1095,6 @@ void FONcArray::write_temp_string_array(int ncid) {
     size_t last_dim_size = d_dim_sizes[d_ndims-1];
     text_data.resize(d_a->length_ll()*last_dim_size);
     
-    size_t buffer_counter = 0;
-    size_t str_element_counter = 0;
     char * temp_buffer = text_data.data();
     auto const &d_a_str = d_a->get_str();
     for (int64_t  i = 0; i <d_a->length_ll();i++) {
@@ -1111,6 +1119,7 @@ void FONcArray::write_temp_string_array(int ncid) {
     d_a->get_str().clear();
 }
 
+#if 0
 /**
  * @note This may not work for 'ragged arrays' of strings.
  * @param ncid
@@ -1167,7 +1176,9 @@ return;
 
     d_a->get_str().clear();
 }
+#endif
 
+#if 0
 /**
  * @brief Take an n-dim array of string and treat it as a n+1 dim array of string
  * Each string of the n+1 dim array is a single character. The strings
@@ -1176,7 +1187,6 @@ return;
  * @param ncid
  */
 void FONcArray::write_equal_length_string_array(int ncid) {
-return;
     vector<size_t> var_count(d_ndims);
     vector<size_t> var_start(d_ndims);
     // The flattened n-dim array as a vector of strings, row major order
@@ -1207,6 +1217,7 @@ return;
 
     d_a->get_str().clear();
 }
+#endif
 
 
 /** @brief returns the name of the DAP Array
