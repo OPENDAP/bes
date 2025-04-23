@@ -60,7 +60,10 @@ using namespace libdap;
 // This controls whether variables' data values are deleted as soon
 // as they are written (except for DAP2 Grid Maps, which may be shared).
 #define CLEAR_LOCAL_DATA 1
-//#define STRING_ARRAY_OPT 1
+
+#if 0
+#define STRING_ARRAY_OPT 1
+#endif
 
 vector<FONcDim *> FONcArray::Dimensions;
 
@@ -451,18 +454,6 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
         // set the chunk sizes then tried to access data that had never been set.
         // jhrg 11/25/15
         d_chunksizes.push_back(max_length <= MAX_CHUNK_SIZE ? max_length : MAX_CHUNK_SIZE);
-
-        
-#if 0
-        size_t total_chunksizes = 1;
-        for (const auto& chunk_size:d_chunksizes)
-            total_chunksizes *= chunk_size;
-        if (total_chunksizes  >4194304) {
-            size_t cache_size = 67108864;
-            nc_set_var_chunk_cache(ncid, d_varid, cache_size,521,1);
-        }
-#endif
-        
     }
 
     // If this array has a single dimension, and the name of the array
