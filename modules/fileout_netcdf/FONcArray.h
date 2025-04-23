@@ -118,9 +118,13 @@ private:
     void write_for_nc4_types(int ncid);
     void write_for_nc3_types(int ncid);
     void write_nc_variable(int ncid, nc_type var_type);
-    //static bool equal_length(vector<string> &the_strings);
+
+#if 0
+    static bool equal_length(vector<string> &the_strings);
+    void write_equal_length_string_array(int ncid);
+#endif
+
     void write_string_array(int ncid);
-    //void write_equal_length_string_array(int ncid);
     void write_enum_array(int ncid);
 
     void define_dio_filters(int ncid, int d_varid);

@@ -453,7 +453,6 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
         d_chunksizes.push_back(max_length <= MAX_CHUNK_SIZE ? max_length : MAX_CHUNK_SIZE);
 
         
-        //int64_t total_num_elems = d_a->length_ll() *max_length;
 #if 0
         size_t total_chunksizes = 1;
         for (const auto& chunk_size:d_chunksizes)
@@ -964,13 +963,11 @@ void FONcArray::write(int ncid) {
 #if STRING_ARRAY_OPT
             write_equal_length_string_array(ncid);
 #else
-            write_temp_string_array(ncid);
-            //write_string_array(ncid);
+            write_string_array(ncid);
 #endif
         }
         else {
-            write_temp_string_array(ncid);
-            //write_string_array(ncid);
+            write_string_array(ncid);
         }
 #endif
     }
@@ -1125,7 +1122,6 @@ void FONcArray::write_string_array(int ncid) {
  * @param ncid
  */
 void FONcArray::write_string_array(int ncid) {
-return;
     vector<size_t> var_count(d_ndims);
     vector<size_t> var_start(d_ndims);
     int dim = 0;
