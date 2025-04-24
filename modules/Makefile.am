@@ -40,7 +40,7 @@ SUBDIRS += netcdf_handler fileout_netcdf fileout_covjson
 endif
 
 # Why are these here? Because they have tests that depend on netcdf.
-SUBDIRS += httpd_catalog_module ngap_module s3_reader fileout_json w10n_handler gateway_module xml_data_handler builddmrpp_module
+SUBDIRS += httpd_catalog_module ngap_module s3_reader fileout_json w10n_handler gateway_module xml_data_handler
 
 if BUILD_GDAL
 SUBDIRS += gdal_module
