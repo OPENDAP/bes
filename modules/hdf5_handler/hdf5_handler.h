@@ -87,6 +87,7 @@ typedef struct DS {
     hsize_t size[DODS_MAX_RANK];
     vector <string> dimnames;
     vector <string> dimnames_path;
+    vector <bool> unlimited_dims;
     /// Number of elements 
     hsize_t nelmts;
     /// Space needed 

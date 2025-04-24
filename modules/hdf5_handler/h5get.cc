@@ -727,6 +727,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
+    
     hsize_t nelmts = 1;
     if (ndims !=0) {
         for (int j = 0; j < ndims; j++)
@@ -770,6 +771,25 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
     (*dt_inst_ptr).name[dname.size()] = '\0';
     for (int j = 0; j < ndims; j++) 
         (*dt_inst_ptr).size[j] = size[j];
+
+    // Add unlimited dimension information
+    bool has_unlimited_dim = false;
+    for (const auto&max_s:maxsize) {
+        if (max_s == H5S_UNLIMITED) {
+            has_unlimited_dim = true;
+            break;
+        }
+    }
+
+    if (has_unlimited_dim) {
+        for (const auto&max_s:maxsize) {
+            if (max_s == H5S_UNLIMITED) {
+                (*dt_inst_ptr).unlimited_dims.push_back(true);
+            }
+            else 
+                (*dt_inst_ptr).unlimited_dims.push_back(false);
+        }
+    }
 
     // For DAP4 when dimension scales are used.
     if (true == use_dimscale)
