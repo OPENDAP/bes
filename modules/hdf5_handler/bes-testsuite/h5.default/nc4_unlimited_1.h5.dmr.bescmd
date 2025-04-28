@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap2</setContext>
+    <setContainer name="nc4_unlimited_0" space="catalog">/data/nc4_unlimited_1.h5</setContainer>
+    <define name="d">
+	<container name="nc4_unlimited_0" />
+    </define>
+    <get type="dmr" definition="d" />
+</request>
