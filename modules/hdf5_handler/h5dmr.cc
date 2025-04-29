@@ -337,6 +337,7 @@ void handle_pure_dimension(D4Group *par_grp, hid_t pid, const vector<char>& onam
         d4_dims->add_dim_nocopy(d4_dim_unique.release());
     }
 
+    // We need to clear unlimited dimension value for this pure dimension HDF5 dataset.
     if (dt_inst.unlimited_dims.empty()==false)
         dt_inst.unlimited_dims.clear();
     BESDEBUG("h5", "<h5dmr.cc: pure dimension: dataset name: " << d4dim_name << endl);
@@ -633,17 +634,9 @@ read_objects_base_type(D4Group * d4_grp, hid_t pid, const string & varname, cons
             throw InternalErr(__FILE__, __LINE__,"number of dimensions: overflow");
 
         dimnames_size = (int) (dt_inst.dimnames.size());
-#if 0
-cerr<<"var name: "<<varname <<endl;
-cerr<<"dimnames_size: "<<dimnames_size <<endl;
-cerr<<"d5_inst.ndims: "<<dt_inst.ndims <<endl;
-cerr<<"dt_inst.unlimited_dims.size(): "<<dt_inst.unlimited_dims.size()<<endl;
-for(const auto &ud:unlimited_dimpaths)
-cerr<<"unlimited dimpath: "<<ud<<endl;
-#endif
+
         // Here we need to add the unlimited dimension info if dimension scale dimension names are present.
         if (dt_inst.unlimited_dims.empty() == false && dimnames_size == dt_inst.ndims) {
-
 
             for (unsigned i = 0; i <dt_inst.unlimited_dims.size(); i++) {
 
@@ -656,12 +649,13 @@ cerr<<"unlimited dimpath: "<<ud<<endl;
                         dim_path_excluding_name= "/";
                     else
                         dim_path_excluding_name = HDF5CFUtil::obtain_string_before_lastslash(dim_path);                   
-//cerr<<"dim_path_excluding_name: "<<dim_path_excluding_name<<endl;
                     
                     // If this unlimited dimension is not visited,we will add the unlimited dimension name to the corresponding group.
                     if (unlimited_dimpaths.find(dim_path) == unlimited_dimpaths.end()) {
 
                         D4Group *temp_grp = d4_grp;
+
+                        // The dimension must be under this group or its ancestors.
                         while(temp_grp){
     
                             if (temp_grp->FQN() == dim_path_excluding_name){
@@ -696,11 +690,9 @@ cerr<<"unlimited dimpath: "<<ud<<endl;
                     }
                 }
             }           
-         
-
         }
+        // We must clear the unlimited_dims vector for the next variable.
         dt_inst.unlimited_dims.clear();
-
 
         bool is_eos5_dims = false;
         if (dimnames_size == dt_inst.ndims)
@@ -718,66 +710,6 @@ cerr<<"unlimited dimpath: "<<ud<<endl;
             new_var = ar->h5dims_transform_to_dap4(d4_grp, eos5_dim_info.varpath_to_dims.at(varname));
         else
             new_var = ar->h5dims_transform_to_dap4(d4_grp, dt_inst.dimnames_path);
-#if 0
-cerr<<"var name: "<<varname <<endl;
-cerr<<"dimnames_size: "<<dimnames_size <<endl;
-cerr<<"d5_inst.ndims: "<<dt_inst.ndims <<endl;
-cerr<<"dt_inst.unlimited_dims.size(): "<<dt_inst.unlimited_dims.size()<<endl;
-        // Here we need to add the unlimited dimension info if dimension scale dimension names are present.
-        if (dt_inst.unlimited_dims.empty() == false && dimnames_size == dt_inst.ndims) {
-
-
-            for (unsigned i = 0; i <dt_inst.unlimited_dims.size(); i++) {
-
-                // If this dimension is an unlimited dimension
-                if (dt_inst.unlimited_dims[i]) { 
-
-                    string dim_path = dt_inst.dimnames_path[i];
-                    string dim_path_excluding_name = HDF5CFUtil::obtain_string_before_lastslash(dim_path);                   
-cerr<<"dim_path_excluding_name: "<<dim_path_excluding_name<<endl;
-                    
-                    // If this unlimited dimension is not visited,we will add the unlimited dimension name to the corresponding group.
-                    if (unlimited_dimpaths.find(dim_path_excluding_name) == unlimited_dimpaths.end()) {
-
-                        D4Group *temp_grp = d4_grp;
-                        while(temp_grp){
-    
-                            if (temp_grp->FQN() == dim_path_excluding_name){
-
-                                D4Attribute *d4_container = temp_grp->attributes()->get("DODS_EXTRA");
-                                if (d4_container == nullptr) {
-                                    auto d4_container_unique = make_unique<D4Attribute>("DODS_EXTRA",attr_container_c);
-                                    d4_container = d4_container_unique.get();
-                                    temp_grp->attributes()->add_attribute_nocopy(d4_container);
-                                    auto d4_attr_unique = make_unique<D4Attribute>("Unlimited_Dimension",attr_str_c);
-                                    auto d4_attr = d4_attr_unique.get();
-                                    d4_attr->add_value(dt_inst.dimnames[i]);
-                                    d4_container->attributes()->add_attribute_nocopy(d4_attr_unique.release());
-                                    d4_container_unique.release();
-                                }
-                                else {
-                                    D4Attribute *d4_attr = d4_container->attributes()->get("Unlimited_Dimension");
-                                    if (d4_attr == nullptr)
-                                        throw InternalErr(__FILE__, __LINE__, "Unlimited_Dimension attribute should exist.");
-                                    else 
-                                        d4_attr->add_value(' '+dt_inst.dimnames[i]);
-                                }
-                                break;
-                            
-                            }
-
-                            temp_grp = dynamic_cast<D4Group*>(temp_grp->get_ancestor());
-    
-                        }
-                        unlimited_dimpaths.insert(dim_path);
-                    }
-                }
-            }           
-         
-
-
-        }
-#endif
 
         // clear DAP4 dimnames_path vector
         dt_inst.dimnames_path.clear();

@@ -790,10 +790,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
                 (*dt_inst_ptr).unlimited_dims.push_back(false);
         }
     }
-#if 0
-cerr<<"dname: "<<dname <<endl;
-cerr<<"unlimited_dims size: "<<(*dt_inst_ptr).unlimited_dims.size() <<endl;
-#endif
+
     // For DAP4 when dimension scales are used.
     if (true == use_dimscale)
         is_pure_dim = handle_dimscale_dmr(file_id,dset, dspace, is_eos5,dt_inst_ptr, hdf5_hls, handled_cv_names);
