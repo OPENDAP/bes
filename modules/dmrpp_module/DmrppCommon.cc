@@ -546,6 +546,14 @@ DmrppCommon::print_chunks_element(XMLWriter &xml, const string &name_space)
             throw BESInternalError("Could not write fillValue attribute.", __FILE__, __LINE__);
     }
 
+    if(d_chunks.empty()){
+        if(d_byte_order.empty()==false) {
+              if (xmlTextWriterWriteAttribute(xml.get_writer(), (const xmlChar *) "byteOrder",
+                                            (const xmlChar *) get_byte_order().c_str()) < 0)
+                throw BESInternalError("Could not write attribute byteOrder", __FILE__, __LINE__);
+        }
+    
+    }
     if(!d_chunks.empty()) {
         auto first_chunk = get_immutable_chunks().front();
         if (!first_chunk->get_byte_order().empty()) {

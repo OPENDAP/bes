@@ -1001,6 +1001,8 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp, bool disable_
                 __LINE__);
 
     dc->set_chunk_dimension_sizes(chunk_dims);
+    if (num_chunks == 0)
+        dc->set_byte_order(byte_order);
  
     for (unsigned int i = 0; i < num_chunks; ++i) {
         vector<hsize_t> chunk_coords(dataset_rank, 0);

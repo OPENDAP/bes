@@ -3,7 +3,7 @@
     <Int32 name="chunks_all_fill">
         <Dim size="16"/>
         <Dim size="16"/>
-        <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="-99">
+        <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="-99" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>8 8</dmrpp:chunkDimensionSizes>
         </dmrpp:chunks>
     </Int32>

@@ -339,6 +339,7 @@ public:
 
     virtual void ingest_byte_order(const std::string &byte_order_string);
     virtual std::string get_byte_order() const { return d_byte_order; }
+    virtual void set_byte_order(const std::string &byte_order_string)  { d_byte_order = byte_order_string; }
 
     // There are two main versions of add_chunk: One that takes a size and offset
     // and one that takes a fill value. However, for each of those, there are versions

@@ -100,6 +100,9 @@ AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/compound_array_fix_vlen_str.h5])
 # Test the big-endian scalar compound datatype data.
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/comp_scalar_be.h5])
 
+# Test the zero size byte order 
+AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/nc4_unlimited_0.h5])
+
 # Test data files with various fill value schemes. These won't work until
 # more work is done on fill value support. jhrg 4/22/22
 # Works now. jhrg 5/25/22
@@ -108,6 +111,7 @@ AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/FValue_chunk.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/FValue_c_b.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/deflate_twice/cmprss_big_1.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/deflate_twice/cmprss_big_2.h5])
+
 
 # Test data files with user-defined compound datatype fill values. 
 AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/comp_scalar_udf_fv.h5])
