@@ -3858,5 +3858,12 @@
                 <Value>Overview of all the processing steps, the algorithm order and data flow of the L01b data processing for this data product</Value>
             </Attribute>
         </String>
+        <Attribute name="DODS_EXTRA" type="Container">
+            <Attribute name="Unlimited_Dimension" type="String">
+                <Value>job_configuration_dim</Value>
+                <Value>algorithm_configuration_dim</Value>
+                <Value>processing_configuration_dim</Value>
+            </Attribute>
+        </Attribute>
     </Group>
 </Dataset>

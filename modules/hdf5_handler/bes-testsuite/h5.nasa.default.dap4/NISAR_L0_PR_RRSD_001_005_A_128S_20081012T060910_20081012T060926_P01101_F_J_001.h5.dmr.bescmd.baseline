@@ -100,7 +100,7 @@
                             <Dim size="1"/>
                         </String>
                         <Group name="txH">
-                            <Enumeration name="NoNameEum0" basetype="Byte">
+                            <Enumeration name="NoNameEnum0" basetype="Byte">
                                 <EnumConst name="BYPASS" value="2"/>
                                 <EnumConst name="HPA" value="0"/>
                                 <EnumConst name="LNA" value="1"/>
@@ -111,7 +111,7 @@
                                     <Value>seconds since 2008-10-12 00:00:00</Value>
                                 </Attribute>
                             </Float64>
-                            <Enum name="calType" enum="/science/LSAR/RRSD/swaths/frequencyA/txH/NoNameEum0">
+                            <Enum name="calType" enum="/science/LSAR/RRSD/swaths/frequencyA/txH/NoNameEnum0">
                                 <Dim size="30540"/>
                             </Enum>
                             <Float64 name="centerFrequency"/>

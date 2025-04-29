@@ -114,7 +114,7 @@
         </Float64>
     </Group>
     <Group name="identification">
-        <Enumeration name="NoNameEum0" basetype="Int8">
+        <Enumeration name="NoNameEnum0" basetype="Int8">
             <EnumConst name="FALSE" value="0"/>
             <EnumConst name="TRUE" value="1"/>
         </Enumeration>
@@ -183,7 +183,7 @@
                 <Value>Name of the instrument used to collect the remote sensing data provided in this product</Value>
             </Attribute>
         </String>
-        <Enum name="isGeocoded" enum="/identification/NoNameEum0">
+        <Enum name="isGeocoded" enum="/identification/NoNameEnum0">
             <Attribute name="description" type="String">
                 <Value>Flag to indicate whether the primary product data is in radar geometry (&quot;False&quot;) or map geometry (&quot;True&quot;)</Value>
             </Attribute>
@@ -387,7 +387,7 @@
                 </String>
             </Group>
             <Group name="parameters">
-                <Enumeration name="NoNameEum0" basetype="Int8">
+                <Enumeration name="NoNameEnum0" basetype="Int8">
                     <EnumConst name="FALSE" value="0"/>
                     <EnumConst name="TRUE" value="1"/>
                 </Enumeration>
@@ -415,7 +415,7 @@
                     <EnumConst name="FALSE" value="0"/>
                     <EnumConst name="TRUE" value="1"/>
                 </Enumeration>
-                <Enum name="bistaticDelayCorrectionApplied" enum="/metadata/processingInformation/parameters/NoNameEum0">
+                <Enum name="bistaticDelayCorrectionApplied" enum="/metadata/processingInformation/parameters/NoNameEnum0">
                     <Attribute name="description" type="String">
                         <Value>Flag to indicate if the bistatic delay correction has been applied</Value>
                     </Attribute>
@@ -512,11 +512,11 @@
                 </Group>
             </Group>
             <Group name="rfi">
-                <Enumeration name="NoNameEum0" basetype="Int8">
+                <Enumeration name="NoNameEnum0" basetype="Int8">
                     <EnumConst name="FALSE" value="0"/>
                     <EnumConst name="TRUE" value="1"/>
                 </Enumeration>
-                <Enum name="isRfiInfoAvailable" enum="/metadata/qa/rfi/NoNameEum0">
+                <Enum name="isRfiInfoAvailable" enum="/metadata/qa/rfi/NoNameEnum0">
                     <Attribute name="description" type="String">
                         <Value>A flag to indicate whether RFI information is available in the source data</Value>
                     </Attribute>

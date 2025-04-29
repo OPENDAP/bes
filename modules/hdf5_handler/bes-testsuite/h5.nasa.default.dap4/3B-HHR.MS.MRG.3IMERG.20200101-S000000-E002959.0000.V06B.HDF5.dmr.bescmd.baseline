@@ -415,6 +415,11 @@ EndianType=LITTLE_ENDIAN;
             </Attribute>
             <Map name="/Grid/lon"/>
         </Float32>
+        <Attribute name="DODS_EXTRA" type="Container">
+            <Attribute name="Unlimited_Dimension" type="String">
+                <Value>time</Value>
+            </Attribute>
+        </Attribute>
         <Attribute name="GridHeader" type="String">
             <Value>BinMethod=ARITHMETIC_MEAN;
 Registration=CENTER;

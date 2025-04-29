@@ -302,6 +302,12 @@
                 <Value>Rel 34 GLAS Binary Data</Value>
             </Attribute>
         </Float64>
+        <Attribute name="DODS_EXTRA" type="Container">
+            <Attribute name="Unlimited_Dimension" type="String">
+                <Value>DS_DEMhiresArElv</Value>
+                <Value>DS_UTCTime_40</Value>
+            </Attribute>
+        </Attribute>
         <Attribute name="Description" type="String">
             <Value>This group contains data with a rate of 40HZ. 40Hz data may be indexed to the 1HZ data using the i_rec_ndx parameter in each respective time group.</Value>
         </Attribute>
@@ -757,6 +763,11 @@
                 </Attribute>
                 <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Int32>
+            <Attribute name="DODS_EXTRA" type="Container">
+                <Attribute name="Unlimited_Dimension" type="String">
+                    <Value>d_UTCTime_40</Value>
+                </Attribute>
+            </Attribute>
             <Attribute name="Description" type="String">
                 <Value>This group contains the 40HZ index and time-related parameters</Value>
             </Attribute>
@@ -4485,6 +4496,11 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 <Value>Rel 34 GLAS Binary Data</Value>
             </Attribute>
         </Float64>
+        <Attribute name="DODS_EXTRA" type="Container">
+            <Attribute name="Unlimited_Dimension" type="String">
+                <Value>DS_UTCTime_1</Value>
+            </Attribute>
+        </Attribute>
         <Attribute name="Description" type="String">
             <Value>This group contains data with a rate of 1HZ. 1Hz data may be indexed to the 40HZ data using the i_rec_ndx parameter in each respective time group.</Value>
         </Attribute>
@@ -4915,6 +4931,11 @@ OUT_GLAH06=GLAH06_634_2113_002_0152_2_01_0001.H5 184507185 184508795 634 1</Valu
                 </Attribute>
                 <Map name="/Data_1HZ/DS_UTCTime_1"/>
             </Int32>
+            <Attribute name="DODS_EXTRA" type="Container">
+                <Attribute name="Unlimited_Dimension" type="String">
+                    <Value>d_UTCTime_1</Value>
+                </Attribute>
+            </Attribute>
             <Attribute name="Description" type="String">
                 <Value>This group contains the 1HZ index and time-related parameters</Value>
             </Attribute>

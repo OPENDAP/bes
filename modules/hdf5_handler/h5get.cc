@@ -538,7 +538,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
     vector<hsize_t>size(ndims);
     vector<hsize_t>maxsize(ndims);
 
-    // Retrieve size. DAP4 doesn't have a convention to support multi-unlimited dimension yet.
+    // Retrieve size. 
     if (H5Sget_simple_extent_dims(dspace, size.data(), maxsize.data())<0){
         string msg = "cannot obtain the dim. info for the dataset ";
         msg += dname;
@@ -621,7 +621,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
                      bool is_eos5, bool &is_pure_dim, vector<link_info_t> &hdf5_hls,vector<string> &handled_cv_names)
 {
 
-    BESDEBUG("h5", ">get_dataset()" << endl);
+    BESDEBUG("h5", ">get_dataset_dmr()" << endl);
 
     // Obtain the dataset ID
     hid_t dset = -1;
@@ -717,7 +717,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
     vector<hsize_t>size(ndims);
     vector<hsize_t>maxsize(ndims);
 
-    // Retrieve size. DAP4 doesn't have a convention to support multi-unlimited dimension yet.
+    // Retrieve size. 
     if (H5Sget_simple_extent_dims(dspace, size.data(), maxsize.data())<0){
         string msg = "cannot obtain the dim. info for the dataset ";
         msg += dname;
@@ -727,6 +727,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
+    
     hsize_t nelmts = 1;
     if (ndims !=0) {
         for (int j = 0; j < ndims; j++)
@@ -770,6 +771,25 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
     (*dt_inst_ptr).name[dname.size()] = '\0';
     for (int j = 0; j < ndims; j++) 
         (*dt_inst_ptr).size[j] = size[j];
+
+    // Add unlimited dimension information
+    bool has_unlimited_dim = false;
+    for (const auto&max_s:maxsize) {
+        if (max_s == H5S_UNLIMITED) {
+            has_unlimited_dim = true;
+            break;
+        }
+    }
+
+    if (has_unlimited_dim) {
+        for (const auto&max_s:maxsize) {
+            if (max_s == H5S_UNLIMITED) {
+                (*dt_inst_ptr).unlimited_dims.push_back(true);
+            }
+            else 
+                (*dt_inst_ptr).unlimited_dims.push_back(false);
+        }
+    }
 
     // For DAP4 when dimension scales are used.
     if (true == use_dimscale)
