@@ -152,8 +152,8 @@ def generate_tmp_bes_conf_file(user_conf,out_conf):
         if (out_conf is not None):
             bes_conf_name=out_conf
         else:
-            bes_conf_name= "bes.tmp.conf";
-        bes_tmp_conf_str='''BES.LogName=./bes.log
+            bes_conf_name = "bes.tmp.conf"
+        bes_tmp_conf_str = r'''BES.LogName=./bes.log
 BES.modules=dap,cmd,h4
 BES.module.dap=
 BES.module.cmd=
@@ -168,7 +168,8 @@ BES.Catalog.catalog.FollowSymLinks=Yes
 BES.UncompressCache.dir=/tmp
 BES.UncompressCache.prefix=uncompress_cache
 BES.UncompressCache.size=500
-H4.EnableDirectDMR=true'''
+H4.EnableDirectDMR=true
+'''
         temp_text = add_module_path(bes_tmp_conf_str, "BES.module.dap=", libdap_path)
         temp_text = add_module_path(temp_text, "BES.module.cmd=", libdap_xml_path)
         temp_text = add_module_path(temp_text, "BES.module.h4=", libhdf4_path)
