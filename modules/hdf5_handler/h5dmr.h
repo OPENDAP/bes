@@ -257,4 +257,7 @@ void add_lamaz_cf_grid_mapping_attrs(libdap::BaseType *dummy_proj_cf, const eos5
 void add_possible_var_cv_info(libdap::BaseType *, const eos5_dim_info_t &eos5_dim_info);
 void make_attributes_to_cf(libdap::BaseType *, const eos5_dim_info_t &eos5_dim_info);
 
+// Handle unlimited dimension
+void add_unlimited_dimension_info(libdap::D4Group *d4_grp);
+
 #endif
