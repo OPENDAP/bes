@@ -40,7 +40,7 @@ AC_DEFUN([AM_PATH_CPPUNIT],
             [AC_MSG_RESULT([no, needed $cppunit_req_ver])])])
 
     AS_IF([test $cppunit_ok = yes],
-        [ifelse([$2], , :, [$2])], dnl This idiom ensure that if $2 is empty, ':' is used
+        [ifelse([$2], , :, [$2])], dnl This idiom ensures that if $2 is empty, ':' is used
         [ifelse([$3], , :, [$3])])
 
     AC_SUBST(CPPUNIT_CFLAGS)
