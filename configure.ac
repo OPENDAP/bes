@@ -419,7 +419,7 @@ AC_ARG_WITH(libwrap,
     [AC_MSG_RESULT(no)])
 
 # Check for cppunit to enable unit testing.
-AM_PATH_CPPUNIT(2.12.0,
+AM_PATH_CPPUNIT(1.12.0,
 	[AM_CONDITIONAL([CPPUNIT], [true])],
 	[AM_CONDITIONAL([CPPUNIT], [false])])
 
