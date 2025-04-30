@@ -2597,8 +2597,12 @@ bool DmrppArray::read()
     // It's important to note that w.r.t. the compact data layout the DMZ parser reads the values into the
     // DmrppArray at the time it is parsed and the read flag is then set. Thus, the compact layout solution
     // does not explicitly appear in this method as it is handled by the parser.
-    if (read_p()) return true;
+    if (read_p()) 
+        return true;
 
+    // If it is zero size array, we just return empty data.
+    if (length_ll() == 0) 
+        return true;
 #if 0
     // Here we need to reset the dio_flag to false for the time being before calling the method use_direct_io_opt()
     // since the dio_flag may be set to true for reducing the memory usage with a temporary solution. 
@@ -2740,7 +2744,6 @@ bool DmrppArray::read()
                 }
             }
             else {
-
                 bool buffer_chunk_case = array_to_read->use_buffer_chunk();
             
                 if (!array_to_read->is_projected()) {
