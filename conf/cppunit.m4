@@ -24,16 +24,16 @@ AC_DEFUN([AM_PATH_CPPUNIT],
 
     AS_IF([test -n "$cppunit_prefix"],
         dnl then
-        [cppunit_ok=yes,
+        [cppunit_ok=yes
         CPPUNIT_CFLAGS="-I$cppunit_prefix/include"
-        CPPUNIT_LIBS="-L$cppunit_prefix/lib -lcppunit",
+        CPPUNIT_LIBS="-L$cppunit_prefix/lib -lcppunit"
         AC_MSG_RESULT(Using $cppunit_prefix for the CppUnit prefix)],
 
         dnl else if pkg-config exists and can find 'cppuint' at least version xyz
         [AS_IF([pkg-config --atleast-version=$cppunit_req_ver cppunit],
-            [cppunit_ok=yes,
-            CPPUNIT_CFLAGS=$(pkg-config --cflags cppunit),
-            CPPUNIT_LIBS=$(pkg-config --libs cppunit),
+            [cppunit_ok=yes
+            CPPUNIT_CFLAGS=$(pkg-config --cflags cppunit)
+            CPPUNIT_LIBS=$(pkg-config --libs cppunit)
             AC_MSG_RESULT([yes; found version $(pkg-config --modversion cppunit)])],
 
             dnl else did not use --with... and pkg-config didn't find it
