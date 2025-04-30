@@ -425,6 +425,8 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_enum2_mt_array.h5.dap])
 AT_BESCMD_RESPONSE_TEST([chunked/t_enum_name_chunk_array.h5.dmr])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/t_enum_name_chunk_array.h5.dap])
 
+# Zero size array test
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/nc4_unlimited_0.h5.dap])
 #############################################################################
 # Arrays of Variable Length String tests
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_vl_string_1d.h5.dmrpp])
