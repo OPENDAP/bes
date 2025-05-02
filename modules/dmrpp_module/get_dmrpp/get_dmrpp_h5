@@ -152,8 +152,8 @@ def generate_tmp_bes_conf_file(user_conf,is_cf,out_conf):
         if (out_conf is not None):
             bes_conf_name=out_conf
         else:
-            bes_conf_name= "bes.tmp.conf";
-        bes_tmp_conf_str='''BES.LogName=./bes.log
+            bes_conf_name = "bes.tmp.conf"
+        bes_tmp_conf_str = r'''BES.LogName=./bes.log
 BES.modules=dap,cmd,h5
 BES.module.dap=
 BES.module.cmd=

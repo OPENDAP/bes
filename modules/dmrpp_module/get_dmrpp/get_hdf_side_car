@@ -92,7 +92,7 @@ def generate_tmp_bes_conf_file(enable_cf):
         sys.exit(1)
 
     bes_conf_name = "bes.tmp.conf"
-    bes_tmp_conf_str = '''BES.LogName=./bes.log
+    bes_tmp_conf_str = r'''BES.LogName=./bes.log
 BES.modules=dap,cmd,fonc,h4,h5
 BES.module.dap=
 BES.module.cmd=
@@ -115,7 +115,8 @@ FONc.ChunkSize=4096
 FONc.ClassicModel=false
 FONc.NoGlobalAttrs=true
 H4.EnableDirectDMR=true
-H5.DefaultHandleDimension=true'''
+H5.DefaultHandleDimension=true
+'''
 
     if (enable_cf is True):
         bes_tmp_conf_str = bes_tmp_conf_str + "\nH5.EnableCF=true"
