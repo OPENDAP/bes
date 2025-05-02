@@ -81,6 +81,9 @@ private:
     std::unordered_map<int64_t, std::vector<std::string>> dimsize_to_dup_dimnames;
     int reduced_dim_num = 0;
 
+    bool is_root_no_grp_unlimited_dim = false;
+    std::vector<std::string> root_no_grp_unlimited_dimnames; 
+
 public:
     FONcTransform(BESResponseObject *obj, BESDataHandlerInterface *dhi, const std::string &localfile, const std::string &ncVersion = "netcdf");
     virtual ~FONcTransform();
@@ -110,6 +113,9 @@ private:
     virtual bool check_var_dim(libdap::BaseType *bt);
     virtual void build_reduce_dim();
     virtual void build_reduce_dim_internal(libdap::D4Group *grp, libdap::D4Group *root_grp);
+
+    virtual bool obtain_unlimited_dimension_info_helper(libdap::D4Attributes *d4_attrs, vector<string> &unlimited_dim_names);
+    virtual bool obtain_unlimited_dimension_info(libdap::D4Group *grp, std::vector<std::string> &unlimited_dim_names);
 
     void throw_if_dap2_response_too_big(DDS *dds, const string &dap2_ce="");
     void throw_if_dap4_response_too_big(DMR *dmr, const string &dap4_ce="");
