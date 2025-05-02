@@ -11,8 +11,7 @@ M_NAME=ngap_module
 M_VER=1.1.0
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand \
--I$(top_srcdir)/http $(DAP_CFLAGS)
-LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+    -I$(top_srcdir)/http $(DAP_CFLAGS) -I$(top_srcdir)/modules/ngap_module/writer
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
@@ -20,14 +19,15 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-SUBDIRS = . unit-tests tests
+SUBDIRS = writer . unit-tests tests
 
 lib_besdir=$(libdir)/bes
 
 lib_bes_LTLIBRARIES = libngap_module.la
 libngap_module_la_SOURCES = $(NGAP_SRC) $(NGAP_HDR)
 libngap_module_la_LDFLAGS = -avoid-version -module 
-libngap_module_la_LIBADD = $(LIBADD)
+libngap_module_la_LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
+    -Lwriter -lngap_writer
 
 NGAP_SRC =  NgapRequestHandler.cc \
             NgapModule.cc \

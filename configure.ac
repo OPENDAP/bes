@@ -1101,9 +1101,11 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/cmr_module/unit-tests/Makefile
 
     modules/ngap_module/Makefile
+    modules/ngap_module/writer/Makefile
     modules/ngap_module/tests/Makefile
     modules/ngap_module/tests/atlocal
     modules/ngap_module/unit-tests/Makefile
+
     
     modules/s3_reader/Makefile
     modules/s3_reader/tests/Makefile

@@ -33,43 +33,53 @@
 #include <unistd.h>
 #endif
 
+#if 0
 #include <exception>
 #include <sstream>      // std::stringstream
 #include <thread>
 #include <future>
+#endif
 
+#include <iostream>
+#include <string>
+
+#if 0
 #include <libdap/util.h>
 #include <libdap/D4Attributes.h>
 #include <libdap/D4ParserSax2.h>
+#endif
 
+#if 0
 #include <BESContextManager.h>
 #include <BESDapNames.h>
-#include <BESDebug.h>
 #include <BESUtil.h>
 #include <RequestServiceTimer.h>
 
 #include <BESLog.h>
 #include <BESError.h>
-#include <BESInternalFatalError.h>
 #include <BESDapError.h>
+#endif
 
-#include "BESDMRResponse.h"
+#include <BESDebug.h>
+#include <BESDataHandlerInterface.h>
 
-#include "DMRpp.h"
-#include "DmrppTypeFactory.h"
-#include "DmrppD4Group.h"
+#include <BESInternalError.h>
+#include <BESInternalFatalError.h>
 
-#include "build_dmrpp_util.h"
+#include "NgapOwnedContainer.h"
 #include "FODmrppTransmitter.h"
 
-#include "DapUtils.h"
+// #include "DapUtils.h"
 
-using namespace libdap;
+// using namespace libdap;
 using namespace std;
 
-#define MODULE "dmrpp"
+class BESResponseObject;
+
+#define MODULE "ngap_writer"
 #define prolog string("FODmrppTransmitter::").append(__func__).append("() - ")
 
+#if 0
 /** @brief BESTransmitter class named "dmrpp" that transmits an OPeNDAP
  * data object as a DMRPP file
  *
@@ -83,6 +93,7 @@ FODmrppTransmitter::FODmrppTransmitter() :
 {
     add_method(DAP4DATA_SERVICE, FODmrppTransmitter::send_dmrpp);
 }
+#endif
 
 /**
  * Follow the send_dmrpp()
@@ -100,12 +111,24 @@ FODmrppTransmitter::FODmrppTransmitter() :
  * there are any problems reading the data, generating DMRPP XML, or
  * streaming the DMRPP XML
  */
-void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterface &dhi)
+void FODmrppTransmitter::send_dmrpp(BESResponseObject *, BESDataHandlerInterface &dhi)
 {
     BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
 
     bool add_production_metadata = true;
 
+    auto container = dynamic_cast<ngap::NgapOwnedContainer*>(dhi.container);
+    // in case for later -> *(dhi.containers.begin()))->access()
+    if (!container) throw BESInternalFatalError("expected NgapOwnedContainer", __FILE__, __LINE__);
+    auto dmrpp = container->access();
+
+    // dhi.get_output_stream() << dmrpp << flush;
+
+    auto &strm = dhi.get_output_stream();
+    strm << dmrpp << flush;
+    if (!strm) throw BESInternalError("Output stream is not set, can not return as", __FILE__, __LINE__);
+
+#if 0
     auto bdmr = dynamic_cast<BESDMRResponse *>(obj);
     if (!bdmr) throw BESInternalFatalError("Expected a BESDMRResponse instance", __FILE__, __LINE__);
     auto dmr = bdmr->get_dmr();
@@ -183,5 +206,6 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
         throw BESInternalError("Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
     }
 
-    BESDEBUG(MODULE,  prolog << "END  Transmitted DMRPP XML" << endl);
+#endif
+    BESDEBUG(MODULE,  prolog << "END  Transmitted DMRPP string" << endl);
 }

@@ -45,8 +45,8 @@
 class FODmrppTransmitter: public BESTransmitter {
 
 public:
-    FODmrppTransmitter();
-    virtual ~FODmrppTransmitter() { }
+    FODmrppTransmitter() = default;
+    ~FODmrppTransmitter() override = default;
 
     static void send_dmrpp(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 };

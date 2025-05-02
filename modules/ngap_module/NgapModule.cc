@@ -32,10 +32,18 @@
 #include <BESRequestHandlerList.h>
 #include <BESDebug.h>
 #include <BESContainerStorageList.h>
+#include <BESDapNames.h>
+
+#include <BESReturnManager.h>
+#include <BESServiceRegistry.h>
 
 #include "NgapModule.h"
 #include "NgapRequestHandler.h"
 #include "NgapOwnedContainerStorage.h"
+#include "FODmrppTransmitter.h"
+
+#define RETURNAS_DMRPP "dmrpp"
+#define prolog string("NgapModule::").append(__func__).append("() - ")
 
 using namespace std;
 using namespace ngap;
@@ -48,10 +56,13 @@ void NgapModule::initialize(const string &modname)
     BESRequestHandlerList::TheList()->add_handler(modname, new NgapRequestHandler(modname));
 
     BESDEBUG(modname, "    adding OWNED " << modname << " container storage" << endl);
-    // FIXME Do NOT merge this code as is since it breaks the handler needed for NGAP.
-    //  This is a POC modification to test access to data using DMR++ documents that
-    //  OPeNDAP 'owns.' jhrg 5/17/24
+
     BESContainerStorageList::TheList()->add_persistence(new NgapOwnedContainerStorage(modname));
+
+    BESReturnManager::TheManager()->add_transmitter(RETURNAS_DMRPP, new FODmrppTransmitter());
+    BESServiceRegistry::TheRegistry()->add_format(OPENDAP_SERVICE, DAP4DATA_SERVICE, RETURNAS_DMRPP);
+
+    BESDEBUG(modname, prolog << "Done Initializing DMR++ Transmitter " << modname << endl);
 
     BESDEBUG(modname, "    adding NGAP debug context" << endl);
     BESDebug::Register(modname);
