@@ -2,7 +2,7 @@ netcdf test {
 dimensions:
 	lat = 720 ;
 	lon = 1440 ;
-	time = 1 ;
+	time = UNLIMITED ; // (1 currently)
 variables:
 	float lat(lat) ;
 		lat:units = "degrees_north" ;
@@ -60,6 +60,7 @@ variables:
 		mask:flag_meanings = "water land optional_lake_surface sea_ice optional_river_surface IR_data MW_data" ;
 
 // global attributes:
+		:DODS_EXTRA.Unlimited_Dimension = "time" ;
 		:Conventions = "CF-1.6,ACDD-1.3" ;
 		:title = "Analysed foundation sea surface temperature over the global ocean" ;
 		:summary = "A merged, multi-sensor L4 foundation SST product from Remote Sensing Systems" ;

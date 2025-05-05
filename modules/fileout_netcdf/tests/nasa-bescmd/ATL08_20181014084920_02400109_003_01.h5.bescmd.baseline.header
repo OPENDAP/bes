@@ -83,8 +83,8 @@ variables:
 
 group: orbit_info {
   dimensions:
-  	crossing_time = 1 ;
-  	sc_orient_time = 1 ;
+  	crossing_time = UNLIMITED ; // (1 currently)
+  	sc_orient_time = UNLIMITED ; // (1 currently)
   variables:
   	double crossing_time(crossing_time) ;
   		crossing_time:contentType = "referenceInformation" ;
@@ -149,6 +149,7 @@ group: orbit_info {
   		lan:valid_min = -180. ;
 
   // group attributes:
+  		:DODS_EXTRA.Unlimited_Dimension = "crossing_time\nsc_orient_time" ;
   		:Description = "Contains orbit information." ;
   		:data_rate = "Varies. Data are only provided when one of the stored values (besides time) changes." ;
   } // group orbit_info
@@ -548,7 +549,7 @@ group: gt1r {
 
   group: signal_photons {
     dimensions:
-    	delta_time = 1185 ;
+    	delta_time = UNLIMITED ; // (1185 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:description = "Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
@@ -588,13 +589,14 @@ group: gt1r {
     		ph_segment_id:units = "1" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters related to individual photons." ;
     		:data_rate = "Data are stored at the signal-photon classification rate." ;
     } // group signal_photons
 
   group: land_segments {
     dimensions:
-    	delta_time = 5 ;
+    	delta_time = UNLIMITED ; // (5 currently)
     variables:
     	float latitude(delta_time) ;
     		latitude:coordinates = "delta_time longitude" ;
@@ -942,6 +944,7 @@ group: gt1r {
     		h_dif_ref:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains data categorized as land at 100 meter intervals." ;
     		:data_rate = "Data are stored as aggregates of 100 meters." ;
 

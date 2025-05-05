@@ -49,7 +49,8 @@ private:
     int				_dimid = 0;
     bool			_defined = false;
     int				_ref = 1;
-    int                         _struct_ref =1;
+    int                         _struct_ref  = 1;
+    bool                        is_unlimited = false;
 public:
     				FONcDim( const std::string &name, int64_t size ) ;
     virtual			~FONcDim() {}
@@ -66,6 +67,7 @@ public:
     virtual void		update_size( int64_t newsize ) { _size = newsize ; }
     virtual int			dimid() { return _dimid ; }
     virtual bool		defined() { return _defined ; }
+    virtual void                set_unlimited_dim() { is_unlimited = true; }
 
     virtual void		dump( std::ostream &strm ) const ;
 

@@ -646,6 +646,12 @@ void FONcTransform::transform_dap4() {
             FONcUtils::handle_error(stax, prolog + "Call to nc_create() failed for file: " + _localfile, __FILE__, __LINE__);
 
         D4Group *root_grp = _dmr->root();
+#if 0
+        is_root_unlimited_dim = obtain_unlimited_dimension_info(root_grp,root_unlimited_dimnames);
+for (const auto &und:root_unlimited_dimnames)
+    cerr<<"und: "<<und <<endl;
+#endif
+
 
         // Declare the dimname to dimid map to handle netCDF-4 dimensions
         map<string, int> fdimname_to_id;
@@ -807,6 +813,13 @@ void FONcTransform::transform_dap4_no_group() {
 
     D4Group *root_grp = _dmr->root();
 
+    is_root_no_grp_unlimited_dim = obtain_unlimited_dimension_info(root_grp,root_no_grp_unlimited_dimnames);
+#if 0
+for (const auto &und:root_no_grp_unlimited_dimnames)
+    cerr<<"und: "<<und <<endl;
+#endif
+
+
     if(root_grp->has_enum_defs()) 
         gen_nc4_enum_type(root_grp,_ncid);
  
@@ -833,7 +846,7 @@ void FONcTransform::transform_dap4_no_group() {
                 BESDEBUG(MODULE, prolog << "Converting variable '" << v->name() << "'" << endl);
     
                 // This is a factory class call, and 'fg' is specialized for 'v'
-                FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model, GFQN_to_en_typeid_vec);
+                FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model, GFQN_to_en_typeid_vec,root_no_grp_unlimited_dimnames);
                 
                 _fonc_vars.push_back(fb);
     
@@ -857,7 +870,7 @@ void FONcTransform::transform_dap4_no_group() {
     
                 }
                 // This is a factory class call, and 'fg' is specialized for 'v'
-                FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model);
+                FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model, GFQN_to_en_typeid_vec,root_no_grp_unlimited_dimnames);
     
                 
                 _fonc_vars.push_back(fb);
@@ -1039,6 +1052,13 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
         }
     }
 
+    vector<string> unlimited_dimnames;
+    bool has_unlimited_dims =  obtain_unlimited_dimension_info(d4_grp,unlimited_dimnames);
+#if 0
+for (const auto &und:unlimited_dimnames)
+    cerr<<"und: "<<und <<endl;
+#endif
+
     D4Dimensions *grp_dims = d4_grp->dims();
     for (D4Dimensions::D4DimensionsIter di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di) {
 
@@ -1060,6 +1080,15 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
 
         // Define dimension. 
         int g_dimid = -1;
+        
+        if (has_unlimited_dims) {
+            for (const auto &und:unlimited_dimnames) {
+                if (und == (*di)->name()) { 
+                    dimsize = NC_UNLIMITED;
+                    break;
+                }
+            }
+        }
         stax = nc_def_dim(nc4_grp_id, (*di)->name().c_str(), dimsize, &g_dimid);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to define dimension: " + _localfile, __FILE__,
@@ -1084,7 +1113,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
     
                 // This is a factory class call, and 'fg' is specialized for 'v'
                 //FONcBaseType *fb = FONcUtils::convert(v,FONcTransform::_returnAs,FONcRequestHandler::classic_model);
-                FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums, GFQN_to_en_typeid_vec);
+                FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums, GFQN_to_en_typeid_vec,root_no_grp_unlimited_dimnames);
     
                 fonc_vars_in_grp.push_back(fb);
     
@@ -1113,7 +1142,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
     
                 // This is a factory class call, and 'fg' is specialized for 'v'
                 //FONcBaseType *fb = FONcUtils::convert(v,FONcTransform::_returnAs,FONcRequestHandler::classic_model);
-                FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums,GFQN_to_en_typeid_vec);
+                FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums,GFQN_to_en_typeid_vec, root_no_grp_unlimited_dimnames);
     
                 fonc_vars_in_grp.push_back(fb);
     
@@ -1564,6 +1593,49 @@ void FONcTransform::build_reduce_dim_internal(D4Group *grp, D4Group *root_grp) {
     for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) 
         build_reduce_dim_internal(*gi,root_grp); 
 
+}
+
+bool FONcTransform::obtain_unlimited_dimension_info_helper(libdap::D4Attributes *d4_attrs, vector<string> &unlimited_dim_names){
+
+    bool ret_value = false;
+
+    if (d4_attrs->empty() == false) {
+        for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end();
+                     ii != ee; ++ii) {
+            if ((*ii)->type() == attr_str_c && (*ii)->name()=="Unlimited_Dimension") {
+                for (D4Attribute::D4AttributeIter vi = (*ii)->value_begin(), ve = (*ii)->value_end(); vi != ve; vi++) 
+                      unlimited_dim_names.emplace_back(*vi);
+                if (unlimited_dim_names.empty() == false)
+                    ret_value = true;
+                break;
+            }
+        }
+    }
+    
+    return ret_value;
+}
+
+bool FONcTransform::obtain_unlimited_dimension_info(libdap::D4Group *d4_grp, vector<string> &unlimited_dim_names) {
+
+    bool ret_value = false;
+    D4Attributes *d4_attrs = d4_grp->attributes();
+    if (d4_attrs->empty() == false) {
+        for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end();
+                     ii != ee; ++ii) {
+            if ((*ii)->type() == attr_container_c && (*ii)->name()=="DODS_EXTRA") {
+                D4Attributes *extra_attrs = (*ii)->attributes();
+                ret_value = obtain_unlimited_dimension_info_helper(extra_attrs,unlimited_dim_names);
+                if (ret_value == true)
+                    break;
+            }
+        }
+    }
+#if 0
+for (const auto& udn:unlimited_dim_names) 
+cerr<<"unlimited dimension names: "<<udn<<endl;
+#endif
+
+    return ret_value; 
 }
 
 void FONcTransform::gen_nc4_enum_type(libdap::D4Group *d4_grp,int nc4_grp_id) {

@@ -534,6 +534,17 @@ FONcArray::find_dim(const vector<string> &embed, const string &name, int64_t siz
     return ret_dim;
 }
 
+bool FONcArray::is_unlimited_dim(const string &dim_name) const {
+
+    bool ret_value = false;
+    for (const auto & udn: unlimited_dim_names) {
+        if (udn == dim_name) {
+            ret_value = true;
+            break;
+        }
+    }
+    return ret_value;
+}
 
 /** @brief define the DAP Array in the netcdf file
  *
@@ -581,7 +592,16 @@ void FONcArray::define(int ncid) {
             int dimnum = 0;
             for (; i != e; i++) {
                 FONcDim *fd = *i;
-                fd->define(ncid);
+                // Here we want to check if the dimension is defined.
+                // Doing this way, we only need to check if this dimension is unlimited once. 
+                if (fd->defined()==false) {
+                    if (unlimited_dim_names.empty()==false) {
+                        bool is_unlimited = is_unlimited_dim(fd->name());
+                        if(is_unlimited) 
+                            fd->set_unlimited_dim();
+                    }
+                    fd->define(ncid);
+                }
                 d_dim_ids[dimnum] = fd->dimid();
                 BESDEBUG("fonc", "FONcArray::define() - dim_id: " << fd->dimid() << " size:" << fd->size() << endl);
                 dimnum++;
@@ -803,38 +823,43 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
         return;
     }
 
-    int stax;
+    vector<size_t> var_count(d_ndims);
+    vector<size_t> var_start(d_ndims);
+    for (int dim = 0; dim < d_ndims; dim++)
+        var_count[dim] = d_dim_sizes[dim];
+
+    int stax = NC_NOERR;
 
     switch (var_type) {
         case NC_UBYTE:
-            stax = nc_put_var_uchar(ncid, d_varid, reinterpret_cast<unsigned char *>(d_a->get_buf()));
+            stax = nc_put_vara_uchar(ncid, d_varid, var_start.data(), var_count.data(), reinterpret_cast<unsigned char *>(d_a->get_buf()));
             break;
         case NC_BYTE:
-            stax = nc_put_var_schar(ncid, d_varid, reinterpret_cast<signed char *>(d_a->get_buf()));
+            stax = nc_put_vara_schar(ncid, d_varid, var_start.data(), var_count.data(), reinterpret_cast<signed char *>(d_a->get_buf()));
             break;
         case NC_SHORT:
-            stax = nc_put_var_short(ncid, d_varid, reinterpret_cast<short *>(d_a->get_buf()));
+            stax = nc_put_vara_short(ncid, d_varid, var_start.data(), var_count.data(), reinterpret_cast<short *>(d_a->get_buf()));
             break;
         case NC_INT:
-            stax = nc_put_var_int(ncid, d_varid, reinterpret_cast<int *>(d_a->get_buf()));
+            stax = nc_put_vara_int(ncid, d_varid, var_start.data(), var_count.data(), reinterpret_cast<int *>(d_a->get_buf()));
             break;
         case NC_INT64:
-            stax = nc_put_var_longlong(ncid, d_varid, reinterpret_cast<long long *>(d_a->get_buf()));
+            stax = nc_put_vara_longlong(ncid, d_varid, var_start.data(), var_count.data(), reinterpret_cast<long long *>(d_a->get_buf()));
             break;
         case NC_FLOAT:
-            stax = nc_put_var_float(ncid, d_varid, reinterpret_cast<float *>(d_a->get_buf()));
+            stax = nc_put_vara_float(ncid, d_varid, var_start.data(), var_count.data(), reinterpret_cast<float *>(d_a->get_buf()));
             break;
         case NC_DOUBLE:
-            stax = nc_put_var_double(ncid, d_varid, reinterpret_cast<double *>(d_a->get_buf()));
+            stax = nc_put_vara_double(ncid, d_varid, var_start.data(), var_count.data(), reinterpret_cast<double *>(d_a->get_buf()));
             break;
         case NC_USHORT:
-            stax = nc_put_var_ushort(ncid, d_varid, reinterpret_cast<unsigned short *>(d_a->get_buf()));
+            stax = nc_put_vara_ushort(ncid, d_varid, var_start.data(), var_count.data(), reinterpret_cast<unsigned short *>(d_a->get_buf()));
             break;
         case NC_UINT:
-            stax = nc_put_var_uint(ncid, d_varid, reinterpret_cast<unsigned int *>(d_a->get_buf()));
+            stax = nc_put_vara_uint(ncid, d_varid, var_start.data(), var_count.data(), reinterpret_cast<unsigned int *>(d_a->get_buf()));
             break;
         case NC_UINT64:
-            stax = nc_put_var_ulonglong(ncid, d_varid, reinterpret_cast<unsigned long long *>(d_a->get_buf()));
+            stax = nc_put_vara_ulonglong(ncid, d_varid, var_start.data(), var_count.data(), reinterpret_cast<unsigned long long *>(d_a->get_buf()));
             break;
 
         default:
@@ -942,6 +967,12 @@ void FONcArray::write(int ncid) {
 }
 
 void FONcArray::write_for_nc3_types(int ncid) {
+
+    vector<size_t> var_count(d_ndims);
+    vector<size_t> var_start(d_ndims);
+    for (int dim = 0; dim < d_ndims; dim++)
+        var_count[dim] = d_dim_sizes[dim];
+
     Type element_type = d_a->var()->type();
     // create array to hold data hyperslab
     switch (d_array_type) {
@@ -971,7 +1002,7 @@ void FONcArray::write_for_nc3_types(int ncid) {
                 for (size_t d_i = 0; d_i < d_nelements; d_i++) 
                     data[d_i] = *(reinterpret_cast<unsigned char *>(d_a->get_buf()) + d_i);
 
-                int stax = nc_put_var_short(ncid, d_varid, data.data());
+                int stax = nc_put_vara_short(ncid, d_varid, var_start.data(), var_count.data(), data.data());
                 if (stax != NC_NOERR) {
                     string err = (string) "fileout.netcdf - Failed to create array of shorts for " + d_varname;
                     FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
@@ -1022,7 +1053,7 @@ void FONcArray::write_for_nc3_types(int ncid) {
                 for (size_t d_i = 0; d_i < d_nelements; d_i++)
                     data[d_i] = *(reinterpret_cast<unsigned short *>(d_a->get_buf()) + d_i);
 
-                int stax = nc_put_var_int(ncid, d_varid, data.data());
+                int stax = nc_put_vara_int(ncid, d_varid, var_start.data(), var_count.data(), data.data());
                 if (stax != NC_NOERR) {
                     string err = (string) "fileout.netcdf - Failed to create array of ints for " + d_varname;
                     FONcUtils::handle_error(stax, err, __FILE__, __LINE__);

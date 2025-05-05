@@ -1,6 +1,6 @@
 netcdf test {
 dimensions:
-	TIME = 3 ;
+	TIME = UNLIMITED ; // (3 currently)
 	COADSY = 2 ;
 	COADSX = 3 ;
 variables:
