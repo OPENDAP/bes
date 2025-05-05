@@ -1604,7 +1604,7 @@ bool FONcTransform::obtain_unlimited_dimension_info_helper(libdap::D4Attributes 
                      ii != ee; ++ii) {
             if ((*ii)->type() == attr_str_c && (*ii)->name()=="Unlimited_Dimension") {
                 for (D4Attribute::D4AttributeIter vi = (*ii)->value_begin(), ve = (*ii)->value_end(); vi != ve; vi++) 
-                      unlimited_dim_names.emplace_back((*vi));
+                      unlimited_dim_names.emplace_back(*vi);
                 if (unlimited_dim_names.empty() == false)
                     ret_value = true;
                 break;

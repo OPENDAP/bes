@@ -534,7 +534,7 @@ FONcArray::find_dim(const vector<string> &embed, const string &name, int64_t siz
     return ret_dim;
 }
 
-bool FONcArray::is_unlimited_dim(const string &dim_name) {
+bool FONcArray::is_unlimited_dim(const string &dim_name) const {
 
     bool ret_value = false;
     for (const auto & udn: unlimited_dim_names) {

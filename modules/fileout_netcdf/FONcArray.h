@@ -129,7 +129,7 @@ private:
     void allocate_dio_nc4_def_filters(int, int, bool ,bool , bool , bool , bool, const vector<unsigned int> &) const; 
     void write_direct_io_data(int, int);
 
-    bool is_unlimited_dim(const string &dim_name);
+    bool is_unlimited_dim(const string &dim_name) const;
     FONcArray() = default;      // Used in some unit tests
     friend class FONcArrayTest;
 
@@ -149,7 +149,7 @@ public:
     void set_nc4_enum_type_id(int enum_type_id) { d_fa_nc4_enum_type_id = enum_type_id;}
     void set_nc4_enum_basetype (nc_type enum_basetype) { d_fa_nc_enum_base_type = enum_basetype;}
     void set_enum_flag(bool is_enum) {d_is_dap4_enum = is_enum; }
-    void set_unlimited_dim_names(const std::vector<std::string> u_dnames) { unlimited_dim_names = u_dnames;}
+    void set_unlimited_dim_names(const std::vector<std::string> & u_dnames) { unlimited_dim_names = u_dnames;}
 
     virtual void dump(std::ostream &strm) const override;
 
