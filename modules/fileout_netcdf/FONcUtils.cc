@@ -505,10 +505,6 @@ FONcUtils::convert(BaseType *v,
                     }
 
                 } else {
-#if 0
-for (const auto &und:unlimited_dimnames)
-    cerr<<"und: "<<und <<endl;
-#endif
                     b = new FONcArray(v);
                     if (is_enum) {
                         auto fonc_a = dynamic_cast<FONcArray *>(b); 
