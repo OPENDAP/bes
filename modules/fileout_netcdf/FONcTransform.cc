@@ -646,12 +646,6 @@ void FONcTransform::transform_dap4() {
             FONcUtils::handle_error(stax, prolog + "Call to nc_create() failed for file: " + _localfile, __FILE__, __LINE__);
 
         D4Group *root_grp = _dmr->root();
-#if 0
-        is_root_unlimited_dim = obtain_unlimited_dimension_info(root_grp,root_unlimited_dimnames);
-for (const auto &und:root_unlimited_dimnames)
-    cerr<<"und: "<<und <<endl;
-#endif
-
 
         // Declare the dimname to dimid map to handle netCDF-4 dimensions
         map<string, int> fdimname_to_id;
@@ -814,11 +808,6 @@ void FONcTransform::transform_dap4_no_group() {
     D4Group *root_grp = _dmr->root();
 
     is_root_no_grp_unlimited_dim = obtain_unlimited_dimension_info(root_grp,root_no_grp_unlimited_dimnames);
-#if 0
-for (const auto &und:root_no_grp_unlimited_dimnames)
-    cerr<<"und: "<<und <<endl;
-#endif
-
 
     if(root_grp->has_enum_defs()) 
         gen_nc4_enum_type(root_grp,_ncid);
@@ -1054,10 +1043,6 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
 
     vector<string> unlimited_dimnames;
     bool has_unlimited_dims =  obtain_unlimited_dimension_info(d4_grp,unlimited_dimnames);
-#if 0
-for (const auto &und:unlimited_dimnames)
-    cerr<<"und: "<<und <<endl;
-#endif
 
     D4Dimensions *grp_dims = d4_grp->dims();
     for (D4Dimensions::D4DimensionsIter di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di) {
@@ -1630,10 +1615,6 @@ bool FONcTransform::obtain_unlimited_dimension_info(libdap::D4Group *d4_grp, vec
             }
         }
     }
-#if 0
-for (const auto& udn:unlimited_dim_names) 
-cerr<<"unlimited dimension names: "<<udn<<endl;
-#endif
 
     return ret_value; 
 }
