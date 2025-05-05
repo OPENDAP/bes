@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="nc4_unlimited_0.h5" dmrpp:href="data/nc4_unlimited_0.h5">
+    <Dimension name="time" size="0"/>
+    <Dimension name="lon" size="5"/>
+    <Dimension name="lat" size="10"/>
+    <Int32 name="time">
+        <Dim name="/time"/>
+        <Attribute name="units" type="String">
+            <Value>seconds</Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="-2147483647" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>1</dmrpp:chunkDimensionSizes>
+        </dmrpp:chunks>
+    </Int32>
+    <Int32 name="lon">
+        <Dim name="/lon"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="-2147483647" byteOrder="LE">
+            <dmrpp:chunk offset="7429" nBytes="20"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Int32 name="lat">
+        <Dim name="/lat"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="-2147483647" byteOrder="LE">
+            <dmrpp:chunk offset="7715" nBytes="40"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Float32 name="t">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+        <dmrpp:chunks fillValue="9.96921e+36" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>1 10 5</dmrpp:chunkDimensionSizes>
+        </dmrpp:chunks>
+    </Float32>
+    <Float64 name="p">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Float64">
+            <Value>-9999.</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+        <dmrpp:chunks fillValue="-9999" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>1 10 5</dmrpp:chunkDimensionSizes>
+        </dmrpp:chunks>
+    </Float64>
+    <Float32 name="z">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="units" type="String">
+            <Value>meters</Value>
+        </Attribute>
+        <Attribute name="valid_range" type="Float64">
+            <Value>0.</Value>
+            <Value>5000.</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+        <dmrpp:chunks fillValue="9.96921e+36" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>1 10 5</dmrpp:chunkDimensionSizes>
+        </dmrpp:chunks>
+    </Float32>
+    <Int32 name="rh">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-1</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+        <dmrpp:chunks fillValue="-1" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>1 10 5</dmrpp:chunkDimensionSizes>
+        </dmrpp:chunks>
+    </Int32>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>time</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

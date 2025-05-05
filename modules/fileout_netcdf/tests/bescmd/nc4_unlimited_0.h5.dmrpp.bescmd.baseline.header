@@ -1,0 +1,26 @@
+netcdf test {
+dimensions:
+	time = UNLIMITED ; // (0 currently)
+	lon = 5 ;
+	lat = 10 ;
+variables:
+	int time(time) ;
+		time:units = "seconds" ;
+	int lon(lon) ;
+		lon:units = "degrees_east" ;
+	int lat(lat) ;
+		lat:units = "degrees_north" ;
+	float t(time, lat, lon) ;
+	double p(time, lat, lon) ;
+		p:_FillValue = -9999. ;
+	float z(time, lat, lon) ;
+		z:units = "meters" ;
+		z:valid_range = 0., 5000. ;
+	int rh(time, lat, lon) ;
+		rh:_FillValue = -1 ;
+
+// global attributes:
+		:DODS_EXTRA.Unlimited_Dimension = "time" ;
+		:history = "removed date-timex nc4_unlimited_0.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"nc4_unlimited_0.h5.dmrpp\"}]}]" ;
+}

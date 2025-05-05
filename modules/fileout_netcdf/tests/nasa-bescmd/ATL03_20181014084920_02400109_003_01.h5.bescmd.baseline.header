@@ -74,8 +74,8 @@ variables:
 
 group: orbit_info {
   dimensions:
-  	crossing_time = 1 ;
-  	sc_orient_time = 1 ;
+  	crossing_time = UNLIMITED ; // (1 currently)
+  	sc_orient_time = UNLIMITED ; // (1 currently)
   variables:
   	double crossing_time(crossing_time) ;
   		crossing_time:contentType = "referenceInformation" ;
@@ -140,6 +140,7 @@ group: orbit_info {
   		lan:valid_min = -180. ;
 
   // group attributes:
+  		:DODS_EXTRA.Unlimited_Dimension = "crossing_time\nsc_orient_time" ;
   		:Description = "Contains data that are common among all beams for the granule.  These parameters are constants for a given granule." ;
   		:data_rate = "These parameters are constant for a given granule." ;
   } // group orbit_info
@@ -617,7 +618,7 @@ group: gt1r {
 
   group: bckgrd_atlas {
     dimensions:
-    	delta_time = 71814 ;
+    	delta_time = UNLIMITED ; // (71814 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:description = "Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
@@ -699,12 +700,13 @@ group: gt1r {
     		bckgrd_counts:units = "counts" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains data related to the 50-shot background count, including telemetry and range windows." ;
     } // group bckgrd_atlas
 
   group: geolocation {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
     	double reference_photon_lat(delta_time) ;
     		reference_photon_lat:coordinates = "delta_time" ;
@@ -960,13 +962,14 @@ group: gt1r {
     		neutat_delay_total:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters related to geolocation.  The rate of all of these parameters is at the rate corresponding to the ICESat-2 Geolocation Along Track Segment interval (nominally 20 m along-track). In the case of no photons within the segment (segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "Data within this group are stored at the ICESat-2 20m segment rate." ;
     } // group geolocation
 
   group: geophys_corr {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:contentType = "referenceInformation" ;
@@ -1054,6 +1057,7 @@ group: gt1r {
     		tide_pole:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters used to correct photon heights for selected geophysical effects. Additional geophysical parameters (dac and tide_ocean) are not applied and provided for informational purposes only. All parameters are posted at the same interval as the ICESat-2 Geolocation Along-Track Segment interval (nominally 20m along-track). In the case of no photons within the segment (../geolocation/segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "These parameters are stored at the ICESat-2 Geolocation Along Track Segment rate (nominally every 20 m along-track)." ;
     } // group geophys_corr
@@ -1066,7 +1070,7 @@ group: gt1r {
 
     group: land {
       dimensions:
-      	delta_time = 12281 ;
+      	delta_time = UNLIMITED ; // (12281 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -1105,12 +1109,13 @@ group: gt1r {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group land
 
     group: ocean {
       dimensions:
-      	delta_time = 39472 ;
+      	delta_time = UNLIMITED ; // (39472 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -1149,13 +1154,14 @@ group: gt1r {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group ocean
     } // group signal_find_output
 
   group: heights {
     dimensions:
-    	delta_time = 357823 ;
+    	delta_time = UNLIMITED ; // (357823 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:contentType = "referenceInformation" ;
@@ -1246,6 +1252,7 @@ group: gt1r {
     		dist_ph_across:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains arrays of the parameters for each received photon." ;
     		:data_rate = "Data are stored at the photon detection rate." ;
     } // group heights
@@ -1264,7 +1271,7 @@ group: gt2r {
 
   group: bckgrd_atlas {
     dimensions:
-    	delta_time = 72243 ;
+    	delta_time = UNLIMITED ; // (72243 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:description = "Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
@@ -1346,12 +1353,13 @@ group: gt2r {
     		bckgrd_counts:units = "counts" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains data related to the 50-shot background count, including telemetry and range windows." ;
     } // group bckgrd_atlas
 
   group: geolocation {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
     	double reference_photon_lat(delta_time) ;
     		reference_photon_lat:coordinates = "delta_time" ;
@@ -1607,13 +1615,14 @@ group: gt2r {
     		neutat_delay_total:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters related to geolocation.  The rate of all of these parameters is at the rate corresponding to the ICESat-2 Geolocation Along Track Segment interval (nominally 20 m along-track). In the case of no photons within the segment (segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "Data within this group are stored at the ICESat-2 20m segment rate." ;
     } // group geolocation
 
   group: geophys_corr {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:contentType = "referenceInformation" ;
@@ -1701,6 +1710,7 @@ group: gt2r {
     		tide_pole:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters used to correct photon heights for selected geophysical effects. Additional geophysical parameters (dac and tide_ocean) are not applied and provided for informational purposes only. All parameters are posted at the same interval as the ICESat-2 Geolocation Along-Track Segment interval (nominally 20m along-track). In the case of no photons within the segment (../geolocation/segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "These parameters are stored at the ICESat-2 Geolocation Along Track Segment rate (nominally every 20 m along-track)." ;
     } // group geophys_corr
@@ -1713,7 +1723,7 @@ group: gt2r {
 
     group: land {
       dimensions:
-      	delta_time = 12302 ;
+      	delta_time = UNLIMITED ; // (12302 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -1752,12 +1762,13 @@ group: gt2r {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group land
 
     group: ocean {
       dimensions:
-      	delta_time = 41711 ;
+      	delta_time = UNLIMITED ; // (41711 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -1796,13 +1807,14 @@ group: gt2r {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group ocean
     } // group signal_find_output
 
   group: heights {
     dimensions:
-    	delta_time = 307488 ;
+    	delta_time = UNLIMITED ; // (307488 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:contentType = "referenceInformation" ;
@@ -1893,6 +1905,7 @@ group: gt2r {
     		dist_ph_across:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains arrays of the parameters for each received photon." ;
     		:data_rate = "Data are stored at the photon detection rate." ;
     } // group heights
@@ -1911,7 +1924,7 @@ group: gt1l {
 
   group: bckgrd_atlas {
     dimensions:
-    	delta_time = 2355 ;
+    	delta_time = UNLIMITED ; // (2355 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:description = "Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
@@ -1993,12 +2006,13 @@ group: gt1l {
     		bckgrd_counts:units = "counts" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains data related to the 50-shot background count, including telemetry and range windows." ;
     } // group bckgrd_atlas
 
   group: geolocation {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
     	double reference_photon_lat(delta_time) ;
     		reference_photon_lat:coordinates = "delta_time" ;
@@ -2254,13 +2268,14 @@ group: gt1l {
     		neutat_delay_total:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters related to geolocation.  The rate of all of these parameters is at the rate corresponding to the ICESat-2 Geolocation Along Track Segment interval (nominally 20 m along-track). In the case of no photons within the segment (segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "Data within this group are stored at the ICESat-2 20m segment rate." ;
     } // group geolocation
 
   group: geophys_corr {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:contentType = "referenceInformation" ;
@@ -2348,6 +2363,7 @@ group: gt1l {
     		tide_pole:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters used to correct photon heights for selected geophysical effects. Additional geophysical parameters (dac and tide_ocean) are not applied and provided for informational purposes only. All parameters are posted at the same interval as the ICESat-2 Geolocation Along-Track Segment interval (nominally 20m along-track). In the case of no photons within the segment (../geolocation/segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "These parameters are stored at the ICESat-2 Geolocation Along Track Segment rate (nominally every 20 m along-track)." ;
     } // group geophys_corr
@@ -2360,7 +2376,7 @@ group: gt1l {
 
     group: land {
       dimensions:
-      	delta_time = 179 ;
+      	delta_time = UNLIMITED ; // (179 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -2399,12 +2415,13 @@ group: gt1l {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group land
 
     group: ocean {
       dimensions:
-      	delta_time = 18879 ;
+      	delta_time = UNLIMITED ; // (18879 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -2443,13 +2460,14 @@ group: gt1l {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group ocean
     } // group signal_find_output
 
   group: heights {
     dimensions:
-    	delta_time = 62258 ;
+    	delta_time = UNLIMITED ; // (62258 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:contentType = "referenceInformation" ;
@@ -2540,6 +2558,7 @@ group: gt1l {
     		dist_ph_across:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains arrays of the parameters for each received photon." ;
     		:data_rate = "Data are stored at the photon detection rate." ;
     } // group heights
@@ -2931,8 +2950,8 @@ group: atlas_impulse_response {
 
     group: tep_histogram {
       dimensions:
-      	tep_tod = 1 ;
-      	tep_hist_time = 2000 ;
+      	tep_tod = UNLIMITED ; // (1 currently)
+      	tep_hist_time = UNLIMITED ; // (2000 currently)
       variables:
       	double tep_hist_time(tep_hist_time) ;
       		tep_hist_time:description = "The times associated with the TEP histogram bin centers, measured from the laser transmit time." ;
@@ -2981,6 +3000,7 @@ group: atlas_impulse_response {
       		tep_bckgrd:units = "counts" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "tep_tod\ntep_hist_time" ;
       		:Description = "Subgroup that contains the time of the histogram centers and the normalized histogram counts for each bin." ;
       } // group tep_histogram
     } // group pce1_spot1
@@ -2992,8 +3012,8 @@ group: atlas_impulse_response {
 
     group: tep_histogram {
       dimensions:
-      	tep_tod = 1 ;
-      	tep_hist_time = 2000 ;
+      	tep_tod = UNLIMITED ; // (1 currently)
+      	tep_hist_time = UNLIMITED ; // (2000 currently)
       variables:
       	double tep_hist_time(tep_hist_time) ;
       		tep_hist_time:description = "The times associated with the TEP histogram bin centers, measured from the laser transmit time." ;
@@ -3042,6 +3062,7 @@ group: atlas_impulse_response {
       		tep_bckgrd:units = "counts" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "tep_tod\ntep_hist_time" ;
       		:Description = "Subgroup that contains the time of the histogram centers and the normalized histogram counts for each bin." ;
       } // group tep_histogram
     } // group pce2_spot3
@@ -3060,7 +3081,7 @@ group: gt3l {
 
   group: bckgrd_atlas {
     dimensions:
-    	delta_time = 2359 ;
+    	delta_time = UNLIMITED ; // (2359 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:description = "Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
@@ -3142,12 +3163,13 @@ group: gt3l {
     		bckgrd_counts:units = "counts" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains data related to the 50-shot background count, including telemetry and range windows." ;
     } // group bckgrd_atlas
 
   group: geolocation {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
     	double reference_photon_lat(delta_time) ;
     		reference_photon_lat:coordinates = "delta_time" ;
@@ -3403,13 +3425,14 @@ group: gt3l {
     		neutat_delay_total:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters related to geolocation.  The rate of all of these parameters is at the rate corresponding to the ICESat-2 Geolocation Along Track Segment interval (nominally 20 m along-track). In the case of no photons within the segment (segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "Data within this group are stored at the ICESat-2 20m segment rate." ;
     } // group geolocation
 
   group: geophys_corr {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:contentType = "referenceInformation" ;
@@ -3497,6 +3520,7 @@ group: gt3l {
     		tide_pole:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters used to correct photon heights for selected geophysical effects. Additional geophysical parameters (dac and tide_ocean) are not applied and provided for informational purposes only. All parameters are posted at the same interval as the ICESat-2 Geolocation Along-Track Segment interval (nominally 20m along-track). In the case of no photons within the segment (../geolocation/segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "These parameters are stored at the ICESat-2 Geolocation Along Track Segment rate (nominally every 20 m along-track)." ;
     } // group geophys_corr
@@ -3509,7 +3533,7 @@ group: gt3l {
 
     group: land {
       dimensions:
-      	delta_time = 9784 ;
+      	delta_time = UNLIMITED ; // (9784 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -3548,12 +3572,13 @@ group: gt3l {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group land
 
     group: ocean {
       dimensions:
-      	delta_time = 19218 ;
+      	delta_time = UNLIMITED ; // (19218 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -3592,13 +3617,14 @@ group: gt3l {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group ocean
     } // group signal_find_output
 
   group: heights {
     dimensions:
-    	delta_time = 70351 ;
+    	delta_time = UNLIMITED ; // (70351 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:contentType = "referenceInformation" ;
@@ -3689,6 +3715,7 @@ group: gt3l {
     		dist_ph_across:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains arrays of the parameters for each received photon." ;
     		:data_rate = "Data are stored at the photon detection rate." ;
     } // group heights
@@ -3707,7 +3734,7 @@ group: gt2l {
 
   group: bckgrd_atlas {
     dimensions:
-    	delta_time = 2355 ;
+    	delta_time = UNLIMITED ; // (2355 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:description = "Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
@@ -3789,12 +3816,13 @@ group: gt2l {
     		bckgrd_counts:units = "counts" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains data related to the 50-shot background count, including telemetry and range windows." ;
     } // group bckgrd_atlas
 
   group: geolocation {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
     	double reference_photon_lat(delta_time) ;
     		reference_photon_lat:coordinates = "delta_time" ;
@@ -4050,13 +4078,14 @@ group: gt2l {
     		neutat_delay_total:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters related to geolocation.  The rate of all of these parameters is at the rate corresponding to the ICESat-2 Geolocation Along Track Segment interval (nominally 20 m along-track). In the case of no photons within the segment (segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "Data within this group are stored at the ICESat-2 20m segment rate." ;
     } // group geolocation
 
   group: geophys_corr {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:contentType = "referenceInformation" ;
@@ -4144,6 +4173,7 @@ group: gt2l {
     		tide_pole:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters used to correct photon heights for selected geophysical effects. Additional geophysical parameters (dac and tide_ocean) are not applied and provided for informational purposes only. All parameters are posted at the same interval as the ICESat-2 Geolocation Along-Track Segment interval (nominally 20m along-track). In the case of no photons within the segment (../geolocation/segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "These parameters are stored at the ICESat-2 Geolocation Along Track Segment rate (nominally every 20 m along-track)." ;
     } // group geophys_corr
@@ -4156,7 +4186,7 @@ group: gt2l {
 
     group: land {
       dimensions:
-      	delta_time = 9634 ;
+      	delta_time = UNLIMITED ; // (9634 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -4195,12 +4225,13 @@ group: gt2l {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group land
 
     group: ocean {
       dimensions:
-      	delta_time = 18350 ;
+      	delta_time = UNLIMITED ; // (18350 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -4239,13 +4270,14 @@ group: gt2l {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group ocean
     } // group signal_find_output
 
   group: heights {
     dimensions:
-    	delta_time = 60110 ;
+    	delta_time = UNLIMITED ; // (60110 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:contentType = "referenceInformation" ;
@@ -4336,6 +4368,7 @@ group: gt2l {
     		dist_ph_across:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains arrays of the parameters for each received photon." ;
     		:data_rate = "Data are stored at the photon detection rate." ;
     } // group heights
@@ -7275,7 +7308,7 @@ group: gt3r {
 
   group: bckgrd_atlas {
     dimensions:
-    	delta_time = 72094 ;
+    	delta_time = UNLIMITED ; // (72094 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:description = "Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
@@ -7357,12 +7390,13 @@ group: gt3r {
     		bckgrd_counts:units = "counts" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains data related to the 50-shot background count, including telemetry and range windows." ;
     } // group bckgrd_atlas
 
   group: geolocation {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
     	double reference_photon_lat(delta_time) ;
     		reference_photon_lat:coordinates = "delta_time" ;
@@ -7618,13 +7652,14 @@ group: gt3r {
     		neutat_delay_total:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters related to geolocation.  The rate of all of these parameters is at the rate corresponding to the ICESat-2 Geolocation Along Track Segment interval (nominally 20 m along-track). In the case of no photons within the segment (segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "Data within this group are stored at the ICESat-2 20m segment rate." ;
     } // group geolocation
 
   group: geophys_corr {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:contentType = "referenceInformation" ;
@@ -7712,6 +7747,7 @@ group: gt3r {
     		tide_pole:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters used to correct photon heights for selected geophysical effects. Additional geophysical parameters (dac and tide_ocean) are not applied and provided for informational purposes only. All parameters are posted at the same interval as the ICESat-2 Geolocation Along-Track Segment interval (nominally 20m along-track). In the case of no photons within the segment (../geolocation/segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "These parameters are stored at the ICESat-2 Geolocation Along Track Segment rate (nominally every 20 m along-track)." ;
     } // group geophys_corr
@@ -7724,7 +7760,7 @@ group: gt3r {
 
     group: land {
       dimensions:
-      	delta_time = 12386 ;
+      	delta_time = UNLIMITED ; // (12386 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -7763,12 +7799,13 @@ group: gt3r {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group land
 
     group: ocean {
       dimensions:
-      	delta_time = 31142 ;
+      	delta_time = UNLIMITED ; // (31142 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -7807,13 +7844,14 @@ group: gt3r {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group ocean
     } // group signal_find_output
 
   group: heights {
     dimensions:
-    	delta_time = 501627 ;
+    	delta_time = UNLIMITED ; // (501627 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:contentType = "referenceInformation" ;
@@ -7904,6 +7942,7 @@ group: gt3r {
     		dist_ph_across:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains arrays of the parameters for each received photon." ;
     		:data_rate = "Data are stored at the photon detection rate." ;
     } // group heights

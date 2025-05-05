@@ -251,11 +251,12 @@ string FONcUtils::gen_name(const vector<string> &embed, const string &name, stri
     return FONcUtils::id2netcdf(new_name);
 }
 FONcBaseType *
-FONcUtils::convert(BaseType *v, const string &ncdf_version, const bool is_classic_model) {
+FONcUtils::convert(BaseType *v, const string &ncdf_version, bool is_classic_model) {
     map<string,int>fdimname_to_id;
     vector<int>rds_nums;
     unordered_map<string,vector<pair<string,int>>>  GFQN_to_en_typeid_vec;
-    return convert(v, ncdf_version, is_classic_model,fdimname_to_id,rds_nums, GFQN_to_en_typeid_vec);
+    vector<string> unlimited_dimnames;
+    return convert(v, ncdf_version, is_classic_model,fdimname_to_id,rds_nums, GFQN_to_en_typeid_vec, unlimited_dimnames);
 }
 /** @brief Creates a FONc object for the given DAP object
  *
@@ -270,11 +271,12 @@ FONcUtils::convert(BaseType *v, const string &ncdf_version, const bool is_classi
  * @throws BESInternalError if the DAP object is not an expected type
  */
 FONcBaseType *
-FONcUtils::convert(BaseType *v, const string &ncdf_version, const bool is_classic_model,
-                   unordered_map<string,vector<pair<string,int>>> & GFQN_to_en_typeid_vec) {
+FONcUtils::convert(BaseType *v, const string &ncdf_version, bool is_classic_model,
+                   unordered_map<string,vector<pair<string,int>>> & GFQN_to_en_typeid_vec,
+                   const vector<string> & unlimited_dim_names) {
     map<string,int>fdimname_to_id;
     vector<int>rds_nums;
-    return convert(v, ncdf_version, is_classic_model,fdimname_to_id,rds_nums, GFQN_to_en_typeid_vec);
+    return convert(v, ncdf_version, is_classic_model,fdimname_to_id,rds_nums, GFQN_to_en_typeid_vec, unlimited_dim_names);
 }
 
 /** @brief Creates a FONc object for the given DAP object
@@ -316,10 +318,11 @@ FONcUtils::convert(BaseType *v, const string &ncdf_version, const bool is_classi
 FONcBaseType *
 FONcUtils::convert(BaseType *v, 
                    const string &ncdf_version, 
-                   const bool is_classic_model, 
+                   bool is_classic_model, 
                    map<string,int>&fdimname_to_id,
                    vector<int>&rds_nums,
-                   unordered_map<string,vector<pair<string,int>>> & GFQN_to_en_typeid_vec)
+                   unordered_map<string,vector<pair<string,int>>> & GFQN_to_en_typeid_vec,
+                   const vector<string>& unlimited_dimnames)
 {
     FONcBaseType *b = nullptr;
 
@@ -495,19 +498,23 @@ FONcUtils::convert(BaseType *v,
                     }
                     b = new FONcArray(v, dim_ids, use_d4_dim_ids, rds_nums);
                     if (is_enum) {
-                       auto fonc_a = dynamic_cast<FONcArray *>(b); 
-                       fonc_a->set_enum_flag(is_enum);
-                       fonc_a->set_nc4_enum_type_id(nc4_enum_type_id);
-                       fonc_a->set_nc4_enum_basetype(enum_basetype);
+                        auto fonc_a = dynamic_cast<FONcArray *>(b); 
+                        fonc_a->set_enum_flag(is_enum);
+                        fonc_a->set_nc4_enum_type_id(nc4_enum_type_id);
+                        fonc_a->set_nc4_enum_basetype(enum_basetype);
                     }
 
                 } else {
                     b = new FONcArray(v);
                     if (is_enum) {
-                       auto fonc_a = dynamic_cast<FONcArray *>(b); 
-                       fonc_a->set_enum_flag(is_enum);
-                       fonc_a->set_nc4_enum_type_id(nc4_enum_type_id);
-                       fonc_a->set_nc4_enum_basetype(enum_basetype);
+                        auto fonc_a = dynamic_cast<FONcArray *>(b); 
+                        fonc_a->set_enum_flag(is_enum);
+                        fonc_a->set_nc4_enum_type_id(nc4_enum_type_id);
+                        fonc_a->set_nc4_enum_basetype(enum_basetype);
+                    }
+                    if (unlimited_dimnames.empty()==false) {
+                        auto fonc_a = dynamic_cast<FONcArray *>(b);
+                        fonc_a->set_unlimited_dim_names(unlimited_dimnames);
                     }
                 }
             }
