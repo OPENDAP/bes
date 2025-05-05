@@ -29,6 +29,7 @@
 #include <vector>
 #include <string>
 
+#include <BESDapService.h>
 #include <BESRequestHandlerList.h>
 #include <BESDebug.h>
 #include <BESContainerStorageList.h>
@@ -57,10 +58,12 @@ void NgapModule::initialize(const string &modname)
 
     BESDEBUG(modname, "    adding OWNED " << modname << " container storage" << endl);
 
+    BESDapService::handle_dap_service(modname);
+
     BESContainerStorageList::TheList()->add_persistence(new NgapOwnedContainerStorage(modname));
 
     BESReturnManager::TheManager()->add_transmitter(RETURNAS_DMRPP, new FODmrppTransmitter());
-    BESServiceRegistry::TheRegistry()->add_format(OPENDAP_SERVICE, DAP4DATA_SERVICE, RETURNAS_DMRPP);
+    BESServiceRegistry::TheRegistry()->add_format(OPENDAP_SERVICE, DMR_SERVICE, RETURNAS_DMRPP);
 
     BESDEBUG(modname, prolog << "Done Initializing DMR++ Transmitter " << modname << endl);
 

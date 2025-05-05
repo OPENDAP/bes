@@ -10,5 +10,5 @@
   <bes:define name="d1" space="default">
     <bes:container name="ngap-1" />
   </bes:define>
-  <bes:get type="dmr" definition="d1"/>
+  <bes:get type="dmr" definition="d1" returnAs="dmrpp"/>
 </bes:request>
