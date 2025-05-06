@@ -54,7 +54,7 @@ typedef BESXMLCommand *(*p_xmlcmd_builder)(const BESDataHandlerInterface &dhi);
 /**
  * @brief Base class for the BES's commands
  *
- * Maintains a factory for used to build all of the BES's commands. This class
+ * Maintains a factory for used to build all the BES's commands. This class
  * also holds instances of the DataHandlerInterface used by a particular instance
  * of a command and the information about this command that should be written
  * to the BES log.

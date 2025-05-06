@@ -93,25 +93,26 @@ void BESXMLInterface::build_data_request_plan()
 
     try {
         // set the default error function to my own
-        vector<string> parseerrors;
-        xmlSetGenericErrorFunc((void *) &parseerrors, BESXMLUtils::XMLErrorFunc);
+        vector<string> parse_errors;
+        xmlSetGenericErrorFunc((void *) &parse_errors, BESXMLUtils::XMLErrorFunc);
 
         // XML_PARSE_NONET
-        doc = xmlReadMemory(d_xml_document.c_str(), (int) d_xml_document.size(), "" /* base URL */,
-                            nullptr /* encoding */, XML_PARSE_NONET /* xmlParserOption */);
+        doc = xmlReadMemory(d_xml_document.c_str(), static_cast<int>(d_xml_document.size()), "",
+                            nullptr, XML_PARSE_NONET);
 
         if (doc == nullptr) {
             string err = "Problem parsing the request xml document:\n";
-            bool isfirst = true;
-            for (const auto &parseerror: parseerrors) {
-                if (!isfirst && parseerror.compare(0, 6, "Entity") == 0) {
+            bool is_first = true;
+            for (const auto &parse_error: parse_errors) {
+                if (!is_first && parse_error.compare(0, 6, "Entity") == 0) {
                     err += "\n";
                 }
-                err += parseerror;
-                isfirst = false;
+                err += parse_error;
+                is_first = false;
             }
             throw BESSyntaxUserError(err, __FILE__, __LINE__);
         }
+
         // get the root element and make sure it exists and is called request
         root_element = xmlDocGetRootElement(doc);
         if (!root_element) throw BESSyntaxUserError("There is no root element in the xml document", __FILE__, __LINE__);
@@ -179,8 +180,7 @@ void BESXMLInterface::build_data_request_plan()
 
         while (current_node) {
             if (current_node->type == XML_ELEMENT_NODE) {
-                // given the name of this node we should be able to find a
-                // BESXMLCommand object
+                // given the name of this node, we should be able to find a BESXMLCommand object
                 string node_name = (char *) current_node->name;
 
                 if (node_name == SETCONTAINER_STR) {

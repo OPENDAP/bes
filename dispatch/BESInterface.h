@@ -59,7 +59,7 @@ class BESDataHandlerInterface;
  <LI>transmit the response object</LI>
  <LI>log the status of the request</LI>
  <LI>send out report information that can be reported on by any number of
- reporters registered with the system.</LI>
+ reporters registered with the system</LI>
  <LI>end the request</LI>
  </OL>
 
@@ -72,14 +72,14 @@ class BESDataHandlerInterface;
  in Cedar, response handlers are registered to build flat, tab, info,
  and stream responses.
 
- To build the response objects a user can make many requests. For
+ To build the response objects, a user can make many requests. For
  example, a das object can be built using as many different files as is
  requested, say for file1,file2,file3,file4. And each of these files
  could be of a different data type. For example, file1 and file3 could
- be cedar files, file2 could be cdf file and file4 could be a netcdf
+ be cedar files, file2 could be a cdf file, and file4 could be a netcdf
  file.
 
- The structure that holds all of the requested information is the
+ The structure that holds all the requested information is the
  BESDataHandlerInterface. It holds on to a list of containers, each of
  which has the data type (cedar, cdf, nph, etc...) and the file to be
  read. The BESDataHandlerInterface is built in the build request method.
@@ -88,13 +88,13 @@ class BESDataHandlerInterface;
  such as DAS, DDS, help, status, version, etc...
 
  For each container in the BESDataHandlerInterface find the
- request handler (BESRequestHandler) for the containers data type. Each
+ request handler (BESRequestHandler) for the container data type. Each
  request handler registers functions that know how to fill in a certain
  type of response (DAS, DDS, etc...). Find that function and invoke it. So,
  for example, there is a CedarRequestHandler class that registers functions
- that knows how to fill in the different response objects from cedar files.
+ that know how to fill in the different response objects from cedar files.
 
- Once the response object is filled it is transmitted using a specified
+ Once the response object is filled, it is transmitted using a specified
  BESTransmitter.
 
  The status is then logged (default is to not log any status. It is up
@@ -104,7 +104,7 @@ class BESDataHandlerInterface;
  pass off the reporting to BESReporterList::TheList(), which has a list of
  registered reporters and passes off the information to each of those
  reporters. For example, if the Cedar project wants to report on any
- cedar access then it can register a reporter with
+ cedar access, then it can register a reporter with
  BESReporterList::TheList().
 
  @see BESGlobalInit
