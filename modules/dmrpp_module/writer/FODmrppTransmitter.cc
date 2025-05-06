@@ -60,6 +60,7 @@
 #include "DmrppD4Group.h"
 
 #include "build_dmrpp_util.h"
+#include "NgapOwnedContainer.h"
 #include "FODmrppTransmitter.h"
 
 #include "DapUtils.h"
@@ -84,6 +85,7 @@ FODmrppTransmitter::FODmrppTransmitter() :
     add_method(DAP4DATA_SERVICE, FODmrppTransmitter::send_dmrpp);
 }
 
+
 /**
  * Follow the send_dmrpp()
  * @brief The static method registered to transmit OPeNDAP DMRPP XML metadata.
@@ -105,6 +107,20 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
     BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
 
     bool add_production_metadata = true;
+
+    auto container = dynamic_cast<ngap::NgapOwnedContainer*>(dhi.container);
+    // in case for later -> *(dhi.containers.begin()))->access()
+    if (!container) throw BESInternalFatalError("expected NgapOwnedContainer", __FILE__, __LINE__);
+    auto dmrpp = container->access();
+
+    // dhi.get_output_stream() << dmrpp << flush;
+
+    auto &strm = dhi.get_output_stream();
+    strm << dmrpp << flush;
+    if (!strm) throw BESInternalError("Output stream is not set, can not return as", __FILE__, __LINE__);
+
+#if 0
+      bool add_production_metadata = true;
 
     auto bdmr = dynamic_cast<BESDMRResponse *>(obj);
     if (!bdmr) throw BESInternalFatalError("Expected a BESDMRResponse instance", __FILE__, __LINE__);
@@ -135,8 +151,8 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
         string dataset_name = (*(dhi.containers.begin()))->access();
         string href_url = (*(dhi.containers.begin()))->get_real_name();
 
-        // Currently the disable_dio flag is always false. 
-        // One cannot pass a different value of the disable_dio flag for this build_dmrpp module. 
+        // Currently the disable_dio flag is always false.
+        // One cannot pass a different value of the disable_dio flag for this build_dmrpp module.
         // The build_dmrpp module will not generate a dmrpp file that turns off the direct IO feature.
         // One has to use the build_dmrpp utility to do this. KY 2024-07-17
         build_dmrpp_util::add_chunk_information(dataset_name, &dmrpp, false);
@@ -182,6 +198,7 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
     catch (...) {
         throw BESInternalError("Failed to get read data: Unknown exception caught", __FILE__, __LINE__);
     }
+#endif
 
     BESDEBUG(MODULE,  prolog << "END  Transmitted DMRPP XML" << endl);
 }
