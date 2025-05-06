@@ -73,13 +73,10 @@ NgapRequestHandler::NgapRequestHandler(const string &name) :
     add_method(HELP_RESPONSE, NgapRequestHandler::ngap_build_help);
 
     // Read BES keys to determine if the caches should be used. jhrg 9/22/23
-    NgapRequestHandler::d_use_cmr_cache 
-        = TheBESKeys::read_bool_key(USE_CMR_CACHE, NgapRequestHandler::d_use_cmr_cache);
+    NgapRequestHandler::d_use_cmr_cache = TheBESKeys::read_bool_key(USE_CMR_CACHE, NgapRequestHandler::d_use_cmr_cache);
     if (NgapRequestHandler::d_use_cmr_cache) {
-        NgapRequestHandler::d_cmr_cache_size_items
-                = TheBESKeys::read_int_key(CMR_CACHE_THRESHOLD, NgapRequestHandler::d_cmr_cache_size_items);
-        NgapRequestHandler::d_cmr_cache_purge_items
-                = TheBESKeys::read_int_key(CMR_CACHE_SPACE, NgapRequestHandler::d_cmr_cache_purge_items);
+        NgapRequestHandler::d_cmr_cache_size_items = TheBESKeys::read_int_key(CMR_CACHE_THRESHOLD, NgapRequestHandler::d_cmr_cache_size_items);
+        NgapRequestHandler::d_cmr_cache_purge_items = TheBESKeys::read_int_key(CMR_CACHE_SPACE, NgapRequestHandler::d_cmr_cache_purge_items);
         if (!d_cmr_mem_cache.initialize(d_cmr_cache_size_items, d_cmr_cache_purge_items)) {
             ERROR_LOG("NgapRequestHandler::NgapRequestHandler() - failed to initialize CMR cache");
         }

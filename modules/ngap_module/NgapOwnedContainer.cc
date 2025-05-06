@@ -67,7 +67,7 @@ bool NgapOwnedContainer::d_use_opendap_bucket = true;
 bool NgapOwnedContainer::d_inject_data_url = true;
 
 /**
- * @brief Creates an instances of NgapOwnedContainer with symbolic name and real
+ * @brief Creates an instance of NgapOwnedContainer with symbolic name and real
  * name, which is the remote request.
  *
  * The real_name is the remote request URL.
@@ -121,14 +121,14 @@ bool NgapOwnedContainer::file_to_string(int fd, string &content) {
  * @brief Set the real name of the container using the CMR or cache.
  *
  * This uses CMR to translate a REST path to a true NGAP URL for the granule.
- * Once this is done, the result is cached in an unordered_map keyed using the the
- * REST path and the UID. The REST path is initially the value of the
- * real_name property of the Container, but the action of performing the translation
+ * Once this is done, the result is cached in an unordered_map keyed using the
+ * REST path and the UID. The REST path is initially the value of the Container
+ * real_name property, but the action of performing the translation
  * changes the name of the real_name property to the true NGAP URL. The REST
  * path is stored in the d_ngap_path property of the NgapContainer instance.
  *
  * @note: The cache is global to the NgapRequestHandler class. This is a per-process
- * cache and it is not thread-safe.
+ * cache, and it is not thread-safe.
  */
 string NgapOwnedContainer::build_data_url_to_daac_bucket(const string &rest_path) {
     BES_MODULE_TIMING(prolog + rest_path);
