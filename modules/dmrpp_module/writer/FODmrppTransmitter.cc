@@ -67,6 +67,7 @@
 
 using namespace libdap;
 using namespace std;
+using namespace ngap;
 
 #define MODULE "dmrpp"
 #define prolog string("FODmrppTransmitter::").append(__func__).append("() - ")
@@ -106,9 +107,10 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
 {
     BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
 
-    bool add_production_metadata = true;
+#if 0
+      bool add_production_metadata = true;
 
-    auto container = dynamic_cast<ngap::NgapOwnedContainer*>(dhi.container);
+    auto container = dynamic_cast<NgapOwnedContainer*>(dhi.container);
     // in case for later -> *(dhi.containers.begin()))->access()
     if (!container) throw BESInternalFatalError("expected NgapOwnedContainer", __FILE__, __LINE__);
     auto dmrpp = container->access();
@@ -118,9 +120,11 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
     auto &strm = dhi.get_output_stream();
     strm << dmrpp << flush;
     if (!strm) throw BESInternalError("Output stream is not set, can not return as", __FILE__, __LINE__);
+#endif
 
-#if 0
-      bool add_production_metadata = true;
+
+#if 1
+    bool add_production_metadata = true;
 
     auto bdmr = dynamic_cast<BESDMRResponse *>(obj);
     if (!bdmr) throw BESInternalFatalError("Expected a BESDMRResponse instance", __FILE__, __LINE__);

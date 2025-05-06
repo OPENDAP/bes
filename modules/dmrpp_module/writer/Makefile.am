@@ -41,5 +41,6 @@ h5common.h: Makefile
 	cp $(top_srcdir)/modules/hdf5_handler/h5common.h ./h5common.h
 
 FODMRPP_SRC = FODmrppTransmitter.cc $(top_srcdir)/modules/dmrpp_module/build_dmrpp_util.cc h5common.cc
+# $(top_srcdir)/modules/ngap_module/NgapOwnedContainer.cc  $(top_srcdir)/modules/ngap_module/NgapAPI.cc
 
 FODMRPP_HDR = FODmrppTransmitter.h $(top_srcdir)/modules/dmrpp_module/build_dmrpp_util.h h5common.h
