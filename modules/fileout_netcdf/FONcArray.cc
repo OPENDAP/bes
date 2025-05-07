@@ -758,15 +758,26 @@ void FONcArray::define(int ncid) {
                     }
                 }
 
-                size_t total_chunksizes = 1;
-                for (const auto& chunk_size:d_chunksizes)
-                    total_chunksizes *= chunk_size;
+                // We find that increasing the chunk cache size only benefits large-size character array for NASA files. 
+                // So we only check if we need to increase the chunk cache for character array. 
+                // If we find it necessary to apply this to other datatypes, don't forget to count the datatype size. KY 2025-05-07
+                if (d_array_type == NC_CHAR) {
 
-                // If the chunk size is greater than 4M, we increase the chunk cache size to be 64M.
-                if (total_chunksizes  >NORMAL_CHUNK_CACHE_SIZE) {
-                    size_t cache_size = MAXIMUM_CHUNK_CACHE_SIZE;
-                    // The number 521 is HDF5's default value for this parameter.
-                    nc_set_var_chunk_cache(ncid, d_varid, cache_size,521,1);
+                    BESDEBUG("fonc", "FONcArray::define() - Checking if we should increase HDF5 chunk cache. " << endl);
+                    // Chunk size is the number of elements in a chunk. chunk cache needs to be in byte. For character the datatype
+                    // is one byte, so we don't need to consider the datatype size but for other datatype, we need to multiply
+                    // the datatype size.
+                    size_t total_chunksizes = 1;
+                    for (const auto& chunk_size:d_chunksizes)
+                        total_chunksizes *= chunk_size;
+    
+                    // If the chunk size is greater than 4M, we increase the chunk cache size to be 64M.
+                    if (total_chunksizes  >NORMAL_CHUNK_CACHE_SIZE) {
+                        size_t cache_size = MAXIMUM_CHUNK_CACHE_SIZE;
+                        BESDEBUG("fonc", "FONcArray::define() - we increase the HDF5 chunk cache of this variable to 64MB. " << endl);
+                        // The number 521 is HDF5's default value for this parameter.
+                        nc_set_var_chunk_cache(ncid, d_varid, cache_size,521,1);
+                    }
                 }
             }
         }
