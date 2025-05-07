@@ -37,7 +37,6 @@
 
 #include "BESInternalFatalError.h"
 
-//#include "DmrppParserSax2.h"
 #include "DmrppTypeFactory.h"
 #include "DmrppMetadataStore.h"
 
@@ -283,9 +282,8 @@ DmrppMetadataStore::get_dmrpp_object(const string &name)
     dmz.parse_xml_string(oss.str());
     dmz.build_thin_dmr(dmrpp.get());
     dmz.load_all_attributes(dmrpp.get());
-    dmz.load_chunks(dmrpp.get()->root()); // @TODO - Does this work? Does it get ALL the chunks?
+    dmz.load_chunks(dmrpp.get()->root());
     dmrpp->set_factory(nullptr);
-
 
     return dmrpp.release();
 }
