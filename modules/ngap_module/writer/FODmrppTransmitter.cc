@@ -51,7 +51,7 @@
 
 #if 0
 #include <BESContextManager.h>
-#include <BESDapNames.h>
+
 #include <BESUtil.h>
 #include <RequestServiceTimer.h>
 
@@ -60,6 +60,7 @@
 #include <BESDapError.h>
 #endif
 
+#include <BESDapNames.h>
 #include <BESDebug.h>
 #include <BESDataHandlerInterface.h>
 
@@ -79,7 +80,7 @@ class BESResponseObject;
 #define MODULE "ngap_writer"
 #define prolog string("FODmrppTransmitter::").append(__func__).append("() - ")
 
-#if 0
+
 /** @brief BESTransmitter class named "dmrpp" that transmits an OPeNDAP
  * data object as a DMRPP file
  *
@@ -91,9 +92,8 @@ class BESResponseObject;
 FODmrppTransmitter::FODmrppTransmitter() :
     BESTransmitter()
 {
-    add_method(DAP4DATA_SERVICE, FODmrppTransmitter::send_dmrpp);
+    add_method(DMR_SERVICE, FODmrppTransmitter::send_dmrpp);
 }
-#endif
 
 /**
  * Follow the send_dmrpp()
