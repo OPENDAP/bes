@@ -1824,30 +1824,14 @@ bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
 
     bool is_unsupported = false;
     hid_t h5_type_id = H5Dget_type(dataset_id);
+    if (h5_type_id < 0) {
+        H5Dclose(dataset_id);
+        throw BESInternalError("H5Dget_type failed", __FILE__, __LINE__);
+    }
+
     H5T_class_t class_type = H5Tget_class(h5_type_id);
 
-    bool isArray = btp->type() == dods_array_c;
-
     switch (class_type) {
-        case H5T_STRING: {
-            if (H5Tis_variable_str(h5_type_id) && isArray) {
-                stringstream msgs;
-                msgs << "UnsupportedTypeException: Your data contains the dataset/variable: ";
-                msgs << get_type_decl(btp) << " ";
-                msgs << "which the underlying HDF5/NetCDF-4 file has stored as a";
-                msgs << (isArray?"n array of ":" ");
-                msgs << "variable length string";
-                msgs << (isArray?"s (AVLS). ":". ");
-                msgs << "This data architecture is not currently supported by ";
-                msgs << "the dmr++ creation machinery. One solution available to you is to rewrite the granule ";
-                msgs << "so that these arrays are represented as arrays of fixed length strings (AFLS). While ";
-                msgs << "these may not be as 'elegant' as AVLS, the ragged ends of the AFLS compress well, so ";
-                msgs << "the storage penalty is minimal.";
-                msg = msgs.str();
-                is_unsupported = false;
-            }
-            break;
-        }
         case H5T_ARRAY: {
             stringstream msgs;
             msgs << "UnsupportedTypeException: Your data contains the dataset/variable: ";
@@ -1889,7 +1873,28 @@ bool is_unsupported_type(hid_t dataset_id, BaseType *btp, string &msg){
             break;
 
         }
-
+        case H5T_TIME: {
+            stringstream msgs;
+            msgs << "UnsupportedTypeException: Your data contains the dataset/variable: ";
+            msgs << get_type_decl(btp) << " ";
+            msgs << "which the underlying HDF5/NetCDF-4 file has stored as an HDF5 time type. ";
+            msgs << "This is not yet supported by the dmr++ creation machinery.";
+            msg = msgs.str();
+            is_unsupported = true;
+            break;
+ 
+        }
+        case H5T_BITFIELD: {
+            stringstream msgs;
+            msgs << "UnsupportedTypeException: Your data contains the dataset/variable: ";
+            msgs << get_type_decl(btp) << " ";
+            msgs << "which the underlying HDF5/NetCDF-4 file has stored as an HDF5 bitfield type. ";
+            msgs << "This is not yet supported by the dmr++ creation machinery.";
+            msg = msgs.str();
+            is_unsupported = true;
+            break;
+ 
+        }
         default:
             break;
     }
