@@ -38,27 +38,15 @@ using std::endl;
 using std::ostream;
 using std::string;
 
-#if 0
-  BESReturnManager *BESReturnManager::d_instance = nullptr;
-std::once_flag d_euc_init_once;
-
-BESReturnManager::BESReturnManager() {
-}
-#endif
-
-
 BESReturnManager::~BESReturnManager() {
     for (const auto& transmitter: transmitter_list_)
         delete transmitter.second;
+}
 
-#if 0
-      BESReturnManager::Transmitter_iter i;
-    BESTransmitter *t = 0;
-    for (i = _transmitter_list.begin(); i != _transmitter_list.end(); i++) {
-        t = (*i).second;
-        delete t;
-    }
-#endif
+BESReturnManager *
+BESReturnManager::TheManager() {
+    static BESReturnManager the_manager;
+    return &the_manager;
 }
 
 bool BESReturnManager::add_transmitter(const string &name, BESTransmitter *transmitter) {
@@ -75,9 +63,6 @@ bool BESReturnManager::del_transmitter(const string &name) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     bool ret = false;
-#if 0
-      BESReturnManager::Transmitter_iter i;
-#endif
 
     auto i = transmitter_list_.find(name);
     if (i != transmitter_list_.end()) {
@@ -92,10 +77,6 @@ bool BESReturnManager::del_transmitter(const string &name) {
 BESTransmitter *
 BESReturnManager::find_transmitter(const string &name) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
-
-#if 0
-      BESReturnManager::Transmitter_citer i;
-#endif
 
     auto i = transmitter_list_.find(name);
     if (i != transmitter_list_.end()) {
@@ -132,28 +113,3 @@ void BESReturnManager::dump(ostream &strm) const {
     }
     BESIndent::UnIndent();
 }
-
-BESReturnManager *
-BESReturnManager::TheManager() {
-    static BESReturnManager the_manager;
-    return &the_manager;
-#if 0
-      std::call_once(d_euc_init_once, BESReturnManager::initialize_instance);
-    return d_instance;
-#endif
-}
-
-#if 0
-  void BESReturnManager::initialize_instance() {
-    d_instance = new BESReturnManager;
-#ifdef HAVE_ATEXIT
-    atexit(delete_instance);
-#endif
-}
-
-void BESReturnManager::delete_instance() {
-    delete d_instance;
-    d_instance = 0;
-}
-
-#endif

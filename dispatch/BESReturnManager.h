@@ -49,31 +49,12 @@ class BESTransmitter;
  */
 class BESReturnManager : public BESObj {
 private:
-#if 0
-      static BESReturnManager *d_instance;
-#endif
-
     mutable std::recursive_mutex d_cache_lock_mutex;
-
-#if 0
-      static void initialize_instance();
-
-    static void delete_instance();
-#endif
-
-
     std::map<std::string, BESTransmitter *> transmitter_list_;
 
 public:
     BESReturnManager() = default;
-
     ~BESReturnManager() override;
-
-#if 0
-     typedef std::map<std::string, BESTransmitter *>::const_iterator Transmitter_citer;
-    typedef std::map<std::string, BESTransmitter *>::iterator Transmitter_iter;
-
-#endif
 
     virtual bool add_transmitter(const std::string &name, BESTransmitter *transmitter);
 
