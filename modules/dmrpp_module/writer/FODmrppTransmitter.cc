@@ -83,7 +83,7 @@ using namespace ngap;
 FODmrppTransmitter::FODmrppTransmitter() :
     BESTransmitter()
 {
-    add_method(DAP4DATA_SERVICE, FODmrppTransmitter::send_dmrpp);
+    BESTransmitter::add_method(DAP4DATA_SERVICE, FODmrppTransmitter::send_dmrpp);
 }
 
 
@@ -92,14 +92,14 @@ FODmrppTransmitter::FODmrppTransmitter() :
  * @brief The static method registered to transmit OPeNDAP DMRPP XML metadata.
  *
  * This function takes the OPeNDAP DMR object, reads in the data (can be
- * used with any data handler), transforms the DMR into a DMRPP, and
+ * used with any data handler), and transforms the DMR into a DMRPP. It then
  * streams back that DMRPP XML back to the requester using the stream
  * specified in the BESDataHandlerInterface.
  *
  * @param obj The BESResponseObject containing the OPeNDAP DataDDS object
  * @param dhi BESDataHandlerInterface containing information about the
  * request and response
- * @throws BESInternalError if the response is not an OPeNDAP DMR or if
+ * @throws BESInternalError if the response is not an OPeNDAP DMR, or if
  * there are any problems reading the data, generating DMRPP XML, or
  * streaming the DMRPP XML
  */
@@ -108,7 +108,7 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
     BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
 
 #if 0
-      bool add_production_metadata = true;
+    bool add_production_metadata = true;
 
     auto container = dynamic_cast<NgapOwnedContainer*>(dhi.container);
     // in case for later -> *(dhi.containers.begin()))->access()
