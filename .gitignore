@@ -173,3 +173,6 @@ timing/*/*.dtps
 /.externalToolBuilders/
 /.scannerwork/
 /bw-output/
+
+## IDE configuration
+.vscode
