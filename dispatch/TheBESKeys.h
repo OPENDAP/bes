@@ -109,6 +109,8 @@ class TheBESKeys: public BESObj {
     // Only called by the static TheBESKeys::TheKeys() method.
     explicit TheBESKeys(std::string keys_file_name);
 
+    TheBESKeys();
+
 public:
     /**
      * TheBESKeys::ConfigFile provides a way for the daemon and test code to
@@ -116,7 +118,7 @@ public:
      */
     static std::string ConfigFile;
 
-    TheBESKeys() = delete;
+    // TheBESKeys() = delete;
     TheBESKeys(const TheBESKeys &) = delete;
     TheBESKeys(TheBESKeys &&) = delete;
     TheBESKeys &operator=(const TheBESKeys &) = delete;
@@ -137,10 +139,11 @@ public:
      * @brief Delete the key
      * Added primarily for testing purposes.
      * @param key
-     */
+     *``
     void delete_key(const std::string &key) {
         d_the_keys.erase(key);
     }
+    */
 
     void set_key(const std::string &key, const std::string &val, bool addto = false);
 
