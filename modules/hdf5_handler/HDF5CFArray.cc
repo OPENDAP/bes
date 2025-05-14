@@ -274,6 +274,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
 
     }
 
+
 // END CACHE
    
     bool pass_fileid = HDF5RequestHandler::get_pass_fileid();
@@ -384,6 +385,8 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
     // Now reading the data, note dtype is not dtypeid.
     // dtype is an enum  defined by the handler.
      
+if (true == data_to_disk_cache) 
+cerr<<"writing data to disk cache for "<<varname <<endl;
     switch (dtype) {
 
         case H5CHAR:
@@ -889,6 +892,8 @@ bool HDF5CFArray:: valid_disk_cache_for_compressed_data(short dtype_size) const 
 #endif
     if((comp_ratio < HDF5RequestHandler::get_disk_comp_threshold()) 
        && (total_elems*dtype_size >= HDF5RequestHandler::get_disk_var_size())) {
+cerr<<"var name: "<<varname <<endl;
+cerr<<"var size in bytes: "<<total_elems*dtype_size <<endl;
         if( true == HDF5RequestHandler::get_disk_cache_float_only_comp()) {
             if(dtype==H5FLOAT32 || dtype == H5FLOAT64) 
                 ret_value = true;

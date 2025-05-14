@@ -202,6 +202,7 @@ bool HDF5DiskCache::write_cached_data2(const string & cache_file_name, int64_t e
     BESDEBUG("cache", "In HDF5DiskCache::write_cached_data()" << endl);
     int fd = 0;
     bool ret_value = false;
+cerr<<"cache_file_name: "<<cache_file_name <<endl;
 
     // 1. create_and_lock. 
     if (create_and_lock(cache_file_name, fd)) {
@@ -217,17 +218,26 @@ bool HDF5DiskCache::write_cached_data2(const string & cache_file_name, int64_t e
                 string msg = "Cannot remove the corrupt cached file " + cache_file_name;
                 throw BESInternalError(msg, __FILE__, __LINE__);
             }
+cerr<<"written size is not the same as the expected file size"<<endl;
+cerr<<"ret_val: "<<ret_val <<endl;
+cerr<<"expected_file_size: "<<expected_file_size <<endl;
 
         }
         else {
             unsigned long long size = update_cache_info(cache_file_name);
-            if (cache_too_big(size)) update_and_purge(cache_file_name);
+cerr<<"write the same size "<<endl;
+            if (cache_too_big(size)) {
+cerr<<"cache_too_big: "<<endl;
+                update_and_purge(cache_file_name);
+            }
             ret_value = true;
         }
         // 4. release the lock.
         unlock_and_close(cache_file_name);
 
     }
+else 
+cerr<<"cannot get a lock"<<endl;
 
     return ret_value;
 
