@@ -135,16 +135,6 @@ public:
     void reload_keys();
     void reload_keys(const std::string &keys_file_name);
 
-    /**
-     * @brief Delete the key
-     * Added primarily for testing purposes.
-     * @param key
-     *``
-    void delete_key(const std::string &key) {
-        d_the_keys.erase(key);
-    }
-    */
-
     void set_key(const std::string &key, const std::string &val, bool addto = false);
 
     void set_key(const std::string &pair);
