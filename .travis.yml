@@ -203,7 +203,7 @@ jobs:
 #            make check -j16
 #            make coverage
 #        fi
-      - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
+      - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.token=$SONAR_LOGIN
       - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "QUALITY GATE PASS"
 
     - stage: scan
