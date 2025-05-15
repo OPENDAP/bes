@@ -387,6 +387,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
      
 if (true == data_to_disk_cache) 
 cerr<<"writing data to disk cache for "<<varname <<endl;
+
     switch (dtype) {
 
         case H5CHAR:
@@ -907,6 +908,7 @@ cerr<<"var size in bytes: "<<total_elems*dtype_size <<endl;
 
 bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & cache_fpath, int fd,vector<int64_t> &cd_step, vector<int64_t>&cd_count,size_t total_read,short dtype_size) {
 
+cerr<<"Obtain the cached data - varname: "<<varname <<endl;
     ssize_t ret_read_val = -1;
     vector<char>buf;
 
@@ -921,6 +923,8 @@ bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & ca
         size_t nele_to_read = 1;
         for(int i = 0; i<rank;i++) 
             nele_to_read *=cd_count[i];
+
+cerr<<" Get real data - varname: "<<varname <<endl;
 
         if(nele_to_read == (total_read/dtype_size)) {
             val2buf(buf.data());

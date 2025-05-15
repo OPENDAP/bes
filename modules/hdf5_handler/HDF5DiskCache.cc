@@ -23,6 +23,7 @@ HDF5DiskCache *HDF5DiskCache::d_instance = nullptr;
 const string HDF5DiskCache::PATH_KEY = "H5.DiskCacheDataPath";
 const string HDF5DiskCache::PREFIX_KEY = "H5.DiskCacheFilePrefix";
 const string HDF5DiskCache::SIZE_KEY = "H5.DiskCacheSize";
+const int HDF5DiskCache::CACHE_BUF_SIZE = 1073741824;
 
 long HDF5DiskCache::getCacheSizeFromConfig(const long cache_size)
 {
@@ -210,17 +211,44 @@ cerr<<"cache_file_name: "<<cache_file_name <<endl;
         ssize_t ret_val = 0;
 
         // 2. write the file.
-        ret_val = write(fd, buf, expected_file_size);
+        
+        bool write_disk_cache = true;
+        
+        if (expected_file_size > HDF5DiskCache::CACHE_BUF_SIZE) {
+            ssize_t bytes_written = 0;
+            while (bytes_written < expected_file_size) {
+cerr<<"write big cache "<<endl;
+                int one_write_buf_size = HDF5DiskCache::CACHE_BUF_SIZE;
+                if (expected_file_size <(bytes_written+HDF5DiskCache::CACHE_BUF_SIZE)) 
+                    one_write_buf_size = expected_file_size - bytes_written;
+
+                ret_val = write(fd,buf,one_write_buf_size);
+                if (ret_val <0) {
+
+cerr<<"write big cache failed. "<<endl;
+                    write_disk_cache = false;
+                    break;
+                }
+                bytes_written +=ret_val;
+                buf = (const char *)buf + ret_val;
+
+            }
+
+            
+        }
+        else  {
+            ret_val = write(fd, buf, expected_file_size);
+            if (ret_val != expected_file_size)
+                write_disk_cache = false;
+               
+        }
 
         // 3. If the written size is not the same as the expected file size, purge the file.
-        if (ret_val != expected_file_size) {
+        if (write_disk_cache == false) {
             if (unlink(cache_file_name.c_str()) != 0) {
                 string msg = "Cannot remove the corrupt cached file " + cache_file_name;
                 throw BESInternalError(msg, __FILE__, __LINE__);
             }
-cerr<<"written size is not the same as the expected file size"<<endl;
-cerr<<"ret_val: "<<ret_val <<endl;
-cerr<<"expected_file_size: "<<expected_file_size <<endl;
 
         }
         else {
