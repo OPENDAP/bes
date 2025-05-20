@@ -409,8 +409,24 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_two_chunks_naligned_constr
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_low_comp_two_chunks_lc_constraint.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_high_comp_two_chunks_naligned_constraint.h5.dap])
 
+# DAP4 enum type tests.
+AT_BESCMD_RESPONSE_TEST([contiguous/t_enum_name_scalar.h5.dmr])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_enum_name_scalar.h5.dap])
+AT_BESCMD_RESPONSE_TEST([contiguous/t_enum_array.h5.dmr])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_enum_array.h5.dap])
+AT_BESCMD_RESPONSE_TEST([contiguous/t_enum_grp.h5.dmr])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_enum_grp.h5.dap])
+AT_BESCMD_RESPONSE_TEST([contiguous/t_enum_grp_array.h5.dmr])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_enum_grp_array.h5.dap])
+AT_BESCMD_RESPONSE_TEST([contiguous/t_enum2_mt_scalar.h5.dmr])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_enum2_mt_scalar.h5.dap])
+AT_BESCMD_RESPONSE_TEST([contiguous/t_enum2_mt_array.h5.dmr])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_enum2_mt_array.h5.dap])
+AT_BESCMD_RESPONSE_TEST([chunked/t_enum_name_chunk_array.h5.dmr])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/t_enum_name_chunk_array.h5.dap])
 
-
+# Zero size array test
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/nc4_unlimited_0.h5.dap])
 #############################################################################
 # Arrays of Variable Length String tests
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_vl_string_1d.h5.dmrpp])

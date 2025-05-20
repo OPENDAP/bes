@@ -59,19 +59,20 @@ class BESDataHandlerInterface;
  */
 class FONcTransform: public BESObj {
 private:
-	int _ncid = {0};
-	libdap::DDS *_dds = {nullptr};
-    libdap::DMR *_dmr = {nullptr};
-    BESResponseObject *d_obj = {nullptr};
-    BESDataHandlerInterface *d_dhi = {nullptr};
-	std::string _localfile;
-	std::string _returnAs;
+    int _ncid = 0;
+    libdap::DDS *_dds = nullptr;
+    libdap::DMR *_dmr = nullptr;
+    BESResponseObject *d_obj = nullptr;
+    BESDataHandlerInterface *d_dhi = nullptr;
+    std::string _localfile;
+    std::string _returnAs;
     std::vector<FONcBaseType *> _fonc_vars;
     std::vector<FONcBaseType *> _total_fonc_vars_in_grp;
     std::set<std::string> _included_grp_names;
     std::map<std::string,int64_t> GFQN_dimname_to_dimsize;
     std::map<std::string,int64_t> VFQN_dimname_to_dimsize;
-  
+    std::unordered_map<std::string,std::vector<std::pair<std::string,int>>> GFQN_to_en_typeid_vec;
+
     // TODO: This is for the temporary memory usage optimization. Once we can support the define() with or without dio for individual array.
     //       This flag is not necessary and should be removed. KY 11/29/23
     bool global_dio_flag = false; 
@@ -79,6 +80,9 @@ private:
     bool do_reduce_dim = false;
     std::unordered_map<int64_t, std::vector<std::string>> dimsize_to_dup_dimnames;
     int reduced_dim_num = 0;
+
+    bool is_root_no_grp_unlimited_dim = false;
+    std::vector<std::string> root_no_grp_unlimited_dimnames; 
 
 public:
     FONcTransform(BESResponseObject *obj, BESDataHandlerInterface *dhi, const std::string &localfile, const std::string &ncVersion = "netcdf");
@@ -102,12 +106,16 @@ private:
     virtual void check_and_obtain_dimensions_internal(libdap::D4Group *grp);
     virtual bool check_group_support();
     virtual void gen_included_grp_list(libdap::D4Group *grp);
+    virtual void gen_nc4_enum_type(libdap::D4Group *d4_grp,int nc4_grp_id);
 
     virtual bool check_reduce_dim();
     virtual bool check_reduce_dim_internal(libdap::D4Group *grp);
     virtual bool check_var_dim(libdap::BaseType *bt);
     virtual void build_reduce_dim();
     virtual void build_reduce_dim_internal(libdap::D4Group *grp, libdap::D4Group *root_grp);
+
+    virtual bool obtain_unlimited_dimension_info_helper(libdap::D4Attributes *d4_attrs, vector<string> &unlimited_dim_names);
+    virtual bool obtain_unlimited_dimension_info(libdap::D4Group *grp, std::vector<std::string> &unlimited_dim_names);
 
     void throw_if_dap2_response_too_big(DDS *dds, const string &dap2_ce="");
     void throw_if_dap4_response_too_big(DMR *dmr, const string &dap4_ce="");

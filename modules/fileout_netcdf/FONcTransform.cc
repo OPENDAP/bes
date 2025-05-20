@@ -552,7 +552,7 @@ void FONcTransform::transform_dap4() {
         msg << endl;
         msg << "You may also try constraining your request to omit the problematic data type(s), " << endl;
         msg << "or ask for a different encoding such as DAP4 binary or NetCDF-4." << endl;
-        msg << "There are" << inventory.size() << " incompatible variables referenced in your request." << endl;
+        msg << "There are " << inventory.size() << " incompatible variables referenced in your request." << endl;
         msg << "Incompatible variables: " << endl;
         msg << endl;
         for(const auto &entry: inventory){
@@ -777,76 +777,6 @@ void FONcTransform::transform_dap4() {
  */
 void FONcTransform::transform_dap4_no_group() {
 
-    D4Group *root_grp = _dmr->root();
-#if !NDEBUG
-    D4Dimensions *root_dims = root_grp->dims();
-    for (D4Dimensions::D4DimensionsIter di = root_dims->dim_begin(), de = root_dims->dim_end(); di != de; ++di) {
-        BESDEBUG(MODULE,  prolog << "transform_dap4() - check dimensions" << endl);
-        BESDEBUG(MODULE,  prolog << "transform_dap4() - dim name is: " << (*di)->name() << endl);
-        BESDEBUG(MODULE,  prolog << "transform_dap4() - dim size is: " << (*di)->size() << endl);
-        BESDEBUG(MODULE,  prolog << "transform_dap4() - fully_qualfied_dim name is: " << (*di)->fully_qualified_name() << endl);
-    }
-#endif
-    Constructor::Vars_iter vi = root_grp->var_begin();
-    Constructor::Vars_iter ve = root_grp->var_end();
-
-    // If the global_dio_flag is false, we cannot do direct IO for this file at all. No need to check every variable.
-    // This is necessary since direct IO cannot apply to the current existing dmrpp files in the earth data cloud. KY 2023-12-11
-    if (global_dio_flag == false) {
-        for (; vi != ve; vi++) {
-            if ((*vi)->send_p()) {
-                BaseType *v = *vi;
-    
-                BESDEBUG(MODULE, prolog << "Converting variable '" << v->name() << "'" << endl);
-    
-                // This is a factory class call, and 'fg' is specialized for 'v'
-                FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model);
-                
-                _fonc_vars.push_back(fb);
-    
-                vector <string> embed;
-                // This call sets d_is_dap4 to true, and d_is_dap4_group to false. jhrg 2/14/24
-                fb->convert(embed, true, false);
-            }
-        }
-    }
-    else {
-        for (; vi != ve; vi++) {
-            if ((*vi)->send_p()) {
-                BaseType *v = *vi;
-    
-                BESDEBUG(MODULE, prolog << "Direct IO is off, Converting variable '" << v->name() << "'" << endl);
-    
-                if (v->type() == dods_array_c) {
-                    auto t_a = dynamic_cast<Array *>(v);
-                    if (t_a->get_dio_flag()) 
-                        set_constraint_var_dio_flag(t_a);
-    
-                }
-                // This is a factory class call, and 'fg' is specialized for 'v'
-                FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model);
-    
-                
-                _fonc_vars.push_back(fb);
-    
-                vector <string> embed;
-                // This call sets d_is_dap4 to true, and d_is_dap4_group to false. jhrg 2/14/24
-                fb->convert(embed, true, false);
-            }
-        }
-    }
-
-#if !NDEBUG
-    if (root_grp->grp_begin() == root_grp->grp_end())
-        BESDEBUG(MODULE,  prolog << "No group  " << endl);
-    else
-        BESDEBUG(MODULE,  prolog << "Has group  " << endl);
-    for (D4Group::groupsIter gi = root_grp->grp_begin(), ge = root_grp->grp_end(); gi != ge; ++gi)
-        BESDEBUG(MODULE,  prolog << "Group name:  " << (*gi)->name() << endl);
-#endif
-
-    fonc_history_util::updateHistoryAttributes(_dmr, d_dhi->data[POST_CONSTRAINT]);
-
     // Open the file for writing
     int stax = -1;
     if (FONcTransform::_returnAs == FONC_RETURN_AS_NETCDF4) {
@@ -873,6 +803,85 @@ void FONcTransform::transform_dap4_no_group() {
     if (stax != NC_NOERR) {
         FONcUtils::handle_error(stax, prolog + "Call to nc_create() failed for file: " + _localfile, __FILE__, __LINE__);
     }
+
+
+    D4Group *root_grp = _dmr->root();
+
+    is_root_no_grp_unlimited_dim = obtain_unlimited_dimension_info(root_grp,root_no_grp_unlimited_dimnames);
+
+    if(root_grp->has_enum_defs()) 
+        gen_nc4_enum_type(root_grp,_ncid);
+ 
+#if !NDEBUG
+    D4Dimensions *root_dims = root_grp->dims();
+    for (D4Dimensions::D4DimensionsIter di = root_dims->dim_begin(), de = root_dims->dim_end(); di != de; ++di) {
+        BESDEBUG(MODULE,  prolog << "transform_dap4() - check dimensions" << endl);
+        BESDEBUG(MODULE,  prolog << "transform_dap4() - dim name is: " << (*di)->name() << endl);
+        BESDEBUG(MODULE,  prolog << "transform_dap4() - dim size is: " << (*di)->size() << endl);
+        BESDEBUG(MODULE,  prolog << "transform_dap4() - fully_qualfied_dim name is: " << (*di)->fully_qualified_name() << endl);
+    }
+#endif
+
+    Constructor::Vars_iter vi = root_grp->var_begin();
+    Constructor::Vars_iter ve = root_grp->var_end();
+
+    // If the global_dio_flag is false, we cannot do direct IO for this file at all. No need to check every variable.
+    // This is necessary since direct IO cannot apply to the current existing dmrpp files in the earth data cloud. KY 2023-12-11
+    if (global_dio_flag == false) {
+        for (; vi != ve; vi++) {
+            if ((*vi)->send_p()) {
+                BaseType *v = *vi;
+    
+                BESDEBUG(MODULE, prolog << "Converting variable '" << v->name() << "'" << endl);
+    
+                // This is a factory class call, and 'fg' is specialized for 'v'
+                FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model, GFQN_to_en_typeid_vec,root_no_grp_unlimited_dimnames);
+                
+                _fonc_vars.push_back(fb);
+    
+                vector <string> embed;
+                // This call sets d_is_dap4 to true, and d_is_dap4_group to false. jhrg 2/14/24
+                fb->convert(embed, true, false);
+            }
+        }
+    }
+    else {
+        for (; vi != ve; vi++) {
+            if ((*vi)->send_p()) {
+                BaseType *v = *vi;
+    
+                BESDEBUG(MODULE, prolog << "Direct IO is off, Converting variable '" << v->name() << "'" << endl);
+    
+                if (v->type() == dods_array_c) {
+                    auto t_a = dynamic_cast<Array *>(v);
+                    if (t_a->get_dio_flag()) 
+                        set_constraint_var_dio_flag(t_a);
+    
+                }
+                // This is a factory class call, and 'fg' is specialized for 'v'
+                FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model, GFQN_to_en_typeid_vec,root_no_grp_unlimited_dimnames);
+    
+                
+                _fonc_vars.push_back(fb);
+    
+                vector <string> embed;
+                // This call sets d_is_dap4 to true, and d_is_dap4_group to false. jhrg 2/14/24
+                fb->convert(embed, true, false);
+            }
+        }
+    }
+
+#if !NDEBUG
+    if (root_grp->grp_begin() == root_grp->grp_end())
+        BESDEBUG(MODULE,  prolog << "No group  " << endl);
+    else
+        BESDEBUG(MODULE,  prolog << "Has group  " << endl);
+    for (D4Group::groupsIter gi = root_grp->grp_begin(), ge = root_grp->grp_end(); gi != ge; ++gi)
+        BESDEBUG(MODULE,  prolog << "Group name:  " << (*gi)->name() << endl);
+#endif
+
+    fonc_history_util::updateHistoryAttributes(_dmr, d_dhi->data[POST_CONSTRAINT]);
+
 
     try {
         // Here we will be defining the variables of the netcdf and
@@ -981,33 +990,61 @@ void FONcTransform::transform_dap4_group(D4Group *grp,
  * @param fdimname_to_id
  * @param rds_nums
  */
-void FONcTransform::transform_dap4_group_internal(D4Group *grp,
+void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
                                                   bool is_root_grp,
-                                                  int par_grp_id, map<string, int> &fdimname_to_id,
+                                                  int par_nc4_grp_id, map<string, int> &fdimname_to_id,
                                                   vector<int> &rds_nums) {
 
     BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
-    int grp_id = -1;
+    int nc4_grp_id = -1;
     int stax = -1;
 
     fonc_history_util::updateHistoryAttributes(_dmr, d_dhi->data[POST_CONSTRAINT]);
 
-    if (is_root_grp == true)
-        grp_id = _ncid;
+    if (is_root_grp == true) { 
+        nc4_grp_id = _ncid;
+        if(d4_grp->has_enum_defs()) 
+            gen_nc4_enum_type(d4_grp,nc4_grp_id);
+    }
     else {
         // Here we need to check if there is any special character inside the group name.
         // If yes, we will replace that character to _ since nc_def_grp will fail if
         // there are special characters inside the group name. KY 2025-02-14 
-        string grp_name = (*grp).name();
+        string grp_name = (*d4_grp).name();
         string new_grp_name = FONcUtils::id2netcdf(grp_name);
-        stax = nc_def_grp(par_grp_id, new_grp_name.c_str(), &grp_id);
-        BESDEBUG(MODULE,  prolog << "Group name is " << (*grp).name() << endl);
+        stax = nc_def_grp(par_nc4_grp_id, new_grp_name.c_str(), &nc4_grp_id);
+        BESDEBUG(MODULE,  prolog << "Group name is " << (*d4_grp).name() << endl);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to define group: " + _localfile, __FILE__, __LINE__);
 
+        if(d4_grp->has_enum_defs()) {
+            gen_nc4_enum_type(d4_grp,nc4_grp_id);
+
+#if !NDEBUG 
+            auto d4enum_defs= d4_grp->enum_defs();
+            for (D4EnumDefs::D4EnumDefIter ed_i = d4enum_defs->enum_begin(), ed_e= d4enum_defs->enum_end(); ed_i != ed_e; ++ed_i) {
+
+                BESDEBUG(MODULE, prolog <<"d4enumdef name: "<<(*ed_i)->name()<<endl);
+                BESDEBUG(MODULE, prolog <<"d4enumdef type: "<<(*ed_i)->type()<<endl);
+
+                for (D4EnumDef::D4EnumValueIter edv_i = (*ed_i)->value_begin(), edv_e = (*ed_i)->value_end(); edv_i != edv_e; ++edv_i) {
+
+                    string edv_label = (*ed_i)->label(edv_i);
+                    long long edv_value = (*ed_i)->value(edv_i);
+
+                    BESDEBUG(MODULE, prolog <<"edv_label: "<<edv_label <<endl);
+                    BESDEBUG(MODULE, prolog <<"edv_value: "<<edv_value<<endl);
+
+                }
+            } 
+#endif
+        }
     }
 
-    D4Dimensions *grp_dims = grp->dims();
+    vector<string> unlimited_dimnames;
+    bool has_unlimited_dims =  obtain_unlimited_dimension_info(d4_grp,unlimited_dimnames);
+
+    D4Dimensions *grp_dims = d4_grp->dims();
     for (D4Dimensions::D4DimensionsIter di = grp_dims->dim_begin(), de = grp_dims->dim_end(); di != de; ++di) {
 
 #if !NDEBUG
@@ -1028,7 +1065,16 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
 
         // Define dimension. 
         int g_dimid = -1;
-        stax = nc_def_dim(grp_id, (*di)->name().c_str(), dimsize, &g_dimid);
+        
+        if (has_unlimited_dims) {
+            for (const auto &und:unlimited_dimnames) {
+                if (und == (*di)->name()) { 
+                    dimsize = NC_UNLIMITED;
+                    break;
+                }
+            }
+        }
+        stax = nc_def_dim(nc4_grp_id, (*di)->name().c_str(), dimsize, &g_dimid);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to define dimension: " + _localfile, __FILE__,
                                     __LINE__);
@@ -1036,8 +1082,8 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
         fdimname_to_id[(*di)->fully_qualified_name()] = g_dimid;
     }
 
-    Constructor::Vars_iter vi = grp->var_begin();
-    Constructor::Vars_iter ve = grp->var_end();
+    Constructor::Vars_iter vi = d4_grp->var_begin();
+    Constructor::Vars_iter ve = d4_grp->var_end();
 
     vector < FONcBaseType * > fonc_vars_in_grp;
 
@@ -1052,7 +1098,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
     
                 // This is a factory class call, and 'fg' is specialized for 'v'
                 //FONcBaseType *fb = FONcUtils::convert(v,FONcTransform::_returnAs,FONcRequestHandler::classic_model);
-                FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums);
+                FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums, GFQN_to_en_typeid_vec,root_no_grp_unlimited_dimnames);
     
                 fonc_vars_in_grp.push_back(fb);
     
@@ -1081,7 +1127,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
     
                 // This is a factory class call, and 'fg' is specialized for 'v'
                 //FONcBaseType *fb = FONcUtils::convert(v,FONcTransform::_returnAs,FONcRequestHandler::classic_model);
-                FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums);
+                FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums,GFQN_to_en_typeid_vec, root_no_grp_unlimited_dimnames);
     
                 fonc_vars_in_grp.push_back(fb);
     
@@ -1096,7 +1142,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
     }
 
 #if !NDEBUG
-    if (grp->grp_begin() == grp->grp_end())
+    if (d4_grp->grp_begin() == d4_grp->grp_end())
         BESDEBUG(MODULE, prolog << "No group" << endl);
     else
         BESDEBUG(MODULE, prolog << "Has group" << endl);
@@ -1114,13 +1160,12 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
             FONcBaseType *fbt = *i;
             BESDEBUG(MODULE,  prolog << "Defining variable:  " << fbt->name() << endl);
             //fbt->set_is_dap4(true);
-            fbt->define(grp_id);
+            fbt->define(nc4_grp_id);
         }
 
         bool is_netCDF_enhanced = false;
         if (FONcTransform::_returnAs == FONC_RETURN_AS_NETCDF4 && FONcRequestHandler::classic_model == false)
             is_netCDF_enhanced = true;
-
 
         bool add_attr = true;
 
@@ -1129,10 +1174,10 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
             add_attr = false;
 
         if (true == add_attr) {
-            D4Attributes *d4_attrs = grp->attributes();
+            D4Attributes *d4_attrs = d4_grp->attributes();
             BESDEBUG(MODULE, prolog << "Adding Group Attributes" << endl);
             // add dap4 group attributes.
-            FONcAttributes::add_dap4_attributes(grp_id, NC_GLOBAL, d4_attrs, "", "", is_netCDF_enhanced);
+            FONcAttributes::add_dap4_attributes(nc4_grp_id, NC_GLOBAL, d4_attrs, "", "", is_netCDF_enhanced);
             // *** Add the json history here
         }
 
@@ -1144,13 +1189,13 @@ void FONcTransform::transform_dap4_group_internal(D4Group *grp,
             RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmitting: " + fbt->name() , __FILE__, __LINE__);
             BESDEBUG(MODULE, prolog << "Writing data for variable:  " << fbt->name() << endl);
             //fbt->write(_ncid);
-            fbt->write(grp_id);
+            fbt->write(nc4_grp_id);
         }
 
         // Now handle all the child groups.
-        for (D4Group::groupsIter gi = grp->grp_begin(), ge = grp->grp_end(); gi != ge; ++gi) {
+        for (D4Group::groupsIter gi = d4_grp->grp_begin(), ge = d4_grp->grp_end(); gi != ge; ++gi) {
             BESDEBUG(MODULE, prolog << "In group:  " << (*gi)->name() << endl);
-            transform_dap4_group(*gi, false, grp_id, fdimname_to_id, rds_nums);
+            transform_dap4_group(*gi, false, nc4_grp_id, fdimname_to_id, rds_nums);
         }
 
     }
@@ -1535,6 +1580,126 @@ void FONcTransform::build_reduce_dim_internal(D4Group *grp, D4Group *root_grp) {
 
 }
 
+bool FONcTransform::obtain_unlimited_dimension_info_helper(libdap::D4Attributes *d4_attrs, vector<string> &unlimited_dim_names){
+
+    bool ret_value = false;
+
+    if (d4_attrs->empty() == false) {
+        for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end();
+                     ii != ee; ++ii) {
+            if ((*ii)->type() == attr_str_c && (*ii)->name()=="Unlimited_Dimension") {
+                for (D4Attribute::D4AttributeIter vi = (*ii)->value_begin(), ve = (*ii)->value_end(); vi != ve; vi++) 
+                      unlimited_dim_names.emplace_back(*vi);
+                if (unlimited_dim_names.empty() == false)
+                    ret_value = true;
+                break;
+            }
+        }
+    }
+    
+    return ret_value;
+}
+
+bool FONcTransform::obtain_unlimited_dimension_info(libdap::D4Group *d4_grp, vector<string> &unlimited_dim_names) {
+
+    bool ret_value = false;
+    D4Attributes *d4_attrs = d4_grp->attributes();
+    if (d4_attrs->empty() == false) {
+        for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end();
+                     ii != ee; ++ii) {
+            if ((*ii)->type() == attr_container_c && (*ii)->name()=="DODS_EXTRA") {
+                D4Attributes *extra_attrs = (*ii)->attributes();
+                ret_value = obtain_unlimited_dimension_info_helper(extra_attrs,unlimited_dim_names);
+                if (ret_value == true)
+                    break;
+            }
+        }
+    }
+
+    return ret_value; 
+}
+
+void FONcTransform::gen_nc4_enum_type(libdap::D4Group *d4_grp,int nc4_grp_id) {
+
+    string grp_fqn = d4_grp->FQN();
+    D4EnumDefs * d4enum_defs = d4_grp->enum_defs();
+    vector<pair<string,int>> en_type_id_vec;
+
+    for (D4EnumDefs::D4EnumDefIter ed_i = d4enum_defs->enum_begin(), ed_e= d4enum_defs->enum_end(); ed_i != ed_e; ++ed_i) {
+
+        int nc4_type_id = 0;
+        nc_type nc4_enum_type = FONcUtils::dap4_int_float_type_to_nc4_type((*ed_i)->type());
+        string nc4_enum_name = (*ed_i)->name();
+        int stat = nc_def_enum(nc4_grp_id, nc4_enum_type,nc4_enum_name.c_str(), &nc4_type_id);
+        if (stat != NC_NOERR)
+            throw BESInternalError("nc_def_enum failed.", __FILE__, __LINE__);
+
+        for (D4EnumDef::D4EnumValueIter edv_i = (*ed_i)->value_begin(), edv_e = (*ed_i)->value_end(); edv_i != edv_e; ++edv_i) {
+            string edv_label = (*ed_i)->label(edv_i);
+            long long edv_value = (*ed_i)->value(edv_i);
+            switch(nc4_enum_type) {
+                case NC_UBYTE:
+                {
+                    auto nc_enum_const = (uint8_t)edv_value;
+                    stat = nc_insert_enum(nc4_grp_id,nc4_type_id,edv_label.c_str(),(const void*)&nc_enum_const);
+                }
+                    break;
+                case NC_BYTE:
+                {
+                    auto nc_enum_const = (int8_t)edv_value;
+                    stat = nc_insert_enum(nc4_grp_id,nc4_type_id,edv_label.c_str(),(const void*)&nc_enum_const);
+                }
+                    break;
+                case NC_USHORT:
+                {
+                    auto nc_enum_const = (unsigned short)edv_value;
+                    stat = nc_insert_enum(nc4_grp_id,nc4_type_id,edv_label.c_str(),(const void*)&nc_enum_const);
+                }
+                    break;
+                case NC_SHORT:
+                {
+                    auto nc_enum_const = (short)edv_value;
+                    stat = nc_insert_enum(nc4_grp_id,nc4_type_id,edv_label.c_str(),(const void*)&nc_enum_const);
+                }
+                    break;
+                case NC_UINT:
+                {
+                    auto nc_enum_const = (unsigned int)edv_value;
+                    stat = nc_insert_enum(nc4_grp_id,nc4_type_id,edv_label.c_str(),(const void*)&nc_enum_const);
+                }
+                    break;
+                case NC_INT:
+                {
+                    auto nc_enum_const = (int)edv_value;
+                    stat = nc_insert_enum(nc4_grp_id,nc4_type_id,edv_label.c_str(),(const void*)&nc_enum_const);
+                }
+                    break;
+
+                case NC_UINT64:
+                {
+                    auto nc_enum_const = (uint64_t)edv_value;
+                    stat = nc_insert_enum(nc4_grp_id,nc4_type_id,edv_label.c_str(),(const void*)&nc_enum_const);
+                }
+
+                    break;
+                case NC_INT64:
+                    stat = nc_insert_enum(nc4_grp_id,nc4_type_id,edv_label.c_str(),(const void*)&edv_value);
+                    break;
+                default:
+                    throw BESInternalError("Unsupported enum base type", __FILE__, __LINE__);
+            }
+            if (stat !=NC_NOERR)
+                throw BESInternalError("nc_insert_enum failed.", __FILE__, __LINE__);
+
+        }
+
+        pair<string,int> en_type_id = make_pair(nc4_enum_name, nc4_type_id);
+        en_type_id_vec.emplace_back(en_type_id);
+        
+    }
+    GFQN_to_en_typeid_vec[grp_fqn] = en_type_id_vec;
+
+}
 
 /** @brief dumps information about this transformation object for debugging
  * purposes

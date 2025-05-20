@@ -38,13 +38,8 @@
 #include <mutex>
 
 #include "BESObj.h"
-
-#if 0
-#include "BESDataHandlerInterface.h"
-#endif
-
 #include "BESRequestHandler.h"
-//class BESRequestHandler;
+
 class BESDataHandlerInterface;
 
 /** @brief The list of registered request handlers for this server; a singleton
@@ -79,8 +74,8 @@ private:
     std::map<std::string, BESRequestHandler *> _handler_list;
 
 public:
-    BESRequestHandlerList();
-    virtual ~BESRequestHandlerList();
+    BESRequestHandlerList() = default;
+    ~BESRequestHandlerList() override = default;
 
     typedef std::map<std::string, BESRequestHandler *>::const_iterator Handler_citer;
     typedef std::map<std::string, BESRequestHandler *>::iterator Handler_iter;
@@ -96,9 +91,7 @@ public:
 
     virtual void execute_each(BESDataHandlerInterface &dhi);
     virtual void execute_all(BESDataHandlerInterface &dhi);
-#if 0
-    virtual void execute_once(BESDataHandlerInterface &dhi);
-#endif
+
     virtual void execute_current(BESDataHandlerInterface &dhi);
 
     virtual void dump(std::ostream &strm) const;

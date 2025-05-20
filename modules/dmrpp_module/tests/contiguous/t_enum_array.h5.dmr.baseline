@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="t_enum_array.h5">
+    <Enumeration name="NoNameEum0" basetype="Byte">
+        <EnumConst name="RED" value="0"/>
+        <EnumConst name="GREEN" value="1"/>
+        <EnumConst name="BLUE" value="2"/>
+    </Enumeration>
+    <Enum name="enum_array" enum="/NoNameEum0">
+        <Dim size="4"/>
+    </Enum>
+</Dataset>

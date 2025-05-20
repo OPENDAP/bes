@@ -779,6 +779,9 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([nc4_group_var_dim_name_same.h5.dap.bes
 
 #netcdf4 pure unlimited dimension when the dimension size is 0.
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_simple_unlimited_0.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_unlimited_1.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_unlimited.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_unlimited_pure.h5.dmr.bescmd])
 
 # These tests call a function 'test(<name>)' that does not actually use variables
 # from the dataset named in the 'URL,' but does pull attributes from the dataset.
@@ -909,8 +912,13 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_enum_array.h5.dap.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([t_enum2n_array.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_enum2n_array.h5.dap.bescmd])
 
+AT_BESCMD_RESPONSE_TEST_DEFAULT([t_enum_grp.h5.dmr.bescmd])
+
 # VLEN test
 AT_BESCMD_RESPONSE_TEST_DEFAULT([vlen.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([vlen_dim.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([vlen.h5.dap.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([vlen_dim.h5.dap_ce.bescmd])
 
 # AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.ddx.bescmd], [bes.e_utf8_false.conf], [xfail])
 # AT_BESCMD_BESCONF_RESPONSE_TEST([h5.default/utf8_attr.h5.ddx.bescmd], [bes.e_utf8_false.default.conf], [xfail])

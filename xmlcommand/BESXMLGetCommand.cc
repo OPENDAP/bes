@@ -181,7 +181,7 @@ BESXMLGetCommand::get_xmlcmd_dhi()
  *
  * This function is used to prepare the information needed to execute
  * the get request. It finds the definition specified in the element
- * and prepares all of the containers within that definition.
+ * and prepares all the containers within that definition.
  */
 void BESXMLGetCommand::prep_request()
 {

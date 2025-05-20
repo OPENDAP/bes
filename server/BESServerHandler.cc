@@ -187,8 +187,7 @@ void BESServerHandler::execute(Connection *connection)
 
         BESDEBUG(MODULE, prolog << "Processing client command:" << endl << cmd_str << endl);
 
-        BESStopWatch sw;
-        if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("BESServerHandler::execute");
+        BES_STOPWATCH_START(MODULE, prolog + "Timer");
 
 
         // This is where we actually save/assign the output stream used for the response

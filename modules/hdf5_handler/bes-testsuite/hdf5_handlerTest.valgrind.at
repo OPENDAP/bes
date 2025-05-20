@@ -694,6 +694,13 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([t_group_scalar_attrs.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_var_dim_name_same.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([nc4_group_var_dim_name_same.h5.dap.bescmd])
 
+#netcdf4 unlimited dimension
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_simple_unlimited_0.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_unlimited_1.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_unlimited.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_unlimited_pure.h5.dmr.bescmd])
+
+
 #HYRAX-588, check the handling of hardlinks
 AT_BESCMD_RESPONSE_TEST_DEFAULT([dim_link.h5.dmr.bescmd])
 # The hardlinks that doesn't follow the netCDF-4 model fails.
@@ -804,5 +811,8 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_enum2n_array.h5.dap.bescmd])
 
 # VLEN test
 AT_BESCMD_RESPONSE_TEST_DEFAULT([vlen.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([vlen_dim.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([vlen.h5.dap.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([vlen_dim.h5.dap_ce.bescmd])
 
 

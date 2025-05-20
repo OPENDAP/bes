@@ -2,7 +2,7 @@ netcdf test {
 dimensions:
 	COADSX = 3 ;
 	COADSY = 2 ;
-	TIME = 3 ;
+	TIME = UNLIMITED ; // (3 currently)
 variables:
 	double COADSX(COADSX) ;
 		COADSX:units = "degrees_east" ;

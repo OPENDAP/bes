@@ -57,6 +57,8 @@
 
 // For extra debug spew for now.
 #define DEBUG_NCML_PARSER_INTERNALS 1
+#define MODULE "ncml"
+#define prolog std::string("NCMLParser::").append(__func__).append("() - ")
 
 using namespace agg_util;
 
@@ -136,7 +138,7 @@ NCMLParser::NCMLParser(DDSLoader& loader) :
         0), _pVar(0), _pCurrentTable(*this, 0), _elementStack(), _scope(), _namespaceStack(), _pOtherXMLParser(0), _currentParseLine(
         NO_CURRENT_PARSE_LINE_NUMBER)
 {
-    BESDEBUG("ncml", "Created NCMLParser." << endl);
+    BESDEBUG(MODULE, prolog << "Created NCMLParser." << endl);
 }
 
 NCMLParser::~NCMLParser()
@@ -160,8 +162,7 @@ unique_ptr<BESDapResponse> NCMLParser::parse(const string& ncmlFilename, DDSLoad
 
 void NCMLParser::parseInto(const string& ncmlFilename, DDSLoader::ResponseType responseType, BESDapResponse* response)
 {
-    BESStopWatch sw2;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw2.start("NCMLParser::parseInto", ncmlFilename);
+    BES_STOPWATCH_START(MODULE, prolog + "Timer");
 
     VALID_PTR(response);
     NCML_ASSERT_MSG(DDSLoader::checkResponseIsValidType(responseType, response),
@@ -174,7 +175,7 @@ void NCMLParser::parseInto(const string& ncmlFilename, DDSLoader::ResponseType r
         THROW_NCML_INTERNAL_ERROR("Illegal Operation: NCMLParser::parse called while already parsing!");
     }
 
-    BESDEBUG("ncml", "Beginning NcML parse of file=" << ncmlFilename << endl);
+    BESDEBUG(MODULE, prolog << "Beginning NcML parse of file=" << ncmlFilename << endl);
 
     // In case we care.
     _filename = ncmlFilename;
@@ -210,12 +211,12 @@ NCMLParser::getXMLNamespaceStack() const
 
 void NCMLParser::onStartDocument()
 {
-    BESDEBUG("ncml", "onStartDocument." << endl);
+    BESDEBUG(MODULE, prolog << "onStartDocument." << endl);
 }
 
 void NCMLParser::onEndDocument()
 {
-    BESDEBUG("ncml", "onEndDocument." << endl);
+    BESDEBUG(MODULE, prolog << "onEndDocument." << endl);
 }
 
 void NCMLParser::onStartElement(const std::string& name, const XMLAttributeMap& attrs)
@@ -346,7 +347,7 @@ void NCMLParser::onCharacters(const std::string& content)
 void NCMLParser::onParseWarning(std::string msg)
 {
     // TODO  We may want to make a flag for considering warnings errors as well.
-    BESDEBUG("ncml", "PARSE WARNING: LibXML msg={" << msg << "}.  Attempting to continue parse." << endl);
+    BESDEBUG(MODULE, prolog << "PARSE WARNING: LibXML msg={" << msg << "}.  Attempting to continue parse." << endl);
 }
 
 void NCMLParser::onParseError(std::string msg)
@@ -358,7 +359,7 @@ void NCMLParser::onParseError(std::string msg)
 void NCMLParser::setParseLineNumber(int line)
 {
     _currentParseLine = line;
-    // BESDEBUG("ncml", "******** Now parsing line: " << line << endl);
+    // BESDEBUG(MODULE, prolog << "******** Now parsing line: " << line << endl);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -511,7 +512,7 @@ void NCMLParser::setCurrentDataset(NetcdfElement* dataset)
         }
     }
     else {
-        BESDEBUG("ncml", "NCMLParser::setCurrentDataset(): setting to NULL..." << endl);
+        BESDEBUG(MODULE, prolog << "NCMLParser::setCurrentDataset(): setting to NULL..." << endl);
         _currentDataset = 0;
         _pCurrentTable.invalidate();
     }
@@ -598,7 +599,7 @@ NCMLParser::getVariableInContainer(const string& varName, BaseType* pContainer)
         // It has to be a Constructor!
         Constructor* pCtor = dynamic_cast<Constructor*>(pContainer);
         if (!pCtor) {
-            BESDEBUG("ncml",
+            BESDEBUG(MODULE,
                 "WARNING: NCMLParser::getVariableInContainer:  " "Expected a BaseType of subclass Constructor, but didn't get it!" << endl);
             return 0;
         }
@@ -651,7 +652,7 @@ void NCMLParser::addCopyOfVariableAtCurrentScope(BaseType& varTemplate)
     }
     else // Top level DDS for current dataset
     {
-        BESDEBUG("ncml",
+        BESDEBUG(MODULE,
             "Adding new variable to DDS top level.  Variable name=" << varTemplate.name() << " and typename=" << varTemplate.type_name() << endl);
         DDS* pDDS = getDDSForCurrentDataset();
         pDDS->add_var(&varTemplate);
@@ -807,7 +808,7 @@ int NCMLParser::tokenizeAttrValues(vector<string>& tokens, const string& values,
 #if DEBUG_NCML_PARSER_INTERNALS
 
     if (separator != NCMLUtil::WHITESPACE) {
-        BESDEBUG("ncml", "Got non-default separators for tokenize.  separator=\"" << separator << "\"" << endl);
+        BESDEBUG(MODULE, prolog << "Got non-default separators for tokenize.  separator=\"" << separator << "\"" << endl);
     }
 
     string msg;
@@ -819,7 +820,7 @@ int NCMLParser::tokenizeAttrValues(vector<string>& tokens, const string& values,
         msg += tokens[i];
         msg += "\"";
     }
-    BESDEBUG("ncml", "Tokenize got " << numTokens << " tokens:\n" << msg << endl);
+    BESDEBUG(MODULE, prolog << "Tokenize got " << numTokens << " tokens:\n" << msg << endl);
 
 #endif // DEBUG_NCML_PARSER_INTERNALS
 
@@ -834,14 +835,14 @@ int NCMLParser::tokenizeValuesForDAPType(vector<string>& tokens, const string& v
 
     if (dapType == Attr_unknown) {
         // Do out best to recover....
-        BESDEBUG("ncml",
+        BESDEBUG(MODULE,
             "Warning: tokenizeValuesForDAPType() got unknown DAP type!  Attempting to continue..." << endl);
         tokens.push_back(values);
         numTokens = 1;
     }
     else if (dapType == Attr_container) {
         // Not supposed to have values, just push empty string....
-        BESDEBUG("ncml", "Warning: tokenizeValuesForDAPType() got container type, we should not have values!" << endl);
+        BESDEBUG(MODULE, prolog << "Warning: tokenizeValuesForDAPType() got container type, we should not have values!" << endl);
         tokens.push_back("");
         numTokens = 1;
     }
@@ -1081,21 +1082,21 @@ void NCMLParser::clearVariableMetadataRecursively(BaseType* var)
 void NCMLParser::enterScope(const string& name, ScopeStack::ScopeType type)
 {
     _scope.push(name, type);
-    BESDEBUG("ncml", "Entering scope: " << _scope.top().getTypedName() << endl);
-    BESDEBUG("ncml", "New scope=\"" << _scope.getScopeString() << "\"" << endl);
+    BESDEBUG(MODULE, prolog << "Entering scope: " << _scope.top().getTypedName() << endl);
+    BESDEBUG(MODULE, prolog << "New scope=\"" << _scope.getScopeString() << "\"" << endl);
 }
 
 void NCMLParser::exitScope()
 {
     NCML_ASSERT_MSG(!_scope.empty(), "Logic Error: Scope Stack Underflow!");
-    BESDEBUG("ncml", "Exiting scope " << _scope.top().getTypedName() << endl);
+    BESDEBUG(MODULE, prolog << "Exiting scope " << _scope.top().getTypedName() << endl);
     _scope.pop();
-    BESDEBUG("ncml", "New scope=\"" << _scope.getScopeString() << "\"" << endl);
+    BESDEBUG(MODULE, prolog << "New scope=\"" << _scope.getScopeString() << "\"" << endl);
 }
 
 void NCMLParser::printScope() const
 {
-    BESDEBUG("ncml", "Scope=\"" << _scope.getScopeString() << "\"" << endl);
+    BESDEBUG(MODULE, prolog << "Scope=\"" << _scope.getScopeString() << "\"" << endl);
 }
 
 string NCMLParser::getScopeString() const
@@ -1175,7 +1176,7 @@ void NCMLParser::processStartNCMLElement(const std::string& name, const XMLAttri
                 "Unknown element type=" + name + " found in NcML parse with scope=" + _scope.getScopeString());
         }
         else {
-            BESDEBUG("ncml", "Start of <" << name << "> element.  Element unsupported, ignoring." << endl);
+            BESDEBUG(MODULE, prolog << "Start of <" << name << "> element.  Element unsupported, ignoring." << endl);
         }
     }
 }
@@ -1192,7 +1193,7 @@ void NCMLParser::processEndNCMLElement(const std::string& name)
     }
     else // the names don't match, so just ignore it.
     {
-        BESDEBUG("ncml", "End of <" << name << "> element unsupported currently, ignoring." << endl);
+        BESDEBUG(MODULE, prolog << "End of <" << name << "> element unsupported currently, ignoring." << endl);
     }
 }
 
@@ -1219,7 +1220,7 @@ string NCMLParser::printAllDimensionsAtLexicalScope() const
 
 void NCMLParser::enterOtherXMLParsingState(OtherXMLParser* pOtherXMLParser)
 {
-    BESDEBUG("ncml", "Entering state for parsing OtherXML!" << endl);
+    BESDEBUG(MODULE, prolog << "Entering state for parsing OtherXML!" << endl);
     _pOtherXMLParser = pOtherXMLParser;
 }
 

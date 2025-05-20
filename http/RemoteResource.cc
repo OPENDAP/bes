@@ -53,8 +53,8 @@
 #define BES_CATALOG_ROOT_KEY "BES.Catalog.catalog.RootDirectory"
 // See HttpNames.h for the key definitions.
 
-#define prolog string("RemoteResource::").append(__func__).append("() - ")
 #define MODULE HTTP_MODULE
+#define prolog string("RemoteResource::").append(__func__).append("() - ")
 
 using namespace std;
 
@@ -236,12 +236,8 @@ void RemoteResource::retrieve_resource() {
 void RemoteResource::get_url(int fd) {
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+    BES_STOPWATCH_START(MODULE, prolog + "Timing retrieval. Target url: " + d_url->str());
 
-    BESStopWatch besTimer;
-    if (BESDebug::IsSet("rr") || BESDebug::IsSet(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) ||
-        BESLog::TheLog()->is_verbose()) {
-        besTimer.start(prolog + "source url: " + d_url->str());
-    }
     try {
         // Throws an HttpError if there is a curl error.
         curl::http_get_and_write_resource(d_url, fd, &d_response_headers);

@@ -49,6 +49,7 @@
 #include "HDF5UInt16.h"
 #include "HDF5Int16.h"
 #include "HDF5Array.h"
+#include "HDF5VlenAtomicArray.h"
 #include "HDF5Float32.h"
 #include "HDF5Float64.h"
 #include "HDF5Url.h"
@@ -74,6 +75,9 @@ HDF5PathFinder obj_paths;
 
 /// An instance of DS_t structure defined in hdf5_handler.h.
 static DS_t dt_inst; 
+
+/// Rarely used, keep a set of a global unlimited_dimpaths. 
+unordered_set<string>unlimited_dimpaths;
 
 struct yy_buffer_state;
 
@@ -180,6 +184,7 @@ bool breadth_first(hid_t file_id, hid_t pid, const char *gname,
             }
             else
                 handle_pure_dimension(par_grp, pid, oname, is_eos5, full_path_name);
+            
         } 
     }
    
@@ -332,7 +337,10 @@ void handle_pure_dimension(D4Group *par_grp, hid_t pid, const vector<char>& onam
         d4_dims->add_dim_nocopy(d4_dim_unique.release());
     }
 
-    BESDEBUG("h5", "<h5dmr.cc: pure dimension: dataset name." << d4dim_name << endl);
+    // We need to clear unlimited dimension value for this pure dimension HDF5 dataset.
+    if (dt_inst.unlimited_dims.empty()==false)
+        dt_inst.unlimited_dims.clear();
+    BESDEBUG("h5", "<h5dmr.cc: pure dimension: dataset name: " << d4dim_name << endl);
 
     if (H5Tclose(dt_inst.type)<0) {
           throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 datatype.");
@@ -506,13 +514,21 @@ read_objects( D4Group * d4_grp, hid_t pid, const string &varname, const string &
 
 void array_add_dimensions_dimscale(HDF5Array *ar){
 
-    for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
-        if (dt_inst.dimnames[dim_index].empty() == false)
-            ar->append_dim_ll(dt_inst.size[dim_index], dt_inst.dimnames[dim_index]);
-        else
+    if (dt_inst.dimnames.empty() == true) {
+        for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) 
             ar->append_dim_ll(dt_inst.size[dim_index]);
     }
-    dt_inst.dimnames.clear();
+    else { 
+        for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
+            if (dt_inst.dimnames[dim_index].empty() == false)
+                ar->append_dim_ll(dt_inst.size[dim_index], dt_inst.dimnames[dim_index]);
+            else
+                ar->append_dim_ll(dt_inst.size[dim_index]);
+        }
+    }
+
+    if (dt_inst.dimnames.empty() == false)
+        dt_inst.dimnames.clear();
 
 }
 
@@ -541,6 +557,60 @@ void read_objects_basetype_add_eos5_grid_mapping(const eos5_dim_info_t &eos5_dim
     if (eos5_dim_info.gridname_to_info.empty() == false)
         make_attributes_to_cf(new_var, eos5_dim_info);
 
+}
+
+void add_unlimited_dimension_info(libdap::D4Group *d4_grp) {
+
+    for (unsigned i = 0; i <dt_inst.unlimited_dims.size(); i++) {
+
+        // If this dimension is an unlimited dimension
+        if (dt_inst.unlimited_dims[i]) { 
+
+            string dim_path = dt_inst.dimnames_path[i];
+            string dim_path_excluding_name;
+            if (dim_path=="/") 
+                dim_path_excluding_name= "/";
+            else
+                dim_path_excluding_name = HDF5CFUtil::obtain_string_before_lastslash(dim_path);                   
+            
+            // If this unlimited dimension is not visited,we will add the unlimited dimension name to the corresponding group.
+            if (unlimited_dimpaths.find(dim_path) == unlimited_dimpaths.end()) {
+
+                D4Group *temp_grp = d4_grp;
+
+                // The dimension must be under this group or its ancestors.
+                while(temp_grp){
+
+                    if (temp_grp->FQN() == dim_path_excluding_name){
+
+                        D4Attribute *d4_container = temp_grp->attributes()->get("DODS_EXTRA");
+                        if (d4_container == nullptr) {
+                            auto d4_container_unique = make_unique<D4Attribute>("DODS_EXTRA",attr_container_c);
+                            d4_container = d4_container_unique.get();
+                            temp_grp->attributes()->add_attribute_nocopy(d4_container);
+                            auto d4_attr_unique = make_unique<D4Attribute>("Unlimited_Dimension",attr_str_c);
+                            auto d4_attr = d4_attr_unique.get();
+                            d4_attr->add_value(dt_inst.dimnames[i]);
+                            d4_container->attributes()->add_attribute_nocopy(d4_attr_unique.release());
+                            d4_container_unique.release();
+                        }
+                        else {
+                            D4Attribute *d4_attr = d4_container->attributes()->get("Unlimited_Dimension");
+                            if (d4_attr == nullptr)
+                                throw InternalErr(__FILE__, __LINE__, "Unlimited_Dimension attribute should exist.");
+                            else {
+                                d4_attr->add_value(dt_inst.dimnames[i]);
+                            }
+                        }
+                        break;
+                    
+                    }
+                    temp_grp = dynamic_cast<D4Group*>(temp_grp->get_ancestor());
+                }
+                unlimited_dimpaths.insert(dim_path);
+            }
+        }
+    }           
 }
 
 /////////////////////////////////////////////////////////////////////////////// 
@@ -619,11 +689,16 @@ read_objects_base_type(D4Group * d4_grp, hid_t pid, const string & varname, cons
 
         dimnames_size = (int) (dt_inst.dimnames.size());
 
+        // Here we need to add the unlimited dimension(if any) info if dimension scale dimension names are present.
+        if (dt_inst.unlimited_dims.empty() == false && dimnames_size == dt_inst.ndims)
+            add_unlimited_dimension_info(d4_grp);
+        dt_inst.unlimited_dims.clear();
+
         bool is_eos5_dims = false;
         if (dimnames_size == dt_inst.ndims)
             array_add_dimensions_dimscale(ar);
         else {
-            // With using the dimension scales, the HDF5 file may still have dimension names such as HDF-EOS5.
+            // Without using the dimension scales, the HDF5 file may still have dimension names such as HDF-EOS5.
             // We search if there are dimension names. If yes, add them here.
             is_eos5_dims = array_add_dimensions_non_dimscale(ar, varname, eos5_dim_info);
         }
@@ -1911,7 +1986,7 @@ hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, 
             }
         }
         if (num_unlimited_dims >1)
-            throw InternalErr(__FILE__,__LINE__,"This variable has more than 1 unlimited dimensions. This is not supported.");
+            throw InternalErr(__FILE__,__LINE__,"This variable has more than 1 unlimited pure dimension. This is not supported.");
         
         ret_value = cur_unlimited_dim_size;
 
@@ -3225,7 +3300,7 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
     H5Tclose(vlen_type);
     H5Tclose(vlen_memtype);
  
-    auto ar_unique = make_unique<HDF5Array>(vname, filename, bt);
+    auto ar_unique = make_unique<HDF5VlenAtomicArray>(vname, filename, bt,false);
     HDF5Array *ar = ar_unique.get();
 
     // set number of elements and variable name values.
@@ -3285,14 +3360,21 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
     string vname_idx = vname + "_vlen_index";
     auto hdf5_int32 = make_unique<HDF5Int32>(vname_idx,var_path,filename);
     
-    auto ar_index_unique = make_unique<HDF5Array>(vname_idx, filename, hdf5_int32.get());
+    auto ar_index_unique = make_unique<HDF5VlenAtomicArray>(vname_idx, filename, hdf5_int32.get(),true);
     HDF5Array *ar_index = ar_index_unique.get();
 
     // set number of elements and variable name values.
     // This essentially stores in the struct.
     ar_index->set_varpath(var_path);
-    if (dimnames.empty()==false)  
-        array_add_dimensions_dimscale(ar_index);
+    if (dimnames.empty()==false) { 
+        for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
+            if (dimnames[dim_index].empty() == false)
+                ar_index->append_dim_ll(dt_inst.size[dim_index], dimnames[dim_index]);
+            else
+                ar_index->append_dim_ll(dt_inst.size[dim_index]);
+        }
+ 
+    }
     else {
         for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++)
             ar_index->append_dim_ll(dt_inst.size[dim_index]);

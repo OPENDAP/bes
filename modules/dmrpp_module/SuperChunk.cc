@@ -162,8 +162,7 @@ bool one_chunk_compute_thread(unique_ptr<one_chunk_args> args)
     stringstream timer_tag;
     timer_tag << prolog << "tid: 0x" << std::hex << std::this_thread::get_id() <<
         " parent_tid: 0x" << std::hex << args->parent_thread_id << " parent_sc: " << args->parent_super_chunk_id;
-    BESStopWatch sw(COMPUTE_THREADS);
-    sw.start(timer_tag.str());
+    BES_STOPWATCH_START(COMPUTE_THREADS, timer_tag.str());
 #endif
 
     process_one_chunk(args->chunk, args->array, args->array_shape);
@@ -181,8 +180,7 @@ bool one_chunk_unconstrained_compute_thread(unique_ptr<one_chunk_unconstrained_a
     stringstream timer_tag;
     timer_tag << prolog << "tid: 0x" << std::hex << std::this_thread::get_id() <<
           " parent_tid: 0x" << std::hex << args->parent_thread_id << " parent_sc: " << args->parent_super_chunk_id ;
-    BESStopWatch sw(COMPUTE_THREADS);
-    sw.start(timer_tag.str());
+    BES_STOPWATCH_START(COMPUTE_THREADS, timer_tag.str());
 #endif
 
     process_one_chunk_unconstrained(args->chunk, args->chunk_shape, args->array, args->array_shape);
@@ -195,8 +193,7 @@ bool one_chunk_unconstrained_compute_thread_dio(unique_ptr<one_chunk_unconstrain
     stringstream timer_tag;
     timer_tag << prolog << "tid: 0x" << std::hex << std::this_thread::get_id() <<
           " parent_tid: 0x" << std::hex << args->parent_thread_id << " parent_sc: " << args->parent_super_chunk_id ;
-    BESStopWatch sw(COMPUTE_THREADS);
-    sw.start(timer_tag.str());
+    BES_STOPWATCH_START(COMPUTE_THREADS, timer_tag.str());
 #endif
 
     process_one_chunk_unconstrained_dio(args->chunk, args->chunk_shape, args->array, args->array_shape);
@@ -810,8 +807,7 @@ void SuperChunk::process_child_chunks() {
 
     if (!DmrppRequestHandler::d_use_compute_threads) {
 #if DMRPP_ENABLE_THREAD_TIMERS
-        BESStopWatch sw(SUPER_CHUNK_MODULE);
-        sw.start(prolog+"Serial Chunk Processing. id: " + d_id);
+        BES_STOPWATCH_START(SUPER_CHUNK_MODULE, prolog+"Serial Chunk Processing. id: " + d_id);
 #endif
         for(const auto &chunk: d_chunks){
             process_one_chunk(chunk,d_parent_array,constrained_array_shape);
@@ -819,10 +815,9 @@ void SuperChunk::process_child_chunks() {
     }
     else {
 #if DMRPP_ENABLE_THREAD_TIMERS
-        stringstream timer_name;
-        timer_name << prolog << "Concurrent Chunk Processing. id: " << d_id;
-        BESStopWatch sw(SUPER_CHUNK_MODULE);
-        sw.start(timer_name.str());
+        stringstream timer_tag;
+        timer_tag << prolog << "Concurrent Chunk Processing. id: " << d_id;
+        BES_STOPWATCH_START(SUPER_CHUNK_MODULE, timer_tag.str());
 #endif
         queue< shared_ptr<Chunk> > chunks_to_process;
         for(const auto &chunk: d_chunks)
@@ -850,8 +845,7 @@ void SuperChunk::process_child_chunks_unconstrained() {
 
     if (!DmrppRequestHandler::d_use_compute_threads) {
 #if DMRPP_ENABLE_THREAD_TIMERS
-        BESStopWatch sw(SUPER_CHUNK_MODULE);
-        sw.start(prolog + "Serial Chunk Processing. sc_id: " + d_id );
+        BES_STOPWATCH_START(SUPER_CHUNK_MODULE, prolog + "Serial Chunk Processing. sc_id: " + d_id);
 #endif
         for(const auto &chunk: d_chunks){
             process_one_chunk_unconstrained(chunk, chunk_shape, d_parent_array, array_shape);
@@ -859,10 +853,9 @@ void SuperChunk::process_child_chunks_unconstrained() {
     }
     else {
 #if DMRPP_ENABLE_THREAD_TIMERS
-        stringstream timer_name;
-        timer_name << prolog << "Concurrent Chunk Processing. sc_id: " << d_id;
-        BESStopWatch sw(SUPER_CHUNK_MODULE);
-        sw.start(timer_name.str());
+        stringstream timer_tag;
+        timer_tag << prolog << "Concurrent Chunk Processing. sc_id: " << d_id;
+        BES_STOPWATCH_START(SUPER_CHUNK_MODULE, timer_tag.str());
 #endif
         queue<shared_ptr<Chunk>> chunks_to_process;
         for (const auto &chunk: d_chunks) {
@@ -916,8 +909,7 @@ void SuperChunk::read_unconstrained_dio() {
 
     if(!DmrppRequestHandler::d_use_compute_threads){
 #if DMRPP_ENABLE_THREAD_TIMERS
-        BESStopWatch sw(SUPER_CHUNK_MODULE);
-        sw.start(prolog + "Serial Chunk Processing. sc_id: " + d_id );
+        BES_STOPWATCH_START(SUPER_CHUNK_MODULE, prolog + "Serial Chunk Processing. sc_id: " + d_id);
 #endif
         for(const auto &chunk : d_chunks){
             process_one_chunk_unconstrained_dio(chunk, chunk_shape, d_parent_array, array_shape);
@@ -925,10 +917,9 @@ void SuperChunk::read_unconstrained_dio() {
     }
     else {
 #if DMRPP_ENABLE_THREAD_TIMERS
-        stringstream timer_name;
-        timer_name << prolog << "Concurrent Chunk Processing. sc_id: " << d_id;
-        BESStopWatch sw(SUPER_CHUNK_MODULE);
-        sw.start(timer_name.str());
+        stringstream timer_tag;
+        timer_tag << prolog << "Concurrent Chunk Processing. sc_id: " << d_id;
+        BES_STOPWATCH_START(SUPER_CHUNK_MODULE, timer_tag.str());
 #endif
         queue<shared_ptr<Chunk>> chunks_to_process;
         for (const auto &chunk : d_chunks)

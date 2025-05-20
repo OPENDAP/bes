@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<response reqID="some_unique_value" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+<response reqID="some_unique_value" reqUUID="SomeUUIDString" xmlns="http://xml.opendap.org/ns/bes/1.0#">
     <getDAP>
         <BESError>
             <Type>3</Type>
@@ -10,7 +10,7 @@ your request will FAIL.
 
 You may also try constraining your request to omit the problematic data type(s), 
 or ask for a different encoding such as DAP4 binary or NetCDF-4.
-There are2 incompatible variables referenced in your request.
+There are 2 incompatible variables referenced in your request.
 Incompatible variables: 
 
     Group /b/

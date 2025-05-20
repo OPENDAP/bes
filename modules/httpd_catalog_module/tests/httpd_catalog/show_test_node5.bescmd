@@ -1,4 +1,4 @@
-<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]">
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[thread:http-nio-8080-exec-4-42][bes_client:/-2]" reqUUID="SomeUUIDString">
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:showNode node="/RemoteResources/test/httpd_catalog/subdir2/" />
 </bes:request>

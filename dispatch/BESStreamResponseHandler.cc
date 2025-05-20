@@ -87,28 +87,23 @@ void BESStreamResponseHandler::execute(BESDataHandlerInterface &dhi)
     // led me to leave the code in the execute method.
     // pcw 10/11/06
     if (dhi.containers.size() != 1) {
-        string err = (string) "Unable to stream file: " + "no container specified";
-        throw BESInternalError(err, __FILE__, __LINE__);
+        throw BESInternalError("Unable to stream file: no container specified", __FILE__, __LINE__);
     }
 
     dhi.first_container();
     BESContainer *container = dhi.container;
     string filename = container->access();
     if (filename.empty()) {
-        string err = (string) "Unable to stream file: " + "filename not specified";
-        throw BESInternalError(err, __FILE__, __LINE__);
+        throw BESInternalError("Unable to stream file: filename not specified", __FILE__, __LINE__);
     }
 
     ifstream os;
     os.open(filename.c_str(), ios::in);
     int myerrno = errno;
     if (!os) {
-        string serr = (string) "Unable to stream file because it cannot be opened. file: '" + filename + "'  msg: ";
+        string serr = "Unable to stream file because it cannot be opened. file: '" + filename + "'  msg: ";
         char *err = strerror(myerrno);
-        if (err)
-            serr += err;
-        else
-            serr += "Unknown error";
+        serr += err ? err: "Unknown error";
 
         // ENOENT means that the node wasn't found.
         // On some systems a file that doesn't exist returns ENOTDIR because: w.f.t?

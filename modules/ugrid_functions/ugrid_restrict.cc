@@ -74,6 +74,10 @@ using namespace libdap;
 
 namespace ugrid {
 
+const auto MODULE = "ugrid";
+const auto MODULE_2 = "ugrid2";
+#define prolog string("urgid::").append(__func__).append("() - ")
+
 /**
  * Function syntax
  */
@@ -131,16 +135,14 @@ static void addRangeVar(DDS *dds, libdap::Array *rangeVar, map<string, vector<Me
     map<string, vector<MeshDataVariable *> *>::iterator mit = rangeVariables->find(meshVarName);
     if (mit == rangeVariables->end()) {
         // Not there? Make a new one.
-        BESDEBUG("ugrid",
-            "addRangeVar() - MeshTopology object for '" << meshVarName <<"' does not exist. Getting a new one... " << endl);
+        BESDEBUG(MODULE, prolog << "MeshTopology object for '" << meshVarName <<"' does not exist. Getting a new one... " << endl);
 
         requestedRangeVarsForMesh = new vector<MeshDataVariable *>();
         (*rangeVariables)[meshVarName] = requestedRangeVarsForMesh;
     }
     else {
         // Sweet! Found it....
-        BESDEBUG("ugrid",
-            "addRangeVar() - MeshTopology object for '" << meshVarName <<"' exists. Retrieving... " << endl);
+        BESDEBUG(MODULE, prolog << "MeshTopology object for '" << meshVarName <<"' exists. Retrieving... " << endl);
         requestedRangeVarsForMesh = mit->second;
     }
 
@@ -161,11 +163,11 @@ string usage(string fnc){
 static UgridRestrictArgs processUgrArgs(string func_name, locationType dimension, int argc, BaseType *argv[])
 {
 
-    BESDEBUG("ugrid", "processUgrArgs() - BEGIN" << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     UgridRestrictArgs args;
     args.dimension = dimension;
-    BESDEBUG("ugrid", "args.dimension: " << libdap::long_to_string(args.dimension) << endl);
+    BESDEBUG(MODULE, prolog << "args.dimension: " << libdap::long_to_string(args.dimension) << endl);
 
     args.rangeVars = vector<libdap::Array *>();
 
@@ -186,7 +188,7 @@ static UgridRestrictArgs processUgrArgs(string func_name, locationType dimension
             "Wrong type for first argument, expected DAP Int32. " + ugrSyntax + "  was passed a/an " + bt->type_name());
 
     args.dimension = (locationType) dynamic_cast<Int32&>(*argv[0]).value();
-    BESDEBUG("ugrid", "args.dimension: " << libdap::long_to_string(args.dimension) << endl);
+    BESDEBUG(MODULE, prolog << "args.dimension: " << libdap::long_to_string(args.dimension) << endl);
 #endif
 
     // ---------------------------------------------
@@ -198,11 +200,11 @@ static UgridRestrictArgs processUgrArgs(string func_name, locationType dimension
                 + bt->type_name());
 
     args.filterExpression = dynamic_cast<Str&>(*bt).value();
-    BESDEBUG("ugrid", "args.filterExpression: '" << args.filterExpression << "' (AS RECEIVED)" << endl);
+    BESDEBUG(MODULE, prolog << "args.filterExpression: '" << args.filterExpression << "' (AS RECEIVED)" << endl);
 
     args.filterExpression = www2id(args.filterExpression);
 
-    BESDEBUG("ugrid", "args.filterExpression: '" << args.filterExpression << "' (URL DECODED)" << endl);
+    BESDEBUG(MODULE, prolog << "args.filterExpression: '" << args.filterExpression << "' (URL DECODED)" << endl);
 
     // --------------------------------------------------
     // Process the range variables selected by the user.
@@ -225,7 +227,7 @@ static UgridRestrictArgs processUgrArgs(string func_name, locationType dimension
         args.rangeVars.push_back(newRangeVar);
     }
 
-    BESDEBUG("ugrid", "processUgrArgs() - END" << endl);
+    BESDEBUG(MODULE, prolog << "END" << endl);
 
     return args;
 }
@@ -256,7 +258,7 @@ static string arrayState(libdap::Array *dapArray, string indent)
 
 static void copyUsingSubsetIndex(libdap::Array *sourceArray, vector<unsigned int> *subsetIndex, void *result)
 {
-    BESDEBUG("ugrid", "ugrid::copyUsingIndex() - BEGIN" << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     switch (sourceArray->var()->type()) {
     case dods_byte_c:
@@ -286,14 +288,14 @@ static void copyUsingSubsetIndex(libdap::Array *sourceArray, vector<unsigned int
         throw InternalErr(__FILE__, __LINE__, "ugrid::hgr5::copyUsingSubsetIndex() - Unknown DAP type encountered.");
     }
 
-    BESDEBUG("ugrid", "ugrid::copyUsingIndex() - END" << endl);
+    BESDEBUG(MODULE, prolog << "END" << endl);
 }
 
 // This is only used for the ugrid2 BESDEBUG lines.
 static string vectorToString(vector<unsigned int> *index)
 {
-    BESDEBUG("ugrid", "indexToString() - BEGIN"<< endl);
-    BESDEBUG("ugrid", "indexToString() - index.size(): " << libdap::long_to_string(index->size()) << endl);
+    BESDEBUG(MODULE, prolog << "BEGIN"<< endl);
+    BESDEBUG(MODULE, prolog << "index.size(): " << libdap::long_to_string(index->size()) << endl);
     stringstream s;
     s << "[";
 
@@ -302,7 +304,7 @@ static string vectorToString(vector<unsigned int> *index)
         s << (*index)[i];
     }
     s << "]";
-    BESDEBUG("ugrid", "indexToString() - END"<< endl);
+    BESDEBUG(MODULE, prolog << "END"<< endl);
 
     return s.str();
 }
@@ -316,23 +318,21 @@ static void rDAWorker(MeshDataVariable *mdv, libdap::Array::Dim_iter thisDim, ve
     libdap::Array *dapArray = mdv->getDapArray();
 
     // For real data, this output is huge. jhrg 4/15/15
-    BESDEBUG("ugrid2",
-        "rDAWorker() - slab_subset_index" << vectorToString(slab_subset_index) << " size: " << slab_subset_index->size() << endl);
+    BESDEBUG(MODULE_2, prolog << "slab_subset_index " << vectorToString(slab_subset_index) << " size: " << slab_subset_index->size() << endl);
 
     // The locationCoordinateDimension is the dimension of the array that is associated with the ugrid "rank" - e.g. it is the
     // dimension that ties the variable to the 'nodes' (rank 0) or 'edges' (rank 1) or 'faces' (rank 2) of the ugrid.
     libdap::Array::Dim_iter locationCoordinateDim = mdv->getLocationCoordinateDimension();
 
-    BESDEBUG("ugrid", "rdaWorker() - thisDim: '" << dapArray->dimension_name(thisDim) << "'" << endl);
-    BESDEBUG("ugrid",
-        "rdaWorker() - locationCoordinateDim: '" << dapArray->dimension_name(locationCoordinateDim) << "'" << endl);
+    BESDEBUG(MODULE, prolog << "thisDim: '" << dapArray->dimension_name(thisDim) << "'" << endl);
+    BESDEBUG(MODULE, prolog << "locationCoordinateDim: '" << dapArray->dimension_name(locationCoordinateDim) << "'" << endl);
     // locationCoordinateDim is, e.g., 'nodes'. jhrg 10/25/13
     if (thisDim != locationCoordinateDim) {
         unsigned int start = dapArray->dimension_start(thisDim, true);
         unsigned int stride = dapArray->dimension_stride(thisDim, true);
         unsigned int stop = dapArray->dimension_stop(thisDim, true);
 
-        BESDEBUG("ugrid", "rdaWorker() - array state: " << arrayState(dapArray, "    "));
+        BESDEBUG(MODULE, prolog << "array state: " << arrayState(dapArray, "    "));
 
         for (unsigned int dimIndex = start; dimIndex <= stop; dimIndex += stride) {
             dapArray->add_constraint(thisDim, dimIndex, 1, dimIndex);
@@ -343,26 +343,26 @@ static void rDAWorker(MeshDataVariable *mdv, libdap::Array::Dim_iter thisDim, ve
         dapArray->add_constraint(thisDim, start, stride, stop);
     }
     else {
-        BESDEBUG("ugrid", "rdaWorker() - Found locationCoordinateDim" << endl);
+        BESDEBUG(MODULE, prolog << "Found locationCoordinateDim" << endl);
 
         if ((thisDim + 1) != dapArray->dim_end()) {
-            string msg =
-                "rDAWorker() - The location coordinate dimension is not the last dimension in the array. Hyperslab subsetting of this dimension is not supported.";
-            BESDEBUG("ugrid", msg << endl);
+            string msg = prolog;
+            msg.append("The location coordinate dimension is not the last dimension in the array. "
+                                   "Hyperslab subsetting of this dimension is not supported.");
+            BESDEBUG(MODULE, msg << endl);
             throw Error(malformed_expr, msg);
         }
 
-        BESDEBUG("ugrid", "rdaWorker() - Arrived At Last Dimension" << endl);
+        BESDEBUG(MODULE, prolog << "Arrived At Last Dimension" << endl);
 
         dapArray->set_read_p(false);
 
-        BESDEBUG("ugrid", "rdaWorker() - dap array: " << arrayState(dapArray, "    "));
+        BESDEBUG(MODULE, prolog << "dap array: " << arrayState(dapArray, "    "));
 
         vector<unsigned int> lastDimHyperSlabLocation;
         NDimensionalArray::retrieveLastDimHyperSlabLocationFromConstrainedArrray(dapArray, &lastDimHyperSlabLocation);
 
-        BESDEBUG("ugrid",
-            "rdaWorker() - lastDimHyperSlabLocation: " << NDimensionalArray::vectorToIndices(&lastDimHyperSlabLocation) << endl);
+        BESDEBUG(MODULE, prolog << "lastDimHyperSlabLocation: " << NDimensionalArray::vectorToIndices(&lastDimHyperSlabLocation) << endl);
 
         // unused. 4/7/14 jhrg. unsigned int elementCount;
 
@@ -389,13 +389,11 @@ static libdap::Array *restrictRangeVariableByOneDHyperSlab(MeshDataVariable *mdv
 
     long restrictedSlabSize = slab_subset_index->size();
 
-    BESDEBUG("ugrid2",
-        "restrictRangeVariableByOneDHyperSlab() - slab_subset_index"<< vectorToString(slab_subset_index) << " size: " << libdap::long_to_string(restrictedSlabSize) << endl);
+    BESDEBUG(MODULE_2, prolog << "slab_subset_index"<< vectorToString(slab_subset_index) << " size: " << libdap::long_to_string(restrictedSlabSize) << endl);
 
     libdap::Array *sourceDapArray = mdv->getDapArray();
 
-    BESDEBUG("ugrid",
-        "restrictDapArrayByOneDHyperSlab() - locationCoordinateDim: '" << sourceDapArray->dimension_name(mdv->getLocationCoordinateDimension()) << "'" << endl);
+    BESDEBUG(MODULE, prolog << "locationCoordinateDim: '" << sourceDapArray->dimension_name(mdv->getLocationCoordinateDimension()) << "'" << endl);
 
     // We want the manipulate the Array's Dimensions so that only a single dimensioned slab of the location coordinate dimension
     // is read at a time. We need to cache the original constrained dimensions so that we can build the correct collection of
@@ -410,7 +408,7 @@ static libdap::Array *restrictRangeVariableByOneDHyperSlab(MeshDataVariable *mdv
     for (unsigned int i = 0; i < resultArrayShape.size(); i++) {
         msg << "[" << resultArrayShape[i] << "]";
     }
-    BESDEBUG("ugrid", "restrictDapArrayByOneDHyperSlab() - Constrained source array shape" << msg.str() << endl);
+    BESDEBUG(MODULE, prolog << "Constrained source array shape" << msg.str() << endl);
     msg.str("");
 
     // Now, we know that the result array has a last dimension slab size determined by the slab_subset_index (whichwas made by the ugrid sub-setting),
@@ -419,15 +417,13 @@ static libdap::Array *restrictRangeVariableByOneDHyperSlab(MeshDataVariable *mdv
     resultArrayShape[sourceDapArray->dimensions(true) - 1] = restrictedSlabSize; // jhrg 10/25/13 resultArrayShape.last() = ...
     libdap::Type dapType = sourceDapArray->var()->type();
 
-    BESDEBUG("ugrid",
-        "restrictDapArrayByOneDHyperSlab() - UGrid restricted HyperSlab has  "<< restrictedSlabSize << " elements." << endl);
-    BESDEBUG("ugrid",
-        "restrictDapArrayByOneDHyperSlab() - Array is of type '"<< libdap::type_name(dapType) << "'" << endl);
+    BESDEBUG(MODULE, prolog << "UGrid restricted HyperSlab has  "<< restrictedSlabSize << " elements." << endl);
+    BESDEBUG(MODULE, prolog << "Array is of type '"<< libdap::type_name(dapType) << "'" << endl);
 
     for (unsigned int i = 0; i < resultArrayShape.size(); i++) {
         msg << "[" << resultArrayShape[i] << "]";
     }
-    BESDEBUG("ugrid", "restrictDapArrayByOneDHyperSlab() - resultArrayShape" << msg.str() << endl);
+    BESDEBUG(MODULE, prolog << "resultArrayShape" << msg.str() << endl);
     msg.str(std::string());
 
     // Now we make a new NDimensionalArray instance that we will use to hold the results.
@@ -469,10 +465,9 @@ void ugrid_restrict(string func_name, locationType location, int argc, BaseType 
 {
     try { // This top level try block is used to catch gridfields library errors.
 
-        BESStopWatch sw;
-        if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("ugrid::ugrid_restrict()", "[function_invocation]");
+        BES_STOPWATCH_START(MODULE, prolog + "Timing");
 
-        BESDEBUG("ugrid", "ugrid_restrict() - BEGIN" << endl);
+        BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
         string info = string("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
             + "<function name=\"ugrid_restrict\" version=\"0.1\">\n" + "Server function for Unstructured grid operations.\n"
@@ -498,9 +493,8 @@ void ugrid_restrict(string func_name, locationType location, int argc, BaseType 
         for (it = args.rangeVars.begin(); it != args.rangeVars.end(); ++it) {
             addRangeVar(&dds, *it, meshToRangeVarsMap);
         }
-        BESDEBUG("ugrid", "ugrid_restrict() - The user requested "<< args.rangeVars.size() << " range data variables." << endl);
-        BESDEBUG("ugrid",
-            "ugrid_restrict() - The user's request referenced "<< meshToRangeVarsMap->size() << " mesh topology variables." << endl);
+        BESDEBUG(MODULE, prolog << "The user requested "<< args.rangeVars.size() << " range data variables." << endl);
+        BESDEBUG(MODULE, prolog << "The user's request referenced "<< meshToRangeVarsMap->size() << " mesh topology variables." << endl);
 
         // ----------------------------------
         // OK, so up to this point we have not read any data from the data set, but we have QC'd the inputs and verified that
@@ -519,11 +513,11 @@ void ugrid_restrict(string func_name, locationType location, int argc, BaseType 
         // Add any global attributes to the netcdf file
 #if 1
         AttrTable &globals = dds.get_attr_table();
-        BESDEBUG("ugrid", "ugrid_restrict() - Copying Global Attributes" << endl << globals << endl);
+        BESDEBUG(MODULE, prolog << "Copying Global Attributes" << endl << globals << endl);
 
         AttrTable *newDatasetAttrTable = new AttrTable(globals);
         dapResult->set_attr_table(*newDatasetAttrTable);
-        BESDEBUG("ugrid", "ugrid_restrict() - Result Structure attrs: " << endl << dapResult->get_attr_table() << endl);
+        BESDEBUG(MODULE, prolog << "Result Structure attrs: " << endl << dapResult->get_attr_table() << endl);
 
 
 #endif
@@ -540,8 +534,7 @@ void ugrid_restrict(string func_name, locationType location, int argc, BaseType 
             // Building the restricted TwoDMeshTopology without adding any range variables and then converting the result
             // Grid field to Dap Objects should return all of the Ugrid structural stuff - mesh variable, node coordinate variables,
             // face and edge coordinate variables if present.
-            BESDEBUG("ugrid",
-                "ugrid_restrict() - Adding restricted mesh_topology structure for mesh '" << meshVariableName << "' to DAP response." << endl);
+            BESDEBUG(MODULE, prolog << "Adding restricted mesh_topology structure for mesh '" << meshVariableName << "' to DAP response." << endl);
 
             TwoDMeshTopology *tdmt = new TwoDMeshTopology();
             tdmt->init(meshVariableName, &dds);
@@ -555,31 +548,30 @@ void ugrid_restrict(string func_name, locationType location, int argc, BaseType 
             vector<vector<unsigned int> *> location_subset_indices(3);
 
             long nodeResultSize = tdmt->getResultGridSize(node);
-            BESDEBUG("ugrid", "ugrid_restrict() - there are "<< nodeResultSize << " nodes in the subset." << endl);
+            BESDEBUG(MODULE, prolog << "There are "<< nodeResultSize << " nodes in the subset." << endl);
             vector<unsigned int> node_subset_index(nodeResultSize);
             if (nodeResultSize > 0) {
                 tdmt->getResultIndex(node, node_subset_index.data());
             }
             location_subset_indices[node] = &node_subset_index;
 
-            BESDEBUG("ugrid2", "ugrid_restrict() - node_subset_index"<< vectorToString(&node_subset_index) << endl);
+            BESDEBUG(MODULE_2, prolog << "node_subset_index"<< vectorToString(&node_subset_index) << endl);
 
             long faceResultSize = tdmt->getResultGridSize(face);
-            BESDEBUG("ugrid", "ugrid_restrict() - there are "<< faceResultSize << " faces in the subset." << endl);
+            BESDEBUG(MODULE, prolog << "There are "<< faceResultSize << " faces in the subset." << endl);
             vector<unsigned int> face_subset_index(faceResultSize);
             if (faceResultSize > 0) {
                 tdmt->getResultIndex(face, face_subset_index.data());
             }
             location_subset_indices[face] = &face_subset_index;
-            BESDEBUG("ugrid2", "ugrid_restrict() - face_subset_index: "<< vectorToString(&face_subset_index) << endl);
+            BESDEBUG(MODULE_2, prolog << "face_subset_index: "<< vectorToString(&face_subset_index) << endl);
 
             // This gets all the stuff that's attached to the grid - which at this point does not include the range variables but does include the
             // index variable. good enough for now but need to drop the index....
             vector<BaseType *> dapResults;
             tdmt->convertResultGridFieldStructureToDapObjects(&dapResults);
 
-            BESDEBUG("ugrid",
-                "ugrid_restrict() - Restriction of mesh_topology '"<< tdmt->getMeshVariable()->name() << "' structure completed." << endl);
+            BESDEBUG(MODULE, prolog << "Restriction of mesh_topology '"<< tdmt->getMeshVariable()->name() << "' structure completed." << endl);
 
             // now that we have the mesh topology variable we are going to look at each of the requested
             // range variables (aka MeshDataVariable instances) and we're going to subset that using the
@@ -588,8 +580,7 @@ void ugrid_restrict(string func_name, locationType location, int argc, BaseType 
             for (rvit = requestedRangeVarsForMesh->begin(); rvit != requestedRangeVarsForMesh->end(); rvit++) {
                 MeshDataVariable *mdv = *rvit;
 
-                BESDEBUG("ugrid",
-                    "ugrid_restrict() - Processing MeshDataVariable  '"<< mdv->getName() << "' associated with rank/location: "<< mdv->getGridLocation() << endl);
+                BESDEBUG(MODULE, prolog << "Processing MeshDataVariable  '"<< mdv->getName() << "' associated with rank/location: "<< mdv->getGridLocation() << endl);
 
                 tdmt->setLocationCoordinateDimension(mdv);
 
@@ -600,19 +591,17 @@ void ugrid_restrict(string func_name, locationType location, int argc, BaseType 
                 libdap::Array *restrictedRangeVarArray = restrictRangeVariableByOneDHyperSlab(mdv,
                     location_subset_indices[mdv->getGridLocation()]);
 
-                BESDEBUG("ugrid",
-                    "ugrid_restrict() - Adding resulting dapArray  '"<< restrictedRangeVarArray->name() << "' to dapResults." << endl);
+                BESDEBUG(MODULE, prolog << "Adding resulting dapArray  '"<< restrictedRangeVarArray->name() << "' to dapResults." << endl);
 
                 dapResults.push_back(restrictedRangeVarArray);
             }
 
             delete tdmt;
 
-            BESDEBUG("ugrid", "ugrid_restrict() - Adding GF::GridField results to DAP structure " << dapResult->name() << endl);
+            BESDEBUG(MODULE, prolog << "Adding GF::GridField results to DAP structure " << dapResult->name() << endl);
 
             for (vector<BaseType *>::iterator i = dapResults.begin(); i != dapResults.end(); ++i) {
-                BESDEBUG("ugrid",
-                    "ugrid_restrict() - Adding variable "<< (*i)->name() << " to DAP structure " << dapResult->name() << endl);
+                BESDEBUG(MODULE, prolog << "Adding variable "<< (*i)->name() << " to DAP structure " << dapResult->name() << endl);
                 dapResult->add_var_nocopy(*i);
             }
         }
@@ -621,7 +610,7 @@ void ugrid_restrict(string func_name, locationType location, int argc, BaseType 
 
         // TODO replace with auto_ptr. jhrg 4/17/15
 
-        BESDEBUG("ugrid", "ugrid_restrict() - Releasing maps and vectors..." << endl);
+        BESDEBUG(MODULE, prolog << "Releasing maps and vectors..." << endl);
         for (mit = meshToRangeVarsMap->begin(); mit != meshToRangeVarsMap->end(); ++mit) {
             vector<MeshDataVariable *> *requestedRangeVarsForMesh = mit->second;
             vector<MeshDataVariable *>::iterator rvit;
@@ -633,7 +622,7 @@ void ugrid_restrict(string func_name, locationType location, int argc, BaseType 
         }
         delete meshToRangeVarsMap;
 
-        BESDEBUG("ugrid", "ugrid_restrict() - END" << endl);
+        BESDEBUG(MODULE, prolog << "END" << endl);
     }
     catch (GFError &gfe) {
         throw BESError(gfe.get_message(), gfe.get_error_type(), gfe.get_file(), gfe.get_line());

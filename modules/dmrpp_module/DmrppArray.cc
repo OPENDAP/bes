@@ -223,8 +223,7 @@ bool one_super_chunk_transfer_thread(const unique_ptr<one_super_chunk_args> &arg
     stringstream timer_tag;
     timer_tag << prolog << "tid: 0x" << std::hex << std::this_thread::get_id() <<
     " parent_tid: 0x" << std::hex << args->parent_thread_id << " sc_id: " << args->super_chunk->id();
-    BESStopWatch sw(TRANSFER_THREADS);
-    sw.start(timer_tag.str());
+    BES_STOPWATCH_START(TRANSFER_THREADS, prolog + timer_tag.str());
 #endif
 
     args->super_chunk->read();
@@ -243,8 +242,7 @@ bool one_super_chunk_unconstrained_transfer_thread(const unique_ptr<one_super_ch
     stringstream timer_tag;
     timer_tag << prolog << "tid: 0x" << std::hex << std::this_thread::get_id() <<
     " parent_tid: 0x" << std::hex << args->parent_thread_id  << " sc_id: " << args->super_chunk->id();
-    BESStopWatch sw(TRANSFER_THREADS);
-    sw.start(timer_tag.str());
+    BES_STOPWATCH_START(TRANSFER_THREADS, prolog + timer_tag.str());
 #endif
 
     args->super_chunk->read_unconstrained();
@@ -258,8 +256,7 @@ bool one_super_chunk_unconstrained_transfer_thread_dio(const unique_ptr<one_supe
     stringstream timer_tag;
     timer_tag << prolog << "tid: 0x" << std::hex << std::this_thread::get_id() <<
     " parent_tid: 0x" << std::hex << args->parent_thread_id  << " sc_id: " << args->super_chunk->id();
-    BESStopWatch sw(TRANSFER_THREADS);
-    sw.start(timer_tag.str());
+    BES_STOPWATCH_START(TRANSFER_THREADS, prolog + timer_tag.str());
 #endif
 
     args->super_chunk->read_unconstrained_dio();
@@ -365,8 +362,7 @@ bool start_super_chunk_unconstrained_transfer_thread_dio(list<std::future<bool>>
  */
 void read_super_chunks_unconstrained_concurrent(queue<shared_ptr<SuperChunk>> &super_chunks, DmrppArray *array)
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+array->name(), "");
+    BES_STOPWATCH_START(MODULE, prolog + "Timing array name: "+array->name());
 
     // Parallel version based on read_chunks_unconstrained(). There is
     // substantial duplication of the code in read_chunks_unconstrained(), but
@@ -431,8 +427,7 @@ void read_super_chunks_unconstrained_concurrent(queue<shared_ptr<SuperChunk>> &s
 // Doing this to ensure direct IO won't affect the regular operations.
 void read_super_chunks_unconstrained_concurrent_dio(queue<shared_ptr<SuperChunk>> &super_chunks, DmrppArray *array)
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+array->name(), "");
+    BES_STOPWATCH_START(MODULE, prolog + "Timing array name: "+array->name());
 
     // Parallel version based on read_chunks_unconstrained(). There is
     // substantial duplication of the code in read_chunks_unconstrained(), but
@@ -518,8 +513,7 @@ void read_super_chunks_unconstrained_concurrent_dio(queue<shared_ptr<SuperChunk>
  */
 void read_super_chunks_concurrent(queue< shared_ptr<SuperChunk> > &super_chunks, DmrppArray *array)
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+array->name(), "");
+    BES_STOPWATCH_START(MODULE, prolog + "Timing array name: "+array->name());
 
     // Parallel version based on read_chunks_unconstrained(). There is
     // substantial duplication of the code in read_chunks_unconstrained(), but
@@ -841,8 +835,7 @@ void DmrppArray::read_contiguous()
 {
 
     BESDEBUG(dmrpp_3, prolog << "NOT using direct IO " << endl);
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
+    BES_STOPWATCH_START(MODULE, prolog + "Timing array name: "+name());
 
     // Get the single chunk that makes up this CONTIGUOUS variable.
     if (get_chunks_size() != 1)
@@ -1181,8 +1174,7 @@ void DmrppArray::read_chunks_unconstrained()
 
     if (!DmrppRequestHandler::d_use_transfer_threads) {  // Serial transfers
 #if DMRPP_ENABLE_THREAD_TIMERS
-        BESStopWatch sw(dmrpp_3);
-        sw.start(prolog + "Serial SuperChunk Processing.");
+        BES_STOPWATCH_START(dmrpp_3, prolog + "Serial SuperChunk Processing.");
 #endif
         while(!super_chunks.empty()) {
             auto super_chunk = super_chunks.front();
@@ -1193,10 +1185,8 @@ void DmrppArray::read_chunks_unconstrained()
     }
     else {      // Parallel transfers
 #if DMRPP_ENABLE_THREAD_TIMERS
-        stringstream timer_name;
-        timer_name << prolog << "Concurrent SuperChunk Processing. d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads;
-        BESStopWatch sw(dmrpp_3);
-        sw.start(timer_name.str());
+        string timer_name = prolog + "Concurrent SuperChunk Processing. d_max_transfer_threads: "  + to_string(DmrppRequestHandler::d_max_transfer_threads);
+        BES_STOPWATCH_START(dmrpp_3, timer_name);
 #endif
         read_super_chunks_unconstrained_concurrent(super_chunks, this);
     }
@@ -1253,8 +1243,7 @@ void DmrppArray::read_chunks_dio_unconstrained()
 
     if (!DmrppRequestHandler::d_use_transfer_threads) {  // Serial transfers
 #if DMRPP_ENABLE_THREAD_TIMERS
-        BESStopWatch sw(dmrpp_3);
-        sw.start(prolog + "Serial SuperChunk Processing.");
+        BES_STOPWATCH_START(dmrpp_3, prolog + "Serial SuperChunk Processing.");
 #endif
         while(!super_chunks.empty()) {
             auto super_chunk = super_chunks.front();
@@ -1267,10 +1256,8 @@ void DmrppArray::read_chunks_dio_unconstrained()
     }
     else {      // Parallel transfers
 #if DMRPP_ENABLE_THREAD_TIMERS
-        stringstream timer_name;
-        timer_name << prolog << "Concurrent SuperChunk Processing. d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads;
-        BESStopWatch sw(dmrpp_3);
-        sw.start(timer_name.str());
+        string timer_name = prolog + "Concurrent SuperChunk Processing. d_max_transfer_threads: " + to_string( DmrppRequestHandler::d_max_transfer_threads);
+        BES_STOPWATCH_START(dmrpp_3, timer_name);
 #endif
         // Call direct IO routine for parallel transfers
         read_super_chunks_unconstrained_concurrent_dio(super_chunks, this);
@@ -1381,8 +1368,7 @@ void DmrppArray::read_linked_blocks(){
 
     if (!DmrppRequestHandler::d_use_transfer_threads) {  // Serial transfers
 #if DMRPP_ENABLE_THREAD_TIMERS
-        BESStopWatch sw(dmrpp_3);
-        sw.start(prolog + "Serial SuperChunk Processing.");
+        BES_STOPWATCH_START(dmrpp_3, prolog + "Serial SuperChunk Processing.");
 #endif
         while(!super_chunks.empty()) {
             auto super_chunk = super_chunks.front();
@@ -1395,10 +1381,8 @@ void DmrppArray::read_linked_blocks(){
     }
     else {      // Parallel transfers
 #if DMRPP_ENABLE_THREAD_TIMERS
-        stringstream timer_name;
-        timer_name << prolog << "Concurrent SuperChunk Processing. d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads;
-        BESStopWatch sw(dmrpp_3);
-        sw.start(timer_name.str());
+        string timer_name = prolog + "Concurrent SuperChunk Processing. d_max_transfer_threads: " + to_string(DmrppRequestHandler::d_max_transfer_threads);
+        BES_STOPWATCH_START(dmrpp_3, timer_name);
 #endif
         // Call direct IO routine for parallel transfers
         read_super_chunks_unconstrained_concurrent_dio(super_chunks, this);
@@ -2042,8 +2026,7 @@ void DmrppArray::read_chunks()
         // This version is the 'serial' version of the code. It reads a chunk, inserts it,
         // reads the next one, and so on.
 #if DMRPP_ENABLE_THREAD_TIMERS
-        BESStopWatch sw(dmrpp_3);
-        sw.start(prolog + "Serial SuperChunk Processing.");
+        BES_STOPWATCH_START(dmrpp_3, prolog + "Serial SuperChunk Processing.");
 #endif
         while (!super_chunks.empty()) {
             auto super_chunk = super_chunks.front();
@@ -2054,10 +2037,8 @@ void DmrppArray::read_chunks()
     }
     else {
 #if DMRPP_ENABLE_THREAD_TIMERS
-        stringstream timer_name;
-        timer_name << prolog << "Concurrent SuperChunk Processing. d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads;
-        BESStopWatch sw(dmrpp_3);
-        sw.start(timer_name.str());
+        string timer_name = prolog + "Concurrent SuperChunk Processing. d_max_transfer_threads: " + to_string(DmrppRequestHandler::d_max_transfer_threads);
+        BES_STOPWATCH_START(dmrpp_3, timer_name);
 #endif
         read_super_chunks_concurrent(super_chunks, this);
     }
@@ -2327,8 +2308,7 @@ DmrppArray::set_send_p(bool state)
  */
 void DmrppArray::read_contiguous_string()
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start(prolog + " name: "+name(), "");
+    BES_STOPWATCH_START(MODULE, prolog + "Timing array name: "+name());
 
     // This is the original chunk for this 'contiguous' variable.
     auto the_one_chunk = get_immutable_chunks()[0];
@@ -2617,8 +2597,12 @@ bool DmrppArray::read()
     // It's important to note that w.r.t. the compact data layout the DMZ parser reads the values into the
     // DmrppArray at the time it is parsed and the read flag is then set. Thus, the compact layout solution
     // does not explicitly appear in this method as it is handled by the parser.
-    if (read_p()) return true;
+    if (read_p()) 
+        return true;
 
+    // If it is zero size array, we just return empty data.
+    if (length_ll() == 0) 
+        return true;
 #if 0
     // Here we need to reset the dio_flag to false for the time being before calling the method use_direct_io_opt()
     // since the dio_flag may be set to true for reducing the memory usage with a temporary solution. 
@@ -2760,7 +2744,6 @@ bool DmrppArray::read()
                 }
             }
             else {
-
                 bool buffer_chunk_case = array_to_read->use_buffer_chunk();
             
                 if (!array_to_read->is_projected()) {

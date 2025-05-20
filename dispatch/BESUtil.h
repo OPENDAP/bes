@@ -138,6 +138,7 @@ public:
     static void string_to_file(const std::string &filename, const std::string &content);
 
     static std::string &remove_crlf(std::string &str);
+    static std::string uuid();
 
 };
 

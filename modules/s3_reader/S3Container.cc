@@ -186,12 +186,8 @@ string S3Container::access()
             // This scope is here because of the BESStopWatch. jhrg 10/18/22
             //d_dmrpp_rresource = new http::RemoteResource(dmrpp_url);
             d_dmrpp_rresource = std::make_shared<http::RemoteResource>(dmrpp_url);
-#ifndef NDEBUG
-            BESStopWatch besTimer;
-            if (BESISDEBUG(MODULE) || BESDebug::IsSet(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) {
-                besTimer.start("DMR++ retrieval: " + dmrpp_url->str());
-            }
-#endif
+
+            BES_STOPWATCH_START(MODULE, prolog + "Timing DMR++ retrieval. Target url: " + dmrpp_url->str());
             d_dmrpp_rresource->retrieve_resource();
 
             // Substitute the data_access_url and missing_data_access_url in the dmr++ file.

@@ -37,6 +37,9 @@
 #include <netcdf.h>
 
 #include <libdap/Array.h>
+#include <libdap/D4Enum.h>
+#include <libdap/D4EnumDefs.h>
+#include <libdap/D4Group.h>
 #include <libdap/AttrTable.h>
 #include <libdap/D4Attributes.h>
 
@@ -54,10 +57,10 @@
 
 using namespace libdap;
 
+
 // This controls whether variables' data values are deleted as soon
 // as they are written (except for DAP2 Grid Maps, which may be shared).
 #define CLEAR_LOCAL_DATA 1
-#define STRING_ARRAY_OPT 1
 
 vector<FONcDim *> FONcArray::Dimensions;
 
@@ -68,6 +71,12 @@ const int GENERAL_MAX_CHUNK_SIZES = 1048576;
 
 // set normal 1-D maximum chunk sizes to 64K(64*1024)
 const int NORMAL_1D_MAX_CHUNK_SIZES = 65536;
+
+// normal chunk cache size (4M)
+const int NORMAL_CHUNK_CACHE_SIZE = 4194304;
+
+// maximum chunk cache size (64M)
+const int MAXIMUM_CHUNK_CACHE_SIZE = 67108864;
 
 /** @brief Constructor for FONcArray that takes a DAP Array
  *
@@ -145,18 +154,20 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
 
     BESDEBUG("fonc", "FONcArray::convert() - converting array " << d_varname << endl);
 
-    d_array_type = FONcUtils::get_nc_type(d_a->var(), isNetCDF4_ENHANCED());
-
-    if(d_array_type == NC_NAT) {
-
-        string err = "fileout_netcdf: The datatype of this variable '" + d_varname;
-        err += "' is not supported. It is very possible that you try to obtain ";
-        err += "a netCDF file that follows the netCDF classic model. ";
-        err += "The unsigned 32-bit integer and signed/unsigned 64-bit integer ";
-        err += "are not supported by the netCDF classic model. Downloading this file as the netCDF-4 file that ";
-        err += "follows the netCDF enhanced model should solve the problem.";
-
-        throw BESInternalError(err, __FILE__, __LINE__);
+    if (!d_is_dap4_enum) {
+        d_array_type = FONcUtils::get_nc_type(d_a->var(), isNetCDF4_ENHANCED());
+    
+        if(d_array_type == NC_NAT) {
+    
+            string err = "fileout_netcdf: The datatype of this variable '" + d_varname;
+            err += "' is not supported. It is very possible that you try to obtain ";
+            err += "a netCDF file that follows the netCDF classic model. ";
+            err += "The unsigned 32-bit integer and signed/unsigned 64-bit integer ";
+            err += "are not supported by the netCDF classic model. Downloading this file as the netCDF-4 file that ";
+            err += "follows the netCDF enhanced model should solve the problem.";
+    
+            throw BESInternalError(err, __FILE__, __LINE__);
+        }
     }
 
 #if !NDEBUG
@@ -523,6 +534,18 @@ FONcArray::find_dim(const vector<string> &embed, const string &name, int64_t siz
     return ret_dim;
 }
 
+bool FONcArray::is_unlimited_dim(const string &dim_name) const {
+
+    bool ret_value = false;
+    for (const auto & udn: unlimited_dim_names) {
+        if (udn == dim_name) {
+            ret_value = true;
+            break;
+        }
+    }
+    return ret_value;
+}
+
 /** @brief define the DAP Array in the netcdf file
  *
  * This includes creating the dimensions, if they haven't already been
@@ -569,7 +592,16 @@ void FONcArray::define(int ncid) {
             int dimnum = 0;
             for (; i != e; i++) {
                 FONcDim *fd = *i;
-                fd->define(ncid);
+                // Here we want to check if the dimension is defined.
+                // Doing this way, we only need to check if this dimension is unlimited once. 
+                if (fd->defined()==false) {
+                    if (unlimited_dim_names.empty()==false) {
+                        bool is_unlimited = is_unlimited_dim(fd->name());
+                        if(is_unlimited) 
+                            fd->set_unlimited_dim();
+                    }
+                    fd->define(ncid);
+                }
                 d_dim_ids[dimnum] = fd->dimid();
                 BESDEBUG("fonc", "FONcArray::define() - dim_id: " << fd->dimid() << " size:" << fd->size() << endl);
                 dimnum++;
@@ -587,17 +619,27 @@ void FONcArray::define(int ncid) {
             }
         }
 
-        int stax = nc_def_var(ncid, d_varname.c_str(), d_array_type, d_ndims, d_dim_ids.data(), &d_varid);
-        if (stax != NC_NOERR) {
-            string err = (string) "fileout.netcdf - Failed to define variable " + d_varname;
-            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+        if (d_is_dap4_enum) {
+            int stax = nc_def_var(ncid, d_varname.c_str(), d_fa_nc4_enum_type_id, d_ndims, d_dim_ids.data(), &d_varid);
+            if (stax != NC_NOERR) {
+                string err = (string) "fileout.netcdf - Failed to define enum variable " + d_varname;
+                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+            }  
+        } 
+        else {
+            int stax = nc_def_var(ncid, d_varname.c_str(), d_array_type, d_ndims, d_dim_ids.data(), &d_varid);
+            if (stax != NC_NOERR) {
+                string err = (string) "fileout.netcdf - Failed to define variable " + d_varname;
+                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+            }
         }
-
-        stax = nc_def_var_fill(ncid, d_varid, NC_NOFILL, NULL );
+    
+        int stax = nc_def_var_fill(ncid, d_varid, NC_NOFILL, nullptr );
         if (stax != NC_NOERR) {
-            string err = (string) "fileout.netcdf - " + "Failed to clear fill value for " + d_varname;
-            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                string err = (string) "fileout.netcdf - " + "Failed to clear fill value for " + d_varname;
+                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
         }
+        
 #ifndef NBEBUG
 
         if (fdio_flag) {
@@ -715,6 +757,28 @@ void FONcArray::define(int ncid) {
                         FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
                     }
                 }
+
+                // We find that increasing the chunk cache size only benefits large-size character array for NASA files. 
+                // So we only check if we need to increase the chunk cache for character array. 
+                // If we find it necessary to apply this to other datatypes, don't forget to count the datatype size. KY 2025-05-07
+                if (d_array_type == NC_CHAR) {
+
+                    BESDEBUG("fonc", "FONcArray::define() - Checking if we should increase HDF5 chunk cache. " << endl);
+                    // Chunk size is the number of elements in a chunk. chunk cache needs to be in byte. For character the datatype
+                    // is one byte, so we don't need to consider the datatype size but for other datatype, we need to multiply
+                    // the datatype size.
+                    size_t total_chunksizes = 1;
+                    for (const auto& chunk_size:d_chunksizes)
+                        total_chunksizes *= chunk_size;
+    
+                    // If the chunk size is greater than 4M, we increase the chunk cache size to be 64M.
+                    if (total_chunksizes  >NORMAL_CHUNK_CACHE_SIZE) {
+                        size_t cache_size = MAXIMUM_CHUNK_CACHE_SIZE;
+                        BESDEBUG("fonc", "FONcArray::define() - we increase the HDF5 chunk cache of this variable to 64MB. " << endl);
+                        // The number 521 is HDF5's default value for this parameter.
+                        nc_set_var_chunk_cache(ncid, d_varid, cache_size,521,1);
+                    }
+                }
             }
         }
 
@@ -770,38 +834,43 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
         return;
     }
 
-    int stax;
+    vector<size_t> var_count(d_ndims);
+    vector<size_t> var_start(d_ndims);
+    for (int dim = 0; dim < d_ndims; dim++)
+        var_count[dim] = d_dim_sizes[dim];
+
+    int stax = NC_NOERR;
 
     switch (var_type) {
         case NC_UBYTE:
-            stax = nc_put_var_uchar(ncid, d_varid, reinterpret_cast<unsigned char *>(d_a->get_buf()));
+            stax = nc_put_vara_uchar(ncid, d_varid, var_start.data(), var_count.data(), reinterpret_cast<unsigned char *>(d_a->get_buf()));
             break;
         case NC_BYTE:
-            stax = nc_put_var_schar(ncid, d_varid, reinterpret_cast<signed char *>(d_a->get_buf()));
+            stax = nc_put_vara_schar(ncid, d_varid, var_start.data(), var_count.data(), reinterpret_cast<signed char *>(d_a->get_buf()));
             break;
         case NC_SHORT:
-            stax = nc_put_var_short(ncid, d_varid, reinterpret_cast<short *>(d_a->get_buf()));
+            stax = nc_put_vara_short(ncid, d_varid, var_start.data(), var_count.data(), reinterpret_cast<short *>(d_a->get_buf()));
             break;
         case NC_INT:
-            stax = nc_put_var_int(ncid, d_varid, reinterpret_cast<int *>(d_a->get_buf()));
+            stax = nc_put_vara_int(ncid, d_varid, var_start.data(), var_count.data(), reinterpret_cast<int *>(d_a->get_buf()));
             break;
         case NC_INT64:
-            stax = nc_put_var_longlong(ncid, d_varid, reinterpret_cast<long long *>(d_a->get_buf()));
+            stax = nc_put_vara_longlong(ncid, d_varid, var_start.data(), var_count.data(), reinterpret_cast<long long *>(d_a->get_buf()));
             break;
         case NC_FLOAT:
-            stax = nc_put_var_float(ncid, d_varid, reinterpret_cast<float *>(d_a->get_buf()));
+            stax = nc_put_vara_float(ncid, d_varid, var_start.data(), var_count.data(), reinterpret_cast<float *>(d_a->get_buf()));
             break;
         case NC_DOUBLE:
-            stax = nc_put_var_double(ncid, d_varid, reinterpret_cast<double *>(d_a->get_buf()));
+            stax = nc_put_vara_double(ncid, d_varid, var_start.data(), var_count.data(), reinterpret_cast<double *>(d_a->get_buf()));
             break;
         case NC_USHORT:
-            stax = nc_put_var_ushort(ncid, d_varid, reinterpret_cast<unsigned short *>(d_a->get_buf()));
+            stax = nc_put_vara_ushort(ncid, d_varid, var_start.data(), var_count.data(), reinterpret_cast<unsigned short *>(d_a->get_buf()));
             break;
         case NC_UINT:
-            stax = nc_put_var_uint(ncid, d_varid, reinterpret_cast<unsigned int *>(d_a->get_buf()));
+            stax = nc_put_vara_uint(ncid, d_varid, var_start.data(), var_count.data(), reinterpret_cast<unsigned int *>(d_a->get_buf()));
             break;
         case NC_UINT64:
-            stax = nc_put_var_ulonglong(ncid, d_varid, reinterpret_cast<unsigned long long *>(d_a->get_buf()));
+            stax = nc_put_vara_ulonglong(ncid, d_varid, var_start.data(), var_count.data(), reinterpret_cast<unsigned long long *>(d_a->get_buf()));
             break;
 
         default:
@@ -821,30 +890,34 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
 #endif
 }
 
-/**
- * @brief Are all of the strings the same length?
- *
- * This function also handles a special case when
- * the vector size is 0. If this happens,
- * the return value is false since no string is
- * compared. KY 2022-10-31
- *
- * @param the_array_strings
- * @return True if the strings are the same length
- */
-bool FONcArray::equal_length(vector<string> &the_strings)
-{
-    if (the_strings.empty()==true)
-        return false;
-    else {
-        size_t length = the_strings[0].size();
-        if ( std::all_of(the_strings.begin()+1, the_strings.end(),
-                         [length](string &s){return s.size() == length;}) )
-            return true;
-        else
-            return false;
+void FONcArray::write_enum_array(int ncid) {
+
+    if (d_is_dap4 || get_eval() == nullptr || get_dds() == nullptr)
+        d_a->intern_data();
+    else
+        d_a->intern_data(*get_eval(), *get_dds());
+
+    vector<size_t> var_count(d_ndims);
+    vector<size_t> var_start(d_ndims);
+    for (int dim = 0; dim < d_ndims; dim++) 
+        var_count[dim] = d_dim_sizes[dim];
+    int stax = nc_put_vara(ncid, d_varid, var_start.data(),var_count.data(),d_a->get_buf());
+    if (stax != NC_NOERR) {
+        string err = "fileout.netcdf - Failed to create array of " + d_a->var()->type_name() + " for " + d_varname;
+        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
     }
+
+   
+ 
+
+#if CLEAR_LOCAL_DATA
+    if (!FONcGrid::InMaps(d_a))
+        d_a->clear_local_data();
+#endif
+
+    return;
 }
+
 
 /**
  * @brief Write the array out to the netcdf file
@@ -865,13 +938,15 @@ void FONcArray::write(int ncid) {
         return;
     }
 
-    // Writing out array is complex. There are three cases:
-    // 1. Arrays of NC_CHAR, which are written the same for both the netCDF
+    // Writing out array is complex. There are four cases:
+    // 1. Array of Enum, we need to use a different netCDF-4 API to write the data.
+    // 2. Arrays of NC_CHAR, which are written the same for both the netCDF
     // classic and enhanced data models;
-    // 2. All the other types, written for the enhanced data model
-    // 3. All the other types, written for the classic data model
-
-    if (d_array_type == NC_CHAR) {
+    // 3. All the other types, written for the enhanced data model
+    // 4. All the other types, written for the classic data model
+    if (d_is_dap4_enum) 
+        write_enum_array(ncid);
+    else if (d_array_type == NC_CHAR) {
         // Note that String data are not read here but in FONcArray::convert() because
         // that code needs to know that actual length of the individual strings in the
         // array. jhrg 6/4/21
@@ -885,16 +960,10 @@ void FONcArray::write(int ncid) {
 
         // Can we optimize for a special case where all strings are the same length?
         // jhrg 10/3/22
-        if (equal_length(d_a->get_str())) {
-#if STRING_ARRAY_OPT
-            write_equal_length_string_array(ncid);
-#else
-            write_string_array(ncid);
-#endif
-        }
-        else {
-            write_string_array(ncid);
-        }
+        // We don't need to consider the above special case after we optimize the general
+        // string write routine with one netcdf write call. In fact, the calculation
+        // of the equal_length increases the execution time.
+        write_string_array(ncid);
     }
     else if (isNetCDF4_ENHANCED()) {
         // If we support the netCDF-4 enhanced model, the unsigned integer
@@ -909,6 +978,12 @@ void FONcArray::write(int ncid) {
 }
 
 void FONcArray::write_for_nc3_types(int ncid) {
+
+    vector<size_t> var_count(d_ndims);
+    vector<size_t> var_start(d_ndims);
+    for (int dim = 0; dim < d_ndims; dim++)
+        var_count[dim] = d_dim_sizes[dim];
+
     Type element_type = d_a->var()->type();
     // create array to hold data hyperslab
     switch (d_array_type) {
@@ -938,7 +1013,7 @@ void FONcArray::write_for_nc3_types(int ncid) {
                 for (size_t d_i = 0; d_i < d_nelements; d_i++) 
                     data[d_i] = *(reinterpret_cast<unsigned char *>(d_a->get_buf()) + d_i);
 
-                int stax = nc_put_var_short(ncid, d_varid, data.data());
+                int stax = nc_put_vara_short(ncid, d_varid, var_start.data(), var_count.data(), data.data());
                 if (stax != NC_NOERR) {
                     string err = (string) "fileout.netcdf - Failed to create array of shorts for " + d_varname;
                     FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
@@ -989,7 +1064,7 @@ void FONcArray::write_for_nc3_types(int ncid) {
                 for (size_t d_i = 0; d_i < d_nelements; d_i++)
                     data[d_i] = *(reinterpret_cast<unsigned short *>(d_a->get_buf()) + d_i);
 
-                int stax = nc_put_var_int(ncid, d_varid, data.data());
+                int stax = nc_put_vara_int(ncid, d_varid, var_start.data(), var_count.data(), data.data());
                 if (stax != NC_NOERR) {
                     string err = (string) "fileout.netcdf - Failed to create array of ints for " + d_varname;
                     FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
@@ -1009,81 +1084,20 @@ void FONcArray::write_for_nc3_types(int ncid) {
     }
 }
 
-/**
- * @note This may not work for 'ragged arrays' of strings.
- * @param ncid
- */
 void FONcArray::write_string_array(int ncid) {
+
     vector<size_t> var_count(d_ndims);
     vector<size_t> var_start(d_ndims);
-    int dim = 0;
-    for (dim = 0; dim < d_ndims; dim++) {
-        // the count for each of the dimensions will always be 1 except
-        // for the string length dimension.
-        // The size of the last dimension (var_count[d_ndims-1]) is set
-        // separately for each element below. jhrg 10/3/22
-        var_count[dim] = 1;
-
-        // the start for each of the dimensions will start at 0. We will
-        // bump this up in the while loop below
-        var_start[dim] = 0;
-    }
-
-    auto const &d_a_str = d_a->get_str();
-    for (size_t element = 0; element < d_nelements; element++) {
-        var_count[d_ndims - 1] = d_a_str[element].size() + 1;
-        var_start[d_ndims - 1] = 0;
-
-        // write out the string
-        int stax = nc_put_vara_text(ncid, d_varid, var_start.data(), var_count.data(),
-                                    d_a_str[element].c_str());
-
-        if (stax != NC_NOERR) {
-            string err = (string) "fileout.netcdf - Failed to create array of strings for " + d_varname;
-            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-        }
-
-        // bump up the start.
-        if (element + 1 < d_nelements) {
-            bool done = false;
-            dim = d_ndims - 2;
-            while (!done) {
-                var_start[dim] = var_start[dim] + 1;
-                if (var_start[dim] == d_dim_sizes[dim]) {
-                    var_start[dim] = 0;
-                    dim--;
-		    if (dim <0)
-	                 break;
-                }
-                else {
-                    done = true;
-                }
-            }
-        }
-    }
-
-    d_a->get_str().clear();
-}
-
-/**
- * @brief Take an n-dim array of string and treat it as a n+1 dim array of string
- * Each string of the n+1 dim array is a single character. The strings
- * are C-style strings (null-terminated). The field d_ndims is already
- * set to n+1 when the server runs this method.
- * @param ncid
- */
-void FONcArray::write_equal_length_string_array(int ncid) {
-    vector<size_t> var_count(d_ndims);
-    vector<size_t> var_start(d_ndims);
-    // The flattened n-dim array as a vector of strings, row major order
-    auto const &d_a_str = d_a->get_str();
 
     vector<char> text_data;
-    text_data.reserve(d_a_str.size() * (d_a_str[0].size() + 1));
-    for (auto &str: d_a_str) {
-        for (auto c: str)
-            text_data.emplace_back(c);
-        text_data.emplace_back('\0');
+    size_t last_dim_size = d_dim_sizes[d_ndims-1];
+    text_data.resize(d_a->length_ll()*last_dim_size);
+    
+    char * temp_buffer = text_data.data();
+    auto const &d_a_str = d_a->get_str();
+    for (int64_t  i = 0; i <d_a->length_ll();i++) {
+        memcpy(temp_buffer,d_a_str[i].c_str(),d_a_str[i].size()+1);
+        temp_buffer +=last_dim_size;
     }
 
     for (int dim = 0; dim < d_ndims; dim++) {
@@ -1092,7 +1106,6 @@ void FONcArray::write_equal_length_string_array(int ncid) {
     for (int dim = 0; dim < d_ndims; dim++) {
         var_count[dim] = d_dim_sizes[dim];
     }
-    var_count[d_ndims - 1] = d_a_str[0].size() + 1;
 
     int stax = nc_put_vara_text(ncid, d_varid, var_start.data(), var_count.data(), text_data.data());
 
@@ -1103,7 +1116,6 @@ void FONcArray::write_equal_length_string_array(int ncid) {
 
     d_a->get_str().clear();
 }
-
 
 /** @brief returns the name of the DAP Array
  *

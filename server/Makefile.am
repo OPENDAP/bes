@@ -22,7 +22,7 @@ include $(top_srcdir)/coverage.mk
 EXTRA_DIST = beslog2json.py
 
 bin_PROGRAMS = beslistener besdaemon
-dist_bin_SCRIPTS = besctl hyraxctl
+dist_bin_SCRIPTS = besctl hyraxctl beslog2json.py
 
 beslistener_SOURCES = BESServerHandler.cc ServerApp.cc BESServerUtils.cc \
 BESServerHandler.h ServerApp.h BESServerUtils.h \

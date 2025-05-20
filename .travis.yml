@@ -86,6 +86,7 @@ env:
     - CMAC_BUCKET="cloudydap"
 
 before_install:
+  - gem install bundler
   - pip install --user awscli
   # fix for Java 17 install for Sonar from Travis CI support. jhrg 1/23/24
   - curl -s "https://get.sdkman.io" | bash
@@ -135,8 +136,8 @@ stages:
   - name: hyrax-olfs-trigger
     if: type != pull_request OR branch =~ ^(.*-test-deploy)$
     # A way to skip a stage. jhrg 1/26/23
-  - name: off
-    if: branch = off
+  - name: never
+    if: branch = never
 
 jobs:
   include:
@@ -160,12 +161,12 @@ jobs:
     - stage: build-and-package
       name: "Enterprise Linux 8 RPMs (via Rocky8)"
       script:
-        - export BES_BUILD=centos-stream8
+        - export BES_BUILD=rocky8
         - mkdir -p $prefix/rpmbuild
         - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
         - docker run --env prefix=/root/install --volume $prefix/rpmbuild:/root/rpmbuild 
             --volume $TRAVIS_BUILD_DIR:/root/travis
-            --env OS=centos-stream8
+            --env OS=rocky8
             --env DIST=el8
             --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
             --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
@@ -253,10 +254,10 @@ before_deploy:
   - export DEPLOY="S3"
   # Make sure that we have the target dir...
   - mkdir -p $TRAVIS_BUILD_DIR/package;
-  # Source distribution prep (copies both the 'version' and 'snapshot'
+  # Source distribution prep (copies both the 'version' and 'snapshot')
   - if test "$BES_BUILD" = "srcdist"; then cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package; fi
-  # CentOS-Stream8  distribution prep
-  - if test "$BES_BUILD" = "centos-stream8"; then ./travis/rpm-to-package-dir.sh "el8"; fi
+  # Rocky8  distribution prep
+  - if test "$BES_BUILD" = "rocky8"; then ./travis/rpm-to-package-dir.sh "el8"; fi
   # Check for the stuff...
   - ls -l $TRAVIS_BUILD_DIR/package
 
@@ -271,4 +272,4 @@ deploy:
     local_dir: $TRAVIS_BUILD_DIR/package
     on:
       all_branches: true
-      condition: $BES_BUILD =~ ^centos-stream8|srcdist$
+      condition: $BES_BUILD =~ ^rocky8|srcdist$

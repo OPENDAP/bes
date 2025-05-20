@@ -52,6 +52,7 @@ $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/PODAAC/SWOT_L2_
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/PODAAC/20220930120000-REMSS-L4_GHRSST-SSTfnd-MW_OI-GLOB-v02.0-fv05.0.nc.h5
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/PODAAC/20220930120000-REMSS-L4_GHRSST-SSTfnd-MW_OI-GLOB-v02.0-fv05.0.nc.h5.dmrpp
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/PODAAC/20220930120000-REMSS-L4_GHRSST-SSTfnd-MW_OI-GLOB-v02.0-fv05.0.nc.h5.dio.dmrpp
+$GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/PODAAC/20220930120000-REMSS-L4_GHRSST-SSTfnd-MW_OI-GLOB-v02.0-fv05.0.nc.h5.unlimited.dmrpp
 
 
 #GESDISC GPM
@@ -103,7 +104,9 @@ $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/LaRC/CLARREO_CE
 
 #NISAR ENUM
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/ASF/OPERA_L2_RTC-S1_T102-217155-IW1_20240703T162341Z_20240703T220516Z_S1A_30_v1.0.h5
-$GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/ASF/NISAR_L0_PR_RRSD_001_005_A_128S_20081012T060910_20081012T060926_P01101_F_J_001.h5
+$GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/ASF/OPERA_L2_RTC-S1_T102-217155-IW1_20240703T162341Z_20240703T220516Z_S1A_30_v1.0.h5.dmrpp
+#$GET http://test.opendap.org/opendap/nasa-hdf/NASAHDF/NISAR_L0_PR_RRSD_001_005_A_128S_20081012T060910_20081012T060926_P01101_F_J_001.h5
+#$GET http://test.opendap.org/opendap/nasa-hdf/NASAHDF/NISAR_L0_PR_RRSD_001_005_A_128S_20081012T060910_20081012T060926_P01101_F_J_001.h5.dmrpp
 
 #unlimited dimensions and structure
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/LAADS/XAERDT_L2_MODIS_Aqua.A2022365.2355.001.2023250134344.nc

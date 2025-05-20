@@ -13,4 +13,9 @@
             <Value>degrees_east</Value>
         </Attribute>
     </Int32>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>time</Value>
+        </Attribute>
+    </Attribute>
 </Dataset>

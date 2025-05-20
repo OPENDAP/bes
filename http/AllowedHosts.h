@@ -4,7 +4,7 @@
 
 // This file is part of the OPeNDAP Back-End Server (BES)
 // and creates a set of allowed hosts that may be
-// accessed by the server as part of it's routine operation.
+// accessed by the server as part of its routine operation.
 
 // Copyright (c) 2018 OPeNDAP, Inc.
 // Author: Nathan D. Potter <ndp@opendap.org>
@@ -31,7 +31,6 @@
 #ifndef I_AllowedHosts_H
 #define I_AllowedHosts_H 1
 
-#include <memory>
 #include <string>
 #include <vector>
 
@@ -53,24 +52,26 @@ namespace http {
  */
 class AllowedHosts {
 private:
-	static AllowedHosts *d_instance;
     std::vector<std::string> d_allowed_hosts;
 
-    static void initialize_instance();
-    static void delete_instance();
+    bool check(const std::string &url) const;
 
+    // Private constructor to prevent direct instantiation
     AllowedHosts();
-
-    bool check(const std::string &url);
-
 public:
-    virtual ~AllowedHosts() {}
+    AllowedHosts(const AllowedHosts &) = delete;
+    AllowedHosts &operator=(const AllowedHosts &) = delete;
 
+    virtual ~AllowedHosts() = default;
+
+    // Static member function that returns the pointer to the singleton instance
     static AllowedHosts *theHosts();
 
-    bool is_allowed(std::shared_ptr<http::url> candidate_url);
-    bool is_allowed(std::shared_ptr<http::url> candidate_url, std::string &whynot);
+    bool is_allowed(const http::url &candidate_url);
+    bool is_allowed(const http::url &candidate_url, std::string &whynot);
 
+    bool is_allowed(const std::shared_ptr<http::url> &candidate_url);
+    bool is_allowed(const std::shared_ptr<http::url> &candidate_url, std::string &whynot);
 };
 
 } // namespace bes

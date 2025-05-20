@@ -538,7 +538,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
     vector<hsize_t>size(ndims);
     vector<hsize_t>maxsize(ndims);
 
-    // Retrieve size. DAP4 doesn't have a convention to support multi-unlimited dimension yet.
+    // Retrieve size. 
     if (H5Sget_simple_extent_dims(dspace, size.data(), maxsize.data())<0){
         string msg = "cannot obtain the dim. info for the dataset ";
         msg += dname;
@@ -621,7 +621,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
                      bool is_eos5, bool &is_pure_dim, vector<link_info_t> &hdf5_hls,vector<string> &handled_cv_names)
 {
 
-    BESDEBUG("h5", ">get_dataset()" << endl);
+    BESDEBUG("h5", ">get_dataset_dmr()" << endl);
 
     // Obtain the dataset ID
     hid_t dset = -1;
@@ -717,7 +717,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
     vector<hsize_t>size(ndims);
     vector<hsize_t>maxsize(ndims);
 
-    // Retrieve size. DAP4 doesn't have a convention to support multi-unlimited dimension yet.
+    // Retrieve size. 
     if (H5Sget_simple_extent_dims(dspace, size.data(), maxsize.data())<0){
         string msg = "cannot obtain the dim. info for the dataset ";
         msg += dname;
@@ -727,6 +727,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
         throw InternalErr(__FILE__, __LINE__, msg);
     }
 
+    
     hsize_t nelmts = 1;
     if (ndims !=0) {
         for (int j = 0; j < ndims; j++)
@@ -770,6 +771,25 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
     (*dt_inst_ptr).name[dname.size()] = '\0';
     for (int j = 0; j < ndims; j++) 
         (*dt_inst_ptr).size[j] = size[j];
+
+    // Add unlimited dimension information
+    bool has_unlimited_dim = false;
+    for (const auto&max_s:maxsize) {
+        if (max_s == H5S_UNLIMITED) {
+            has_unlimited_dim = true;
+            break;
+        }
+    }
+
+    if (has_unlimited_dim) {
+        for (const auto&max_s:maxsize) {
+            if (max_s == H5S_UNLIMITED) {
+                (*dt_inst_ptr).unlimited_dims.push_back(true);
+            }
+            else 
+                (*dt_inst_ptr).unlimited_dims.push_back(false);
+        }
+    }
 
     // For DAP4 when dimension scales are used.
     if (true == use_dimscale)
@@ -1252,9 +1272,10 @@ BaseType *Get_bt_enhanced(D4Group *d4_grp,
             case H5T_ENUM: {
                     // retrieve enum information
                     D4EnumDef* enum_def = map_hdf5_enum_to_dap4(d4_grp,pid,datatype);
-                    auto hdf5_enum= make_unique<HDF5D4Enum>(vname, vpath, dataset, enum_def->type());
+                    auto hdf5_enum_unique= make_unique<HDF5D4Enum>(vname, vpath, dataset, enum_def->type());
+                    auto hdf5_enum = hdf5_enum_unique.get();
                     hdf5_enum->set_enumeration(enum_def);
-                    btp = hdf5_enum.release();
+                    btp = hdf5_enum_unique.release();
             }
                 break;
 
@@ -1780,16 +1801,16 @@ D4EnumDef* map_hdf5_enum_to_dap4(libdap::D4Group *d4_grp, hid_t pid,  hid_t data
     // So we need to generate a fake enum name.
     // Since we have to make sure each enum name is unique under this group,
     // so we will increase the counter once a new fake enum name is generated.
-    // We will use NoNameEum+number as the EnumName. For example, the name can be  NoNameEum0, NoNameEum1 etc.
+    // We will use NoNameEnum+number as the EnumName. For example, the name can be  NoNameEnum0, NoNameEnum1 etc.
  
     // If HDF5 Enum doesn't have a name, we will create one when mapping to DAP4.
     if (enum_def_name.empty()) {
         if (d4enumdefs->empty()) {
-            enum_def_name = "NoNameEum0";
+            enum_def_name = "NoNameEnum0";
             enum_def = new D4EnumDef(enum_def_name,enum_def_type);
         }
         else {
-            // Search if NoNameEum? is used as an enum name in this group. 
+            // Search if NoNameEnum? is used as an enum name in this group. 
             vector <string> enumdef_names;
             for (auto iter = d4enumdefs->enum_begin(); iter != d4enumdefs->enum_end(); iter++) {
                 enumdef_names.push_back((*iter)->name());

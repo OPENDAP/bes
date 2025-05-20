@@ -359,7 +359,14 @@ int BESInterface::execute_request(const string &from)
         throw BESInternalError("DataHandlerInterface can not be null", __FILE__, __LINE__);
     }
 
+#if 0
+    // At this point we have not begun processing the request, so there is no request id in the BESDataHandlerInterface
+    // and the previous request id is still cached in BESLog. If we start this timer here then the previous request
+    // id will be used and that makes things very confusing in the timing log.
+    // Sorting this out seems like a lot of work with little benefit, so I am disabling this call
+    // for the time being - ndp 03/07/2025
     BES_COMMAND_TIMING(prolog, d_dhi_ptr);
+#endif
 
     // TODO These never change for the life of a BES, so maybe they can move out of
     //  code that runs for every request? jhrg 11/8/17

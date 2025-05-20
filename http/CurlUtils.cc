@@ -564,6 +564,41 @@ string get_range_arg_string(const unsigned long long &offset, const unsigned lon
 /**
  * @brief Sign the URL if it matches S3 credentials held by the CredentialsManager
  *
+ * @param url The URL as a string.
+ * @param request_headers An existing list of curl request headers. If this is empty,
+ * the append operation used by this function will result in a blank entry in the
+ * first node
+ * @return The modified list of request headers, if the URL was signed, or the original
+ * list of headers if it was not.
+ */
+static curl_slist *
+sign_url_for_s3_if_possible(const string &url, curl_slist *request_headers) {
+    // If this is a URL that references an S3 bucket, and there are credentials for the URL,
+    // sign the URL.
+    if (CredentialsManager::theCM()->size() > 0) {
+        auto ac = CredentialsManager::theCM()->get(url);
+        if (ac && ac->is_s3_cred()) {
+            BESDEBUG(MODULE, prolog << "Located S3 credentials for url: " << url
+                    << " Using request headers to hold AWS signature\n");
+            request_headers = sign_s3_url(url, ac, request_headers);
+        }
+        else {
+            if(ac){
+                BESDEBUG(MODULE, prolog << "Located credentials for url: " << url  << "They are "
+                << (ac->is_s3_cred()?"":"NOT ") << "S3 credentials.\n");
+            }
+            else {
+                BESDEBUG(MODULE, prolog << "Unable to locate credentials for url: " << url << "\n");
+            }
+        }
+    }
+
+    return request_headers;
+}
+
+/**
+ * @brief Sign the URL if it matches S3 credentials held by the CredentialsManager
+ *
  * @param url An instance of http::url
  * @param request_headers An existing list of curl request headers. If this is empty,
  * the append operation used by this function will result in a blank entry in the
@@ -573,26 +608,7 @@ string get_range_arg_string(const unsigned long long &offset, const unsigned lon
  */
 static curl_slist *
 sign_url_for_s3_if_possible(const shared_ptr <url> &url, curl_slist *request_headers) {
-    // If this is a URL that references an S3 bucket, and there are credentials for the URL,
-    // sign the URL.
-    if (CredentialsManager::theCM()->size() > 0) {
-        auto ac = CredentialsManager::theCM()->get(url);
-        if (ac && ac->is_s3_cred()) {
-            BESDEBUG(MODULE, prolog << "Located S3 credentials for url: " << url->str()
-                    << " Using request headers to hold AWS signature\n");
-            request_headers = sign_s3_url(url, ac, request_headers);
-        }
-        else {
-            if(ac){
-                BESDEBUG(MODULE, prolog << "Located credentials for url: " << url->str()  << "They are " << (ac->is_s3_cred()?"":"NOT ") << "S3 credentials.\n");
-            }
-            else {
-                BESDEBUG(MODULE, prolog << "Unable to locate credentials for url: " << url->str() << "\n");
-            }
-        }
-    }
-
-    return request_headers;
+    return sign_url_for_s3_if_possible(url->str(), request_headers);
 }
 
 /**
@@ -1066,6 +1082,8 @@ static void super_easy_perform(CURL *c_handle, int fd) {
  * Use libcurl to dereference a URL. Read the information referenced by
  * url into the file pointed to by the open file descriptor fd.
  *
+ * @todo Continue the shared_ptr<http::url> removal refactor with this method and its callers. jhrg 2/20/25
+ *
  * @param target_url The URL to dereference.
  * @param fd  An open file descriptor (as in 'open' as opposed to 'fopen') which
  * will be the destination for the data; the caller can assume that when this
@@ -1095,13 +1113,11 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
-
     try {
-
         // Add the EDL authorization headers if the Information is in the BES Context Manager
         req_headers = add_edl_auth_headers(req_headers);
         // Add AWS credentials if they're available.
-        req_headers = sign_url_for_s3_if_possible(target_url, req_headers);
+        req_headers = sign_url_for_s3_if_possible(target_url->str(), req_headers);
 
         // OK! Make the cURL handle
         ceh = init(target_url->str(), req_headers, http_response_headers);
@@ -1193,11 +1209,10 @@ void http_get(const string &target_url, string &buf) {
         // Add the authorization headers
         request_headers = add_edl_auth_headers(request_headers);
 
-        auto url = std::make_shared<http::url>(target_url);
-        request_headers = sign_url_for_s3_if_possible(url, request_headers);
+        request_headers = sign_url_for_s3_if_possible(target_url, request_headers);
 
 #ifdef DEVELOPER
-        AccessCredentials *credentials = CredentialsManager::theCM()->get(url);
+        AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
         if (credentials) {
             INFO_LOG(prolog + "Looking for EDL Token for URL: " + target_url );
             string edl_token = credentials->get("edl_token");
@@ -1446,10 +1461,11 @@ curl_slist *add_edl_auth_headers(curl_slist *request_headers) {
  * @param The modified list of request headers
  */
 curl_slist *
-sign_s3_url(const shared_ptr <url> &target_url, AccessCredentials *ac, curl_slist *req_headers) {
+sign_s3_url(const string &target_url, AccessCredentials *ac, curl_slist *req_headers) {
     const time_t request_time = time(nullptr);
-
-    const string auth_header = compute_awsv4_signature(target_url, request_time, ac->get(AccessCredentials::ID_KEY),
+    const auto url_obj = http::url(target_url); // parse the URL using the http::url object. jhrg 2/20/25
+    const string auth_header = compute_awsv4_signature(url_obj.path(), url_obj.query(), url_obj.host(),
+                                                       request_time, ac->get(AccessCredentials::ID_KEY),
                                                        ac->get(AccessCredentials::KEY_KEY),
                                                        ac->get(AccessCredentials::REGION_KEY), "s3");
 
@@ -1458,8 +1474,22 @@ sign_s3_url(const shared_ptr <url> &target_url, AccessCredentials *ac, curl_slis
     req_headers = append_http_header(req_headers, "x-amz-content-sha256",
                                      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
     req_headers = append_http_header(req_headers, "x-amz-date", AWSV4::ISO8601_date(request_time));
+    INFO_LOG(prolog + "Signed S3 request for " + target_url);
 
     return req_headers;
+}
+
+/**
+ * @brief Support the shared_ptr<http::url> interface of this function.
+ * @todo Remove when no longer needed. jhrg 2/20/25
+ * @param target_url
+ * @param ac
+ * @param req_headers
+ * @return
+ */
+curl_slist *
+sign_s3_url(const shared_ptr <url> &target_url, AccessCredentials *ac, curl_slist *req_headers) {
+    return sign_s3_url(target_url->str(), ac, req_headers);
 }
 
 /**
@@ -1684,11 +1714,9 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
 
 #ifndef NDEBUG
         {
-            BESStopWatch sw;
-            if (BESDebug::IsSet(CURL_TIMING)) {
-                sw.start(prolog + "Retrieved HTTP response from origin_url: " + origin_url->str());
-            }
+            BES_STOPWATCH_START(MODULE,prolog + "Retrieved HTTP response from origin_url: " + origin_url->str());
 #endif
+
             curl_code = curl_easy_perform(ceh);
 #ifndef NDEBUG
         }

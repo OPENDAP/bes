@@ -1,0 +1,28 @@
+netcdf test {
+dimensions:
+	sdim1 = 2 ;
+	sdim2 = 2 ;
+	sdim3 = 3 ;
+variables:
+	int DSC_memb_array.Orbit(sdim1) ;
+	float DSC_memb_array.Temperature(sdim2, sdim3) ;
+
+// global attributes:
+		:build_dmrpp_metadata.created = "removed date-time" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.21.1" ;
+		:build_dmrpp_metadata.bes = "3.21.1" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -f /Users/myang6/work/opendap/hyrax-1695/bes/modules/fileout_netcdf/data/compound_group_same_structure_name.h5 -r compound_group_same_structure_name.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M" ;
+		:history = "removed date-timex compound_group_same_structure_name.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"compound_group_same_structure_name.h5.dmrpp\"}]}]" ;
+
+group: g {
+  dimensions:
+  	sdim4 = 2 ;
+  	sdim5 = 2 ;
+  	sdim6 = 3 ;
+  variables:
+  	int DSC_memb_array.Orbit(sdim4) ;
+  	float DSC_memb_array.Temperature(sdim5, sdim6) ;
+  } // group g
+}

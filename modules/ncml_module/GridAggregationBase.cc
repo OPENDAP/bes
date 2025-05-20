@@ -53,6 +53,7 @@ using libdap::D4Map;
 
 // Local debug flags
 #define DEBUG_CHANNEL "agg_util"
+#define prolog std::string("GridAggregationBase::").append(__func__).append("() - ")
 
 namespace agg_util {
 GridAggregationBase::GridAggregationBase(const libdap::Grid& proto, const AMDList& memberDatasets, const DDSLoader& loaderProto) :
@@ -167,10 +168,10 @@ GridAggregationBase::getDatasetList() const
 /* virtual */
 bool GridAggregationBase::read()
 {
-    BESDEBUG_FUNC(DEBUG_CHANNEL, "Function entered..." << endl);
+    BESDEBUG_FUNC(DEBUG_CHANNEL, prolog << "Function entered..." << endl);
 
     if (read_p()) {
-        BESDEBUG_FUNC(DEBUG_CHANNEL, "read_p() set, early exit!");
+        BESDEBUG_FUNC(DEBUG_CHANNEL, prolog << "read_p() set, early exit!");
         return true;
     }
 
@@ -218,8 +219,7 @@ bool
 GridAggregationBase::serialize(libdap::ConstraintEvaluator &eval, libdap::DDS &dds, libdap::Marshaller &m,
     bool ce_eval)
 {
-    BESStopWatch sw;
-    if (BESDebug::IsSet(TIMING_LOG_KEY)) sw.start("GridAggregationBase::serialize", "");
+    BES_STOPWATCH_START(DEBUG_CHANNEL, prolog + "Timer");
 
     bool status = false;
 
@@ -276,8 +276,7 @@ GridAggregationBase::serialize(libdap::ConstraintEvaluator &eval, libdap::DDS &d
             // Otherwise, find the map in the protogrid and copy it's data into this.
             Array* pProtoGridMap = const_cast<Array*>(AggregationUtil::findMapByName(*pSubGridTemplate, pOutMap->name()));
             NCML_ASSERT_MSG(pProtoGridMap, "Couldn't find map in prototype grid for map name=" + pOutMap->name());
-            BESDEBUG_FUNC(DEBUG_CHANNEL,
-                "About to call read() on prototype map vector name=" << pOutMap->name() << " and calling transfer constraints..." << endl);
+            BESDEBUG_FUNC(DEBUG_CHANNEL, prolog << "Calling read() on prototype map vector name=" << pOutMap->name() << " and calling transfer constraints..." << endl);
 
             // Make sure the protogrid maps were properly read
             NCML_ASSERT_MSG(pProtoGridMap->read_p(), "Expected the prototype map to have been read but it wasn't.");
@@ -363,7 +362,7 @@ void GridAggregationBase::printConstraints(const Array& fromArray)
 {
     ostringstream oss;
     AggregationUtil::printConstraints(oss, fromArray);
-    BESDEBUG("ncml:2", "Constraints for Grid: " << name() << ": " << oss.str() << endl);
+    BESDEBUG("ncml:2", prolog << "Constraints for Grid: " << name() << ": " << oss.str() << endl);
 }
 
 void GridAggregationBase::readProtoSubGrid()
@@ -412,8 +411,7 @@ void GridAggregationBase::copyProtoMapsIntoThisGrid(const Dimension& aggDim)
         // Otherwise, find the map in the protogrid and copy it's data into this.
         Array* pProtoGridMap = const_cast<Array*>(AggregationUtil::findMapByName(*pSubGridTemplate, pOutMap->name()));
         NCML_ASSERT_MSG(pProtoGridMap, "Couldn't find map in prototype grid for map name=" + pOutMap->name());
-        BESDEBUG_FUNC(DEBUG_CHANNEL,
-            "About to call read() on prototype map vector name=" << pOutMap->name() << " and calling transfer constraints..." << endl);
+        BESDEBUG_FUNC(DEBUG_CHANNEL, prolog << "Calling read() on prototype map vector name=" << pOutMap->name() << " and calling transfer constraints..." << endl);
 
         // Make sure the protogrid maps were properly read
         NCML_ASSERT_MSG(pProtoGridMap->read_p(), "Expected the prototype map to have been read but it wasn't.");

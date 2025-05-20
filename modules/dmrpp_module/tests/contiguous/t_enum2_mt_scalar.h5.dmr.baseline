@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="t_enum2_mt_scalar.h5">
+    <Enumeration name="NoNameEnum0" basetype="Int32">
+        <EnumConst name="TRUE" value="1000"/>
+        <EnumConst name="FALSE" value="2000"/>
+    </Enumeration>
+    <Enumeration name="NoNameEnum1" basetype="UInt64">
+        <EnumConst name="RED" value="0"/>
+        <EnumConst name="GREEN" value="1"/>
+        <EnumConst name="BLUE" value="2"/>
+    </Enumeration>
+    <Enum name="enum_scalar_i32" enum="/NoNameEnum0"/>
+    <Enum name="enum_scalar_u64" enum="/NoNameEnum1"/>
+</Dataset>
