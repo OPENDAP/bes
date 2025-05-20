@@ -200,10 +200,9 @@ bool HDF5DiskCache::write_cached_data(const string & cache_file_name, int64_t ex
 bool HDF5DiskCache::write_cached_data2(const string & cache_file_name, int64_t expected_file_size, const void *buf)
 {
 
-    BESDEBUG("cache", "In HDF5DiskCache::write_cached_data()" << endl);
+    BESDEBUG("cache", "In HDF5DiskCache::write_cached_data() - cache_file_name: " <<cache_file_name << endl);
     int fd = 0;
     bool ret_value = false;
-cerr<<"cache_file_name: "<<cache_file_name <<endl;
 
     // 1. create_and_lock. 
     if (create_and_lock(cache_file_name, fd)) {
@@ -217,15 +216,12 @@ cerr<<"cache_file_name: "<<cache_file_name <<endl;
         if (expected_file_size > HDF5DiskCache::CACHE_BUF_SIZE) {
             ssize_t bytes_written = 0;
             while (bytes_written < expected_file_size) {
-cerr<<"write big cache "<<endl;
                 int one_write_buf_size = HDF5DiskCache::CACHE_BUF_SIZE;
                 if (expected_file_size <(bytes_written+HDF5DiskCache::CACHE_BUF_SIZE)) 
                     one_write_buf_size = expected_file_size - bytes_written;
 
                 ret_val = write(fd,buf,one_write_buf_size);
                 if (ret_val <0) {
-
-cerr<<"write big cache failed. "<<endl;
                     write_disk_cache = false;
                     break;
                 }
@@ -253,9 +249,7 @@ cerr<<"write big cache failed. "<<endl;
         }
         else {
             unsigned long long size = update_cache_info(cache_file_name);
-cerr<<"write the same size "<<endl;
             if (cache_too_big(size)) {
-cerr<<"cache_too_big: "<<endl;
                 update_and_purge(cache_file_name);
             }
             ret_value = true;
@@ -264,8 +258,6 @@ cerr<<"cache_too_big: "<<endl;
         unlock_and_close(cache_file_name);
 
     }
-else 
-cerr<<"cannot get a lock"<<endl;
 
     return ret_value;
 

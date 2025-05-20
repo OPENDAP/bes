@@ -217,7 +217,6 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
     if(true == use_disk_cache) {
         BESDEBUG("h5","Coming to use disk cache "<<endl);
 
-
         unsigned long long disk_cache_size = HDF5RequestHandler::get_disk_cache_size();
         string diskcache_dir = HDF5RequestHandler::get_disk_cache_dir();
         string diskcache_prefix = HDF5RequestHandler::get_disk_cachefile_prefix();
@@ -238,7 +237,6 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
         int fd = 0;
         HDF5DiskCache *disk_cache = HDF5DiskCache::get_instance(disk_cache_size,diskcache_dir,diskcache_prefix);
         if( true == disk_cache->get_data_from_cache(cache_fpath, expected_file_size,fd)) {
-
             vector<size_t> offset_size_t;
             offset_size_t.resize(rank);
             for(int i = 0; i <rank;i++)
@@ -385,8 +383,6 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
     // Now reading the data, note dtype is not dtypeid.
     // dtype is an enum  defined by the handler.
      
-if (true == data_to_disk_cache) 
-cerr<<"writing data to disk cache for "<<varname <<endl;
 
     switch (dtype) {
 
@@ -893,8 +889,6 @@ bool HDF5CFArray:: valid_disk_cache_for_compressed_data(short dtype_size) const 
 #endif
     if((comp_ratio < HDF5RequestHandler::get_disk_comp_threshold()) 
        && (total_elems*dtype_size >= HDF5RequestHandler::get_disk_var_size())) {
-cerr<<"var name: "<<varname <<endl;
-cerr<<"var size in bytes: "<<total_elems*dtype_size <<endl;
         if( true == HDF5RequestHandler::get_disk_cache_float_only_comp()) {
             if(dtype==H5FLOAT32 || dtype == H5FLOAT64) 
                 ret_value = true;
@@ -908,7 +902,7 @@ cerr<<"var size in bytes: "<<total_elems*dtype_size <<endl;
 
 bool HDF5CFArray::obtain_cached_data(HDF5DiskCache *disk_cache,const string & cache_fpath, int fd,vector<int64_t> &cd_step, vector<int64_t>&cd_count,size_t total_read,short dtype_size) {
 
-cerr<<"Obtain the cached data - varname: "<<varname <<endl;
+    BESDEBUG("h5","Coming to obtain the cached data - varname: "<<varname <<endl);
     ssize_t ret_read_val = -1;
     vector<char>buf;
 
@@ -924,7 +918,7 @@ cerr<<"Obtain the cached data - varname: "<<varname <<endl;
         for(int i = 0; i<rank;i++) 
             nele_to_read *=cd_count[i];
 
-cerr<<" Get real data - varname: "<<varname <<endl;
+        BESDEBUG("h5","Obtain the cached data - read data varname: "<<varname <<endl);
 
         if(nele_to_read == (total_read/dtype_size)) {
             val2buf(buf.data());
