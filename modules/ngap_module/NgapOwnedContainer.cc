@@ -379,8 +379,9 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
     BES_MODULE_TIMING(prolog + get_real_name());
     // This code may ask CMR and will throw exceptions that mention CMR on error. jhrg 1/24/25
     string data_url = build_data_url_to_daac_bucket(get_real_name());
+    string dmrpp_url_str = data_url;
     if (data_url.find(".dmrpp") == std::string::npos)   // Only add the .dmrpp extension if it is not present kln 5/20/25
-        string dmrpp_url_str = data_url + ".dmrpp"; // This is the URL to the DMR++ in the DAAC-owned bucket. jhrg 8/9/24
+        dmrpp_url_str = data_url + ".dmrpp"; // This is the URL to the DMR++ in the DAAC-owned bucket. jhrg 8/9/24
     INFO_LOG(prolog + "Look in the DAAC-bucket for the DMRpp for: " + dmrpp_url_str);
 
     try {
