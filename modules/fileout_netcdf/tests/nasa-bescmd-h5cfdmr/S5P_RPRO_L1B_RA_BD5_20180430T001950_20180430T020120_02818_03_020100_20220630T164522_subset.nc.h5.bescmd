@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[http-8080-1:27:bes_request]">
+  <bes:setContext name="xdap_accept">4.0</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+
+  <bes:setContainer name="c" space="catalog">data/S5P_RPRO_L1B_RA_BD5_20180430T001950_20180430T020120_02818_03_020100_20220630T164522.nc.h5</bes:setContainer>
+
+  <bes:define name="d1" space="default">
+    <bes:container name="c">
+      <constraint>BAND5_RADIANCE_STANDARD_MODE_OBSERVATIONS_radiance[0:1:0][0:100:2905][0:100:447][0:100:496]</constraint>
+    </bes:container>
+  </bes:define>
+
+  <bes:get type="dods" definition="d1" returnAs="netcdf-4"/>
+
+</bes:request>

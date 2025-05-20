@@ -1196,8 +1196,35 @@ int HDF5CFUtil::subset(
 // Need to wrap a 'read buffer' from a pure file call here since read() is also a DAP function to read DAP data.
 ssize_t HDF5CFUtil::read_buffer_from_file(int fd,  void*buf, size_t total_read) {
 
-     ssize_t ret_val = read(fd,buf,total_read);
-     return ret_val;
+    const int max_read_buf_size = 1073741824;
+    ssize_t ret_val = -1;
+
+    if (total_read >max_read_buf_size) {
+  
+        ssize_t bytes_read = 0;
+        int one_read_buf_size = max_read_buf_size;
+        while (bytes_read < total_read) {
+            if (total_read <(bytes_read+max_read_buf_size))
+                one_read_buf_size = total_read - bytes_read;
+
+            ret_val = read(fd,buf,one_read_buf_size);
+            if (ret_val !=one_read_buf_size) {
+                ret_val = -1;
+                break;
+            }
+            bytes_read +=ret_val;
+            buf = (char *)buf + ret_val;
+
+        }
+        if (ret_val != -1)
+            ret_val = total_read;
+    }
+    else {
+       ret_val = read(fd,buf,total_read);
+       if (ret_val !=total_read)
+            ret_val = -1;
+    }
+    return ret_val;
 }
 
 // Obtain the cache name. The clashing is rare given that fname is unique.The "_" may cause clashing in theory.
