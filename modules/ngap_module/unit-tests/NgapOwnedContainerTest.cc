@@ -354,12 +354,12 @@ public:
             string expected_mock_response_prefix = "Mocked DMRpp content for URL: ";
             // The build_data_url_to_daac_bucket mock will return a URL without .dmrpp,
             // and the function under test should append it.
-            string expected_url_in_mock = "[https://s3.amazonaws.com/cloudydap/C1996541017-GHRC_DAAC/amsua15_2020.028_12915_1139_1324_WI.nc.dmrpp](https://s3.amazonaws.com/cloudydap/C1996541017-GHRC_DAAC/amsua15_2020.028_12915_1139_1324_WI.nc.dmrpp)";
+            string expected_url_in_mock = "https://s3.amazonaws.com/cloudydap/C1996541017-GHRC_DAAC/amsua15_2020.028_12915_1139_1324_WI.nc.dmrpp";
             CPPUNIT_ASSERT_MESSAGE("dmrpp_string should contain the expected mocked response with .dmrpp extension",
                                    dmrpp_string.find(expected_mock_response_prefix + expected_url_in_mock) != std::string::npos);
         } catch (const BESInternalError& e) {
             CPPUNIT_FAIL("Unexpected BESInternalError: " + string(e.what()));
-        } catch (const curl::http::HttpError& e) {
+        } catch (const HttpError& e) {
             CPPUNIT_FAIL("Unexpected HttpError: " + string(e.what()));
         }
     }
@@ -376,12 +376,12 @@ public:
             string expected_mock_response_prefix = "Mocked DMRpp content for URL: ";
             // The build_data_url_to_daac_bucket mock will return a URL with .dmrpp,
             // and the function under test should NOT append another .dmrpp.
-            string expected_url_in_mock = "[https://s3.amazonaws.com/cloudydap/C1996541017-GHRC_DAAC/amsua15_2020.028_12915_1139_1324_WI.nc.dmrpp](https://s3.amazonaws.com/cloudydap/C1996541017-GHRC_DAAC/amsua15_2020.028_12915_1139_1324_WI.nc.dmrpp)";
+            string expected_url_in_mock = "https://s3.amazonaws.com/cloudydap/C1996541017-GHRC_DAAC/amsua15_2020.028_12915_1139_1324_WI.nc.dmrpp";
             CPPUNIT_ASSERT_MESSAGE("dmrpp_string should contain the expected mocked response with existing .dmrpp extension",
                                    dmrpp_string.find(expected_mock_response_prefix + expected_url_in_mock) != std::string::npos);
         } catch (const BESInternalError& e) {
             CPPUNIT_FAIL("Unexpected BESInternalError: " + string(e.what()));
-        } catch (const curl::http::HttpError& e) {
+        } catch (const HttpError& e) {
             CPPUNIT_FAIL("Unexpected HttpError: " + string(e.what()));
         }
     }
