@@ -345,23 +345,15 @@ public:
     void test_read_no_dmrpp_extension() {
         TEST_NAME;
         NgapOwnedContainer container;
-        // Simulate a real_name that will result in a data_url without .dmrpp
         container.set_real_name("collections/C1996541017-GHRC_DAAC/granules/amsua15_2020.028_12915_1139_1324_WI.nc");
 
         string dmrpp_string;
-        try {
-            container.dmrpp_read_from_daac_bucket(dmrpp_string);
-            string expected_mock_response_prefix = "Mocked DMRpp content for URL: ";
-            // The build_data_url_to_daac_bucket mock will return a URL without .dmrpp,
-            // and the function under test should append it.
-            string expected_url_in_mock = "https://s3.amazonaws.com/cloudydap/C1996541017-GHRC_DAAC/amsua15_2020.028_12915_1139_1324_WI.nc.dmrpp";
-            CPPUNIT_ASSERT_MESSAGE("dmrpp_string should contain the expected mocked response with .dmrpp extension",
-                                   dmrpp_string.find(expected_mock_response_prefix + expected_url_in_mock) != std::string::npos);
-        } catch (const BESInternalError& e) {
-            CPPUNIT_FAIL("Unexpected BESInternalError: " + string(e.what()));
-        } catch (const HttpError& e) {
-            CPPUNIT_FAIL("Unexpected HttpError: " + string(e.what()));
-        }
+        container.dmrpp_read_from_daac_bucket(dmrpp_string);
+
+        string expected_mock_response_prefix = "Mocked DMRpp content for URL: ";
+        string expected_url_in_mock = "https://s3.amazonaws.com/cloudydap/C1996541017-GHRC_DAAC/amsua15_2020.028_12915_1139_1324_WI.nc.dmrpp";
+        CPPUNIT_ASSERT_MESSAGE("dmrpp_string should contain the expected mocked response with .dmrpp extension",
+                               dmrpp_string.find(expected_mock_response_prefix + expected_url_in_mock) != std::string::npos);
     }
 
     void test_read_with_dmrpp_extension() {
@@ -371,19 +363,14 @@ public:
         container.set_real_name("collections/C1996541017-GHRC_DAAC/granules/amsua15_2020.028_12915_1139_1324_WI.nc.dmrpp");
 
         string dmrpp_string;
-        try {
-            container.dmrpp_read_from_daac_bucket(dmrpp_string);
-            string expected_mock_response_prefix = "Mocked DMRpp content for URL: ";
-            // The build_data_url_to_daac_bucket mock will return a URL with .dmrpp,
-            // and the function under test should NOT append another .dmrpp.
-            string expected_url_in_mock = "https://s3.amazonaws.com/cloudydap/C1996541017-GHRC_DAAC/amsua15_2020.028_12915_1139_1324_WI.nc.dmrpp";
-            CPPUNIT_ASSERT_MESSAGE("dmrpp_string should contain the expected mocked response with existing .dmrpp extension",
+        container.dmrpp_read_from_daac_bucket(dmrpp_string);
+        
+        string expected_mock_response_prefix = "Mocked DMRpp content for URL: ";
+        // The build_data_url_to_daac_bucket mock will return a URL with .dmrpp,
+        // and the function under test should NOT append another .dmrpp.
+        string expected_url_in_mock = "https://s3.amazonaws.com/cloudydap/C1996541017-GHRC_DAAC/amsua15_2020.028_12915_1139_1324_WI.nc.dmrpp";
+        CPPUNIT_ASSERT_MESSAGE("dmrpp_string should contain the expected mocked response with existing .dmrpp extension",
                                    dmrpp_string.find(expected_mock_response_prefix + expected_url_in_mock) != std::string::npos);
-        } catch (const BESInternalError& e) {
-            CPPUNIT_FAIL("Unexpected BESInternalError: " + string(e.what()));
-        } catch (const HttpError& e) {
-            CPPUNIT_FAIL("Unexpected HttpError: " + string(e.what()));
-        }
     }
 
     CPPUNIT_TEST_SUITE( NgapOwnedContainerTest );
