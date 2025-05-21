@@ -51,21 +51,7 @@ public:
     SingletonList(const SingletonList&) = delete;
     SingletonList& operator=(const SingletonList&) = delete;
 
-    /*
-     * Not deleted due to the unique nature of this deconstructor
-     * should we remove or leave be? SBL - 5/20/25
-    virtual ~SingletonList()
-    {
-        for (const auto& fit: d_func_list) {
-            libdap::ServerFunction *func = fit.second;
-            DBG(cerr << "SingletonList::~SingletonList() - Deleting ServerFunction " << func->getName()
-                     << " from SingletonList." << endl);
-            delete func;
-        }
-
-        d_func_list.clear();
-    }
-    */
+    ~SingletonList() override = default;
 
     static SingletonList *TheList()
     {
