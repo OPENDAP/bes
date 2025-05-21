@@ -51,7 +51,17 @@ public:
     SingletonList(const SingletonList&) = delete;
     SingletonList& operator=(const SingletonList&) = delete;
 
-    ~SingletonList() override = default;
+    virtual ~SingletonList()
+    {
+        for (const auto& fit: d_func_list) {
+            libdap::ServerFunction *func = fit.second;
+            DBG(cerr << "SingletonList::~SingletonList() - Deleting ServerFunction " << func->getName()
+                     << " from SingletonList." << endl);
+            delete func;
+        }
+
+        d_func_list.clear();
+    }
 
     static SingletonList *TheList()
     {
