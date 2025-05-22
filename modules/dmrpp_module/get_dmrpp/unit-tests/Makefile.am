@@ -27,7 +27,9 @@ cp_build_script:
 	cp -f  ../$(srcdir)/get_dmrpp_h5 $(builddir); \
 	fi;
 
-check-local: cp_build_script check-local-gen-dmrpp 
+check-local: check-local-gen-dmrpp 
+
+check-local-gen-dmrpp: cp_build_script
 
 check-local-gen-dmrpp:
 	if test $(srcdir) != .; then \
