@@ -30,7 +30,11 @@ cp_build_script:
 check-local: cp_build_script check-local-gen-dmrpp 
 
 check-local-gen-dmrpp:
-	(PATH=$(abs_top_builddir)/modules/dmrpp_module:$(abs_top_builddir)/modules/dmrpp_module/build_dmrpp_h4:$(abs_top_builddir)/standalone:$(abs_builddir):$$PATH; python3 -m unittest gen_dmrpp_side_car_test)
+	if test $(srcdir) != .; then \
+	(PATH=$(abs_top_builddir)/modules/dmrpp_module:$(abs_top_builddir)/modules/dmrpp_module/build_dmrpp_h4:$(abs_top_builddir)/standalone:$(abs_builddir):$$PATH; python3 -m unittest gen_dmrpp_side_car_test) \
+	else \
+	python3 -m unittest gen_dmrpp_side_car_test; \
+        fi;
 
 clean-local:
 	rm -f $(builddir)/gen_dmrpp_side_car; \
@@ -47,4 +51,5 @@ clean-local:
 	rm -f $(builddir)/libfonc_module.so; \
 	rm -f $(builddir)/libdap_xml_module.so; \
 	rm -f $(builddir)/libdap_module.so; \
+	rm -rf $(builddir)/__pycache__; \
 	fi;
