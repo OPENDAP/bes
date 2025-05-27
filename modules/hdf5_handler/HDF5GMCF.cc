@@ -334,6 +334,7 @@ void GMFile::Adjust_H5_Attr_Value(Attribute *attr)  const{
 
     BESDEBUG("h5", "Coming to Adjust_H5_Attr_Value()"<<endl);
     if (product_type == ACOS_L2S_OR_OCO2_L1B) {
+#if 0
         if (("Type" == attr->name) && (H5VSTRING == attr->dtype)) {
             string orig_attrvalues(attr->value.begin(),attr->value.end());
             if (orig_attrvalues != "Signed64") return;
@@ -344,6 +345,7 @@ void GMFile::Adjust_H5_Attr_Value(Attribute *attr)  const{
             attr->value.resize(new_attrvalues.size());
             copy(new_attrvalues.begin(),new_attrvalues.end(),attr->value.begin()); 
         }
+#endif
     } 
 }
 
@@ -4719,9 +4721,11 @@ void GMFile::Handle_CVar_OBPG_L3()  {
 void GMFile::Handle_SpVar() {
 
     BESDEBUG("h5", "Coming to Handle_SpVar()"<<endl);
+#if 0
     if (ACOS_L2S_OR_OCO2_L1B == product_type) 
         Handle_SpVar_ACOS_OCO2();
-    else if(GPM_L1 == product_type) {
+#endif
+    if(GPM_L1 == product_type) {
         // Loop through the variable list to build the coordinates.
         // These variables need to be removed.
         for (auto irv = this->vars.begin(); irv != this->vars.end(); ++irv) {
