@@ -333,8 +333,12 @@ void GMFile::Retrieve_H5_Supported_Attr_Values()  {
 void GMFile::Adjust_H5_Attr_Value(Attribute *attr)  const{
 
     BESDEBUG("h5", "Coming to Adjust_H5_Attr_Value()"<<endl);
-    if (product_type == ACOS_L2S_OR_OCO2_L1B) {
+    // We decide to drop the special variable support for ACOS/OCO2 since
+    // the 64-bit integer is supported in DAP4 and we already add DAP4 64-bit integer support for the CF option.
+    // Keeping the old way is error prone since the newer version may have different rule on 
+    // how to divide the 64-bit integer to two 32-bit integer numbers. 
 #if 0
+    if (product_type == ACOS_L2S_OR_OCO2_L1B) {
         if (("Type" == attr->name) && (H5VSTRING == attr->dtype)) {
             string orig_attrvalues(attr->value.begin(),attr->value.end());
             if (orig_attrvalues != "Signed64") return;
@@ -345,8 +349,8 @@ void GMFile::Adjust_H5_Attr_Value(Attribute *attr)  const{
             attr->value.resize(new_attrvalues.size());
             copy(new_attrvalues.begin(),new_attrvalues.end(),attr->value.begin()); 
         }
-#endif
     } 
+#endif
 }
 
 // Unsupported datatype
@@ -4721,6 +4725,11 @@ void GMFile::Handle_CVar_OBPG_L3()  {
 void GMFile::Handle_SpVar() {
 
     BESDEBUG("h5", "Coming to Handle_SpVar()"<<endl);
+
+    // We decide to drop the special variable support for ACOS/OCO2 since
+    // the 64-bit integer is supported in DAP4 and we already add DAP4 64-bit integer support for the CF option.
+    // Keeping the old way is error prone since the newer version may have different rule on 
+    // how to divide the 64-bit integer to two 32-bit integer numbers. 
 #if 0
     if (ACOS_L2S_OR_OCO2_L1B == product_type) 
         Handle_SpVar_ACOS_OCO2();
