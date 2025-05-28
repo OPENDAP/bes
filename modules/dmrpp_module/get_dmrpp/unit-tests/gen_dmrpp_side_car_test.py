@@ -19,7 +19,6 @@ class TestSample(unittest.TestCase):
         self.addCleanup(os.remove, "grid_2_2d_ps.hdf_mvs.h5")
         result = filecmp.cmp("grid_2_2d_ps.hdf.dmrpp","grid_2_2d_ps.hdf.dmrpp.baseline")
         self.assertEqual(result ,True )
-        
    
 
     def test_gen_dmrpp_side_car2(self):
