@@ -107,11 +107,8 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
 {
     BESDEBUG(MODULE,  prolog << "BEGIN" << endl);
 
-#if 0
-    bool add_production_metadata = true;
-
-    auto container = dynamic_cast<NgapOwnedContainer*>(dhi.container);
-    // in case for later -> *(dhi.containers.begin()))->access()
+#if 1
+    auto container = dynamic_cast<NgapOwnedContainer*>(*dhi.containers.begin());
     if (!container) throw BESInternalFatalError("expected NgapOwnedContainer", __FILE__, __LINE__);
     auto dmrpp = container->access();
 
@@ -123,7 +120,7 @@ void FODmrppTransmitter::send_dmrpp(BESResponseObject *obj, BESDataHandlerInterf
 #endif
 
 
-#if 1
+#if 0
     bool add_production_metadata = true;
 
     auto bdmr = dynamic_cast<BESDMRResponse *>(obj);

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="exec-3_30" reqUUID="aa3d4bd8-4d1a-41e4-8a1b-d36c2eb26467" clientId="/-0" clientCmdCount="2">
   <bes:setContext name="bes_timeout">0</bes:setContext>
-  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">yes</bes:setContext>
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
   <bes:setContext name="max_variable_size">0</bes:setContext>
