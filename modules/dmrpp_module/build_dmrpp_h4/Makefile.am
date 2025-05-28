@@ -2,7 +2,7 @@
 #
 # 07/25/18
 #
-AUTOMAKE_OPTIONS = foreign
+AUTOMAKE_OPTIONS = foreign subdir-objects
 
 dist_bin_SCRIPTS = get_dmrpp_h4
 
