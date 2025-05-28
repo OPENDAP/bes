@@ -153,3 +153,6 @@ $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/others/f16_ssmi
 
 #SMAP_L3_SM_P_E
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/NSIDC/SMAP_L3_SM_P_E_20211030_R18240_001.h5
+
+#TROPOMI
+$GET http://test.opendap.org/opendap/GESDISC/S5P_RPRO_L1B_RA_BD5_20180430T001950_20180430T020120_02818_03_020100_20220630T164522.nc.h5

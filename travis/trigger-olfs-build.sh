@@ -27,8 +27,6 @@ echo "libdap4-snapshot record: ${LIBDAP4_SNAPSHOT}" >&2
 export bes_version=$(cat ./bes_VERSION)
 echo "bes_version: ${bes_version}" >&2
 
-export build_dmrpp_version="build_dmrpp-${bes_version}"
-echo "build_dmrpp_version: ${build_dmrpp_version}" >&2
 
 export time_now=$(date "+%FT%T%z")
 echo "time_now: ${time_now}" >&2
@@ -37,17 +35,10 @@ echo "time_now: ${time_now}" >&2
 BES_SNAPSHOT="bes-${bes_version} ${time_now}"
 echo "BES_SNAPSHOT: ${BES_SNAPSHOT}" >&2
 
-# Build the build_dmrpp snapshot record.
-BUILD_DMRPP_SNAPSHOT="${build_dmrpp_version} ${time_now}"
-echo "BUILD_DMRPP_SNAPSHOT: ${BUILD_DMRPP_SNAPSHOT}" >&2
 
 echo "Tagging bes with version: ${bes_version}"
 git tag -m "bes-${bes_version}" -a "${bes_version}"
 git push "https://${GIT_UID}:${GIT_PSWD}@github.com/OPENDAP/bes.git" "${bes_version}"
-
-echo "Tagging bes with build_dmrpp version: ${build_dmrpp_version}"
-git tag -m "${build_dmrpp_version}" -a "${build_dmrpp_version}"
-git push "https://${GIT_UID}:${GIT_PSWD}@github.com/OPENDAP/bes.git" "${build_dmrpp_version}"
 
 # Now do the work to trigger the OLFS TravisCI build.
 git clone --depth 1 https://github.com/OPENDAP/olfs
@@ -59,9 +50,6 @@ echo "${LIBDAP4_SNAPSHOT}" > bes-snapshot
 
 # Append the BES snapshot record to the bes-snapshot file.
 echo "${BES_SNAPSHOT}" >> bes-snapshot
-
-# Append the build_dmrpp snapshot record to the bes-snapshot file.
-echo "${BUILD_DMRPP_SNAPSHOT}" >> bes-snapshot
 
 cat bes-snapshot >&2
 
