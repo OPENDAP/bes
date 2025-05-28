@@ -31,16 +31,19 @@ def is_program_present(p_name):
 def check_required_programs():
     # Sanity check if the necessary programs exist
     # The following programs  must exist 
-    has_required_programs = \
-        is_program_present('check_dmrpp') and is_program_present('get_dmrpp_h5') \
-        and is_program_present('merge_dmrpp') and is_program_present('build_dmrpp_h4') \
-        and is_program_present('get_hdf_side_car')
+    required_programs = ['check_dmrpp', 'get_dmrpp_h5', 'merge_dmrpp', 
+                         'build_dmrpp_h4', 'get_hdf_side_car']
+    missing_programs = []
+    for p in required_programs:
+        if not is_program_present(p):
+            missing_programs.append(p)
 
-    if (has_required_programs == False):
-        print("Some required programs are missing. ")
+    if missing_programs:
+        print("Some required programs are missing: ")
+        print("\t - " + "\n\t - ".join(missing_programs))
         print("They are required to continue, stop!")
 
-    return has_required_programs
+    return not missing_programs
 
 
 #  Obtain HDF full path
