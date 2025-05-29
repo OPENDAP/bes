@@ -32,16 +32,15 @@
 #include "BESSyntaxUserError.h"
 
 #include "NgapOwnedContainer.h"
-#include "NgapOwnedContainer.h"
 
 #include "run_tests_cppunit.h"
 #include "test_config.h"
 
 using namespace std;
 
-auto const DMRPP_LOCATION = "https://dmrpp-sit-poc.s3.amazonaws.com";
-auto const DMRPP_TEST_BUCKET_OPENDAP_AWS = "https://s3.amazonaws.com/cloudydap";
-auto const TEST_DATA_LOCATION = string("file://") + TEST_SRC_DIR;
+const auto DMRPP_LOCATION = "https://dmrpp-sit-poc.s3.amazonaws.com";
+const auto DMRPP_TEST_BUCKET_OPENDAP_AWS = "https://s3.amazonaws.com/cloudydap";
+const auto TEST_DATA_LOCATION = string("file://") + TEST_SRC_DIR;
 
 #define TEST_NAME DBG(cerr << __PRETTY_FUNCTION__ << "()\n")
 #define prolog string("NgapOwnedContainerTest::").append(__func__).append("() - ")
@@ -318,7 +317,7 @@ public:
     void test_access_s3() {
         TEST_NAME;
 
-        if (getenv("CMAC_URL") == nullptr) {
+        if (getenv("CMAC_ID") == nullptr) {
             DBG(cerr << "Skipping test_access_s3 because AWS_ACCESS_KEY_ID is not set.\n");
             return;
         }

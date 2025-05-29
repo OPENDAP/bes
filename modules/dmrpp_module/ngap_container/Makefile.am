@@ -9,7 +9,8 @@ ACLOCAL_AMFLAGS = -I conf
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand \
 -I$(top_srcdir)/http $(DAP_CFLAGS)
 
-LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+LIBADD =
+# BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CXXFLAGS=
 AM_LDFLAGS =
