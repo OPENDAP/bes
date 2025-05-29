@@ -1,0 +1,55 @@
+#
+#  Test the NGAP Container with both DAAC- and OPeNDAP-Owned S3 buckets.
+#
+
+BES.ServerAdministrator = admin.email.address@your.domain.name
+
+BES.User = user_name
+BES.Group = group_name
+
+BES.LogName = ./bes.log
+BES.LogVerbose = no
+
+BES.modules = dap,cmd,ngap,dmrpp
+# ,fonc
+BES.module.dap = @abs_top_builddir@/dap/.libs/libdap_module.so
+BES.module.cmd = @abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
+BES.module.dmrpp = @abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.so
+BES.module.ngap = @abs_top_builddir@/modules/ngap_module/.libs/libngap_module.so
+BES.module.fonc = @abs_top_builddir@/modules/fileout_netcdf/.libs/libfonc_module.so
+
+BES.Catalog.catalog.RootDirectory = @abs_top_srcdir@/modules/ngap_module
+BES.Data.RootDirectory = /dev/null
+
+BES.Catalog.catalog.TypeMatch += dmrpp:.*\.dmrpp$;
+
+BES.Catalog.catalog.Include = ;
+BES.Catalog.catalog.Exclude = ^\..*;
+
+# Note: Cache is off for these tests since we get the same data from two sources.
+NGAP.UseDMRppCache = false
+
+# This is how we tell the server that it's OK to use HTTP GET to access the DMR++ documents.
+AllowedHosts = ^https://cloudydap.s3.us-east-1.amazonaws.com/.*$
+
+CredentialsManager.config = @abs_top_srcdir@/modules/ngap_module/tests/CM.config
+
+Http.cache.effective.urls = true
+Http.cache.effective.urls.skip.regex.pattern = ^https://.*\.s3\..*\.amazonaws\.com/.*$
+
+# Note: By default, the tests in this directory read from a DMR++ in an OPeNDAP-owned
+# S3 bucket. Credentials to read from this bucket are provided in the CM.config file.
+# An EDL token is needed to read the data. With that token, you can also read the DMR++
+# from the DAAC-owned S3 bucket. The DMR++ files are a little different and so the tests
+# for that case will need different baselines, but it's easy to see that the responses
+# OK. Neither of these buckets are public and so the tests are not run by CICD. jhrg 8/9/24
+
+# This is the default value - used for 'OPeNDAP-Owned' S3 bucket tests.
+# Set this to your own S3 bucket where DMR++ documents can be found.
+NGAP.DataSourceLocation = https://cloudydap.s3.us-east-1.amazonaws.com
+
+# Set this to true to try the OPeNDAP bucket for DMR++ documents.
+NGAP.UseOPeNDAPBucket = true
+
+# set this to true to substitute data URLs in the DMR++ for the template href value.
+NGAP.inject_data_urls = true

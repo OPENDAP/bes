@@ -62,7 +62,7 @@ ReturnAsDmrppTransmitter::ReturnAsDmrppTransmitter() {
  * @throws BESInteralError if there is a string output error when sending the response.
  */
 void ReturnAsDmrppTransmitter::send_dmrpp(BESResponseObject *, BESDataHandlerInterface &dhi) {
-    auto container = dynamic_cast<NgapOwnedContainer *>(*dhi.containers.begin());
+    auto container = dynamic_cast<NgapOwnedContainer *>(dhi.containers.front());
     if (!container) throw BESInternalFatalError("expected NgapOwnedContainer", __FILE__, __LINE__);
     const auto dmrpp = container->access();
 

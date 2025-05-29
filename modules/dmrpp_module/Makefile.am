@@ -30,7 +30,7 @@ CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 AM_LDFLAGS = 
 include $(top_srcdir)/coverage.mk
 
-SUBDIRS = dmrpp_transmitter build_dmrpp_h4 . unit-tests tests data tests_build_dmrpp get_dmrpp
+SUBDIRS = ngap_container dmrpp_transmitter build_dmrpp_h4 . unit-tests tests data tests_build_dmrpp get_dmrpp
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdmrpp_module.la
