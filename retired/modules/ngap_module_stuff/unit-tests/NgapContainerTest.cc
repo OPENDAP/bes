@@ -35,7 +35,7 @@
 #include "NgapRequestHandler.h"
 
 #include "run_tests_cppunit.h"
-#include "test_config.h"
+#include "../../../../modules/dmrpp_module/ngap_container/unit-tests/test_config.h"
 
 using namespace std;
 

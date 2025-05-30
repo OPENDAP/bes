@@ -136,7 +136,7 @@ dnl module if the user supplies --without-ngap or --with-ngap=no. jhrg 3/31/20
 
 AC_ARG_WITH([ngap],
     AS_HELP_STRING([--without-ngap],
-    [Disable support for the NGAP service, no ngap_module. (Built by default)])
+    [Disable support for the NGAP container. (Built by default)])
 )
 AM_CONDITIONAL([WITH_NGAP], [test "x$with_ngap" != "xno"])
 AM_COND_IF([WITH_NGAP],
@@ -1094,11 +1094,6 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/cmr_module/tests/atlocal
     modules/cmr_module/unit-tests/Makefile
 
-    modules/ngap_module/Makefile
-    modules/ngap_module/tests/Makefile
-    modules/ngap_module/tests/atlocal
-    modules/ngap_module/unit-tests/Makefile
-    
     modules/s3_reader/Makefile
     modules/s3_reader/tests/Makefile
     modules/s3_reader/tests/atlocal
@@ -1121,7 +1116,10 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/dmrpp_module/tests_build_dmrpp/Makefile
     modules/dmrpp_module/tests_build_dmrpp/atlocal
     modules/dmrpp_module/data/Makefile
-    modules/dmrpp_module/writer/Makefile
+    modules/dmrpp_module/dmrpp_transmitter/Makefile
+
+    modules/dmrpp_module/ngap_container/Makefile
+
     modules/dmrpp_module/build_dmrpp_h4/Makefile
     modules/dmrpp_module/get_dmrpp/Makefile
     modules/dmrpp_module/get_dmrpp/unit-tests/Makefile
@@ -1230,13 +1228,13 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     AC_CONFIG_TESTDIR(modules/httpd_catalog_module/tests, [standalone])
 
     AC_CONFIG_TESTDIR(modules/cmr_module/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/ngap_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/s3_reader/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_json/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_covjson/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/debug_functions/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/dmrpp_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/dmrpp_module/tests_build_dmrpp, [modules/dmrpp_module])
+    AC_CONFIG_TESTDIR(modules/dmrpp_module/ngap_container/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/freeform_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/xml_data_handler/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/netcdf_handler/tests, [standalone])

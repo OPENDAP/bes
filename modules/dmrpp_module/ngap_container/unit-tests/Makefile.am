@@ -2,11 +2,13 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/modules/common -I$(top_srcdir)/modules/ngap_module \
-    -I$(top_srcdir)/dispatch  -I$(top_srcdir)/dap -I$(top_srcdir)/http $(DAP_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/modules/common \
+    -I$(top_srcdir)/modules/dmrpp_module/ngap_container -I$(top_srcdir)/dispatch \
+    -I$(top_srcdir)/dap -I$(top_srcdir)/http $(DAP_CFLAGS)
 
-LIBADD = -L$(top_builddir)/modules/common -lmodules_common $(BES_DISPATCH_LIB) \
-    $(top_builddir)/dap/.libs/libdap_module.a $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+LIBADD = -L$(top_builddir)/modules/common -lmodules_common -L$(builddir)/../ -lngap \
+    $(BES_DISPATCH_LIB) $(top_builddir)/dap/.libs/libdap_module.a $(BES_HTTP_LIB) \
+    $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 # $(BES_DAP_LIB) Replace with static library explicitly referenced. jhrg 4/29/24
 
@@ -69,7 +71,7 @@ $(abs_builddir)/static-cache:
 	@echo "# abs_top_builddir: $(abs_top_builddir)"
 	@echo "# abs_builddir: $(abs_builddir)"
 	@echo "# builddir: $(builddir)"
-	@echo "# Copying preloaded NGAP cache from: '$(top_srcdir)/modules/ngap_module/data/ngap_cache_for_tests' to '$(builddir)/static-cache'"
+	@echo "# Copying preloaded NGAP cache from: '$(top_srcdir)/modules/dmrpp_module/ngap_container/data/ngap_cache_for_tests' to '$(builddir)/static-cache'"
 	cp -r $(top_srcdir)/modules/ngap_module/data/ngap_cache_for_tests $(builddir)/static-cache
 	chmod -R ug+w $(builddir)/static-cache
 
@@ -77,10 +79,10 @@ $(abs_builddir)/static-cache:
 # Unit Tests
 #
 
-# NgapContainerTest
+# NgapContainerTest NgapRequestHandlerTest
 
 if CPPUNIT
-UNIT_TESTS = MemoryCacheTest NgapApiTest NgapRequestHandlerTest NgapOwnedContainerTest
+UNIT_TESTS = MemoryCacheTest NgapApiTest NgapOwnedContainerTest
 else
 UNIT_TESTS =
 
@@ -96,18 +98,15 @@ endif
 clean-local:
 	test ! -d $(builddir)/owned-cache || rm -rf $(builddir)/owned-cache
 
+MemoryCacheTest_SOURCES = MemoryCacheTest.cc
+MemoryCacheTest_LDADD = $(LIBADD)
+
 NgapApiTest_SOURCES = NgapApiTest.cc
-NgapApiTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $(LIBADD)
+NgapApiTest_LDADD =  $(LIBADD)
 
 NgapRequestHandlerTest_SOURCES = NgapRequestHandlerTest.cc
-NgapRequestHandlerTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $(LIBADD)
-
-# NgapContainerTest_SOURCES = NgapContainerTest.cc
-# NgapContainerTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $(LIBADD)
-
-MemoryCacheTest_SOURCES = MemoryCacheTest.cc
-MemoryCacheTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $(LIBADD)
+NgapRequestHandlerTest_LDADD = $(LIBADD)
 
 NgapOwnedContainerTest_SOURCES = NgapOwnedContainerTest.cc
-NgapOwnedContainerTest_LDADD = $(top_builddir)/modules/ngap_module/.libs/libngap_module.a $(LIBADD)
+NgapOwnedContainerTest_LDADD = $(LIBADD)
 

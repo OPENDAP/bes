@@ -64,7 +64,7 @@ template <typename VALUE>
 class MemoryCache {
     unsigned int d_max_items = 100;       //< Max number of items to cache (not bytes, but items)
     unsigned int d_purge_items = 20;     //< When purging, remove this many items
-    
+
     std::deque<std::string> d_fifo_keys; //< FIFO queue of keys; used by purge()
     std::unordered_map<std::string, VALUE> d_cache;
 
@@ -103,10 +103,9 @@ class MemoryCache {
 
 public:
     MemoryCache() = default;    // this makes testing easier
-    MemoryCache(const MemoryCache *src) = delete;
-
+    MemoryCache(const MemoryCache &src) = delete;
+    MemoryCache &operator=(const MemoryCache &src) = delete;
     virtual ~MemoryCache() = default;
-    MemoryCache &operator=(const MemoryCache *src) = delete;
 
     /**
      * @brief Initialize the cache.
@@ -159,7 +158,7 @@ public:
             d_cache[key] = value;
     }
 
-    /// @brief How many items are in the cache
+    /// @brief How many items are in the cache?
     virtual unsigned long size() const { return d_cache.size(); }
 
     /// @brief Clear the cache

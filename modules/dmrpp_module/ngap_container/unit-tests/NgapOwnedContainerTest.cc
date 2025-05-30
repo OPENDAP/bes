@@ -32,16 +32,15 @@
 #include "BESSyntaxUserError.h"
 
 #include "NgapOwnedContainer.h"
-#include "NgapRequestHandler.h"
 
 #include "run_tests_cppunit.h"
 #include "test_config.h"
 
 using namespace std;
 
-auto const DMRPP_LOCATION = "https://dmrpp-sit-poc.s3.amazonaws.com";
-auto const DMRPP_TEST_BUCKET_OPENDAP_AWS = "https://s3.amazonaws.com/cloudydap";
-auto const TEST_DATA_LOCATION = string("file://") + TEST_SRC_DIR;
+const auto DMRPP_LOCATION = "https://dmrpp-sit-poc.s3.amazonaws.com";
+const auto DMRPP_TEST_BUCKET_OPENDAP_AWS = "https://s3.amazonaws.com/cloudydap";
+const auto TEST_DATA_LOCATION = string("file://") + TEST_SRC_DIR;
 
 #define TEST_NAME DBG(cerr << __PRETTY_FUNCTION__ << "()\n")
 #define prolog string("NgapOwnedContainerTest::").append(__func__).append("() - ")
@@ -70,14 +69,14 @@ public:
     }
 
     void configure_ngap_handler() const {
-        NgapRequestHandler::d_use_dmrpp_cache = true;
-        NgapRequestHandler::d_dmrpp_file_cache_dir = d_cache_dir;   // This is made if it doesn't exist
-        NgapRequestHandler::d_dmrpp_file_cache_size_mb = 100 * MEGABYTE; // MB
-        NgapRequestHandler::d_dmrpp_file_cache_purge_size_mb = 20 * MEGABYTE; // MB
-        NgapRequestHandler::d_dmrpp_file_cache.initialize(NgapRequestHandler::d_dmrpp_file_cache_dir,
-                                                          NgapRequestHandler::d_dmrpp_file_cache_size_mb,
-                                                          NgapRequestHandler::d_dmrpp_file_cache_purge_size_mb);
-        NgapRequestHandler::d_dmrpp_mem_cache.initialize(100, 20);
+        NgapOwnedContainer::d_use_dmrpp_cache = true;
+        NgapOwnedContainer::d_dmrpp_file_cache_dir = d_cache_dir;   // This is made if it doesn't exist
+        NgapOwnedContainer::d_dmrpp_file_cache_size_mb = 100 * MEGABYTE; // MB
+        NgapOwnedContainer::d_dmrpp_file_cache_purge_size_mb = 20 * MEGABYTE; // MB
+        NgapOwnedContainer::d_dmrpp_file_cache.initialize(NgapOwnedContainer::d_dmrpp_file_cache_dir,
+                                                          NgapOwnedContainer::d_dmrpp_file_cache_size_mb,
+                                                          NgapOwnedContainer::d_dmrpp_file_cache_purge_size_mb);
+        NgapOwnedContainer::d_dmrpp_mem_cache.initialize(100, 20);
     }
 
     void setUp() override {
@@ -88,8 +87,8 @@ public:
     // Delete the cache dir after each test; really only needed for the
     // tests toward the end of the suite that test the FileCache.
     void tearDown() override {
-        NgapRequestHandler::d_dmrpp_file_cache.clear();
-        NgapRequestHandler::d_dmrpp_mem_cache.clear();
+        NgapOwnedContainer::d_dmrpp_file_cache.clear();
+        NgapOwnedContainer::d_dmrpp_mem_cache.clear();
     }
 
     void test_file_to_string() {
@@ -255,21 +254,21 @@ public:
 
         string key = FileCache::hash_key(real_name);
         FileCache::Item item;
-        bool result = NgapRequestHandler::d_dmrpp_file_cache.get(key, item, LOCK_SH);
+        bool result = NgapOwnedContainer::d_dmrpp_file_cache.get(key, item, LOCK_SH);
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should not be in the file cache.", !result);
 
         string cache_value;
-        result = NgapRequestHandler::d_dmrpp_mem_cache.get(real_name, cache_value);
+        result = NgapOwnedContainer::d_dmrpp_mem_cache.get(real_name, cache_value);
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should not be in the memory cache.", !result);
 
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should be found", container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
         DBG2(cerr << "DMR++: " << dmrpp_string << '\n');
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the string", !dmrpp_string.empty());
 
-        result = NgapRequestHandler::d_dmrpp_file_cache.get(key, item, LOCK_SH);
+        result = NgapOwnedContainer::d_dmrpp_file_cache.get(key, item, LOCK_SH);
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should not be in the file cache.", result);
 
-        result = NgapRequestHandler::d_dmrpp_mem_cache.get(real_name, cache_value);
+        result = NgapOwnedContainer::d_dmrpp_mem_cache.get(real_name, cache_value);
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should not be in the memory cache.", result);
     }
 
@@ -318,7 +317,7 @@ public:
     void test_access_s3() {
         TEST_NAME;
 
-        if (getenv("CMAC_URL") == nullptr) {
+        if (getenv("CMAC_ID") == nullptr) {
             DBG(cerr << "Skipping test_access_s3 because AWS_ACCESS_KEY_ID is not set.\n");
             return;
         }

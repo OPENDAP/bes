@@ -32,6 +32,9 @@
 #include <memory>
 
 #include "BESContainer.h"
+#include "MemoryCache.h"
+#include "FileCache.h"
+
 
 namespace http {
 class RemoteResource;
@@ -61,14 +64,33 @@ namespace ngap {
 class NgapOwnedContainer: public BESContainer {
 
     std::string d_ngap_path;    // The (in)famous REST path
+
     static std::string d_data_source_location;
     static bool d_use_opendap_bucket;
     static bool d_inject_data_url;
 
+    static int d_cmr_cache_size_items;      // max number of entries
+    static int d_cmr_cache_purge_items;     // remove this many during purge
+
+    static bool d_use_cmr_cache;
+    static MemoryCache<std::string> d_cmr_mem_cache;
+
+    static int d_dmrpp_mem_cache_size_items;    // max number of entries
+    static int d_dmrpp_mem_cache_purge_items;   // remove this many during purge
+
+    static bool d_use_dmrpp_cache;
+    static MemoryCache<std::string> d_dmrpp_mem_cache;
+
+    static long long d_dmrpp_file_cache_size_mb;
+    static long long d_dmrpp_file_cache_purge_size_mb;
+    static std::string d_dmrpp_file_cache_dir;
+
+    static FileCache d_dmrpp_file_cache;
+
     bool get_dmrpp_from_cache_or_remote_source(std::string &dmrpp_string) const;
 
     // I made these static so that they will be in the class' namespace but still
-    // be easy to test in the unit tests. jhrg 4/29/24
+    // easy to test in the unit tests. jhrg 4/29/24
     static bool file_to_string(int fd, std::string &content);
 
     static bool get_daac_content_filters(const std::string &data_url, std::map<std::string, std::string, std::less<>> &content_filters);

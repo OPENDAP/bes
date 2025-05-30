@@ -46,11 +46,11 @@
 #include "BESSyntaxUserError.h"
 #include "BESDebug.h"
 
-#include "NgapRequestHandler.h"
 #include "NgapOwnedContainer.h"
 #include "NgapApi.h"
 #include "NgapNames.h"
 
+#define MODULE "dmrpp"
 #define prolog std::string("NgapOwnedContainer::").append(__func__).append("() - ")
 // CACHE_LOG is defined separately from INFO_LOG so that we can turn it off easily. jhrg 11/19/23
 #define CACHE_LOG(x) INFO_LOG(x)
@@ -66,8 +66,28 @@ std::string NgapOwnedContainer::d_data_source_location = "https://cloudydap.s3.u
 bool NgapOwnedContainer::d_use_opendap_bucket = true;
 bool NgapOwnedContainer::d_inject_data_url = true;
 
+// CMR caching
+int NgapOwnedContainer::d_cmr_cache_size_items = 100;    // Entries, not size in bytes, MB, etc.
+int NgapOwnedContainer::d_cmr_cache_purge_items = 20;
+
+bool NgapOwnedContainer::d_use_cmr_cache = false;
+MemoryCache<std::string> NgapOwnedContainer::d_cmr_mem_cache;
+
+// DMR++ caching
+int NgapOwnedContainer::d_dmrpp_mem_cache_size_items = 100;
+int NgapOwnedContainer::d_dmrpp_mem_cache_purge_items = 20;
+
+bool NgapOwnedContainer::d_use_dmrpp_cache = false;
+MemoryCache<std::string> NgapOwnedContainer::d_dmrpp_mem_cache;
+
+long long NgapOwnedContainer::d_dmrpp_file_cache_size_mb = 10'000;    // 10,000 MB ~= 10GB, roughly
+long long NgapOwnedContainer::d_dmrpp_file_cache_purge_size_mb = 2'000;  // 2,000 MB ~= 2GB
+string NgapOwnedContainer::d_dmrpp_file_cache_dir = "/tmp/hyrax_dmrpp_cache";
+
+FileCache NgapOwnedContainer::d_dmrpp_file_cache;
+
 /**
- * @brief Creates an instances of NgapOwnedContainer with symbolic name and real
+ * @brief Creates an instance of NgapOwnedContainer with symbolic name and real
  * name, which is the remote request.
  *
  * The real_name is the remote request URL.
@@ -85,6 +105,52 @@ NgapOwnedContainer::NgapOwnedContainer(const string &sym_name, const string &rea
         = TheBESKeys::read_bool_key(USE_OPENDAP_BUCKET, NgapOwnedContainer::d_use_opendap_bucket);
     NgapOwnedContainer::d_inject_data_url
         = TheBESKeys::read_bool_key(NGAP_INJECT_DATA_URL_KEY, NgapOwnedContainer::d_inject_data_url);
+
+       // Read BES keys to determine if the caches should be used. jhrg 9/22/23
+    NgapOwnedContainer::d_use_cmr_cache
+        = TheBESKeys::read_bool_key(USE_CMR_CACHE, NgapOwnedContainer::d_use_cmr_cache);
+    if (NgapOwnedContainer::d_use_cmr_cache) {
+        NgapOwnedContainer::d_cmr_cache_size_items
+                = TheBESKeys::read_int_key(CMR_CACHE_THRESHOLD, NgapOwnedContainer::d_cmr_cache_size_items);
+        NgapOwnedContainer::d_cmr_cache_purge_items
+                = TheBESKeys::read_int_key(CMR_CACHE_SPACE, NgapOwnedContainer::d_cmr_cache_purge_items);
+        if (!d_cmr_mem_cache.initialize(d_cmr_cache_size_items, d_cmr_cache_purge_items)) {
+            ERROR_LOG("NgapOwnedContainer::NgapOwnedContainer() - failed to initialize CMR cache");
+        }
+    }
+
+    NgapOwnedContainer::d_use_dmrpp_cache
+            = TheBESKeys::read_bool_key(USE_DMRPP_CACHE, NgapOwnedContainer::d_use_dmrpp_cache);
+    if (NgapOwnedContainer::d_use_dmrpp_cache) {
+        NgapOwnedContainer::d_dmrpp_mem_cache_size_items
+                = TheBESKeys::read_int_key(DMRPP_CACHE_THRESHOLD,  NgapOwnedContainer::d_dmrpp_mem_cache_size_items);
+        NgapOwnedContainer::d_dmrpp_mem_cache_purge_items
+                = TheBESKeys::read_int_key(DMRPP_CACHE_SPACE, NgapOwnedContainer::d_dmrpp_mem_cache_purge_items);
+        if (!d_dmrpp_mem_cache.initialize(d_dmrpp_mem_cache_size_items, d_dmrpp_mem_cache_purge_items)) {
+            ERROR_LOG("NgapOwnedContainer::NgapOwnedContainer() - failed to initialize DMR++ cache");
+        }
+
+        // Now set up the file cache. Note that the sizes in the bes.conf file are in MB,
+        // so convert them to bytes. jhrg 11/14/23
+        NgapOwnedContainer::d_dmrpp_file_cache_size_mb
+            = MEGABYTE * TheBESKeys::read_ulong_key(DMRPP_FILE_CACHE_THRESHOLD,
+                                                               NgapOwnedContainer::d_dmrpp_file_cache_size_mb);
+        NgapOwnedContainer::d_dmrpp_file_cache_purge_size_mb
+            = MEGABYTE * TheBESKeys::read_ulong_key(DMRPP_FILE_CACHE_SPACE,
+                                                               NgapOwnedContainer::d_dmrpp_file_cache_purge_size_mb);
+        NgapOwnedContainer::d_dmrpp_file_cache_dir
+            = TheBESKeys::read_string_key(DMRPP_FILE_CACHE_DIR,
+                                                     NgapOwnedContainer::d_dmrpp_file_cache_dir);
+        if (BESUtil::mkdir_p(NgapOwnedContainer::d_dmrpp_file_cache_dir, 0775) != 0) {
+            ERROR_LOG("DMR++ file cache directory '" + NgapOwnedContainer::d_dmrpp_file_cache_dir + "' error: "
+                      + strerror(errno));
+        }
+        if (!NgapOwnedContainer::d_dmrpp_file_cache.initialize(NgapOwnedContainer::d_dmrpp_file_cache_dir,
+                                                               NgapOwnedContainer::d_dmrpp_file_cache_size_mb,
+                                                               NgapOwnedContainer::d_dmrpp_file_cache_purge_size_mb)) {
+            ERROR_LOG("NgapOwnedContainer::NgapOwnedContainer() - failed to initialize DMR++ file cache");
+        }
+    }
 }
 
 /**
@@ -121,13 +187,13 @@ bool NgapOwnedContainer::file_to_string(int fd, string &content) {
  * @brief Set the real name of the container using the CMR or cache.
  *
  * This uses CMR to translate a REST path to a true NGAP URL for the granule.
- * Once this is done, the result is cached in an unordered_map keyed using the the
+ * Once this is done, the result is cached in an unordered_map keyed using the
  * REST path and the UID. The REST path is initially the value of the
  * real_name property of the Container, but the action of performing the translation
  * changes the name of the real_name property to the true NGAP URL. The REST
  * path is stored in the d_ngap_path property of the NgapContainer instance.
  *
- * @note: The cache is global to the NgapRequestHandler class. This is a per-process
+ * @note: The cache is global to the NgapOwnedContainer class. This is a per-process
  * cache and it is not thread-safe.
  */
 string NgapOwnedContainer::build_data_url_to_daac_bucket(const string &rest_path) {
@@ -140,8 +206,8 @@ string NgapOwnedContainer::build_data_url_to_daac_bucket(const string &rest_path
     // If using the cache, look there. Note that the UID is part of the key to the cached data.
     string url_key = rest_path + ':' + uid;
     string data_url;
-    if (NgapRequestHandler::d_use_cmr_cache) {
-        if (NgapRequestHandler::d_cmr_mem_cache.get(url_key, data_url)) {
+    if (NgapOwnedContainer::d_use_cmr_cache) {
+        if (NgapOwnedContainer::d_cmr_mem_cache.get(url_key, data_url)) {
             CACHE_LOG(prolog + "CMR Cache hit, translated URL: " + data_url + '\n');
             return data_url;
         } else {
@@ -153,8 +219,8 @@ string NgapOwnedContainer::build_data_url_to_daac_bucket(const string &rest_path
     data_url = NgapApi::convert_ngap_resty_path_to_data_access_url(rest_path);
 
     // If using the CMR cache, cache the response.
-    if (NgapRequestHandler::d_use_cmr_cache) {
-        NgapRequestHandler::d_cmr_mem_cache.put(url_key, data_url);
+    if (NgapOwnedContainer::d_use_cmr_cache) {
+        NgapOwnedContainer::d_cmr_mem_cache.put(url_key, data_url);
         CACHE_LOG(prolog + "CMR Cache put, translated URL: " + data_url + '\n');
     }
 
@@ -192,7 +258,7 @@ string NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(const string &rest_pa
 bool NgapOwnedContainer::get_item_from_dmrpp_cache(string &dmrpp_string) const {
 
     // Read the cache entry if it exists. jhrg 4/29/24
-    if (NgapRequestHandler::d_dmrpp_mem_cache.get(get_real_name(), dmrpp_string)) {
+    if (NgapOwnedContainer::d_dmrpp_mem_cache.get(get_real_name(), dmrpp_string)) {
         CACHE_LOG(prolog + "Memory Cache hit, DMR++: " + get_real_name() + '\n');
         return true;
     }
@@ -204,12 +270,12 @@ bool NgapOwnedContainer::get_item_from_dmrpp_cache(string &dmrpp_string) const {
     // If found, put it in the memory cache and return it as a string.
 
     FileCache::Item item;
-    if (NgapRequestHandler::d_dmrpp_file_cache.get(FileCache::hash_key(get_real_name()), item)) { // got it
+    if (NgapOwnedContainer::d_dmrpp_file_cache.get(FileCache::hash_key(get_real_name()), item)) { // got it
         // read data from the file into the string.
         CACHE_LOG(prolog + "File Cache hit, DMR++: " + get_real_name() + '\n');
         if (file_to_string(item.get_fd(), dmrpp_string)) {
             // put it in the memory cache
-            NgapRequestHandler::d_dmrpp_mem_cache.put(get_real_name(), dmrpp_string);
+            NgapOwnedContainer::d_dmrpp_mem_cache.put(get_real_name(), dmrpp_string);
             CACHE_LOG(prolog + "Memory Cache put, DMR++: " + get_real_name() + '\n');
             return true;
         }
@@ -227,7 +293,7 @@ bool NgapOwnedContainer::get_item_from_dmrpp_cache(string &dmrpp_string) const {
 
 bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string) const
 {
-    if (NgapRequestHandler::d_dmrpp_file_cache.put_data(FileCache::hash_key(get_real_name()), dmrpp_string)) {
+    if (NgapOwnedContainer::d_dmrpp_file_cache.put_data(FileCache::hash_key(get_real_name()), dmrpp_string)) {
         CACHE_LOG(prolog + "File Cache put, DMR++: " + get_real_name() + '\n');
     }
     else {
@@ -236,11 +302,11 @@ bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string
         return false;
     }
 
-    if (!NgapRequestHandler::d_dmrpp_file_cache.purge()) {
+    if (!NgapOwnedContainer::d_dmrpp_file_cache.purge()) {
         ERROR_LOG(prolog + "Call to FileCache::purge() failed\n");
     }
 
-    NgapRequestHandler::d_dmrpp_mem_cache.put(get_real_name(), dmrpp_string);
+    NgapOwnedContainer::d_dmrpp_mem_cache.put(get_real_name(), dmrpp_string);
     CACHE_LOG(prolog + "Memory Cache put, DMR++: " + get_real_name() + '\n');
 
     return true;
@@ -417,7 +483,7 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
     BES_MODULE_TIMING(prolog + get_real_name());
 
     // If the DMR++ is cached, return it. NB: This cache holds OPeNDAP- and DAAC-owned DMR++ documents.
-    if (NgapRequestHandler::d_use_dmrpp_cache && get_item_from_dmrpp_cache(dmrpp_string)) {
+    if (NgapOwnedContainer::d_use_dmrpp_cache && get_item_from_dmrpp_cache(dmrpp_string)) {
         return true;
     }
     else {
@@ -440,7 +506,7 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
 
     // if we get here, the DMR++ has been pulled over the network. Put it in both caches.
     // The memory cache is for use by this process, the file cache for other processes/VMs
-    if (NgapRequestHandler::d_use_dmrpp_cache && !put_item_in_dmrpp_cache(dmrpp_string)) {
+    if (NgapOwnedContainer::d_use_dmrpp_cache && !put_item_in_dmrpp_cache(dmrpp_string)) {
         return false;
     }
 

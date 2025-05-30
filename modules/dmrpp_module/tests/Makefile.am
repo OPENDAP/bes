@@ -29,6 +29,8 @@ bes.conf: $(top_srcdir)/configure.ac $(srcdir)/bes.conf.in
 
 bes_serial.conf: $(top_srcdir)/configure.ac $(srcdir)/bes_serial.conf.in
 
+bes-return-as-dmrpp.conf:  $(top_srcdir)/configure.ac $(srcdir)/bes-return-as-dmrpp.conf.in
+
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te
