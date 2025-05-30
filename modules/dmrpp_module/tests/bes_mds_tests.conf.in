@@ -11,7 +11,6 @@ BES.modules=dap,cmd,dmrpp
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
 BES.module.dmrpp=@abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.so
-BES.module.ngap = @abs_top_builddir@/modules/ngap_module/.libs/libngap_module.so
 
 BES.Catalog.catalog.RootDirectory = @abs_top_srcdir@/modules/dmrpp_module
 BES.Catalog.catalog.TypeMatch = dmrpp:.*\.(dmrpp)$;

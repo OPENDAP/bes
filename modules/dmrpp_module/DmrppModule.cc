@@ -70,10 +70,9 @@ void DmrppModule::initialize(const string &modname)
         BESContainerStorageList::TheList()->add_persistence(csc);
     }
 
-    /*BESDEBUG(modname, "    adding " << modname << " dmrpp-ngap container storage" << endl);
-    BESContainerStorageList::TheList()->add_persistence(new NgapBuildDmrppContainerStorage(modname));*/
+    /*BESDEBUG(modname, "    adding " << modname << " dmrpp-ngap container storage" << endl); */
 
-    BESContainerStorageList::TheList()->add_persistence(new ngap::NgapOwnedContainerStorage(modname));
+    BESContainerStorageList::TheList()->add_persistence(new ngap::NgapOwnedContainerStorage("ngap"));
 
     // This part of the handler sets up transmitters that return DMRPP responses
     BESReturnManager::TheManager()->add_transmitter(RETURNAS_DMRPP, new ReturnAsDmrppTransmitter());

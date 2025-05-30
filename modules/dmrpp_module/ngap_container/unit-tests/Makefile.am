@@ -71,7 +71,7 @@ $(abs_builddir)/static-cache:
 	@echo "# abs_top_builddir: $(abs_top_builddir)"
 	@echo "# abs_builddir: $(abs_builddir)"
 	@echo "# builddir: $(builddir)"
-	@echo "# Copying preloaded NGAP cache from: '$(top_srcdir)/modules/ngap_module/data/ngap_cache_for_tests' to '$(builddir)/static-cache'"
+	@echo "# Copying preloaded NGAP cache from: '$(top_srcdir)/modules/dmrpp_module/ngap_container/data/ngap_cache_for_tests' to '$(builddir)/static-cache'"
 	cp -r $(top_srcdir)/modules/ngap_module/data/ngap_cache_for_tests $(builddir)/static-cache
 	chmod -R ug+w $(builddir)/static-cache
 

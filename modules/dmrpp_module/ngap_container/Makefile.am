@@ -1,4 +1,4 @@
-# Automake file for ngap_module
+# Automake file for ngap-specific code
 #
 # 07/25/18
 #

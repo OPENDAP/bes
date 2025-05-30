@@ -5,7 +5,7 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 
 AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch -I$(top_srcdir)/http \
-    -I$(top_srcdir)/modules/ngap_module
+    -I$(top_srcdir)/modules/dmrpp_module/ngap_container
 
 AM_CXXFLAGS =
 AM_LDFLAGS = $(DMRPP_LDFLAGS)
@@ -30,14 +30,6 @@ libdmrpp_return_as_la_LIBADD = $(LIBADD)
 libdmrpp_return_as_la_LDFLAGS = $(AM_LDFLAGS)
 libdmrpp_return_as_la_LDFLAGS += -no-undefinedpwd
 
-NGAP_SRC = $(top_srcdir)/modules/ngap_module/NgapOwnedContainer.cc \
-    $(top_srcdir)/modules/ngap_module/NgapApi.cc \
-    $(top_srcdir)/modules/ngap_module/NgapRequestHandler.cc
-
 SRC = ReturnAsDmrppTransmitter.cc
-
-NGAP_HDR = $(srcdir)/../ngap_container/NgapOwnedContainer.h \
-    $(top_srcdir)/modules/ngap_module/NgapApi.h \
-    $(top_srcdir)/modules/ngap_module/NgapRequestHandler.h
 
 HDR = ReturnAsDmrppTransmitter.h
