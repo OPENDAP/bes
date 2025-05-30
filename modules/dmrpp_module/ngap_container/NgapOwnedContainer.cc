@@ -187,7 +187,7 @@ bool NgapOwnedContainer::file_to_string(int fd, string &content) {
  * @brief Set the real name of the container using the CMR or cache.
  *
  * This uses CMR to translate a REST path to a true NGAP URL for the granule.
- * Once this is done, the result is cached in an unordered_map keyed using the the
+ * Once this is done, the result is cached in an unordered_map keyed using the
  * REST path and the UID. The REST path is initially the value of the
  * real_name property of the Container, but the action of performing the translation
  * changes the name of the real_name property to the true NGAP URL. The REST

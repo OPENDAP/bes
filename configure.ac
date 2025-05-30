@@ -136,7 +136,7 @@ dnl module if the user supplies --without-ngap or --with-ngap=no. jhrg 3/31/20
 
 AC_ARG_WITH([ngap],
     AS_HELP_STRING([--without-ngap],
-    [Disable support for the NGAP service, no ngap_module. (Built by default)])
+    [Disable support for the NGAP container. (Built by default)])
 )
 AM_CONDITIONAL([WITH_NGAP], [test "x$with_ngap" != "xno"])
 AM_COND_IF([WITH_NGAP],
@@ -1119,9 +1119,6 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/dmrpp_module/dmrpp_transmitter/Makefile
 
     modules/dmrpp_module/ngap_container/Makefile
-    modules/dmrpp_module/ngap_container/tests/Makefile
-    modules/dmrpp_module/ngap_container/tests/atlocal
-    modules/dmrpp_module/ngap_container/unit-tests/Makefile
 
     modules/dmrpp_module/build_dmrpp_h4/Makefile
     modules/dmrpp_module/get_dmrpp/Makefile

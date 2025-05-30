@@ -309,7 +309,7 @@ static void unset_error_buffer(CURL *ceh) {
  *
  * @note used only by init() below. jhrg 3/7/23
  *
- * @param curl The cURL easy handle to configure.
+ * @param ceh The cURL easy handle to configure.
  * @param target_url The url used to configure the proxy
  * @return
  */
@@ -706,19 +706,18 @@ bool is_retryable(const string &target_url) {
  *  - CURLE_SSL_CONNECT_ERROR
  *  - CURLE_SSL_CACERT_BADFILE
  *  - CURLE_GOT_NOTHING
- *  And for these values of curl_code the function returns false.
+ *  For these values of curl_code the function returns false.
  *
  *  The function returns success iff curl_code == CURLE_OK.
  *
- *  If the curl_code is another value a BESInternalError is thrown.
+ *  If the curl_code is another value, a BESInternalError is thrown.
  *
- * @param ceh The cURL easy handle used in the request.
  * @param eff_req_url The requested URL - This should be the 'effective URL'.
  * @param curl_code The CURLcode value to evaluate.
  * @param error_buffer The CURLOPT_ERRORBUFFER used in the request.
  * @param attempt The number of attempts on the url that this request represents.
  *
- * @return True if the curl_easy_perform was successful, false if not but the request may be retried.
+ * @return True if the curl_easy_perform was successful, false if not, but the request may be retried.
  * @throws BESInternalError When the curl_code is an error that should not be retried.
  */
 static bool eval_curl_easy_perform_code(
