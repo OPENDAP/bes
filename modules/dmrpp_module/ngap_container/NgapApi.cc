@@ -56,7 +56,7 @@ const unsigned int REFRESH_THRESHOLD = 3600; // An hour
  * the assembled URL.
  * @return The URL used to access CMR.
  */
-std::string NgapApi::get_cmr_search_endpoint_url() {
+string NgapApi::get_cmr_search_endpoint_url() {
     static string cmr_search_endpoint_url;
     if (cmr_search_endpoint_url.empty()) {
         string cmr_hostname = TheBESKeys::TheKeys()->read_string_key(NGAP_CMR_HOSTNAME_KEY, DEFAULT_CMR_ENDPOINT_URL);
@@ -75,7 +75,7 @@ std::string NgapApi::get_cmr_search_endpoint_url() {
  * @return The CMR query URL that will return the granules.umm_json_v1_4 from CMR for the
  * granule specified in the restified path.
  */
-std::string NgapApi::build_cmr_query_url_old_rpath_format(const std::string &restified_path) {
+string NgapApi::build_cmr_query_url_old_rpath_format(const string &restified_path) {
 
     // Make sure it starts with a '/' (see key strings above)
     string r_path = (restified_path[0] != '/' ? "/" : "") + restified_path;
@@ -192,7 +192,7 @@ std::string NgapApi::build_cmr_query_url_old_rpath_format(const std::string &res
  * @return The CMR query URL that will return the granules.umm_json_v1_4 from CMR for the
  * granule specified in the restified path.
  */
-std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
+string NgapApi::build_cmr_query_url(const string &restified_path) {
 
     // Make sure it starts with a '/' (see key strings above)
     string r_path = (restified_path[0] != '/' ? "/" : "") + restified_path;
@@ -279,6 +279,38 @@ std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
     return cmr_url;
 }
 
+string get_data_access_url(rapidjson::Value &obj) {
+    auto mitr = obj.FindMember("URL");
+    if (mitr == obj.MemberEnd()) {
+        throw BESInternalError("The umm/RelatedUrls element does not contain the URL object", __FILE__, __LINE__);
+    }
+
+    const rapidjson::Value &r_url = mitr->value;
+
+    mitr = obj.FindMember("Type");
+    if (mitr == obj.MemberEnd()) {
+        throw BESInternalError("The umm/RelatedUrls element does not contain the Type object", __FILE__, __LINE__);
+    }
+
+    const rapidjson::Value &r_type = mitr->value;
+
+    bool noSubtype = obj.FindMember("Subtype") == obj.MemberEnd();
+
+    if ((r_type.GetString() == string(CMR_URL_TYPE_GET_DATA)) && noSubtype) {
+        // Added test that the URL does not end in 'xml' to avoid the LPDAAC .cmr.xml records. jhrg 5/22/24
+        string candidate_url = r_url.GetString();
+
+        // The URL has to start with HTTP/S and cannot end in .xml or .dmrpp. jhrg 6/2/25
+        if ((candidate_url.find("https://") == 0 || candidate_url.find("http://") == 0)
+            && candidate_url.rfind(".xml") == string::npos
+            && candidate_url.rfind(".dmrpp") == string::npos) {
+            return candidate_url;
+        }
+    }
+
+    return {""};
+}
+
 /**
  * @brief  Locates the "GET DATA" URL for a granule in the granules.umm_json_v1_4 document.
  *
@@ -292,11 +324,11 @@ std::string NgapApi::build_cmr_query_url(const std::string &restified_path) {
  *  not end in 'xml'. The latter characteristic was added for records added by LPDAAC. jhrg 5/22/24
  *
  * @param rest_path The REST path used to form the CMR query (only used for error messages)
- * @param cmr_granules The CMR response (granules.umm_json_v1_4) to evaluate
+ * @param cmr_granule_response The CMR response (granules.umm_json_v1_4) to evaluate
  * @return  The "GET DATA" URL for the granule.
  */
-std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::string &rest_path,
-                                                                 rapidjson::Document &cmr_granule_response) {
+string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const string &rest_path,
+                                                            rapidjson::Document &cmr_granule_response) {
     const rapidjson::Value &val = cmr_granule_response["hits"];
     int hits = val.GetInt();
     if (hits < 1) {
@@ -308,85 +340,35 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
     if (!items.IsArray()) {
         throw BESInternalError(string("ERROR! The CMR response did not contain the data URL information: ")
                                + rest_path, __FILE__, __LINE__);
-    } else {
-        // Search the items array for the first item that contains a RelatedUrls array
-        if (BESISDEBUG(MODULE)) {
-            stringstream ss;
-            const string RJ_TYPE_NAMES[] = {string("kNullType"), string("kFalseType"), string("kTrueType"),
-                                            string("kObjectType"), string("kArrayType"), string("kStringType"),
-                                            string("kNumberType")};
-            for (rapidjson::SizeType i = 0; i < items.Size(); i++) // Uses SizeType instead of size_t
-                ss << "items[" << i << "]: " << RJ_TYPE_NAMES[items[i].GetType()] << endl;
-            BESDEBUG(MODULE, prolog << "items size: " << items.Size() << endl << ss.str() << endl);
-        }
-
-        rapidjson::Value &items_obj = items[0];
-        auto mitr = items_obj.FindMember("umm");
-
-        rapidjson::Value &umm = mitr->value;
-        mitr = umm.FindMember("RelatedUrls");
-        if (mitr == umm.MemberEnd()) {
-            throw BESInternalError("Error! The umm/RelatedUrls object was not located!", __FILE__, __LINE__);
-        }
-
-        rapidjson::Value &related_urls = mitr->value;
-
-        if (!related_urls.IsArray()) {
-            throw BESNotFoundError("Error! The RelatedUrls object in the CMR response is not an array!", __FILE__,
-                                   __LINE__);
-        }
-
-        BESDEBUG(MODULE, prolog << " Found RelatedUrls array in CMR response." << endl);
-
-        string data_access_url;
-        for (rapidjson::SizeType i = 0; i < related_urls.Size() && data_access_url.empty(); i++) {
-            rapidjson::Value &obj = related_urls[i];
-            mitr = obj.FindMember("URL");
-            if (mitr == obj.MemberEnd()) {
-                stringstream err;
-                err << "Error! The umm/RelatedUrls[" << i << "] does not contain the URL object";
-                throw BESInternalError(err.str(), __FILE__, __LINE__);
-            }
-
-            const rapidjson::Value &r_url = mitr->value;
-
-            mitr = obj.FindMember("Type");
-            if (mitr == obj.MemberEnd()) {
-                stringstream err;
-                err << "Error! The umm/RelatedUrls[" << i << "] does not contain the Type object";
-                throw BESInternalError(err.str(), __FILE__, __LINE__);
-            }
-
-            const rapidjson::Value &r_type = mitr->value;
-
-            bool noSubtype = obj.FindMember("Subtype") == obj.MemberEnd();
-
-            BESDEBUG(MODULE, prolog << "RelatedUrl Object:" <<
-                                    " URL: '" << r_url.GetString() << "'" <<
-                                    " Type: '" << r_type.GetString() << "'" <<
-                                    " SubType: '" << (noSubtype ? "Absent" : "Present") << "'" << endl);
-
-            if ((r_type.GetString() == string(CMR_URL_TYPE_GET_DATA)) && noSubtype) {
-
-                // Because a member of RelatedUrls may contain a URL of Type GET DATA with the s3:// protocol
-                // as well as a Type GET DATA URL which uses https:// or http://
-                // Added test that the URL does not end in 'xml' to avoid the LPDAAC .cmr.xml records. jhrg 5/22/24
-                string candidate_url = r_url.GetString();
-
-                if ((candidate_url.rfind("https://", 0) == 0 || candidate_url.rfind("http://", 0) == 0)
-                    && candidate_url.find(".xml", candidate_url.size()-5) == string::npos) {
-                    data_access_url = candidate_url;
-                }
-            }
-        }
-
-        if (data_access_url.empty()) {
-            throw BESInternalError(string("ERROR! Failed to locate a data access URL for the path: ") + rest_path,
-                                   __FILE__, __LINE__);
-        }
-
-        return data_access_url;
     }
+
+    // JSON is now vetted so that we know it has an array of one or more 'items'. jhrg 6/2/25
+    rapidjson::Value &items_obj = items[0];
+    auto mitr = items_obj.FindMember("umm");
+
+    rapidjson::Value &umm = mitr->value;
+    mitr = umm.FindMember("RelatedUrls");
+    if (mitr == umm.MemberEnd()) {
+        throw BESInternalError("Error! The umm/RelatedUrls object was not located!", __FILE__, __LINE__);
+    }
+
+    rapidjson::Value &related_urls = mitr->value;
+    if (!related_urls.IsArray()) {
+        throw BESNotFoundError("Error! The RelatedUrls object in the CMR response is not an array!", __FILE__,
+                               __LINE__);
+    }
+
+    // The first element of 'items' is now vetted so that we know it's an array of 'RelatedUrls'. jhrg 6/2/25
+    for (rapidjson::SizeType i = 0; i < related_urls.Size(); i++) {
+        string data_access_url = get_data_access_url(related_urls[i]);
+        if (!data_access_url.empty()) {
+            return data_access_url;
+        }
+    }
+
+    // If no valid related URL is found, it's an error.
+    throw BESInternalError(string("Failed to locate a data access URL for the path: ") + rest_path,
+                           __FILE__, __LINE__);
 }
 
 /**
@@ -411,7 +393,7 @@ std::string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const std::stri
  *
  * @param restified_path The name to decompose.
  */
-string NgapApi::convert_ngap_resty_path_to_data_access_url(const std::string &restified_path) {
+string NgapApi::convert_ngap_resty_path_to_data_access_url(const string &restified_path) {
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     string data_access_url;
 
