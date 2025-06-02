@@ -1119,6 +1119,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/dmrpp_module/dmrpp_transmitter/Makefile
 
     modules/dmrpp_module/ngap_container/Makefile
+    modules/dmrpp_module/ngap_container/Makefile/unit-tests
 
     modules/dmrpp_module/build_dmrpp_h4/Makefile
     modules/dmrpp_module/get_dmrpp/Makefile
