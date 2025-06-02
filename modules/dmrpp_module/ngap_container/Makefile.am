@@ -10,7 +10,6 @@ AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(t
 -I$(top_srcdir)/http $(DAP_CFLAGS)
 
 LIBADD =
-# BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CXXFLAGS=
 AM_LDFLAGS =
@@ -25,25 +24,12 @@ libngap_la_LIBADD = $(LIBADD)
 
 NGAP_SRC = NgapOwnedContainer.cc NgapOwnedContainerStorage.cc  NgapApi.cc
 
-# NgapModule.cc NgapRequestHandler.cc
-# MemoryCache.cc NgapContainer.cc NgapContainerStorage.cc
-
 NGAP_HDR = NgapNames.h NgapOwnedContainer.h NgapOwnedContainerStorage.h \
     NgapApi.h MemoryCache.h
-
-# NgapContainer.h NgapContainerStorage.h NgapRequestHandler.h NgapModule.h
 
 # EXTRA_DIST = ngap.conf.in
 
 CLEANFILES = *~
-
-# ngap.conf
-
-# moduledir = $(sysconfdir)/bes/modules
-# module_DATA = ngap.conf
-
-# ngap.conf: ngap.conf.in $(top_builddir)/config.status
-# 	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > ngap.conf
 
 C4_DIR=./cccc
 .PHONY: cccc
