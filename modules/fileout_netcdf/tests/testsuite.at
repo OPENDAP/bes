@@ -403,6 +403,8 @@ AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/SDS_simple_comp.hdf.dap2.bescmd],
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/SDS_simple_comp.hdf.dap2dmr.bescmd], [bes.h4cf.conf])
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/sinusoid.hdf_constraint.dap2.bescmd], [bes.h4cf.conf])
 
+# Unlimited dimension with compression(direct IO is not applied)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/part_chunk_data_unlim_comp.h5.dmrpp.bescmd)
 
 #Disable direct IO tests
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/One_chunk_shuf_deflate.h5.dmrpp.bescmd], [bes.nc4.grp.disable_dio.conf])
