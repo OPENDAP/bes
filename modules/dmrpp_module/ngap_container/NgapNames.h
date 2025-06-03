@@ -63,13 +63,11 @@ constexpr static auto DMRPP_FILE_CACHE_DIR = "NGAP.DMRppFileCacheDir";
 constexpr static auto DATA_SOURCE_LOCATION = "NGAP.DataSourceLocation";
 constexpr static auto USE_OPENDAP_BUCKET = "NGAP.UseOPeNDAPBucket";
 
-#if 1
   // These are used only in NgapApiTest.cc. jhrg 9/28/23
 #define CMR_PROVIDER "provider"
 #define CMR_ENTRY_TITLE "entry_title"
 #define CMR_COLLECTION_CONCEPT_ID "collection_concept_id"
 #define CMR_GRANULE_UR "granule_ur"
-#endif
 
 constexpr static auto MODULE = "dmrpp";
 

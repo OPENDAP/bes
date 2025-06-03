@@ -76,8 +76,14 @@ class BESContainer: public BESObj {
 
     std::string d_attributes;     ///< See DefinitionStorageList, XMLDefineCommand
 
-protected:
+public:
     BESContainer() = default;
+    BESContainer(const BESContainer &) = default;
+    BESContainer(const BESContainer &&) = delete;
+    BESContainer& operator=(const BESContainer&) = default;
+    BESContainer& operator=(const BESContainer&&) = delete;
+
+    ~BESContainer() override = default;
 
     /** @brief construct a container with the given symbolic name, real name
      * and container type.
@@ -95,25 +101,15 @@ protected:
     {
     }
 
-    // TODO Delete this copy ctor if possible. This class has an odd notion of
-    //  copying. See _duplicate() that takes an object to copy to instead of
-    //  copy from. jhrg 10/18/22
-    BESContainer(const BESContainer &copy_from);
+    virtual void _duplicate(BESContainer &copy_to);
 
-    void _duplicate(BESContainer &copy_to);
-
-public:
-
-    ~BESContainer() override = default;
-
-    BESContainer& operator=(const BESContainer& other) = delete;
-
-    /** @brief pure abstract method to duplicate this instances of BESContainer
+    /**
+     * @brief pure abstract method to duplicate this instances of BESContainer
      */
     virtual BESContainer * ptr_duplicate() = 0;
 
-    /** @brief set the constraint for this container
-     *
+    /**
+     * @brief set the constraint for this container
      * @param s constraint
      */
     void set_constraint(const std::string &s)
@@ -245,7 +241,8 @@ public:
         return d_attributes;
     }
 
-    /** @brief returns the true name of this container
+    /**
+     * @brief returns the name of the resource encapsulated by this container.
      *
      * The true name of this container might be an uncompressed file name
      * from the compressed file name represented by the real name of this
@@ -254,9 +251,14 @@ public:
      * represents a WCS request. The access method would make the WCS
      * request and return the name of the resulting file.
      *
-     * @return name of file to access
+     * @return name of the file to access
      */
     virtual std::string  access() = 0;
+
+    /**
+     * @brief Release the resource encapsulated by the container.
+     * @return True if the file or other resource has been released.
+     */
     virtual bool release() = 0;
 
     void dump(std::ostream &strm) const override;

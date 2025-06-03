@@ -299,14 +299,20 @@ public:
 
         time_t now;
         time(&now);
-        stringstream ingest_time;
-        time_t then = now - 82810; // 23 hours and 10 seconds ago.
+#if 0
+         stringstream ingest_time;
+
+#endif
+        const time_t then = now - 82810; // 23 hours and 10 seconds ago.
 
         signed_url.set_ingest_time(then);
-        is_expired = NgapApi::signed_url_is_expired(signed_url);
+        is_expired = signed_url.is_expired();
+#if 0
+        //is_expired = NgapApi::signed_url_is_expired(signed_url);
+
+#endif
         CPPUNIT_ASSERT(is_expired == true);
         DBG(cerr << prolog << "END" << endl);
-
     }
 
     // Test the 'no hits' case
