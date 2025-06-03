@@ -854,8 +854,15 @@ void FONcTransform::transform_dap4_no_group() {
     
                 if (v->type() == dods_array_c) {
                     auto t_a = dynamic_cast<Array *>(v);
-                    if (t_a->get_dio_flag()) 
-                        set_constraint_var_dio_flag(t_a);
+                    if (t_a->get_dio_flag()) {
+                        bool var_has_unlim_dim = false;
+                        if (is_root_no_grp_unlimited_dim) 
+                            var_has_unlim_dim = check_var_unlimited_dimension(t_a,root_no_grp_unlimited_dimnames);
+                        if (var_has_unlim_dim)
+                            t_a->set_dio_flag(false);
+                        else 
+                            set_constraint_var_dio_flag(t_a);
+                    }
     
                 }
                 // This is a factory class call, and 'fg' is specialized for 'v'
@@ -1120,8 +1127,16 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
     
                 if (v->type() == dods_array_c) {
                     auto t_a = dynamic_cast<Array *>(v);
-                    if (t_a->get_dio_flag()) 
+                    if (t_a->get_dio_flag()) { 
+                        bool var_has_unlim_dim = false;
+                        var_has_unlim_dim = check_var_unlimited_dimension(t_a,unlimited_dimnames);
+                        if (var_has_unlim_dim)
+                            t_a->set_dio_flag(false);
+                        else 
+                            set_constraint_var_dio_flag(t_a);
+ 
                         set_constraint_var_dio_flag(t_a);
+                    }
     
                 }
     
@@ -1617,6 +1632,25 @@ bool FONcTransform::obtain_unlimited_dimension_info(libdap::D4Group *d4_grp, vec
     }
 
     return ret_value; 
+}
+
+bool FONcTransform::check_var_unlimited_dimension(libdap::Array *t_a, const vector<string> &unlimited_dimnames) {
+
+    bool ret_value = false;
+    for (const auto &und:unlimited_dimnames) {
+        Array::Dim_iter dim_i = t_a->dim_begin();
+        Array::Dim_iter dim_e = t_a->dim_end();
+        for (; dim_i != dim_e; dim_i++) {
+            if ((*dim_i).name == und) {
+                ret_value = true;
+                break;
+            }
+        }
+        if (ret_value)
+            break;
+    }
+    return ret_value;
+ 
 }
 
 void FONcTransform::gen_nc4_enum_type(libdap::D4Group *d4_grp,int nc4_grp_id) {
