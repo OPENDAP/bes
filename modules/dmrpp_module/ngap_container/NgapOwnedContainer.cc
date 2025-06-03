@@ -21,12 +21,12 @@
 //
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
-// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+// Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 // Authors:
-//      ndp       Nathan Potter <ndp@opendap.org>
-//      jhrg      James Gallagher <jgallagher@opendap.org>
+//      ndp Nathan Potter <ndp@opendap.org>
+//      jhrg James Gallagher <jgallagher@opendap.org>
 
 #include "config.h"
 
@@ -50,7 +50,6 @@
 #include "NgapApi.h"
 #include "NgapNames.h"
 
-#define MODULE "dmrpp"
 #define prolog std::string("NgapOwnedContainer::").append(__func__).append("() - ")
 // CACHE_LOG is defined separately from INFO_LOG so that we can turn it off easily. jhrg 11/19/23
 #define CACHE_LOG(x) INFO_LOG(x)
@@ -87,8 +86,8 @@ string NgapOwnedContainer::d_dmrpp_file_cache_dir = "/tmp/hyrax_dmrpp_cache";
 FileCache NgapOwnedContainer::d_dmrpp_file_cache;
 
 /**
- * @brief Creates an instance of NgapOwnedContainer with symbolic name and real
- * name, which is the remote request.
+ * @brief Creates an instance of NgapOwnedContainer with a symbolic name
+ * and a real name.
  *
  * The real_name is the remote request URL.
  *
