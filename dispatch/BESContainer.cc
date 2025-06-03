@@ -35,7 +35,8 @@
 using std::endl;
 using std::ostream;
 
-/** @brief make a copy of the passed container
+#if 0
+  /** @brief make a copy of the passed container
  *
  * @param copy_from The container to copy
  */
@@ -46,6 +47,8 @@ BESContainer::BESContainer(const BESContainer &copy_from) :
     d_dap4_function(copy_from.d_dap4_function), d_attributes(copy_from.d_attributes)
 {
 }
+#endif
+
 
 /** @brief duplicate this instance into the passed container
  *

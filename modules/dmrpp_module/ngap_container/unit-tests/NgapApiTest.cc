@@ -33,9 +33,6 @@
 
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
-#include "rapidjson/prettywriter.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/filereadstream.h"
 
 #include "BESError.h"
 #include "BESDebug.h"
@@ -43,13 +40,12 @@
 #include "BESCatalogList.h"
 #include "BESNotFoundError.h"
 #include "TheBESKeys.h"
-#include "HttpUtils.h"
-#include "HttpNames.h"
 #include "url_impl.h"
 #include "RemoteResource.h"
 
 #include "NgapApi.h"
 #include "NgapNames.h"
+
 
 #include "test_config.h"
 #include "run_tests_cppunit.h"
@@ -64,12 +60,12 @@ namespace ngap {
 
 class NgapApiTest: public CppUnit::TestFixture {
 private:
-    void show_file(string filename)
+    static void show_file(const string &filename)
     {
-        ifstream t(filename.c_str());
+        ifstream t(filename);
 
         if (t.is_open()) {
-            string file_content((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
+            const string file_content((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
             t.close();
             cout << endl << "##################################################################" << endl;
             cout << "file: " << filename << endl;
@@ -84,7 +80,7 @@ public:
     NgapApiTest() = default;
 
     // Called at the end of the test
-    ~NgapApiTest() = default;
+    ~NgapApiTest() override = default;
 
     // Called before each test
     void setUp() override
@@ -101,20 +97,20 @@ public:
         DBG2(cerr << "setUp() - END" << endl);
     }
 
-    void show_vector(vector<string> v){
+   static  void show_vector(vector<string> &v) {
         cerr << "show_vector(): Found " << v.size() << " elements." << endl;
         // vector<string>::iterator it = v.begin();
-        for(size_t i=0;  i < v.size(); i++){
+        for(size_t i=0;  i < v.size(); i++) {
             cerr << "show_vector:    v["<< i << "]: " << v[i] << endl;
         }
     }
 
-    void compare_results(const string &granule_name, const string &data_access_url, const string &expected_data_access_url){
+    const void compare_results(const string &granule_name, const string &data_access_url, const string &expected_data_access_url){
         if (debug) cerr << prolog << "TEST: Is the URL longer than the granule name? " << endl;
         CPPUNIT_ASSERT (data_access_url.size() > granule_name.size() );
 
         if (debug) cerr << prolog << "TEST: Does the URL end with the granule name? " << endl;
-        bool endsWithGranuleName = data_access_url.substr(data_access_url.size()-granule_name.size(), granule_name.size()) == granule_name;
+        const bool endsWithGranuleName = data_access_url.substr(data_access_url.size()-granule_name.size(), granule_name.size()) == granule_name;
         CPPUNIT_ASSERT( endsWithGranuleName == true );
 
         if (debug) cerr << prolog << "TEST: Does the returned URL match the expected URL? " << endl;
@@ -128,7 +124,7 @@ public:
      * This test exercises the legacy 3 component restified path model
      * /providers/<provider_id>/collections/<entry_title>/granules/<granule_ur>
      */
-    void resty_path_to_cmr_query_test_01() {
+    static void resty_path_to_cmr_query_test_01() {
         DBG(cerr << prolog << "BEGIN" << endl);
 
         string resty_path("providers/POCLOUD"
@@ -149,7 +145,7 @@ public:
             DBG(cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl);
             CPPUNIT_ASSERT( cmr_query_url == expected_cmr_url );
         }
-        catch(BESError e){
+        catch(const BESError &e){
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << e.get_verbose_message() << endl;
             CPPUNIT_FAIL(msg.str());
@@ -181,7 +177,7 @@ public:
             DBG(cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl);
             CPPUNIT_ASSERT( cmr_query_url == expected_cmr_url );
         }
-        catch(BESError e){
+        catch(const BESError &e){
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << e.get_verbose_message() << endl;
             CPPUNIT_FAIL(msg.str());
@@ -212,7 +208,7 @@ public:
             DBG(cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl);
             CPPUNIT_ASSERT( cmr_query_url == expected_cmr_url );
         }
-        catch(BESError e){
+        catch(const BESError &e){
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << e.get_verbose_message() << endl;
             CPPUNIT_FAIL(msg.str());
@@ -279,7 +275,10 @@ public:
     void signed_url_is_expired_test(){
         DBG(cerr << prolog << "BEGIN" << endl);
         string signed_url_str;
-        std::map<std::string,std::string> url_info;
+#if 0
+         std::map<std::string,std::string> url_info;
+
+#endif
         bool is_expired;
 
         signed_url_str = "https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
@@ -300,14 +299,20 @@ public:
 
         time_t now;
         time(&now);
-        stringstream ingest_time;
-        time_t then = now - 82810; // 23 hours and 10 seconds ago.
+#if 0
+         stringstream ingest_time;
+
+#endif
+        const time_t then = now - 82810; // 23 hours and 10 seconds ago.
 
         signed_url.set_ingest_time(then);
-        is_expired = NgapApi::signed_url_is_expired(signed_url);
+        is_expired = signed_url.is_expired();
+#if 0
+        //is_expired = NgapApi::signed_url_is_expired(signed_url);
+
+#endif
         CPPUNIT_ASSERT(is_expired == true);
         DBG(cerr << prolog << "END" << endl);
-
     }
 
     // Test the 'no hits' case

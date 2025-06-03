@@ -23,7 +23,6 @@
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
-
 #ifndef NgapOwnedContainer_h_
 #define NgapOwnedContainer_h_ 1
 
@@ -34,7 +33,6 @@
 #include "BESContainer.h"
 #include "MemoryCache.h"
 #include "FileCache.h"
-
 
 namespace http {
 class RemoteResource;
@@ -89,7 +87,7 @@ class NgapOwnedContainer: public BESContainer {
 
     bool get_dmrpp_from_cache_or_remote_source(std::string &dmrpp_string) const;
 
-    // I made these static so that they will be in the class' namespace but still
+    // I made these statics so that they will be in the class' namespace but still
     // easy to test in the unit tests. jhrg 4/29/24
     static bool file_to_string(int fd, std::string &content);
 
@@ -108,21 +106,21 @@ class NgapOwnedContainer: public BESContainer {
 
     friend class NgapOwnedContainerTest;
 
-protected:
-    void _duplicate(NgapOwnedContainer &copy_to) {
-        copy_to.d_ngap_path = d_ngap_path;
-        BESContainer::_duplicate(copy_to);
-    }
-
 public:
     NgapOwnedContainer() = default;
-    NgapOwnedContainer(const NgapOwnedContainer &copy_from) = delete;
+    NgapOwnedContainer(const NgapOwnedContainer &copy_from) = default;
     NgapOwnedContainer(NgapOwnedContainer &&move_from) = delete;
-    NgapOwnedContainer &operator=(const NgapOwnedContainer &rhs) = delete;
+    NgapOwnedContainer &operator=(const NgapOwnedContainer &rhs) = default;
     NgapOwnedContainer &operator=(NgapOwnedContainer &&rhs) = delete;
     ~NgapOwnedContainer() override = default;
 
     NgapOwnedContainer(const std::string &sym_name, const std::string &real_name, const std::string &);
+
+    void _duplicate(BESContainer &copy_to) override {
+        auto dest = dynamic_cast<NgapOwnedContainer &>(copy_to);
+        dest.d_ngap_path = d_ngap_path;
+        BESContainer::_duplicate(dest);
+    }
 
     BESContainer *ptr_duplicate() override {
         auto container = std::make_unique<NgapOwnedContainer>();

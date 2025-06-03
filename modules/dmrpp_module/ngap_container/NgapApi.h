@@ -62,7 +62,9 @@ public:
 
     static std::string convert_ngap_resty_path_to_data_access_url(const std::string &restified_path);
 
-    static bool signed_url_is_expired(const http::url &signed_url) ;
+#if 0
+      static bool signed_url_is_expired(const http::url &signed_url) ;
+#endif
 };
 
 } // namespace ngap

@@ -59,8 +59,8 @@ const unsigned int REFRESH_THRESHOLD = 3600; // An hour
 string NgapApi::get_cmr_search_endpoint_url() {
     static string cmr_search_endpoint_url;
     if (cmr_search_endpoint_url.empty()) {
-        string cmr_hostname = TheBESKeys::TheKeys()->read_string_key(NGAP_CMR_HOSTNAME_KEY, DEFAULT_CMR_ENDPOINT_URL);
-        string cmr_search_endpoint_path = TheBESKeys::TheKeys()->read_string_key(NGAP_CMR_SEARCH_ENDPOINT_PATH_KEY,
+        const string cmr_hostname = TheBESKeys::read_string_key(NGAP_CMR_HOSTNAME_KEY, DEFAULT_CMR_ENDPOINT_URL);
+        const string cmr_search_endpoint_path = TheBESKeys::read_string_key(NGAP_CMR_SEARCH_ENDPOINT_PATH_KEY,
                                                                                  DEFAULT_CMR_SEARCH_ENDPOINT_PATH);
         cmr_search_endpoint_url = BESUtil::assemblePath(cmr_hostname, cmr_search_endpoint_path);
     }
@@ -140,13 +140,13 @@ string NgapApi::build_cmr_query_url_old_rpath_format(const string &restified_pat
     string collection = r_path.substr(collection_index, granule_index - collection_index);
     granule_index += string(NGAP_GRANULES_KEY).size();
 
-    // The granule value is the path terminus so it's every thing after the key
+    // The granule value is the path terminus, so it's every thing after the key
     string granule = r_path.substr(granule_index);
 
     // Build the CMR query URL for the dataset
     string cmr_url = get_cmr_search_endpoint_url() + "?";
     {
-        // This easy handle is only created so we can use the curl_easy_escape() on the token values
+        // This easy-handle is only created so we can use the curl_easy_escape() on the token values
         CURL *ceh = curl_easy_init();
         char *esc_url_content;
 
@@ -262,7 +262,7 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
     // Build the CMR query URL for the dataset
     string cmr_url = get_cmr_search_endpoint_url() + "?";
     {
-        // This easy handle is only created so we can use the curl_easy_escape() on the token values
+        // This easy-handle is only created so we can use the curl_easy_escape() on the token values
         CURL *ceh = curl_easy_init();
         char *esc_url_content;
 
@@ -421,7 +421,8 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(const string &restifi
     return data_access_url;
 }
 
-/**
+#if 0
+  /**
  * @brief Has the signed S3 URL expired?
  * If neither the CloudFront Expires header nor the AWS Expires header are present, then
  * this function returns true.
@@ -503,6 +504,6 @@ bool NgapApi::signed_url_is_expired(const http::url &signed_url) {
 
     return is_expired;
 }
-
+#endif
 } // namespace ngap
 
