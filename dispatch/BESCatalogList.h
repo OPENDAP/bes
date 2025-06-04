@@ -98,13 +98,17 @@ private:
 
     friend class BESCatalogListTest;
 
+    BESCatalogList();
+
 public:
     typedef std::map<std::string, BESCatalog *>::iterator catalog_iter;
     typedef std::map<std::string, BESCatalog *>::const_iterator catalog_citer;
 
+    BESCatalogList(const BESCatalogList&) = delete;
+    BESCatalogList& operator=(const BESCatalogList&) = delete;
+
     static BESCatalogList * TheCatalogList();
 
-    BESCatalogList();
     virtual ~BESCatalogList();
 
     /// @brief The number of non-default catalogs
