@@ -106,21 +106,19 @@ class NgapOwnedContainer: public BESContainer {
 
     friend class NgapOwnedContainerTest;
 
+protected:
+    void _duplicate(BESContainer &dest) override;
+
 public:
     NgapOwnedContainer() = default;
     NgapOwnedContainer(const NgapOwnedContainer &copy_from) = default;
     NgapOwnedContainer(NgapOwnedContainer &&move_from) = default;
     NgapOwnedContainer &operator=(const NgapOwnedContainer &rhs) = default;
     NgapOwnedContainer &operator=(NgapOwnedContainer &&rhs) = default;
+
     ~NgapOwnedContainer() override = default;
 
     NgapOwnedContainer(const std::string &sym_name, const std::string &real_name, const std::string &);
-
-    void _duplicate(BESContainer &copy_to) override {
-        auto dest = dynamic_cast<NgapOwnedContainer &>(copy_to);
-        dest.d_ngap_path = d_ngap_path;
-        BESContainer::_duplicate(dest);
-    }
 
     BESContainer *ptr_duplicate() override {
         auto container = std::make_unique<NgapOwnedContainer>();

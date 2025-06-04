@@ -152,6 +152,16 @@ NgapOwnedContainer::NgapOwnedContainer(const string &sym_name, const string &rea
     }
 }
 
+void NgapOwnedContainer::_duplicate(BESContainer &dest) {
+    BESContainer::_duplicate(dest);
+    auto ngap_dset = dynamic_cast<NgapOwnedContainer*>(&dest);
+    if (!ngap_dset) {
+        throw BESInternalError("Expected a NgapOwnedContainer.", __FILE__, __LINE__);
+    }
+    ngap_dset->d_ngap_path = d_ngap_path;
+    // BESContainer::_duplicate(dest);
+}
+
 /**
  * @brief Read data from a file descriptor into a string.
  * @param fd The file descriptor to read from.

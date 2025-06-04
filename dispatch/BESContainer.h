@@ -76,12 +76,17 @@ class BESContainer: public BESObj {
 
     std::string d_attributes;     ///< See DefinitionStorageList, XMLDefineCommand
 
+protected:
+    // This is an odd bit of code. The argument is copied, which is the reverse
+    // of a copy constructor, where the argument is the source for the copy operation.
+    virtual void _duplicate(BESContainer &copy_to);
+
 public:
     BESContainer() = default;
     BESContainer(const BESContainer &) = default;
-    BESContainer(const BESContainer &&) = default;
+    BESContainer(BESContainer &&) = default;
     BESContainer& operator=(const BESContainer&) = default;
-    BESContainer& operator=(const BESContainer&&) = default;
+    BESContainer& operator=(BESContainer&&) = default;
 
     ~BESContainer() override = default;
 
@@ -100,8 +105,6 @@ public:
         d_symbolic_name(std::move(sym_name)), d_real_name(std::move(real_name)), d_container_type(std::move(type))
     {
     }
-
-    virtual void _duplicate(BESContainer &copy_to);
 
     /**
      * @brief pure abstract method to duplicate this instances of BESContainer
