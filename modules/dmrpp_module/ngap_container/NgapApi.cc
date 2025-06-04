@@ -48,7 +48,10 @@ using namespace std;
 
 namespace ngap {
 
-const unsigned int REFRESH_THRESHOLD = 3600; // An hour
+#if 0
+  const unsigned int REFRESH_THRESHOLD = 3600; // An hour
+#endif
+
 
 /**
  * @brief Get the CMR search endpoint URL using information from the BES Keys.

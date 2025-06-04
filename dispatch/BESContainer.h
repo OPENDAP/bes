@@ -79,9 +79,9 @@ class BESContainer: public BESObj {
 public:
     BESContainer() = default;
     BESContainer(const BESContainer &) = default;
-    BESContainer(const BESContainer &&) = delete;
+    BESContainer(const BESContainer &&) = default;
     BESContainer& operator=(const BESContainer&) = default;
-    BESContainer& operator=(const BESContainer&&) = delete;
+    BESContainer& operator=(const BESContainer&&) = default;
 
     ~BESContainer() override = default;
 

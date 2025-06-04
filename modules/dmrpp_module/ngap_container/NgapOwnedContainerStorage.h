@@ -46,8 +46,14 @@ namespace ngap {
  */
 class NgapOwnedContainerStorage: public BESContainerStorageVolatile {
 public:
-    explicit NgapOwnedContainerStorage(const std::string &n) : BESContainerStorageVolatile(n) {}
+    // Inherit all the constructors of the base class. jhrg 6/4/25
+    using BESContainerStorageVolatile::BESContainerStorageVolatile;
+#if 0
+      explicit NgapOwnedContainerStorage(const std::string &n) : BESContainerStorageVolatile(n) {}
+#endif
+
     ~NgapOwnedContainerStorage() override = default;
+
 
     void add_container(const std::string &s_name, const std::string &r_name, const std::string &type) override;
 

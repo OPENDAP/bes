@@ -109,9 +109,9 @@ class NgapOwnedContainer: public BESContainer {
 public:
     NgapOwnedContainer() = default;
     NgapOwnedContainer(const NgapOwnedContainer &copy_from) = default;
-    NgapOwnedContainer(NgapOwnedContainer &&move_from) = delete;
+    NgapOwnedContainer(NgapOwnedContainer &&move_from) = default;
     NgapOwnedContainer &operator=(const NgapOwnedContainer &rhs) = default;
-    NgapOwnedContainer &operator=(NgapOwnedContainer &&rhs) = delete;
+    NgapOwnedContainer &operator=(NgapOwnedContainer &&rhs) = default;
     ~NgapOwnedContainer() override = default;
 
     NgapOwnedContainer(const std::string &sym_name, const std::string &real_name, const std::string &);
