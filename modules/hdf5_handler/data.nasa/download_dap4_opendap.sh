@@ -53,6 +53,8 @@ $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/PODAAC/20220930
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/PODAAC/20220930120000-REMSS-L4_GHRSST-SSTfnd-MW_OI-GLOB-v02.0-fv05.0.nc.h5.dmrpp
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/PODAAC/20220930120000-REMSS-L4_GHRSST-SSTfnd-MW_OI-GLOB-v02.0-fv05.0.nc.h5.dio.dmrpp
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/PODAAC/20220930120000-REMSS-L4_GHRSST-SSTfnd-MW_OI-GLOB-v02.0-fv05.0.nc.h5.unlimited.dmrpp
+$GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/PODAAC/20120201000000-STAR-L3U_GHRSST-SSTsubskin-VIIRS_NPP-ACSPO_V2.80-v02.0-fv01.0.nc
+$GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/PODAAC/20120201000000-STAR-L3U_GHRSST-SSTsubskin-VIIRS_NPP-ACSPO_V2.80-v02.0-fv01.0.nc.dmrpp
 
 
 #GESDISC GPM
