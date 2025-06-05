@@ -1,7 +1,3 @@
-BES.Include=dap.conf
-
-BES.modules+=ngap
-BES.module.ngap=@bes_modules_dir@/libngap_module.so
 
 # Use this CMR endpoint URL for CMR queries.
 # NGAP.cmr_host_url=https://cmr.uat.earthdata.nasa.gov

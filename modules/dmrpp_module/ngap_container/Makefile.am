@@ -27,9 +27,15 @@ NGAP_SRC = NgapOwnedContainer.cc NgapOwnedContainerStorage.cc  NgapApi.cc
 NGAP_HDR = NgapNames.h NgapOwnedContainer.h NgapOwnedContainerStorage.h \
     NgapApi.h MemoryCache.h
 
-# EXTRA_DIST = ngap.conf.in
+EXTRA_DIST = ngap.conf.in
 
-CLEANFILES = *~
+moduledir = $(sysconfdir)/bes/modules
+module_DATA = ngap.conf
+
+%.conf: %.conf.in $(top_builddir)/config.status
+	sed -e "s%[@]bes_modules_dir[@]%${lib_besdir}%" $< > $@
+
+CLEANFILES = *~ *.gcda *.gcno *.gcov ngap.conf
 
 C4_DIR=./cccc
 .PHONY: cccc
