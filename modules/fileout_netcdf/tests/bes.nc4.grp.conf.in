@@ -85,6 +85,7 @@ FONc.ClassicModel=false
 
 H5.EnableCF=false
 H5.DefaultHandleDimension=true
+H5.DefaultDAP4AddUnlimitedDimension=true
 
 NC.PromoteByteToShort=true
 

@@ -284,6 +284,7 @@ H5.CacheEntries=100
 #H5.CachePurgeLevel=0.2
 #
 H5.DefaultHandleDimension=true
+H5.DefaultDAP4AddUnlimitedDimension=true
 
 # This defines a dynamjc configuration for all files beginning with
 # the string "dynamic_" and ending in ".h5" When this is encountered

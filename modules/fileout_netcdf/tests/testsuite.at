@@ -363,6 +363,12 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_unlimited_0.h5.dmrpp.
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_group_unlimited.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_group_unlimited_pure.h5.dmrpp.bescmd)
 
+#unlimited dimension_nostored
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/nc4_group_unlimited_nostored.h5.bescmd], [bes.nc4.grp.reduce_dim.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/nc4_group_unlimited_pure_nostored.h5.bescmd], [bes.nc4.grp.reduce_dim.conf])
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_group_unlimited.h5.not_stored.dmrpp.bescmd)
+
+
 # HDF4 dmrpp
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/vg_hl_test.hdf.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/SDS_simple_comp.hdf.dmrpp.bescmd)
