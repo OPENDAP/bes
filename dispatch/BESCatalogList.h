@@ -101,8 +101,8 @@ private:
     BESCatalogList();
 
 public:
-    typedef std::map<std::string, BESCatalog *>::iterator catalog_iter;
-    typedef std::map<std::string, BESCatalog *>::const_iterator catalog_citer;
+    using catalog_iter = std::map<std::string, BESCatalog *>::iterator;
+    using catalog_citer = std::map<std::string, BESCatalog *>::const_iterator;
 
     BESCatalogList(const BESCatalogList&) = delete;
     BESCatalogList& operator=(const BESCatalogList&) = delete;
