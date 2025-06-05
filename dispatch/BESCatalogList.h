@@ -109,7 +109,7 @@ public:
 
     static BESCatalogList * TheCatalogList();
 
-    virtual ~BESCatalogList();
+    ~BESCatalogList() override = default;
 
     /// @brief The number of non-default catalogs
     /// @todo Change this to include the default!

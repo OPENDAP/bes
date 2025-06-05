@@ -89,10 +89,10 @@ public:
             DBG(cerr << "bclut_test() - TheCatalogList()->num_catalogs(): " << numCat << endl);
             CPPUNIT_ASSERT(numCat == 1);
 
-            DBG(cerr << "bclut_test() - Calling  BESCatalogList::delete_instance()" << endl);
-            BESCatalogList::delete_instance();
-            DBG(cerr << "bclut_test() - Calling  BESCatalogList::initialize_instance()" << endl);
-            BESCatalogList::initialize_instance();
+//            DBG(cerr << "bclut_test() - Calling  BESCatalogList::delete_instance()" << endl);
+//            BESCatalogList::delete_instance();
+//            DBG(cerr << "bclut_test() - Calling  BESCatalogList::initialize_instance()" << endl);
+//            BESCatalogList::initialize_instance();
 
             defcat = BESCatalogList::TheCatalogList()->default_catalog_name();
             DBG(cerr << "bclut_test() - Default catalog is '" << defcat << "'" << endl);
