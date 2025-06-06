@@ -3,17 +3,18 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir)
 
-noinst_DATA = bes.conf
+noinst_DATA = bes.conf bes_serial.conf bes-return-as-dmrpp.conf
 
-CLEANFILES = bes.conf bes.log bes_serial.conf
+CLEANFILES = bes.conf bes.log bes_serial.conf bes-return-as-dmrpp.conf
 
 # Parallel make clean fail. jhrg 4/13/22 $(TESTSUITE) $(TESTSUITE_S3) $(srcdir)/package.m4
 
-EXTRA_DIST = contiguous chunked compact new_types s3 fill_value deflate_twice string_arrays hdf4 hdf4_build_dmrpp check_dmrpp merge_dmrpp\
-$(TESTSUITE) $(TESTSUITE).at $(TESTSUITE_S3) $(TESTSUITE_S3).at $(TESTSUITE_DMRPP_BUILDER) \
-$(TESTSUITE_DMRPP_BUILDER).at atlocal.in bes.conf.in bes_serial.conf.in $(srcdir)/package.m4 \
-multi_input_tests.m4 $(TESTSUITE_DMRPP_BUILDER_H4) $(TESTSUITE_DMRPP_BUILDER_H4).at $(TESTSUITE_CHECK_DMRPP) $(TESTSUITE_CHECK_DMRPP).at \
-$(TESTSUITE_MERGE_DMRPP) $(TESTSUITE_MERGE_DMRPP).at
+EXTRA_DIST = contiguous chunked compact new_types s3 fill_value deflate_twice string_arrays hdf4 hdf4_build_dmrpp \
+    check_dmrpp merge_dmrpp return_as_dmrpp $(TESTSUITE) $(TESTSUITE).at $(TESTSUITE_S3) $(TESTSUITE_S3).at \
+    $(TESTSUITE_DMRPP_BUILDER) $(TESTSUITE_DMRPP_BUILDER).at $(TESTSUITE_DMRPP_BUILDER_H4) \
+    $(TESTSUITE_DMRPP_BUILDER_H4).at $(TESTSUITE_CHECK_DMRPP)  $(TESTSUITE_CHECK_DMRPP).at \
+    $(TESTSUITE_MERGE_DMRPP) $(TESTSUITE_MERGE_DMRPP).at $(TESTSUITE_RA_DMRPP) $(TESTSUITE_RA_DMRPP).at \
+    atlocal.in bes.conf.in bes_serial.conf.in bes-return-as-dmrpp.conf.in package.m4 multi_input_tests.m4
 
 DISTCLEANFILES = atconfig
 
