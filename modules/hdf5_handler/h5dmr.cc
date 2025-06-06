@@ -43,6 +43,7 @@
 
 #include <BESDebug.h>
 
+#include "HDF5RequestHandler.h"
 #include "hdf5_handler.h"
 #include "HDF5Int32.h"
 #include "HDF5UInt32.h"
@@ -690,7 +691,7 @@ read_objects_base_type(D4Group * d4_grp, hid_t pid, const string & varname, cons
         dimnames_size = (int) (dt_inst.dimnames.size());
 
         // Here we need to add the unlimited dimension(if any) info if dimension scale dimension names are present.
-        if (dt_inst.unlimited_dims.empty() == false && dimnames_size == dt_inst.ndims)
+        if (dt_inst.unlimited_dims.empty() == false && dimnames_size == dt_inst.ndims && HDF5RequestHandler::get_default_add_unlimited_dimension_dap4()==true)
             add_unlimited_dimension_info(d4_grp);
         dt_inst.unlimited_dims.clear();
 

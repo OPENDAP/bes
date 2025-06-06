@@ -1,0 +1,36 @@
+netcdf test {
+dimensions:
+	dim1 = 2 ;
+variables:
+	int dim1(dim1) ;
+	float d1(dim1) ;
+
+// global attributes:
+		:build_dmrpp_metadata.created = "removed date-time" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.21.1" ;
+		:build_dmrpp_metadata.bes = "3.21.1" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -f /Users/myang6/work/opendap/hyrax-1771/bes/modules/fileout_netcdf/data/nc4_group_unlimited.h5 -r nc4_group_unlimited.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M" ;
+		:history = "removed date-timex nc4_group_unlimited_not_stored.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"nc4_group_unlimited_not_stored.h5.dmrpp\"}]}]" ;
+data:
+
+ dim1 = 2, 4 ;
+
+ d1 = 2, 4 ;
+
+group: g1 {
+  dimensions:
+  	dim2 = 3 ;
+  variables:
+  	int dim2(dim2) ;
+  	float d2(dim1, dim2) ;
+  data:
+
+   dim2 = 10, 20, 30 ;
+
+   d2 =
+  10, 20, 30,
+  40, 50, 60 ;
+  } // group g1
+}

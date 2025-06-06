@@ -154,6 +154,7 @@ bool HDF5RequestHandler::_fillvalue_check             = true;
 bool HDF5RequestHandler::_check_ignore_obj            = false;
 bool HDF5RequestHandler::_flatten_coor_attr           = true;
 bool HDF5RequestHandler::_default_handle_dimension    = true; //Ignored when _usecf=true.
+bool HDF5RequestHandler::_add_unlimited_dimension_dap4   = false; //Ignored when _usecf=true.
 bool HDF5RequestHandler::_eos5_rm_convention_attr_path = true;
 bool HDF5RequestHandler::_dmr_long_int                = true;
 bool HDF5RequestHandler::_no_zero_size_fullnameattr   = false;
@@ -270,6 +271,12 @@ void HDF5RequestHandler::load_config()
     if (has_key)
         _default_handle_dimension  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.DefaultHandleDimension: " << (_default_handle_dimension?"true":"false") << endl);
+
+    key_value = obtain_beskeys_info("H5.DefaultDAP4AddUnlimitedDimension",has_key);
+    if (has_key)
+        _add_unlimited_dimension_dap4  = key_value;
+    BESDEBUG(HDF5_NAME, prolog << "H5.DefaultDAP4AddUnlimitedDimension: " << (_add_unlimited_dimension_dap4?"true":"false") << endl);
+
 
     // The following keys are only effective when EnableCF is true or unset(EnableCF is true if users don't set the key).
     key_value = obtain_beskeys_info("H5.EnablePassFileID",has_key);
