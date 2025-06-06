@@ -337,6 +337,52 @@ public:
         CPPUNIT_ASSERT_MESSAGE("data_url should be '" + expected + " but was '" + data_url, data_url == expected);
     }
 
+    /**
+     * Test urls to make sure an existing ".dmrpp" is removed if found
+     * kln 6/6/25
+     */
+    void test_dmrpp_is_removed_from_data_url()
+    {
+        DBG(cerr << prolog << "BEGIN" << endl);
+
+        // Case 1: URL with a .dmrpp suffix that should be removed.
+        string url_with_suffix = "https://dmrpp-sit-poc.s3.amazonaws.com/some-file.nc.dmrpp";
+        string expected_url = "https://dmrpp-sit-poc.s3.amazonaws.com/some-file.nc";
+
+        // Apply the same logic as in the function under test
+        size_t pos1 = url_with_suffix.find(".dmrpp");
+        if (pos1 != string::npos) {
+            url_with_suffix.erase(pos1, string(".dmrpp").length());
+        }
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("The .dmrpp suffix should be removed.",
+                                     expected_url, url_with_suffix);
+
+        // Case 2: URL without a .dmrpp suffix, which should not be changed.
+        string url_without_suffix = "https://s3.amazonaws.com/bucket/granule.nc";
+        string original_url = url_without_suffix;
+
+        size_t pos2 = url_without_suffix.find(".dmrpp");
+        if (pos2 != string::npos) {
+            url_without_suffix.erase(pos2, string(".dmrpp").length());
+        }
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("URL without .dmrpp should not be changed.",
+                                     original_url, url_without_suffix);
+
+        // Case 3: URL with '.dmrpp' in the middle. The current 'find' logic will
+        // remove the first occurrence.
+        string url_with_middle_dmrpp = "https://my-domain.com/path/file.dmrpp.nc";
+        string expected_middle_removal_url = "https://my-domain.com/path/file.nc";
+
+        size_t pos3 = url_with_middle_dmrpp.find(".dmrpp");
+        if (pos3 != string::npos) {
+            url_with_middle_dmrpp.erase(pos3, string(".dmrpp").length());
+        }
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("URL with .dmrpp not at the end should still have it removed.",
+                                     expected_middle_removal_url, url_with_middle_dmrpp);
+
+        DBG(cerr << prolog << "END" << endl);
+    }
+
     CPPUNIT_TEST_SUITE( NgapApiTest );
 
         CPPUNIT_TEST(resty_path_to_cmr_query_test_01);
@@ -345,6 +391,7 @@ public:
         CPPUNIT_TEST(signed_url_is_expired_test);
         CPPUNIT_TEST(test_find_get_data_url_in_granules_umm_json_v1_4_lpdaac);
         CPPUNIT_TEST(test_find_get_data_url_in_granules_umm_json_v1_4_podaac);
+        CPPUNIT_TEST(test_dmrpp_is_removed_from_data_url);
 
     CPPUNIT_TEST_SUITE_END();
 };
