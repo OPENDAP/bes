@@ -174,9 +174,9 @@ BESDapFunctionResponseCache::get_instance(const string &cache_dir, const string 
                     "Cache is DISABLED"<< endl);
            }
             else {
-    #ifdef HAVE_ATEXIT
-                atexit(delete_instance);
-    #endif
+//    #ifdef HAVE_ATEXIT // SBL - SAFE TO DELETE?
+//                atexit(delete_instance);
+//    #endif
                 BESDEBUG("cache", "BESDapFunctionResponseCache::"<<__func__ << "() - " <<
                     "Cache is ENABLED"<< endl);
            }
@@ -205,9 +205,9 @@ BESDapFunctionResponseCache::get_instance()
                     "Cache is DISABLED"<< endl);
            }
             else {
-    #ifdef HAVE_ATEXIT
-                atexit(delete_instance);
-    #endif
+//    #ifdef HAVE_ATEXIT // SBL - SAFE TO DELETE?
+//                atexit(delete_instance);
+//    #endif
                 BESDEBUG("cache", "BESDapFunctionResponseCache::"<<__func__ << "() - " <<
                     "Cache is ENABLED"<< endl);
            }
