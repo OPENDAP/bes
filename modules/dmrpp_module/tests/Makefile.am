@@ -81,7 +81,7 @@ clean-local:
 	test ! -f '$(TESTSUITE_CHECK_DMRPP)' || $(SHELL) '$(TESTSUITE_CHECK_DMRPP)' --clean
 	test ! -f '$(TESTSUITE_MERGE_DMRPP)' || $(SHELL) '$(TESTSUITE_MERGE_DMRPP)' --clean
 	test ! -f '$(TESTSUITE_S3)' || $(SHELL) '$(TESTSUITE_S3)' --clean
-	
+
 %: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 

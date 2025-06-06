@@ -64,7 +64,11 @@ ReturnAsDmrppTransmitter::ReturnAsDmrppTransmitter() {
 void ReturnAsDmrppTransmitter::send_dmrpp(BESResponseObject *, BESDataHandlerInterface &dhi) {
     const auto container = dynamic_cast<NgapOwnedContainer *>(dhi.containers.front());
     if (!container) throw BESInternalFatalError("expected NgapOwnedContainer", __FILE__, __LINE__);
-    const auto dmrpp = container->access();
+    auto dmrpp = container->access();
+
+    if (!dmrpp.empty() && dmrpp.back() == '\0') {
+        dmrpp.pop_back();
+    }
 
     auto &strm = dhi.get_output_stream();
     strm << dmrpp << flush;
