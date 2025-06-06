@@ -2057,7 +2057,7 @@ void DmrppArray::read_buffer_chunks()
     // Prepare buffer size.
     unsigned long long max_buffer_end_position = 0;
 
-    // For highly compressed chunks, we need to make sure the buffer_size is not too big to exceed the file size.
+    // For highly compressed chunks, we need to make sure the buffer_size is not too big because it may exceed the file size.
     // For this variable we also need to find the maximum value of the end position of all the chunks.
     // Here we try to loop through all the needed chunks for the constraint case.
     bool first_needed_chunk = true;
@@ -2072,9 +2072,15 @@ void DmrppArray::read_buffer_chunks()
                 first_needed_chunk_size = chunk->get_size();
                 first_needed_chunk = false;
             }
-            unsigned long long temp_max_buffer_end_position= chunk->get_size() + chunk->get_offset();
-            if(max_buffer_end_position < temp_max_buffer_end_position)
-                max_buffer_end_position = temp_max_buffer_end_position;
+            // We may encounter the filled chunks. Since those chunks will be handled separately.
+            // when considering max_buffer_end_position, we should not consider them since
+            // the chunk size may be so big that it may  make the buffer exceed the file size.
+            // The offset of filled chunk is 0.
+            if (chunk->get_offset()!=0) {
+                unsigned long long temp_max_buffer_end_position= chunk->get_size() + chunk->get_offset();
+                if(max_buffer_end_position < temp_max_buffer_end_position)
+                    max_buffer_end_position = temp_max_buffer_end_position;
+            }
         }
     }
     if (max_buffer_end_position == 0) 
@@ -3500,12 +3506,19 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
 
     unsigned long long max_buffer_end_position = 0;
 
-    // For highly compressed chunks, we need to make sure the buffer_size is not too big to exceed the file size.
+    // For highly compressed chunks, we need to make sure the buffer_size is not too big because it may exceed the file size.
     // For this variable we also need to find the maximum value of the end position of all the chunks.
     for (const auto &chunk: array_chunks) {
-        unsigned long long temp_max_buffer_end_position= chunk->get_size() + chunk->get_offset();
-        if(max_buffer_end_position < temp_max_buffer_end_position)
-            max_buffer_end_position = temp_max_buffer_end_position;
+
+        // We may encounter the filled chunks. Since those chunks will be handled separately.
+        // when considering max_buffer_end_position, we should not consider them since
+        // the chunk size may be so big that it may make the buffer exceed the file size.
+        // The offset of filled chunk is 0.
+        if (chunk->get_offset()!=0) {
+            unsigned long long temp_max_buffer_end_position= chunk->get_size() + chunk->get_offset();
+            if(max_buffer_end_position < temp_max_buffer_end_position)
+                max_buffer_end_position = temp_max_buffer_end_position;
+        }
     }
     
     // The end position of the buffer should not exceed the max_buffer_end_position.
@@ -3556,7 +3569,8 @@ bool DmrppArray::use_buffer_chunk() {
 
     // For our use case, we only need to check if the first chunk and the second chunk are adjacent.
     // To make the process clear and simple, we don't handle structure data.
-    if (chunks.size() >1 && this->var()->type() !=dods_structure_c){
+    // Also when all the chunks are filled with the fill values, we should not use the buffer chunk.
+    if (chunks.size() >1 && this->var()->type() !=dods_structure_c && this->get_var_chunks_storage_size()!=0){
         unsigned long long first_chunk_offset = (chunks[0])->get_offset();
         unsigned long long first_chunk_size = (chunks[0])->get_size();
         unsigned long long second_chunk_offset = (chunks[1])->get_offset();

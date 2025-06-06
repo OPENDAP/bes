@@ -74,20 +74,20 @@ private:
     static bool d_enabled;
     static BESDapFunctionResponseCache *d_instance;
 
-    /**
-     * Called by atexit()
-     */
-    static void delete_instance() {
-        delete d_instance;
-        d_instance = 0;
-    }
+//    /**
+//     * Called by atexit()
+//     */
+//    static void delete_instance() {
+//        delete d_instance;
+//        d_instance = 0;
+//    }
 
     /** @name Suppressed constructors
      *  Do not use.
      */
     ///@{
     BESDapFunctionResponseCache();
-    BESDapFunctionResponseCache(const BESDapFunctionResponseCache &src);
+    // BESDapFunctionResponseCache(const BESDapFunctionResponseCache &src);
     ///@}
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
@@ -130,13 +130,14 @@ public:
     static const std::string PREFIX_KEY;
     static const std::string SIZE_KEY;
 
+    BESDapFunctionResponseCache(const BESDapFunctionResponseCache&) = delete;
+    BESDapFunctionResponseCache& operator=(const BESDapFunctionResponseCache&) = delete;
+
     static BESDapFunctionResponseCache *get_instance(const std::string &cache_dir, const std::string &prefix,
                                                      unsigned long long size);
     static BESDapFunctionResponseCache *get_instance();
 
-    virtual ~BESDapFunctionResponseCache()
-    {
-    }
+    ~BESDapFunctionResponseCache() override = default;
 
     // If the DDS is in the cache and valid, return it otherwise, build the dds, cache it and return it.
     // TODO cache_dataset() was too confusing, but get_or_... is not that great either

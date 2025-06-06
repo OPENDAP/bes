@@ -68,31 +68,8 @@ BESCatalogList *BESCatalogList::d_instance = 0;
 BESCatalogList *
 BESCatalogList::TheCatalogList()
 {
-    if (d_instance == 0) initialize_instance();
-
-    return d_instance;
-}
-
-/**
- * private static that only get's called once by using pthread_once and
- * pthread_once_t mutex.
- */
-void BESCatalogList::initialize_instance()
-{
-    d_instance = new BESCatalogList;
-#ifdef HAVE_ATEXIT
-    atexit(delete_instance);
-#endif
-
-}
-
-/**
- * Private static function can only be called by friends and pThreads code.
- */
-void BESCatalogList::delete_instance()
-{
-    delete d_instance;
-    d_instance = 0;
+    static BESCatalogList catalog;
+    return &catalog;
 }
 
 /** @brief construct a catalog list
@@ -117,22 +94,6 @@ BESCatalogList::BESCatalogList()
     // Build the default catalog and add it to the map of catalogs. jhrg 7/21/18
     d_default_catalog = new BESCatalogDirectory(d_default_catalog_name);
     add_catalog(d_default_catalog);
-}
-
-/** @brief list destructor deletes all registered catalogs
- *
- * @see BESCatalog
- */
-BESCatalogList::~BESCatalogList()
-{
-    catalog_iter i = d_catalogs.begin();
-    catalog_iter e = d_catalogs.end();
-    for (; i != e; i++) {
-        BESCatalog *catalog = (*i).second;
-        delete catalog;
-    }
-
-    d_catalogs.clear();
 }
 
 /** @brief adds the specified catalog to the list

@@ -552,7 +552,10 @@ bool SuperChunk::add_chunk_non_contiguous(const std::shared_ptr<Chunk> candidate
     if(d_chunks.empty()){
         d_chunks.push_back(candidate_chunk);
         d_offset = candidate_chunk->get_offset();
-        d_size = buffer_end_position-d_offset;
+        if(candidate_chunk->get_uses_fill_value())
+            d_size = candidate_chunk->get_size();
+        else 
+            d_size = buffer_end_position-d_offset;
 
         BESDEBUG(SUPER_CHUNK_MODULE, prolog << "add_chunk_non d_size: "<<d_size<< endl);
         BESDEBUG(SUPER_CHUNK_MODULE, prolog << "add_chunk_non d_offset: "<<d_offset<< endl);
@@ -711,7 +714,6 @@ void SuperChunk::retrieve_data() {
         BESDEBUG(SUPER_CHUNK_MODULE, prolog << "SuperChunk (" << (void **) this << ") has already been read! Returning." << endl);
         return;
     }
-
     // TODO Move this into read_aggregate_bytes(), move map_chunks_to_buffer()
     //  after read_aggregate_bytes() and modify map_chunks_to_buffer() to set
     //  the chunk size and read state so the last for loop can be removed.

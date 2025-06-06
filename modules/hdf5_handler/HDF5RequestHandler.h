@@ -86,6 +86,7 @@ class HDF5RequestHandler:public BESRequestHandler {
 
     // Default Handle dimension key, only valid when the default option is on.
     static bool get_default_handle_dimension() { return _default_handle_dimension;}
+    static bool get_default_add_unlimited_dimension_dap4() { return _add_unlimited_dimension_dap4;}
 
     static void set_dmr_64bit_int(libdap::DMR *dmr) { dmr_int64 = dmr;}
     static libdap::DMR* get_dmr_64bit_int() {return dmr_int64;}
@@ -184,6 +185,7 @@ class HDF5RequestHandler:public BESRequestHandler {
 
     // For the default option
     static bool _default_handle_dimension;
+    static bool _add_unlimited_dimension_dap4;
     static std::string _stp_east_filename;
     static std::string _stp_north_filename;
 

@@ -97,7 +97,6 @@ public:
 
     void dump(std::ostream &strm) const override;
 
-private:
     std::string dump() const {
         std::stringstream sstrm;
         dump(sstrm);

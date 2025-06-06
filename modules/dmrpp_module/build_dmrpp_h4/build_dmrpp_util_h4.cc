@@ -1534,14 +1534,6 @@ void add_chunk_information(const string &h4_file_name, DMRpp *dmrpp, bool disabl
  */
 void qc_input_file(const string &file_fqn)
 {
-    //Use an ifstream file to run a check on the provided file's signature
-    // to see if it is an HDF4 file. - kln 11/20/23
-
-    if (file_fqn.empty()) {
-        stringstream msg;
-        msg << "HDF4 input file name must be provided (-f <input>) and be a fully qualified path name." << endl;
-        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
-    }
 
     std::ifstream file(file_fqn, ios::binary);
     auto errnum = errno;

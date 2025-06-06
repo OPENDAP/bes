@@ -62,7 +62,7 @@ lib_besdir=$(libdir)/bes
 # libcmr_module_la_LIBADD = $(LIBADD)
 
 
-EXTRA_DIST =
+EXTRA_DIST = get_dmrpp_h4
 
 CLEANFILES = *~
 
