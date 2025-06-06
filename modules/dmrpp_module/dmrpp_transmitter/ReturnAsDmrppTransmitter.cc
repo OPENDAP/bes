@@ -66,6 +66,7 @@ void ReturnAsDmrppTransmitter::send_dmrpp(BESResponseObject *, BESDataHandlerInt
     if (!container) throw BESInternalFatalError("expected NgapOwnedContainer", __FILE__, __LINE__);
     auto dmrpp = container->access();
 
+    // Test if the DMR++ has a trailing null and if so, remove it. jhrg 6/6/25
     if (!dmrpp.empty() && dmrpp.back() == '\0') {
         dmrpp.pop_back();
     }

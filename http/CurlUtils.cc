@@ -1193,7 +1193,7 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
  *
  * @param target_url The URL to dereference.
  * @param buf The string into which to put the response. New data will be
- * appended to this string. In most cases this should be an empty string.
+ * appended to this string.
  * @exception Throws when libcurl encounters a problem.
  */
 void http_get(const string &target_url, string &buf) {

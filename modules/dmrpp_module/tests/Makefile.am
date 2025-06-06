@@ -50,10 +50,12 @@ TESTSUITE_CHECK_DMRPP = $(srcdir)/testsuite_check_dmrpp
 
 TESTSUITE_MERGE_DMRPP = $(srcdir)/testsuite_merge_dmrpp
 
-check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_DMRPP_BUILDER_H4) $(TESTSUITE_CHECK_DMRPP) $(TESTSUITE_MERGE_DMRPP) $(TESTSUITE_S3) $(TESTSUITE_DMRPP_BUILDER) bes.conf bes_serial.conf
+check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_RA_DMRPP) $(TESTSUITE_DMRPP_BUILDER_H4) \
+    $(TESTSUITE_CHECK_DMRPP) $(TESTSUITE_MERGE_DMRPP) $(TESTSUITE_S3) $(TESTSUITE_DMRPP_BUILDER) \
+    bes.conf bes_serial.conf bes-return-as-dmrpp.conf
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes_serial.conf
-	$(SHELL) '$(TESTSUITE_RA_DMRPP)' $(TESTSUITEFLAGS)
+	$(SHELL) '$(TESTSUITE_RA_DMRPP)' $(TESTSUITEFLAGS) # uses bes-return-as-dmrpp.conf internally. jhrg 6/6/25
 	$(SHELL) '$(TESTSUITE_DMRPP_BUILDER_H4)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE_CHECK_DMRPP)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE_MERGE_DMRPP)' $(TESTSUITEFLAGS)
