@@ -55,7 +55,6 @@ check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_RA_DMRPP) $(TESTSUITE_DMR
     bes.conf bes_serial.conf bes-return-as-dmrpp.conf
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes_serial.conf
-	$(SHELL) '$(TESTSUITE_RA_DMRPP)' $(TESTSUITEFLAGS) # uses bes-return-as-dmrpp.conf internally. jhrg 6/6/25
 	$(SHELL) '$(TESTSUITE_DMRPP_BUILDER_H4)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE_CHECK_DMRPP)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE_MERGE_DMRPP)' $(TESTSUITEFLAGS)
@@ -72,6 +71,15 @@ check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_RA_DMRPP) $(TESTSUITE_DMR
 		$(SHELL) '$(TESTSUITE_S3)' $(TESTSUITEFLAGS); \
 	else \
 		echo "No access credentials available, skipping S3 authentication tests"; \
+		true;\
+	fi
+	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
+	@echo "\n# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
+	@if [ -f ~/.netrc ]; then \
+		echo "--------- Found netrc, assuming EDL credentials are there ---------"; \
+		$(SHELL) '$(TESTSUITE_RA_DMRPP)' $(TESTSUITEFLAGS); \
+	else \
+		echo "No netrc available, skipping EDL-based tests"; \
 		true;\
 	fi
 	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
