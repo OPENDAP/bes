@@ -48,11 +48,6 @@ using namespace std;
 
 namespace ngap {
 
-#if 0
-  const unsigned int REFRESH_THRESHOLD = 3600; // An hour
-#endif
-
-
 /**
  * @brief Get the CMR search endpoint URL using information from the BES Keys.
  * This method only reads the BES keys once and caches the results, including
@@ -249,9 +244,9 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
     // This is the entire collections string including any optional components.
     string collection_name = r_path.substr(collections_index, granules_key_index - collections_index);
 
-    // Since there may be optional parameters we need to strip them off to get the collection_concept_id
-    // And, since we know that collection_concept_id will never contain a '/', and we know that the optional
-    // part is separated from the collection_concept_id by a '/' we look for that and of we find it we truncate
+    // Since there may be optional parameters, we need to strip them off to get the collection_concept_id, since
+    // we know that collection_concept_id will never contain a '/', and we know that the optional
+    // part is separated from the collection_concept_id by a '/', we look for that and if we find it, we truncate
     // the value at that spot.
     string optional_part;
     size_t slash_pos = collection_name.find('/');
@@ -369,7 +364,7 @@ string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const string &rest_p
         }
     }
 
-    // If no valid related URL is found, it's an error.
+    // If no valid related-URL is found, it's an error.
     throw BESInternalError(string("Failed to locate a data access URL for the path: ") + rest_path,
                            __FILE__, __LINE__);
 }
@@ -424,89 +419,5 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(const string &restifi
     return data_access_url;
 }
 
-#if 0
-  /**
- * @brief Has the signed S3 URL expired?
- * If neither the CloudFront Expires header nor the AWS Expires header are present, then
- * this function returns true.
- * @note This function is ony used in unit tests (jhrg 10/16/23)
- * @param signed_url
- * @return True if the signed URL has expired, false otherwise.
- * @todo Remove this since it is only used by tests and duplicates http::url::is_expired(). jhrg 10/18/23
- * @see http::url::is_expired()
- */
-bool NgapApi::signed_url_is_expired(const http::url &signed_url) {
-    bool is_expired;
-    time_t now;
-    time(&now);  /* get current time; same as: timer = time(NULL)  */
-    BESDEBUG(MODULE, prolog << "now: " << now << endl);
-
-    time_t expires = now;
-    string cf_expires = signed_url.query_parameter_value(CLOUDFRONT_EXPIRES_HEADER_KEY);
-    string aws_expires = signed_url.query_parameter_value(AMS_EXPIRES_HEADER_KEY);
-    time_t ingest_time = signed_url.ingest_time();
-
-    // If both cf_expires and aws_expires are empty, this code returns true. jhrg 10/13/23
-    if (!cf_expires.empty()) { // CloudFront expires header?
-        expires = stoll(cf_expires);
-        BESDEBUG(MODULE, prolog << "Using " << CLOUDFRONT_EXPIRES_HEADER_KEY << ": " << expires << endl);
-    } else if (!aws_expires.empty()) {
-        // AWS Expires header?
-        //
-        // By default we'll use the time we made the URL object, ingest_time
-        time_t start_time = ingest_time;
-        // But if there's an AWS Date we'll parse that and compute the time
-        string aws_date = signed_url.query_parameter_value(AWS_DATE_HEADER_KEY);
-        if (!aws_date.empty()) {
-            string year = aws_date.substr(0, 4);
-            string month = aws_date.substr(4, 2);
-            string day = aws_date.substr(6, 2);
-            string hour = aws_date.substr(9, 2);
-            string minute = aws_date.substr(11, 2);
-            string second = aws_date.substr(13, 2);
-
-            BESDEBUG(MODULE, prolog << "date: " << aws_date <<
-                                    " year: " << year << " month: " << month << " day: " << day <<
-                                    " hour: " << hour << " minute: " << minute << " second: " << second << endl);
-
-            struct tm ti{}; // NB: Calling gmtime_r() is an initialization hack since some fields are not set here.
-            if (gmtime_r(&now, &ti) == nullptr)
-                throw BESInternalError("Could not get the current time, gmtime_r() failed!", __FILE__, __LINE__);
-            ti.tm_year = stoi(year) - 1900;
-            ti.tm_mon = stoi(month) - 1;
-            ti.tm_mday = stoi(day);
-            ti.tm_hour = stoi(hour);
-            ti.tm_min = stoi(minute);
-            ti.tm_sec = stoi(second);
-
-            BESDEBUG(MODULE, prolog << "ti.tm_year: " << ti.tm_year <<
-                                    " ti.tm_mon: " << ti.tm_mon <<
-                                    " ti.tm_mday: " << ti.tm_mday <<
-                                    " ti.tm_hour: " << ti.tm_hour <<
-                                    " ti.tm_min: " << ti.tm_min <<
-                                    " ti.tm_sec: " << ti.tm_sec << endl);
-
-            start_time = mktime(&ti);
-            BESDEBUG(MODULE, prolog << "AWS (computed) start_time: " << start_time << endl);
-        }
-
-        expires = start_time + stoll(aws_expires);
-        BESDEBUG(MODULE, prolog << "Using " << AMS_EXPIRES_HEADER_KEY << ": " << aws_expires <<
-                                " (expires: " << expires << ")" << endl);
-    }
-
-    // If both cf_expires and aws_expires are empty, 'expires' == 'now' and 'remaining' is 0 so
-    // this code returns true. jhrg 10/13/23
-    time_t remaining = expires - now;
-    BESDEBUG(MODULE, prolog << "expires_time: " << expires <<
-                            "  remaining_time: " << remaining <<
-                            " refresh_threshold: " << REFRESH_THRESHOLD << endl);
-
-    is_expired = remaining < REFRESH_THRESHOLD;
-    BESDEBUG(MODULE, prolog << "is_expired: " << (is_expired ? "true" : "false") << endl);
-
-    return is_expired;
-}
-#endif
 } // namespace ngap
 

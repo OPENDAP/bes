@@ -38,6 +38,8 @@ AUTOTEST = $(AUTOM4TE) --language=autotest
 
 TESTSUITE = $(srcdir)/testsuite
 
+TESTSUITE_RA_DMRPP = $(srcdir)/testsuite_return_as_dmrpp
+
 TESTSUITE_S3 = $(srcdir)/testsuite_s3_tests
 
 TESTSUITE_DMRPP_BUILDER = $(srcdir)/testsuite_dmrpp_builder
@@ -51,6 +53,7 @@ TESTSUITE_MERGE_DMRPP = $(srcdir)/testsuite_merge_dmrpp
 check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_DMRPP_BUILDER_H4) $(TESTSUITE_CHECK_DMRPP) $(TESTSUITE_MERGE_DMRPP) $(TESTSUITE_S3) $(TESTSUITE_DMRPP_BUILDER) bes.conf bes_serial.conf
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes_serial.conf
+	$(SHELL) '$(TESTSUITE_RA_DMRPP)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE_DMRPP_BUILDER_H4)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE_CHECK_DMRPP)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE_MERGE_DMRPP)' $(TESTSUITEFLAGS)
@@ -73,15 +76,18 @@ check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_DMRPP_BUILDER_H4) $(TESTS
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
-	test ! -f '$(TESTSUITE_S3)' || $(SHELL) '$(TESTSUITE_S3)' --clean
+	test ! -f '$(TESTSUITE_RA_DMRPP)' || $(SHELL) '$(TESTSUITE_RA_DMRPP)' --clean
 	test ! -f '$(TESTSUITE_DMRPP_BUILDER_H4)' || $(SHELL) '$(TESTSUITE_DMRPP_BUILDER_H4)' --clean
 	test ! -f '$(TESTSUITE_CHECK_DMRPP)' || $(SHELL) '$(TESTSUITE_CHECK_DMRPP)' --clean
 	test ! -f '$(TESTSUITE_MERGE_DMRPP)' || $(SHELL) '$(TESTSUITE_MERGE_DMRPP)' --clean
-
+	test ! -f '$(TESTSUITE_S3)' || $(SHELL) '$(TESTSUITE_S3)' --clean
+	
 %: %.at 
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 $(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4 multi_input_tests.m4
+
+$(TESTSUITE_RA_DMRPP): $(TESTSUITE_RA_DMRPP).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4
 
 $(TESTSUITE_S3): $(TESTSUITE_S3).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4
 
