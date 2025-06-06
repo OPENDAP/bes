@@ -1,0 +1,15 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+AT_INIT([bes/modules/dmrpp_module/tests testsuite_return_as_dmrpp])
+
+m4_include([../../common/handler_tests_macros.m4])
+
+# override the defzult value of bes_conf. jhrg 6/5/25
+# bes_conf=bes-return-as-dmrpp.conf
+
+# m4_include([multi_input_tests.m4])
+
+# Using the file:/... URLs
+# AT_BESCMD_RESPONSE_TEST([return_as_dmrpp/dmrpp-return-as-test.bescmd])
+AT_BESCMD_BESCONF_RESPONSE_TEST([return_as_dmrpp/dmrpp-return-as-test.bescmd], [bes-return-as-dmrpp.conf])
+AT_BESCMD_BESCONF_RESPONSE_TEST([return_as_dmrpp/dmrpp-return-as-test-2.bescmd], [bes-return-as-dmrpp.conf])
