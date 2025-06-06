@@ -77,8 +77,8 @@ public:
     BESRequestHandlerList() = default;
     ~BESRequestHandlerList() override = default;
 
-    typedef std::map<std::string, BESRequestHandler *>::const_iterator Handler_citer;
-    typedef std::map<std::string, BESRequestHandler *>::iterator Handler_iter;
+    using Handler_citer = std::map<std::string, BESRequestHandler *>::const_iterator;
+    using Handler_iter = std::map<std::string, BESRequestHandler *>::iterator;
 
     virtual bool add_handler(const std::string &handler_name, BESRequestHandler * handler);
     virtual BESRequestHandler * remove_handler(const std::string &handler_name);
@@ -94,7 +94,7 @@ public:
 
     virtual void execute_current(BESDataHandlerInterface &dhi);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static BESRequestHandlerList *TheList();
 };

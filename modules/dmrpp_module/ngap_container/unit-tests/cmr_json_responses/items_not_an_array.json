@@ -1,0 +1,5 @@
+{
+  "hits" : 1,
+  "took" : 351,
+  "items" : { "foo": "bar", "bar": "baz" }
+}

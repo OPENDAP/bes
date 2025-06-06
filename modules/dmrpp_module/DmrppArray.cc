@@ -87,7 +87,7 @@ atomic_uint transfer_thread_counter(0);
  *
  * When a valid, ready future is found future::get() is called and the thead_counter is decremented.
  * Returns true when it successfully "get"s a future (joins a thread), or if a future turns up as not valid, then
- * it is discarded and the thread is ":finished" and true is returned.
+ * it is discarded, and the thread is ":finished" and true is returned.
  *
  * @param futures The list of futures to scan
  * @param thread_counter This counter will be decremented when a future is "finished".
@@ -184,7 +184,7 @@ static void one_child_chunk_thread_new_sanity_check(const one_child_chunk_args_n
  *
  * This is only used for threads started by read_contiguous().
  *
- * @param arg_list A pointer to a one_child_chunk_args
+ * @param args A pointer to a one_child_chunk_args
  */
 bool one_child_chunk_thread_new(const unique_ptr<one_child_chunk_args_new> &args)
 {

@@ -1,0 +1,55 @@
+{
+  "hits" : 1,
+  "took" : 351,
+  "items" : [ {
+    "umm" : {
+      "RelatedUrls" : [ {
+        "Format" : "Not provided",
+        "Description" : "Download ECOv002_L1B_GEO_22172_008_20220604T024955_0700_01.cmr.xml",
+        "Type" : "GET DATA",
+        "URL" : "https://should_not_be_returned.cmr.xml"
+      }, {
+        "Format" : "Not provided",
+        "Description" : "Download ECOv002_L1B_GEO_22172_008_20220604T024955_0700_01.h5",
+        "Type" : "GET DATA",
+        "URL" : "https://minimal.h5"
+      }, {
+        "Format" : "Not provided",
+        "Description" : "This link provides direct download access via S3 to the granule",
+        "Type" : "GET DATA",
+        "URL" : "s3://should_not_be_returned.h5"
+      }, {
+        "Format" : "Not provided",
+        "Description" : "Download ECOv002_L1B_GEO_22172_008_20220604T024955_0700_01.h5.dmrpp",
+        "Type" : "GET DATA",
+        "URL" : "https://should_not_be_returned.h5.dmrpp"
+      }, {
+        "Format" : "Not provided",
+        "Description" : "This link provides direct download access via S3 to the granule",
+        "Type" : "GET DATA",
+        "URL" : "s3://lp-prod-protected/should_not_be_returned.h5.dmrpp"
+      }, {
+        "Format" : "Not provided",
+        "Description" : "Download ECOv002_L1B_GEO_22172_008_20220604T024955_0700_01.cmr.xml",
+        "Type" : "VIEW RELATED INFORMATION",
+        "URL" : "https://should_not_be_returned.cmr.xml"
+      }, {
+        "Format" : "Not provided",
+        "Description" : "This link provides direct download access via S3 to the granule",
+        "Type" : "VIEW RELATED INFORMATION",
+        "URL" : "s3://lp-prod-protected/should_not_be_returned.cmr.xml"
+      }, {
+        "Format" : "Not provided",
+        "Description" : "api endpoint to retrieve temporary credentials valid for same-region direct s3 access",
+        "Type" : "VIEW RELATED INFORMATION",
+        "URL" : "https://data.lpdaac.earthdatacloud.nasa.gov/s3credentials"
+      }, {
+        "Subtype" : "OPENDAP DATA",
+        "Format" : "Not provided",
+        "Description" : "OPeNDAP request URL",
+        "Type" : "USE SERVICE API",
+        "URL" : "https://opendap.earthdata.nasa.gov/collections/C2076087338-LPCLOUD/granules/ECOv002_L1B_GEO_22172_008_20220604T024955_0700_01"
+      } ]
+    }
+  } ]
+}

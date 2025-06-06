@@ -1,0 +1,49 @@
+
+BES.ServerAdministrator = root@localhost
+
+BES.User = user_name
+BES.Group = group_name
+
+BES.LogName = ./bes.log
+BES.LogVerbose = no
+
+BES.modules = dap,cmd,dmrpp,h5
+BES.module.dap = @abs_top_builddir@/dap/.libs/libdap_module.so
+BES.module.cmd = @abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
+BES.module.dmrpp = @abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.so
+BES.module.h5 = @abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
+
+BES.Catalog.catalog.RootDirectory=@abs_top_builddir@/modules/dmrpp_module
+BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
+BES.Catalog.catalog.TypeMatch+=h5:.*\.(h5|he5|HDF5)(\.bz2|\.gz|\.Z)?$;
+BES.Catalog.catalog.FollowSymLinks=No
+
+# This is the default value - used for 'OPeNDAP-Owned' S3 bucket tests.
+# Set this to your own S3 bucket where DMR++ documents can be found.
+NGAP.DataSourceLocation = https://cloudydap.s3.us-east-1.amazonaws.com
+
+# Set this to true to try the OPeNDAP bucket for DMR++ documents.
+NGAP.UseOPeNDAPBucket = false
+
+# set this to true to substitute data URLs in the DMR++ for the template href value.
+NGAP.inject_data_urls = true
+
+NGAP.UseCMRCache = true
+NGAP.UseDMRppCache = true
+
+BES.Catalog.catalog.Include=;
+BES.Catalog.catalog.Exclude=^\..*;
+
+BES.FollowSymLinks=Yes
+BES.Data.RootDirectory=/dev/null
+
+BES.Info.Buffered=no
+BES.Info.Type=xml
+
+BES.UncompressCache.dir=/tmp/hyrax_ux
+BES.UncompressCache.prefix=ux_
+BES.UncompressCache.size=500
+
+AllowedHosts = https:\/\/cloudydap\.s3\.us-east-1\.amazonaws.com\/.*$
+
+# AllowedHosts += ^https:\/\/cmr\.earthdata\.nasa\.gov\/.*$

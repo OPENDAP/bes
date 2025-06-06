@@ -55,31 +55,35 @@
  * @see BESContainer
  */
 class BESContainerStorageVolatile: public BESContainerStorage {
-private:
     std::map<std::string, BESContainer *> _container_list;
 
 protected:
     std::string _root_dir;
     bool _follow_sym_links;
 
-    virtual void add_container(BESContainer *c);
+    void add_container(BESContainer *c) override;
 public:
-    BESContainerStorageVolatile(const std::string &n);
-    virtual ~BESContainerStorageVolatile();
+    explicit BESContainerStorageVolatile(const std::string &n);
+    ~BESContainerStorageVolatile() override;
 
-    typedef std::map<std::string, BESContainer *>::const_iterator Container_citer;
+    using Container_citer = std::map<std::string, BESContainer *>::const_iterator;
+    using Container_iter = std::map<std::string, BESContainer *>::iterator;
+#if 0
+      typedef std::map<std::string, BESContainer *>::const_iterator Container_citer;
     typedef std::map<std::string, BESContainer *>::iterator Container_iter;
+#endif
 
-    virtual BESContainer * look_for(const std::string &sym_name);
-    virtual void add_container(const std::string &sym_name, const std::string &real_name, const std::string &type);
-    virtual bool del_container(const std::string &s_name);
-    virtual bool del_containers();
 
-    virtual bool isData(const std::string &inQuestion, std::list<std::string> &provides);
+    BESContainer * look_for(const std::string &sym_name) override;
+    void add_container(const std::string &sym_name, const std::string &real_name, const std::string &type) override;
+    bool del_container(const std::string &s_name) override;
+    bool del_containers() override;
 
-    virtual void show_containers(BESInfo &info);
+    bool isData(const std::string &inQuestion, std::list<std::string> &provides) override;
 
-    virtual void dump(std::ostream &strm) const;
+    void show_containers(BESInfo &info) override;
+
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // BESContainerStorageVolatile_h_

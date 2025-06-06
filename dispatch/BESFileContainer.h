@@ -63,7 +63,7 @@ private:
     }
 
 protected:
-    virtual void _duplicate(BESContainer &copy_to);
+    void _duplicate(BESContainer &copy_to) override;
 
 public:
 	static const std::string UNCOMPRESS_CACHE_DIR_KEY;

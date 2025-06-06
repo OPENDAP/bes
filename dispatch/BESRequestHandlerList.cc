@@ -149,7 +149,7 @@ string BESRequestHandlerList::get_handler_names()
 
     string ret;
     bool first_name = true;
-    for (auto const &handler_pair: _handler_list) {
+    for (const auto &handler_pair: _handler_list) {
         if (!first_name) ret += ", ";
         ret += handler_pair.first;
         first_name = false;
@@ -210,7 +210,7 @@ void BESRequestHandlerList::execute_all(BESDataHandlerInterface &dhi)
 {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    for (auto const &handler_pair: _handler_list) {
+    for (const auto &handler_pair: _handler_list) {
         auto p = handler_pair.second->find_method(dhi.action);
         if (p)
             p(dhi);
@@ -291,7 +291,7 @@ void BESRequestHandlerList::dump(ostream &strm) const
     if (!_handler_list.empty()) {
         strm << BESIndent::LMarg << "registered handlers:" << endl;
         BESIndent::Indent();
-        for (auto const &handler_pair: _handler_list) {
+        for (const auto &handler_pair: _handler_list) {
             handler_pair.second->dump(strm);
         }
         BESIndent::UnIndent();

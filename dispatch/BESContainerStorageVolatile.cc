@@ -44,7 +44,10 @@
 
 // FIXME This is a lie, but it will help with debugging/design for the RemoteResources
 // FIXME design/fix. Remove this once that's done. jhrg 8/7/20
-#define MODULE "ngap"
+#if 0
+  #define MODULE "ngap"
+#endif
+
 #define prolog std::string("BESContainerStorageVolatile::").append(__func__).append("() - ")
 
 using std::endl;
@@ -57,7 +60,7 @@ using std::ostream;
  * Creates an instances of BESContainerStorageVolatile with the given name.
  *
  * @note This constructor will fail with an Internal Fatal Error if the BES
- * Keys file cannot be read. That is, the if the singleton TheBESKeys cannot
+ * Keys file cannot be read. That is, if the singleton TheBESKeys cannot
  * be initialized, the access to the BES keys will throw a BESInternalFatalError.
  *
  * @todo Remove the non-BESCatalog file system stuff in this class and combine it with
@@ -72,13 +75,13 @@ BESContainerStorageVolatile::BESContainerStorageVolatile(const string &n) :
     string key = "BES.Data.RootDirectory";
     bool found = false;
     TheBESKeys::TheKeys()->get_value(key, _root_dir, found);
-    if (_root_dir == "") {
+    if (_root_dir.empty()) {
         string s = key + " not defined in BES configuration file";
         throw BESSyntaxUserError(s, __FILE__, __LINE__);
     }
 
     found = false;
-    key = (string) "BES.FollowSymLinks";
+    key = static_cast<string>("BES.FollowSymLinks");
     string s_str;
     TheBESKeys::TheKeys()->get_value(key, s_str, found);
     s_str = BESUtil::lowercase(s_str);
@@ -89,7 +92,7 @@ BESContainerStorageVolatile::BESContainerStorageVolatile(const string &n) :
 
 BESContainerStorageVolatile::~BESContainerStorageVolatile()
 {
-    del_containers();
+    BESContainerStorageVolatile::del_containers();
 }
 
 /** @brief looks for the specified container using the symbolic name passed
@@ -104,7 +107,7 @@ BESContainerStorageVolatile::~BESContainerStorageVolatile()
 BESContainer *
 BESContainerStorageVolatile::look_for(const string &sym_name)
 {
-    BESContainer *ret_container = 0;
+    BESContainer *ret_container = nullptr;
 
     BESContainerStorageVolatile::Container_citer i;
     i = _container_list.find(sym_name);
@@ -136,7 +139,7 @@ void BESContainerStorageVolatile::add_container(const string &sym_name, const st
 {
     // The type must be specified so that we can find the request handler
     // that knows how to handle the container.
-    // Changed sym_name to real_name to make the message clearer. jhrg 11/14/19
+    // Changed sym_name to real_name to clarify the message. jhrg 11/14/19
     if (type.empty())
         throw BESInternalError(string("Unable to add container '").append(real_name).append("', the type of data must be specified."), __FILE__, __LINE__);
 
@@ -215,19 +218,14 @@ void BESContainerStorageVolatile::add_container(BESContainer *c)
  */
 bool BESContainerStorageVolatile::del_container(const string &s_name)
 {
-    BESDEBUG(MODULE, prolog << "BEGIN: " << s_name <<  endl);
     bool ret = false;
-    BESContainerStorageVolatile::Container_iter i = _container_list.find(s_name);
+    const auto i = _container_list.find(s_name);
     if (i != _container_list.end()) {
         BESContainer *c = (*i).second;
         _container_list.erase(i);
-        if (c) {
-            BESDEBUG(MODULE, prolog << "delete the container: "<< (void *) c <<  endl);
-            delete c;
-        }
+        delete c;
         ret = true;
     }
-    BESDEBUG(MODULE, prolog << "END" <<  endl);
     return ret;
 }
 
@@ -240,17 +238,13 @@ bool BESContainerStorageVolatile::del_container(const string &s_name)
  */
 bool BESContainerStorageVolatile::del_containers()
 {
-    BESDEBUG(MODULE, prolog << "BEGIN" <<  endl);
-    while (_container_list.size() != 0) {
-        Container_iter ci = _container_list.begin();
+    while (!_container_list.empty()) {
+        auto ci = _container_list.begin();
         BESContainer *c = (*ci).second;
         _container_list.erase(ci);
-        if (c) {
-            BESDEBUG(MODULE, prolog << "delete the container: "<< (void *) c <<  endl);
-            delete c;
-        }
+        delete c;
     }
-    BESDEBUG(MODULE, prolog << "END" <<  endl);
+
     return true;
 }
 
@@ -264,10 +258,10 @@ bool BESContainerStorageVolatile::del_containers()
 bool BESContainerStorageVolatile::isData(const string &inQuestion, list<string> &provides)
 {
     bool isit = false;
-    BESContainer *c = look_for(inQuestion);
+    const BESContainer *c = look_for(inQuestion);
     if (c) {
         isit = true;
-        string node_type = c->get_container_type();
+        const string node_type = c->get_container_type();
         BESServiceRegistry::TheRegistry()->services_handled(node_type, provides);
     }
     return isit;
@@ -291,9 +285,8 @@ void BESContainerStorageVolatile::show_containers(BESInfo &info)
 {
     info.add_tag("name", get_name());
     string::size_type root_len = _root_dir.size();
-    BESContainerStorageVolatile::Container_iter i = _container_list.begin();
-    BESContainerStorageVolatile::Container_iter e = _container_list.end();
-    for (; i != e; i++) {
+    auto i = _container_list.begin();
+    for (auto e = _container_list.end(); i != e; i++) {
         BESContainer *c = (*i).second;
         string sym = c->get_symbolic_name();
         string real = c->get_real_name();
@@ -319,12 +312,11 @@ void BESContainerStorageVolatile::dump(ostream &strm) const
     strm << BESIndent::LMarg << "BESContainerStorageVolatile::dump - (" << (void *) this << ")" << endl;
     BESIndent::Indent();
     strm << BESIndent::LMarg << "name: " << get_name() << endl;
-    if (_container_list.size()) {
+    if (!_container_list.empty()) {
         strm << BESIndent::LMarg << "containers:" << endl;
         BESIndent::Indent();
-        BESContainerStorageVolatile::Container_citer i = _container_list.begin();
-        BESContainerStorageVolatile::Container_citer ie = _container_list.end();
-        for (; i != ie; i++) {
+        auto i = _container_list.begin();
+        for (auto ie = _container_list.end(); i != ie; i++) {
             BESContainer *c = (*i).second;
             c->dump(strm);
         }

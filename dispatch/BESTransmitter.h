@@ -44,33 +44,30 @@ class BESResponseObject;
 
 typedef void (*p_transmitter)(BESResponseObject *obj, BESDataHandlerInterface &dhi);
 
-class BESTransmitter: public BESObj {
+class BESTransmitter : public BESObj {
 private:
-	std::map<std::string, p_transmitter> _method_list;
+    std::map<std::string, p_transmitter> _method_list;
 
-	typedef std::map<std::string, p_transmitter>::const_iterator _method_citer;
-	typedef std::map<std::string, p_transmitter>::iterator _method_iter;
+    using _method_citer = std::map<std::string, p_transmitter>::const_iterator;
+    using _method_iter = std::map<std::string, p_transmitter>::iterator;
 
 public:
-	BESTransmitter()
-	{
-	}
-	virtual ~BESTransmitter()
-	{
-	}
+    BESTransmitter() = default;
+    ~BESTransmitter() override = default;
 
-	virtual bool add_method(std::string method_name, p_transmitter trans_method);
-	virtual bool remove_method(std::string method_name);
-	virtual p_transmitter find_method(std::string method_name);
+    virtual bool add_method(std::string method_name, p_transmitter trans_method);
 
-	// TODO I think BESResponseObject may be superfluous here since it's in the DHI,
-	// but maybe not... should check. jhrg 2/20/15
-	virtual void send_response(const std::string &method, BESResponseObject *obj, BESDataHandlerInterface &dhi);
+    virtual bool remove_method(std::string method_name);
 
-	virtual void send_text(BESInfo &info, BESDataHandlerInterface &dhi);
-	virtual void send_html(BESInfo &info, BESDataHandlerInterface &dhi);
+    virtual p_transmitter find_method(std::string method_name);
 
-	virtual void dump(std::ostream &strm) const;
+    virtual void send_response(const std::string &method, BESResponseObject *obj, BESDataHandlerInterface &dhi);
+
+    virtual void send_text(BESInfo &info, BESDataHandlerInterface &dhi);
+
+    virtual void send_html(BESInfo &info, BESDataHandlerInterface &dhi);
+
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // A_BESTransmitter_h
