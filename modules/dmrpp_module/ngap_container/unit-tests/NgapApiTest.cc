@@ -467,7 +467,7 @@ public:
         // Apply the same logic as in the function under test
         if (url_with_suffix.size() >= suffix_length &&
         url_with_suffix.compare(url_with_suffix.size() - suffix.size(), suffix.size(), suffix) == 0) {
-            url_with_suffix.erase(url_with_suffix.size() - suffix.size(), suffix_length);
+            url_with_suffix.erase(url_with_suffix.size() - suffix.size(), suffix.size());
         }
         CPPUNIT_ASSERT_EQUAL_MESSAGE("The .dmrpp suffix should be removed.",
                                      expected_url, url_with_suffix);
@@ -478,7 +478,7 @@ public:
 
         if (url_without_suffix.size() >= suffix_length &&
         url_without_suffix.compare(url_without_suffix.size() - suffix.size(), suffix.size(), suffix) == 0) {
-            url_without_suffix.erase(url_without_suffix.size() - suffix.size(), suffix_length);
+            url_without_suffix.erase(url_without_suffix.size() - suffix.size(), suffix.size());
         }
         CPPUNIT_ASSERT_EQUAL_MESSAGE("URL without .dmrpp should not be changed.",
                                      original_url, url_without_suffix);
@@ -490,7 +490,7 @@ public:
 
         if (url_with_middle_dmrpp.size() >= suffix_length &&
         url_with_middle_dmrpp.compare(url_with_middle_dmrpp.size() - suffix.size(), suffix.size(), suffix) == 0) {
-            url_with_middle_dmrpp.erase(url_with_middle_dmrpp.size() - suffix.size(), suffix_length);
+            url_with_middle_dmrpp.erase(url_with_middle_dmrpp.size() - suffix.size(), suffix.size());
         }
         CPPUNIT_ASSERT_EQUAL_MESSAGE("URL with .dmrpp not at the end should not have it removed.",
                                      expected_middle_no_removal_url, url_with_middle_dmrpp);
