@@ -229,9 +229,6 @@ BESStoredDapResultCache::get_instance(const string &data_root_dir, const string 
                     "Cache is DISABLED"<< endl);
            }
             else {
-#ifdef HAVE_ATEXIT
-                atexit(delete_instance);
-#endif
                 BESDEBUG("cache", "BESStoredDapResultCache::"<<__func__ << "() - " <<
                     "Cache is ENABLED"<< endl);
             }
@@ -256,9 +253,6 @@ BESStoredDapResultCache::get_instance()
                 "Cache is DISABLED"<< endl);
        }
         else {
-#ifdef HAVE_ATEXIT
-            atexit(delete_instance);
-#endif
             BESDEBUG("cache", "BESStoredDapResultCache::"<<__func__ << "() - " <<
                 "Cache is ENABLED"<< endl);
         }

@@ -57,11 +57,6 @@ class BESStoredDapResultCache: public BESFileLockingCache {
 private:
     static bool d_enabled;
     static BESStoredDapResultCache *d_instance;
-    static void delete_instance()
-    {
-        delete d_instance;
-        d_instance = 0;
-    }
 
     string d_storedResultsSubdir;
     string d_dataRootDir;
@@ -70,8 +65,6 @@ private:
 
     /** Initialize the cache using the default values for the cache. */
     BESStoredDapResultCache();
-
-    BESStoredDapResultCache(const BESStoredDapResultCache &src);
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
 #ifdef DAP2_STORED_RESULTS
@@ -102,7 +95,10 @@ public:
     static const string SIZE_KEY;
 #endif
 
-    virtual ~BESStoredDapResultCache() { }
+    BESStoredDapResultCache(const BESStoredDapResultCache&) = delete;
+    BESStoredDapResultCache& operator=(const BESStoredDapResultCache&) = delete;
+
+    ~BESStoredDapResultCache() override = default;
 
     static BESStoredDapResultCache *get_instance(const string &bes_catalog_root_dir,
         const string &stored_results_subdir, const string &prefix, unsigned long long size);
