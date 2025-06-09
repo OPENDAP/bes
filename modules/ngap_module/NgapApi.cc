@@ -434,10 +434,12 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(const std::string &re
     cmr_response.Parse(cmr_json_string.c_str());
     data_access_url = find_get_data_url_in_granules_umm_json_v1_4(restified_path, cmr_response);
 
-    // Check for existing .dmrpp and remove it if found. - kln 6/6/25
-    size_t pos = data_access_url.find(".dmrpp");
-    if (pos != std::string::npos)
-        data_access_url.erase(pos, std::string(".dmrpp").length());
+    // Check for existing .dmrpp and remove it if found at the end of the url. - kln 6/6/25
+    string suffix = ".dmrpp";
+    if (data_access_url.size() >= suffix.size() &&
+    data_access_url.compare(data_access_url.size() - suffix.size(), suffix.size(), suffix) == 0) {
+        data_access_url.erase(data_access_url.size() - suffix.size());
+    }
 
     BESDEBUG(MODULE, prolog << "END (data_access_url: " << data_access_url << ")" << endl);
 
