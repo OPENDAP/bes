@@ -35,18 +35,6 @@
 using std::endl;
 using std::ostream;
 
-/** @brief make a copy of the passed container
- *
- * @param copy_from The container to copy
- */
-BESContainer::BESContainer(const BESContainer &copy_from) :
-    BESObj(copy_from), d_symbolic_name(copy_from.d_symbolic_name), d_real_name(copy_from.d_real_name),
-    d_relative_name(copy_from.d_relative_name), d_container_type(copy_from.d_container_type),
-    d_constraint(copy_from.d_constraint), d_dap4_constraint(copy_from.d_dap4_constraint),
-    d_dap4_function(copy_from.d_dap4_function), d_attributes(copy_from.d_attributes)
-{
-}
-
 /** @brief duplicate this instance into the passed container
  *
  * @param copy_to The container to copy this instance into

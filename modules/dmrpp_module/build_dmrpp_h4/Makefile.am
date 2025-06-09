@@ -2,7 +2,7 @@
 #
 # 07/25/18
 #
-AUTOMAKE_OPTIONS = foreign
+AUTOMAKE_OPTIONS = foreign subdir-objects
 
 dist_bin_SCRIPTS = get_dmrpp_h4
 
@@ -13,7 +13,7 @@ M_NAME=builddmrpp_h4
 M_VER=0.1.0
 
 AM_CPPFLAGS = $(HDF4_CFLAGS) $(HDFEOS2_CPPFLAGS) -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/modules/dmrpp_module \
-    -I$(top_srcdir)/pugixml/src -I$(top_srcdir)/http -I$(top_srcdir)/modules/ngap_module -I$(top_srcdir)/dap \
+    -I$(top_srcdir)/pugixml/src -I$(top_srcdir)/http -I$(top_srcdir)/modules/dmrpp_module/ngap_container -I$(top_srcdir)/dap \
     $(DAP_CFLAGS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
