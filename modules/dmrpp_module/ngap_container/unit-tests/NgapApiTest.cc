@@ -465,7 +465,7 @@ public:
         string expected_url = "https://dmrpp-sit-poc.s3.amazonaws.com/some-file.nc";
 
         // Apply the same logic as in the function under test
-        if (url_with_suffix.size() >= suffix_length &&
+        if (url_with_suffix.size() >= suffix.size() &&
         url_with_suffix.compare(url_with_suffix.size() - suffix.size(), suffix.size(), suffix) == 0) {
             url_with_suffix.erase(url_with_suffix.size() - suffix.size(), suffix.size());
         }
@@ -476,7 +476,7 @@ public:
         string url_without_suffix = "https://s3.amazonaws.com/bucket/granule.nc";
         string original_url = url_without_suffix;
 
-        if (url_without_suffix.size() >= suffix_length &&
+        if (url_without_suffix.size() >= suffix.size() &&
         url_without_suffix.compare(url_without_suffix.size() - suffix.size(), suffix.size(), suffix) == 0) {
             url_without_suffix.erase(url_without_suffix.size() - suffix.size(), suffix.size());
         }
@@ -488,7 +488,7 @@ public:
         string url_with_middle_dmrpp = "https://my-domain.com/path/file.dmrpp.nc";
         string expected_middle_no_removal_url = url_with_middle_dmrpp;
 
-        if (url_with_middle_dmrpp.size() >= suffix_length &&
+        if (url_with_middle_dmrpp.size() >= suffix.size() &&
         url_with_middle_dmrpp.compare(url_with_middle_dmrpp.size() - suffix.size(), suffix.size(), suffix) == 0) {
             url_with_middle_dmrpp.erase(url_with_middle_dmrpp.size() - suffix.size(), suffix.size());
         }
