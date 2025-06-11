@@ -217,27 +217,15 @@ BESStoredDapResultCache *
 BESStoredDapResultCache::get_instance(const string &data_root_dir, const string &stored_results_subdir,
     const string &result_file_prefix, unsigned long long max_cache_size)
 {
-    if (d_enabled && d_instance == 0) {
-        if (dir_exists(data_root_dir)) {
-            d_instance = new BESStoredDapResultCache(data_root_dir, stored_results_subdir, result_file_prefix,
-                max_cache_size);
-            d_enabled = d_instance->cache_enabled();
-            if(!d_enabled){
-                delete d_instance;
-                d_instance = NULL;
-                BESDEBUG("cache", "BESStoredDapResultCache::"<<__func__ << "() - " <<
-                    "Cache is DISABLED"<< endl);
-           }
-            else {
-#ifdef HAVE_ATEXIT
-                atexit(delete_instance);
-#endif
-                BESDEBUG("cache", "BESStoredDapResultCache::"<<__func__ << "() - " <<
-                    "Cache is ENABLED"<< endl);
-            }
-        }
+    if (d_enabled && dir_exists(data_root_dir)) {
+        static BESStoredDapResultCache instance;
+
+        d_enabled = d_instance->cache_enabled(); // Why was this included in the original version of this code? jhrg 6/9/25
+        if (!d_enabled)
+            return nullptr;
+
+        return &instance;
     }
-    return d_instance;
 }
 
 /** Get the default instance of the BESStoredDapResultCache object. This will read "TheBESKeys" looking for the values
@@ -247,24 +235,13 @@ BESStoredDapResultCache *
 BESStoredDapResultCache::get_instance()
 {
     if (d_enabled && d_instance == 0) {
-        d_instance = new BESStoredDapResultCache();
+        static BESStoredDapResultCache instance;
         d_enabled = d_instance->cache_enabled();
         if(!d_enabled){
-            delete d_instance;
-            d_instance = NULL;
-            BESDEBUG("cache", "BESStoredDapResultCache::"<<__func__ << "() - " <<
-                "Cache is DISABLED"<< endl);
-       }
-        else {
-#ifdef HAVE_ATEXIT
-            atexit(delete_instance);
-#endif
-            BESDEBUG("cache", "BESStoredDapResultCache::"<<__func__ << "() - " <<
-                "Cache is ENABLED"<< endl);
+            return nullptr;
         }
+        return &instance;
     }
-
-    return d_instance;
 }
 
 /**
