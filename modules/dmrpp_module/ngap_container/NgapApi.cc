@@ -248,11 +248,12 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
     // we know that collection_concept_id will never contain a '/', and we know that the optional
     // part is separated from the collection_concept_id by a '/', we look for that and if we find it, we truncate
     // the value at that spot.
-    string optional_part;
     size_t slash_pos = collection_name.find('/');
     if (slash_pos != string::npos) {
-        optional_part = collection_name.substr(slash_pos);
+#if 0
+        const string optional_part = collection_name.substr(slash_pos);
         BESDEBUG(MODULE, prolog << "Found optional collections name component: " << optional_part << endl);
+#endif
         collection_name = collection_name.substr(0, slash_pos);
     }
     BESDEBUG(MODULE, prolog << "Found collection_name (aka collection_concept_id): " << collection_name << endl);

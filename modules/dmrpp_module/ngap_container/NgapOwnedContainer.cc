@@ -51,8 +51,14 @@
 #include "NgapNames.h"
 
 #define prolog std::string("NgapOwnedContainer::").append(__func__).append("() - ")
+
 // CACHE_LOG is defined separately from INFO_LOG so that we can turn it off easily. jhrg 11/19/23
+#ifndef NDEBUG
 #define CACHE_LOG(x) INFO_LOG(x)
+#else
+#define CACHE_LOG(x)
+#define INFO_LOG(x) VERBOSE(x)
+#endif
 
 using namespace std;
 using namespace bes;
