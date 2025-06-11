@@ -238,13 +238,7 @@ BESStoredDapResultCache::get_instance()
         static BESStoredDapResultCache instance;
         d_enabled = d_instance->cache_enabled();
         if(!d_enabled){
-            BESDEBUG("cache", "BESStoredDapResultCache::"<<__func__ << "() - " <<
-                "Cache is DISABLED"<< endl);
             return nullptr;
-       }
-        else {
-            BESDEBUG("cache", "BESStoredDapResultCache::"<<__func__ << "() - " <<
-                "Cache is ENABLED"<< endl);
         }
         return &instance;
     }
