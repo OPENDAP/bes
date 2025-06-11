@@ -83,11 +83,12 @@ public:
     ~NgapApiTest() override = default;
 
     // Called before each test
-    void setUp() override
+#if 0
+      void setUp() override
     {
         DBG(cerr << endl);
         DBG2(cerr << "setUp() - BEGIN" << endl);
-        string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
+        const string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
         DBG2(cerr << "setUp() - Using BES configuration: " << bes_conf << endl);
 
         TheBESKeys::ConfigFile = bes_conf;
@@ -96,8 +97,10 @@ public:
 
         DBG2(cerr << "setUp() - END" << endl);
     }
+#endif
 
-   static  void show_vector(vector<string> &v) {
+
+    static  void show_vector(const vector<string> &v) {
         cerr << "show_vector(): Found " << v.size() << " elements." << endl;
         // vector<string>::iterator it = v.begin();
         for(size_t i=0;  i < v.size(); i++) {
@@ -105,7 +108,7 @@ public:
         }
     }
 
-    const void compare_results(const string &granule_name, const string &data_access_url, const string &expected_data_access_url){
+    static void compare_results(const string &granule_name, const string &data_access_url, const string &expected_data_access_url){
         if (debug) cerr << prolog << "TEST: Is the URL longer than the granule name? " << endl;
         CPPUNIT_ASSERT (data_access_url.size() > granule_name.size() );
 
@@ -127,20 +130,19 @@ public:
     static void resty_path_to_cmr_query_test_01() {
         DBG(cerr << prolog << "BEGIN" << endl);
 
-        string resty_path("providers/POCLOUD"
+        const string resty_path("providers/POCLOUD"
                           "/collections/Sentinel-6A MF/Jason-CS L2 Advanced Microwave Radiometer (AMR-C) NRT Geophysical Parameters"
                           "/granules/S6A_MW_2__AMR_____NR_001_227_20201130T133814_20201130T153340_F00");
         DBG(cerr << prolog << "resty_path: " << resty_path << endl);
 
-        string expected_cmr_url(
+        const string expected_cmr_url(
                 "https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4"
                 "?" CMR_PROVIDER "=POCLOUD"
                 "&" CMR_ENTRY_TITLE "=Sentinel-6A%20MF%2FJason-CS%20L2%20Advanced%20Microwave%20Radiometer%20%28AMR-C%29%20NRT%20Geophysical%20Parameters"
                 "&" CMR_GRANULE_UR "=S6A_MW_2__AMR_____NR_001_227_20201130T133814_20201130T153340_F00"
         );
         try {
-            string cmr_query_url;
-            cmr_query_url = NgapApi::build_cmr_query_url(resty_path);
+            const string cmr_query_url = NgapApi::build_cmr_query_url(resty_path);
             DBG(cerr << prolog << "expected_cmr_url: " << expected_cmr_url << endl);
             DBG(cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl);
             CPPUNIT_ASSERT( cmr_query_url == expected_cmr_url );
