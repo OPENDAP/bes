@@ -690,7 +690,7 @@ string filter_aws_url(const string &eff_url) {
             // Add it (or not if it's an AWS thing) to the kvp vector
             add_if_not_aws(kvp_string, kvp);
             // Start at the beginning of the next field (if there is one)
-            start = end + 1;
+            start = position + 1;
             position = eff_url.find(delimiter, start);
         }
         // Handle any remaining chars in the query...
@@ -701,8 +701,12 @@ string filter_aws_url(const string &eff_url) {
         // Now rebuild the URL, but now without the AWS stuff.
         bool first = true;
         for (auto kvp_str:kvp) {
+
             if (!first)
                 filtered_url += delimiter;
+            else
+                filtered_url += "?";
+
             filtered_url += kvp_str;
             first = false;
         }
