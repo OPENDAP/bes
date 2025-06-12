@@ -817,8 +817,8 @@ void CmrApi::get_opendap_providers(map<string, unique_ptr<cmr::Provider>> &opend
 
 /**
  * Determines the number of collections published by the "provider" that are tagged as having an opendap URL
- * The collections search endpoint query uses the provider_id and the query parameter "has_opendap_url=true"
- * to acheive this.
+ * The collection search endpoint query uses the provider_id and the query parameter "has_opendap_url=true"
+ * to achieve this.
  * @param provider_id
  * @return
  */
@@ -827,12 +827,17 @@ unsigned long int CmrApi::get_opendap_collections_count(const string &provider_i
     JsonUtils json;
     stringstream cmr_query_url;
     cmr_query_url << d_cmr_collections_search_endpoint_url;
+    // FIXME See https://bugs.earthdata.nasa.gov/browse/HYRAX-1642.
+    //  Using 'has_opendap_url' is broken because most collections in CMR do not
+    //  use the correct UMM-S record and thus set the information required to for
+    //  this feature. The only way (as of June 2025) to get a reliable tally of
+    //  collections with DMR++ documents is to probe every collection. jhrg 6/12/25
     cmr_query_url << "?has_opendap_url=true&page_size=0";
     cmr_query_url << "&provider=" << provider_id;
     BESDEBUG(MODULE, prolog << "cmr_query_url: " << cmr_query_url.str() << endl);
     const auto &cmr_doc = json.get_as_json(cmr_query_url.str());
 
-    unsigned long int hits = json.qc_integer(CMR_HITS_KEY,cmr_doc);
+    const unsigned long int hits = json.qc_integer(CMR_HITS_KEY,cmr_doc);
     BESDEBUG(MODULE, prolog << CMR_HITS_KEY <<  ": " << hits << endl);
     return hits;
 }
