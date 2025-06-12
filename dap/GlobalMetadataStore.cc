@@ -308,6 +308,7 @@ GlobalMetadataStore *
 GlobalMetadataStore::get_instance(const string &cache_dir, const string &prefix, unsigned long long size)
 {
     if (d_enabled && d_instance == 0) {
+        
         d_instance = new GlobalMetadataStore(cache_dir, prefix, size); // never returns null_ptr
         d_enabled = d_instance->cache_enabled();
         if (!d_enabled) {

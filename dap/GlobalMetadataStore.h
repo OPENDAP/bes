@@ -97,15 +97,13 @@ private:
 
     std::ofstream of;
 
-    // Called by atexit()
-    static void delete_instance() {
-        delete d_instance;
-        d_instance = 0;
-    }
-
     friend class DmrppMetadataStore;
     friend class DmrppMetadataStoreTest;
     friend class GlobalMetadataStoreTest;
+
+    // Only get_instance() should be used to instantiate this class
+    GlobalMetadataStore();
+    GlobalMetadataStore(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
 
 protected:
     std::string d_ledger_entry; // Built up as info is added, written on success
@@ -210,19 +208,18 @@ public:
          }//end clearLock()
      };
 
-    typedef struct MDSReadLock MDSReadLock;
+    // SBL - is this correct?
+    using MDSReadLock = struct MDSReadLock;
+    // typedef struct MDSReadLock MDSReadLock;
 
 protected:
     MDSReadLock get_read_lock_helper(const std::string &name, const std::string &suffix, const std::string &object_name);
 
     // Suppress the automatic generation of these ctors
-    GlobalMetadataStore(const GlobalMetadataStore &src);
+    GlobalMetadataStore(const GlobalMetadataStore& ) = delete;
+    GlobalMetadataStore& operator=(const GlobalMetadataStore&) = delete;
 
     void initialize();
-
-    // Only get_instance() should be used to instantiate this class
-    GlobalMetadataStore();
-    GlobalMetadataStore(const std::string &cache_dir, const std::string &prefix, unsigned long long size);
 
     // these are static because they are called by the static method get_instance()
     static std::string get_cache_dir_from_config();
@@ -234,9 +231,7 @@ public:
         unsigned long long size);
     static GlobalMetadataStore *get_instance();
 
-    virtual ~GlobalMetadataStore()
-    {
-    }
+    ~GlobalMetadataStore() override = default;
 
     virtual bool add_responses(libdap::DDS *dds, const std::string &name);
     virtual bool add_responses(libdap::DMR *dmr, const std::string &name);
