@@ -308,25 +308,15 @@ GlobalMetadataStore *
 GlobalMetadataStore::get_instance(const string &cache_dir, const string &prefix, unsigned long long size)
 {
     if (d_enabled && d_instance == 0) {
-        
-        d_instance = new GlobalMetadataStore(cache_dir, prefix, size); // never returns null_ptr
+        static GlobalMetadataStore instance;
         d_enabled = d_instance->cache_enabled();
         if (!d_enabled) {
-            delete d_instance;
-            d_instance = 0;
-
-            BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::"<<__func__ << "() - " << "MDS is DISABLED"<< endl);
+            return nullptr;
         }
-        else {
-            AT_EXIT(delete_instance);
 
-            BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::"<<__func__ << "() - " << "MDS is ENABLED"<< endl);
-        }
+        BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::get_instance(dir,prefix,size) - instance: " << instance << endl);
+        return &instance;
     }
-
-    BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::get_instance(dir,prefix,size) - d_instance: " << d_instance << endl);
-
-    return d_instance;
 }
 
 /**
@@ -339,24 +329,15 @@ GlobalMetadataStore *
 GlobalMetadataStore::get_instance()
 {
     if (d_enabled && d_instance == 0) {
-        d_instance = new GlobalMetadataStore(get_cache_dir_from_config(), get_cache_prefix_from_config(),
-            get_cache_size_from_config());
+        static GlobalMetadataStore instance;
         d_enabled = d_instance->cache_enabled();
         if (!d_enabled) {
-            delete d_instance;
-            d_instance = nullptr;
-            BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::"<<__func__ << "() - " << "MDS is DISABLED"<< endl);
+            return nullptr;
         }
-        else {
-            AT_EXIT(delete_instance);
 
-            BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::"<<__func__ << "() - " << "MDS is ENABLED"<< endl);
-        }
+        BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::get_instance() - instance: " << instance << endl);
+        return &instance;
     }
-
-    BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::get_instance() - d_instance: " << (void *) d_instance << endl);
-
-    return d_instance;
 }
 ///@}
 

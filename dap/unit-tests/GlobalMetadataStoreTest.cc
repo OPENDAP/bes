@@ -240,7 +240,7 @@ public:
 
         delete d_test_dmr; d_test_dmr = 0;
 
-        d_mds->delete_instance();
+        delete d_mds;
 
         if (clean) clean_cache_dir(d_mds_dir);
 
