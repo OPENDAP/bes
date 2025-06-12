@@ -27,15 +27,16 @@ include $(top_srcdir)/coverage.mk
 
 DISTCLEANFILES = test_config.h *.Po
 
-CLEANFILES = bes.conf bes.cache.conf *.dbg *.log
-
-EXTRA_DIST = test_config.h.in bes.conf.in bes.cache.conf.in cmr_json_responses data
-
+CLEANFILES = *.dbg *.log
+# bes.conf
+EXTRA_DIST = test_config.h.in cmr_json_responses data
+# bes.conf.in bes.cache.conf
 check_PROGRAMS = $(UNIT_TESTS)
 
 TESTS = $(UNIT_TESTS)
 
-noinst_DATA = bes.conf bes.cache.conf
+# noinst_DATA = bes.cache.conf
+# bes.conf
 # See target below. jhrg
 # $(abs_builddir)/static-cache
 
@@ -54,8 +55,8 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" \
 	    -e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" $< > test_config.h
 
-bes.conf: $(top_srcdir)/configure.ac
-bes.cache.conf: $(top_srcdir)/configure.ac
+# bes.conf: $(top_srcdir)/configure.ac
+# bes.cache.conf: $(top_srcdir)/configure.ac
 
 %.conf: %.conf.in
 	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \

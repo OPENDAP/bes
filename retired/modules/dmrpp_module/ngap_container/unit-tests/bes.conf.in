@@ -1,22 +1,22 @@
 
 BES.LogName = ./bes.log
-BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/ngap_module
-BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
+# BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/ngap_module
+# BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
 
-BES.modules+=ngap
-BES.module.ngap=@abs_top_builddir@/modules/ngap/.libs/libngap_module.so
+# BES.modules+=ngap
+# BES.module.ngap=@abs_top_builddir@/modules/ngap/.libs/libngap_module.so
 
-BES.modules+=h5
-BES.module.h5=@abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
-BES.Catalog.catalog.TypeMatch+=h5:.*\.(HDF5|h5|he5)(\.bz2|\.gz|\.Z)?$;
+# BES.modules+=h5
+# BES.module.h5=@abs_top_builddir@/modules/hdf5_handler/.libs/libhdf5_module.so
+# BES.Catalog.catalog.TypeMatch+=h5:.*\.(HDF5|h5|he5)(\.bz2|\.gz|\.Z)?$;
 
-BES.modules+=dmrpp
-BES.module.dmrpp=@abs_top_builddir@/modules/dmrpp/libdmrpp_module.so
-BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.dmrpp(\.bz2|\.gz|\.Z)?$;
+# BES.modules+=dmrpp
+# BES.module.dmrpp=@abs_top_builddir@/modules/dmrpp/libdmrpp_module.so
+# BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.dmrpp(\.bz2|\.gz|\.Z)?$;
 
-BES.Catalog.catalog.RootDirectory=@abs_top_builddir@/modules/ngap_module
+# BES.Catalog.catalog.RootDirectory=@abs_top_builddir@/modules/ngap_module
 
-BES.LogName=/dev/null
+# BES.LogName=/dev/null
 
 AllowedHosts = ^https:\/\/cmr\.(uat\.|sit\.)?earthdata\.nasa\.gov\/.*$
 
