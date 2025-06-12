@@ -710,14 +710,12 @@ string filter_aws_url(const string &eff_url) {
         // Now rebuild the URL, but without the AWS stuff.
         bool first = true;
         for (auto &kvp_str:kvp) {
-
             if (!first) {
                 filtered_url += delimiter;
             }
             else {
                 filtered_url += '?';
             }
-
             filtered_url += kvp_str;
             first = false;
         }
