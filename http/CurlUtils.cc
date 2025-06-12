@@ -674,7 +674,7 @@ string filter_aws_url(const string &eff_url) {
 #endif
 
     std::vector<std::string> kvp;
-    string filtered_url = eff_url;;
+    string filtered_url = eff_url;
     size_t start = 0;
     char delimiter = '&';
     auto position = eff_url.find('?');
@@ -709,7 +709,7 @@ string filter_aws_url(const string &eff_url) {
 
         // Now rebuild the URL, but without the AWS stuff.
         bool first = true;
-        for (auto &kvp_str:kvp) {
+        for (const auto &kvp_str:kvp) {
             if (!first) {
                 filtered_url += delimiter;
             }
