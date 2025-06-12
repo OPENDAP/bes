@@ -633,6 +633,17 @@ static string get_effective_url(CURL *ceh, const string &requested_url) {
 }
 
 
+/**
+ * @brief A helper function for filter_aws_url()
+ * @param kvp_string The string to be valuated and possibly added to the vector
+ * @param kvp A vector of strings to hold the kvp strings that are not obviously AWS things.
+ */
+void add_if_not_aws(const string &kvp_string, std::vector<std::string> &kvp) {
+    if (kvp_string.find("X-Amz-") == string::npos) {
+        kvp.push_back(kvp_string);
+    }
+}
+
 
 // https://<<host>>>/<<path>>?A-userid=jhrg&amp;X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=...;
 // X-Amz-Date=20230417T193403Z&amp;X-Amz-Expires=3467&amp;X-Amz-Security-Token=...
@@ -646,17 +657,11 @@ static string get_effective_url(CURL *ceh, const string &requested_url) {
  * @param eff_url
  * @return The URL with the tokens removed
  */
-void add_if_not_aws(const string &kvp_string, std::vector<std::string> &kvp) {
-    if (kvp_string.find("X-Amz-") == string::npos) {
-        kvp.push_back(kvp_string);
-    }
-}
-
 string filter_aws_url(const string &eff_url) {
+#if 0
     // It seems unlikely that the X-Amz prefix will be in the first part of the query string
     // and the first part will likely be useful for the error message, so looking for the first
     // '&' is a good start.
-    /*
     auto pos = eff_url.find('&');
     string filtered_url = eff_url.substr(0, pos);
     // Check to make sure that the X-Amz prefix is not in the first part of the query string
@@ -666,7 +671,8 @@ string filter_aws_url(const string &eff_url) {
         pos = filtered_url.find('?');
         return filtered_url.substr(0, pos);
     }
-    */
+#endif
+
     std::vector<std::string> kvp;
     string filtered_url = eff_url;;
     size_t start = 0;
@@ -687,25 +693,30 @@ string filter_aws_url(const string &eff_url) {
         while (position != std::string::npos) {
             // Find the current kvp thing
             kvp_string = eff_url.substr(start, position - start);
+
             // Add it (or not if it's an AWS thing) to the kvp vector
             add_if_not_aws(kvp_string, kvp);
+
             // Start at the beginning of the next field (if there is one)
             start = position + 1;
             position = eff_url.find(delimiter, start);
         }
         // Handle any remaining chars in the query...
         kvp_string = eff_url.substr(start);
-        // Add it (or not if it's an AWS thing) to the kvp vector
+
+        // Add them (or not if they're an AWS thing) to the kvp vector
         add_if_not_aws(kvp_string, kvp);
 
-        // Now rebuild the URL, but now without the AWS stuff.
+        // Now rebuild the URL, but without the AWS stuff.
         bool first = true;
-        for (auto kvp_str:kvp) {
+        for (auto &kvp_str:kvp) {
 
-            if (!first)
+            if (!first) {
                 filtered_url += delimiter;
-            else
-                filtered_url += "?";
+            }
+            else {
+                filtered_url += '?';
+            }
 
             filtered_url += kvp_str;
             first = false;
