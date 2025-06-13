@@ -42,8 +42,6 @@ endif
 # Why are these here? Because they have tests that depend on netcdf.
 SUBDIRS += httpd_catalog_module s3_reader fileout_json w10n_handler gateway_module xml_data_handler
 
-# builddmrpp_module
-
 if BUILD_GDAL
 SUBDIRS += gdal_module
 endif
