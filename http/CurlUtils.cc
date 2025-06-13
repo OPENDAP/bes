@@ -632,12 +632,25 @@ static string get_effective_url(CURL *ceh, const string &requested_url) {
     return effective_url;
 }
 
+
+/**
+ * @brief A helper function for filter_aws_url()
+ * @param kvp_string The string to be evaluated and possibly added to the vector
+ * @param kvp A vector of strings to hold the kvp strings that are not obviously AWS things.
+ */
+void add_if_not_aws(const string &kvp_string, std::vector<std::string> &kvp) {
+    if (kvp_string.find("X-Amz-") == string::npos) {
+        kvp.push_back(kvp_string);
+    }
+}
+
+
 // https://<<host>>>/<<path>>?A-userid=jhrg&amp;X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=...;
 // X-Amz-Date=20230417T193403Z&amp;X-Amz-Expires=3467&amp;X-Amz-Security-Token=...
 /**
  * @brief Remove AWS tokens from the URL
  * This function will look for the first ampersand and remove everything after it. Then
- * it will look any thing with an X-Amz- prefix if that is found it will remove the whole
+ * it will look anything with an X-Amz- prefix if that is found it will remove the whole
  * query string. This code should only be called if an error is being reported, so high
  * performance is not required.
  * @note Public only to enable testing.
@@ -645,18 +658,49 @@ static string get_effective_url(CURL *ceh, const string &requested_url) {
  * @return The URL with the tokens removed
  */
 string filter_aws_url(const string &eff_url) {
-    // It seems unlikely that the X-Amz prefix will be in the first part of the query string
-    // and the first part will likely be useful for the error message, so looking for the first
-    // '&' is a good start.
-    auto pos = eff_url.find('&');
-    string filtered_url = eff_url.substr(0, pos);
-    // Check to make sure that the X-Amz prefix is not in the first part of the query string
-    if (filtered_url.find("X-Amz-") == string::npos) {
-        return filtered_url;
-    } else {
-        pos = filtered_url.find('?');
-        return filtered_url.substr(0, pos);
+
+    std::vector<std::string> kvp;
+    string filtered_url = eff_url;
+    size_t start = 0;
+    auto position = eff_url.find('?');
+
+    if (position != string::npos) {
+        constexpr char delimiter = '&';
+        // We found a '?' which indicates that there may be a query string.
+        start = position + 1;
+
+        // Stash the URl's domain name and path for reconstruction...
+        filtered_url = eff_url.substr(0, position);
+
+        // Find the first delimiter in the query_string
+        position  = eff_url.find(delimiter, start);
+
+        while (position != std::string::npos) {
+
+            // Find the current kvp record and add it (or not if it's an AWS thing) to the kvp vector
+            add_if_not_aws(eff_url.substr(start, position - start), kvp);
+
+            // Start at the beginning of the next field (if there is one)
+            start = position + 1;
+            position = eff_url.find(delimiter, start);
+        }
+        // Handle any remaining chars in the query, add them (or not if they're an AWS thing) to the kvp vector
+        add_if_not_aws(eff_url.substr(start, position - start), kvp);
+
+        // Now rebuild the URL, but without the AWS stuff.
+        bool first = true;
+        for (const auto &kvp_str:kvp) {
+            if (!first) {
+                filtered_url += delimiter;
+            }
+            else {
+                filtered_url += '?';
+            }
+            filtered_url += kvp_str;
+            first = false;
+        }
     }
+    return filtered_url;
 }
 
 /**
