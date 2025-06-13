@@ -650,7 +650,7 @@ void add_if_not_aws(const string &kvp_string, std::vector<std::string> &kvp) {
 /**
  * @brief Remove AWS tokens from the URL
  * This function will look for the first ampersand and remove everything after it. Then
- * it will look any thing with an X-Amz- prefix if that is found it will remove the whole
+ * it will look anything with an X-Amz- prefix if that is found it will remove the whole
  * query string. This code should only be called if an error is being reported, so high
  * performance is not required.
  * @note Public only to enable testing.
