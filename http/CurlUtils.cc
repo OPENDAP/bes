@@ -635,7 +635,7 @@ static string get_effective_url(CURL *ceh, const string &requested_url) {
 
 /**
  * @brief A helper function for filter_aws_url()
- * @param kvp_string The string to be valuated and possibly added to the vector
+ * @param kvp_string The string to be evaluated and possibly added to the vector
  * @param kvp A vector of strings to hold the kvp strings that are not obviously AWS things.
  */
 void add_if_not_aws(const string &kvp_string, std::vector<std::string> &kvp) {
