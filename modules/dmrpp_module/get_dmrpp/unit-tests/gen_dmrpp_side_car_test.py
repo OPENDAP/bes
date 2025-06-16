@@ -21,8 +21,17 @@ class TestSample(unittest.TestCase):
         if not os.environ.get('PRESERVE_TEST_ASSETS'):
             self.addCleanup(os.remove, "grid_2_2d_ps.hdf.dmrpp")
             self.addCleanup(os.remove, "grid_2_2d_ps.hdf_mvs.h5")
-        result = filecmp.cmp("grid_2_2d_ps.hdf.dmrpp","grid_2_2d_ps.hdf.dmrpp.baseline")
-        self.assertEqual(result ,True )
+        
+        #result = filecmp.cmp("grid_2_2d_ps.hdf.dmrpp","grid_2_2d_ps.hdf.dmrpp.baseline")
+        #self.assertEqual(result ,True )
+        
+        # Since we also add the dmrpp metadata generation informatio for the HDF4 files,
+        # we need to ignore those information when doing comparision.
+        with open('grid_2_2d_ps.hdf.dmrpp') as f:
+            dmrpp_lines_after_79 = f.readlines()[79:]
+        with open('grid_2_2d_ps.hdf.dmrpp.baseline') as f1:
+            baseline_lines_after_79 = f1.readlines()[79:]
+        self.assertEqual(dmrpp_lines_after_79 ,baseline_lines_after_79)
    
 
     def test_gen_dmrpp_side_car2(self):

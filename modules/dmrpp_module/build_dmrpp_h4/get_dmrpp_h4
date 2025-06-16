@@ -392,10 +392,10 @@ if (args.data_url is not None):
     hdf4_url = args.data_url
 
 if (args.disable_missing_data is True):
-    ret = subprocess.run(["build_dmrpp_h4", "-f", hdf4_full_path, "-r", hdf4_dmr_name, "-u", hdf4_url, "-D"],
+    ret = subprocess.run(["build_dmrpp_h4", "-f", hdf4_full_path, "-r", hdf4_dmr_name, "-u", hdf4_url, "-D", "-M"],
                          stdout=subprocess.PIPE, universal_newlines=True)
 else:
-    ret = subprocess.run(["build_dmrpp_h4", "-f", hdf4_full_path, "-r", hdf4_dmr_name, "-u", hdf4_url],
+    ret = subprocess.run(["build_dmrpp_h4", "-f", hdf4_full_path, "-r", hdf4_dmr_name, "-u", hdf4_url,"-M"],
                          stdout=subprocess.PIPE, universal_newlines=True)
 if ret.returncode != 0:
     print("build_dmrpp_h4 fails to generate the HDF4 dmrpp file. ")
