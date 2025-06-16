@@ -81,7 +81,7 @@ def generate_tmp_bes_conf_file(enable_cf):
             locate_par_dir = locate[:len(locate) - len(bin_bes_cmd)]
             # Remove the end characters, bin/besstandalone
             #locate_par_dir = locate[:len(locate) - 17]
-            print(locate_par_dir)
+            #print(locate_par_dir)
             
             locate_lib_path = locate_par_dir
             if (locate_par_dir == '/usr/'):
