@@ -55,7 +55,7 @@
 
 #define COMP_INFO 512 /*!< Max buffer size for compression information.  */
 
-#define ERROR(x) do { cerr << "ERROR: " << x << " " << __FILE__ << ":" << __LINE__ << endl; } while(false)
+#define ERROR(x) do { cerr << "Internal Error: " << x << " at " << __FILE__ << ":" << __LINE__ << endl; } while(false)
 
 /*
  * Hold mapping information for SDS objects.
@@ -203,6 +203,7 @@ int read_chunk(int sdsid, SD_mapping_info_t *map_info, int *origin)
     /* Save SDS id since HDmemset reset it. map_info->id will be reused. */
     /* map_info->id = sdsid; */
 
+
     // First check if this chunk/data stream has any block of data.
     intn info_count = SDgetdatainfo(sdsid, origin, 0, 0, nullptr, nullptr);
     if (info_count == FAIL) {
@@ -233,16 +234,18 @@ int read_chunk(int sdsid, SD_mapping_info_t *map_info, int *origin)
 
 } /* read_chunk */
 
-string get_sds_fill_value_str(int32 sdsid, int32 datatype) {
+string get_sds_fill_value_str(int32 sdsid, int32 datatype, bool &dmrpp_h4_error, string &err_msg) {
 
     intn emptySDS = 0;
+    string ret_value;
     
     if (SDcheckempty(sdsid,&emptySDS) == FAIL) {
         SDendaccess(sdsid);
-        throw BESInternalError("SDcheckempty fails. ",__FILE__,__LINE__);
+        dmrpp_h4_error = true;
+        err_msg = "SDcheckempty fails at "+string(__FILE__) +":" + to_string(__LINE__);
+        return ret_value;
     }
 
-    string ret_value;
     switch (datatype) {
 
         case DFNT_UINT8:
@@ -327,7 +330,13 @@ string get_sds_fill_value_str(int32 sdsid, int32 datatype) {
 }
 bool SD_set_fill_value(int32 sdsid, int32 datatype, BaseType *btp) {
 
-    string fill_value = get_sds_fill_value_str(sdsid,datatype);
+    bool dmrpp_h4_error = false;
+    string err_msg;
+    string fill_value = get_sds_fill_value_str(sdsid,datatype,dmrpp_h4_error,err_msg);
+    if (dmrpp_h4_error) {
+        ERROR(err_msg);
+        return false;
+    }
     if (!fill_value.empty()) {
          auto dc = dynamic_cast<DmrppCommon *>(btp);
          if (!dc) {
@@ -1287,7 +1296,6 @@ bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id,
         throw BESInternalError("Expected to find an DAP4 attribute list for " + btp->name() + " but did not.",
                                __FILE__, __LINE__);
     }
-
     // Look for the full name path for this variable
     // If one was not given via an attribute, use BaseType::FQN() which
     // relies on the variable's position in the DAP dataset hierarchy.
@@ -1304,7 +1312,7 @@ bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id,
         if (is_sds) {
             if (false == ingest_sds_info_to_chunk(sd_id, obj_ref,btp)) {
                 close_hdf4_file_ids(sd_id,file_id);
-                throw BESInternalError("Cannot retrieve SDS information correctly for  " + btp->name() ,
+                throw BESInternalError("Cannot retrieve SDS information correctly for " + btp->name() ,
                                    __FILE__, __LINE__);
             }
         }
@@ -1312,7 +1320,7 @@ bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id,
         else {
             if (false == ingest_vdata_info_to_chunk(file_id, obj_ref,btp)) {
                 close_hdf4_file_ids(sd_id,file_id);
-                throw BESInternalError("Cannot retrieve vdata information correctly for  " + btp->name() ,
+                throw BESInternalError("Cannot retrieve vdata information correctly for " + btp->name() ,
                                    __FILE__, __LINE__);
             }
         }
@@ -1509,7 +1517,6 @@ void add_chunk_information(const string &h4_file_name, DMRpp *dmrpp, bool disabl
         msg << "Error: HDF4 file '" << h4_file_name << "' Vstart failed." << endl;
         throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
     }
-
  
     // iterate over all the variables in the DMR
     get_chunks_for_all_variables(h4_file_name, sd_id,file_id, dmrpp->root(),disable_missing_data);
@@ -1745,7 +1752,7 @@ void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr
     parser.intern(in, &dmrpp, false);
 
     add_chunk_information(h4_file_fqn, &dmrpp,disable_missing_data);
-
+        
     if (add_production_metadata) {
         inject_version_and_configuration(argc,argv,bes_conf_file_used_to_create_dmr,&dmrpp);
     }

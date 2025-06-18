@@ -37,6 +37,8 @@
 #include <BESDebug.h>
 #include <BESError.h>
 #include <BESInternalFatalError.h>
+#include <BESInternalError.h>
+#include <BESNotFoundError.h>
 
 #include "build_dmrpp_util_h4.h"
 
@@ -142,7 +144,29 @@ int main(int argc, char *argv[]) {
         return EXIT_FAILURE; 
 
     }
-    qc_input_file(h4_file_name);
+    try {
+        qc_input_file(h4_file_name);
+    }
+    catch (BESInternalFatalError &e) {
+         cerr<<"Fatal Error: "<<e.get_message() <<" at "<<e.get_file()<<":" <<e.get_line() << endl;
+         return EXIT_FAILURE;
+    }
+    catch(BESNotFoundError &e) {
+         cerr<<e.get_message() <<" at "<<e.get_file()<<":" <<e.get_line() <<endl;
+         return EXIT_FAILURE;
+    }
+    catch(BESInternalError  &e) {
+         cerr<<"Internal Error: "<<e.get_message() <<" at "<<e.get_file()<<":" <<e.get_line() << endl;
+         return EXIT_FAILURE;
+    }
+    catch (std::exception &se) {
+        cerr << "Caught std::exception! Message: " << se.what() <<"at "<<__FILE__<<":" <<__LINE__<<endl;
+        return EXIT_FAILURE;
+    }
+    catch(...) {
+        cerr << "Caught unknown exception" <<"at "<<__FILE__<<":" <<__LINE__<<endl;
+        return EXIT_FAILURE;
+    }
 
     if (dmr_filename.empty()){
         cerr << endl <<"    A DMR file for the granule '" << h4_file_name << "' must also be provided with -r <h4_dmrpp_file_name> ." << endl;
@@ -151,7 +175,8 @@ int main(int argc, char *argv[]) {
     }
 
     // Build the dmr++ from an existing DMR file.
-    build_dmrpp_from_dmr_file(
+    try {
+        build_dmrpp_from_dmr_file(
             dmrpp_href_value,
             dmr_filename,
             h4_file_name,
@@ -159,7 +184,27 @@ int main(int argc, char *argv[]) {
             disable_missing_data,
             bes_conf_file_used_to_create_dmr,
             argc,  argv);
-
+    }
+    catch(BESNotFoundError &e) {
+         cerr<<e.get_message() <<" at "<<e.get_file()<<":" <<e.get_line() <<endl;
+         return EXIT_FAILURE;
+    }
+    catch(BESInternalError  &e) {
+         cerr<<"Internal Error: "<<e.get_message() <<" at "<<e.get_file()<<":" <<e.get_line() << endl;
+         return EXIT_FAILURE;
+    }
+    catch (BESInternalFatalError &e) {
+         cerr<<"Fatal Error: "<<e.get_message() <<" at "<<e.get_file()<<":" <<e.get_line() << endl;
+         return EXIT_FAILURE;
+    }
+    catch (std::exception &se) {
+        cerr << "Caught std::exception! Message: " << se.what() <<"at "<<__FILE__<<":" <<__LINE__<<endl;
+        return EXIT_FAILURE;
+    }
+    catch(...) {
+        cerr << "Caught unknown exception" <<"at "<<__FILE__<<":" <<__LINE__<<endl;
+        return EXIT_FAILURE;
+    }
 
     return EXIT_SUCCESS;
 }
