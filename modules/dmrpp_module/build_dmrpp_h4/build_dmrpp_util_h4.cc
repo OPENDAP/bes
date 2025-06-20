@@ -914,13 +914,6 @@ bool add_missing_cf_grid(const string &filename,BaseType *btp, const D4Attribute
         return false;
     }
 
-    auto dc = dynamic_cast<DmrppCommon *>(btp);
-    if (!dc) {
-        GDdetach(gridid);
-        GDclose(gridfd);
-        err_msg = "Expected to find a DmrppCommon instance but did not in add_missing_cf_grid";
-        return false;
-    }
     auto da = dynamic_cast<DmrppArray *>(btp);
     if (!da) {
         GDdetach(gridid);
@@ -1092,13 +1085,7 @@ bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attrib
     VERBOSE(cerr<<"The first value of longtitude: "<<lon[0]<<endl);
     VERBOSE(cerr<<"The first value of latitude: "<<lat[0]<<endl);
 
-    auto dc = dynamic_cast<DmrppCommon *>(btp);
-    if (!dc) {
-        GDdetach(gridid);
-        GDclose(gridfd);
-        err_msg = "Expected to find a DmrppCommon instance but did not in add_missing_eos_latlon";
-        return false;
-    }
+
     auto da = dynamic_cast<DmrppArray *>(btp);
     if (!da) {
         GDdetach(gridid);
@@ -1177,11 +1164,6 @@ bool add_missing_sp_latlon(BaseType *btp, const D4Attribute *sp_ll_attr, string 
     float ll_start = stof(ll_start_str);
     float ll_res   = stof(ll_res_str);
 
-    auto dc = dynamic_cast<DmrppCommon *>(btp);
-    if (!dc) {
-        err_msg = "Expected to find a DmrppCommon instance but did not in add_missing_sp_latlon";
-        return false;
-    }
     auto da = dynamic_cast<DmrppArray *>(btp);
     if (!da) {
         err_msg = "Expected to find a DmrppArray instance but did not in add_missing_sp_latlon";
@@ -1319,11 +1301,6 @@ bool handle_chunks_for_none_array(BaseType *btp, bool disable_missing_data, stri
             // Here we don't bother to check the attribute value since this CF grid variable value is dummy.
             if (attr) {
     
-                auto dc = dynamic_cast<DmrppCommon *>(btp);
-                if (!dc) {
-                    err_msg = "Expected to find a DmrppCommon instance but did not in handle_chunks_for_none_array";
-                    return false;
-                }
                 auto db = dynamic_cast<DmrppByte *>(btp);
                 if (!db) {
                     err_msg = "Expected to find a DmrppByte instance but did not in handle_chunks_for_none_array";
