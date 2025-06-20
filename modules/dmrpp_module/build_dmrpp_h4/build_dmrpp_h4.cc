@@ -2,7 +2,9 @@
 
 // This file is part of the Hyrax data server.
 
+// Copyright (c) The HDF Group
 // Copyright (c) 2018 OPeNDAP, Inc.
+// Author: Kent Yang <myang6@hdfgroup.org>
 // Author: James Gallagher <jgallagher@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
@@ -43,6 +45,7 @@
 #include "build_dmrpp_util_h4.h"
 
 using namespace std;
+
 using namespace libdap;
 
 using namespace dmrpp;
@@ -64,7 +67,7 @@ void usage() {
         -r: DMR file to build DMR++ from
         -u: The href value to use in the DMR++ for the data file
         -M: Add information about this software, incl versions, to the built DMR++
-        -D: Disable the generation of HDF-EOS2/HDF4 missing latitude/longitude
+        -D: Disable the generation of HDF-EOS2/HDF4 missing latitude/longitude and the CF grid mapping variables
         -h: Show this help
         -v: Verbose information helpful for debugging and understanding the program working flow
         -V: Show build versions for components that make up the program
@@ -80,6 +83,7 @@ void usage() {
  * @return
  */
 int main(int argc, char *argv[]) {
+
     string h4_file_name;
     string h4_dset_path;
     string dmr_filename;
@@ -92,12 +96,14 @@ int main(int argc, char *argv[]) {
     while ((option_char = getopt(argc, argv, "c:f:r:u:dhvVMD")) != -1) {
         switch (option_char) {
             case 'V':
+                // CVER is the package version of BES and its components. libdap_name and libdap_version
+                // return the libdap package's name and version. 
                 cerr << basename(argv[0]) << "-" << CVER << " (bes-"<< CVER << ", " << libdap_name() << "-"
                     << libdap_version() << ")" << endl;
                 return 0;
 
             case 'v':
-                build_dmrpp_util_h4::verbose = true; // verbose hdf5 errors
+                build_dmrpp_util_h4::verbose = true; // verbose error messages
                 break;
 
             case 'd':
@@ -137,7 +143,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // Check to see if the file is hdf4 compliant
+    // Check to see if this file is an hdf4 file
     if (h4_file_name.empty()) {
         cerr << endl << "    The HDF4 file name must be provided with -f <h4_file_name> ." << endl;
         usage();
