@@ -102,7 +102,7 @@ protected:
         virtual void operator()(std::ostream &os);
     };
 
-    DmrppMetadataStore(const DmrppMetadataStore &src) : bes::GlobalMetadataStore(src) { }
+    DmrppMetadataStore(const DmrppMetadataStore &src) : bes::GlobalMetadataStore() { }
 
     // Only get_instance() should be used to instantiate this class
     DmrppMetadataStore() : bes::GlobalMetadataStore() { }

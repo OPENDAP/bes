@@ -93,7 +93,6 @@ private:
     std::string d_xml_base;     // The value of the context xml:basse
 
     static bool d_enabled;
-    static GlobalMetadataStore *d_instance;
 
     std::ofstream of;
 
@@ -208,9 +207,7 @@ public:
          }//end clearLock()
      };
 
-    // SBL - is this correct?
     using MDSReadLock = struct MDSReadLock;
-    // typedef struct MDSReadLock MDSReadLock;
 
 protected:
     MDSReadLock get_read_lock_helper(const std::string &name, const std::string &suffix, const std::string &object_name);

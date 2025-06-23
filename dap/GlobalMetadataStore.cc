@@ -101,7 +101,6 @@ static const string SIZE_KEY = "DAP.GlobalMetadataStore.size";
 static const string LEDGER_KEY = "DAP.GlobalMetadataStore.ledger";
 static const string LOCAL_TIME_KEY = "BES.LogTimeLocal";
 
-GlobalMetadataStore *GlobalMetadataStore::d_instance = 0;
 bool GlobalMetadataStore::d_enabled = true;
 
 /**
@@ -307,16 +306,11 @@ string GlobalMetadataStore::get_cache_dir_from_config()
 GlobalMetadataStore *
 GlobalMetadataStore::get_instance(const string &cache_dir, const string &prefix, unsigned long long size)
 {
-    if (d_enabled && d_instance == 0) {
-        static GlobalMetadataStore instance;
-        d_enabled = d_instance->cache_enabled();
-        if (!d_enabled) {
-            return nullptr;
-        }
-
-        BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::get_instance(dir,prefix,size) - instance: " << instance << endl);
+    if (d_enabled) {
+        static GlobalMetadataStore instance(cache_dir, prefix, size);
         return &instance;
     }
+    return nullptr;
 }
 
 /**
@@ -328,16 +322,11 @@ GlobalMetadataStore::get_instance(const string &cache_dir, const string &prefix,
 GlobalMetadataStore *
 GlobalMetadataStore::get_instance()
 {
-    if (d_enabled && d_instance == 0) {
+    if (d_enabled) {
         static GlobalMetadataStore instance;
-        d_enabled = d_instance->cache_enabled();
-        if (!d_enabled) {
-            return nullptr;
-        }
-
-        BESDEBUG(DEBUG_KEY, "GlobalMetadataStore::get_instance() - instance: " << instance << endl);
         return &instance;
     }
+    return nullptr;
 }
 ///@}
 

@@ -107,7 +107,7 @@ private:
         try {
             // Stock code to get the d_test_dds and d_mds objects used by many
             // of the tests.
-            d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
+            d_mds = GlobalMetadataStore::get_instance();
             DBG(cerr << "Retrieved GlobalMetadataStore object: " << d_mds << endl);
 
             // Get a DDS to cache.
@@ -124,13 +124,13 @@ private:
             DBG(cerr << "DDS Name: " << d_test_dds->get_dataset_name() << endl);
             CPPUNIT_ASSERT(d_test_dds);
         }
-        catch (BESError &e) {
+        catch (const BESError &e) {
             CPPUNIT_FAIL(e.get_message());
         }
-        catch (Error &e) {
+        catch (const Error &e) {
             CPPUNIT_FAIL(e.get_error_message());
         }
-        catch (std::exception &e) {
+        catch (const std::exception &e) {
             CPPUNIT_FAIL(e.what());
         }
     }
@@ -143,7 +143,7 @@ private:
         try {
             // Stock code to get the d_test_dds and d_mds objects used by many
             // of the tests.
-            d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
+            d_mds = GlobalMetadataStore::get_instance();
             DBG(cerr << "Retrieved GlobalMetadataStore object: " << d_mds << endl);
 
             // Get a DMR to cache.
@@ -158,13 +158,13 @@ private:
             DBG(cerr << "DMR Name: " << d_test_dmr->name() << endl);
             CPPUNIT_ASSERT(d_test_dmr);
         }
-        catch (BESError &e) {
+        catch (const BESError &e) {
             CPPUNIT_FAIL(e.get_message());
         }
-        catch (Error &e) {
+        catch (const Error &e) {
             CPPUNIT_FAIL(e.get_error_message());
         }
-        catch (std::exception &e) {
+        catch (const std::exception &e) {
             CPPUNIT_FAIL(e.what());
         }
     }
@@ -175,7 +175,7 @@ private:
         try {
             // Stock code to get the d_test_dds and d_mds objects used by many
             // of the tests.
-            d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
+            d_mds = GlobalMetadataStore::get_instance();
             DBG(cerr << "Retrieved GlobalMetadataStore object: " << d_mds << endl);
 
             // Get a DMRpp to cache.
@@ -240,8 +240,6 @@ public:
 
         delete d_test_dmr; d_test_dmr = 0;
 
-        delete d_mds;
-
         if (clean) clean_cache_dir(d_mds_dir);
 
         DBG(cerr << __func__ << " - END" << endl);
@@ -261,7 +259,7 @@ public:
 				CPPUNIT_FAIL("get_instance() Should not return when the non-existent directory cannot be created");
          	}
         }
-        catch (BESError &e) {
+        catch (const BESError &e) {
             CPPUNIT_ASSERT(!e.get_message().empty());
         }
 
@@ -274,34 +272,14 @@ public:
 
         try {
             // This one should work and will make the directory
-            d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 1000);
+            d_mds = GlobalMetadataStore::get_instance();
             DBG(cerr << "retrieved GlobalMetadataStore instance: " << d_mds << endl);
             CPPUNIT_ASSERT(d_mds);
             CPPUNIT_ASSERT(!d_mds->is_unlimited());
 
             d_mds->update_and_purge("no_name"); //cheesy test - use -b to read BES debug info
         }
-        catch (BESError &e) {
-            CPPUNIT_FAIL("Caught exception: " + e.get_message());
-        }
-
-        DBG(cerr << __func__ << " - END" << endl);
-    }
-
-    void ctor_test_3()
-    {
-        DBG(cerr << __func__ << " - BEGIN" << endl);
-
-        try {
-            // This one should work and will make the directory
-            d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 0);
-            DBG(cerr << "retrieved GlobalMetadataStore instance: " << d_mds << endl);
-            CPPUNIT_ASSERT(d_mds);
-            CPPUNIT_ASSERT(d_mds->is_unlimited());
-
-            d_mds->update_and_purge("no_name");
-        }
-        catch (BESError &e) {
+        catch (const BESError &e) {
             CPPUNIT_FAIL("Caught exception: " + e.get_message());
         }
 
@@ -310,7 +288,7 @@ public:
 
     void get_hash_test()
     {
-        d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 0);
+        d_mds = GlobalMetadataStore::get_instance();
         DBG(cerr << "retrieved GlobalMetadataStore instance: " << d_mds << endl);
         CPPUNIT_ASSERT(d_mds);
 
@@ -319,7 +297,7 @@ public:
 
     void get_hash_test_error()
     {
-        d_mds = GlobalMetadataStore::get_instance(d_mds_dir, c_mds_prefix, 0);
+        d_mds = GlobalMetadataStore::get_instance();
         DBG(cerr << "retrieved GlobalMetadataStore instance: " << d_mds << endl);
         CPPUNIT_ASSERT(d_mds);
 
@@ -2058,7 +2036,6 @@ public:
 
     CPPUNIT_TEST(ctor_test_1);
     CPPUNIT_TEST(ctor_test_2);
-    CPPUNIT_TEST(ctor_test_3);
 
     CPPUNIT_TEST(get_hash_test);
     CPPUNIT_TEST_EXCEPTION(get_hash_test_error, BESError);
