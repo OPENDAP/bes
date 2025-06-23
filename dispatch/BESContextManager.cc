@@ -53,8 +53,6 @@ static std::once_flag d_euc_init_once;
 
 BESContextManager::BESContextManager() {}
 
-BESContextManager::~BESContextManager() {}
-
 /** @brief set context in the BES
  *
  * @param name name of the context
@@ -213,8 +211,9 @@ void BESContextManager::dump(ostream &strm) const
 BESContextManager *
 BESContextManager::TheManager()
 {
-    std::call_once(d_euc_init_once,BESContextManager::initialize_instance);
-    return d_instance;
+    static BESContextManager manager;
+    // std::call_once(d_euc_init_once,BESContextManager::initialize_instance);
+    return &manager;
 }
 
 void BESContextManager::initialize_instance() {
