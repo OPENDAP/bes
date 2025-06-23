@@ -46,14 +46,11 @@ using std::string;
 using std::ostream;
 
 BESContextManager *BESContextManager::d_instance = nullptr;
-static std::once_flag d_euc_init_once;
 
 #define MODULE "context"
 #define prolog std::string("BESContextManager::").append(__func__).append("() - ")
 
 BESContextManager::BESContextManager() {}
-
-BESContextManager::~BESContextManager() {}
 
 /** @brief set context in the BES
  *
@@ -213,8 +210,8 @@ void BESContextManager::dump(ostream &strm) const
 BESContextManager *
 BESContextManager::TheManager()
 {
-    std::call_once(d_euc_init_once,BESContextManager::initialize_instance);
-    return d_instance;
+    static BESContextManager manager;
+    return &manager;
 }
 
 void BESContextManager::initialize_instance() {

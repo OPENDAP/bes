@@ -57,10 +57,13 @@ private:
     static void delete_instance();
 
     std::unordered_map<std::string, std::string> _context_list;
+    BESContextManager();
 
 public:
-    BESContextManager();
-    virtual ~BESContextManager();
+    BESContextManager(const BESContextManager&) = delete;
+    BESContextManager& operator=(const BESContextManager&) = delete;
+
+    ~BESContextManager() override = default;
     
     virtual void set_context(const std::string &name, const std::string &value);
     virtual void unset_context(const std::string &name);
