@@ -82,10 +82,13 @@ private:
     } persistence_list;
 
     BESDefinitionStorageList::persistence_list *_first;
+    BESDefinitionStorageList();
 
 public:
-    BESDefinitionStorageList();
-    virtual ~BESDefinitionStorageList();
+    ~BESDefinitionStorageList() override = default;
+
+    BESDefinitionStorageList(const BESDefinitionStorageList&) = delete;
+    BESDefinitionStorageList& operator=(const BESDefinitionStorageList&) = delete;
 
     virtual bool add_persistence(BESDefinitionStorage *p);
     virtual bool ref_persistence(const std::string &persist_name);

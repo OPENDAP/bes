@@ -48,24 +48,10 @@ using std::ostream;
 #include "BESInfo.h"
 
 BESDefinitionStorageList *BESDefinitionStorageList::d_instance = nullptr;
-static std::once_flag d_euc_init_once;
 
 BESDefinitionStorageList::BESDefinitionStorageList() :
     _first(0)
 {
-}
-
-BESDefinitionStorageList::~BESDefinitionStorageList()
-{
-    BESDefinitionStorageList::persistence_list *pl = _first;
-    while (pl) {
-        if (pl->_persistence_obj) {
-            delete pl->_persistence_obj;
-        }
-        BESDefinitionStorageList::persistence_list *next = pl->_next;
-        delete pl;
-        pl = next;
-    }
 }
 
 /** @brief Add a persistent store to the list
@@ -339,8 +325,8 @@ void BESDefinitionStorageList::dump(ostream &strm) const
 BESDefinitionStorageList *
 BESDefinitionStorageList::TheList()
 {
-    std::call_once(d_euc_init_once,BESDefinitionStorageList::initialize_instance);
-    return d_instance;
+    static BESDefinitionStorageList list;
+    return &list;
 }
 
 void BESDefinitionStorageList::initialize_instance() {
