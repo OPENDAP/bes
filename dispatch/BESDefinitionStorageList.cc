@@ -47,8 +47,6 @@ using std::ostream;
 #include "BESDefine.h"
 #include "BESInfo.h"
 
-BESDefinitionStorageList *BESDefinitionStorageList::d_instance = nullptr;
-
 BESDefinitionStorageList::BESDefinitionStorageList() :
     _first(0)
 {
@@ -327,17 +325,5 @@ BESDefinitionStorageList::TheList()
 {
     static BESDefinitionStorageList list;
     return &list;
-}
-
-void BESDefinitionStorageList::initialize_instance() {
-    d_instance = new BESDefinitionStorageList;
-#ifdef HAVE_ATEXIT
-    atexit(delete_instance);
-#endif
-}
-
-void BESDefinitionStorageList::delete_instance() {
-    delete d_instance;
-    d_instance = 0;
 }
 

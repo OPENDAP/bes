@@ -69,7 +69,6 @@ class BESInfo;
  */
 class BESDefinitionStorageList: public BESObj {
 private:
-    static BESDefinitionStorageList * d_instance;
     mutable std::recursive_mutex d_cache_lock_mutex;
 
     static void initialize_instance();
