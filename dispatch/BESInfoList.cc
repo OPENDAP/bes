@@ -48,8 +48,6 @@ using std::string;
 
 #define BES_DEFAULT_INFO_TYPE "txt"
 
-static std::once_flag d_euc_init_once;
-
 BESInfoList::BESInfoList() {}
 
 bool
