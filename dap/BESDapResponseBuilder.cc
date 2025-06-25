@@ -120,6 +120,7 @@
 #include "BESStopWatch.h"
 #include "DapFunctionUtils.h"
 #include "RequestServiceTimer.h"
+#include "../dispatch/BESContextManager.h"
 
 using namespace std;
 using namespace libdap;
@@ -1453,6 +1454,13 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mim
     }
 }
 
+bool use_dap4_checksums() {
+    bool found = false;
+    string state = "false";
+    state = BESContextManager::TheManager()->get_context("dap4_checksums", found);
+    return found && (BESUtil::lowercase(state) == "true");
+}
+
 /**
  * Serialize the DAP4 data response to the passed stream
  */
@@ -1460,6 +1468,8 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
 {
     BES_STOPWATCH_START(MODULE, prolog + "Timer");
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+
+    dmr.compute_checksums(use_dap4_checksums());
 
     if (with_mime_headers) set_mime_binary(out, dap4_data, x_plain, last_modified_time(d_dataset), dmr.dap_version());
 
