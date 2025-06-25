@@ -1456,8 +1456,12 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mim
 
 bool use_dap4_checksums() {
     bool found = false;
-    string state = "false";
+    string state = "unset";
     state = BESContextManager::TheManager()->get_context("dap4_checksums", found);
+    if (!found) {
+        state="false";
+    }
+    BESDEBUG(MODULE, prolog << "dap4_checksums: " << state << "\n");
     return found && (BESUtil::lowercase(state) == "true");
 }
 
