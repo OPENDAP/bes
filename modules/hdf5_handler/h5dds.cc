@@ -37,9 +37,10 @@
 
 #include<memory>
 #include <libdap/InternalErr.h>
-#include <BESDebug.h>
-
 #include <libdap/mime_util.h>
+
+#include <BESDebug.h>
+#include <BESInternalError.h>
 
 #include "hdf5_handler.h"
 #include "HDF5Int32.h"
@@ -99,7 +100,7 @@ bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
       string msg =
             "h5_dds handler: counting hdf5 group elements error for ";
         msg += gname;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     nelems = g_info.nlinks;
@@ -116,7 +117,7 @@ bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
         if (oname_size <= 0) {
             string msg = "h5_dds handler: Error getting the size of the hdf5 object from the group: ";
             msg += gname;
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
         // Obtain the name of the object
@@ -127,7 +128,7 @@ bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
             string msg =
                     "h5_dds handler: Error getting the hdf5 object name from the group: ";
              msg += gname;
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
         // Check if it is the hard link or the soft link
@@ -135,7 +136,7 @@ bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
         if (H5Lget_info(pid,oname.data(),&linfo,H5P_DEFAULT)<0) {
             string msg = "hdf5 link name error from: ";
             msg += gname;
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
         // External links are not supported in this release
@@ -153,7 +154,7 @@ bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
                               i, &oinfo, H5P_DEFAULT)<0) {
             string msg = "h5_dds handler: Error obtaining the info for the object";
             msg += string(oname.begin(),oname.end());
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
         H5O_type_t obj_type = oinfo.type;

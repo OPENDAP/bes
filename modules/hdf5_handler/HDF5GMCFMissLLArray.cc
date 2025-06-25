@@ -466,7 +466,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
         string msg = "Cannot open the HDF5 attribute  ";
         msg += s_attr_name;
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     hid_t attr_type = -1;
@@ -475,7 +475,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
         msg += s_attr_name;
         H5Aclose(s_attr_id);
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     hid_t attr_space = -1;
@@ -485,7 +485,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
         H5Tclose(attr_type);
         H5Aclose(s_attr_id);
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     hssize_t num_elm = H5Sget_simple_extent_npoints(attr_space);
@@ -497,7 +497,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
         H5Aclose(s_attr_id);
         H5Sclose(attr_space);
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     if (1 != num_elm) {
@@ -507,7 +507,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
         H5Aclose(s_attr_id);
         H5Sclose(attr_space);
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     size_t atype_size = H5Tget_size(attr_type);
@@ -518,7 +518,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
         H5Aclose(s_attr_id);
         H5Sclose(attr_space);
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     if (H5T_STRING == H5Tget_class(attr_type)) {
@@ -539,7 +539,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
                 H5Aclose(s_attr_id);
                 H5Sclose(attr_space);
                 H5Gclose(s_root_id);
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
 
             }
         }
@@ -552,7 +552,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
         H5Aclose(s_attr_id);
         H5Sclose(attr_space);
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
 
     }
 

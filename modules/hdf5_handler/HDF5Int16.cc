@@ -104,34 +104,28 @@ bool HDF5Int16::read()
     }
 
     try {
-      if(false == is_dap4()) {
-         if (1 == H5Tget_size(memtype) && H5T_SGN_2 == H5Tget_sign(memtype)) {
+        if(false == is_dap4()) {
+            if (1 == H5Tget_size(memtype) && H5T_SGN_2 == H5Tget_sign(memtype)) {
+                dods_int16 buf;
+                signed char buf2; // Needs to be corrected with signed int8 buffer.
+                get_data(dset_id, (void *) &buf2);
+                buf = (short) buf2;
+                set_read_p(true);
+                set_value(buf);
+            }
+            else if (get_dap_type(memtype,false) == "Int16") {
+                dods_int16 buf;
+                get_data(dset_id, (void *) &buf);
+                set_read_p(true);
+                set_value(buf);
+            }
+        }
+        else {
             dods_int16 buf;
-            signed char buf2; // Needs to be corrected with signed int8 buffer.
-            get_data(dset_id, (void *) &buf2);
-            buf = (short) buf2;
+            get_data(dset_id, (void *) &buf);
             set_read_p(true);
             set_value(buf);
-
         }
-
-        else if (get_dap_type(memtype,false) == "Int16") {
-             dods_int16 buf;
-             get_data(dset_id, (void *) &buf);
-
-             set_read_p(true);
-             set_value(buf);
-
-        }
-      }
-      else {
-         dods_int16 buf;
-         get_data(dset_id, (void *) &buf);
-
-         set_read_p(true);
-         set_value(buf);
-
-      }
          
         // Release the handles.
         if (H5Tclose(memtype) < 0) {
@@ -143,8 +137,6 @@ bool HDF5Int16::read()
         }
 
         H5Fclose(file_id);
-
-
     }
 
     catch(...) {

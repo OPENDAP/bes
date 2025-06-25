@@ -60,7 +60,7 @@ void read_cfdds(DDS & dds, const string &filename,hid_t myfile_id) {
         string msg =
             "h5_cf_dds handler: Cannot open the HDF5 file ";
         msg += filename;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 #endif
 
@@ -87,7 +87,7 @@ void read_cfdas(DAS & das, const string &filename,hid_t myfile_id) {
         string msg =
             "h5_cf_das handler: Cannot open the HDF5 file ";
         msg += filename;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 #endif
 

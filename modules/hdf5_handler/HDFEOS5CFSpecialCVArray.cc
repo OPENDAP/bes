@@ -135,7 +135,7 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         msg += cv_attr_name;
         H5Aclose(cv_attr_id);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     hid_t attr_space = -1;
@@ -145,7 +145,7 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         H5Tclose(attr_type);
         H5Aclose(cv_attr_id);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     auto attr_num_elm = (int)(H5Sget_simple_extent_npoints(attr_space));
@@ -156,7 +156,7 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         H5Aclose(cv_attr_id);
         H5Sclose(attr_space);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     if (attr_num_elm != (total_num_elm -1)) {
@@ -166,7 +166,7 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         H5Aclose(cv_attr_id);
         H5Sclose(attr_space);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     if (dtype != H5FLOAT32 || dtype != HDF5CFUtil::H5type_to_H5DAPtype(attr_type)) {
@@ -176,7 +176,7 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         H5Aclose(cv_attr_id);
         H5Sclose(attr_space);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     hid_t attr_mem_type = -1;
@@ -187,7 +187,7 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         H5Aclose(cv_attr_id);
         H5Sclose(attr_space);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     if (nelms <= 0 || (total_num_elm -1) <=0 ||total_num_elm < 0) { 
@@ -218,7 +218,7 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         H5Aclose(cv_attr_id);
         H5Sclose(attr_space);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
  
     

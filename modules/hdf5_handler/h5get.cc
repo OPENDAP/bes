@@ -94,7 +94,7 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
     if ((attrid = H5Aopen_by_idx(dset, ".", H5_INDEX_CRT_ORDER, H5_ITER_INC,
                                  (hsize_t)index, H5P_DEFAULT, H5P_DEFAULT)) < 0) {
         string msg = "unable to open attribute by index ";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     // Obtain the size of attribute name.
@@ -102,7 +102,7 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
     if (name_size < 0) {
         H5Aclose(attrid);
         string msg = "unable to obtain the size of the hdf5 attribute name ";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     vector<char> attr_name;
@@ -111,7 +111,7 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
     if ((H5Aget_name(attrid, name_size+1, attr_name.data())) < 0) {
         H5Aclose(attrid);
         string msg = "unable to obtain the hdf5 attribute name  ";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
     
     // Obtain the type of the attribute. 
@@ -121,7 +121,7 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
         string attrnamestr(attr_name.begin(),attr_name.end());
         msg += attrnamestr;
         H5Aclose(attrid);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     *ignore_attr_ptr = check_ignored_attrs(attrid,ty_id,attr_name,is_dap4);
@@ -137,7 +137,7 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
         msg += attrnamestr;
         H5Tclose(ty_id);
         H5Aclose(attrid);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     // It is better to use the dynamic allocation of the array.
@@ -153,7 +153,7 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
         H5Tclose(ty_id);
         H5Sclose(aspace_id);
         H5Aclose(attrid);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     // Check if the dimension size exceeds the maximum number of dimension DAP supports
@@ -164,7 +164,7 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
         H5Tclose(ty_id);
         H5Sclose(aspace_id);
         H5Aclose(attrid);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
       
     vector<hsize_t> size(ndims);
@@ -179,7 +179,7 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
         H5Tclose(ty_id);
         H5Sclose(aspace_id);
         H5Aclose(attrid);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     // Return ndims and size[ndims]. 
@@ -197,7 +197,7 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
         H5Tclose(ty_id);
         H5Sclose(aspace_id);
         H5Aclose(attrid);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
      
     size_t need = nelmts * H5Tget_size(ty_id);
@@ -211,7 +211,7 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
         H5Tclose(ty_id);
         H5Sclose(aspace_id);
         H5Aclose(attrid);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     // Save the information to the struct
@@ -248,7 +248,7 @@ bool check_ignored_attrs(hid_t attr_id, hid_t ty_id, const vector <char>& attr_n
         msg += attrnamestr;
         H5Tclose(ty_id);
         H5Aclose(attr_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     // The following datatype will not be supported for mapping to DAS for both DAP2 and DAP4.
@@ -426,7 +426,7 @@ hid_t get_fileid(const char *filename)
         string msg = "cannot open the HDF5 file  ";
         string filenamestr(filename);
         msg += filenamestr;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     return fileid;
@@ -469,7 +469,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
     if ((dset = H5Dopen(pid, dname.c_str(),H5P_DEFAULT)) < 0) {
         string msg = "cannot open the HDF5 dataset  ";
         msg += dname;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     // Obtain the datatype ID
@@ -478,7 +478,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
         H5Dclose(dset);
         string msg = "cannot get the the datatype of HDF5 dataset  ";
         msg += dname;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     // Obtain the datatype class 
@@ -488,7 +488,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
         H5Dclose(dset);
         string msg = "cannot get the datatype class of HDF5 dataset  ";
         msg += dname;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     // These datatype classes are unsupported. Note we do support
@@ -498,7 +498,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
         || (ty_class == H5T_OPAQUE) || (ty_class == H5T_ENUM) || (ty_class == H5T_VLEN)) {
         string msg = "unexpected datatype of HDF5 dataset  ";
         msg += dname;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
    
     hid_t dspace = -1;
@@ -507,7 +507,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
         H5Dclose(dset);
         string msg = "cannot get the the dataspace of HDF5 dataset  ";
         msg += dname;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     // It is better to use the dynamic allocation of the array.
@@ -522,7 +522,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
         H5Dclose(dset);
         string msg = "cannot get hdf5 dataspace number of dimension for dataset ";
         msg += dname;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     // Check if the dimension size exceeds the maximum number of dimension DAP supports
@@ -532,7 +532,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
         H5Tclose(dtype);
         H5Sclose(dspace);
         H5Dclose(dset);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     vector<hsize_t>size(ndims);
@@ -545,7 +545,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
         H5Tclose(dtype);
         H5Sclose(dspace);
         H5Dclose(dset);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     // return ndims and size[ndims]. 
@@ -562,7 +562,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
         H5Tclose(dtype);
         H5Sclose(dspace);
         H5Dclose(dset);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
  
     size_t need = nelmts * dtype_size;
@@ -574,7 +574,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
         H5Tclose(dtype);
         H5Sclose(dspace);
         H5Dclose(dset);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     (*dt_inst_ptr).type = memtype;
@@ -628,7 +628,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
     if ((dset = H5Dopen(pid, dname.c_str(),H5P_DEFAULT)) < 0) {
         string msg = "cannot open the HDF5 dataset  ";
         msg += dname;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     // Obtain the datatype ID
@@ -637,7 +637,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
         H5Dclose(dset);
         string msg = "cannot get the the datatype of HDF5 dataset  ";
         msg += dname;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     // Obtain the datatype class 
@@ -647,7 +647,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
         H5Dclose(dset);
         string msg = "cannot get the datatype class of HDF5 dataset  ";
         msg += dname;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     // These datatype classes are unsupported. Note we do support
@@ -658,7 +658,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
         || (ty_class == H5T_OPAQUE) || (ty_class == H5T_ENUM) || (ty_class == H5T_VLEN)) {
         string msg = "unexpected datatype of HDF5 dataset  ";
         msg += dname;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 #endif
 
@@ -666,7 +666,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
         || (ty_class == H5T_OPAQUE) ) {
         string msg = "unexpected datatype of HDF5 dataset  ";
         msg += dname;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
   
     hid_t dspace = -1;
@@ -675,7 +675,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
         H5Dclose(dset);
         string msg = "cannot get the the dataspace of HDF5 dataset  ";
         msg += dname;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     // Here we need to handle NULL SPACE variables. Since the data with null sapce doesn't contain any value,
@@ -701,7 +701,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
         H5Dclose(dset);
         string msg = "cannot get hdf5 dataspace number of dimension for dataset ";
         msg += dname;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     // Check if the dimension size exceeds the maximum number of dimension DAP supports
@@ -711,7 +711,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
         H5Tclose(dtype);
         H5Sclose(dspace);
         H5Dclose(dset);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     vector<hsize_t>size(ndims);
@@ -724,7 +724,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
         H5Tclose(dtype);
         H5Sclose(dspace);
         H5Dclose(dset);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     
@@ -741,7 +741,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
         H5Tclose(dtype);
         H5Sclose(dspace);
         H5Dclose(dset);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
  
     size_t need = nelmts * dtype_size;
@@ -760,7 +760,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
         H5Tclose(dtype);
         H5Sclose(dspace);
         H5Dclose(dset);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     (*dt_inst_ptr).type = memtype;
@@ -853,7 +853,7 @@ bool handle_dimscale_dmr(hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
                 msg += dname;
                 H5Sclose(dspace);
                 H5Dclose(dset);
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
             }
 
             // Find the dimension scale. DIM*SCALE is a must. Then NAME=VARIABLE or (REFERENCE_LIST and not PURE DIM)
@@ -2068,25 +2068,25 @@ void obtain_dimnames_internal(hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_
         attr_id = H5Aopen(dset,dimlist_name.c_str(),H5P_DEFAULT);
         if (attr_id <0 ) {
             string msg = "Cannot open the attribute " + dimlist_name + " of HDF5 dataset "+ string(dt_inst_ptr->name);
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
         atype_id = H5Aget_type(attr_id);
         if (atype_id <0) {
             string msg = "Cannot get the datatype of the attribute " + dimlist_name + " of HDF5 dataset "+ string(dt_inst_ptr->name);
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
         amemtype_id = H5Tget_native_type(atype_id, H5T_DIR_ASCEND);
         if (amemtype_id < 0) {
             string msg = "Cannot get the memory datatype of the attribute " + dimlist_name + " of HDF5 dataset "+ string(dt_inst_ptr->name);
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__, __LINE__);
 
         }
 
         if (H5Aread(attr_id,amemtype_id,vlbuf.data()) <0)  {
             string msg = "Cannot obtain the referenced object for the variable  " + string(dt_inst_ptr->name);
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
         vector<char> objname;
@@ -2099,14 +2099,14 @@ void obtain_dimnames_internal(hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_
                 sindex <<i;
                 string msg = "For variable " + string(dt_inst_ptr->name) + "; ";
                 msg = msg + "the dimension of which the index is "+ sindex.str() + " doesn't exist. ";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
             }
 
             rbuf =((hobj_ref_t*)vlbuf[i].p)[0];
 
             if ((ref_dset = H5RDEREFERENCE(attr_id, H5R_OBJECT, &rbuf)) < 0) {
                 string msg = "Cannot dereference from the DIMENSION_LIST attribute  for the variable " + string(dt_inst_ptr->name);
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
             }
 
             string trim_objname = obtain_dimname_deref(ref_dset,dt_inst_ptr);
@@ -2193,7 +2193,7 @@ void obtain_dimname_hardlinks(hid_t file_id, hid_t ref_dset, vector<link_info_t>
     if (H5OGET_INFO(ref_dset, &obj_info) < 0) {
         H5Dclose(ref_dset);
         string msg = "Cannot obtain the object info for the dimension variable " + trim_objname;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     // This dimension indeed has hard links.

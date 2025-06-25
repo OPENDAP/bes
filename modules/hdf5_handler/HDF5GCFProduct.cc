@@ -31,6 +31,7 @@
 
 
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include <assert.h>
 #include "HDF5GCFProduct.h"
 #include "h5apicompatible.h"
@@ -50,7 +51,7 @@ H5GCFProduct check_product(hid_t file_id) {
     if ((root_id = H5Gopen(file_id,ROOT_NAME,H5P_DEFAULT))<0){
         string msg = "cannot open the HDF5 root group  ";
         msg += string(ROOT_NAME);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     // Check if the product is MEaSUREs SeaWiFS
@@ -258,7 +259,7 @@ bool check_gpms_l3(hid_t s_root_id) {
                 string msg = "Cannot open the HDF5 Group  ";
                 msg += string(GPM_GRID_GROUP_NAME1);
                 H5Gclose(s_root_id);
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
             }
         }
         else {
@@ -269,7 +270,7 @@ bool check_gpms_l3(hid_t s_root_id) {
                     string msg = "Cannot open the HDF5 Group  ";
                     msg += string(GPM_GRID_GROUP_NAME2);
                     H5Gclose(s_root_id);
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__, __LINE__);
                 }
  
             }
@@ -310,7 +311,7 @@ bool check_gpmm_l3(hid_t s_root_id) {
                 string msg = "Cannot open the HDF5 Group  ";
                 msg += string(GPM_GRID_MULTI_GROUP_NAME);
                 H5Gclose(s_root_id);
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
             }
 
             H5G_info_t g_info;
@@ -489,7 +490,7 @@ bool check_measure_seawifs(hid_t s_root_id,int & s_lflag) {
                 msg += string(SeaWiFS_ATTR3_NAME);
                 msg +=" exists ";
                 H5Gclose(s_root_id);
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
             }
         }
     }
@@ -500,7 +501,7 @@ bool check_measure_seawifs(hid_t s_root_id,int & s_lflag) {
         msg += string(SeaWiFS_ATTR1_NAME);
         msg +=" exists ";
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
     return ret_flag;
 }
@@ -537,7 +538,7 @@ bool check_measure_ozone(hid_t s_root_id) {
                 msg += string(Ozone_ATTR2_NAME);
                 msg +=" exists ";
                 H5Gclose(s_root_id);
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
             }
         }
     }
@@ -548,7 +549,7 @@ bool check_measure_ozone(hid_t s_root_id) {
         msg += string(Ozone_ATTR1_NAME);
         msg +=" exists ";
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
     return ret_flag;
 }       
@@ -591,7 +592,7 @@ bool check_aquarius(hid_t s_root_id,int & s_level) {
                 msg += string(Aquarius_ATTR2_NAME);
                 msg +=" exists ";
                 H5Gclose(s_root_id);
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
             }
         }
     }
@@ -622,7 +623,7 @@ bool check_aquarius(hid_t s_root_id,int & s_level) {
                     msg += string(Aquarius_ATTR2_NAME2);
                     msg +=" exists ";
                     H5Gclose(s_root_id);
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__, __LINE__);
                 }
             }
     
@@ -634,7 +635,7 @@ bool check_aquarius(hid_t s_root_id,int & s_level) {
             msg += string(Aquarius_ATTR1_NAME2);
             msg +=" exists ";
             H5Gclose(s_root_id);
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
     }
     else {
@@ -642,7 +643,7 @@ bool check_aquarius(hid_t s_root_id,int & s_level) {
         msg += string(Aquarius_ATTR1_NAME);
         msg +=" exists ";
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
     return ret_flag;
 }       
@@ -682,7 +683,7 @@ bool check_obpg(hid_t s_root_id,int & s_level) {
                 msg += string(Obpgl3_ATTR2_NAME);
                 msg +=" exists ";
                 H5Gclose(s_root_id);
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
         }
     }
     else if (0 == has_obpg_attr1) 
@@ -692,7 +693,7 @@ bool check_obpg(hid_t s_root_id,int & s_level) {
         msg += string(Obpgl3_ATTR1_NAME);
         msg +=" exists ";
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
     return ret_flag;
 }
@@ -711,7 +712,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
            string msg = "Cannot open the HDF5 Group  ";
            msg += string(SMAC2S_META_GROUP_NAME);
            H5Gclose(s_root_id);
-           throw InternalErr(__FILE__, __LINE__, msg);
+           throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
         // OSMAPL2S 
@@ -739,7 +740,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
                 msg +="  exists ";
                 H5Gclose(s_group_id);
                 H5Gclose(s_root_id);
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
             }
         }
         else if (2 == which_pro) {
@@ -756,7 +757,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
                     msg += string(ACOS_L2S_OCO2_L1B_DSET_NAME);
                     H5Gclose(s_group_id);
                     H5Gclose(s_root_id);
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__, __LINE__);
                 }
 
                 // Obtain the datatype ID
@@ -767,7 +768,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
                     H5Gclose(s_root_id);
                     string msg = "cannot get the datatype of HDF5 dataset  ";
                     msg += string(ACOS_L2S_OCO2_L1B_DSET_NAME);
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__, __LINE__);
                 }
 
                 // Obtain the datatype class 
@@ -779,7 +780,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
                     H5Gclose(s_root_id);
                     string msg = "cannot get the datatype class of HDF5 dataset  ";
                     msg += string(ACOS_L2S_OCO2_L1B_DSET_NAME);
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__, __LINE__);
                 }
 
                 if (ty_class != H5T_STRING) {
@@ -789,7 +790,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
                     H5Gclose(s_root_id);
                     string msg = "This dataset must be a H5T_STRING class  ";
                     msg += string(ACOS_L2S_OCO2_L1B_DSET_NAME);
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__, __LINE__);
                 }
 
 
@@ -801,7 +802,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
                     H5Gclose(s_root_id);
                     string msg = "cannot get the the dataspace of HDF5 dataset  ";
                     msg += string(ACOS_L2S_OCO2_L1B_DSET_NAME);
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__, __LINE__);
                 }
 
                 hssize_t num_elem = 0;
@@ -813,7 +814,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
                     H5Gclose(s_root_id);
                     string msg = "cannot get the the number of points of HDF5 dataset  ";
                     msg += string(ACOS_L2S_OCO2_L1B_DSET_NAME);
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__, __LINE__);
                 }
 
                 size_t dtype_size = H5Tget_size(dtype);
@@ -825,7 +826,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
                     H5Gclose(s_root_id);
                     string msg = "cannot get the the dataspace of HDF5 dataset  ";
                     msg += string(ACOS_L2S_OCO2_L1B_DSET_NAME);
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__, __LINE__);
                 }
  
                 size_t total_data_size = num_elem * H5Tget_size(dtype);
@@ -843,7 +844,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
                         H5Gclose(s_root_id);
                         string msg = "cannot get the the dataspace of HDF5 dataset  ";
                         msg += string(ACOS_L2S_OCO2_L1B_DSET_NAME);
-                        throw InternalErr(__FILE__, __LINE__, msg);
+                        throw BESInternalError(msg,__FILE__, __LINE__);
                     }
 
                     char *temp_bp = temp_buf.data();
@@ -894,7 +895,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
                            H5Gclose(s_root_id);
                            string msg = "cannot data of HDF5 dataset  ";
                            msg += string(ACOS_L2S_OCO2_L1B_DSET_NAME);
-                           throw InternalErr(__FILE__, __LINE__, msg);
+                           throw BESInternalError(msg,__FILE__, __LINE__);
                     }
 
                     string total_string(temp_buf.begin(),temp_buf.end()-1);
@@ -920,7 +921,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
                 msg +="  exists ";
                 H5Gclose(s_group_id);
                 H5Gclose(s_root_id);
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
             }
          }
          // Other product, don't do anything.
@@ -932,7 +933,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
         msg += string(SMAC2S_META_GROUP_NAME);
         msg +=" exists or not ";
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
     return return_flag;
 }
@@ -945,7 +946,7 @@ void obtain_gm_attr_value(hid_t s_root_id, const char* s_attr_name, string & s_a
         string msg = "Cannot open the HDF5 attribute  ";
         msg += string(s_attr_name);
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     hid_t attr_type = -1;
@@ -963,7 +964,7 @@ void obtain_gm_attr_value(hid_t s_root_id, const char* s_attr_name, string & s_a
         H5Tclose(attr_type);
         H5Aclose(s_attr_id);
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     auto num_elm = (int)(H5Sget_simple_extent_npoints(attr_space));
@@ -974,7 +975,7 @@ void obtain_gm_attr_value(hid_t s_root_id, const char* s_attr_name, string & s_a
         H5Aclose(s_attr_id);
         H5Sclose(attr_space);
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     size_t atype_size = H5Tget_size(attr_type);
@@ -985,7 +986,7 @@ void obtain_gm_attr_value(hid_t s_root_id, const char* s_attr_name, string & s_a
         H5Aclose(s_attr_id);
         H5Sclose(attr_space);
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     if(H5Tis_variable_str(attr_type)) {
@@ -1000,7 +1001,7 @@ void obtain_gm_attr_value(hid_t s_root_id, const char* s_attr_name, string & s_a
             H5Aclose(s_attr_id);
             H5Sclose(attr_space);
             H5Gclose(s_root_id);
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
         char *temp_bp;
@@ -1041,7 +1042,7 @@ void obtain_gm_attr_value(hid_t s_root_id, const char* s_attr_name, string & s_a
             H5Aclose(s_attr_id);
             H5Sclose(attr_space);
             H5Gclose(s_root_id);
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__, __LINE__);
 
         }
 

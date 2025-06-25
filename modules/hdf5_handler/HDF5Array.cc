@@ -34,9 +34,11 @@
 #include <iostream>
 #include <memory>
 
-#include <BESDebug.h>
 #include <libdap/Error.h>
 #include <libdap/InternalErr.h>
+
+#include <BESDebug.h>
+#include <BESInternalError.h>
 
 #include "HDF5Array.h"
 #include "HDF5Structure.h"
@@ -126,7 +128,8 @@ bool HDF5Array::read()
     if(dtype_id < 0) {
         H5Dclose(dset_id);
         H5Fclose(file_id);
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
+        string msg = "Fail to obtain the datatype .";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
 
  
@@ -191,7 +194,8 @@ void HDF5Array::do_array_read(hid_t dset_id,hid_t dtype_id,vector<char>&values,
         H5Tclose(basetype);
     }
     else {
-        throw InternalErr(__FILE__,__LINE__,"Fail to read the data for Unsupported datatype.");
+        string msg = "Fail to read the data for Unsupported datatype.";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
     
 }
@@ -264,8 +268,10 @@ void HDF5Array::handle_array_read_slab(hid_t dset_id, hid_t memtype, int64_t nel
                                        const int64_t *offset, const int64_t *step, const int64_t *count)
 {
     size_t data_size = nelms * H5Tget_size(memtype);
-    if (data_size == 0)
-        throw InternalErr(__FILE__, __LINE__, "get_size failed");
+    if (data_size == 0) {
+        string msg = "H5Tget_size failed.";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
 
     vector<char> convbuf(data_size);
     get_slabdata(dset_id, offset, step, count, d_num_dim, convbuf.data());
@@ -291,7 +297,8 @@ void HDF5Array::handle_vlen_string(hid_t dset_id, hid_t memtype, int64_t nelms, 
     }
     catch(...) {
         H5Tclose(memtype);
-        throw InternalErr(__FILE__,__LINE__,"Fail to read variable-length string.");
+        string msg = "Fail to read variable-length string.";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
     set_value_ll(finstrval,nelms);
     H5Tclose(memtype);
@@ -307,12 +314,15 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
     hid_t dtypeid  = -1;
     size_t ty_size = -1;
 
-    if ((dtypeid = H5Dget_type(dsetid)) < 0)
-        throw InternalErr (__FILE__, __LINE__, "Cannot obtain the datatype.");
+    if ((dtypeid = H5Dget_type(dsetid)) < 0) {
+        string msg = "Cannot obtain the datatype of the variable " + var_path + ".";
+        throw InternalErr (__FILE__, __LINE__, msg);
+    }
 
     if ((memtype = H5Tget_native_type(dtypeid, H5T_DIR_ASCEND))<0) {
         H5Tclose(dtypeid);
-        throw InternalErr (__FILE__, __LINE__, "Fail to obtain memory datatype.");
+        string msg = "Cannot obtain the memory datatype of the variable " + var_path + ".";
+        throw InternalErr (__FILE__, __LINE__, msg);
     }
 
     ty_size = H5Tget_size(memtype);
@@ -324,7 +334,8 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
         if ((dspace = H5Dget_space(dsetid))<0) {
             H5Tclose(memtype);
             H5Tclose(dtypeid);
-            throw InternalErr (__FILE__, __LINE__, "Cannot obtain data space.");
+            string msg = "Cannot obtain the data space of the variable " + var_path + ".";
+            throw InternalErr (__FILE__, __LINE__, msg);
         }
 
         d_num_dim = H5Sget_simple_extent_ndims(dspace);
@@ -332,7 +343,8 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
             H5Tclose(memtype);
             H5Tclose(dtypeid);
             H5Sclose(dspace);
-            throw InternalErr (__FILE__, __LINE__, "Cannot obtain the number of dimensions of the data space.");
+            string msg = "Cannot obtain the number of dimensions for the variable " + var_path + ".";
+            throw InternalErr (__FILE__, __LINE__, msg);
         }
 
         vector<hsize_t> hoffset;
@@ -353,7 +365,8 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
             H5Tclose(memtype);
             H5Tclose(dtypeid);
             H5Sclose(dspace);
-            throw InternalErr (__FILE__, __LINE__, "Cannot generate the hyperslab of the HDF5 dataset.");
+            string msg = "Cannot generate the hyperslab for variable " + var_path + ".";
+            throw InternalErr (__FILE__, __LINE__, msg);
         }
 
         mspace = H5Screate_simple(d_num_dim, hcount.data(),nullptr);
@@ -361,6 +374,7 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
             H5Sclose(dspace);
             H5Tclose(memtype);
             H5Tclose(dtypeid);
+            string msg = "Cannot create the memory space for the variable " + var_path + ".";
             throw InternalErr (__FILE__, __LINE__, "Cannot create the memory space.");
         }
 
@@ -372,7 +386,8 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
             H5Tclose(memtype);
             H5Tclose(dtypeid);
             H5Sclose(dspace);
-            throw InternalErr (__FILE__, __LINE__, "Fail to read the HDF5 compound datatype dataset.");
+            string msg = "Failed to read the data for the variable " + var_path + ".";
+            throw InternalErr (__FILE__, __LINE__, msg);
         }
 
         H5Sclose(dspace);
@@ -392,14 +407,18 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
             int                 nmembs           = 0;
             size_t              struct_elem_offset = values_offset + ty_size*element;
 
-            if ((nmembs = H5Tget_nmembers(memtype)) < 0)
-                throw InternalErr (__FILE__, __LINE__, "Fail to obtain number of HDF5 compound datatype.");
+            if ((nmembs = H5Tget_nmembers(memtype)) < 0) {
+                string msg = "Fail to obtain number of the HDF5 compound datatype members for variable " + var_path + ".";
+                throw InternalErr (__FILE__, __LINE__, msg);
+            }
 
             for (unsigned int u = 0; u < (unsigned)nmembs; u++) {
                 // Get member name
                 memb_name = H5Tget_member_name(memtype,u);
-                if (memb_name == nullptr)
-                    throw InternalErr (__FILE__, __LINE__, "Fail to obtain the name of an HDF5 compound datatype member.");
+                if (memb_name == nullptr) {
+                    string msg = "Fail to obtain the name of an HDF5 compound datatype member." + var_path + ".";
+                    throw InternalErr (__FILE__, __LINE__, msg);
+                }
 
                 BaseType *field = h5s->var(memb_name);
                 m_array_of_structure_member(field, memtype, u,dsetid, values, has_values, struct_elem_offset );
@@ -415,7 +434,6 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
         m_array_of_structure_close_hdf5_ids(values, has_values, mspace, dtypeid, memtype);
     }
     catch(...) {
-
         m_array_of_structure_catch_close_hdf5_ids(memb_id, memb_name, values, has_values, mspace, dtypeid, memtype);
         delete h5s;
         throw;
@@ -435,12 +453,16 @@ void HDF5Array:: m_array_of_structure_member(BaseType *field, hid_t memtype, uns
     H5T_class_t         memb_cls         = H5T_NO_CLASS;
     size_t              memb_offset      = 0;
     // Get member type ID
-    if((memb_id = H5Tget_member_type(memtype, u)) < 0)
-        throw InternalErr (__FILE__, __LINE__, "Fail to obtain the datatype of an HDF5 compound datatype member.");
+    if((memb_id = H5Tget_member_type(memtype, u)) < 0) {
+        string msg = "Fail to obtain the datatype of an HDF5 compound datatype member for variable " + var_path + ".";
+        throw InternalErr (__FILE__, __LINE__, msg);
+    }
 
     // Get member type class
-    if((memb_cls = H5Tget_member_class (memtype, u)) < 0)
-        throw InternalErr (__FILE__, __LINE__, "Fail to obtain the datatype class of an HDF5 compound datatype member.");
+    if((memb_cls = H5Tget_member_class (memtype, u)) < 0) {
+        string msg = "Fail to obtain the datatype class of an HDF5 compound datatype member for variable " + var_path + ".";
+        throw InternalErr (__FILE__, __LINE__, msg);
+    }
 
     // Get member offset,H5Tget_member_offset only fails
     // when H5Tget_memeber_class fails. Sinc H5Tget_member_class
@@ -455,8 +477,10 @@ void HDF5Array:: m_array_of_structure_member(BaseType *field, hid_t memtype, uns
 
         // memb_id, obtain the number of dimensions
         int at_ndims = H5Tget_array_ndims(memb_id);
-        if(at_ndims <= 0)
-            throw InternalErr (__FILE__, __LINE__, "Fail to obtain number of dimensions of the array datatype.");
+        if(at_ndims <= 0) {
+            string msg =  "Fail to obtain number of dimensions of the array datatype for variable " + var_path + ".";
+            throw InternalErr (__FILE__, __LINE__, msg);
+        }
 
         HDF5Array &h5_array_type = dynamic_cast<HDF5Array&>(*field);
         vector<int64_t> at_offset(at_ndims,0);
@@ -1719,11 +1743,11 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> 
             // The following block is fine, but to avoid the complaint from sonarcloud.
             // Use a bool.
             if (true == is_dim_nonc4_grp) {
-                 string err= "The variable " + var_path +" has dimension ";
-                 err += dimpath[k] + ". This dimension is not under its ancestor or the current group.";
-                 err += " This is not supported.";
+                 string msg= "The variable " + var_path +" has dimension ";
+                 msg += dimpath[k] + ". This dimension is not under its ancestor or the current group.";
+                 msg += " This is not supported.";
                  delete dest;
-                 throw InternalErr(__FILE__,__LINE__,err); 
+                 throw InternalErr(__FILE__,__LINE__, msg); 
             }
 
             bool d4_dim_null = ((d4_dim==nullptr)?true:false);
