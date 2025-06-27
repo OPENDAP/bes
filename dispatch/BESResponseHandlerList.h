@@ -59,7 +59,6 @@ typedef BESResponseHandler * (*p_response_handler)(const std::string &name);
  */
 class BESResponseHandlerList: public BESObj {
 private:
-    static BESResponseHandlerList * d_instance;
     mutable std::recursive_mutex d_cache_lock_mutex;
 
     static void initialize_instance();
@@ -69,9 +68,13 @@ private:
 
     friend class resplistT;
 
-public:
     BESResponseHandlerList();
-    virtual ~BESResponseHandlerList();
+
+public:
+    ~BESResponseHandlerList() override = default;
+
+    BESResponseHandlerList(const BESResponseHandlerList&) = delete;
+    BESResponseHandlerList& operator=(const BESResponseHandlerList&) = delete;
 
     typedef std::map<std::string, p_response_handler>::const_iterator Handler_citer;
     typedef std::map<std::string, p_response_handler>::iterator Handler_iter;
