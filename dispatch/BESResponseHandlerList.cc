@@ -43,12 +43,7 @@ using std::endl;
 using std::ostream;
 using std::string;
 
-BESResponseHandlerList *BESResponseHandlerList::d_instance = nullptr;
-static std::once_flag d_euc_init_once;
-
 BESResponseHandlerList::BESResponseHandlerList() {}
-
-BESResponseHandlerList::~BESResponseHandlerList() {}
 
 /** @brief add a response handler to the list
  *
@@ -178,19 +173,8 @@ void BESResponseHandlerList::dump(ostream &strm) const
 BESResponseHandlerList *
 BESResponseHandlerList::TheList()
 {
-    std::call_once(d_euc_init_once,BESResponseHandlerList::initialize_instance);
-    return d_instance;
+    static BESResponseHandlerList list;
+    return &list;
 }
 
-void BESResponseHandlerList::initialize_instance() {
-    d_instance = new BESResponseHandlerList;
-#ifdef HAVE_ATEXIT
-    atexit(delete_instance);
-#endif
-}
-
-void BESResponseHandlerList::delete_instance() {
-    delete d_instance;
-    d_instance = 0;
-}
 
