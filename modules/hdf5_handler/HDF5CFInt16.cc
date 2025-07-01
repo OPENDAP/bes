@@ -33,6 +33,8 @@
 
 #include <memory>
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
+
 #include "HDF5CFInt16.h"
 #include <BESDebug.h>
 #include "h5common.h"
@@ -90,7 +92,7 @@ bool HDF5CFInt16::read()
         H5Dclose(dset_id);
         H5Fclose(file_id);
         string msg = "Cannot obtain the native datatype for the variable " + dataset() +".";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
   
     try {
@@ -109,16 +111,16 @@ bool HDF5CFInt16::read()
 
         if(H5Tclose(memtype) < 0) {
             string msg = "Unable to close the memory datatype for the variable " + dataset() + ".";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         if(H5Tclose(dtypeid) < 0) {
             string msg = "Unable to close the datatype id for the variable " + dataset() + ".";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         // Release the handles.
         if (H5Dclose(dset_id) < 0) {
             string msg = "Unable to close the HDF5 dataset for the variable " + dataset() + ".";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         H5Fclose(file_id);
     }

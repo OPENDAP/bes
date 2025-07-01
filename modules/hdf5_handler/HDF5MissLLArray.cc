@@ -9,6 +9,7 @@
 #include <memory>
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 
 #include "HDF5MissLLArray.h"
 #include "HDF5CFUtil.h"
@@ -48,7 +49,7 @@ bool HDF5MissLLArray::read_data_non_geo() {
 
     if (rank <=  0)  {
        string msg = "The number of dimension of this variable should be greater than 0.";
-       throw InternalErr (__FILE__, __LINE__, msg);
+       throw BESInternalError(msg,__FILE__,__LINE__);
     }
     else {
          offset.resize(rank);
@@ -59,18 +60,18 @@ bool HDF5MissLLArray::read_data_non_geo() {
 
     if (nelms <= 0) { 
        string msg = "The number of elments is negative.";
-       throw InternalErr (__FILE__, __LINE__, msg);
+       throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     int64_t total_elms = g_info.xdim_size * g_info.ydim_size;
     if (total_elms > DODS_INT_MAX) {
        string msg = "Currently we cannot calculate lat/lon that is greater than 2G for HDF-EOS5.";
-       throw InternalErr (__FILE__, __LINE__, msg);
+       throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if(g_info.ydim_size <=0 || g_info.xdim_size <=0) {
         string msg = "The number of elments at each dimension should be greater than 0.";
-	throw InternalErr (__FILE__, __LINE__, msg);
+	throw BESInternalError(msg,__FILE__,__LINE__);
     }
         
     vector<size_t>pos(rank,0);
@@ -129,7 +130,7 @@ bool HDF5MissLLArray::read_data_non_geo() {
                  g_info.xdim_size * g_info.ydim_size, rows.data(), cols.data(), lon.data(), lat.data(), g_info.pixelregistration, g_info.gridorigin);
     if (r != 0) {
         string msg = "Cannot calculate grid latitude and longitude.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     BESDEBUG("h5", " The first value of lon is "  << lon[0] <<endl);
@@ -188,7 +189,7 @@ bool HDF5MissLLArray::read_data_geo(){
 
     if (rank <=  0) {
         string msg = "The number of dimension of this variable should be greater than 0.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     offset.resize(rank);
@@ -198,7 +199,7 @@ bool HDF5MissLLArray::read_data_geo(){
 
     if (nelms <= 0 || nelms >DODS_INT_MAX) {
         string msg = "The number of elements for geographic lat/lon is negative or greater than 2G.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     vector<float>val;
@@ -235,7 +236,7 @@ void HDF5MissLLArray::read_data_geo_lat(int64_t nelms, const vector<int64_t> &of
     
     if (g_info.ydim_size <=0){
         string msg = "The number of elements should be greater than 0.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     
     float lat_step = (end - start) /(float)(g_info.ydim_size);
@@ -268,7 +269,7 @@ void HDF5MissLLArray::read_data_geo_lon(int64_t nelms, const vector<int64_t> &of
     
     if (g_info.xdim_size <=0) {
         string msg = "The number of elements should be greater than 0.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     
     float lon_step = (end - start) /(float)(g_info.xdim_size);

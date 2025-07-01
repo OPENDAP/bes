@@ -631,7 +631,7 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
                 if (cvar->getRank() !=1) {
                     delete bt;
                     string msg = "The rank of missing Z dimension field must be 1.";
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 auto nelem = (int)((cvar->getDimensions()[0])->getSize());
 
@@ -659,7 +659,7 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
                 if (cvar->getRank() !=1) {
                     delete bt;
                     string msg = "The rank of missing Z dimension field must be 1.";
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 auto nelem = (int)((cvar->getDimensions()[0])->getSize());
                 auto ar_unique = make_unique<HDFEOS5CFSpecialCVArray>(
@@ -2109,7 +2109,7 @@ void gen_eos5_cfdmr(D4Group *d4_root,  const HDF5CF::EOS5File *f) {
             }
             else  {
                 string msg = "Unlimited dimension should exist.";
-                throw InternalErr(__FILE__, __LINE__, msg);  
+                throw BESInternalError(msg,__FILE__,__LINE__);  
             }
         //}    
        }
@@ -2259,7 +2259,7 @@ void gen_dap_oneeos5cvar_dmr(D4Group* d4_root,const EOS5CVar* cvar,const hid_t f
                 if (cvar->getRank() !=1) {
                     delete bt;
                     string msg = "The rank of missing Z dimension field must be 1.";
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 int nelem = (int)((cvar->getDimensions()[0])->getSize());
 

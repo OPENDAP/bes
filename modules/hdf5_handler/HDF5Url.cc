@@ -40,6 +40,7 @@
 #include <memory>
 #include "HDF5Url.h"
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 
 using namespace std;
 using namespace libdap;
@@ -82,7 +83,7 @@ bool HDF5Url::read()
         H5Dclose(dset_id);
         H5Fclose(file_id);
         string msg = "H5Dread() failed for the variable " + var_path +".";
-	throw InternalErr(__FILE__, __LINE__, msg);
+	throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     hid_t did_r = H5RDEREFERENCE(dset_id, H5R_OBJECT, &rbuf);
@@ -91,13 +92,13 @@ bool HDF5Url::read()
 	H5Dclose(dset_id);
         H5Fclose(file_id);
         string msg = "H5RDEREFERENCE() failed for the variable " + var_path +".";
-	throw InternalErr(__FILE__, __LINE__, msg);
+	throw BESInternalError(msg,__FILE__,__LINE__);
     }
     if (H5Iget_name(did_r, r_name, DODS_NAMELEN) < 0){
 	H5Dclose(dset_id);
         H5Fclose(file_id);
         string msg = "Unable to retrieve the name of the dereferenced object. ";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     string reference = r_name;
     set_value(reference);

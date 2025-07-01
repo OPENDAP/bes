@@ -47,6 +47,7 @@
 #include <memory>
 
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 
 #include "h5dds.h"
 #include "HDF5Str.h"
@@ -105,7 +106,7 @@ bool HDF5Str::read()
 	H5Dclose(dset_id);
         H5Fclose(file_id);
         string msg = "Fail to obtain the size of datatype for the variable " + var_path +".";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     try {
 

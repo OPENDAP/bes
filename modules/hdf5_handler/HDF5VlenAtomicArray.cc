@@ -135,7 +135,7 @@ void HDF5VlenAtomicArray::read_vlen_internal(bool vlen_index) {
         H5Dclose(dset_id);
         H5Fclose(file_id);
         string msg = "Fail to obtain the vlen data space ID for the variable " + vlen_var_path +".";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if (H5Sget_simple_extent_type(vlen_space) != H5S_SIMPLE) {
@@ -148,7 +148,7 @@ void HDF5VlenAtomicArray::read_vlen_internal(bool vlen_index) {
         H5Fclose(file_id);
         string msg = "Only support array of float or intger variable-length datatype,";
         msg += "the vlen variable name is " + vlen_var_path + ".";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Obtain the vlen counts, offsets and steps.
@@ -186,7 +186,7 @@ void HDF5VlenAtomicArray::read_vlen_internal(bool vlen_index) {
             H5Fclose(file_id);
             string msg = "This variable is a variable-length array, the number of dimensions for DAP4 representation must be greater than 1.";
             msg += "The variable name is " + vlen_var_path + ".";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         vector<int64_t> offset(num_dims+1);
         vector<int64_t> count(num_dims+1);
@@ -210,7 +210,7 @@ void HDF5VlenAtomicArray::read_vlen_internal(bool vlen_index) {
             H5Fclose(file_id);
             string msg = "This variable is a variable-length array, the last dimension in the DAP4 representation cannot be subset.";
             msg += "The variable name is " + vlen_var_path + ".";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         vlen_count.resize(num_dims);
@@ -242,7 +242,7 @@ void HDF5VlenAtomicArray::read_vlen_internal(bool vlen_index) {
         H5Dclose(dset_id);
         H5Fclose(file_id);
         string msg = "Could not select hyperslab for the vlen variable " + vlen_var_path + ".";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     } 
  
     hid_t memspace = H5Screate_simple(num_dims,vlen_count.data(),nullptr);
@@ -255,7 +255,7 @@ void HDF5VlenAtomicArray::read_vlen_internal(bool vlen_index) {
         H5Dclose(dset_id);
         H5Fclose(file_id);
         string msg = "Could not create memory space  for the vlen variable " + vlen_var_path + ".";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     vector<hvl_t> vlen_data(vlen_num_elems);
@@ -269,7 +269,7 @@ void HDF5VlenAtomicArray::read_vlen_internal(bool vlen_index) {
         H5Dclose(dset_id);
         H5Fclose(file_id);
         string msg = "Could not read the data for the vlen variable " + vlen_var_path + ".";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Handle vlen and vlen_index here.
@@ -342,7 +342,7 @@ void HDF5VlenAtomicArray::read_vlen_internal(bool vlen_index) {
                 H5Dclose(dset_id); 
                 H5Fclose(file_id);
                 string msg = "Vector::val2buf: bad type.";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
         }
     }
@@ -356,7 +356,7 @@ void HDF5VlenAtomicArray::read_vlen_internal(bool vlen_index) {
         H5Dclose(dset_id);
         H5Fclose(file_id);
         string msg = "H5Dvlen_reclaim failed.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     H5Sclose(vlen_space);
     H5Sclose(memspace);

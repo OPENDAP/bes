@@ -179,7 +179,7 @@ bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
                 hid_t cgroup = H5Gopen(pid, t_fpn.data(),H5P_DEFAULT);
                 if (cgroup < 0){
                     string msg = "H5Gopen failed for the group name " + full_path_name + ".";
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 // Check the hard link loop and break the loop if it exists.
@@ -197,7 +197,7 @@ bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
 
                 if (H5Gclose(cgroup) < 0){
                     string msg = "Could not close the group.";
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 break;
             }
@@ -273,7 +273,7 @@ read_objects_base_type(DDS & dds_table, const string & varname,
         string msg = "Unable to convert hdf5 datatype to dods basetype ";
         msg += "for variable "+varname + ".";
         throw
-            InternalErr(__FILE__, __LINE__, msg);
+            BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // First deal with scalar data. 
@@ -384,7 +384,7 @@ read_objects(DDS & dds_table, const string &varname, const string &filename)
     {
         H5Tclose(dt_inst.type);
         string msg = "Currently don't support accessing data of Array datatype when array datatype is not inside the compound.";
-        throw InternalErr(__FILE__, __LINE__, msg);       
+        throw BESInternalError(msg,__FILE__,__LINE__);       
     }
     default:
         read_objects_base_type(dds_table, varname, filename);
@@ -393,7 +393,7 @@ read_objects(DDS & dds_table, const string &varname, const string &filename)
     // We must close the datatype obtained in the get_dataset routine since this is the end of reading DDS.
     if(H5Tclose(dt_inst.type)<0) {
         string msg = "Cannot close the HDF5 datatype.";
-        throw InternalErr(__FILE__, __LINE__, msg);       
+        throw BESInternalError(msg,__FILE__,__LINE__);       
     }
 }
 

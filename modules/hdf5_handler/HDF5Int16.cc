@@ -41,6 +41,7 @@
 #include <memory>
 
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 
 #include "h5dds.h"
 #include "HDF5Int16.h"
@@ -138,15 +139,15 @@ bool HDF5Int16::read()
         // Release the handles.
         if (H5Tclose(memtype) < 0) {
             string msg = "Unable to close the 16-bit integer memory datatype.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         if (H5Tclose(dtypeid) < 0) {
             string msg = "Unable to close the 16-bit integer datatype.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         if (H5Dclose(dset_id) < 0) {
             string msg = "Unable to close the dataset .";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         H5Fclose(file_id);

@@ -32,6 +32,7 @@
 
 #include <cstring>
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include <BESDebug.h>
 
 
@@ -54,13 +55,13 @@ void get_data(hid_t dset, void *buf)
     hid_t dtype = -1;
     if ((dtype = H5Dget_type(dset)) < 0) {
         string msg = "Failed to get the datatype of the dataset.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     hid_t dspace = -1;
     if ((dspace = H5Dget_space(dset)) < 0) {
         H5Tclose(dtype);
         string msg = "Failed to get the data space of the dataset.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     //  Use HDF5 H5Tget_native_type API
     hid_t memtype = H5Tget_native_type(dtype, H5T_DIR_ASCEND);
@@ -68,7 +69,7 @@ void get_data(hid_t dset, void *buf)
         H5Tclose(dtype);
         H5Sclose(dspace);
         string msg = "Failed to get memory type.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if (H5Dread(dset, memtype, dspace, dspace, H5P_DEFAULT, buf)
@@ -77,25 +78,25 @@ void get_data(hid_t dset, void *buf)
         H5Tclose(memtype);
         H5Sclose(dspace);
         string msg = "Failed to read data. ";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if (H5Tclose(dtype) < 0){
         H5Tclose(memtype);
         H5Sclose(dspace);
         string msg = "Unable to release the dtype.";
-	throw InternalErr(__FILE__, __LINE__, msg);
+	throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if (H5Tclose(memtype) < 0){
         H5Sclose(dspace);
         string msg = "Unable to release the memtype.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if(H5Sclose(dspace)<0) {
         string msg = "Unable to release the data space.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     BESDEBUG("h5", "<get_data()" << endl);
@@ -154,14 +155,14 @@ get_slabdata(hid_t dset, const int64_t *offset, const int64_t *step, const int64
     hid_t dtype = H5Dget_type(dset);
     if (dtype < 0) {
         string msg = "Could not get data type.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     // Using H5T_get_native_type API
     hid_t memtype = H5Tget_native_type(dtype, H5T_DIR_ASCEND);
     if (memtype < 0) {
         H5Tclose(dtype);
         string msg = "Could not get memory type.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     hid_t dspace = H5Dget_space(dset);
@@ -169,7 +170,7 @@ get_slabdata(hid_t dset, const int64_t *offset, const int64_t *step, const int64
         H5Tclose(dtype);
         H5Tclose(memtype);
         string msg = "Could not get data space";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
 
@@ -201,7 +202,7 @@ get_slabdata(hid_t dset, const int64_t *offset, const int64_t *step, const int64
         H5Tclose(memtype);
         H5Sclose(dspace);
         string msg = "Could not select hyperslab";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     hid_t memspace = H5Screate_simple(num_dim, dyn_count.data(), nullptr);
@@ -210,7 +211,7 @@ get_slabdata(hid_t dset, const int64_t *offset, const int64_t *step, const int64
         H5Tclose(memtype);
         H5Sclose(dspace);
         string msg = "Could not create memory space.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if (H5Dread(dset, memtype, memspace, dspace, H5P_DEFAULT, buf) < 0) {
@@ -219,7 +220,7 @@ get_slabdata(hid_t dset, const int64_t *offset, const int64_t *step, const int64
         H5Sclose(dspace);
         H5Sclose(memspace);
         string msg = "Could not get data.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if (H5Sclose(dspace) < 0){
@@ -227,23 +228,23 @@ get_slabdata(hid_t dset, const int64_t *offset, const int64_t *step, const int64
         H5Tclose(memtype);
         H5Sclose(memspace);
         string msg = "Unable to close the dspace.";
-	throw InternalErr(__FILE__, __LINE__, msg);
+	throw BESInternalError(msg,__FILE__,__LINE__);
     }
     if (H5Sclose(memspace) < 0){
         H5Tclose(dtype);
         H5Tclose(memtype);
         string msg = "Unable to close the memspace.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     if (H5Tclose(dtype) < 0){
         H5Tclose(memtype);
         string msg = "Unable to close the dtype.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if (H5Tclose(memtype) < 0){
         string msg = "Unable to close the memory datatype.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     BESDEBUG("h5", "<get_slabdata() " << endl);
@@ -262,7 +263,7 @@ bool read_vlen_string(hid_t dsetid, const int64_t nelms, const hsize_t *hoffset,
 
     if ((dspace = H5Dget_space(dsetid))<0) {
         string msg = "Cannot obtain HDF5 variable length string data space.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if(H5S_SCALAR == H5Sget_simple_extent_type(dspace))
@@ -274,21 +275,21 @@ bool read_vlen_string(hid_t dsetid, const int64_t nelms, const hsize_t *hoffset,
                                hcount, nullptr) < 0) {
             H5Sclose(dspace);
             string msg = "Cannot generate the hyperslab of the HDF5 variable length string dataset.";
-            throw InternalErr (__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         int d_num_dim = H5Sget_simple_extent_ndims(dspace);
         if(d_num_dim < 0) {
             H5Sclose(dspace);
             string msg = "Cannot obtain the number of dimensions of the data space.";
-            throw InternalErr (__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         mspace = H5Screate_simple(d_num_dim, hcount,nullptr);
         if (mspace < 0) {
             H5Sclose(dspace);
             string msg = "Cannot create the memory space.";
-            throw InternalErr (__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     }
 
@@ -297,7 +298,7 @@ bool read_vlen_string(hid_t dsetid, const int64_t nelms, const hsize_t *hoffset,
             H5Sclose(mspace);
         H5Sclose(dspace);
         string msg = "Cannot obtain the datatype.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
 
     }
 
@@ -307,7 +308,7 @@ bool read_vlen_string(hid_t dsetid, const int64_t nelms, const hsize_t *hoffset,
         H5Tclose(dtypeid);
         H5Sclose(dspace);
         string msg = "Fail to obtain memory datatype.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     size_t ty_size = H5Tget_size(memtype);
@@ -337,7 +338,7 @@ bool read_vlen_string(hid_t dsetid, const int64_t nelms, const hsize_t *hoffset,
         H5Tclose(dtypeid);
         H5Sclose(dspace);
         string msg = "Fail to read the HDF5 variable length string dataset.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     read_vlen_string_value(nelms, strval, finstrval, ty_size);
@@ -380,7 +381,7 @@ void claim_vlen_string_memory(hid_t memtype, hid_t dspace, hid_t dtypeid, hid_t 
             H5Tclose(dtypeid);
             H5Sclose(dspace);
             string msg = "Cannot reclaim the memory buffer of the HDF5 variable length string.";
-            throw InternalErr (__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
 
         }
     }

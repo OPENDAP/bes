@@ -101,12 +101,12 @@ void HDF5BaseArray::write_nature_number_buffer(int rank, int64_t tnumelm) {
 
     if (rank != 1) { 
         string msg =  "Currently the rank of the missing field should be 1";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if (tnumelm >DODS_INT_MAX) {
         string msg = "Currently the maximum number for this dimension is less than DODS_INT_MAX";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     
     vector<int64_t>offset;
@@ -148,7 +148,7 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
     auto ndims = (int)(h5_dimsizes.size());
     if(ndims == 0) {
         string msg = "Currently we only support array numeric data in the cache, the number of dimension for this file is 0.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     
 

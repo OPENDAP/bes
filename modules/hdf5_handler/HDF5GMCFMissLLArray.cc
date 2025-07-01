@@ -112,14 +112,14 @@ void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(const int64_t* offset, const int
     // Longitude Step, SW Point Longitude, Number of Columns
     if (1 != rank) {
         string msg = "The number of dimension for Aquarius Level 3 map data must be 1.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     bool check_pass_fileid_key = HDF5RequestHandler::get_pass_fileid();
     if (false == check_pass_fileid_key) {
         if ((fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT)) < 0) {
             string msg = "HDF5 File " + filename + " cannot be opened. ";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     }
 
@@ -127,7 +127,7 @@ void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(const int64_t* offset, const int
     if ((rootid = H5Gopen(fileid, "/", H5P_DEFAULT)) < 0) {
         HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
         string msg = "HDF5 dataset " + varname + " cannot be opened. ";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     float LL_first_point = 0.0;
@@ -160,7 +160,7 @@ void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(const int64_t* offset, const int
             H5Gclose(rootid);
             HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
             string msg = "The number of line must be >0.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         // The first number of the latitude is at the north west corner
@@ -196,7 +196,7 @@ void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(const int64_t* offset, const int
             H5Gclose(rootid);
             HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
             string msg = "The number of line must be >0.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         // The first number of the latitude is at the north west corner
@@ -212,7 +212,7 @@ void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(const int64_t* offset, const int
         H5Gclose(rootid);
         HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
         string msg = "The number of elements exceeds the total number of  Latitude or Longitude.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     for (int64_t i = 0; i < nelms; ++i)
@@ -237,7 +237,7 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(const int64_t* offset, const int64_t*
 
     if (1 != rank) {
         string msg = "The number of dimension for GPM Level 3 map data must be 1.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     bool check_pass_fileid_key = HDF5RequestHandler::get_pass_fileid();
@@ -245,7 +245,7 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(const int64_t* offset, const int64_t*
     if (false == check_pass_fileid_key) {
         if ((fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT)) < 0) {
             string msg = "HDF5 File " + filename + " cannot be opened. ";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     }
 
@@ -276,7 +276,7 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(const int64_t* offset, const int64_t*
                     grid_grp_name = temp_grid_grp_name2;
                 else {
                     string msg = "Unknown GPM grid group name. ";
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
             }
         }
@@ -296,7 +296,7 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(const int64_t* offset, const int64_t*
         if ((grid_grp_id = H5Gopen(fileid, grid_grp_name.c_str(), H5P_DEFAULT)) < 0) {
             HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
             string msg = "HDF5 dataset " + varname + " cannot be opened. ";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     
         // GPMDPR: update grid_info_name. 
@@ -414,7 +414,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
             H5Sclose(attr_space);
             H5Gclose(s_root_id);
             string msg = "Currently we assume the attributes we use to retrieve lat and lon are NOT variable length string.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         else {
             str_attr_value.resize(atype_size);
@@ -464,7 +464,7 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_new_grid_info(hid_t file,
    if(ret_o < 0){
         H5Fclose(file);
         string msg = "H5OVISIT failed. ";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
    }
    else if(ret_o >0) {
         BESDEBUG("h5","Found the GPM level 3 Grid_info attribute."<<endl);
@@ -484,7 +484,7 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_new_grid_info(hid_t file,
         if(ret_o2 < 0) {
             H5Fclose(file);
             string msg = "H5OVISIT failed again. ";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         else if(ret_o2>0) {
             if(attr_na.name) {
@@ -725,7 +725,7 @@ void HDF5GMCFMissLLArray::send_gpm_l3_ll_to_dap(const int latsize,const int lons
 
     if (0 == latsize || 0 == lonsize) {
         string msg = "Either latitude or longitude size is 0. ";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     vector<float> val;
@@ -735,7 +735,7 @@ void HDF5GMCFMissLLArray::send_gpm_l3_ll_to_dap(const int latsize,const int lons
 
         if (nelms > latsize) {
             string msg = "The number of elements exceeds the total number of  Latitude. ";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
 
         }
         for (int64_t i = 0; i < nelms; ++i)
@@ -753,7 +753,7 @@ void HDF5GMCFMissLLArray::send_gpm_l3_ll_to_dap(const int latsize,const int lons
 
         if (nelms > lonsize) {
             string msg = "The number of elements exceeds the total number of  Longitude.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         for (int64_t i = 0; i < nelms; ++i)

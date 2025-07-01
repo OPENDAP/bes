@@ -68,27 +68,27 @@ bool HDF5CFStr::read()
 
     if ((fileid = H5Fopen(dataset().c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
         string msg = "HDF5 File " + dataset() + " cannot be opened. ";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if ((dsetid = H5Dopen(fileid,varname.c_str(),H5P_DEFAULT))<0) {
         H5Fclose(fileid);
         string msg = "HDF5 dataset " + varname  + " cannot be opened. ";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if ((dspace = H5Dget_space(dsetid))<0) {
         H5Dclose(dsetid);
         H5Fclose(fileid);
         string msg = "Space id of the HDF5 dataset " + varname + " cannot be obtained. ";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if (H5S_SCALAR != H5Sget_simple_extent_type(dspace)) {
         H5Dclose(dsetid);
         H5Fclose(fileid);
         string msg = " The HDF5 dataset " + varname + " is not scalar.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
 
@@ -97,7 +97,7 @@ bool HDF5CFStr::read()
         H5Dclose(dsetid);
         H5Fclose(fileid);
         string msg = " Obtaining the datatype of the HDF5 dataset " + varname +" fails.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if ((memtype = H5Tget_native_type(dtypeid, H5T_DIR_ASCEND))<0) {
@@ -106,7 +106,7 @@ bool HDF5CFStr::read()
         H5Dclose(dsetid);
         H5Fclose(fileid);
         string msg = "Obtaining the memory type of the HDF5 dataset " + varname + " fails.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     htri_t is_vlen_str = H5Tis_variable_str(dtypeid);
@@ -119,7 +119,7 @@ bool HDF5CFStr::read()
             H5Dclose(dsetid);
             H5Fclose(fileid);
             string msg = "Cannot obtain the size of the fixed size HDF5 string of the dataset" + varname + " fails.";
-            throw InternalErr (__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         vector <char> strval;
         strval.resize(ty_size);
@@ -133,7 +133,7 @@ bool HDF5CFStr::read()
             H5Dclose(dsetid);
             H5Fclose(fileid);
             string msg = "Cannot read the HDF5 dataset " + varname + " with the type of the HDF5 variable length string.";
-            throw InternalErr (__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         char*temp_bp = strval.data();
@@ -158,7 +158,7 @@ bool HDF5CFStr::read()
                 H5Fclose(fileid);
                 string msg = "Cannot reclaim the memory buffer of the HDF5 variable length string of the dataset ";
                 msg = msg + varname + ".";
-                throw InternalErr (__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
         }
 
@@ -182,7 +182,7 @@ bool HDF5CFStr::read()
             H5Fclose(fileid);
             string msg = "Cannot obtain the size of the fixed size HDF5 string of the dataset ";
             msg = msg + varname + ".";
-            throw InternalErr (__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         vector <char> strval;
@@ -197,7 +197,7 @@ bool HDF5CFStr::read()
             H5Fclose(fileid);
             string msg = "Cannot read the HDF5 dataset ";
             msg = msg + " with the type of the fixed size HDF5 string.";
-            throw InternalErr (__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         string total_string(strval.begin(),strval.end());
@@ -230,7 +230,7 @@ bool HDF5CFStr::read()
         H5Dclose(dsetid);
         H5Fclose(fileid);
         string msg = "H5Tis_variable_str returns negative value.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     } 
 
     H5Tclose(memtype);

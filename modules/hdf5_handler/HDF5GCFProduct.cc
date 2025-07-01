@@ -908,7 +908,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
                         H5Dclose(s_dset_id);
                         H5Gclose(s_group_id);
                         string msg = "Cannot reclaim the memory buffer of the HDF5 variable length string.";
-                        throw InternalErr(__FILE__, __LINE__, msg);
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                     }
                     H5Sclose(dspace);
                     H5Tclose(dtype);
@@ -1063,7 +1063,7 @@ void obtain_gm_attr_value(hid_t s_root_id, const char* s_attr_name, string & s_a
                 H5Aclose(s_attr_id);
                 H5Sclose(attr_space);
                 string msg = "Cannot reclaim the memory buffer of the HDF5 variable length string.";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
                  
             temp_buf.clear();

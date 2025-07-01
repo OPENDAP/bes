@@ -32,6 +32,8 @@
 
 #include <memory>
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
+
 #include "HDF5CFUInt32.h"
 #include <BESDebug.h>
 #include "h5common.h"
@@ -85,7 +87,7 @@ bool HDF5CFUInt32::read()
         // Release the handles.
         if (H5Dclose(dset_id) < 0) {
             string msg = "Unable to close the dset.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         H5Fclose(file_id);
     }

@@ -41,6 +41,7 @@
 #include "config_hdf5.h"
 #include "BESDebug.h"
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include "h5dds.h"
 #include "HDF5UInt64.h"
 
@@ -94,7 +95,7 @@ bool HDF5UInt64::read()
 
         if (H5Dclose(dset_id) < 0) {
             string msg = "Unable to close the HDF5 dataset " + var_path +".";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         H5Fclose(file_id);
     }

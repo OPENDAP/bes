@@ -107,7 +107,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
 
     if (rank <=  0) {
         string msg = "The number of dimension of this variable should be greater than 0.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     else {
          offset.resize(rank);
@@ -118,13 +118,13 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
 
     if (nelms <= 0) { 
         string msg = "The number of elments is negative.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     int64_t total_elms = xdimsize*ydimsize;
     if (total_elms > DODS_INT_MAX) {
         string msg = "Currently we cannot calculate lat/lon that is greater than 2G for HDF-EOS5.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
 
@@ -242,7 +242,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
             off_t fpos = lseek(fd,var_offset,SEEK_SET);
             if(fpos == -1) {
                 string msg = "Cannot seek the cached file offset.";
-                throw InternalErr (__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             ssize_t ret_val = HDF5CFUtil::read_buffer_from_file(fd,(void*)var_value.data(),var_value.size()*sizeof(double));
             ll_cache->unlock_and_close(cache_fname);
@@ -282,7 +282,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
                  xdimsize * ydimsize, rows.data(), cols.data(), lon.data(), lat.data(), eos5_pixelreg, eos5_origin);
     if (r != 0) {
         string msg = "Cannot calculate grid latitude and longitude.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // ll_read_from_cache may be redundant. It is good to remind that we will generate the cache file
@@ -376,7 +376,7 @@ string HDFEOS5CFMissLLArray::obtain_ll_cache_name() {
 
     if(("" == bescachedir)||(""==bescacheprefix)||(cachesize <=0)){
         string msg = "Either the cached dir is empty or the prefix is nullptr or the cache size is not set.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     else {
         struct stat sb;
@@ -442,7 +442,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*
     if (rank <=  0) {
        string msg = "The number of dimension of this variable should be greater than 0.";
        msg += " The variable name is " + varname + ".";
-       throw InternalErr (__FILE__, __LINE__, msg);
+       throw BESInternalError(msg,__FILE__,__LINE__);
     }
     else {
          offset.resize(rank);
@@ -454,7 +454,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*
     if (nelms <= 0 || nelms >DODS_INT_MAX) {
        string msg = "The number of elments for geographic lat/lon is negative or greater than 2G.";
        msg += " The variable name is " + varname + ".";
-       throw InternalErr (__FILE__, __LINE__, msg);
+       throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     float start = 0.0;
@@ -481,7 +481,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*
 	if (ydimsize <=0) {
             string msg = "The number of elments should be greater than 0.";
             msg += " The variable name is " + varname + ".";
-	    throw InternalErr (__FILE__, __LINE__, msg);
+	    throw BESInternalError(msg,__FILE__,__LINE__);
         }
            
 	float lat_step = (end - start) /ydimsize;

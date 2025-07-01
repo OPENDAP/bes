@@ -176,7 +176,7 @@ void gen_dap_onevar_dds_sca_atomic(DDS &dds, const HDF5CF::Var *var, const strin
             break;
         default:{
             string msg = "unsupported data type.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     }
 }
@@ -282,7 +282,7 @@ void gen_dap_special_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr, con
     BESDEBUG("h5", "Coming to gen_dap_special_oneobj_das()  "<<endl);
     if (attr->getCount() != 1) {
         string msg = "FillValue attribute can only have one element.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     H5DataType var_dtype = var->getType();

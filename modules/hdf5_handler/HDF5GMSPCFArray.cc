@@ -78,12 +78,12 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
     if((otype != H5INT64 && otype !=H5UINT64) 
        || (dtype !=H5INT32)) { 
         string msg = "The datatype of the special product is not right.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if (rank <= 0) { 
         string msg = "The number of dimension of the variable is <=0 for this array.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     else {
 
@@ -113,21 +113,21 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
     if(false == check_pass_fileid_key) {
         if ((fileid = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
             string msg = "HDF5 File " + filename + " cannot be opened. ";
-            throw InternalErr (__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     }
 
     if ((dsetid = H5Dopen(fileid,varname.c_str(),H5P_DEFAULT))<0) {
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         string msg = "HDF5 dataset " + varname + " cannot be opened. ";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if ((dspace = H5Dget_space(dsetid))<0) {
         H5Dclose(dsetid);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         string msg = "Space id of the HDF5 dataset " + varname + " cannot be obtained. ";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
 
@@ -138,7 +138,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
         H5Dclose(dsetid);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         string msg = "The selection of hyperslab of the HDF5 dataset " + varname + " fails. ";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     mspace = H5Screate_simple(rank, (const hsize_t*)hcount.data(),nullptr);
@@ -147,7 +147,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
         H5Dclose(dsetid);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         string msg = "The creation of the memory space of the  HDF5 dataset " + varname + "fails. ";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if ((dtypeid = H5Dget_type(dsetid)) < 0) {
@@ -156,7 +156,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
         H5Dclose(dsetid);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         string msg = "Obtaining the datatype of the HDF5 dataset " + varname + " fails.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if ((memtype = H5Tget_native_type(dtypeid, H5T_DIR_ASCEND))<0) {
@@ -166,7 +166,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
         H5Dclose(dsetid);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         string msg = "Obtaining the memory type of the HDF5 dataset " + varname + " fails. ";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     H5T_class_t ty_class = H5Tget_class(dtypeid);
@@ -178,7 +178,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
         H5Dclose(dsetid);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         string msg = "Obtaining the type class of the HDF5 dataset " + varname + " fails. ";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
 
     }
 
@@ -190,7 +190,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
         H5Dclose(dsetid);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         string msg = "The type class of the HDF5 dataset " + varname + " is not H5T_INTEGER. ";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     size_t ty_size = H5Tget_size(dtypeid);
@@ -202,7 +202,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
         H5Dclose(dsetid);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         string msg = "The type size of the HDF5 dataset " + varname + " is not right. ";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     hid_t read_ret = -1;
@@ -223,7 +223,7 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
         H5Dclose(dsetid);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         string msg = "Cannot read the HDF5 dataset " + varname + " with type of 64-bit integer.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Create "Time" or "Date" part of the original array. 

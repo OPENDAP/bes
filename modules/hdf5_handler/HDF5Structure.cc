@@ -30,6 +30,7 @@
 #include "h5dds.h"
 #include "HDF5Structure.h"
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include "BESDebug.h"
 
 using namespace std;
@@ -122,13 +123,13 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
 
     if ((memtype = H5Tget_native_type(dtypeid, H5T_DIR_ASCEND)) < 0) {
         string msg = "Fail to obtain memory datatype for the compound datatype variable " + var_path + ".";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if ((mspace = H5Dget_space(dsetid)) < 0) {
         H5Tclose(memtype);
         string msg = "Fail to obtain the data space for the compound datatype variable " + var_path + ".";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     if (false == has_values) {
 
@@ -140,7 +141,7 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
             H5Tclose(memtype);
             H5Sclose(mspace);
             string msg = "Fail to read the HDF5 compound datatype variable " + var_path + ".";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         has_values = true;
@@ -155,14 +156,14 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
     try {
         if ((nmembs = H5Tget_nmembers(memtype)) < 0) {
             string msg = "Fail to obtain the number of HDF5 compound datatype members for variable " + var_path + ".";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         for (unsigned int u = 0; u < (unsigned) nmembs; u++) {
 
             if ((memb_id = H5Tget_member_type(memtype, u)) < 0) {
                 string msg = "Fail to obtain the datatype of an HDF5 compound datatype member for variable " + var_path + ".";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             // Get member type class 
@@ -175,7 +176,7 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
             memb_name = H5Tget_member_name(memtype, u);
             if (memb_name == nullptr) {
                 string msg = "Fail to obtain the name of an HDF5 compound datatype member for variable " + var_path + ".";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             if (memb_cls == H5T_COMPOUND) {
@@ -187,7 +188,7 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
                 int at_ndims = H5Tget_array_ndims(memb_id);
                 if (at_ndims <= 0) {
                     string msg = "Fail to obtain number of dimensions of the array datatype for variable " + var_path + ".";
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 HDF5Array &h5_array_type = dynamic_cast<HDF5Array &>(*var(memb_name));
@@ -207,7 +208,7 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
                 free(memb_name);
                 H5Tclose(memb_id);
                 string msg = "Only support the field of compound datatype when the field type class is integer, float, string, array or compound.";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             // Close member type ID 
             H5Tclose(memb_id);
@@ -226,7 +227,7 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
     // Since it doesn't cause any error. So leave it here and observe. KY 2025-06-26
     if (H5Dvlen_reclaim(memtype, mspace, H5P_DEFAULT, (void *) values.data()) < 0) {
         string msg = "Unable to reclaim the memory of storing  compound datatype array. ";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     H5Tclose(memtype);
@@ -277,7 +278,7 @@ void HDF5Structure::do_structure_read_string(hid_t memb_id, char *memb_name,
             H5Tclose(memb_id);
             free(memb_name);
             string msg = "Fail to obtain the size of HDF5 compound datatype.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         str_val.resize(memb_size);
         memcpy(str_val.data(), src, memb_size);
@@ -292,7 +293,7 @@ void HDF5Structure::catch_free(char *memb_name, hid_t memb_id, hid_t memtype, hi
     if ((memtype != -1) && (mspace != -1) && (H5Dvlen_reclaim(memtype, mspace,
                                                               H5P_DEFAULT, (void *) values.data()) < 0)) {
         string msg = "Unable to reclaim the compound datatype array.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     if (memtype != -1)
         H5Tclose(memtype);

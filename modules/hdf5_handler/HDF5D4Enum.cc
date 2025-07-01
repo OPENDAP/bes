@@ -32,6 +32,7 @@
 #include <memory>
 
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 
 #include "HDF5D4Enum.h"
 
@@ -93,27 +94,27 @@ bool HDF5D4Enum::read()
     if (memtype < 0){
         close_objids(-1,base_type,dtypeid,dset_id,file_id);
         string msg = "Cannot obtain the native datatype of the enum base type for the variable " + var_path + ".";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if (H5Tget_class(base_type) != H5T_INTEGER) {
         close_objids(memtype,base_type,dtypeid,dset_id,file_id);
         string msg = "We currently only support the case when the enum's base type is an integer. The enum variable name is: "+var_path+".";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     size_t dsize = H5Tget_size(base_type);
     if (dsize == 0){
         close_objids(memtype,base_type,dtypeid,dset_id,file_id);
         string msg = "Size of enum base data type is invalid. The enum variable name is: "+var_path+".";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     H5T_sign_t sign = H5Tget_sign(base_type);
     if (sign < 0){
         close_objids(memtype,base_type,dtypeid,dset_id,file_id);
         string msg = "Sign of enum base data type is invalid. The enum variable name is: "+var_path+".";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     switch (dsize) {
@@ -125,7 +126,7 @@ bool HDF5D4Enum::read()
                 close_objids(memtype,base_type,dtypeid,dset_id,file_id);
                 string msg = "Cannot read the enum data for the unsigned char base type. ";
                 msg += "The enum variable name is: "+var_path+".";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             set_value(val);
         } 
@@ -135,7 +136,7 @@ bool HDF5D4Enum::read()
                 close_objids(memtype,base_type,dtypeid,dset_id,file_id);
                 string msg = "Cannot read the enum data for the signed char base type. ";
                 msg += "The enum variable name is: "+var_path+".";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             set_value(val);
         }
@@ -148,7 +149,7 @@ bool HDF5D4Enum::read()
                 close_objids(memtype,base_type,dtypeid,dset_id,file_id);
                 string msg = "Cannot read the enum data for the unsigned 16-bit integer base type. ";
                 msg += "The enum variable name is: "+var_path+".";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             set_value(val);
         } 
@@ -158,7 +159,7 @@ bool HDF5D4Enum::read()
                 close_objids(memtype,base_type,dtypeid,dset_id,file_id);
                 string msg = "Cannot read the enum data for the 16-bit integer base type. ";
                 msg += "The enum variable name is: "+var_path+".";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             set_value(val);
         }
@@ -172,7 +173,7 @@ bool HDF5D4Enum::read()
                 close_objids(memtype,base_type,dtypeid,dset_id,file_id);
                 string msg = "Cannot read the enum data for the unsigned 32-bit integer base type. ";
                 msg += "The enum variable name is: "+var_path+".";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             set_value(val);
  
@@ -183,7 +184,7 @@ bool HDF5D4Enum::read()
                 close_objids(memtype,base_type,dtypeid,dset_id,file_id);
                 string msg = "Cannot read the enum data for the 32-bit integer base type. ";
                 msg += "The enum variable name is: "+var_path+".";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             set_value(val);
  
@@ -197,7 +198,7 @@ bool HDF5D4Enum::read()
                 close_objids(memtype,base_type,dtypeid,dset_id,file_id);
                 string msg = "Cannot read the enum data for the unsigned 64-bit integer base type. ";
                 msg += "The enum variable name is: "+var_path+".";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             set_value(val);
  
@@ -208,7 +209,7 @@ bool HDF5D4Enum::read()
                 close_objids(memtype,base_type,dtypeid,dset_id,file_id);
                 string msg = "Cannot read the enum data for the 64-bit integer base type. ";
                 msg += "The enum variable name is: "+var_path+".";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             set_value(val);
         }
@@ -218,7 +219,7 @@ bool HDF5D4Enum::read()
         close_objids(memtype,base_type,dtypeid,dset_id,file_id);
         string msg =  "The enum base type size is not within the currently supported values.";
         msg += "The enum variable name is: "+var_path+".";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     
     close_objids(memtype,base_type,dtypeid,dset_id,file_id);

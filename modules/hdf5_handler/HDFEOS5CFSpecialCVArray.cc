@@ -70,7 +70,7 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
     if (rank <= 0) {
         string msg = "The number of dimension of the variable is <=0 for this array.";
         msg += "The variable name is " + varname + ".";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     else {
         offset.resize(rank);
@@ -82,14 +82,14 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
     if(false == check_pass_fileid_key) {
         if ((fileid = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
             string msg = "HDF5 File " + filename + " cannot be opened. "; 
-            throw InternalErr (__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     }
     string cv_name = HDF5CFUtil::obtain_string_after_lastslash(varname);
     if ("" == cv_name) {
         string msg = "Cannot obtain TES CV attribute.";
         msg += "The variable name is " + varname + ".";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     string group_name = varname.substr(0,varname.size()-cv_name.size());
@@ -100,7 +100,7 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         string msg = "Cannot obtain TES CV attribute.";
         msg += "The variable name is " + varname + ".";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     string cv_attr_name = cv_name.substr(0,cv_name_sep_pos);
 
@@ -110,7 +110,7 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         string msg = "The TES swath link doesn't exist.";
         msg += "The variable name is " + varname + ".";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     
     htri_t swath_exist = H5Oexists_by_name(fileid,group_name.c_str(),H5P_DEFAULT); 
@@ -118,7 +118,7 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         string msg = "The TES swath link doesn't exist.";
         msg += "The variable name is " + varname + ".";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     htri_t cv_attr_exist = H5Aexists_by_name(fileid,group_name.c_str(),cv_attr_name.c_str(),H5P_DEFAULT);
@@ -126,7 +126,7 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         string msg = "The TES swath CV attribute doesn't exist.";
         msg += "The variable name is " + varname + ".";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     hid_t cv_attr_id = H5Aopen_by_name(fileid,group_name.c_str(),cv_attr_name.c_str(),H5P_DEFAULT,H5P_DEFAULT);
@@ -134,7 +134,7 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
         string msg = "Cannot obtain the TES CV attribute id.";
         msg += "The variable name is " + varname + ".";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     hid_t attr_type = -1;

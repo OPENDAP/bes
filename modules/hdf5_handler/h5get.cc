@@ -314,7 +314,7 @@ string get_dap_type(hid_t type, bool is_dap4)
     H5T_class_t class_t = H5Tget_class(type);
     if (H5T_NO_CLASS == class_t) {
         string msg = "The HDF5 datatype doesn't belong to any Class.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     switch (class_t) {
 
@@ -325,7 +325,7 @@ string get_dap_type(hid_t type, bool is_dap4)
         size = H5Tget_size(type);
         if (size == 0){
             string msg = "Size of the datatype is invalid.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         BESDEBUG("h5", "=get_dap_type(): FLOAT size = " << size << endl);
@@ -369,13 +369,13 @@ string get_dap_integer_type(hid_t dtype, bool is_dap4) {
 
     if (dsize == 0){
         string msg = "Size of datatype is invalid.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     sign = H5Tget_sign(dtype);
     if (sign < 0){
         string msg = "Sign of  datatype is invalid.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     BESDEBUG("h5", "=get_dap_dtype(): H5T_INTEGER" <<
@@ -603,18 +603,18 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
         H5Sclose(dspace);
         H5Dclose(dset);
         string msg = "Cannot close the HDF5 datatype.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if(H5Sclose(dspace)<0) {
         H5Dclose(dset);
         string msg = "Cannot close the HDF5 dataspace.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if(H5Dclose(dset)<0) {
         string msg = "Cannot close the HDF5 dataset.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
 }
@@ -826,18 +826,18 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
         H5Sclose(dspace);
         H5Dclose(dset);
         string msg = "Cannot close the HDF5 datatype.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if (H5Sclose(dspace)<0) {
         H5Dclose(dset);
         string msg = "Cannot close the HDF5 dataspace.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if (H5Dclose(dset)<0) {
         string msg = "Cannot close the HDF5 dataset.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
  
 }
@@ -866,7 +866,7 @@ bool handle_dimscale_dmr(hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
             H5Sclose(dspace);
             H5Dclose(dset);
             string msg = "Fail to check dim. scale.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         if (true == has_ds_attr) {
@@ -993,11 +993,11 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
             size_t str_size = H5Tget_size(type);
             if(H5Tis_variable_str(type)>0) {
                 string msg = "print_attr function doesn't handle variable length string, variable length string should be handled separately.";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             if (str_size == 0){
                 string msg = "H5Tget_size() failed.";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             BESDEBUG("h5", "=print_attr(): H5T_STRING sm_buf=" << (char *) sm_buf
                 << " size=" << str_size << endl);
@@ -1024,13 +1024,13 @@ void print_integer_type_attr(hid_t atype, int loc, void*sm_buf, union attr_data_
     size_t asize = H5Tget_size(atype);
     if (asize == 0) {
         string msg = "Size of datatype is invalid.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     H5T_sign_t sign = H5Tget_sign(atype);
     if (sign < 0) {
         string msg = "Sign  of datatype is invalid. ";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     BESDEBUG("h5", "=get_dap_type(): H5T_INTEGER" <<
@@ -1084,7 +1084,7 @@ void print_integer_type_attr(hid_t atype, int loc, void*sm_buf, union attr_data_
         }
     } else {
         string msg = "Unsupported integer type, check the size of datatype.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
 }
@@ -1147,7 +1147,7 @@ void print_float_type_attr(hid_t atype, int loc, void*sm_buf, union attr_data_pt
     }
     else if (H5Tget_size(atype) == 0){
         string msg = "H5Tget_size() failed.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
 }
@@ -1235,7 +1235,7 @@ BaseType *Get_bt(const string &vname,
 
             default: {
                 string msg = "Unsupported HDF5 type for variable " + vname + "."; 
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
         }
     }
@@ -1246,7 +1246,7 @@ BaseType *Get_bt(const string &vname,
 
     if (!btp) {
         string msg = "Could not make a DAP variable for: " + vname + ".";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     BESDEBUG("h5", "<Get_bt()" << endl);
@@ -1317,7 +1317,7 @@ BaseType *Get_bt_enhanced(D4Group *d4_grp,
 
             default: {
                 string msg = "Unsupported HDF5 type for variable " + vname + ".";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
         }
     }
@@ -1328,7 +1328,7 @@ BaseType *Get_bt_enhanced(D4Group *d4_grp,
 
     if (!btp) {
         string msg = "Could not make a DAP variable for: " + vname + ".";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     BESDEBUG("h5", "<Get_bt()" << endl);
@@ -1347,7 +1347,7 @@ BaseType *Get_integer_bt(const string &vname, const string &vpath, const string 
 
     if (sign == H5T_SGN_ERROR) {
         string msg = "Cannot retrieve the sign type of the integer. ";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     switch (size) {
@@ -1399,7 +1399,7 @@ BaseType *Get_integer_bt(const string &vname, const string &vpath, const string 
         break;
         default: {
             string msg = "Cannot return the size of the datatype.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     }
 
@@ -1435,7 +1435,7 @@ BaseType *Get_float_bt(const string &vname, const string &vpath, const string &d
 
     if (size == 0) {
         string msg = "Cannot return the size of the datatype.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     else if (size == 4) {
         auto hdf5_float32 = make_unique<HDF5Float32>(vname, vpath, dataset);
@@ -1447,7 +1447,7 @@ BaseType *Get_float_bt(const string &vname, const string &vpath, const string &d
     }
     else {
         string msg = "The size of the float datatype ie neither 4 nor 8. ";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     return btp;
@@ -1481,7 +1481,7 @@ Structure *Get_structure(const string &varname,const string &vpath,
 
     if (H5Tget_class(datatype) != H5T_COMPOUND) {
         string msg = "Compound-to-structure mapping error for " + varname + ".";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     try {
@@ -1491,7 +1491,7 @@ Structure *Get_structure(const string &varname,const string &vpath,
         BESDEBUG("h5", "=Get_structure() has " << nmembs << endl);
         if (nmembs < 0){
             string msg = "Cannot retrieve the number of elements." ;
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         auto structure_unique_ptr = make_unique<HDF5Structure>(varname, vpath, dataset);
         structure_ptr = structure_unique_ptr.release();
@@ -1502,11 +1502,11 @@ Structure *Get_structure(const string &varname,const string &vpath,
             memb_type = H5Tget_member_type(datatype, i);
             if (memb_name == nullptr){
                 string msg = "Cannot retrieve the name of the member.";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             if ((memb_cls < 0) || (memb_type < 0)) {
                 string msg = "Type mapping error for " + string(memb_name) + ".";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             if (memb_cls == H5T_COMPOUND) {
                 Structure *s = Get_structure(memb_name, memb_name, dataset, memb_type,is_dap4);
@@ -1526,7 +1526,7 @@ Structure *Get_structure(const string &varname,const string &vpath,
                 free(memb_name);
                 memb_name = nullptr;
                 string msg = "Unsupported field datatype inside a compound datatype.";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             // Caller needs to free the memory allocated by the library for memb_name.
             free(memb_name);
@@ -1582,27 +1582,27 @@ void Get_structure_array_type(Structure *structure_ptr, hid_t memb_type, const s
 
         if (dtype_base < 0) {
             string msg = "Cannot return the base memb_type.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         if (ndim < 0) {
             string msg = "Cannot eturn the rank of the array memb_type.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         if (size == 0) {
             string msg = "Cannot return the size of the memb_type.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         hsize_t size2[DODS_MAX_RANK];
         if (H5Tget_array_dims(memb_type, size2) < 0) {
             string msg = "Could not get array dims for " + memb_name + ".";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         H5T_class_t array_memb_cls = H5Tget_class(dtype_base);
         if (array_memb_cls == H5T_NO_CLASS) {
             string msg = "Cannot get the correct class for compound type member for " + memb_name + ".";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         if (H5T_COMPOUND == array_memb_cls) {
 
@@ -1667,14 +1667,14 @@ string obtain_enum_def_name(hid_t pid, hid_t datatype) {
                                                   nullptr,0, H5P_DEFAULT);
         if (oname_size <0) {
             string msg = "H5Lget_name_by_idx fails to obtain the object name size.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         vector<char> oname(oname_size + 1);
 
         if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname.data(),(size_t)(oname_size+1),H5P_DEFAULT)<0) {
             string msg = "H5Lget_name_by_idx fails to obtain the object name.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         string s_oname(oname.begin(),oname.end()-1);
@@ -1683,7 +1683,7 @@ string obtain_enum_def_name(hid_t pid, hid_t datatype) {
         H5O_info_t oinfo;
         if (H5Oget_info_by_idx(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,i,&oinfo,H5P_DEFAULT)<0) {
             string msg = "H5Oget_info_by_idx fails to obtain enum type name.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         H5O_type_t obj_type = oinfo.type;
@@ -1708,13 +1708,13 @@ int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
     size_t dsize = H5Tget_size(base_datatype);
     if (dsize == 0){
         string msg = "Size of enum base datatype is invalid.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     H5T_sign_t sign = H5Tget_sign(base_datatype);
     if (sign < 0){
         string msg = "Sign of enum base datatype is invalid.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
 
@@ -1725,7 +1725,7 @@ int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
             uint8_t val = 255;
             if (H5Tget_member_value(datatype,i,&val)<0)  {
                 string msg = "H5Tget_member_value is invalid.";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             ret_value = (int64_t)val;
 
@@ -1734,7 +1734,7 @@ int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
             int8_t val = -127;
             if (H5Tget_member_value(datatype,i,&val)<0)  {
                 string msg = "H5Tget_member_value is invalid.";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             ret_value = (int64_t)val;
 
@@ -1747,7 +1747,7 @@ int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
             uint16_t val = 65535;
             if (H5Tget_member_value(datatype,i,&val)<0)  {
                 string msg = "H5Tget_member_value is invalid.";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             ret_value = (int64_t)val;
 
@@ -1756,7 +1756,7 @@ int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
             int16_t val = -32768;
             if (H5Tget_member_value(datatype,i,&val)<0)  {
                 string msg = "H5Tget_member_value is invalid.";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             ret_value = (int64_t)val;
 
@@ -1769,7 +1769,7 @@ int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
             uint32_t val = 4294967295;
             if (H5Tget_member_value(datatype,i,&val)<0)  {
                 string msg = "H5Tget_member_value is invalid.";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             ret_value = (int64_t)val;
 
@@ -1778,7 +1778,7 @@ int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
             int32_t val = -2147483647-1;
             if (H5Tget_member_value(datatype,i,&val)<0)  {
                 string msg = "H5Tget_member_value is invalid.";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             ret_value = (int64_t)val;
 
@@ -1790,7 +1790,7 @@ int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
             uint64_t val = 0;
             if (H5Tget_member_value(datatype,i,&val)<0)  {
                 string msg = "H5Tget_member_value is invalid.";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             ret_value = (int64_t)val;
 
@@ -1799,7 +1799,7 @@ int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
             int64_t val = 0;
             if (H5Tget_member_value(datatype,i,&val)<0)  {
                 string msg = "H5Tget_member_value is invalid.";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             ret_value = val;
 
@@ -1898,7 +1898,7 @@ bool check_dimscale(hid_t fileid) {
     herr_t ret_o= H5OVISIT(fileid, H5_INDEX_NAME, H5_ITER_INC, visit_obj_cb, nullptr);
     if(ret_o < 0) {
         string msg = "H5OVISIT fails.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     else 
        ret_value =(ret_o >0)?true:false;
@@ -1917,7 +1917,7 @@ visit_obj_cb(hid_t  group_id, const char *name, const H5O_info_t *oinfo, void *_
         dataset = H5Dopen2(group_id,name,H5P_DEFAULT);
         if(dataset <0) {
             string msg = "H5Dopen2 fails in the H5OVISIT call back function.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         hid_t dspace = -1;
@@ -1925,7 +1925,7 @@ visit_obj_cb(hid_t  group_id, const char *name, const H5O_info_t *oinfo, void *_
         if(dspace <0) {
             H5Dclose(dataset);
             string msg = "H5Dget_space fails in the H5OVISIT call back function.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         // We only support netCDF-4 like dimension scales, that is the dimension scale dataset is 1-D dimension.
@@ -1955,7 +1955,7 @@ bool has_dimscale_attr(hid_t dataset) {
     htri_t dimscale_attr_exist = H5Aexists_by_name(dataset,".",dimscale_attr_name.c_str(),H5P_DEFAULT);
     if (dimscale_attr_exist <0) {
         string msg = "H5Aexists_by_name fails when checking the CLASS attribute.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     else if(dimscale_attr_exist > 0) {//Attribute CLASS exists
 
@@ -1966,7 +1966,7 @@ bool has_dimscale_attr(hid_t dataset) {
         attr_id = H5Aopen(dataset,dimscale_attr_name.c_str(), H5P_DEFAULT);
         if(attr_id < 0) {
             string msg = "H5Aopen fails in the attr_info call back function.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         // Get attribute datatype and dataspace
@@ -1974,7 +1974,7 @@ bool has_dimscale_attr(hid_t dataset) {
         if(atype_id < 0) {
             H5Aclose(attr_id);
             string msg = "H5Aget_type fails in the attr_info call back function.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         try {
@@ -2025,7 +2025,7 @@ attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void
     attr_id = H5Aopen(loc_id, name, H5P_DEFAULT);
     if(attr_id < 0) {
         string msg = "H5Aopen fails in the attr_info call back function.";
-        throw InternalErr(__FILE__, __LINE__, msg); 
+        throw BESInternalError(msg,__FILE__,__LINE__); 
     }
 
     // Get attribute datatype and dataspace
@@ -2033,7 +2033,7 @@ attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void
     if(atype_id < 0) {
         H5Aclose(attr_id);
         string msg = "H5Aget_type fails in the attr_info call back function.";
-        throw InternalErr(__FILE__, __LINE__, msg); 
+        throw BESInternalError(msg,__FILE__,__LINE__); 
     }
 
     try {
@@ -2327,7 +2327,7 @@ void obtain_dimname_hardlinks(hid_t file_id, hid_t ref_dset, vector<link_info_t>
                 H5Dclose(ref_dset);
                 string msg;
                 msg = "Find all hardlinks: H5Lvisit failed to iterate all the objects.";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 #if 0
             for(int i = 0; i<t_li_info.hl_names.size();i++)
@@ -2342,7 +2342,7 @@ void obtain_dimname_hardlinks(hid_t file_id, hid_t ref_dset, vector<link_info_t>
                 H5Dclose(ref_dset);
                 string msg = "The shortest hardlink is not located under an ancestor group of all links.";
                 msg += "This is not supported by netCDF4 data model and the current Hyrax DAP4 implementation.";
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
 // Save this link that holds the shortest path for future use.
@@ -2381,7 +2381,7 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t * attr_inst_
         if(d4_attr)
             delete d4_attr;
         string msg = "Unable to read HDF5 attribute data.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     vector<char> temp_buf;
@@ -2394,7 +2394,7 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t * attr_inst_
         H5Sclose(temp_space_id);
         delete d4_attr;
         string msg = "Unable to read HDF5 attribute data.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     char *temp_bp;
@@ -2429,7 +2429,7 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t * attr_inst_
             H5Sclose(temp_space_id);
             delete d4_attr;
             string msg = "Cannot reclaim the memory buffer of the HDF5 variable length string.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
                  
         temp_buf.clear();
@@ -2447,7 +2447,7 @@ bool check_if_utf8_str(hid_t ty_id) {
     H5T_cset_t c_set_type = H5Tget_cset(ty_id);
     if (c_set_type < 0) {
         string msg = "Cannot get hdf5 character set type for the attribute.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     if (HDF5RequestHandler::get_escape_utf8_attr() == false && (c_set_type == H5T_CSET_UTF8))
         is_utf8_str = true;
@@ -2462,14 +2462,14 @@ bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_c
     H5T_str_t str_pad = H5Tget_strpad(atype_id);
     if(str_pad == H5T_STR_ERROR) { 
         string msg = "Fail to obtain string pad.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     hid_t aspace_id = -1;
     aspace_id = H5Aget_space(attr_id);
     if (aspace_id < 0) {
         string msg = "Fail to obtain attribute space.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     hsize_t nelmts = obtain_number_elements(aspace_id);
@@ -2478,7 +2478,7 @@ bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_c
     if (0 == ty_size) {
         H5Sclose(aspace_id);
         string msg = "Fail to obtain the type size.";
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     size_t total_bytes = nelmts * ty_size;
@@ -2534,7 +2534,7 @@ hsize_t obtain_number_elements(hid_t aspace_id) {
     if (ndims < 0) {
         H5Sclose(aspace_id);
         string msg = "Fail to obtain number of dimensions.";
-        throw InternalErr(__FILE__, __LINE__, msg); 
+        throw BESInternalError(msg,__FILE__,__LINE__); 
     }
 
     hsize_t nelmts = 1;
@@ -2547,7 +2547,7 @@ hsize_t obtain_number_elements(hid_t aspace_id) {
         if (H5Sget_simple_extent_dims(aspace_id, asize.data(), nullptr)<0) {
             H5Sclose(aspace_id);
             string msg = "Fail to obtain the dimension info.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         // Return ndims and size[ndims].

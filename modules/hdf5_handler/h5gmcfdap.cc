@@ -781,7 +781,7 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
                     }
                     else {
                         string msg = "Unlimited dimension should exist.";
-                        throw InternalErr(__FILE__, __LINE__, msg);  
+                        throw BESInternalError(msg,__FILE__,__LINE__);  
                     }
                }
         
@@ -859,7 +859,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
         if (dims.empty()) {
             delete bt;
             string msg = "The coordinate variable cannot be a scalar.";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         switch(cvar->getCVType()) {
             
@@ -930,7 +930,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
                 if (cvar->getRank() !=1) {
                     delete bt;
                     string msg = "The rank of missing Z dimension field must be 1.";
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 auto nelem = (int)((cvar->getDimensions()[0])->getSize());
 
@@ -958,7 +958,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
                 if (cvar->getRank() !=1) {
                     delete bt;
                     string msg = "The rank of missing Z dimension field must be 1.";
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 HDF5GMCFFillIndexArray *ar = nullptr;
@@ -987,7 +987,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
                 if (cvar->getRank() !=1) {
                     delete bt;
                     string msg = "The rank of special coordinate variable  must be 1.";
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 auto nelem = (int)((cvar->getDimensions()[0])->getSize());
 
@@ -1053,7 +1053,7 @@ void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t f
         if (dims.empty()) {
             delete bt;
             string msg = "Currently don't support scalar special variables. ";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         HDF5GMSPCFArray *ar = nullptr;
 
@@ -1366,7 +1366,7 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                 if (cvar->getRank() !=1) {
                     delete bt;
                     string msg = "The rank of missing Z dimension field must be 1.";
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 auto nelem = (int)((cvar->getDimensions()[0])->getSize());
 
@@ -1398,7 +1398,7 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                 if (cvar->getRank() !=1) {
                     delete bt;
                     string msg = "The rank of missing Z dimension field must be 1.";
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 HDF5GMCFFillIndexArray *ar = nullptr;
@@ -1430,7 +1430,7 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                 if (cvar->getRank() !=1) {
                     delete bt;
                     string msg = "The rank of special coordinate variable  must be 1.";
-                    throw InternalErr(__FILE__, __LINE__, msg);
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 int nelem = (cvar->getDimensions()[0])->getSize();
 
@@ -1501,7 +1501,7 @@ void gen_dap_onegmspvar_dmr(D4Group*d4_root,const GMSPVar*spvar,const hid_t file
         if (dims.empty()) {
             delete bt;
             string msg = "Currently don't support scalar special variables. ";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         
         HDF5GMSPCFArray *ar = nullptr;

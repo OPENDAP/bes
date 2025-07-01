@@ -36,6 +36,7 @@
 #include <cassert>
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 
 #include <libdap/Str.h>
 #include "HDF5GMCFFillIndexArray.h"
@@ -77,7 +78,7 @@ cerr<<"file name " <<filename <<endl;
 
     if (rank != 1) { 
         string msg = "Currently the rank of the dimension scale must be 1.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     vector<int64_t> offset;
@@ -242,7 +243,7 @@ cerr<<"file name " <<filename <<endl;
         default:
         {
             string msg = "Currently the dimension scale datatype cannot be string.";
-            throw InternalErr (__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
     }
