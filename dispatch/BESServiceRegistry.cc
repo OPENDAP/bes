@@ -42,12 +42,7 @@ using std::string;
 using std::map;
 using std::list;
 
-BESServiceRegistry *BESServiceRegistry::d_instance = nullptr ;
-static std::once_flag d_euc_init_once;
-
 BESServiceRegistry::BESServiceRegistry() {}
-
-BESServiceRegistry::~BESServiceRegistry() {}
 
 /** @brief Add a service to the BES
  *
@@ -478,19 +473,8 @@ BESServiceRegistry::dump( ostream &strm ) const
 BESServiceRegistry *
 BESServiceRegistry::TheRegistry()
 {
-    std::call_once(d_euc_init_once,BESServiceRegistry::initialize_instance);
-    return d_instance;
+    static BESServiceRegistry registry;
+    return &registry;
 }
 
-void BESServiceRegistry::initialize_instance() {
-    d_instance = new BESServiceRegistry;
-#ifdef HAVE_ATEXIT
-    atexit(delete_instance);
-#endif
-}
-
-void BESServiceRegistry::delete_instance() {
-    delete d_instance;
-    d_instance = 0;
-}
 
