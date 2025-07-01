@@ -276,11 +276,11 @@ void HDF5MissLLArray::read_data_geo_lon(int64_t nelms, const vector<int64_t> &of
     
     if (HE5_HDFE_CENTER == g_info.pixelregistration) {
         for (int i = 0; i < nelms; i++)
-        val[i] = (((float)(offset[0] + i *step[0]) + 0.5F) * lon_step + start ) / 1000000.0F;
+            val[i] = (((float)(offset[0] + i *step[0]) + 0.5F) * lon_step + start ) / 1000000.0F;
     }
     else { // HE5_HDFE_CORNER
         for (int i = 0; i < nelms; i++)
-        val[i] = ((float)(offset[0]+i*step[0]) * lon_step + start) / 1000000.0F;
+            val[i] = ((float)(offset[0]+i*step[0]) * lon_step + start) / 1000000.0F;
     }
 
 }
