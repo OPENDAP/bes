@@ -59,16 +59,17 @@ bool HDF5CFFloat32::read()
         return true;
 
     hid_t file_id = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
-    if(file_id < 0) {
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the HDF5 file ID .");
+    if (file_id < 0) {
+        string msg = "Fail to obtain the HDF5 file ID for the file " + dataset() +".";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
    
     hid_t dset_id = -1;
     dset_id = H5Dopen2(file_id,dataset().c_str(),H5P_DEFAULT);
-
-    if(dset_id < 0) {
+    if (dset_id < 0) {
         H5Fclose(file_id);
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the dataset .");
+        string msg = "Fail to obtain the HDF5 dataset ID for the variable " + dataset() +".";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
     
     try {
@@ -80,7 +81,8 @@ bool HDF5CFFloat32::read()
 
         // Release the handles.
         if (H5Dclose(dset_id) < 0) {
-            throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
+            string msg = "Unable to close the HDF5 dataset " + dataset() +".";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
         H5Fclose(file_id);
     }

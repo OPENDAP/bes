@@ -779,8 +779,10 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
                         d4_root->attributes()->add_attribute_nocopy(dods_extra_attr);
                         
                     }
-                    else 
-                        throw InternalErr(__FILE__, __LINE__, "Unlimited dimension should exist.");  
+                    else {
+                        string msg = "Unlimited dimension should exist.";
+                        throw InternalErr(__FILE__, __LINE__, msg);  
+                    }
                }
         
             }
@@ -840,8 +842,8 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
         HANDLE_CASE(H5FSTRING, Str)
         HANDLE_CASE(H5VSTRING, Str)
 
-        default:
-            throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+        default: 
+            throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
 #undef HANDLE_CASE
     }
 
@@ -856,7 +858,8 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
 
         if (dims.empty()) {
             delete bt;
-            throw InternalErr(__FILE__, __LINE__, "the coordinate variable cannot be a scalar");
+            string msg = "The coordinate variable cannot be a scalar.";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
         switch(cvar->getCVType()) {
             
@@ -926,7 +929,8 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
 
                 if (cvar->getRank() !=1) {
                     delete bt;
-                    throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
+                    string msg = "The rank of missing Z dimension field must be 1.";
+                    throw InternalErr(__FILE__, __LINE__, msg);
                 }
                 auto nelem = (int)((cvar->getDimensions()[0])->getSize());
 
@@ -953,7 +957,8 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
             {
                 if (cvar->getRank() !=1) {
                     delete bt;
-                    throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
+                    string msg = "The rank of missing Z dimension field must be 1.";
+                    throw InternalErr(__FILE__, __LINE__, msg);
                 }
 
                 HDF5GMCFFillIndexArray *ar = nullptr;
@@ -981,7 +986,8 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
                 // Currently only handle 1-D special CV.
                 if (cvar->getRank() !=1) {
                     delete bt;
-                    throw InternalErr(__FILE__, __LINE__, "The rank of special coordinate variable  must be 1");
+                    string msg = "The rank of special coordinate variable  must be 1.";
+                    throw InternalErr(__FILE__, __LINE__, msg);
                 }
                 auto nelem = (int)((cvar->getDimensions()[0])->getSize());
 
@@ -1007,7 +1013,7 @@ void gen_dap_onegmcvar_dds(DDS &dds,const HDF5CF::GMCVar* cvar, const hid_t file
             case CV_MODIFY:
             default: 
                 delete bt;
-                throw InternalErr(__FILE__,__LINE__,"Coordinate variable type is not supported.");
+                throw BESInternalError("Coordinate variable type is not supported.", __FILE__, __LINE__);
         }
     }
     delete bt;
@@ -1036,7 +1042,7 @@ void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t f
         HANDLE_CASE(H5FSTRING, Str)
         HANDLE_CASE(H5VSTRING, Str)
         default:
-            throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+            throw BESInternalError("Unsupported data type.", __FILE__, __LINE__);
 #undef HANDLE_CASE
     }
 
@@ -1046,7 +1052,8 @@ void gen_dap_onegmspvar_dds(DDS &dds,const HDF5CF::GMSPVar* spvar, const hid_t f
 
         if (dims.empty()) {
             delete bt;
-            throw InternalErr(__FILE__, __LINE__, "Currently don't support scalar special variables. ");
+            string msg = "Currently don't support scalar special variables. ";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
         HDF5GMSPCFArray *ar = nullptr;
 
@@ -1264,7 +1271,7 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
         HANDLE_CASE(H5VSTRING, Str)
 
         default:
-            throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+            throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
 #undef HANDLE_CASE
     }
 
@@ -1280,7 +1287,7 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
 
         if(dims.empty()) {
             delete bt;
-            throw InternalErr(__FILE__, __LINE__, "the coordinate variable cannot be a scalar");
+            throw BESInternalError("The coordinate variable cannot be a scalar.", __FILE__, __LINE__);
         }
         switch(cvar->getCVType()) {
             
@@ -1358,7 +1365,8 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
 
                 if (cvar->getRank() !=1) {
                     delete bt;
-                    throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
+                    string msg = "The rank of missing Z dimension field must be 1.";
+                    throw InternalErr(__FILE__, __LINE__, msg);
                 }
                 auto nelem = (int)((cvar->getDimensions()[0])->getSize());
 
@@ -1389,7 +1397,8 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
 
                 if (cvar->getRank() !=1) {
                     delete bt;
-                    throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
+                    string msg = "The rank of missing Z dimension field must be 1.";
+                    throw InternalErr(__FILE__, __LINE__, msg);
                 }
 
                 HDF5GMCFFillIndexArray *ar = nullptr;
@@ -1420,7 +1429,8 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
                 // Currently only handle 1-D special CV.
                 if (cvar->getRank() !=1) {
                     delete bt;
-                    throw InternalErr(__FILE__, __LINE__, "The rank of special coordinate variable  must be 1");
+                    string msg = "The rank of special coordinate variable  must be 1.";
+                    throw InternalErr(__FILE__, __LINE__, msg);
                 }
                 int nelem = (cvar->getDimensions()[0])->getSize();
 
@@ -1447,7 +1457,7 @@ void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid
             case CV_MODIFY:
             default: 
                 delete bt;
-                throw InternalErr(__FILE__,__LINE__,"Coordinate variable type is not supported.");
+                throw BESInternalError("Coordinate variable type is not supported.", __FILE__,__LINE__);
         }
     }
     delete bt;
@@ -1480,7 +1490,7 @@ void gen_dap_onegmspvar_dmr(D4Group*d4_root,const GMSPVar*spvar,const hid_t file
         HANDLE_CASE(H5FSTRING, Str)
         HANDLE_CASE(H5VSTRING, Str)
         default:
-            throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+            throw BESInternalError("Unsupported data type.", __FILE__,__LINE__);
 #undef HANDLE_CASE
     }
 
@@ -1490,7 +1500,8 @@ void gen_dap_onegmspvar_dmr(D4Group*d4_root,const GMSPVar*spvar,const hid_t file
 
         if (dims.empty()) {
             delete bt;
-            throw InternalErr(__FILE__, __LINE__, "Currently don't support scalar special variables. ");
+            string msg = "Currently don't support scalar special variables. ";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
         
         HDF5GMSPCFArray *ar = nullptr;

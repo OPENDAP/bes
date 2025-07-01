@@ -75,9 +75,10 @@ cerr<<"file name " <<filename <<endl;
 "h5","var name "<<varname <<endl;
 #endif
 
-    if (rank != 1) 
-        throw InternalErr (__FILE__, __LINE__,
-                          "Currently the rank of the dimension scale must be 1.");
+    if (rank != 1) { 
+        string msg = "Currently the rank of the dimension scale must be 1.";
+        throw InternalErr (__FILE__, __LINE__, msg);
+    }
 
     vector<int64_t> offset;
     offset.resize(rank);
@@ -240,9 +241,8 @@ cerr<<"file name " <<filename <<endl;
         case H5VSTRING:
         default:
         {
-            ostringstream eherr;
-            eherr << "Currently the dimension scale datatype cannot be string"<<endl;
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "Currently the dimension scale datatype cannot be string.";
+            throw InternalErr (__FILE__, __LINE__, msg);
         }
 
     }

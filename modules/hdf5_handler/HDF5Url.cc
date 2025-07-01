@@ -59,7 +59,8 @@ bool HDF5Url::read()
 
    hid_t file_id = H5Fopen(dataset().c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
     if(file_id < 0) {
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the HDF5 file ID .");
+        string msg = "Fail to obtain the HDF5 file ID for the file " + dataset() +".";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
 
     hid_t dset_id = -1;
@@ -70,7 +71,8 @@ bool HDF5Url::read()
 
     if(dset_id < 0) {
         H5Fclose(file_id);
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
+        string msg = "Fail to obtain the HDF5 dataset ID for the variable " + var_path +".";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
 
     hobj_ref_t rbuf;
@@ -79,7 +81,8 @@ bool HDF5Url::read()
 		&rbuf) < 0) {
         H5Dclose(dset_id);
         H5Fclose(file_id);
-	throw InternalErr(__FILE__, __LINE__, "H5Dread() failed.");
+        string msg = "H5Dread() failed for the variable " + var_path +".";
+	throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     hid_t did_r = H5RDEREFERENCE(dset_id, H5R_OBJECT, &rbuf);
@@ -87,12 +90,14 @@ bool HDF5Url::read()
     if (did_r < 0){
 	H5Dclose(dset_id);
         H5Fclose(file_id);
-	throw InternalErr(__FILE__, __LINE__, "H5RDEREFERENCE() failed.");
+        string msg = "H5RDEREFERENCE() failed for the variable " + var_path +".";
+	throw InternalErr(__FILE__, __LINE__, msg);
     }
     if (H5Iget_name(did_r, r_name, DODS_NAMELEN) < 0){
 	H5Dclose(dset_id);
         H5Fclose(file_id);
-        throw InternalErr(__FILE__, __LINE__, "Unable to retrieve the name of the object.");
+        string msg = "Unable to retrieve the name of the dereferenced object. ";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
     string reference = r_name;
     set_value(reference);

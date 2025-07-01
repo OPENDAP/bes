@@ -73,7 +73,8 @@ bool HDF5Structure::read()
 
     hid_t file_id = H5Fopen(dataset().c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
     if (file_id < 0) {
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the HDF5 file ID .");
+        string msg = "Fail to obtain the HDF5 file ID for the file " + dataset() +".";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
    
     hid_t dset_id = -1;
@@ -84,7 +85,8 @@ bool HDF5Structure::read()
 
     if(dset_id < 0) {
         H5Fclose(file_id);
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
+        string msg = "Fail to obtain the HDF5 dataset ID for the variable " + var_path +".";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
 
     vector<char> values;
@@ -92,7 +94,8 @@ bool HDF5Structure::read()
     if(dtypeid < 0) {
         H5Dclose(dset_id);
         H5Fclose(file_id);
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
+        string msg = "Fail to obtain the HDF5 data type for the variable " + var_path +".";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
     try {
         do_structure_read(dset_id,dtypeid,values,false,0);
@@ -118,11 +121,14 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
     hid_t mspace = -1;
 
     if ((memtype = H5Tget_native_type(dtypeid, H5T_DIR_ASCEND)) < 0) {
-        throw InternalErr(__FILE__, __LINE__, "Fail to obtain memory datatype.");
+        string msg = "Fail to obtain memory datatype for the compound datatype variable " + var_path + ".";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     if ((mspace = H5Dget_space(dsetid)) < 0) {
-        throw InternalErr(__FILE__, __LINE__, "Fail to obtain memory datatype.");
+        H5Tclose(memtype);
+        string msg = "Fail to obtain the data space for the compound datatype variable " + var_path + ".";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
     if (false == has_values) {
 
@@ -132,7 +138,9 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
         hid_t read_ret = H5Dread(dsetid, memtype, mspace, mspace, H5P_DEFAULT, (void *) values.data());
         if (read_ret < 0) {
             H5Tclose(memtype);
-            throw InternalErr(__FILE__, __LINE__, "Fail to read the HDF5 compound datatype dataset.");
+            H5Sclose(mspace);
+            string msg = "Fail to read the HDF5 compound datatype variable " + var_path + ".";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
 
         has_values = true;
@@ -146,14 +154,16 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
 
     try {
         if ((nmembs = H5Tget_nmembers(memtype)) < 0) {
-            throw InternalErr(__FILE__, __LINE__, "Fail to obtain number of HDF5 compound datatype.");
+            string msg = "Fail to obtain the number of HDF5 compound datatype members for variable " + var_path + ".";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
 
         for (unsigned int u = 0; u < (unsigned) nmembs; u++) {
 
-            if ((memb_id = H5Tget_member_type(memtype, u)) < 0)
-                throw InternalErr(__FILE__, __LINE__,
-                                  "Fail to obtain the datatype of an HDF5 compound datatype member.");
+            if ((memb_id = H5Tget_member_type(memtype, u)) < 0) {
+                string msg = "Fail to obtain the datatype of an HDF5 compound datatype member for variable " + var_path + ".";
+                throw InternalErr(__FILE__, __LINE__, msg);
+            }
 
             // Get member type class 
             memb_cls = H5Tget_member_class(memtype, u);
@@ -163,8 +173,10 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
 
             // Get member name
             memb_name = H5Tget_member_name(memtype, u);
-            if (memb_name == nullptr)
-                throw InternalErr(__FILE__, __LINE__, "Fail to obtain the name of an HDF5 compound datatype member.");
+            if (memb_name == nullptr) {
+                string msg = "Fail to obtain the name of an HDF5 compound datatype member for variable " + var_path + ".";
+                throw InternalErr(__FILE__, __LINE__, msg);
+            }
 
             if (memb_cls == H5T_COMPOUND) {
                 HDF5Structure &memb_h5s = dynamic_cast<HDF5Structure &>(*var(memb_name));
@@ -173,8 +185,10 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
 
                 // memb_id, obtain the number of dimensions
                 int at_ndims = H5Tget_array_ndims(memb_id);
-                if (at_ndims <= 0)
-                    throw InternalErr(__FILE__, __LINE__, "Fail to obtain number of dimensions of the array datatype.");
+                if (at_ndims <= 0) {
+                    string msg = "Fail to obtain number of dimensions of the array datatype for variable " + var_path + ".";
+                    throw InternalErr(__FILE__, __LINE__, msg);
+                }
 
                 HDF5Array &h5_array_type = dynamic_cast<HDF5Array &>(*var(memb_name));
                 vector<int64_t> at_offset(at_ndims, 0);
@@ -192,8 +206,8 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
             } else {
                 free(memb_name);
                 H5Tclose(memb_id);
-                throw InternalErr(__FILE__, __LINE__,
-                                  "Only support the field of compound datatype when the field type class is integer, float, string, array or compound..");
+                string msg = "Only support the field of compound datatype when the field type class is integer, float, string, array or compound.";
+                throw InternalErr(__FILE__, __LINE__, msg);
             }
             // Close member type ID 
             H5Tclose(memb_id);
@@ -208,8 +222,12 @@ void HDF5Structure::do_structure_read(hid_t dsetid, hid_t dtypeid,vector <char> 
         throw;
     }
 
-    if (H5Dvlen_reclaim(memtype, mspace, H5P_DEFAULT, (void *) values.data()) < 0)
-        throw InternalErr(__FILE__, __LINE__, "Unable to reclaim the compound datatype array.");
+    // H5Dvlen_reclaim  only applies to vlen data. Maybe a compound datatype may include variable length string.
+    // Since it doesn't cause any error. So leave it here and observe. KY 2025-06-26
+    if (H5Dvlen_reclaim(memtype, mspace, H5P_DEFAULT, (void *) values.data()) < 0) {
+        string msg = "Unable to reclaim the memory of storing  compound datatype array. ";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
 
     H5Tclose(memtype);
     H5Sclose(mspace);
@@ -258,7 +276,8 @@ void HDF5Structure::do_structure_read_string(hid_t memb_id, char *memb_name,
         if (memb_size == 0) {
             H5Tclose(memb_id);
             free(memb_name);
-            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the size of HDF5 compound datatype.");
+            string msg = "Fail to obtain the size of HDF5 compound datatype.";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
         str_val.resize(memb_size);
         memcpy(str_val.data(), src, memb_size);
@@ -272,7 +291,8 @@ void HDF5Structure::catch_free(char *memb_name, hid_t memb_id, hid_t memtype, hi
 
     if ((memtype != -1) && (mspace != -1) && (H5Dvlen_reclaim(memtype, mspace,
                                                               H5P_DEFAULT, (void *) values.data()) < 0)) {
-        throw InternalErr(__FILE__, __LINE__, "Unable to reclaim the compound datatype array.");
+        string msg = "Unable to reclaim the compound datatype array.";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
     if (memtype != -1)
         H5Tclose(memtype);

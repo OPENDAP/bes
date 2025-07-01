@@ -67,31 +67,29 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
     vector<int64_t>step;
     int64_t nelms = 0;
 
-    if (rank <= 0) 
-        throw InternalErr (__FILE__, __LINE__,
-                          "The number of dimension of the variable is <=0 for this array.");
-
+    if (rank <= 0) {
+        string msg = "The number of dimension of the variable is <=0 for this array.";
+        msg += "The variable name is " + varname + ".";
+        throw InternalErr (__FILE__, __LINE__, msg);
+    }
     else {
         offset.resize(rank);
         count.resize(rank);
         step.resize(rank);
-
         nelms = format_constraint (offset.data(), step.data(), count.data());
-
     }
 
     if(false == check_pass_fileid_key) {
         if ((fileid = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
-
-            ostringstream eherr;
-            eherr << "HDF5 File " << filename 
-                  << " cannot be opened. "<<endl;
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "HDF5 File " + filename + " cannot be opened. "; 
+            throw InternalErr (__FILE__, __LINE__, msg);
         }
     }
     string cv_name = HDF5CFUtil::obtain_string_after_lastslash(varname);
     if ("" == cv_name) {
-        throw InternalErr (__FILE__, __LINE__, "Cannot obtain TES CV attribute");
+        string msg = "Cannot obtain TES CV attribute.";
+        msg += "The variable name is " + varname + ".";
+        throw InternalErr (__FILE__, __LINE__, msg);
     }
 
     string group_name = varname.substr(0,varname.size()-cv_name.size());
@@ -100,7 +98,9 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
 
     if (string::npos == cv_name_sep_pos) {
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "Cannot obtain TES CV attribute");
+        string msg = "Cannot obtain TES CV attribute.";
+        msg += "The variable name is " + varname + ".";
+        throw InternalErr (__FILE__, __LINE__, msg);
     }
     string cv_attr_name = cv_name.substr(0,cv_name_sep_pos);
 
@@ -108,25 +108,33 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
 
     if (swath_link_exist <= 0) {
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "The TES swath link doesn't exist");
+        string msg = "The TES swath link doesn't exist.";
+        msg += "The variable name is " + varname + ".";
+        throw InternalErr (__FILE__, __LINE__, msg);
     }
     
     htri_t swath_exist = H5Oexists_by_name(fileid,group_name.c_str(),H5P_DEFAULT); 
     if (swath_exist <= 0) {
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "The TES swath doesn't exist");
+        string msg = "The TES swath link doesn't exist.";
+        msg += "The variable name is " + varname + ".";
+        throw InternalErr (__FILE__, __LINE__, msg);
     }
 
     htri_t cv_attr_exist = H5Aexists_by_name(fileid,group_name.c_str(),cv_attr_name.c_str(),H5P_DEFAULT);
     if (cv_attr_exist <= 0) {
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "The TES swath CV attribute doesn't exist");
+        string msg = "The TES swath CV attribute doesn't exist.";
+        msg += "The variable name is " + varname + ".";
+        throw InternalErr (__FILE__, __LINE__, msg);
     }
 
     hid_t cv_attr_id = H5Aopen_by_name(fileid,group_name.c_str(),cv_attr_name.c_str(),H5P_DEFAULT,H5P_DEFAULT);
     if (cv_attr_id <0) {
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "Cannot obtain the TES CV attribute id");
+        string msg = "Cannot obtain the TES CV attribute id.";
+        msg += "The variable name is " + varname + ".";
+        throw InternalErr (__FILE__, __LINE__, msg);
     }
 
     hid_t attr_type = -1;
@@ -196,8 +204,9 @@ void HDFEOS5CFSpecialCVArray::read_data_NOT_from_mem_cache(bool /*add_cache*/, v
         H5Aclose(cv_attr_id);
         H5Sclose(attr_space);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        throw InternalErr(__FILE__,__LINE__,
-                         "Number of elements must be greater than 0");
+        string msg = "Number of elements must be greater than 0.";
+        msg += "The variable name is " + varname + ".";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
 
     vector<float> val;

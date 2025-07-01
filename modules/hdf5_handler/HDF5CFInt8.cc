@@ -63,31 +63,18 @@ bool HDF5CFInt8::read()
 
     hid_t file_id = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
     if(file_id < 0) {
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the HDF5 file ID .");
+        string msg = "Fail to obtain the HDF5 file ID for the file " + dataset() +".";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
    
     hid_t dset_id = -1;
     dset_id = H5Dopen2(file_id,dataset().c_str(),H5P_DEFAULT);
     if(dset_id < 0) {
         H5Fclose(file_id);
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the dataset .");
+        string msg = "Fail to obtain the HDF5 dataset ID for the variable " + dataset() +".";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
 
-    hid_t dtypeid = H5Dget_type(dset_id); 
-    if(dtypeid < 0)  { 
-        H5Dclose(dset_id);
-        H5Fclose(file_id);
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype ."); 
-    }
-
-    hid_t memtype = H5Tget_native_type(dtypeid, H5T_DIR_ASCEND);
-    if (memtype < 0){
-        H5Tclose(dtypeid);
-        H5Dclose(dset_id);
-        H5Fclose(file_id);
-        throw InternalErr(__FILE__, __LINE__, "Cannot obtain the native datatype.");
-    }
-  
     try {
 
         dods_int8 buf;
@@ -96,21 +83,14 @@ bool HDF5CFInt8::read()
         set_read_p(true);
         set_value(buf);
 
-        if(H5Tclose(memtype) < 0) {
-            throw InternalErr(__FILE__, __LINE__, "Unable to close the memory datatype.");
-        }
-        if(H5Tclose(dtypeid) < 0) {
-            throw InternalErr(__FILE__, __LINE__, "Unable to close the datatype id.");
-        }
         // Release the handles.
         if (H5Dclose(dset_id) < 0) {
-            throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
+            string msg = "Unable to close the dset.";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
         H5Fclose(file_id);
     }
     catch(...) {
-        H5Tclose(memtype);
-        H5Tclose(dtypeid);
         H5Dclose(dset_id);
         H5Fclose(file_id);
         throw;

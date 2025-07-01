@@ -108,7 +108,8 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
         f = new EOS5File(filename.c_str(),file_id);
     }
     catch(...) {
-        throw InternalErr(__FILE__,__LINE__,"Cannot allocate the file object.");
+        string msg = "Cannot allocate the file object.";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
 
     bool include_attr = false;
@@ -131,16 +132,16 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
 
         // Check if the HDF-EOS5 grid has the valid parameters, projection codes.
         if (c.check_grids_unknown_parameters(&p)) {
-            throw InternalErr("Unknown HDF-EOS5 grid paramters found in the file");
+            throw BESInternalError("Unknown HDF-EOS5 grid paramters found in the file",__FILE__,__LINE__);
         }
 
         if (c.check_grids_missing_projcode(&p)) {
-            throw InternalErr("The HDF-EOS5 is missing project code ");
+            throw BESInternalError("The HDF-EOS5 is missing project code ",__FILE__,__LINE__);
         }
 
         // We gradually add the support of different projection codes
         if (c.check_grids_support_projcode(&p)) {
-            throw InternalErr("The current project code is not supported");
+            throw BESInternalError("The current project code is not supported",__FILE__,__LINE__);
         }
        
         // HDF-EOS5 provides default pixel and origin values if they are not defined.
@@ -292,7 +293,8 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
         f = new EOS5File(filename.c_str(),file_id);
     }
     catch(...) {
-        throw InternalErr(__FILE__,__LINE__,"Cannot allocate the file object.");
+        string msg = "Cannot allocate the file object.";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
     bool include_attr = true;
 
@@ -312,14 +314,14 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
 #endif
 
         if (c.check_grids_unknown_parameters(&p)) {
-            throw InternalErr("Unknown HDF-EOS5 grid paramters found in the file");
+            throw BESInternalError("Unknown HDF-EOS5 grid paramters found in the file",__FILE__,__LINE__);
         }
 
         if (c.check_grids_missing_projcode(&p)) {
-            throw InternalErr("The HDF-EOS5 is missing project code ");
+            throw BESInternalError("The HDF-EOS5 is missing project code ",__FILE__,__LINE__);
         }
         if (c.check_grids_support_projcode(&p)) {
-            throw InternalErr("The current project code is not supported");
+            throw BESInternalError("The current project code is not supported",__FILE__,__LINE__);
         }
         c.set_grids_missing_pixreg_orig(&p);
 
@@ -446,8 +448,10 @@ void  gen_dap_oneeos5cf_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar) {
     float cv_point_right = cvar->getPointRight();       
     EOS5GridPCType cv_proj_code = cvar->getProjCode();
     const vector<HDF5CF::Dimension *>& dims = cvar->getDimensions();
-    if(dims.size() !=2) 
-        throw InternalErr(__FILE__,__LINE__,"Currently we only support the 2-D CF coordinate projection system.");
+    if(dims.size() !=2) {
+        string msg = "Currently we only support the 2-D CF coordinate projection system.";
+        throw InternalErr(__FILE__,__LINE__, msg);
+    }
     add_cf_grid_cvs(dds,cv_proj_code,cv_point_lower,cv_point_upper,cv_point_left,cv_point_right,dims);
 
 }
@@ -471,8 +475,10 @@ for(vector<HDF5CF::Dimension*>::const_iterator it_d = dims.begin(); it_d != dims
     cerr<<"dim name das is "<<(*it_d)->getNewName() <<endl;
 #endif
 
-   if(dims.size() !=2) 
-        throw InternalErr(__FILE__,__LINE__,"Currently we only support the 2-D CF coordinate projection system.");
+    if(dims.size() !=2) {
+        string msg = "Currently we only support the 2-D CF coordinate projection system.";
+        throw InternalErr(__FILE__,__LINE__, msg);
+    }
 #if 0
     add_cf_grid_cv_attrs(das,vars,cv_proj_code,cv_point_lower,cv_point_upper,cv_point_left,cv_point_right,dims,cvar->getParams(),g_suffix);
 #endif
@@ -519,7 +525,7 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
         HANDLE_CASE(H5FSTRING, Str)
         HANDLE_CASE(H5VSTRING, Str)
         default:
-            throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+            throw BESInternalError("Unsupported data type.", __FILE__,__LINE__);
 #undef HANDLE_CASE
     }
 
@@ -533,8 +539,10 @@ void gen_dap_oneeos5cvar_dds(DDS &dds,const HDF5CF::EOS5CVar* cvar, const hid_t 
             dimsizes[i] = (dims[i])->getSize();
 
 
-        if(dims.empty())
-            throw InternalErr(__FILE__,__LINE__,"the coordinate variables cannot be scalar.");
+        if(dims.empty()) {
+            string msg = "The coordinate variables cannot be scalar.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
         switch(cvar->getCVType()) {
 
             case CV_EXIST:
@@ -622,7 +630,8 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
 
                 if (cvar->getRank() !=1) {
                     delete bt;
-                    throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
+                    string msg = "The rank of missing Z dimension field must be 1.";
+                    throw InternalErr(__FILE__, __LINE__, msg);
                 }
                 auto nelem = (int)((cvar->getDimensions()[0])->getSize());
 
@@ -649,7 +658,8 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
 
                 if (cvar->getRank() !=1) {
                     delete bt;
-                    throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
+                    string msg = "The rank of missing Z dimension field must be 1.";
+                    throw InternalErr(__FILE__, __LINE__, msg);
                 }
                 auto nelem = (int)((cvar->getDimensions()[0])->getSize());
                 auto ar_unique = make_unique<HDFEOS5CFSpecialCVArray>(
@@ -676,7 +686,7 @@ cerr<<"cvar getParams here 1 is "<<cvar->getParams()[0]<<endl;
             case CV_MODIFY:
             default: 
                 delete bt;
-                throw InternalErr(__FILE__,__LINE__,"Unsupported coordinate variable type.");
+                throw BESInternalError("Unsupported coordinate variable type.", __FILE__,__LINE__);
         }
 
     }
@@ -699,11 +709,6 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
     const vector<HDF5CF::Group *>& grps           = f->getGroups();
     const vector<HDF5CF::Attribute *>& root_attrs = f->getAttributes();
 
-#if 0
-    vector<HDF5CF::EOS5CVar *>::const_iterator it_cv;
-    vector<HDF5CF::Attribute *>::const_iterator it_ra;
-#endif
-
     // Handling the file attributes(attributes under the root group)
     // The table name is "HDF_GLOBAL".
     if (false == root_attrs.empty()) {
@@ -723,10 +728,6 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
                 at = das.add_table(grp->getNewName(),  obtain_new_attr_table());
 
             for (const auto &attr:grp->getAttributes()) {
-#if 0
-                //gen_dap_oneobj_das(at,attr,nullptr);
-#endif
-                // TODO: ADDING a BES KEY
                 if(attr->getNewName()=="Conventions" &&(grp->getNewName() == "HDFEOS_ADDITIONAL_FILE_ATTRIBUTES")
                         && (true==HDF5RequestHandler::get_eos5_rm_convention_attr_path())) {
                     AttrTable *at_das = das.get_table(FILE_ATTR_TABLE_NAME);
@@ -743,7 +744,6 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
     for (const auto &var:vars) {
         if (false == (var->getAttributes().empty())) {
 
-            // TODO: Need to handle 64-bit int support for DAP4 CF.
             if(H5INT64 == var->getType() || H5UINT64 == var->getType()){
                continue;
             }
@@ -761,7 +761,6 @@ void gen_eos5_cfdas(DAS &das, hid_t file_id, HDF5CF::EOS5File *f) {
 
         if (false == (cvar->getAttributes().empty())) {
             
-            // TODO: Need to handle 64-bit int support for DAP4 CF.
             if(H5INT64 == cvar->getType() || H5UINT64 == cvar->getType()){
                continue;
             }
@@ -942,9 +941,6 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
         string unlimited_names;
 
         for (const auto &cvar: cvars) {
-#if 0
-            bool has_unlimited_dim = false;
-#endif
             // Check unlimited dimension names.
             for (const auto &dim:cvar->getDimensions()) {
 
@@ -964,20 +960,9 @@ if(other_str!="") "h5","Final othermetadata "<<other_str <<endl;
                         }
                     }
                 }
-                    
             }
-
-#if 0
-            //if(true == has_unlimited_dim) 
-            //    break;
-#endif
         }
-#if 0
-        //if(unlimited_names!="") 
-         //   at->append_attr("Unlimited_Dimension","String",unlimited_names);
-#endif
     }
-
 }
 
 // Read ECS metadata
@@ -1064,6 +1049,7 @@ void read_ecs_metadata(hid_t s_file_id,
         if (oname_size <= 0) {
             string msg = "hdf5 object name error from: ";
             msg += ecs_group;
+            msg += ".";
             H5Gclose(ecs_grp_id);
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
@@ -1074,6 +1060,7 @@ void read_ecs_metadata(hid_t s_file_id,
                 (size_t)(oname_size+1), H5P_DEFAULT)<0){
             string msg = "hdf5 object name error from: ";
             msg += ecs_group;
+            msg += ".";
             H5Gclose(ecs_grp_id);
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
@@ -1084,6 +1071,7 @@ void read_ecs_metadata(hid_t s_file_id,
         if (H5Lget_info(ecs_grp_id,oname.data(),&linfo,H5P_DEFAULT)<0) {
             string msg = "hdf5 link name error from: ";
             msg += ecs_group;
+            msg += ".";
             H5Gclose(ecs_grp_id);
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
@@ -1092,6 +1080,7 @@ void read_ecs_metadata(hid_t s_file_id,
         if (linfo.type == H5L_TYPE_SOFT){
             string msg = "hdf5 link name error from: ";
             msg += ecs_group;
+            msg += ".";
             H5Gclose(ecs_grp_id);
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
@@ -1102,6 +1091,7 @@ void read_ecs_metadata(hid_t s_file_id,
                               i, &oinfo, H5P_DEFAULT)<0) {
             string msg = "Cannot obtain the object info ";
             msg += ecs_group;
+            msg += ".";
             H5Gclose(ecs_grp_id);
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
@@ -1109,6 +1099,7 @@ void read_ecs_metadata(hid_t s_file_id,
         if(oinfo.type != H5O_TYPE_DATASET) {
             string msg = "hdf5 link name error from: ";
             msg += ecs_group;
+            msg += ".";
             H5Gclose(ecs_grp_id);
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
@@ -1318,6 +1309,8 @@ else "h5","xmlmeta data has the suffix" <<endl;
     vector<string> strmeta_value;
     if (strmeta_num_total <= 0) {
         string msg = "hdf5 object name error from: ";
+        msg += ecs_group;
+        msg += ".";
         H5Gclose(ecs_grp_id);
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
@@ -1397,6 +1390,7 @@ else "h5","xmlmeta data has the suffix" <<endl;
         if ((s_dset_id = H5Dopen(ecs_grp_id,s_oname[i].c_str(),H5P_DEFAULT))<0){
             string msg = "Cannot open HDF5 dataset  ";
             msg += s_oname[i];
+            msg += ".";
             H5Gclose(ecs_grp_id);
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
@@ -1404,6 +1398,7 @@ else "h5","xmlmeta data has the suffix" <<endl;
         if ((s_space_id = H5Dget_space(s_dset_id))<0) {
             string msg = "Cannot open the data space of HDF5 dataset  ";
             msg += s_oname[i];
+            msg += ".";
             H5Dclose(s_dset_id);
             H5Gclose(ecs_grp_id);
             throw BESInternalError(msg,__FILE__, __LINE__);
@@ -1412,6 +1407,7 @@ else "h5","xmlmeta data has the suffix" <<endl;
         if ((s_ty_id = H5Dget_type(s_dset_id)) < 0) {
             string msg = "Cannot get the data type of HDF5 dataset  ";
             msg += s_oname[i];
+            msg += ".";
             H5Sclose(s_space_id);
             H5Dclose(s_dset_id);
             H5Gclose(ecs_grp_id);
@@ -1420,6 +1416,7 @@ else "h5","xmlmeta data has the suffix" <<endl;
         if ((s_nelms = H5Sget_simple_extent_npoints(s_space_id))<0) {
             string msg = "Cannot get the number of points of HDF5 dataset  ";
             msg += s_oname[i];
+            msg += ".";
             H5Tclose(s_ty_id);
             H5Sclose(s_space_id);
             H5Dclose(s_dset_id);
@@ -1430,6 +1427,7 @@ else "h5","xmlmeta data has the suffix" <<endl;
 
             string msg = "Cannot get the data type size of HDF5 dataset  ";
             msg += s_oname[i];
+            msg += ".";
             H5Tclose(s_ty_id);
             H5Sclose(s_space_id);
             H5Dclose(s_dset_id);
@@ -1444,6 +1442,7 @@ else "h5","xmlmeta data has the suffix" <<endl;
 
             string msg = "Cannot read HDF5 dataset  ";
             msg += s_oname[i];
+            msg += ".";
             H5Tclose(s_ty_id);
             H5Sclose(s_space_id);
             H5Dclose(s_dset_id);
@@ -1476,7 +1475,8 @@ else "h5","xmlmeta data has the suffix" <<endl;
             }
             catch(...) {
                 H5Gclose(ecs_grp_id);
-                throw InternalErr(__FILE__,__LINE__,"Obtain structmetadata suffix error.");
+                string msg = "Obtain structmetadata suffix error.";
+                throw InternalErr(__FILE__,__LINE__, msg);
 
             }
             // This is probably not necessary, since structmetadata may always have a suffix.           
@@ -1488,6 +1488,7 @@ else "h5","xmlmeta data has the suffix" <<endl;
             // strmeta_value at this point should be empty before assigning any values.
             else if (strmeta_value[strmeta_num]!="") {
                 string msg = "The structmeta value array at this index should be empty string  ";
+
                 H5Gclose(ecs_grp_id);
                 throw BESInternalError(msg,__FILE__, __LINE__);
             }
@@ -1505,10 +1506,9 @@ else "h5","xmlmeta data has the suffix" <<endl;
                 case CoreMeta:
                 {
                     if (coremeta_num_total < 0) {
-                        string msg = "There may be no coremetadata or coremetadata is not counted ";
+                        string msg = "There may be no coremetadata or coremetadata is not counted. ";
                         H5Gclose(ecs_grp_id);
                         throw BESInternalError(msg,__FILE__, __LINE__);
-
                     }
 
                     try {
@@ -1516,7 +1516,8 @@ else "h5","xmlmeta data has the suffix" <<endl;
                     }
                     catch(...) {
                         H5Gclose(ecs_grp_id);
-                        throw InternalErr(__FILE__,__LINE__,"Obtain coremetadata suffix error.");
+                        string msg = "Obtain coremetadata suffix error.";
+                        throw InternalErr(__FILE__,__LINE__, msg);
 
                     }
 
@@ -1525,7 +1526,7 @@ else "h5","xmlmeta data has the suffix" <<endl;
                     if ( -1 == coremeta_num ) 
                         total_coremeta_value = finstr;    
                     else if (coremeta_value[coremeta_num]!="") {
-                        string msg = "The coremeta value array at this index should be empty string  ";
+                        string msg = "The coremeta value array at this index should be an empty string.";
                         H5Gclose(ecs_grp_id);
                         throw BESInternalError(msg,__FILE__, __LINE__);
                     }
@@ -1539,7 +1540,7 @@ else "h5","xmlmeta data has the suffix" <<endl;
                 case ArchivedMeta:
                 {
                     if (archmeta_num_total < 0) {
-                        string msg = "There may be no archivemetadata or archivemetadata is not counted ";
+                        string msg = "There may be no archivemetadata or archivemetadata is not counted.";
                         H5Gclose(ecs_grp_id);
                         throw BESInternalError(msg,__FILE__, __LINE__);
                     }
@@ -1548,12 +1549,13 @@ else "h5","xmlmeta data has the suffix" <<endl;
                     }
                     catch(...) {
                         H5Gclose(ecs_grp_id);
-                        throw InternalErr(__FILE__,__LINE__,"Obtain archivemetadata suffix error.");
+                        string msg = "Obtain archivemetadata suffix error.";
+                        throw InternalErr(__FILE__,__LINE__, msg);
                     }
                     if (-1 == archmeta_num ) 
                         total_archmeta_value = finstr;    
                     else if (archmeta_value[archmeta_num]!="") {
-                        string msg = "The archivemeta value array at this index should be empty string  ";
+                        string msg = "The archivemeta value array at this index should be empty string. ";
                         H5Gclose(ecs_grp_id);
                         throw BESInternalError(msg,__FILE__, __LINE__);
 
@@ -1566,7 +1568,7 @@ else "h5","xmlmeta data has the suffix" <<endl;
                 case SubsetMeta:
                 {
                     if (submeta_num_total < 0) {
-                        string msg = "The subsetemeta value array at this index should be empty string  ";
+                        string msg = "The subsetemeta value array at this index should be empty string.";
                         H5Gclose(ecs_grp_id);
                         throw BESInternalError(msg,__FILE__, __LINE__);
                     }
@@ -1575,12 +1577,13 @@ else "h5","xmlmeta data has the suffix" <<endl;
                     }
                     catch(...) {
                         H5Gclose(ecs_grp_id);
-                        throw InternalErr(__FILE__,__LINE__,"Obtain subsetmetadata suffix error.");
+                        string msg = "Obtain subsetmetadata suffix error.";
+                        throw InternalErr(__FILE__,__LINE__, msg);
                     }
                     if (-1 == submeta_num ) 
                         total_submeta_value = finstr;     
                     else if (submeta_value[submeta_num]!="") {
-                        string msg = "The submeta value array at this index should be empty string  ";
+                        string msg = "The submeta value array at this index should be empty string.";
                         H5Gclose(ecs_grp_id);
                         throw BESInternalError(msg,__FILE__, __LINE__);
                     }
@@ -1592,7 +1595,7 @@ else "h5","xmlmeta data has the suffix" <<endl;
                 case ProductMeta:
                 {
                     if (prometa_num_total < 0) {
-                        string msg = "There may be no productmetadata or productmetadata is not counted ";
+                        string msg = "There may be no productmetadata or productmetadata is not counted.";
                         H5Gclose(ecs_grp_id);
                         throw BESInternalError(msg,__FILE__, __LINE__);
                     }
@@ -1601,12 +1604,13 @@ else "h5","xmlmeta data has the suffix" <<endl;
                     }
                     catch(...) {
                         H5Gclose(ecs_grp_id);
-                        throw InternalErr(__FILE__,__LINE__,"Obtain productmetadata suffix error.");
+                        string msg = "Obtain productmetadata suffix error.";
+                        throw InternalErr(__FILE__,__LINE__, msg);
                     }
                     if (prometa_num == -1) 
                         total_prometa_value = finstr;
                     else if (prometa_value[prometa_num]!="") {
-                        string msg = "The productmeta value array at this index should be empty string  ";
+                        string msg = "The productmeta value array at this index should be empty string.";
                         H5Gclose(ecs_grp_id);
                         throw BESInternalError(msg,__FILE__, __LINE__);
                     }
@@ -1618,7 +1622,7 @@ else "h5","xmlmeta data has the suffix" <<endl;
                 case XMLMeta:
                 {
                     if (xmlmeta_num_total < 0) {
-                        string msg = "There may be no xmlmetadata or xmlmetadata is not counted ";
+                        string msg = "There may be no xmlmetadata or xmlmetadata is not counted.";
                         H5Gclose(ecs_grp_id);
                         throw BESInternalError(msg,__FILE__, __LINE__);
                     }
@@ -1627,12 +1631,13 @@ else "h5","xmlmeta data has the suffix" <<endl;
                     }
                     catch(...) {
                         H5Gclose(ecs_grp_id);
-                        throw InternalErr(__FILE__,__LINE__,"Obtain XMLmetadata suffix error.");
+                        string msg = "Obtain XMLmetadata suffix error.";
+                        throw InternalErr(__FILE__,__LINE__, msg);
                     }
                     if (-1 == xmlmeta_num ) 
                         total_xmlmeta_value = finstr;
                     else if (xmlmeta_value[xmlmeta_num]!="") {
-                        string msg = "The xmlmeta value array at this index should be empty string  ";
+                        string msg = "The xmlmeta value array at this index should be empty string.";
                         H5Gclose(ecs_grp_id);
                         throw BESInternalError(msg,__FILE__, __LINE__);
                     }
@@ -1728,14 +1733,18 @@ int get_metadata_num(const string & meta_str) {
         stringstream ssnum(num_str);
         int num;
         ssnum >> num;
-        if (ssnum.fail()) 
-            throw InternalErr(__FILE__,__LINE__,"Suffix after dots is not a number.");
+        if (ssnum.fail()) {
+            string msg = "Suffix after dots is not a number.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
         return num;
     }
     else { // Two dots
         string str_after_first_dot = meta_str.substr(dot_pos+1);
-        if (str_after_first_dot.find_first_of(".") != str_after_first_dot.find_last_of("."))    
-            throw InternalErr(__FILE__,__LINE__,"Currently don't support metadata names containing more than two dots.");
+        if (str_after_first_dot.find_first_of(".") != str_after_first_dot.find_last_of("."))  {
+            string msg = "Currently don't support metadata names containing more than two dots.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
         // Here we don't check if names are like coremetadata.0 coremetadata.0.0 etc., Having ".0 .0.0" is,if not mistaken,
         // is insane. 
         // Instead, we hope that the data producers will produce data like coremetadata.0 coremetadata.0.1 coremeatadata.0.2
@@ -1808,7 +1817,8 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
         f = new EOS5File(filename.c_str(),file_id);
     }
     catch(...) {
-        throw InternalErr(__FILE__,__LINE__,"Cannot allocate the file object.");
+        string msg = "Cannot allocate the file object.";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
 
     bool include_attr = true;
@@ -1834,16 +1844,16 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
 
         // Check if the HDF-EOS5 grid has the valid parameters, projection codes.
         if (c.check_grids_unknown_parameters(&p)) {
-            throw InternalErr("Unknown HDF-EOS5 grid paramters found in the file");
+            throw BESInternalError("Unknown HDF-EOS5 grid paramters found in the file.",__FILE__,__LINE__);
         }
 
         if (c.check_grids_missing_projcode(&p)) {
-            throw InternalErr("The HDF-EOS5 is missing project code ");
+            throw BESInternalError("The HDF-EOS5 is missing project code.",__FILE__,__LINE__);
         }
 
         // We gradually add the support of different projection codes
         if (c.check_grids_support_projcode(&p)) {
-            throw InternalErr("The current project code is not supported");
+            throw BESInternalError("The current project code is not supported.",__FILE__,__LINE__);
         }
        
         // HDF-EOS5 provides default pixel and origin values if they are not defined.
@@ -2097,8 +2107,10 @@ void gen_eos5_cfdmr(D4Group *d4_root,  const HDF5CF::EOS5File *f) {
                 dods_extra_attr->attributes()->add_attribute_nocopy(unlimited_dim_attr);
                 d4_root->attributes()->add_attribute_nocopy(dods_extra_attr);
             }
-            else 
-                throw InternalErr(__FILE__, __LINE__, "Unlimited dimension should exist.");  
+            else  {
+                string msg = "Unlimited dimension should exist.";
+                throw InternalErr(__FILE__, __LINE__, msg);  
+            }
         //}    
        }
 
@@ -2141,7 +2153,7 @@ void gen_dap_oneeos5cvar_dmr(D4Group* d4_root,const EOS5CVar* cvar,const hid_t f
         HANDLE_CASE(H5FSTRING, Str)
         HANDLE_CASE(H5VSTRING, Str)
         default:
-            throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+            throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
 #undef HANDLE_CASE
     }
 
@@ -2154,8 +2166,10 @@ void gen_dap_oneeos5cvar_dmr(D4Group* d4_root,const EOS5CVar* cvar,const hid_t f
         for (int i = 0; i <cvar->getRank();i++)
             dimsizes[i] = (dims[i])->getSize();
 
-        if(dims.empty())
-            throw InternalErr(__FILE__,__LINE__,"the coordinate variables cannot be scalar.");
+        if(dims.empty()) {
+            string msg = "The coordinate variables cannot be scalar.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
         switch(cvar->getCVType()) {
 
             case CV_EXIST:
@@ -2244,7 +2258,8 @@ void gen_dap_oneeos5cvar_dmr(D4Group* d4_root,const EOS5CVar* cvar,const hid_t f
 
                 if (cvar->getRank() !=1) {
                     delete bt;
-                    throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
+                    string msg = "The rank of missing Z dimension field must be 1.";
+                    throw InternalErr(__FILE__, __LINE__, msg);
                 }
                 int nelem = (int)((cvar->getDimensions()[0])->getSize());
 
@@ -2309,7 +2324,7 @@ void gen_dap_oneeos5cvar_dmr(D4Group* d4_root,const EOS5CVar* cvar,const hid_t f
             case CV_MODIFY:
             default: 
                 delete bt;
-                throw InternalErr(__FILE__,__LINE__,"Unsupported coordinate variable type.");
+                throw BESInternalError("Unsupported coordinate variable type.",__FILE__,__LINE__);
         }
 
     }
@@ -2359,8 +2374,10 @@ void  gen_gm_oneproj_var(libdap::D4Group*d4_root,
     EOS5GridPCType cv_proj_code = cvar->getProjCode();
     const vector<HDF5CF::Dimension *>& dims = cvar->getDimensions();
 
-    if(dims.size() !=2) 
-        throw InternalErr(__FILE__,__LINE__,"Currently we only support the 2-D CF coordinate projection system.");
+    if(dims.size() !=2) {
+        string msg = "Currently we only support the 2-D CF coordinate projection system.";
+        throw InternalErr(__FILE__,__LINE__, msg);
+    }
 
     // 1. Add the grid mapping dummy projection variable dmr for each grid
     // 2. Add the grid_mapping attribute for each variable that this projection applies 
@@ -2436,8 +2453,10 @@ void gen_gm_oneproj_spvar(libdap::D4Group *d4_root,const HDF5CF::EOS5CVar *cvar)
     float cv_point_right = cvar->getPointRight();       
     EOS5GridPCType cv_proj_code = cvar->getProjCode();
     const vector<HDF5CF::Dimension *>& dims = cvar->getDimensions();
-    if(dims.size() !=2) 
-        throw InternalErr(__FILE__,__LINE__,"Currently we only support the 2-D CF coordinate projection system.");
+    if(dims.size() !=2) {
+        string msg = "Currently we only support the 2-D CF coordinate projection system.";
+        throw InternalErr(__FILE__,__LINE__, msg);
+    }
     add_gm_spcvs(d4_root,cv_proj_code,cv_point_lower,cv_point_upper,cv_point_left,cv_point_right,dims);
 
 }

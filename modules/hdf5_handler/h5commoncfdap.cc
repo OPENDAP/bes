@@ -37,6 +37,7 @@
 #include <unordered_set>
 
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include <BESDebug.h>
 
 #include "HDF5RequestHandler.h"
@@ -173,8 +174,10 @@ void gen_dap_onevar_dds_sca_atomic(DDS &dds, const HDF5CF::Var *var, const strin
             dds.add_var(sca_float64);
         }
             break;
-        default:
-            throw InternalErr(__FILE__, __LINE__, "unsupported data type.");
+        default:{
+            string msg = "unsupported data type.";
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
     }
 }
 
@@ -226,7 +229,7 @@ void gen_dap_onevar_dds_array(DDS &dds, const HDF5CF::Var *var, hid_t file_id, c
             HANDLE_CASE(H5FSTRING, Str)
             HANDLE_CASE(H5VSTRING, Str)
             default:
-                throw InternalErr(__FILE__, __LINE__, "unsupported data type.");
+                throw BESInternalError("Unsupported data type.", __FILE__, __LINE__);
 #undef HANDLE_CASE
         }
     }
@@ -277,8 +280,10 @@ void gen_dap_special_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr, con
 {
 
     BESDEBUG("h5", "Coming to gen_dap_special_oneobj_das()  "<<endl);
-    if (attr->getCount() != 1)
-        throw InternalErr(__FILE__, __LINE__, "FillValue attribute can only have one element.");
+    if (attr->getCount() != 1) {
+        string msg = "FillValue attribute can only have one element.";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
 
     H5DataType var_dtype = var->getType();
     if ((true == HDF5RequestHandler::get_fillvalue_check()) 
@@ -287,7 +292,7 @@ void gen_dap_special_oneobj_das(AttrTable*at, const HDF5CF::Attribute* attr, con
         msg += "The variable name: " + var->getNewName() + "\n";
         msg += "The attribute name: " + attr->getNewName() + "\n";
         msg += "The error occurs inside the gen_dap_special_oneobj_das function in h5commoncfdap.cc.";
-        throw InternalErr(msg);
+        throw BESInternalError(msg, __FILE__,__LINE__);
     }
     string print_rep = HDF5CFDAPUtil::print_attr(attr->getType(), 0, (void*) (&(attr->getValue()[0])));
     at->append_attr(attr->getNewName(), HDF5CFDAPUtil::print_type(var_dtype), print_rep);
@@ -537,7 +542,7 @@ void gen_dap_onevar_dmr_sca(D4Group* d4_grp, const HDF5CF::Var* var, const strin
             }
                 break;
             default:
-                throw InternalErr(__FILE__, __LINE__, "unsupported data type.");
+                throw BESInternalError("Unsupported data type.", __FILE__, __LINE__);
         }
     }
 }
@@ -565,7 +570,7 @@ void gen_dap_onevar_dmr_array(D4Group* d4_grp, const HDF5CF::Var* var, hid_t fil
         HANDLE_CASE(H5FSTRING, Str)
         HANDLE_CASE(H5VSTRING, Str)
         default:
-            throw InternalErr(__FILE__, __LINE__, "unsupported data type.");
+            throw BESInternalError("Unsupported data type.", __FILE__, __LINE__);
 #undef HANDLE_CASE
     }
 

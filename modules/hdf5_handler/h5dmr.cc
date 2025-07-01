@@ -142,6 +142,7 @@ bool breadth_first(hid_t file_id, hid_t pid, const char *gname,
         string msg =
             "h5_dmr: counting hdf5 group elements error for ";
         msg += gname;
+        msg +=".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
@@ -161,6 +162,7 @@ bool breadth_first(hid_t file_id, hid_t pid, const char *gname,
                               i, &oinfo, H5P_DEFAULT) <0 ) {
             string msg = "h5_dmr handler: Error obtaining the info for the object";
             msg += string(oname.begin(),oname.end());
+            msg += ".";
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
@@ -241,6 +243,7 @@ void obtain_hdf5_object_name(hid_t pid, hsize_t obj_index, const char *gname, ve
     if (oname_size <= 0) {
         string msg = "h5_dmr handler: Error getting the size of the hdf5 object from the group: ";
         msg += gname;
+        msg += ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
@@ -251,6 +254,7 @@ void obtain_hdf5_object_name(hid_t pid, hsize_t obj_index, const char *gname, ve
                            oname.data(),(size_t)(oname_size+1), H5P_DEFAULT) < 0) {
         string msg = "h5_dmr handler: Error getting the hdf5 object name from the group: ";
         msg += gname;
+        msg += ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 }
@@ -265,6 +269,7 @@ bool check_soft_external_links(D4Group *par_grp, hid_t pid, int & slinkindex,
     if (H5Lget_info(pid,oname.data(),&linfo,H5P_DEFAULT) < 0) {
         string msg = "hdf5 link name error from: ";
         msg += gname;
+        msg += ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
@@ -291,6 +296,7 @@ void handle_actual_dataset(D4Group *par_grp, hid_t pid, const string &full_path_
     if ((dset_id = H5Dopen(pid,full_path_name.c_str(),H5P_DEFAULT)) < 0) {
         string msg = "cannot open the HDF5 dataset  ";
         msg += full_path_name;
+        msg += ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
@@ -344,7 +350,8 @@ void handle_pure_dimension(D4Group *par_grp, hid_t pid, const vector<char>& onam
     BESDEBUG("h5", "<h5dmr.cc: pure dimension: dataset name: " << d4dim_name << endl);
 
     if (H5Tclose(dt_inst.type)<0) {
-          throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 datatype.");
+          string msg = "Cannot close the HDF5 datatype.";
+          throw InternalErr(__FILE__, __LINE__, msg);
     }
 
 }
@@ -412,7 +419,9 @@ void handle_child_grp(hid_t file_id, hid_t pid, const char *gname,
 
     hid_t cgroup = H5Gopen(pid, t_fpn.data(),H5P_DEFAULT);
     if (cgroup < 0){
-        throw InternalErr(__FILE__, __LINE__, "h5_dmr handler: H5Gopen() failed.");
+        string msg = "h5_dmr handler: H5Gopen() failed for the group ";
+        msg += full_path_name + ".";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     auto grp_name = string(oname.begin(),oname.end()-1);
@@ -456,7 +465,9 @@ void handle_child_grp(hid_t file_id, hid_t pid, const char *gname,
     }
 
     if (H5Gclose(cgroup) < 0){
-        throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
+        string msg = "Could not close the group ";
+        msg  = msg + full_path_name +".";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 }
 /////////////////////////////////////////////////////////////////////////////// 
@@ -499,17 +510,20 @@ read_objects( D4Group * d4_grp, hid_t pid, const string &varname, const string &
         break;
 
     case H5T_ARRAY:
+    {
         H5Tclose(dt_inst.type);
-        throw InternalErr(__FILE__, __LINE__,
-                          "Currently don't support accessing data of Array datatype when array datatype is not inside the compound.");
-    
+        string msg = "Currently don't support accessing data of Array datatype when array datatype is not inside the compound.";
+        msg = msg + " The variable name is " + varname + ".";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
     default:
         read_objects_base_type(d4_grp,pid,varname, filename,dset_id,use_dimscale,is_eos5,eos5_dim_info);
         break;
     }
     // Close the datatype obtained in the get_dataset_dmr() since the datatype is no longer used.
     if (H5Tclose(dt_inst.type) < 0) {
-        throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 datatype.");       
+        string msg = "Cannot close the HDF5 datatype for variable " + varname + ".";
+        throw InternalErr(__FILE__, __LINE__, msg);       
     }
 }
 
@@ -597,8 +611,10 @@ void add_unlimited_dimension_info(libdap::D4Group *d4_grp) {
                         }
                         else {
                             D4Attribute *d4_attr = d4_container->attributes()->get("Unlimited_Dimension");
-                            if (d4_attr == nullptr)
-                                throw InternalErr(__FILE__, __LINE__, "Unlimited_Dimension attribute should exist.");
+                            if (d4_attr == nullptr) {
+                                string msg = "Unlimited_Dimension attribute should exist.";
+                                throw InternalErr(__FILE__, __LINE__, msg);
+                            }
                             else {
                                 d4_attr->add_value(dt_inst.dimnames[i]);
                             }
@@ -654,8 +670,10 @@ read_objects_base_type(D4Group * d4_grp, hid_t pid, const string & varname, cons
     H5Tclose(datatype);
     // Get a base type. It should be an HDF5 atomic datatype.
     BaseType *bt = Get_bt_enhanced(d4_grp,pid, newvarname,varname, filename, dt_inst.type);
-    if (!bt)
-        throw InternalErr(__FILE__, __LINE__,"Unable to convert hdf5 datatype to dods basetype");
+    if (!bt) {
+        string msg = "Unable to convert hdf5 datatype to dods basetype.";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
 
     // First deal with scalar data. 
     if (dt_inst.ndims == 0) {
@@ -685,8 +703,10 @@ read_objects_base_type(D4Group * d4_grp, hid_t pid, const string & varname, cons
 
         // If we have dimension names(dimension scale is used.),we will see if we can add the names.       
         int dimnames_size = 0;
-        if ((unsigned int) ((int) (dt_inst.dimnames.size())) != dt_inst.dimnames.size())
-            throw InternalErr(__FILE__, __LINE__,"number of dimensions: overflow");
+        if ((unsigned int) ((int) (dt_inst.dimnames.size())) != dt_inst.dimnames.size()) {
+            string msg = "number of dimensions: overflow for variable " + varname + ".";
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
 
         dimnames_size = (int) (dt_inst.dimnames.size());
 
@@ -807,8 +827,8 @@ void read_objects_structure_arrays(D4Group *d4_grp, Structure *structure, const 
     int dimnames_size = 0;
     if((unsigned int)((int)(dt_inst.dimnames.size())) != dt_inst.dimnames.size())
     {
-        throw InternalErr(__FILE__, __LINE__,
-                       "number of dimensions: overflow");
+        string msg = "Number of dimensions: overflow for the variable name " + varname + ".";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
     dimnames_size = (int)(dt_inst.dimnames.size());
 
@@ -927,7 +947,8 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
         hid_t ty_id = H5Aget_type(attr_id);
         if (ty_id < 0) {
             H5Aclose(attr_id);
-            throw InternalErr(__FILE__, __LINE__, "Cannot retrieve HDF5 attribute datatype successfully.");
+            string msg = "Cannot retrieve HDF5 attribute datatype successfully.";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
 
         string dap_type = get_dap_type(ty_id,true);
@@ -939,7 +960,8 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
         if(attr_null_c == dap4_attr_type) {
             H5Tclose(ty_id);
             H5Aclose(attr_id);
-            throw InternalErr(__FILE__, __LINE__, "unsupported DAP4 attribute type");
+            string msg =  "Unsupported DAP4 attribute type.";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
 
         string attr_name = attr_inst.name;
@@ -995,7 +1017,8 @@ void write_dap4_attr(hid_t attr_id, libdap::D4Attribute *d4_attr, hid_t ty_id, c
         H5Tclose(ty_id);
         H5Aclose(attr_id);
         delete d4_attr;
-        throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
+        string msg = "Unable to read HDF5 attribute data.";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
     H5Aclose(memtype);
 
@@ -1014,7 +1037,8 @@ void write_dap4_attr(hid_t attr_id, libdap::D4Attribute *d4_attr, hid_t ty_id, c
             H5Tclose(ty_id);
             H5Aclose(attr_id);
             delete d4_attr;
-            throw InternalErr(__FILE__, __LINE__, "unable to get attibute size");
+            string msg = "Unable to get attibute size.";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
 
         write_dap4_attr_value(d4_attr,ty_id,attr_inst.nelmts,tempvalue, elesize);
@@ -1041,7 +1065,8 @@ void write_dap4_attr_value(D4Attribute *d4_attr, hid_t ty_id, hsize_t nelmts, ch
         } else {
             H5Tclose(ty_id);
             delete d4_attr;
-            throw InternalErr(__FILE__, __LINE__, "unable to convert attribute value to DAP");
+            string msg = "Unable  to convert attribute value to DAP.";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
     }
 }
@@ -1167,7 +1192,8 @@ void get_softlink(D4Group* par_grp, hid_t h5obj_id,  const string & oname, int i
 
     // get link target name
     if (H5Lget_val(h5obj_id, oname.c_str(), (void*) buf.data(), val_size + 1, H5P_DEFAULT) < 0) {
-        throw InternalErr(__FILE__, __LINE__, "unable to get link value");
+        string msg = "Unable to get link value for variable "+ oname + ".";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
     auto softlink_tgt_unique = make_unique<D4Attribute>(softlink_value_name, attr_str_c);
     auto softlink_tgt = softlink_tgt_unique.release();
@@ -1198,8 +1224,10 @@ string get_hardlink_dmr( hid_t h5obj_id, const string & oname) {
 
     // Get the object info
     H5O_info_t obj_info;
-    if (H5OGET_INFO(h5obj_id, &obj_info) <0)
-        throw InternalErr(__FILE__, __LINE__, "H5OGET_INFO() failed.");
+    if (H5OGET_INFO(h5obj_id, &obj_info) <0) {
+        string msg = "H5OGET_INFO() failed for variable " + oname + ".";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
 
     // If the reference count is greater than 1,that means 
     // hard links are found. return the original object name this
@@ -1212,7 +1240,8 @@ string get_hardlink_dmr( hid_t h5obj_id, const string & oname) {
 #if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13) || (H5_VERS_MINOR == 14)))
         char *obj_tok_str = nullptr;
         if(H5Otoken_to_str(h5obj_id, &(obj_info.token), &obj_tok_str) <0) {
-            throw InternalErr(__FILE__, __LINE__, "H5Otoken_to_str failed.");
+            string msg = "H5Otoken_to_str failed for variable " + oname + ".";
+            throw InternalErr(__FILE__, __LINE__, msg);
         } 
         objno.assign(obj_tok_str,obj_tok_str+strlen(obj_tok_str));
         H5free_memory(obj_tok_str);
@@ -1252,6 +1281,7 @@ string read_struct_metadata(hid_t s_file_id) {
     if ((ecs_grp_id = H5Gopen(s_file_id, ecs_group.c_str(),H5P_DEFAULT)) < 0) {
         string msg = "h5_ecs_meta: unable to open the HDF5 group  ";
         msg += ecs_group;
+        msg += ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
@@ -1261,6 +1291,7 @@ string read_struct_metadata(hid_t s_file_id) {
     if (H5Gget_info(ecs_grp_id,&g_info) < 0) {
         string msg = "h5_ecs_meta: unable to obtain the HDF5 group info. for ";
         msg +=ecs_group;
+        msg += ".";
         H5Gclose(ecs_grp_id);
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
@@ -1286,6 +1317,8 @@ string read_struct_metadata(hid_t s_file_id) {
     vector<string> strmeta_value;
     if (strmeta_num_total <= 0) {
         string msg = "hdf5 object name error from: ";
+        msg +=ecs_group;
+        msg += ".";
         H5Gclose(ecs_grp_id);
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
@@ -1321,6 +1354,7 @@ void obtain_struct_metadata_info(hid_t ecs_grp_id, vector<string> &s_oname, vect
         if (oname_size <= 0) {
             string msg = "hdf5 object name error from: ";
             msg += ecs_group;
+            msg += ".";
             H5Gclose(ecs_grp_id);
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
@@ -1331,6 +1365,7 @@ void obtain_struct_metadata_info(hid_t ecs_grp_id, vector<string> &s_oname, vect
                                oname.data(),(size_t) (oname_size + 1), H5P_DEFAULT) < 0) {
             string msg = "hdf5 object name error from: ";
             msg += ecs_group;
+            msg += ".";
             H5Gclose(ecs_grp_id);
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
@@ -1341,6 +1376,7 @@ void obtain_struct_metadata_info(hid_t ecs_grp_id, vector<string> &s_oname, vect
         if (H5Lget_info(ecs_grp_id, oname.data(), &linfo, H5P_DEFAULT) < 0) {
             string msg = "hdf5 link name error from: ";
             msg += ecs_group;
+            msg += ".";
             H5Gclose(ecs_grp_id);
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
@@ -1349,6 +1385,7 @@ void obtain_struct_metadata_info(hid_t ecs_grp_id, vector<string> &s_oname, vect
         if (linfo.type == H5L_TYPE_SOFT) {
             string msg = "hdf5 link name error from: ";
             msg += ecs_group;
+            msg += ".";
             H5Gclose(ecs_grp_id);
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
@@ -1359,6 +1396,7 @@ void obtain_struct_metadata_info(hid_t ecs_grp_id, vector<string> &s_oname, vect
                                i, &oinfo, H5P_DEFAULT) < 0) {
             string msg = "Cannot obtain the object info ";
             msg += ecs_group;
+            msg += ".";
             H5Gclose(ecs_grp_id);
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
@@ -1366,6 +1404,7 @@ void obtain_struct_metadata_info(hid_t ecs_grp_id, vector<string> &s_oname, vect
         if (oinfo.type != H5O_TYPE_DATASET) {
             string msg = "hdf5 link name error from: ";
             msg += ecs_group;
+            msg += ".";
             H5Gclose(ecs_grp_id);
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
@@ -1429,6 +1468,7 @@ int obtain_struct_metadata_value(hid_t ecs_grp_id, const vector<string> &s_oname
         if ((s_dset_id = H5Dopen(ecs_grp_id,s_oname[i].c_str(),H5P_DEFAULT))<0){
             string msg = "Cannot open HDF5 dataset  ";
             msg += s_oname[i];
+            msg += ".";
             H5Gclose(ecs_grp_id);
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
@@ -1436,6 +1476,7 @@ int obtain_struct_metadata_value(hid_t ecs_grp_id, const vector<string> &s_oname
         if ((s_space_id = H5Dget_space(s_dset_id))<0) {
             string msg = "Cannot open the data space of HDF5 dataset  ";
             msg += s_oname[i];
+            msg += ".";
             H5Dclose(s_dset_id);
             H5Gclose(ecs_grp_id);
             throw BESInternalError(msg,__FILE__, __LINE__);
@@ -1444,6 +1485,7 @@ int obtain_struct_metadata_value(hid_t ecs_grp_id, const vector<string> &s_oname
         if ((s_ty_id = H5Dget_type(s_dset_id)) < 0) {
             string msg = "Cannot get the data type of HDF5 dataset  ";
             msg += s_oname[i];
+            msg += ".";
             H5Sclose(s_space_id);
             H5Dclose(s_dset_id);
             H5Gclose(ecs_grp_id);
@@ -1453,6 +1495,7 @@ int obtain_struct_metadata_value(hid_t ecs_grp_id, const vector<string> &s_oname
         if ((s_nelms = H5Sget_simple_extent_npoints(s_space_id))<0) {
             string msg = "Cannot get the number of points of HDF5 dataset  ";
             msg += s_oname[i];
+            msg += ".";
             H5Tclose(s_ty_id);
             H5Sclose(s_space_id);
             H5Dclose(s_dset_id);
@@ -1464,6 +1507,7 @@ int obtain_struct_metadata_value(hid_t ecs_grp_id, const vector<string> &s_oname
 
             string msg = "Cannot get the data type size of HDF5 dataset  ";
             msg += s_oname[i];
+            msg += ".";
             H5Tclose(s_ty_id);
             H5Sclose(s_space_id);
             H5Dclose(s_dset_id);
@@ -1479,6 +1523,7 @@ int obtain_struct_metadata_value(hid_t ecs_grp_id, const vector<string> &s_oname
 
             string msg = "Cannot read HDF5 dataset  ";
             msg += s_oname[i];
+            msg += ".";
             H5Tclose(s_ty_id);
             H5Sclose(s_space_id);
             H5Dclose(s_dset_id);
@@ -1523,7 +1568,8 @@ int obtain_struct_metadata_value_internal(hid_t ecs_grp_id, const vector<string>
     }
     catch(...) {
         H5Gclose(ecs_grp_id);
-        throw InternalErr(__FILE__,__LINE__,"Obtain structmetadata suffix error.");
+        string msg = "Obtain structmetadata suffix error.";
+        throw InternalErr(__FILE__,__LINE__, msg);
 
     }
     // This is probably not necessary, since structmetadata may always have a suffix.
@@ -1556,8 +1602,10 @@ int get_strmetadata_num(const string & meta_str) {
         stringstream ssnum(num_str);
         int num;
         ssnum >> num;
-        if (ssnum.fail()) 
-            throw InternalErr(__FILE__,__LINE__,"Suffix after dots is not a number.");
+        if (ssnum.fail()) {
+            string msg = "Suffix after dots is not a number.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
         return num;
     }
 }
@@ -1586,16 +1634,19 @@ void obtain_eos5_dims(hid_t fileid, eos5_dim_info_t &eos5_dim_info) {
 
     // Check if the HDF-EOS5 grid has the valid parameters, projection codes.
     if (c.check_grids_unknown_parameters(&p)) {
-        throw InternalErr("Unknown HDF-EOS5 grid paramters found in the file");
+        string msg = "Unknown HDF-EOS5 grid paramters found in the file.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if (c.check_grids_missing_projcode(&p)) {
-        throw InternalErr("The HDF-EOS5 is missing project code ");
+        string msg = "The HDF-EOS5 is missing project code.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // We gradually add the support of different projection codes
     if (c.check_grids_support_projcode(&p)) {
-        throw InternalErr("The current project code is not supported");
+        string msg = "The current project code is not supported.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // HDF-EOS5 provides default pixel and origin values if they are not defined.
@@ -1871,7 +1922,7 @@ hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, 
         H5Aclose(attr_id);
         H5Tclose(atype_id);
         H5Dclose(dset_id);
-        string msg = "Cannot obtain the data space ID  for the attribute  " + reference_name;
+        string msg = "Cannot obtain the data space ID  for the attribute  " + reference_name + ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
@@ -1880,7 +1931,7 @@ hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, 
         H5Aclose(attr_id);
         H5Tclose(atype_id);
         H5Dclose(dset_id);
-        string msg = "Cannot obtain the number of elements for space of the attribute  " + reference_name;
+        string msg = "Cannot obtain the number of elements for space of the attribute  " + reference_name + ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
@@ -1889,7 +1940,7 @@ hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, 
         H5Aclose(attr_id);
         H5Tclose(atype_id);
         H5Dclose(dset_id);
-        string msg = "Cannot obtain the datatype size of the attribute  " + reference_name;
+        string msg = "Cannot obtain the datatype size of the attribute  " + reference_name + ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
@@ -1906,7 +1957,7 @@ hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, 
         H5Aclose(attr_id);
         H5Tclose(atype_id);
         H5Dclose(dset_id);
-        string msg = "Cannot obtain the referenced object for the variable  " + dname;
+        string msg = "Cannot obtain the referenced object for the variable  " + dname + ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
@@ -1918,7 +1969,7 @@ hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, 
         H5Aclose(attr_id);
         H5Tclose(atype_id);
         H5Dclose(dset_id);
-        string msg = "Cannot obtain the referenced object for the variable  " + dname;
+        string msg = "Cannot obtain the referenced object for the variable  " + dname + ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
@@ -1929,7 +1980,7 @@ hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, 
             H5Aclose(attr_id);
             H5Tclose(atype_id);
             H5Dclose(dset_id);
-            string msg = "Cannot de-reference the object for the variable  " + dname;
+            string msg = "Cannot de-reference the object for the variable  " + dname + ".";
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
@@ -1939,7 +1990,7 @@ hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, 
             H5Tclose(atype_id);
             H5Dclose(dset_id);
             H5Dclose(did_ref);
-            string msg = "Cannot open the space of the de-referenced object for the variable  " + dname;
+            string msg = "Cannot open the space of the de-referenced object for the variable  " + dname + ".";
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
@@ -1950,7 +2001,7 @@ hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, 
             H5Sclose(did_space);
             H5Dclose(dset_id);
             H5Dclose(did_ref);
-            string msg = "The dataspace must be a simple HDF5 dataspace for the variable  " + dname;
+            string msg = "The dataspace must be a simple HDF5 dataspace for the variable  " + dname + ".";
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
@@ -1961,7 +2012,7 @@ hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, 
             H5Sclose(did_space);
             H5Dclose(dset_id);
             H5Dclose(did_ref);
-            string msg = "The number of dimensions must be > 0 for the variable  " + dname;
+            string msg = "The number of dimensions must be > 0 for the variable  " + dname + ".";
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
         vector<hsize_t> did_dims(did_space_num_dims);
@@ -1973,7 +2024,7 @@ hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, 
             H5Sclose(did_space);
             H5Dclose(dset_id);
             H5Dclose(did_ref);
-            string msg = "Cannot obtain the dimension information for the variable  " + dname;
+            string msg = "Cannot obtain the dimension information for the variable  " + dname + ".";
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
         
@@ -1986,8 +2037,11 @@ hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, 
                 num_unlimited_dims++;
             }
         }
-        if (num_unlimited_dims >1)
-            throw InternalErr(__FILE__,__LINE__,"This variable has more than 1 unlimited pure dimension. This is not supported.");
+        if (num_unlimited_dims >1) {
+            string msg = "This variable has more than 1 unlimited pure dimension. This is not supported.";
+            msg += "The variable name is: " + dname + ".";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
         
         ret_value = cur_unlimited_dim_size;
 
@@ -2782,7 +2836,8 @@ void add_eos5_grid_vars_geo(D4Group* d4_grp, const eos5_grid_info_t & eg_info) {
     catch (...) {
         delete ar_lat;
         delete ar_lon;
-        throw InternalErr(__FILE__, __LINE__, "Unable to allocate the HDFMissLLArray instance.");
+        string msg = "Unable to allocate the HDFMissLLArray instance.";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 }
 
@@ -2938,7 +2993,8 @@ void add_eos5_grid_vars_non_geo(D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info,
         delete ar_dim1;
         delete ar_lat;
         delete ar_lon;
-        throw InternalErr(__FILE__, __LINE__, "Unable to allocate the HDFMissLLArray instance.");
+        string msg = "Unable to allocate the HDFMissLLArray instance.";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 }
 
@@ -3055,9 +3111,9 @@ void build_gd_info(const HE5Grid &gd,unordered_map<string,eos5_grid_info_t>& gri
             dimname_list += dim.name;
             dimname_list += " ";
         }
-        string err_msg = "This HDF-EOS5 grid dimension list doesn't contain XDim, Xdim, YDim or Ydim.";
-        err_msg +=  " The dimension names of this grid are: "+dimname_list;
-        throw InternalErr(__FILE__,__LINE__,err_msg);
+        string msg = "This HDF-EOS5 grid dimension list doesn't contain XDim, Xdim, YDim or Ydim.";
+        msg +=  " The dimension names of this grid are: "+dimname_list;
+        throw InternalErr(__FILE__,__LINE__, msg);
 
     }
 
@@ -3217,8 +3273,10 @@ void add_possible_var_cv_info(libdap::BaseType *var, const eos5_dim_info_t &eos5
     // We know the dimension names in each grid are different. 
     // We can have only one set of match in each grid.
     if (have_cv_dim0 && have_cv_dim1) {
-        if (dim0_cv_name1 != dim1_cv_name1 || dim0_cv_name2 !=dim1_cv_name2 || dim0_gm_name !=dim1_gm_name) 
-            throw InternalErr(__FILE__,__LINE__,"Inconsistent coordinates for this EOS5 Grid");
+        if (dim0_cv_name1 != dim1_cv_name1 || dim0_cv_name2 !=dim1_cv_name2 || dim0_gm_name !=dim1_gm_name) {
+            string msg = "Inconsistent coordinates for this EOS5 Grid.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
         else {// Add the CV attributes.
             string coord_value = dim0_cv_name1 + " "+dim0_cv_name2;
             add_var_dap4_attr(var,"coordinates",attr_str_c,coord_value);
@@ -3263,24 +3321,32 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
 
     hid_t vlen_type = H5Dget_type(dset_id);
     hid_t vlen_basetype = H5Tget_super(vlen_type);
-    if (H5Tget_class(vlen_basetype) != H5T_INTEGER && H5Tget_class(vlen_basetype) != H5T_FLOAT) 
-        throw InternalErr(__FILE__, __LINE__,"Only support float or intger variable-length datatype.");
+    if (H5Tget_class(vlen_basetype) != H5T_INTEGER && H5Tget_class(vlen_basetype) != H5T_FLOAT)  {
+        string msg = "Only support float or intger variable-length datatype. ";
+        msg = msg + "The variable path is " + var_path +".";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
 
     hid_t vlen_base_memtype = H5Tget_native_type(vlen_basetype, H5T_DIR_ASCEND);
     hid_t vlen_memtype = H5Tvlen_create(vlen_base_memtype);
 
     // Will not support the scalar type. 
     hid_t vlen_space = H5Dget_space(dset_id);
-    if (H5Sget_simple_extent_type(vlen_space) != H5S_SIMPLE)
-        throw InternalErr(__FILE__, __LINE__,"Only support array of float or intger variable-length datatype.");
+    if (H5Sget_simple_extent_type(vlen_space) != H5S_SIMPLE) {
+        string msg = "Only support array of float or intger variable-length datatype.";
+        msg = msg + "The variable path is " + var_path +".";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
 
     hssize_t vlen_number_elements = H5Sget_simple_extent_npoints(vlen_space);
     vector<hvl_t> vlen_data(vlen_number_elements);
     if (H5Dread(dset_id, vlen_memtype, H5S_ALL, H5S_ALL, H5P_DEFAULT, vlen_data.data()) <0) {
         H5Dclose(dset_id);
-        throw InternalErr(__FILE__, __LINE__,"Cannot read variable-length datatype data.");
+        string msg = "Cannot read variable-length datatype data.";
+        msg = msg + "The variable path is " + var_path +".";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
-    
+
     size_t max_vlen_length = 0;
     for (ssize_t i = 0; i<vlen_number_elements; i++) {
         if (max_vlen_length<vlen_data[i].len)   
@@ -3293,8 +3359,10 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
     // Now we need to create two variables: one to store vlen data, another to store vlen index.
     // First: vlen data.
     BaseType *bt = Get_bt_enhanced(d4_grp,pid, vname,var_path, filename, vlen_basetype);
-    if (!bt)
-        throw InternalErr(__FILE__, __LINE__,"Unable to convert hdf5 datatype to dods basetype");
+    if (!bt) {
+        string msg = "Unable to convert hdf5 datatype to dods basetype.";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
 
     H5Tclose(vlen_base_memtype);
     H5Tclose(vlen_basetype);

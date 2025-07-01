@@ -229,11 +229,13 @@ hid_t get_attr_info(hid_t dset, int index, bool is_dap4, DSattr_t * attr_inst_pt
     if (H5Tclose(ty_id) < 0) {
         H5Sclose(aspace_id);
         H5Aclose(attrid);
-        throw InternalErr(__FILE__,__LINE__,"Cannot close HDF5 dataspace ");
+        string msg = "Cannot close HDF5 dataspace. ";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
     if (H5Sclose(aspace_id) < 0) {
         H5Aclose(attrid);
-        throw InternalErr(__FILE__,__LINE__,"Cannot close HDF5 dataspace ");
+        string msg = "Cannot close HDF5 dataspace. ";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
 
     return attrid;
@@ -310,9 +312,10 @@ string get_dap_type(hid_t type, bool is_dap4)
     size_t size = 0;
 
     H5T_class_t class_t = H5Tget_class(type);
-    if (H5T_NO_CLASS == class_t)
-        throw InternalErr(__FILE__, __LINE__, 
-                          "The HDF5 datatype doesn't belong to any Class."); 
+    if (H5T_NO_CLASS == class_t) {
+        string msg = "The HDF5 datatype doesn't belong to any Class.";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
     switch (class_t) {
 
     case H5T_INTEGER:
@@ -321,8 +324,8 @@ string get_dap_type(hid_t type, bool is_dap4)
     case H5T_FLOAT:
         size = H5Tget_size(type);
         if (size == 0){
-            throw InternalErr(__FILE__, __LINE__,
-                              "size of the datatype is invalid");
+            string msg = "Size of the datatype is invalid.";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
 
         BESDEBUG("h5", "=get_dap_type(): FLOAT size = " << size << endl);
@@ -365,14 +368,14 @@ string get_dap_integer_type(hid_t dtype, bool is_dap4) {
     H5T_sign_t sign;
 
     if (dsize == 0){
-        throw InternalErr(__FILE__, __LINE__,
-                          "size of datatype is invalid");
+        string msg = "Size of datatype is invalid.";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     sign = H5Tget_sign(dtype);
     if (sign < 0){
-        throw InternalErr(__FILE__, __LINE__,
-                          "sign of datatype is invalid");
+        string msg = "Sign of  datatype is invalid.";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     BESDEBUG("h5", "=get_dap_dtype(): H5T_INTEGER" <<
@@ -443,10 +446,10 @@ hid_t get_fileid(const char *filename)
 ///////////////////////////////////////////////////////////////////////////////
 void close_fileid(hid_t fid)
 {
-    if (H5Fclose(fid) < 0)
-        throw Error(unknown_error,
-                    string("Could not close the HDF5 file."));
-
+    if (H5Fclose(fid) < 0) {
+        string msg = "Could not close the HDF5 file.";
+        throw BESInternalError(msg,__FILE__, __LINE__);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -469,6 +472,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
     if ((dset = H5Dopen(pid, dname.c_str(),H5P_DEFAULT)) < 0) {
         string msg = "cannot open the HDF5 dataset  ";
         msg += dname;
+        msg += ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
@@ -478,6 +482,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
         H5Dclose(dset);
         string msg = "cannot get the the datatype of HDF5 dataset  ";
         msg += dname;
+        msg += ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
@@ -488,6 +493,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
         H5Dclose(dset);
         string msg = "cannot get the datatype class of HDF5 dataset  ";
         msg += dname;
+        msg += ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
@@ -498,6 +504,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
         || (ty_class == H5T_OPAQUE) || (ty_class == H5T_ENUM) || (ty_class == H5T_VLEN)) {
         string msg = "unexpected datatype of HDF5 dataset  ";
         msg += dname;
+        msg += ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
    
@@ -507,6 +514,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
         H5Dclose(dset);
         string msg = "cannot get the the dataspace of HDF5 dataset  ";
         msg += dname;
+        msg += ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
@@ -522,6 +530,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
         H5Dclose(dset);
         string msg = "cannot get hdf5 dataspace number of dimension for dataset ";
         msg += dname;
+        msg += ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
@@ -529,6 +538,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
     if (ndims > DODS_MAX_RANK) {
         string msg = "number of dimensions exceeds allowed for dataset ";
         msg += dname;
+        msg += ".";
         H5Tclose(dtype);
         H5Sclose(dspace);
         H5Dclose(dset);
@@ -542,6 +552,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
     if (H5Sget_simple_extent_dims(dspace, size.data(), maxsize.data())<0){
         string msg = "cannot obtain the dim. info for the dataset ";
         msg += dname;
+        msg += ".";
         H5Tclose(dtype);
         H5Sclose(dspace);
         H5Dclose(dset);
@@ -559,6 +570,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
     if (dtype_size == 0) {
         string msg = "cannot obtain the data type size for the dataset ";
         msg += dname;
+        msg += ".";
         H5Tclose(dtype);
         H5Sclose(dspace);
         H5Dclose(dset);
@@ -571,6 +583,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
     if (memtype < 0){
         string msg = "cannot obtain the memory data type for the dataset ";
         msg += dname;
+        msg += ".";
         H5Tclose(dtype);
         H5Sclose(dspace);
         H5Dclose(dset);
@@ -589,16 +602,19 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
     if(H5Tclose(dtype)<0) {
         H5Sclose(dspace);
         H5Dclose(dset);
-        throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 datatype.");
+        string msg = "Cannot close the HDF5 datatype.";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     if(H5Sclose(dspace)<0) {
         H5Dclose(dset);
-        throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 dataspace.");
+        string msg = "Cannot close the HDF5 dataspace.";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     if(H5Dclose(dset)<0) {
-        throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 dataset.");
+        string msg = "Cannot close the HDF5 dataset.";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 
 }
@@ -626,8 +642,9 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
     // Obtain the dataset ID
     hid_t dset = -1;
     if ((dset = H5Dopen(pid, dname.c_str(),H5P_DEFAULT)) < 0) {
-        string msg = "cannot open the HDF5 dataset  ";
+        string msg = "Cannot open the HDF5 dataset  ";
         msg += dname;
+        msg += ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
@@ -635,8 +652,9 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
     hid_t dtype = -1;
     if ((dtype = H5Dget_type(dset)) < 0) {
         H5Dclose(dset);
-        string msg = "cannot get the the datatype of HDF5 dataset  ";
+        string msg = "Cannot get the the datatype of HDF5 dataset  ";
         msg += dname;
+        msg += ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
@@ -645,8 +663,9 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
     if (ty_class < 0) {
         H5Tclose(dtype);
         H5Dclose(dset);
-        string msg = "cannot get the datatype class of HDF5 dataset  ";
+        string msg = "Cannot get the datatype class of HDF5 dataset  ";
         msg += dname;
+        msg += ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
@@ -658,6 +677,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
         || (ty_class == H5T_OPAQUE) || (ty_class == H5T_ENUM) || (ty_class == H5T_VLEN)) {
         string msg = "unexpected datatype of HDF5 dataset  ";
         msg += dname;
+        msg += ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 #endif
@@ -666,6 +686,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
         || (ty_class == H5T_OPAQUE) ) {
         string msg = "unexpected datatype of HDF5 dataset  ";
         msg += dname;
+        msg += ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
   
@@ -675,6 +696,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
         H5Dclose(dset);
         string msg = "cannot get the the dataspace of HDF5 dataset  ";
         msg += dname;
+        msg += ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
@@ -701,6 +723,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
         H5Dclose(dset);
         string msg = "cannot get hdf5 dataspace number of dimension for dataset ";
         msg += dname;
+        msg += ".";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
@@ -708,6 +731,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
     if (ndims > DODS_MAX_RANK) {
         string msg = "number of dimensions exceeds allowed for dataset ";
         msg += dname;
+        msg += ".";
         H5Tclose(dtype);
         H5Sclose(dspace);
         H5Dclose(dset);
@@ -721,6 +745,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
     if (H5Sget_simple_extent_dims(dspace, size.data(), maxsize.data())<0){
         string msg = "cannot obtain the dim. info for the dataset ";
         msg += dname;
+        msg += ".";
         H5Tclose(dtype);
         H5Sclose(dspace);
         H5Dclose(dset);
@@ -738,6 +763,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
     if (dtype_size == 0) {
         string msg = "cannot obtain the data type size for the dataset ";
         msg += dname;
+        msg += ".";
         H5Tclose(dtype);
         H5Sclose(dspace);
         H5Dclose(dset);
@@ -757,6 +783,7 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
     if (memtype < 0){
         string msg = "cannot obtain the memory data type for the dataset ";
         msg += dname;
+        msg += ".";
         H5Tclose(dtype);
         H5Sclose(dspace);
         H5Dclose(dset);
@@ -798,16 +825,19 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
     if (H5Tclose(dtype)<0) {
         H5Sclose(dspace);
         H5Dclose(dset);
-        throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 datatype.");
+        string msg = "Cannot close the HDF5 datatype.";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     if (H5Sclose(dspace)<0) {
         H5Dclose(dset);
-        throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 dataspace.");
+        string msg = "Cannot close the HDF5 dataspace.";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     if (H5Dclose(dset)<0) {
-        throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 dataset.");
+        string msg = "Cannot close the HDF5 dataset.";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
  
 }
@@ -835,7 +865,8 @@ bool handle_dimscale_dmr(hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
         catch(...) {
             H5Sclose(dspace);
             H5Dclose(dset);
-            throw InternalErr(__FILE__, __LINE__, "Fail to check dim. scale.");
+            string msg = "Fail to check dim. scale.";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
 
         if (true == has_ds_attr) {
@@ -851,6 +882,7 @@ bool handle_dimscale_dmr(hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
             if (ret < 0) {
                 string msg = "cannot interate the attributes of the dataset ";
                 msg += dname;
+                msg += ".";
                 H5Sclose(dspace);
                 H5Dclose(dset);
                 throw BESInternalError(msg,__FILE__, __LINE__);
@@ -960,11 +992,12 @@ string print_attr(hid_t type, int loc, void *sm_buf) {
         case H5T_STRING: {
             size_t str_size = H5Tget_size(type);
             if(H5Tis_variable_str(type)>0) {
-                throw InternalErr(__FILE__, __LINE__, 
-                      "print_attr function doesn't handle variable length string, variable length string should be handled separately.");
+                string msg = "print_attr function doesn't handle variable length string, variable length string should be handled separately.";
+                throw InternalErr(__FILE__, __LINE__, msg);
             }
             if (str_size == 0){
-                throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
+                string msg = "H5Tget_size() failed.";
+                throw InternalErr(__FILE__, __LINE__, msg);
             }
             BESDEBUG("h5", "=print_attr(): H5T_STRING sm_buf=" << (char *) sm_buf
                 << " size=" << str_size << endl);
@@ -990,14 +1023,14 @@ void print_integer_type_attr(hid_t atype, int loc, void*sm_buf, union attr_data_
 
     size_t asize = H5Tget_size(atype);
     if (asize == 0) {
-        throw InternalErr(__FILE__, __LINE__,
-                          "size of datatype is invalid");
+        string msg = "Size of datatype is invalid.";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     H5T_sign_t sign = H5Tget_sign(atype);
     if (sign < 0) {
-        throw InternalErr(__FILE__, __LINE__,
-                          "sign of datatype is invalid");
+        string msg = "Sign  of datatype is invalid. ";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     BESDEBUG("h5", "=get_dap_type(): H5T_INTEGER" <<
@@ -1049,8 +1082,10 @@ void print_integer_type_attr(hid_t atype, int loc, void*sm_buf, union attr_data_
             gp.tlp = (long *) sm_buf;
             snprintf(rep.data(), 32, "%ld", *(gp.tlp + loc));
         }
-    } else
-        throw InternalErr(__FILE__, __LINE__, "Unsupported integer type, check the size of datatype.");
+    } else {
+        string msg = "Unsupported integer type, check the size of datatype.";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
 
 }
 
@@ -1111,7 +1146,8 @@ void print_float_type_attr(hid_t atype, int loc, void*sm_buf, union attr_data_pt
         }
     }
     else if (H5Tget_size(atype) == 0){
-        throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
+        string msg = "H5Tget_size() failed.";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 
 }
@@ -1198,9 +1234,9 @@ BaseType *Get_bt(const string &vname,
                 break;
 
             default: {
-                throw InternalErr(__FILE__, __LINE__, string("Unsupported HDF5 type:  ") + vname);
+                string msg = "Unsupported HDF5 type for variable " + vname + "."; 
+                throw InternalErr(__FILE__, __LINE__, msg);
             }
-
         }
     }
     catch (...) {
@@ -1208,10 +1244,10 @@ BaseType *Get_bt(const string &vname,
         throw;
     }
 
-    if (!btp)
-        throw InternalErr(__FILE__, __LINE__,
-                          string("Could not make a DAP variable for: ")
-                          + vname);
+    if (!btp) {
+        string msg = "Could not make a DAP variable for: " + vname + ".";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
 
     BESDEBUG("h5", "<Get_bt()" << endl);
     return btp;
@@ -1280,9 +1316,9 @@ BaseType *Get_bt_enhanced(D4Group *d4_grp,
                 break;
 
             default: {
-                throw InternalErr(__FILE__, __LINE__, string("Unsupported HDF5 type:  ") + vname);
+                string msg = "Unsupported HDF5 type for variable " + vname + ".";
+                throw InternalErr(__FILE__, __LINE__, msg);
             }
-
         }
     }
     catch (...) {
@@ -1290,10 +1326,10 @@ BaseType *Get_bt_enhanced(D4Group *d4_grp,
         throw;
     }
 
-    if (!btp)
-        throw InternalErr(__FILE__, __LINE__,
-                          string("Could not make a DAP variable for: ")
-                          + vname);
+    if (!btp) {
+        string msg = "Could not make a DAP variable for: " + vname + ".";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
 
     BESDEBUG("h5", "<Get_bt()" << endl);
     return btp;
@@ -1309,8 +1345,10 @@ BaseType *Get_integer_bt(const string &vname, const string &vpath, const string 
     BESDEBUG("h5", "=Get_bt() H5T_INTEGER size = " << size << " sign = "
                                                    << sign << endl);
 
-    if (sign == H5T_SGN_ERROR)
-        throw InternalErr(__FILE__, __LINE__, "cannot retrieve the sign type of the integer");
+    if (sign == H5T_SGN_ERROR) {
+        string msg = "Cannot retrieve the sign type of the integer. ";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
 
     switch (size) {
         case 1:
@@ -1349,18 +1387,20 @@ BaseType *Get_integer_bt(const string &vname, const string &vpath, const string 
                     btp = hdf5_uint64.release();
                 }
             } else {
-                string err_msg;
+                string msg;
                 if (sign == H5T_SGN_2)
-                    err_msg = invalid_type_error_msg("Int64");
+                    msg = invalid_type_error_msg("Int64");
                 else
-                    err_msg = invalid_type_error_msg("UInt64");
+                    msg = invalid_type_error_msg("UInt64");
 
-                throw BESSyntaxUserError(err_msg, __FILE__, __LINE__);
+                throw BESInternalError(msg, __FILE__, __LINE__);
             }
         }
         break;
-        default:
-            throw InternalErr(__FILE__, __LINE__, "cannot return the size of the datatype");
+        default: {
+            string msg = "Cannot return the size of the datatype.";
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
     }
 
     return btp;
@@ -1393,8 +1433,10 @@ BaseType *Get_float_bt(const string &vname, const string &vpath, const string &d
 
     BESDEBUG("h5", "=Get_bt() H5T_FLOAT size = " << size << endl);
 
-    if (size == 0)
-        throw InternalErr(__FILE__, __LINE__, "cannot return the size of the datatype");
+    if (size == 0) {
+        string msg = "Cannot return the size of the datatype.";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
     else if (size == 4) {
         auto hdf5_float32 = make_unique<HDF5Float32>(vname, vpath, dataset);
         btp = hdf5_float32.release();
@@ -1403,8 +1445,10 @@ BaseType *Get_float_bt(const string &vname, const string &vpath, const string &d
         auto hdf5_float64 = make_unique<HDF5Float64>(vname, vpath, dataset);
         btp = hdf5_float64.release();
     }
-    else
-        throw InternalErr(__FILE__, __LINE__, "the size of the float datatype ie neither 4 nor 8. ");
+    else {
+        string msg = "The size of the float datatype ie neither 4 nor 8. ";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
 
     return btp;
 }
@@ -1435,10 +1479,10 @@ Structure *Get_structure(const string &varname,const string &vpath,
 
     BESDEBUG("h5", ">Get_structure()" << datatype << endl);
 
-    if (H5Tget_class(datatype) != H5T_COMPOUND)
-        throw InternalErr(__FILE__, __LINE__,
-                          string("Compound-to-structure mapping error for ")
-                          + varname);
+    if (H5Tget_class(datatype) != H5T_COMPOUND) {
+        string msg = "Compound-to-structure mapping error for " + varname + ".";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
 
     try {
 
@@ -1446,7 +1490,8 @@ Structure *Get_structure(const string &varname,const string &vpath,
         int nmembs = H5Tget_nmembers(datatype);
         BESDEBUG("h5", "=Get_structure() has " << nmembs << endl);
         if (nmembs < 0){
-            throw InternalErr(__FILE__, __LINE__, "cannot retrieve the number of elements");
+            string msg = "Cannot retrieve the number of elements." ;
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
         auto structure_unique_ptr = make_unique<HDF5Structure>(varname, vpath, dataset);
         structure_ptr = structure_unique_ptr.release();
@@ -1456,14 +1501,13 @@ Structure *Get_structure(const string &varname,const string &vpath,
             H5T_class_t memb_cls = H5Tget_member_class(datatype, i);
             memb_type = H5Tget_member_type(datatype, i);
             if (memb_name == nullptr){
-                throw InternalErr(__FILE__, __LINE__, "cannot retrieve the name of the member");
+                string msg = "Cannot retrieve the name of the member.";
+                throw InternalErr(__FILE__, __LINE__, msg);
             }
             if ((memb_cls < 0) || (memb_type < 0)) {
-                throw InternalErr(__FILE__, __LINE__,
-                                  string("Type mapping error for ")
-                                  + string(memb_name) );
+                string msg = "Type mapping error for " + string(memb_name) + ".";
+                throw InternalErr(__FILE__, __LINE__, msg);
             }
-            
             if (memb_cls == H5T_COMPOUND) {
                 Structure *s = Get_structure(memb_name, memb_name, dataset, memb_type,is_dap4);
                 structure_ptr->add_var(s);
@@ -1472,7 +1516,6 @@ Structure *Get_structure(const string &varname,const string &vpath,
             else if (memb_cls == H5T_ARRAY) {
                 auto memb_name_str = string(memb_name);
                 Get_structure_array_type(structure_ptr,memb_type,memb_name_str,dataset,is_dap4);
-
             }
             else if (memb_cls == H5T_INTEGER || memb_cls == H5T_FLOAT || memb_cls == H5T_STRING)  {
                 BaseType *bt = Get_bt(memb_name, memb_name,dataset, memb_type,is_dap4);
@@ -1482,7 +1525,8 @@ Structure *Get_structure(const string &varname,const string &vpath,
             else {
                 free(memb_name);
                 memb_name = nullptr;
-                throw InternalErr(__FILE__, __LINE__, "unsupported field datatype inside a compound datatype");
+                string msg = "Unsupported field datatype inside a compound datatype.";
+                throw InternalErr(__FILE__, __LINE__, msg);
             }
             // Caller needs to free the memory allocated by the library for memb_name.
             free(memb_name);
@@ -1537,26 +1581,28 @@ void Get_structure_array_type(Structure *structure_ptr, hid_t memb_type, const s
         int64_t nelement = 1;
 
         if (dtype_base < 0) {
-            throw InternalErr(__FILE__, __LINE__, "cannot return the base memb_type");
+            string msg = "Cannot return the base memb_type.";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
         if (ndim < 0) {
-            throw InternalErr(__FILE__, __LINE__, "cannot return the rank of the array memb_type");
+            string msg = "Cannot eturn the rank of the array memb_type.";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
         if (size == 0) {
-            throw InternalErr(__FILE__, __LINE__, "cannot return the size of the memb_type");
+            string msg = "Cannot return the size of the memb_type.";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
 
         hsize_t size2[DODS_MAX_RANK];
         if (H5Tget_array_dims(memb_type, size2) < 0) {
-            throw InternalErr(__FILE__, __LINE__,
-                                string("Could not get array dims for: ") + memb_name);
+            string msg = "Could not get array dims for " + memb_name + ".";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
 
         H5T_class_t array_memb_cls = H5Tget_class(dtype_base);
         if (array_memb_cls == H5T_NO_CLASS) {
-            throw InternalErr(__FILE__, __LINE__,
-                              string("cannot get the correct class for compound type member")
-                              + memb_name);
+            string msg = "Cannot get the correct class for compound type member for " + memb_name + ".";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
         if (H5T_COMPOUND == array_memb_cls) {
 
@@ -1619,20 +1665,26 @@ string obtain_enum_def_name(hid_t pid, hid_t datatype) {
 
         ssize_t oname_size = H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,
                                                   nullptr,0, H5P_DEFAULT);
-        if (oname_size <0)
-            throw InternalErr(__FILE__, __LINE__, "H5Lget_name_by_idx fails to obtain the object name size.");
+        if (oname_size <0) {
+            string msg = "H5Lget_name_by_idx fails to obtain the object name size.";
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
 
         vector<char> oname(oname_size + 1);
 
-        if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname.data(),(size_t)(oname_size+1),H5P_DEFAULT)<0)
-            throw InternalErr(__FILE__, __LINE__, "H5Lget_name_by_idx fails to obtain the object name.");
+        if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,oname.data(),(size_t)(oname_size+1),H5P_DEFAULT)<0) {
+            string msg = "H5Lget_name_by_idx fails to obtain the object name.";
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
 
         string s_oname(oname.begin(),oname.end()-1);
 
         // Obtain the object type, such as group or dataset.
         H5O_info_t oinfo;
-        if (H5Oget_info_by_idx(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,i,&oinfo,H5P_DEFAULT)<0)
-            throw InternalErr(__FILE__, __LINE__, "H5Oget_info_by_idx fails to obtain enum type name.");
+        if (H5Oget_info_by_idx(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,i,&oinfo,H5P_DEFAULT)<0) {
+            string msg = "H5Oget_info_by_idx fails to obtain enum type name.";
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
 
         H5O_type_t obj_type = oinfo.type;
         if(H5O_TYPE_NAMED_DATATYPE == obj_type) {
@@ -1655,14 +1707,14 @@ int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
     int64_t ret_value = 0;
     size_t dsize = H5Tget_size(base_datatype);
     if (dsize == 0){
-        throw InternalErr(__FILE__, __LINE__,
-                          "size of enum base datatype is invalid");
+        string msg = "Size of enum base datatype is invalid.";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     H5T_sign_t sign = H5Tget_sign(base_datatype);
     if (sign < 0){
-        throw InternalErr(__FILE__, __LINE__,
-                          "sign of enum base datatype is invalid");
+        string msg = "Sign of enum base datatype is invalid.";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 
 
@@ -1672,8 +1724,8 @@ int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
         if (sign == H5T_SGN_NONE) {
             uint8_t val = 255;
             if (H5Tget_member_value(datatype,i,&val)<0)  {
-                throw InternalErr(__FILE__, __LINE__,
-                          "H5Tget_member_value is invalid");
+                string msg = "H5Tget_member_value is invalid.";
+                throw InternalErr(__FILE__, __LINE__, msg);
             }
             ret_value = (int64_t)val;
 
@@ -1681,8 +1733,8 @@ int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
         else {
             int8_t val = -127;
             if (H5Tget_member_value(datatype,i,&val)<0)  {
-                throw InternalErr(__FILE__, __LINE__,
-                          "H5Tget_member_value is invalid");
+                string msg = "H5Tget_member_value is invalid.";
+                throw InternalErr(__FILE__, __LINE__, msg);
             }
             ret_value = (int64_t)val;
 
@@ -1694,8 +1746,8 @@ int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
         if (sign == H5T_SGN_NONE) {
             uint16_t val = 65535;
             if (H5Tget_member_value(datatype,i,&val)<0)  {
-                throw InternalErr(__FILE__, __LINE__,
-                          "H5Tget_member_value is invalid");
+                string msg = "H5Tget_member_value is invalid.";
+                throw InternalErr(__FILE__, __LINE__, msg);
             }
             ret_value = (int64_t)val;
 
@@ -1703,8 +1755,8 @@ int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
         else {
             int16_t val = -32768;
             if (H5Tget_member_value(datatype,i,&val)<0)  {
-                throw InternalErr(__FILE__, __LINE__,
-                          "H5Tget_member_value is invalid");
+                string msg = "H5Tget_member_value is invalid.";
+                throw InternalErr(__FILE__, __LINE__, msg);
             }
             ret_value = (int64_t)val;
 
@@ -1716,8 +1768,8 @@ int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
         if (sign == H5T_SGN_NONE) {
             uint32_t val = 4294967295;
             if (H5Tget_member_value(datatype,i,&val)<0)  {
-                throw InternalErr(__FILE__, __LINE__,
-                          "H5Tget_member_value is invalid");
+                string msg = "H5Tget_member_value is invalid.";
+                throw InternalErr(__FILE__, __LINE__, msg);
             }
             ret_value = (int64_t)val;
 
@@ -1725,8 +1777,8 @@ int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
         else {
             int32_t val = -2147483647-1;
             if (H5Tget_member_value(datatype,i,&val)<0)  {
-                throw InternalErr(__FILE__, __LINE__,
-                          "H5Tget_member_value is invalid");
+                string msg = "H5Tget_member_value is invalid.";
+                throw InternalErr(__FILE__, __LINE__, msg);
             }
             ret_value = (int64_t)val;
 
@@ -1737,8 +1789,8 @@ int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
         if (sign == H5T_SGN_NONE) {
             uint64_t val = 0;
             if (H5Tget_member_value(datatype,i,&val)<0)  {
-                throw InternalErr(__FILE__, __LINE__,
-                          "H5Tget_member_value is invalid");
+                string msg = "H5Tget_member_value is invalid.";
+                throw InternalErr(__FILE__, __LINE__, msg);
             }
             ret_value = (int64_t)val;
 
@@ -1746,8 +1798,8 @@ int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
         else {
             int64_t val = 0;
             if (H5Tget_member_value(datatype,i,&val)<0)  {
-                throw InternalErr(__FILE__, __LINE__,
-                          "H5Tget_member_value is invalid");
+                string msg = "H5Tget_member_value is invalid.";
+                throw InternalErr(__FILE__, __LINE__, msg);
             }
             ret_value = val;
 
@@ -1844,8 +1896,10 @@ bool check_dimscale(hid_t fileid) {
 
     bool ret_value = false;
     herr_t ret_o= H5OVISIT(fileid, H5_INDEX_NAME, H5_ITER_INC, visit_obj_cb, nullptr);
-    if(ret_o < 0)
-        throw InternalErr(__FILE__, __LINE__, "H5OVISIT fails");
+    if(ret_o < 0) {
+        string msg = "H5OVISIT fails.";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
     else 
        ret_value =(ret_o >0)?true:false;
 
@@ -1861,14 +1915,17 @@ visit_obj_cb(hid_t  group_id, const char *name, const H5O_info_t *oinfo, void *_
 
         hid_t dataset = -1;
         dataset = H5Dopen2(group_id,name,H5P_DEFAULT);
-        if(dataset <0) 
-            throw InternalErr(__FILE__, __LINE__, "H5Dopen2 fails in the H5OVISIT call back function.");
+        if(dataset <0) {
+            string msg = "H5Dopen2 fails in the H5OVISIT call back function.";
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
 
         hid_t dspace = -1;
         dspace = H5Dget_space(dataset);
         if(dspace <0) {
             H5Dclose(dataset);
-            throw InternalErr(__FILE__, __LINE__, "H5Dget_space fails in the H5OVISIT call back function.");
+            string msg = "H5Dget_space fails in the H5OVISIT call back function.";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
 
         // We only support netCDF-4 like dimension scales, that is the dimension scale dataset is 1-D dimension.
@@ -1896,8 +1953,10 @@ bool has_dimscale_attr(hid_t dataset) {
     string dimscale_attr_value="DIMENSION_SCALE";
 
     htri_t dimscale_attr_exist = H5Aexists_by_name(dataset,".",dimscale_attr_name.c_str(),H5P_DEFAULT);
-    if (dimscale_attr_exist <0)
-        throw InternalErr(__FILE__, __LINE__, "H5Aexists_by_name fails when checking the CLASS attribute.");
+    if (dimscale_attr_exist <0) {
+        string msg = "H5Aexists_by_name fails when checking the CLASS attribute.";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
     else if(dimscale_attr_exist > 0) {//Attribute CLASS exists
 
         hid_t attr_id =   -1;
@@ -1905,14 +1964,17 @@ bool has_dimscale_attr(hid_t dataset) {
 
         // Open the attribute
         attr_id = H5Aopen(dataset,dimscale_attr_name.c_str(), H5P_DEFAULT);
-        if(attr_id < 0) 
-            throw InternalErr(__FILE__, __LINE__, "H5Aopen fails in the attr_info call back function.");
+        if(attr_id < 0) {
+            string msg = "H5Aopen fails in the attr_info call back function.";
+            throw InternalErr(__FILE__, __LINE__, msg);
+        }
 
         // Get attribute datatype and dataspace
         atype_id  = H5Aget_type(attr_id);
         if(atype_id < 0) {
             H5Aclose(attr_id);
-            throw InternalErr(__FILE__, __LINE__, "H5Aget_type fails in the attr_info call back function.");
+            string msg = "H5Aget_type fails in the attr_info call back function.";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
 
         try {
@@ -1961,14 +2023,17 @@ attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void
 
     // Open the attribute
     attr_id = H5Aopen(loc_id, name, H5P_DEFAULT);
-    if(attr_id < 0) 
-        throw InternalErr(__FILE__, __LINE__, "H5Aopen fails in the attr_info call back function.");
+    if(attr_id < 0) {
+        string msg = "H5Aopen fails in the attr_info call back function.";
+        throw InternalErr(__FILE__, __LINE__, msg); 
+    }
 
     // Get attribute datatype and dataspace
     atype_id  = H5Aget_type(attr_id);
     if(atype_id < 0) {
         H5Aclose(attr_id);
-        throw InternalErr(__FILE__, __LINE__, "H5Aget_type fails in the attr_info call back function.");
+        string msg = "H5Aget_type fails in the attr_info call back function.";
+        throw InternalErr(__FILE__, __LINE__, msg); 
     }
 
     try {
@@ -1992,13 +2057,13 @@ attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void
                 ssize_t objnamelen = -1;
                 if ((objnamelen= H5Iget_name(loc_id,nullptr,0))<=0) {
                     string msg = "Cannot obtain the variable name length." ;
-                    throw InternalErr(__FILE__,__LINE__,msg);
+                    throw InternalErr(__FILE__,__LINE__, msg);
                 }
                 vector<char> objname;
                 objname.resize(objnamelen+1);
                 if ((objnamelen= H5Iget_name(loc_id,objname.data(),objnamelen+1))<=0) {
                     string msg = "Cannot obtain the variable name." ;
-                    throw InternalErr(__FILE__,__LINE__,msg);
+                    throw InternalErr(__FILE__,__LINE__, msg);
                 }
 
                 auto objname_str = string(objname.begin(),objname.end());
@@ -2127,19 +2192,22 @@ void obtain_dimnames_internal(hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_
                 dt_inst_ptr->dimnames_path.push_back(trim_objname);
             }
 
-            if (H5Dclose(ref_dset)<0)
-                throw InternalErr(__FILE__,__LINE__,"Cannot close the HDF5 dataset in the function obtain_dimnames().");
+            if (H5Dclose(ref_dset)<0) {
+                string msg = "Cannot close the HDF5 dataset in the function obtain_dimnames().";
+                throw InternalErr(__FILE__,__LINE__, msg);
+            }
 
         }// for (vector<Dimension *>::iterator ird is var->dims.begin()
         if (vlbuf.empty()== false) {
 
             if ((aspace_id = H5Aget_space(attr_id)) < 0) {
                 string msg = "Cannot close the HDF5 attribute space successfully for <DIMENSION_LIST> of the variable "+string(dt_inst_ptr->name);
-                throw InternalErr(__FILE__,__LINE__,msg);
+                throw InternalErr(__FILE__,__LINE__, msg);
             }
 
             if (H5Dvlen_reclaim(amemtype_id,aspace_id,H5P_DEFAULT,(void*)vlbuf.data())<0) {
-                throw InternalErr(__FILE__,__LINE__,"Cannot reclaim the variable length memory in the function obtain_dimnames()");
+                string msg = "Cannot reclaim the variable length memory in the function obtain_dimnames().";
+                throw InternalErr(__FILE__,__LINE__, msg);
             }
 
             H5Sclose(aspace_id);
@@ -2168,14 +2236,14 @@ string obtain_dimname_deref(hid_t ref_dset, const DS_t *dt_inst_ptr) {
     ssize_t objnamelen = -1;
     if ((objnamelen= H5Iget_name(ref_dset,nullptr,0))<=0) {
         string msg = "Cannot obtain the dimension name length for the variable " + string(dt_inst_ptr->name);
-        throw InternalErr(__FILE__,__LINE__,msg);
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
 
     objname.resize(objnamelen+1);
     if ((objnamelen= H5Iget_name(ref_dset,objname.data(),objnamelen+1))<=0) {
         H5Dclose(ref_dset);
         string msg = "Cannot obtain the dimension name for the variable " + string(dt_inst_ptr->name);
-        throw InternalErr(__FILE__,__LINE__,msg);
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
 
     auto objname_str = string(objname.begin(),objname.end());
@@ -2212,8 +2280,10 @@ void obtain_dimname_hardlinks(hid_t file_id, hid_t ref_dset, vector<link_info_t>
         for (const auto &hdf5_hl: hdf5_hls) {
 #if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13) || (H5_VERS_MINOR == 14)))
             int token_cmp = -1;
-            if(H5Otoken_cmp(ref_dset,&(obj_info.token),&(hdf5_hl.link_addr),&token_cmp) <0)
-                throw InternalErr(__FILE__,__LINE__,"H5Otoken_cmp failed");
+            if(H5Otoken_cmp(ref_dset,&(obj_info.token),&(hdf5_hl.link_addr),&token_cmp) <0) {
+                string msg = "H5Otoken_cmp failed.";
+                throw InternalErr(__FILE__,__LINE__, msg);
+            }
             if(!token_cmp) {
 #else
             if (obj_info.addr == hdf5_hl.link_addr) {
@@ -2255,9 +2325,9 @@ void obtain_dimname_hardlinks(hid_t file_id, hid_t ref_dset, vector<link_info_t>
             if (H5Lvisit(file_id, H5_INDEX_NAME, H5_ITER_NATIVE, visit_link_cb,
                          (void *) &t_li_info) < 0) {
                 H5Dclose(ref_dset);
-                string err_msg;
-                err_msg = "Find all hardlinks: H5Lvisit failed to iterate all the objects";
-                throw InternalErr(__FILE__, __LINE__, err_msg);
+                string msg;
+                msg = "Find all hardlinks: H5Lvisit failed to iterate all the objects.";
+                throw InternalErr(__FILE__, __LINE__, msg);
             }
 #if 0
             for(int i = 0; i<t_li_info.hl_names.size();i++)
@@ -2270,10 +2340,9 @@ void obtain_dimname_hardlinks(hid_t file_id, hid_t ref_dset, vector<link_info_t>
 #endif
             if (shortest_hl == "") {
                 H5Dclose(ref_dset);
-                string err_msg;
-                err_msg = "The shortest hardlink is not located under an ancestor group of all links.";
-                err_msg += "This is not supported by netCDF4 data model and the current Hyrax DAP4 implementation.";
-                throw InternalErr(__FILE__, __LINE__, err_msg);
+                string msg = "The shortest hardlink is not located under an ancestor group of all links.";
+                msg += "This is not supported by netCDF4 data model and the current Hyrax DAP4 implementation.";
+                throw InternalErr(__FILE__, __LINE__, msg);
             }
 
 // Save this link that holds the shortest path for future use.
@@ -2311,7 +2380,8 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t * attr_inst_
         H5Aclose(attr_id);
         if(d4_attr)
             delete d4_attr;
-        throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
+        string msg = "Unable to read HDF5 attribute data.";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     vector<char> temp_buf;
@@ -2323,7 +2393,8 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t * attr_inst_
         H5Aclose(attr_id);
         H5Sclose(temp_space_id);
         delete d4_attr;
-        throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
+        string msg = "Unable to read HDF5 attribute data.";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     char *temp_bp;
@@ -2357,7 +2428,8 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t * attr_inst_
             H5Aclose(attr_id);
             H5Sclose(temp_space_id);
             delete d4_attr;
-            throw InternalErr(__FILE__, __LINE__, "Cannot reclaim the memory buffer of the HDF5 variable length string.");
+            string msg = "Cannot reclaim the memory buffer of the HDF5 variable length string.";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
                  
         temp_buf.clear();
@@ -2373,8 +2445,10 @@ bool check_if_utf8_str(hid_t ty_id) {
     // See h5dmr.cc around the line 956.
 
     H5T_cset_t c_set_type = H5Tget_cset(ty_id);
-    if (c_set_type < 0)
-        throw InternalErr(__FILE__, __LINE__, "Cannot get hdf5 character set type for the attribute.");
+    if (c_set_type < 0) {
+        string msg = "Cannot get hdf5 character set type for the attribute.";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
     if (HDF5RequestHandler::get_escape_utf8_attr() == false && (c_set_type == H5T_CSET_UTF8))
         is_utf8_str = true;
 
@@ -2386,20 +2460,25 @@ bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_c
     bool ret_value = false;
 
     H5T_str_t str_pad = H5Tget_strpad(atype_id);
-    if(str_pad == H5T_STR_ERROR) 
-        throw InternalErr(__FILE__, __LINE__, "Fail to obtain string pad.");
+    if(str_pad == H5T_STR_ERROR) { 
+        string msg = "Fail to obtain string pad.";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
 
     hid_t aspace_id = -1;
     aspace_id = H5Aget_space(attr_id);
-    if (aspace_id < 0)
-        throw InternalErr(__FILE__, __LINE__, "Fail to obtain attribute space.");
+    if (aspace_id < 0) {
+        string msg = "Fail to obtain attribute space.";
+        throw InternalErr(__FILE__, __LINE__, msg);
+    }
 
     hsize_t nelmts = obtain_number_elements(aspace_id);
 
     size_t ty_size = H5Tget_size(atype_id);
     if (0 == ty_size) {
         H5Sclose(aspace_id);
-        throw InternalErr(__FILE__, __LINE__, "Fail to obtain the type size.");
+        string msg = "Fail to obtain the type size.";
+        throw InternalErr(__FILE__, __LINE__, msg);
     }
 
     size_t total_bytes = nelmts * ty_size;
@@ -2412,7 +2491,8 @@ bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_c
 
         if (H5Aread(attr_id, atype_id, temp_buf.data()) < 0){
             H5Sclose(aspace_id);
-            throw InternalErr(__FILE__,__LINE__,"Fail to read the attribute.");
+            string msg = "Fail to read the attribute.";
+            throw InternalErr(__FILE__,__LINE__, msg);
         }
         total_vstring = obtain_vlstr_values(temp_buf, atype_id,ty_size,nelmts,aspace_id);
     }
@@ -2423,7 +2503,8 @@ bool check_str_attr_value(hid_t attr_id,hid_t atype_id,const string & value_to_c
         temp_buf.resize(total_bytes);
         if (H5Aread(attr_id, atype_id, temp_buf.data()) < 0){
             H5Sclose(aspace_id);
-            throw InternalErr(__FILE__,__LINE__,"Fail to read the attribute.");
+            string msg = "Fail to read the attribute.";
+            throw InternalErr(__FILE__,__LINE__, msg);
         }
         string temp_buf_string(temp_buf.begin(),temp_buf.end());
         total_vstring = temp_buf_string.substr(0,total_bytes);
@@ -2452,7 +2533,8 @@ hsize_t obtain_number_elements(hid_t aspace_id) {
     int ndims = H5Sget_simple_extent_ndims(aspace_id);
     if (ndims < 0) {
         H5Sclose(aspace_id);
-        throw InternalErr(__FILE__, __LINE__, "Fail to obtain number of dimensions.");
+        string msg = "Fail to obtain number of dimensions.";
+        throw InternalErr(__FILE__, __LINE__, msg); 
     }
 
     hsize_t nelmts = 1;
@@ -2464,7 +2546,8 @@ hsize_t obtain_number_elements(hid_t aspace_id) {
         asize.resize(ndims);
         if (H5Sget_simple_extent_dims(aspace_id, asize.data(), nullptr)<0) {
             H5Sclose(aspace_id);
-            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the dimension info.");
+            string msg = "Fail to obtain the dimension info.";
+            throw InternalErr(__FILE__, __LINE__, msg);
         }
 
         // Return ndims and size[ndims].
@@ -2497,7 +2580,8 @@ string obtain_vlstr_values(vector<char> & temp_buf, hid_t atype_id, size_t ty_si
     // Reclaim any VL memory if necessary.
     if (((temp_buf.data()) != nullptr) && (H5Dvlen_reclaim(atype_id,aspace_id,H5P_DEFAULT,temp_buf.data()) < 0)) {
         H5Sclose(aspace_id);
-        throw InternalErr(__FILE__,__LINE__,"Fail to reclaim VL memory.");
+        string msg = "Fail to reclaim VL memory.";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
     return total_vstring;
 }
@@ -2527,8 +2611,10 @@ visit_link_cb(hid_t  group_id, const char *name, const H5L_info_t *linfo, void *
     if(linfo->type == H5L_TYPE_HARD) {
 #if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13) || (H5_VERS_MINOR == 14)))
     int token_cmp = -1;
-    if(H5Otoken_cmp(group_id,&(op_data->link_addr),&(linfo->u.token),&token_cmp) <0)
-        throw InternalErr(__FILE__,__LINE__,"H5Otoken_cmp failed");
+    if(H5Otoken_cmp(group_id,&(op_data->link_addr),&(linfo->u.token),&token_cmp) <0) {
+        string msg = "H5Otoken_cmp failed.";
+        throw InternalErr(__FILE__,__LINE__, msg);
+    }
     if(!token_cmp) {
 #else
         if(op_data->link_addr == linfo->u.address) {
