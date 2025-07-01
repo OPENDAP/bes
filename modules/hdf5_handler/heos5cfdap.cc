@@ -132,7 +132,7 @@ void map_eos5_cfdds(DDS &dds, hid_t file_id, const string & filename) {
 
         // Check if the HDF-EOS5 grid has the valid parameters, projection codes.
         if (c.check_grids_unknown_parameters(&p)) {
-            throw BESInternalError("Unknown HDF-EOS5 grid paramters found in the file",__FILE__,__LINE__);
+            throw BESInternalError("Unknown HDF-EOS5 grid parameters found in the file",__FILE__,__LINE__);
         }
 
         if (c.check_grids_missing_projcode(&p)) {
@@ -314,7 +314,7 @@ void map_eos5_cfdas(DAS &das, hid_t file_id, const string &filename) {
 #endif
 
         if (c.check_grids_unknown_parameters(&p)) {
-            throw BESInternalError("Unknown HDF-EOS5 grid paramters found in the file",__FILE__,__LINE__);
+            throw BESInternalError("Unknown HDF-EOS5 grid parameters found in the file",__FILE__,__LINE__);
         }
 
         if (c.check_grids_missing_projcode(&p)) {
@@ -1844,7 +1844,7 @@ void map_eos5_cfdmr(D4Group *d4_root, hid_t file_id, const string &filename) {
 
         // Check if the HDF-EOS5 grid has the valid parameters, projection codes.
         if (c.check_grids_unknown_parameters(&p)) {
-            throw BESInternalError("Unknown HDF-EOS5 grid paramters found in the file.",__FILE__,__LINE__);
+            throw BESInternalError("Unknown HDF-EOS5 grid parameters found in the file.",__FILE__,__LINE__);
         }
 
         if (c.check_grids_missing_projcode(&p)) {
