@@ -118,22 +118,24 @@ HDF5CFUtil:: H5type_to_H5DAPtype(hid_t h5_type_id)
 size_t HDF5CFUtil::H5_numeric_atomic_type_size(H5DataType h5type) {
     
     switch(h5type) {
-    case H5CHAR:
-    case H5UCHAR:
-        return 1;
-    case H5INT16:
-    case H5UINT16:
-        return 2;
-    case H5INT32:
-    case H5UINT32:
-    case H5FLOAT32:
-        return 4;
-    case H5FLOAT64:
-    case H5INT64:
-    case H5UINT64:
-        return 8;
-    default:
-        throw InternalErr(__FILE__,__LINE__,"This routine doesn't support to return the size of this datatype");
+        case H5CHAR:
+        case H5UCHAR:
+            return 1;
+        case H5INT16:
+        case H5UINT16:
+            return 2;
+        case H5INT32:
+        case H5UINT32:
+        case H5FLOAT32:
+            return 4;
+        case H5FLOAT64:
+        case H5INT64:
+        case H5UINT64:
+            return 8;
+        default: {
+            string msg = "This routine doesn't support to return the size of this datatype";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
     }
 
 }
@@ -380,136 +382,189 @@ void HDF5CFUtil::parser_gpm_l3_gridheader(const vector<char>& value,
 #if 0
     //if(ind_elems.size()!=10)
 #endif
-    if(ind_elems.size()<9)
-        throw InternalErr(__FILE__,__LINE__,"The number of elements in the GPM level 3 GridHeader is not right.");
+    if (ind_elems.size()<9) {
+        string msg = "The number of elements in the GPM level 3 GridHeader is not right.";
+        throw InternalErr(__FILE__,__LINE__, msg);
+    }
 
     if(false == check_reg_orig) {
-        if (0 != ind_elems[1].find("Registration=CENTER"))        
-            throw InternalErr(__FILE__,__LINE__,"The GPM grid registration is not center.");
+        if (0 != ind_elems[1].find("Registration=CENTER")) {       
+            string msg = "The GPM grid registration is not center.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
     }
         
     if (0 == ind_elems[2].find("LatitudeResolution")){ 
 
         size_t equal_pos = ind_elems[2].find_first_of('=');
-        if(string::npos == equal_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for GPM level 3 products");
+        if (string::npos == equal_pos) {
+            string msg = "Cannot find latitude resolution for GPM level 3 products.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
            
         size_t scolon_pos = ind_elems[2].find_first_of(';');
-        if(string::npos == scolon_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for GPM level 3 products");
+        if (string::npos == scolon_pos) {
+            string msg = "Cannot find latitude resolution for GPM level 3 products. ";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
         if (equal_pos < scolon_pos){
 
             string latres_str = ind_elems[2].substr(equal_pos+1,scolon_pos-equal_pos-1);
             lat_res = strtof(latres_str.c_str(),nullptr);
         }
-        else 
-            throw InternalErr(__FILE__,__LINE__,"latitude resolution is not right for GPM level 3 products");
+        else  {
+            string msg = "Latitude resolution is not right for GPM level 3 products.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
     }
-    else
-        throw InternalErr(__FILE__,__LINE__,"The GPM grid LatitudeResolution doesn't exist.");
+    else {
+        string msg = "The GPM grid LatitudeResolution doesn't exist.";
+        throw InternalErr(__FILE__,__LINE__, msg);
+    }
 
     if (0 == ind_elems[3].find("LongitudeResolution")){ 
 
         size_t equal_pos = ind_elems[3].find_first_of('=');
-        if(string::npos == equal_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find longitude resolution for GPM level 3 products");
+        if(string::npos == equal_pos){
+            string msg = "Cannot find longitude resolution for GPM level 3 products. ";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
            
         size_t scolon_pos = ind_elems[3].find_first_of(';');
-        if(string::npos == scolon_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find longitude resolution for GPM level 3 products");
+        if(string::npos == scolon_pos) {
+            string msg = "Cannot find longitude resolution for GPM level 3 products. ";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
         if (equal_pos < scolon_pos){
             string lonres_str = ind_elems[3].substr(equal_pos+1,scolon_pos-equal_pos-1);
             lon_res = strtof(lonres_str.c_str(),nullptr);
         }
-        else 
-            throw InternalErr(__FILE__,__LINE__,"longitude resolution is not right for GPM level 3 products");
+        else {
+            string msg = "Longitude resolution is not right for GPM level 3 products.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
     }
-    else
-        throw InternalErr(__FILE__,__LINE__,"The GPM grid LongitudeResolution doesn't exist.");
+    else {
+        string msg = "The GPM grid LongitudeResolution doesn't exist.";
+        throw InternalErr(__FILE__,__LINE__, msg);
+    }
 
     if (0 == ind_elems[4].find("NorthBoundingCoordinate")){ 
 
         size_t equal_pos = ind_elems[4].find_first_of('=');
-        if(string::npos == equal_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for GPM level 3 products");
+        if(string::npos == equal_pos) {
+            string msg = "Cannot find latitude resolution for GPM level 3 products.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
            
         size_t scolon_pos = ind_elems[4].find_first_of(';');
-        if(string::npos == scolon_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for GPM level 3 products");
+        if(string::npos == scolon_pos) {
+            string msg = "Cannot find latitude resolution for GPM level 3 products.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
         if (equal_pos < scolon_pos){
             string north_bounding_str = ind_elems[4].substr(equal_pos+1,scolon_pos-equal_pos-1);
             lat_north = strtof(north_bounding_str.c_str(),nullptr);
         }
-        else 
-            throw InternalErr(__FILE__,__LINE__,"NorthBoundingCoordinate is not right for GPM level 3 products");
- 
+        else {
+            string msg = "NorthBoundingCoordinate is not right for GPM level 3 products.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
     }
-     else
-        throw InternalErr(__FILE__,__LINE__,"The GPM grid NorthBoundingCoordinate doesn't exist.");
+    else {
+        string msg = "The GPM grid NorthBoundingCoordinate doesn't exist.";
+        throw InternalErr(__FILE__,__LINE__, msg);
+     
+    }
 
     if (0 == ind_elems[5].find("SouthBoundingCoordinate")){ 
 
-            size_t equal_pos = ind_elems[5].find_first_of('=');
-            if(string::npos == equal_pos)
-                throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for GPM level 3 products");
-           
-            size_t scolon_pos = ind_elems[5].find_first_of(';');
-            if(string::npos == scolon_pos)
-                throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for GPM level 3 products");
-            if (equal_pos < scolon_pos){
-                string lat_south_str = ind_elems[5].substr(equal_pos+1,scolon_pos-equal_pos-1);
-                lat_south = strtof(lat_south_str.c_str(),nullptr);
-            }
-            else 
-                throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for GPM level 3 products");
+        size_t equal_pos = ind_elems[5].find_first_of('=');
+        if(string::npos == equal_pos) {
+            string msg = "Cannot find south bound coordinate for GPM level 3 products.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
+       
+        size_t scolon_pos = ind_elems[5].find_first_of(';');
+        if(string::npos == scolon_pos) {
+            string msg = "Cannot find south bound coordinate for GPM level 3 products.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
+        if (equal_pos < scolon_pos){
+            string lat_south_str = ind_elems[5].substr(equal_pos+1,scolon_pos-equal_pos-1);
+            lat_south = strtof(lat_south_str.c_str(),nullptr);
+        }
+        else {
+            string msg = "The south bound coordinate is not right for GPM level 3 products.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
  
     }
-    else
-        throw InternalErr(__FILE__,__LINE__,"The GPM grid SouthBoundingCoordinate doesn't exist.");
+    else {
+        string msg = "The GPM grid SouthBoundingCoordinate doesn't exist.";
+        throw InternalErr(__FILE__,__LINE__, msg);
+    }
 
     if (0 == ind_elems[6].find("EastBoundingCoordinate")){ 
 
         size_t equal_pos = ind_elems[6].find_first_of('=');
-        if(string::npos == equal_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for GPM level 3 products");
+        if(string::npos == equal_pos) {
+            string msg = "Cannot find the east bound coordinate for GPM level 3 products. ";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
            
         size_t scolon_pos = ind_elems[6].find_first_of(';');
-        if(string::npos == scolon_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for GPM level 3 products");
+        if(string::npos == scolon_pos) {
+            string msg = "Cannot find the east bound coordinate for GPM level 3 products.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
         if (equal_pos < scolon_pos){
             string lon_east_str = ind_elems[6].substr(equal_pos+1,scolon_pos-equal_pos-1);
             lon_east = strtof(lon_east_str.c_str(),nullptr);
         }
-        else 
-            throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for GPM level 3 products");
+        else {
+            string msg = "The east bound coordinate is not right for GPM level 3 products.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
  
     }
-    else
-        throw InternalErr(__FILE__,__LINE__,"The GPM grid EastBoundingCoordinate doesn't exist.");
+    else {
+        string msg = "The GPM grid EastBoundingCoordinate doesn't exist.";
+        throw InternalErr(__FILE__,__LINE__, msg);
+    }
 
     if (0 == ind_elems[7].find("WestBoundingCoordinate")){ 
 
         size_t equal_pos = ind_elems[7].find_first_of('=');
-        if(string::npos == equal_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for GPM level 3 products");
+        if(string::npos == equal_pos) {
+            string msg = "Cannot find the west bound coordinate for GPM level 3 products";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
            
         size_t scolon_pos = ind_elems[7].find_first_of(';');
-        if(string::npos == scolon_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for GPM level 3 products");
+        if(string::npos == scolon_pos) {
+            string msg = "Cannot find the west bound coordinate for GPM level 3 products";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
         if (equal_pos < scolon_pos){
             string lon_west_str = ind_elems[7].substr(equal_pos+1,scolon_pos-equal_pos-1);
             lon_west = strtof(lon_west_str.c_str(),nullptr);
         }
-        else 
-            throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for GPM level 3 products");
- 
+        else { 
+            string msg = "The west bound coordinate is not right for GPM level 3 products.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
     }
-    else
-        throw InternalErr(__FILE__,__LINE__,"The GPM grid WestBoundingCoordinate doesn't exist.");
+    else {
+        string msg = "The GPM grid WestBoundingCoordinate doesn't exist.";
+        throw InternalErr(__FILE__,__LINE__, msg);
+    }
 
     if (false == check_reg_orig) {
-        if (0 != ind_elems[8].find("Origin=SOUTHWEST")) 
-            throw InternalErr(__FILE__,__LINE__,"The GPM grid origin is not SOUTHWEST.");
+        if (0 != ind_elems[8].find("Origin=SOUTHWEST")) {
+            string msg = "The GPM grid origin is not SOUTHWEST.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
     }
 
     // Since we only treat the case when the Registration is center, so the size should be the 
@@ -747,7 +802,8 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
 
         default:
         {
-            throw InternalErr(__FILE__,__LINE__,"Unknown pixel corner to retrieve lat/lon from a grid.");
+            string msg = "Unknown pixel corner to retrieve lat/lon from a grid.";
+            throw InternalErr(__FILE__,__LINE__, msg);
         }
     }
   }
@@ -771,8 +827,8 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
       /* ------------------- */
       if (errorcode != 0)
       {
-            throw InternalErr(__FILE__,__LINE__,"GCTP hinv_init Error to retrieve lat/lon from a grid.");
-
+            string msg = "GCTP hinv_init Error to retrieve lat/lon from a grid.";
+            throw InternalErr(__FILE__,__LINE__, msg);
       }
       else
       {
@@ -805,9 +861,10 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
                 longitude[i] = 1.0e51;
                 latitude[i] = 1.0e51;
             }
-            else 
-               throw InternalErr(__FILE__,__LINE__,"GCTP hinv_trans Error to retrieve lat/lon from a grid.");
-
+            else {
+               string msg = "GCTP hinv_trans Error to retrieve lat/lon from a grid.";
+               throw InternalErr(__FILE__,__LINE__, msg);
+            }
         }
         else
         {
@@ -837,7 +894,8 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
       /* ------------------- */
       if (errorcode != 0)
       {
-          throw InternalErr(__FILE__,__LINE__,"GCTP hfor_init Error to retrieve lat/lon from a grid.");
+          string msg = "GCTP hfor_init Error to retrieve lat/lon from a grid.";
+          throw InternalErr(__FILE__,__LINE__, msg);
       }
 
       /* Convert upleft and lowright X coords from DMS to radians */
@@ -858,7 +916,8 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
       /* Report error if any */
       if (errorcode != 0)
       {
-          throw InternalErr(__FILE__,__LINE__,"GCTP hfor_trans Error to retrieve lat/lon from a grid.");
+          string msg = "GCTP hfor_trans Error to retrieve lat/lon from a grid.";
+          throw InternalErr(__FILE__,__LINE__, msg);
 
       }
 
@@ -870,7 +929,8 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
       /* Report error if any */
       if (errorcode != 0)
       {
-          throw InternalErr(__FILE__,__LINE__,"GCTP hfor_trans Error to retrieve lat/lon from a grid.");
+          string msg = "GCTP hfor_trans Error to retrieve lat/lon from a grid.";
+          throw InternalErr(__FILE__,__LINE__, msg);
       }
 
       /* Compute x scale factor */
@@ -888,7 +948,8 @@ int GDij2ll(int projcode, int zonecode, double projparm[],
       /* ------------------- */
       if (errorcode != 0)
       {
-          throw InternalErr(__FILE__,__LINE__,"GCTP hinv_init Error to retrieve lat/lon from a grid.");
+          string msg = "GCTP hinv_init Error to retrieve lat/lon from a grid.";
+          throw InternalErr(__FILE__,__LINE__, msg);
       }
       /* For each point ... */
       /* ------------------ */
@@ -1137,8 +1198,10 @@ HDF5CFUtil::INDEX_nD_TO_1D (const std::vector <size_t > &dims,
     //  int a[10][20][30];  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3);
     //  int b[10][2]; // &b[1][2] == b + (20*1 + 2);
     // 
-    if(dims.size () != pos.size ())
-        throw InternalErr(__FILE__,__LINE__,"dimension error in INDEX_nD_TO_1D routine.");       
+    if(dims.size () != pos.size ()) {
+        string msg = "Dimension error in INDEX_nD_TO_1D routine.";
+        throw InternalErr(__FILE__,__LINE__, msg);       
+    }
     size_t sum = 0;
     size_t  start = 1;
 
@@ -1254,8 +1317,10 @@ size_t INDEX_nD_TO_1D (const std::vector < size_t > &dims,
     //  "int a[10][20][30]  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3)"
     //  "int b[10][2] // &b[1][2] == b + (20*1 + 2)"
     // 
-    if(dims.size () != pos.size ())
-        throw InternalErr(__FILE__,__LINE__,"dimension error in INDEX_nD_TO_1D routine.");       
+    if (dims.size () != pos.size ()) {
+        string msg = "Dimension error in INDEX_nD_TO_1D routine.";
+        throw InternalErr(__FILE__,__LINE__, msg);       
+    }
     size_t sum = 0;
     size_t  start = 1;
 

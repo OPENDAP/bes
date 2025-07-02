@@ -41,6 +41,7 @@
 #include <memory>
 
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 
 #include "h5dds.h"
 #include "HDF5Int16.h"
@@ -73,25 +74,32 @@ bool HDF5Int16::read()
 
     hid_t file_id = H5Fopen(dataset().c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
     if(file_id < 0) {
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the HDF5 file ID .");
+        string msg = "Fail to obtain the HDF5 file ID for the file " + dataset() +".";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
-   
+
+    // We don't need to distingush dap4 from dap2 since var_path is the variable's absolute path.
+    hid_t dset_id = H5Dopen2(file_id,var_path.c_str(),H5P_DEFAULT);
+#if 0
     hid_t dset_id = -1;
     if(true == is_dap4())
         dset_id = H5Dopen2(file_id,var_path.c_str(),H5P_DEFAULT);
     else
         dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
+#endif 
 
     if(dset_id < 0) {
         H5Fclose(file_id);
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
+        string msg = "Fail to obtain the HDF5 dataset ID for the variable " + var_path +".";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
     
     hid_t dtypeid = H5Dget_type(dset_id); 
     if(dtypeid < 0) { 
         H5Dclose(dset_id); 
         H5Fclose(file_id); 
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype ."); 
+        string msg = "Fail to obtain the datatype for the variable " + var_path +".";
+        throw InternalErr(__FILE__,__LINE__, msg); 
     } 
 
     hid_t memtype = H5Tget_native_type(dtypeid, H5T_DIR_ASCEND);
@@ -100,51 +108,49 @@ bool HDF5Int16::read()
         H5Tclose(dtypeid);
         H5Dclose(dset_id); 
         H5Fclose(file_id); 
-        throw InternalErr(__FILE__, __LINE__, "Cannot obtain the native datatype.");
+        string msg = "Fail to obtain the memory datatype for the variable " + var_path +".";
+        throw InternalErr(__FILE__,__LINE__, msg); 
     }
 
     try {
-      if(false == is_dap4()) {
-         if (1 == H5Tget_size(memtype) && H5T_SGN_2 == H5Tget_sign(memtype)) {
+        if(false == is_dap4()) {
+            if (1 == H5Tget_size(memtype) && H5T_SGN_2 == H5Tget_sign(memtype)) {
+                dods_int16 buf;
+                signed char buf2; // Needs to be corrected with signed int8 buffer.
+                get_data(dset_id, (void *) &buf2);
+                buf = (short) buf2;
+                set_read_p(true);
+                set_value(buf);
+            }
+            else if (get_dap_type(memtype,false) == "Int16") {
+                dods_int16 buf;
+                get_data(dset_id, (void *) &buf);
+                set_read_p(true);
+                set_value(buf);
+            }
+        }
+        else {
             dods_int16 buf;
-            signed char buf2; // Needs to be corrected with signed int8 buffer.
-            get_data(dset_id, (void *) &buf2);
-            buf = (short) buf2;
+            get_data(dset_id, (void *) &buf);
             set_read_p(true);
             set_value(buf);
-
         }
-
-        else if (get_dap_type(memtype,false) == "Int16") {
-             dods_int16 buf;
-             get_data(dset_id, (void *) &buf);
-
-             set_read_p(true);
-             set_value(buf);
-
-        }
-      }
-      else {
-         dods_int16 buf;
-         get_data(dset_id, (void *) &buf);
-
-         set_read_p(true);
-         set_value(buf);
-
-      }
          
         // Release the handles.
         if (H5Tclose(memtype) < 0) {
-            throw InternalErr(__FILE__, __LINE__, "Unable to close the datatype.");
+            string msg = "Unable to close the 16-bit integer memory datatype.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
-        H5Tclose(dtypeid);
+        if (H5Tclose(dtypeid) < 0) {
+            string msg = "Unable to close the 16-bit integer datatype.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
+        }
         if (H5Dclose(dset_id) < 0) {
-            throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
+            string msg = "Unable to close the dataset .";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         H5Fclose(file_id);
-
-
     }
 
     catch(...) {
