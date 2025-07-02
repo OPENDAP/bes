@@ -42,6 +42,7 @@
 #include "config_hdf5.h"
 #include "BESDebug.h"
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include "h5dds.h"
 #include "HDF5Byte.h"
 
@@ -49,12 +50,6 @@
 using namespace std;
 using namespace libdap;
 
-#if 0
-HDF5Byte::HDF5Byte(const string & n, const string &vpath, const string &d):Byte(n, d)
-{
-    var_path = vpath;
-}
-#endif
 
 BaseType *HDF5Byte::ptr_duplicate()
 {
@@ -67,21 +62,30 @@ bool HDF5Byte::read()
     if (read_p())
 	return true;
 
+    // In the default option, the dataset() returns the file name. Note: this is not consistent with the corresponding CF option.
+    // The dataset() will return the full path of the variable for the CF option scalar type. See HDF5CFByte.cc. 
+    // Make dataset() return the same kind of object name is a low-priority TODO task. This also applies to HDF5Int16.cc, HDF5Float32.cc, etc.
+
     hid_t file_id = H5Fopen(dataset().c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
     if(file_id < 0) {
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the HDF5 file ID .");
+        string msg = "Fail to obtain the HDF5 file ID for the file " + dataset() +".";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
    
+    // We don't need to distingush dap4 from dap2 since var_path is the variable's absolute path.
+    hid_t dset_id = H5Dopen2(file_id,var_path.c_str(),H5P_DEFAULT);
+#if 0
     hid_t dset_id = -1;
-
     if(true == is_dap4()) 
         dset_id = H5Dopen2(file_id,var_path.c_str(),H5P_DEFAULT);
     else 
         dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
+#endif
 
     if(dset_id < 0) {
         H5Fclose(file_id);
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
+        string msg = "Fail to obtain the HDF5 dataset ID for the variable " + var_path +".";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
     
 
@@ -92,7 +96,8 @@ bool HDF5Byte::read()
 	set_value(buf);
 
         if (H5Dclose(dset_id) < 0) {
-            throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
+            string msg = "Unable to close the HDF5 dataset " + var_path +".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         H5Fclose(file_id);

@@ -42,9 +42,6 @@ using std::endl;
 using std::ostream;
 using std::string;
 
-BESRequestHandlerList *BESRequestHandlerList::d_instance = nullptr;
-static std::once_flag d_euc_init_once;
-
 /** @brief add a request handler to the list of registered handlers for this
  * server
  *
@@ -305,21 +302,8 @@ void BESRequestHandlerList::dump(ostream &strm) const
 BESRequestHandlerList *
 BESRequestHandlerList::TheList()
 {
-    std::call_once(d_euc_init_once,BESRequestHandlerList::initialize_instance);
-    return d_instance;
+    static BESRequestHandlerList list;
+    return &list;
 }
-
-void BESRequestHandlerList::initialize_instance() {
-    d_instance = new BESRequestHandlerList;
-#ifdef HAVE_ATEXIT
-    atexit(delete_instance);
-#endif
-}
-
-void BESRequestHandlerList::delete_instance() {
-    delete d_instance;
-    d_instance = nullptr;
-}
-
 
 

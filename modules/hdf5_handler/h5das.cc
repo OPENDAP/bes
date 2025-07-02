@@ -76,7 +76,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
     if (H5Gget_info(pid, &g_info) < 0) {
         string msg = "h5_das handler: unable to obtain the HDF5 group info. for ";
         msg += gname;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
     nelems = g_info.nlinks;
 
@@ -90,7 +90,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
         if (oname_size <= 0) {
             string msg = "hdf5 object name error from: ";
             msg += gname;
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
         // Obtain the name of the object.
         vector<char> oname(oname_size + 1);
@@ -98,7 +98,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
             H5P_DEFAULT) < 0) {
             string msg = "hdf5 object name error from: ";
             msg += gname;
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
         // Check if it is the hard link or the soft link
@@ -106,7 +106,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
         if (H5Lget_info(pid, oname.data(), &linfo, H5P_DEFAULT) < 0) {
             string msg = "hdf5 link name error from: ";
             msg += gname;
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
         // This is the soft link.
@@ -122,7 +122,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
         if (H5OGET_INFO_BY_IDX(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oinfo, H5P_DEFAULT) < 0) {
             string msg = "Cannot obtain the object info ";
             msg += gname;
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
         H5O_type_t obj_type = oinfo.type;
 
@@ -141,7 +141,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
             if (cgroup < 0) {
                 string msg = "opening hdf5 group failed for ";
                 msg += full_path_name;
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
             }
 
             // Get the object info
@@ -150,7 +150,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
                 H5Gclose(cgroup);
                 string msg = "Obtaining the hdf5 group info. failed for ";
                 msg += full_path_name;
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
             }
 
             // Obtain the number of attributes
@@ -159,7 +159,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
                 H5Gclose(cgroup);
                 string msg = "Fail to get the number of attributes for group ";
                 msg += full_path_name;
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
             }
 
             // Read all attributes in this group and map to DAS.
@@ -214,7 +214,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
             if ((dset = H5Dopen(pid, full_path_name.c_str(), H5P_DEFAULT)) < 0) {
                 string msg = "unable to open the hdf5 dataset of the group ";
                 msg += gname;
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
             }
 
             // Get the object info
@@ -223,7 +223,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
                 H5Dclose(dset);
                 string msg = "Obtaining the info. failed for the dataset ";
                 msg += full_path_name;
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
             }
 
             // Obtain the number of attributes
@@ -232,7 +232,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
                 H5Dclose(dset);
                 string msg = "Fail to get the number of attributes for dataset ";
                 msg += full_path_name;
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
             }
 
             // Read all attributes in this dataset and map to DAS.
@@ -265,7 +265,8 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
             }
 
             if (H5Dclose(dset) < 0) {
-                throw InternalErr(__FILE__, __LINE__, "Could not close the dataset.");
+                string msg = "Could not close the dataset.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             break;
         } // case H5G_DATASET
@@ -346,8 +347,10 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
         bool is_utf8_str = false;
         if (dap_type == STRING) {
             H5T_cset_t c_set_type = H5Tget_cset(ty_id);
-            if (c_set_type < 0)
-                throw InternalErr(__FILE__, __LINE__, "Cannot get hdf5 character set type for the attribute.");
+            if (c_set_type < 0){
+                string msg = "Cannot get hdf5 character set type for the attribute.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
+            }
             if (HDF5RequestHandler::get_escape_utf8_attr() == false && (c_set_type == H5T_CSET_UTF8))
                 is_utf8_str = true;
         }
@@ -362,8 +365,10 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
 
             hid_t memtype = H5Tget_native_type(ty_id, H5T_DIR_ASCEND);
             // Read HDF5 attribute data.
-            if (H5Aread(attr_id, memtype, (void *) (value.data())) < 0)
-                throw InternalErr(__FILE__, __LINE__, "unable to read HDF5 attribute data");
+            if (H5Aread(attr_id, memtype, (void *) (value.data())) < 0) {
+                string msg = "Unable to read HDF5 attribute data";
+                throw BESInternalError(msg,__FILE__,__LINE__);
+            }
             
             H5Aclose(memtype);
 
@@ -389,7 +394,8 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
                     BESDEBUG("h5", "=read_objects(): elesize=0" << endl);
                     H5Tclose(ty_id);
                     H5Aclose(attr_id);
-                    throw InternalErr(__FILE__, __LINE__, "unable to get attibute size");
+                    string msg = "Unable to get attibute size.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 // Due to the implementation of print_attr, the attribute value will be 
@@ -414,17 +420,20 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
                     else {
                         H5Tclose(ty_id);
                         H5Aclose(attr_id);
-                        throw InternalErr(__FILE__, __LINE__, "unable to convert attibute value to DAP");
+                        string msg = "Unable to convert attibute value to DAP.";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                     }
                 }
             } // end if 
         }
         if (H5Tclose(ty_id) < 0) {
             H5Aclose(attr_id);
-            throw InternalErr(__FILE__, __LINE__, "unable to close HDF5 type id");
+            string msg = "Unable to close HDF5 type id.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         if (H5Aclose(attr_id) < 0) {
-            throw InternalErr(__FILE__, __LINE__, "unable to close attibute id");
+            string msg = "Unable to close attribute id.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     } // end for 
     BESDEBUG("h5", "<read_objects()" << endl);
@@ -447,7 +456,10 @@ void find_gloattr(hid_t file, DAS & das)
 
     hid_t root = H5Gopen(file, "/", H5P_DEFAULT);
     try {
-        if (root < 0) throw InternalErr(__FILE__, __LINE__, "unable to open the HDF5 root group");
+        if (root < 0) {
+            string msg = "Unable  to open the HDF5 root group. ";
+            throw BESInternalError(msg,__FILE__,__LINE__);
+        }
 
         // In the default option of the HDF5 handler, the 
         // HDF5 file structure(group hierarchy) will be mapped to 
@@ -469,19 +481,20 @@ void find_gloattr(hid_t file, DAS & das)
         if (H5OGET_INFO(root, &obj_info) < 0) {
             H5Gclose(root);
             string msg = "Obtaining the info. failed for the root group ";
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
         // Obtain the number of attributes
         num_attrs = obj_info.num_attrs;
         if (num_attrs < 0) {
             H5Gclose(root);
-            throw InternalErr(__FILE__, __LINE__, "unable to get the number of attributes for the HDF root group ");
-
+            string msg = "Unable to get the number of attributes for the HDF root group. ";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         if (num_attrs == 0) {
             if (H5Gclose(root) < 0) {
-                throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
+                string msg = "Could not close the group. ";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             BESDEBUG("h5", "<find_gloattr():no attributes" << endl);
             return;
@@ -494,13 +507,15 @@ void find_gloattr(hid_t file, DAS & das)
 
         BESDEBUG("h5", "=find_gloattr(): H5Gclose()" << endl);
         if (H5Gclose(root) < 0) {
-            throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
+            string msg = "Could not close the group.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         BESDEBUG("h5", "<find_gloattr()" << endl);
     }
     catch (...) {
         if (H5Gclose(root) < 0) {
-            throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
+            string msg = "Could not close the group.";
+            throw BESInternalError(msg,__FILE__,__LINE__); 
         }
         throw;
     }
@@ -548,8 +563,10 @@ void get_softlink(DAS & das, hid_t pgroup, const char *gname, const string & ona
     vector<char>buf((val_size + 1) * sizeof(char));
 
     // get link target name
-    if (H5Lget_val(pgroup, oname.c_str(), (void*) buf.data(), val_size + 1, H5P_DEFAULT) < 0)
-        throw InternalErr(__FILE__, __LINE__, "unable to get link value");
+    if (H5Lget_val(pgroup, oname.c_str(), (void*) buf.data(), val_size + 1, H5P_DEFAULT) < 0) {
+        string msg = "Unable to get link value for object name " + oname + ".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
     attr_softlink_ptr->append_attr(softlink_value_name, STRING, buf.data());
 }
 
@@ -573,8 +590,9 @@ string get_hardlink(hid_t pgroup, const string & oname)
 
     // Get the object info
     H5O_info_t obj_info;
-    if (H5OGET_INFO(pgroup, &obj_info) < 0) {
-        throw InternalErr(__FILE__, __LINE__, "H5OGET_INFO() failed.");
+    if (H5OGET_INFO(pgroup, &obj_info) < 0) { 
+        string msg = "H5OGET_INFO() failed.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // If the reference count is greater than 1,that means 
@@ -587,7 +605,8 @@ string get_hardlink(hid_t pgroup, const string & oname)
 #if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13) || (H5_VERS_MINOR ==14)))
         char *obj_tok_str = nullptr;
         if(H5Otoken_to_str(pgroup, &(obj_info.token), &obj_tok_str) <0) {
-            throw InternalErr(__FILE__, __LINE__, "H5Otoken_to_str failed.");
+            string msg = "H5Otoken_to_str failed.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         } 
         objno.assign(obj_tok_str,obj_tok_str+strlen(obj_tok_str));
         H5free_memory(obj_tok_str);
@@ -629,14 +648,16 @@ void read_comments(DAS & das, const string & varname, hid_t oid)
     int comment_size;
     comment_size = (int) (H5Oget_comment(oid, nullptr, 0));
     if (comment_size < 0) {
-        throw InternalErr(__FILE__, __LINE__, "Could not retrieve the comment size.");
+        string msg = "Could not retrieve the comment size for the variable " + varname + ".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if (comment_size > 0) {
         vector<char> comment;
         comment.resize(comment_size + 1);
         if (H5Oget_comment(oid, comment.data(), comment_size + 1) < 0) {
-            throw InternalErr(__FILE__, __LINE__, "Could not retrieve the comment.");
+            string msg = "Could not retrieve the comment for the variable " + varname + ".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         // Insert this comment into the das table.
@@ -677,7 +698,8 @@ void add_group_structure_info(DAS & das, const char *gname, const char *oname, b
     string::size_type pos = 1;
 
     if (gname == nullptr) {
-        throw InternalErr(__FILE__, __LINE__, "The wrong HDF5 group name.");
+        string msg = "The HDF5 group name is null";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     auto full_path = string(gname);
@@ -706,9 +728,9 @@ void add_group_structure_info(DAS & das, const char *gname, const char *oname, b
     // TODO: Not sure if we need to create a table for each group. KY 2015-07-08
     AttrTable *at = das.get_table(full_path);
     if (at == nullptr) {
-        throw InternalErr(__FILE__, __LINE__,
-            "Failed to add group structure information for " + full_path + " attribute table."
-                + "This happens when a group name has . character.");
+        string msg = "Failed to add group structure information for " + full_path + " attribute table.";
+        msg +="This happens when a group name has . character.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // group will be mapped to a container

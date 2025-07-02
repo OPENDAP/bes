@@ -157,8 +157,10 @@ void HE5Parser::add_projparams(const string & st_str) {
     int grid_index = 0;
     while(parms_spos!=string::npos) {
         size_t parms_epos = st_str.find(parms_end_marker,parms_spos);
-        if(parms_epos == string::npos)
-            throw libdap::InternalErr(__FILE__,__LINE__,"HDF-EOS5 Grid ProjParms syntax error: ProjParams doesn't end with ')'. ");
+        if(parms_epos == string::npos) {
+            string msg = "HDF-EOS5 Grid ProjParms syntax error: ProjParams doesn't end with ')'. ";
+            throw libdap::InternalErr(__FILE__,__LINE__, msg);
+        }
         string projparms_raw_values = st_str.substr(parms_spos+projparms.size(),parms_epos-parms_spos-projparms.size());
         vector<string> projparms_values;
         HDF5CFUtil::Split(projparms_raw_values.c_str(),',',projparms_values);
