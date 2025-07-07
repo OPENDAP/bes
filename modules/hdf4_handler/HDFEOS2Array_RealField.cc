@@ -88,7 +88,7 @@ HDFEOS2Array_RealField::read ()
         datasetname = swathname;
     }
     else 
-        throw InternalErr (__FILE__, __LINE__, "It should be either grid or swath.");
+        throw BESInternalError("It should be either grid or swath.",__FILE__, __LINE__);
 
     // Note gfid and gridid represent either swath or grid.
     int32 gfid = 0;
@@ -99,9 +99,8 @@ HDFEOS2Array_RealField::read ()
         // Obtain the EOS object ID(either grid or swath)
         gfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
         if (gfid < 0) {
-            ostringstream eherr;
-            eherr << "File " << filename.c_str () << " cannot be open.";
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "File " + filename + " cannot be open.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     }
     else 
@@ -111,9 +110,8 @@ HDFEOS2Array_RealField::read ()
     gridid = attachfunc (gfid, const_cast < char *>(datasetname.c_str ()));
     if (gridid < 0) {
         close_fileid(gfid,-1);
-        ostringstream eherr;
-        eherr << "Grid/Swath " << datasetname.c_str () << " cannot be attached.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Grid/Swath " + datasetname + " cannot be attached.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     bool is_modis_l1b = false;
@@ -145,10 +143,8 @@ HDFEOS2Array_RealField::read ()
         if (r != 0) {
             detachfunc(gridid);
             close_fileid(gfid,-1);
-            ostringstream eherr;
-
-            eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "Field " +  fieldname + " information cannot be obtained.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         if (1 == tmp_rank) 
@@ -170,8 +166,8 @@ HDFEOS2Array_RealField::read ()
             if (FAIL == sdfileid) {
                 detachfunc(gridid);
                 close_fileid(gfid,-1);
-                ostringstream eherr;
-                eherr << "Cannot Start the SD interface for the file " << filename <<endl;
+                string msg = "Cannot Start the SD interface for the file " + filename + ".";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
         }
         else 
@@ -183,18 +179,16 @@ HDFEOS2Array_RealField::read ()
         if (FAIL == sdsindex) {
             detachfunc(gridid);
             close_fileid(gfid,sdfileid);
-            ostringstream eherr;
-            eherr << "Cannot obtain the index of " << fieldname;
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "Cannot obtain the index of " + fieldname + ".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         sdsid = SDselect(sdfileid, sdsindex);
         if (FAIL == sdsid) {
             detachfunc(gridid);
             close_fileid(gfid,sdfileid);
-            ostringstream eherr;
-            eherr << "Cannot obtain the SDS ID  of " << fieldname;
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "Cannot obtain the SDS ID  of " + fieldname + ".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 	
         // Here we cannot check if SDfindattr fails since even SDfindattr fails it doesn't mean
@@ -230,18 +224,16 @@ HDFEOS2Array_RealField::read ()
     r = detachfunc (gridid);
     if (r != 0) {
         close_fileid(gfid,-1);
-        ostringstream eherr;
-        eherr << "Grid/Swath " << datasetname.c_str () << " cannot be detached.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Grid/Swath " + datasetname + " cannot be detached.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
 
     if (true == isgeofile || false == check_pass_fileid_key) {
         r = closefunc (gfid);
         if (r != 0) {
-            ostringstream eherr;
-            eherr << "Grid/Swath " << filename.c_str () << " cannot be closed.";
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "Grid/Swath " + filename + " cannot be closed.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     }
 
@@ -276,7 +268,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
         readfieldfunc = SWreadfield;
     }
     else 
-        throw InternalErr (__FILE__, __LINE__, "It should be either grid or swath.");
+        throw BESInternalError ("It should be either grid or swath.",__FILE__, __LINE__);
 
     // tmp_rank and tmp_dimlist are two dummy variables that are only used when calling fieldinfo.
     int32 tmp_rank = 0;
@@ -296,12 +288,9 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
     r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
         &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
     if (r != 0) {
-        ostringstream eherr;
-
-        eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Field " + fieldname + " information cannot be obtained.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
-
 
     // The following chunk of code until switch(field_dtype) handles MODIS level 1B, 
     // MOD29E1D Key and VIP products. The reason to keep the code this way is due to 
@@ -382,10 +371,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
             r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
                 &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
             if (r != 0) {
-                ostringstream eherr;
-                eherr << "Field " << fieldname.c_str () 
-                      << " information cannot be obtained.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + " information cannot be obtained.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             if (1 == tmp_rank) 
@@ -410,10 +397,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
             else {
                 sdfileid = SDstart(filename.c_str (), DFACC_READ);
                 if (FAIL == sdfileid) {
-                    ostringstream eherr;
-                    eherr << "Cannot Start the SD interface for the file " 
-                          << filename;
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Cannot Start the SD interface for the file "  + filename +".";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
             }
 
@@ -423,18 +408,16 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
             if (FAIL == sdsindex) {
                 if (true == isgeofile || false == check_pass_fileid_key) 
                     SDend(sdfileid);
-                ostringstream eherr;
-                eherr << "Cannot obtain the index of " << fieldname;
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Cannot obtain the index of " + fieldname;
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             sdsid = SDselect(sdfileid, sdsindex);
             if (FAIL == sdsid) {
                 if (true == isgeofile || false == check_pass_fileid_key)
                     SDend(sdfileid);
-                ostringstream eherr;
-                eherr << "Cannot obtain the SDS ID  of " << fieldname;
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Cannot obtain the SDS ID  of " + fieldname;
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 	
 #if 0
@@ -459,9 +442,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile)
                         SDend(sdfileid);
-                    ostringstream eherr;
-                    eherr << "Attribute 'radiance_scales' in " << fieldname.c_str () << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = Attribute 'radiance_scales' in " + fieldname  + " cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 attrbuf.clear();
                 attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
@@ -472,9 +454,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile)
                         SDend(sdfileid);
-                    ostringstream eherr;
-                    eherr << "Attribute 'radiance_scales' in " << fieldname.c_str () << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Attribute 'radiance_scales' in "+ fieldname +  " cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 ret = SDattrinfo(sdsid, cf_general_attrindex2, attrname, &attr_dtype, &temp_attrcount);
                 if (ret==FAIL)
@@ -483,9 +464,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile)
                         SDend(sdfileid);
-                    ostringstream eherr;
-                    eherr << "Attribute 'radiance_offsets' in " << fieldname.c_str () << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Information of attribute 'radiance_offsets' in " + fieldname + " cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 attrbuf2.clear();
                 attrbuf2.resize(DFKNTsize(attr_dtype)*temp_attrcount);
@@ -496,9 +476,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile)
                         SDend(sdfileid);
-                    ostringstream eherr;
-                    eherr << "Attribute 'radiance_offsets' in " << fieldname.c_str () << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Attribute 'radiance_offsets' in " + fieldname + " cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 // The following macro will obtain radiance_scales and radiance_offsets.
@@ -539,9 +518,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile)
                        SDend(sdfileid);
-                    ostringstream eherr;
-                    eherr << "Attribute 'reflectance_scales' in " << fieldname.c_str () << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Information of attribute 'reflectance_scales' in " + fieldname + " cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 attrbuf.clear();
                 attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
@@ -552,9 +530,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile)
                         SDend(sdfileid);
-                    ostringstream eherr;
-                    eherr << "Attribute 'reflectance_scales' in " << fieldname.c_str () << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Attribute 'reflectance_scales' in " + fieldname + " cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 		
                 ret = SDattrinfo(sdsid, cf_general_attrindex2, attrname, &attr_dtype, &temp_attrcount);
@@ -564,9 +541,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile)
                        SDend(sdfileid);
-                    ostringstream eherr;
-                    eherr << "Attribute 'reflectance_offsets' in " << fieldname.c_str () << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Information of attribute 'reflectance_offsets' in " + fieldname + " cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 attrbuf2.clear();
                 attrbuf2.resize(DFKNTsize(attr_dtype)*temp_attrcount);
@@ -577,9 +553,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile)
                         SDend(sdfileid);
-                    ostringstream eherr;
-                    eherr << "Attribute 'reflectance_offsets' in " << fieldname.c_str () << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Attribute 'reflectance_offsets' in " + fieldname + " cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 		switch(attr_dtype)
                 {
@@ -617,10 +592,9 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
-                    ostringstream eherr;
-                    eherr << "Attribute 'scale_factor' in " 
-                          << fieldname.c_str () << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Attribute 'scale_factor' in " + fieldname; 
+                    msg += " cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 attrbuf.clear();
                 attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
@@ -630,11 +604,9 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
-
-                    ostringstream eherr;
-                    eherr << "Attribute 'scale_factor' in " 
-                          << fieldname.c_str () << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Attribute 'scale_factor' in ";
+                    msg = msg + fieldname + " cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
  
                 switch(attr_dtype)
@@ -657,7 +629,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     GET_SCALE_FACTOR_ATTR_VALUE(FLOAT32, float)
                     GET_SCALE_FACTOR_ATTR_VALUE(FLOAT64, double)
                     default:
-                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+                        throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
 
                     
                 }
@@ -676,11 +648,9 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
-
-                    ostringstream eherr;
-                    eherr << "Attribute 'add_offset' in " << fieldname.c_str () 
-                          << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Attribute 'add_offset' in " + fieldname;
+                    msg +=" cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 attrbuf.clear();
                 attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
@@ -690,11 +660,9 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
-
-                    ostringstream eherr;
-                    eherr << "Attribute 'add_offset' in " << fieldname.c_str () 
-                          << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Attribute 'add_offset' in " + fieldname;
+                    msg +=" cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 switch(attr_dtype)
@@ -717,7 +685,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     GET_ADD_OFFSET_ATTR_VALUE(FLOAT32, float)
                     GET_ADD_OFFSET_ATTR_VALUE(FLOAT64, double)
                     default:
-                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+                        throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
 
                 }
 #undef GET_ADD_OFFSET_ATTR_VALUE
@@ -734,11 +702,9 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
-
-                    ostringstream eherr;
-                    eherr << "Attribute '_FillValue' in " << fieldname.c_str () 
-                          << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Attribute '_FillValue' in " + fieldname;
+                    msg += " cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 attrbuf.clear();
                 attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
@@ -748,11 +714,9 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
-
-                    ostringstream eherr;
-                    eherr << "Attribute '_FillValue' in " << fieldname.c_str () 
-                          << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Attribute '_FillValue' in " + fieldname; 
+                    msg +=" cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 switch(attr_dtype)
@@ -773,7 +737,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     GET_FILLVALUE_ATTR_VALUE(UINT16, uint16)
                     GET_FILLVALUE_ATTR_VALUE(UINT32, uint32)
                     default:
-                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+                        throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
 
                 }
 #undef GET_FILLVALUE_ATTR_VALUE
@@ -792,11 +756,9 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
-
-                    ostringstream eherr;
-                    eherr << "Attribute '_FillValue' in " << fieldname.c_str () 
-                          << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Information of attribute '_FillValue' in " + fieldname;
+                    msg += " cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 attrbuf.clear();
                 attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
@@ -806,13 +768,10 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
-
-                    ostringstream eherr;
-                    eherr << "Attribute '_FillValue' in " << fieldname.c_str () 
-                          << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Attribute '_FillValue' in " + fieldname;
+                    msg += " cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
-
 
                 string attrbuf_str(attrbuf.begin(),attrbuf.end());
 
@@ -829,14 +788,13 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                             SDendaccess(sdsid);
                             if (true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
-                            throw InternalErr(__FILE__,__LINE__,"should find the separator ,");
+                            throw BESInternalError("Cannot find the separator ,",__FILE__,__LINE__);
                         }
                         if (found != found_from_end){
                             SDendaccess(sdsid);
                             if (true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
-                            throw InternalErr(__FILE__,__LINE__,
-                                              "Only one separator , should be available.");
+                            throw BESInternalError("Only one separator , should be available.",__FILE__,__LINE__);
                         }
 
                         orig_valid_min = (float)(atof((attrbuf_str.substr(0,found)).c_str()));
@@ -863,14 +821,13 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                                 SDendaccess(sdsid);
                                 if (true == isgeofile || false == check_pass_fileid_key)
                                     SDend(sdfileid);
-                                throw InternalErr(__FILE__,__LINE__,"should find the separator ,");
+                                throw BESInternalError("Cannot find the separator ,",__FILE__,__LINE__);
                             }
                             if (found != found_from_end){
                                 SDendaccess(sdsid);
                                 if (true == isgeofile || false == check_pass_fileid_key)
                                     SDend(sdfileid);
-                                throw InternalErr(__FILE__,__LINE__,
-                                                  "Only one separator , should be available.");
+                                throw BESInternalError("Only one separator , should be available.",__FILE__,__LINE__);
                             }
 
                             orig_valid_min = (float)(atof((attrbuf_str.substr(0,found)).c_str()));
@@ -885,8 +842,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                             SDendaccess(sdsid);
                             if (true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
-                            throw InternalErr(__FILE__,__LINE__,
-                                             "The number of attribute count should be greater than 1.");
+                            throw BESInternalError("The number of attribute count should be greater than 1.",__FILE__,__LINE__);
                         }
 
                     }
@@ -899,9 +855,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                             SDendaccess(sdsid);
                             if (true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
- 
-                            throw InternalErr(__FILE__,__LINE__,
-                                  "The number of attribute count should be 2 for the DFNT_UINT8 type.");
+                            throw BESInternalError("The number of attribute count should be 2 for the DFNT_UINT8 type.",__FILE__,__LINE__);
                         }
 
                         auto temp_valid_range = (unsigned char *)attrbuf.data();
@@ -916,9 +870,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                             SDendaccess(sdsid);
                             if (true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
- 
-                            throw InternalErr(__FILE__,__LINE__,
-                                  "The number of attribute count should be 2 for the DFNT_INT16 type.");
+                            throw BESInternalError("The number of attribute count should be 2 for the DFNT_INT16 type.",__FILE__,__LINE__);
                         }
 
                         auto temp_valid_range = (short *)attrbuf.data();
@@ -933,9 +885,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                             SDendaccess(sdsid);
                             if (true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
- 
-                            throw InternalErr(__FILE__,__LINE__,
-                                "The number of attribute count should be 2 for the DFNT_UINT16 type.");
+                            throw BESInternalError("The number of attribute count should be 2 for the DFNT_UINT16 type.",__FILE__,__LINE__);
                         }
 
                         auto temp_valid_range = (unsigned short *)attrbuf.data();
@@ -950,9 +900,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                             SDendaccess(sdsid);
                             if (true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
- 
-                            throw InternalErr(__FILE__,__LINE__,
-                                "The number of attribute count should be 2 for the DFNT_INT32 type.");
+                            throw BESInternalError("The number of attribute count should be 2 for the DFNT_INT32 type.",__FILE__,__LINE__);
                         }
 
                         auto temp_valid_range = (int *)attrbuf.data();
@@ -967,11 +915,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                             SDendaccess(sdsid);
                             if (true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
- 
-                            throw InternalErr(__FILE__,__LINE__,
-                               "The number of attribute count should be 2 for the DFNT_UINT32 type.");
+                            throw BESInternalError("The number of attribute count should be 2 for the DFNT_UINT32 type.",__FILE__,__LINE__);
                         }
-
                         auto temp_valid_range = (unsigned int *)attrbuf.data();
                         orig_valid_min = (float)(temp_valid_range[0]);
                         orig_valid_max = (float)(temp_valid_range[1]);
@@ -984,11 +929,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                             SDendaccess(sdsid);
                             if (true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
- 
-                            throw InternalErr(__FILE__,__LINE__,
-                              "The number of attribute count should be 2 for the DFNT_FLOAT32 type.");
+                            throw BESInternalError("The number of attribute count should be 2 for the DFNT_FLOAT32 type.",__FILE__,__LINE__);
                         }
-
                         auto temp_valid_range = (float *)attrbuf.data();
                         orig_valid_min = temp_valid_range[0];
                         orig_valid_max = temp_valid_range[1];
@@ -1001,9 +943,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                             SDendaccess(sdsid);
                             if (true == isgeofile || false == check_pass_fileid_key)
                                 SDend(sdfileid);
- 
-                            throw InternalErr(__FILE__,__LINE__,
-                              "The number of attribute count should be 2 for the DFNT_FLOAT64 type.");
+                            throw BESInternalError("The number of attribute count should be 2 for the DFNT_FLOAT64 type.",__FILE__,__LINE__);
                         }
                         auto temp_valid_range = (double *)attrbuf.data();
 
@@ -1020,7 +960,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                         SDendaccess(sdsid);
                         if (true == isgeofile || false == check_pass_fileid_key)
                             SDend(sdfileid);
-                        throw InternalErr(__FILE__,__LINE__,"Unsupported data type.");
+                        throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
                     }
                 }
             }
@@ -1059,10 +999,9 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
-                    ostringstream eherr;
-                    eherr << "Attribute 'radiance_scales' in " << fieldname.c_str () 
-                          << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "The information of attribute 'radiance_scales' in " + fieldname;
+                    msg +=" cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 attrbuf.clear();
                 attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
@@ -1072,10 +1011,9 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
-                    ostringstream eherr;
-                    eherr << "Attribute 'radiance_scales' in " << fieldname.c_str () 
-                          << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Attribute 'radiance_scales' in " + fieldname;
+                    msg += "cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 ret = SDattrinfo(sdsid, cf_modl1b_rr_attrindex2, attrname, 
                                  &attr_dtype, &temp_attrcount);
@@ -1084,10 +1022,9 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
-                    ostringstream eherr;
-                    eherr << "Attribute 'radiance_offsets' in " 
-                          << fieldname.c_str () << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "The information of attribute 'radiance_offsets' in ";
+                    msg = msg + fieldname + " cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 attrbuf2.clear();
                 attrbuf2.resize(DFKNTsize(attr_dtype)*temp_attrcount);
@@ -1097,10 +1034,9 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
-                    ostringstream eherr;
-                    eherr << "Attribute 'radiance_offsets' in " 
-                          << fieldname.c_str () << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "The attribute 'radiance_offsets' in ";
+                    msg = msg + fieldname + " cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 // The following macro will obtain radiance_scales and radiance_offsets.
@@ -1125,7 +1061,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT32, float)
                     GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT64, double)
                     default:
-                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+                        throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
 
                 }
 #undef GET_RADIANCE_SCALES_OFFSETS_ATTR_VALUES
@@ -1149,10 +1085,9 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile || false == check_pass_fileid_key)
                        SDend(sdfileid);
-                    ostringstream eherr;
-                    eherr << "Attribute 'reflectance_scales' in " 
-                          << fieldname.c_str () << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "The information of attribute 'reflectance_scales' in ";
+                    msg = msg + fieldname + " cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 attrbuf.clear();
                 attrbuf.resize(DFKNTsize(attr_dtype)*temp_attrcount);
@@ -1164,10 +1099,9 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
-                    ostringstream eherr;
-                    eherr << "Attribute 'reflectance_scales' in " 
-                          << fieldname.c_str () << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Attribute 'reflectance_scales' in ";
+                    msg = msg + fieldname + " cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 		
                 ret = SDattrinfo(sdsid, cf_modl1b_rr_attrindex2, attrname, 
@@ -1179,10 +1113,9 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile || false == check_pass_fileid_key)
                        SDend(sdfileid);
-                    ostringstream eherr;
-                    eherr << "Attribute 'reflectance_offsets' in " 
-                          << fieldname.c_str () << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "The information of attribute 'reflectance_offsets' in "; 
+                    msg = msg + fieldname + " cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 attrbuf2.clear();
                 attrbuf2.resize(DFKNTsize(attr_dtype)*temp_attrcount);
@@ -1194,10 +1127,9 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     SDendaccess(sdsid);
                     if (true == isgeofile || false == check_pass_fileid_key)
                         SDend(sdfileid);
-                    ostringstream eherr;
-                    eherr << "Attribute 'reflectance_offsets' in " 
-                          << fieldname.c_str () << " cannot be obtained.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Attribute 'reflectance_offsets' in "; 
+                    msg = msg + fieldname + " cannot be obtained.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 		switch(attr_dtype)
                 {
@@ -1218,7 +1150,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
                     GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT32, float)
                     GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES(FLOAT64, double)
                     default:
-                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+                        throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
 
                 }
 #undef GET_REFLECTANCE_SCALES_OFFSETS_ATTR_VALUES
@@ -1382,9 +1314,9 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
             if ( num_eles_of_an_attr!=tmp_dims[dimindex]) \
             { \
                 release_mod1b_res(reflectance_scales,reflectance_offsets,radiance_scales,radiance_offsets); \
-                ostringstream eherr; \
-                eherr << "The number of Z-Dimension scale attribute is not equal to the size of the first dimension in " << fieldname.c_str() << ". These two values must be equal."; \
-                throw InternalErr (__FILE__, __LINE__, eherr.str ()); \
+                string msg = "The number of Z-Dimension scale attribute is not equal to the size of the first dimension in "; \
+                msg = msg + fieldname + ". These two values must be equal."; \
+                throw BESInternalError(msg,__FILE__,__LINE__); \
             } \
             size_t start_index, end_index; \
             size_t nr_elems = nelms/count32[dimindex]; \
@@ -1435,9 +1367,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
             if (r != 0) {
                 release_mod1b_res(reflectance_scales,reflectance_offsets,
                                   radiance_scales,radiance_offsets);
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
 #ifndef SIGNED_BYTE_TO_INT32
@@ -1465,10 +1396,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
             if (r != 0) {
                 release_mod1b_res(reflectance_scales,reflectance_offsets,
                                   radiance_scales,radiance_offsets);
-                ostringstream eherr;
-
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             RECALCULATE(uint8*, dods_byte*, val.data())
@@ -1486,10 +1415,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
 
                 release_mod1b_res(reflectance_scales,reflectance_offsets,
                                   radiance_scales,radiance_offsets);
-                ostringstream eherr;
-
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             RECALCULATE(int16*, dods_int16*, val.data())
         }
@@ -1504,10 +1431,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
             if (r != 0) {
                 release_mod1b_res(reflectance_scales,reflectance_offsets,
                                   radiance_scales,radiance_offsets);
-                ostringstream eherr;
-
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             RECALCULATE(uint16*, dods_uint16*, val.data())
@@ -1523,10 +1448,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
 
                 release_mod1b_res(reflectance_scales,reflectance_offsets,
                                   radiance_scales,radiance_offsets);
-                ostringstream eherr;
-
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             RECALCULATE(int32*, dods_int32*, val.data())
@@ -1542,10 +1465,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
 
                 release_mod1b_res(reflectance_scales,reflectance_offsets,
                                   radiance_scales,radiance_offsets);
-                ostringstream eherr;
-
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             RECALCULATE(uint32*, dods_uint32*, val.data())
@@ -1561,10 +1482,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
 
                 release_mod1b_res(reflectance_scales,reflectance_offsets,
                                   radiance_scales,radiance_offsets);
-                ostringstream eherr;
-
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             // Recalculate seems not necessary.
@@ -1582,10 +1501,8 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
 
                 release_mod1b_res(reflectance_scales,reflectance_offsets,
                                   radiance_scales,radiance_offsets);
-                ostringstream eherr;
-
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             set_value ((dods_float64 *) val.data(), nelms);
         }
@@ -1658,14 +1575,11 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
     r = fieldinfofunc (gridid, const_cast < char *>(fieldname.c_str ()),
         &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
     if (r != 0) {
-        ostringstream eherr;
-        eherr << "Field " << fieldname.c_str () 
-              << " information cannot be obtained.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Field " + fieldname + " information cannot be obtained.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
-
-     switch (field_dtype) {
+    switch (field_dtype) {
         case DFNT_INT8:
         {
             vector<int8>val;
@@ -1673,9 +1587,8 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()), 
                 offset32, step32, count32, val.data());
             if (r != 0) {
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
 #ifndef SIGNED_BYTE_TO_INT32
@@ -1702,9 +1615,8 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
                 offset32, step32, count32, val.data());
             if (r != 0) {
 
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             set_value((dods_byte*)val.data(),nelms);
@@ -1719,9 +1631,8 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
                 offset32, step32, count32, val.data());
 
             if (r != 0) {
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
            set_value((dods_int16*)val.data(),nelms);
         }
@@ -1733,9 +1644,8 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()), 
                 offset32, step32, count32, val.data());
             if (r != 0) {
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             set_value((dods_uint16*)val.data(),nelms);
@@ -1748,9 +1658,8 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()), 
                 offset32, step32, count32, val.data());
             if (r != 0) {
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             set_value((dods_int32*)val.data(),nelms);
@@ -1763,9 +1672,8 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()), 
                 offset32, step32, count32, val.data());
             if (r != 0) {
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             set_value((dods_uint32*)val.data(),nelms);
@@ -1778,9 +1686,8 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()),
                 offset32, step32, count32, val.data());
             if (r != 0) {
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             // Recalculate seems not necessary.
@@ -1794,15 +1701,14 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
             r = readfieldfunc (gridid, const_cast < char *>(fieldname.c_str ()),
                 offset32, step32, count32, val.data());
             if (r != 0) {
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             set_value ((dods_float64 *) val.data(), nelms);
         }
             break;
         default:
-            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
     }
     return 0;
 }

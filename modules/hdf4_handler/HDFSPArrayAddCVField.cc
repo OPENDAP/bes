@@ -20,6 +20,7 @@
 #include "mfhdf.h"
 #include "hdf.h"
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include <BESDebug.h>
 
 using namespace libdap;
@@ -47,22 +48,17 @@ HDFSPArrayAddCVField::read ()
 
     if (sptype == TRMML3C_V6) {
 
-        if (dtype != DFNT_FLOAT32) {
-            throw InternalErr (__FILE__, __LINE__,
-                "The Height datatype of TRMM CSH product should be float.");
-        }
+        if (dtype != DFNT_FLOAT32) 
+            throw BESInternalError("The Height datatype of TRMM CSH product should be float.",__FILE__,__LINE__);
 
-        if (tnumelm != 19) {
-            throw InternalErr (__FILE__, __LINE__,
-                "The number of elements should be 19.");
-        }
+        if (tnumelm != 19) 
+            throw BESInternalError("The number of elements should be 19.", __FILE__, __LINE__);
 
         vector<float>total_val;
         total_val.resize(tnumelm);
         total_val[0] = 0.5;
         for (int i = 1; i<tnumelm;i++)
             total_val[i] = (float)i;
-
 
         if (nelms == tnumelm) {
             set_value ((dods_float32 *) total_val.data(), nelms);
@@ -81,18 +77,15 @@ HDFSPArrayAddCVField::read ()
     if (sptype == TRMML3S_V7) {
 
         
-        if (dtype != DFNT_FLOAT32) {
-            throw InternalErr (__FILE__, __LINE__,
-                "The Height datatype of TRMM CSH product should be float.");
-        }
+        if (dtype != DFNT_FLOAT32) 
+            throw BESInternalError("The Height datatype of TRMM CSH product should be float.", __FILE__, __LINE__);
 
         if (tnumelm == 28)
             Obtain_trmm_v7_layer(nelms,offset,step);
         else if (tnumelm == 6)
             Obtain_trmml3s_v7_nthrash(nelms,offset,step);
         else {
-            throw InternalErr (__FILE__, __LINE__,
-                "This special coordinate variable is not supported.");
+            throw BESInternalError("This special coordinate variable is not supported.", __FILE__, __LINE__);
         }
 
     }
@@ -100,15 +93,13 @@ HDFSPArrayAddCVField::read ()
     if (sptype == TRMML2_V7) {
 
         if (dtype != DFNT_FLOAT32) {
-            throw InternalErr (__FILE__, __LINE__,
-                "The Height datatype of TRMM CSH product should be float.");
+            throw BESInternalError("The Height datatype of TRMM CSH product should be float.", __FILE__, __LINE__);
         }
 
         if (tnumelm == 28 && name =="nlayer")
             Obtain_trmm_v7_layer(nelms,offset,step);
         else {
-            throw InternalErr (__FILE__, __LINE__,
-                "This special coordinate variable is not supported.");
+            throw BESInternalError("This special coordinate variable is not supported.", __FILE__, __LINE__);
         }
 
     }
@@ -181,8 +172,7 @@ void HDFSPArrayAddCVField:: Obtain_trmml3s_v7_nthrash(int nelms, vector<int>&off
  
     }
     else 
-        throw InternalErr (__FILE__, __LINE__,
-                "Unsupported coordinate variable names.");
+        throw BESInternalError("Unsupported coordinate variable names.",__FILE__, __LINE__);
 
     // Since we always assign the the missing Z dimension as 32-bit
     // integer, so no need to check the type. The missing Z-dim is always

@@ -20,6 +20,7 @@
 #include "mfhdf.h"
 #include "hdf.h"
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include <BESDebug.h>
 
 
@@ -58,8 +59,7 @@ HDFSPArrayMissGeoField::read ()
     }
     else {
         if (rank != 1) {
-            throw InternalErr (__FILE__, __LINE__,
-                "Currently the rank of the missing field should be 1");
+            throw BESInternalError("Currently the rank of the missing field should be 1.",__FILE__, __LINE__);
         }
         for (int i = 0; i < count[0]; i++)
             val[i] = offset[0] + step[0] * i;

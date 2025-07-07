@@ -18,6 +18,7 @@
 #include <cassert>
 #include <libdap/debug.h>
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include "BESDebug.h"
 #include "HDF4RequestHandler.h"
 
@@ -86,9 +87,8 @@ HDFEOS2ArraySwathGeoField::read ()
     if (false == check_pass_fileid_key) {
         sfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
         if (sfid < 0) {
-            ostringstream eherr;
-            eherr << "File " << filename.c_str () << " cannot be open.";
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "File "  + filename + "cannot be open.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     }
     else 
@@ -98,9 +98,8 @@ HDFEOS2ArraySwathGeoField::read ()
 
     if (swathid < 0) {
         HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "Swath " << datasetname.c_str () << " cannot be attached.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Swath " + datasetname + " cannot be attached.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
 
@@ -115,9 +114,8 @@ HDFEOS2ArraySwathGeoField::read ()
     if (r != 0) {
         detachfunc (swathid);
         HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Field " + fieldname + " information cannot be obtained.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
 
@@ -130,10 +128,8 @@ HDFEOS2ArraySwathGeoField::read ()
             if (r != 0) {
                 detachfunc (swathid);
                 HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-
+                string msg = "Field " + fieldname +  "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
 
@@ -158,9 +154,8 @@ HDFEOS2ArraySwathGeoField::read ()
             if (r != 0) {
                 detachfunc (swathid);
                 HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname +  "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             set_value ((dods_byte *) val.data(), nelms);
@@ -175,9 +170,8 @@ HDFEOS2ArraySwathGeoField::read ()
             if (r != 0) {
                 detachfunc (swathid);
                 HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname +  "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             // We found a special MODIS file that used int16 to store lat/lon. The scale-factor is 0.01.
             // We cannot retrieve attributes from EOS. To make this work, we have to manually check the values of lat/lon;
@@ -219,9 +213,8 @@ HDFEOS2ArraySwathGeoField::read ()
             if (r != 0) {
                 detachfunc (swathid);
                 HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname +  "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             set_value ((dods_uint16 *) val.data(), nelms);
@@ -236,9 +229,8 @@ HDFEOS2ArraySwathGeoField::read ()
             if (r != 0) {
                 detachfunc (swathid);
                 HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname +  "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             set_value ((dods_int32 *) val.data(), nelms);
@@ -253,9 +245,8 @@ HDFEOS2ArraySwathGeoField::read ()
             if (r != 0) {
                 detachfunc (swathid);
                 HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname +  "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             set_value ((dods_uint32 *) val.data(), nelms);
@@ -270,9 +261,8 @@ HDFEOS2ArraySwathGeoField::read ()
             if (r != 0) {
                 detachfunc (swathid);
                 HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname +  "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             set_value ((dods_float32 *) val.data(), nelms);
         }
@@ -285,9 +275,8 @@ HDFEOS2ArraySwathGeoField::read ()
             if (r != 0) {
                 detachfunc (swathid);
                 HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname +  "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             set_value ((dods_float64 *) val.data(), nelms);
@@ -296,15 +285,14 @@ HDFEOS2ArraySwathGeoField::read ()
         default:
             detachfunc (swathid);
             HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
-            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw BESInternalError("Unsupported data type.",__FILE__, __LINE__);
     }
 
     r = detachfunc (swathid);
     if (r != 0) {
         HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "Swath " << datasetname.c_str () << " cannot be detached.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Swath " + datasetname + " cannot be detached.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     HDFCFUtil::close_fileid(-1,-1,-1,sfid,check_pass_fileid_key);

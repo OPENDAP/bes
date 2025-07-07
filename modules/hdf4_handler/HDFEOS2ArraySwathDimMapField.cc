@@ -22,6 +22,7 @@
 #include <cassert>
 #include <libdap/debug.h>
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include "BESDebug.h"
 #include <BESLog.h>
 #include "HDFEOS2ArraySwathDimMapField.h"
@@ -78,9 +79,8 @@ HDFEOS2ArraySwathDimMapField::read ()
 
     string datasetname;
 
-    if (swathname == "") {
-        throw InternalErr (__FILE__, __LINE__, "It should be either grid or swath.");
-    }
+    if (swathname == "") 
+        throw BESInternalError("It should be either grid or swath.",__FILE__, __LINE__);
     else if (gridname == "") {
         openfunc = SWopen;
         closefunc = SWclose;
@@ -88,9 +88,8 @@ HDFEOS2ArraySwathDimMapField::read ()
         detachfunc = SWdetach;
         datasetname = swathname;
     }
-    else {
-        throw InternalErr (__FILE__, __LINE__, "It should be either grid or swath.");
-    }
+    else 
+        throw BESInternalError("It should be either grid or swath.",__FILE__, __LINE__);
 
     // Swath ID, swathid is actually in this case only the id of latitude and longitude.
     int32 sfid = -1;
@@ -102,9 +101,8 @@ HDFEOS2ArraySwathDimMapField::read ()
         sfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
 
         if (sfid < 0) {
-            ostringstream eherr;
-            eherr << "File " << filename.c_str () << " cannot be open.";
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "File " + filename + " cannot be open.";
+            throw InternalErr (__FILE__, __LINE__, msg);
         }
     }
     else
@@ -113,9 +111,8 @@ HDFEOS2ArraySwathDimMapField::read ()
     swathid = attachfunc (sfid, const_cast < char *>(datasetname.c_str ()));
     if (swathid < 0) {
         close_fileid (sfid,-1);
-        ostringstream eherr;
-        eherr << "Grid/Swath " << datasetname.c_str () << " cannot be attached.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Cannot attach swath " + datasetname + ".";
+        throw InternalErr (__FILE__, __LINE__, msg);
     }
 
     // dimmaps was set to be empty in hdfdesc.cc if the extra geolocation file also 
@@ -133,14 +130,13 @@ HDFEOS2ArraySwathDimMapField::read ()
         if ((nummaps = SWnentries(swathid, HDFE_NENTMAP, &bufsize)) == -1){
             detachfunc(swathid);
             close_fileid(sfid,-1);
-            throw InternalErr (__FILE__, __LINE__, "cannot obtain the number of dimmaps");
+            throw BESInternalError("Cannot obtain the number of dimmaps.",__FILE__, __LINE__);
         }
 
         if (nummaps <= 0){
             detachfunc(swathid);
             close_fileid(sfid,-1);
-            throw InternalErr (__FILE__,__LINE__,
-                               "Number of dimension maps should be greater than 0");
+            throw BESInternalError("Number of dimension maps should be greater than 0.",__FILE__,__LINE__);
         }
 
         vector<char> namelist;
@@ -154,7 +150,7 @@ HDFEOS2ArraySwathDimMapField::read ()
             == -1) {
             detachfunc(swathid);
             close_fileid(sfid,-1);
-            throw InternalErr (__FILE__,__LINE__,"fail to inquiry dimension maps");
+            throw BESInternalError("Fail to inquiry dimension maps.",__FILE__,__LINE__);
         }
 
         vector<string> mapnames;
@@ -166,9 +162,8 @@ HDFEOS2ArraySwathDimMapField::read ()
             if (parts.size() != 2){
                 detachfunc(swathid);
                 close_fileid(sfid,-1);
-                throw InternalErr (__FILE__,__LINE__,"the dimmaps should only include two parts");
+                throw BESInternalError("The dimmaps should only include two parts.",__FILE__,__LINE__);
             }
-
             struct dimmap_entry tempdimmap;
             tempdimmap.geodim = parts[0];
             tempdimmap.datadim = parts[1];
@@ -203,8 +198,7 @@ HDFEOS2ArraySwathDimMapField::read ()
             if ((true == is_emissive_field) || (true == is_refsb_field)) {
                 detachfunc(swathid);
                 close_fileid(sfid,-1);
-                throw InternalErr (__FILE__, __LINE__, 
-                      "Currently don't support MODIS Level 1B swath dim. map for data ");
+                throw BESInternalError("Currently don't support MODIS Level 1B swath dim. map for data.",__FILE__, __LINE__);
             }
         }
     }
@@ -229,22 +223,18 @@ HDFEOS2ArraySwathDimMapField::read ()
     r = detachfunc (swathid);
     if (r != 0) {
         close_fileid(sfid,-1);
-        ostringstream eherr;
-
-        eherr << "Grid/Swath " << datasetname.c_str () << " cannot be detached.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Grid/Swath " + datasetname + " cannot be detached.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
 
     if (true == isgeofile || false == check_pass_fileid_key) {
         r = closefunc (sfid);
         if (r != 0) {
-            ostringstream eherr;
-            eherr << "Grid/Swath " << filename.c_str () << " cannot be closed.";
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "Grid/Swath " + filename + " cannot be closed.";
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
     }
-
 
     return false;
 }
@@ -463,9 +453,10 @@ bool HDFEOS2ArraySwathDimMapField::FieldSubset (T * outlatlon,
         Field2DSubset(outlatlon,newdims[0],newdims[1],latlon,offset,count,step);
     else if (newdims.size() == 3)
         Field3DSubset(outlatlon,newdims,latlon,offset,count,step);
-    else 
-        throw InternalErr(__FILE__, __LINE__,
-             "Currently doesn't support rank >3 when interpolating with dimension map");
+    else { 
+        string msg = "Currently doesn't support rank >3 when interpolating with dimension map.";
+        throw BESInternalError(msg,__FILE__, __LINE__);
+    }
 
     return true;
 }
@@ -479,9 +470,10 @@ bool HDFEOS2ArraySwathDimMapField::Field1DSubset (T * outlatlon,
                                                   const int32 * count,
                                                   const int32 * step)
 {
-    if (majordim < count[0]) 
-        throw InternalErr(__FILE__, __LINE__,
-                          "The number of elements is greater than the total dimensional size");
+    if (majordim < count[0]) {
+        string msg = "The number of elements is greater than the total dimensional size.";
+        throw BESInternalError(msg,__FILE__, __LINE__);
+    }
 
     for (int i = 0; i < count[0]; i++) 
         outlatlon[i] = latlon[offset[0]+i*step[0]];
@@ -539,8 +531,7 @@ bool HDFEOS2ArraySwathDimMapField::Field3DSubset (T * outlatlon,
                                                   const int32 * step)
 {
     if (newdims.size() !=3) 
-        throw InternalErr(__FILE__, __LINE__,
-                          "the rank must be 3 to call this function");
+        throw BESInternalError("The rank must be 3 to call this function.",__FILE__, __LINE__);
     int i = 0;
     int j = 0;
     int k = 0;
@@ -614,9 +605,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
         if (true == isgeofile || false == check_pass_fileid_key) {
             sdfileid = SDstart(filename.c_str (), DFACC_READ);
             if (FAIL == sdfileid) {
-                ostringstream eherr;
-                eherr << "Cannot Start the SD interface for the file " << filename <<endl;
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Cannot Start the SD interface for the file "+ filename +".";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
         }
         else
@@ -629,18 +619,16 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
         if (FAIL == sdsindex) {
             if (true == isgeofile || false == check_pass_fileid_key) 
                 SDend(sdfileid);
-            ostringstream eherr;
-            eherr << "Cannot obtain the index of " << fieldname;
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "Cannot obtain the index of " + fieldname +".";;
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         sdsid = SDselect(sdfileid, sdsindex);
         if (FAIL == sdsid) {
             if (true == isgeofile || false == check_pass_fileid_key)
                 SDend(sdfileid);
-            ostringstream eherr;
-            eherr << "Cannot obtain the SDS ID  of " << fieldname;
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "Cannot obtain the SDS ID  of " + fieldname + ".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         char attrname[H4_MAX_NC_NAME + 1];
@@ -657,10 +645,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                 SDendaccess(sdsid);
                 if (true == isgeofile || false == check_pass_fileid_key)
                     SDend(sdfileid);
-                ostringstream eherr;
-                eherr << "Attribute 'scale_factor' in " 
-                      << fieldname.c_str () << " cannot be obtained.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Attribute 'scale_factor' in " + fieldname + " cannot be obtained.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             attrbuf.clear();
@@ -671,10 +657,9 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                 SDendaccess(sdsid);
                 if (true == isgeofile || false == check_pass_fileid_key)
                     SDend(sdfileid);
-                ostringstream eherr;
-                eherr << "Attribute 'scale_factor' in " 
-                      << fieldname.c_str () << " cannot be obtained.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Attribute 'scale_factor' in "; 
+                msg = msg + fieldname + " cannot be obtained.";
+                throw InternalErr (__FILE__, __LINE__, msg);
             }
 
             // Appears that the assumption for the datatype of scale_factor 
@@ -694,7 +679,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                     GET_SCALE_FACTOR_ATTR_VALUE(FLOAT32, float)
                     GET_SCALE_FACTOR_ATTR_VALUE(FLOAT64, double)
                     default:
-                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+                        throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
 
             }
             
@@ -711,10 +696,9 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                 SDendaccess(sdsid);
                 if (true == isgeofile || false == check_pass_fileid_key)
                     SDend(sdfileid);
-                ostringstream eherr;
-                eherr << "Attribute 'add_offset' in " 
-                      << fieldname.c_str () << " cannot be obtained.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Attribute 'add_offset' information of  " + fieldname;
+                msg += " cannot be obtained.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             attrbuf.clear();
             attrbuf.resize(DFKNTsize(attrtype)*attrcount);
@@ -724,10 +708,9 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                 SDendaccess(sdsid);
                 if (true == isgeofile || false == check_pass_fileid_key)
                     SDend(sdfileid);
-                ostringstream eherr;
-                eherr << "Attribute 'add_offset' in " 
-                      << fieldname.c_str () << " cannot be obtained.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Attribute 'add_offset' of " + fieldname;
+                msg += " cannot be obtained.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             switch(attrtype)
                 {
@@ -741,7 +724,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                     GET_ADD_OFFSET_ATTR_VALUE(FLOAT32, float)
                     GET_ADD_OFFSET_ATTR_VALUE(FLOAT64, double)
                     default:
-                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+                        throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
                 }
 #undef GET_ADD_OFFSET_ATTR_VALUE
         }
@@ -756,10 +739,9 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                 SDendaccess(sdsid);
                 if (true == isgeofile || false == check_pass_fileid_key)
                     SDend(sdfileid);
-                ostringstream eherr;
-                eherr << "Attribute '_FillValue' in " 
-                      << fieldname.c_str () << " cannot be obtained.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "The information of attribute '_FillValue' of "; 
+                msg = msg + fieldname + " cannot be obtained.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             attrbuf.clear();
             attrbuf.resize(DFKNTsize(attrtype)*attrcount);
@@ -769,10 +751,9 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                 SDendaccess(sdsid);
                 if (true == isgeofile || false == check_pass_fileid_key)
                     SDend(sdfileid);
-                ostringstream eherr;
-                eherr << "Attribute '_FillValue' in " 
-                      << fieldname.c_str () << " cannot be obtained.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Attribute '_FillValue' in " + fieldname;
+                msg += " cannot be obtained.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 		
             switch(attrtype)
@@ -821,9 +802,9 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                 closefunc(gfid);
                 SDendaccess(sdsid);
                 SDend(sdfileid);
-                ostringstream eherr;
-                eherr << "Attribute '_FillValue' in " << fieldname.c_str () << " cannot be obtained.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "The information of attribute 'valid_range' of "; 
+                msg = msg + fieldname + " cannot be obtained.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             attrbuf.clear();
             attrbuf.resize(DFKNTsize(attrtype)*attrcount);
@@ -834,9 +815,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                 closefunc(gfid);
                 SDendaccess(sdsid);
                 SDend(sdfileid);
-                ostringstream eherr;
-                eherr << "Attribute '_FillValue' in " << fieldname.c_str () << " cannot be obtained.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Attribute 'valid_range' of " + fieldname + " cannot be obtained.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             string attrbuf_str(attrbuf.begin(),attrbuf.end());
@@ -851,13 +831,10 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                     size_t found_from_end = attrbuf_str.find_last_of(",");
                         
                     if (string::npos == found)
-                        throw InternalErr(__FILE__,__LINE__,"should find the separator ,");
+                        throw BESInternalError("Should find the separator ','.",__FILE__,__LINE__);
                     if (found != found_from_end)
-                        throw InternalErr(__FILE__,__LINE__,"Only one separator , should be available.");
+                        throw BESInternalError("Only one separator , should be available.",__FILE__,__LINE__);
 
-                    //istringstream(attrbuf_str.substr(0,found))>> orig_valid_min;
-                    //istringstream(attrbuf_str.substr(found+1))>> orig_valid_max;
-                        
                     orig_valid_min = atof((attrbuf_str.substr(0,found)).c_str());
                     orig_valid_max = atof((attrbuf_str.substr(found+1)).c_str());
                     
@@ -871,8 +848,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                             orig_valid_max = (float)attrbuf[1]; 
                     }
                     else 
-                        throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be greater than 1.");
-
+                        throw BESInternalError("The number of attribute count should be greater than 1.",__FILE__,__LINE__);
                 }
                 break;
 
@@ -880,7 +856,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                 case DFNT_UCHAR:
                 {
                     if (temp_attrcount != 2) 
-                        throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be 2 for the DFNT_UINT8 type.");
+                        throw BESInternalError("The number of attribute count should be 2 for the DFNT_UINT8 type.",__FILE__,__LINE__);
 
                     unsigned char* temp_valid_range = (unsigned char *)attrbuf.data();
                     orig_valid_min = (float)(temp_valid_range[0]);
@@ -891,7 +867,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                 case DFNT_INT16:
                 {
                     if (temp_attrcount != 2) 
-                            throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be 2 for the DFNT_INT16 type.");
+                        throw BESInternalError("The number of attribute count should be 2 for the DFNT_UINT16 type.",__FILE__,__LINE__);
 
                     short* temp_valid_range = (short *)attrbuf.data();
                     orig_valid_min = (float)(temp_valid_range[0]);
@@ -902,7 +878,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                 case DFNT_UINT16:
                 {
                     if (temp_attrcount != 2) 
-                        throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be 2 for the DFNT_UINT16 type.");
+                        throw BESInternalError("The number of attribute count should be 2 for the DFNT_UINT16 type.",__FILE__,__LINE__);
 
                     unsigned short* temp_valid_range = (unsigned short *)attrbuf.data();
                     orig_valid_min = (float)(temp_valid_range[0]);
@@ -913,7 +889,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                 case DFNT_INT32:
                 {
                     if (temp_attrcount != 2) 
-                        throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be 2 for the DFNT_INT32 type.");
+                        throw BESInternalError("The number of attribute count should be 2 for the DFNT_INT32 type.",__FILE__,__LINE__);
 
                     int* temp_valid_range = (int *)attrbuf.data();
                     orig_valid_min = (float)(temp_valid_range[0]);
@@ -924,7 +900,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                 case DFNT_UINT32:
                 {
                     if (temp_attrcount != 2) 
-                            throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be 2 for the DFNT_UINT32 type.");
+                        throw BESInternalError("The number of attribute count should be 2 for the DFNT_UINT32 type.",__FILE__,__LINE__);
 
                     unsigned int* temp_valid_range = (unsigned int *)attrbuf.data();
                     orig_valid_min = (float)(temp_valid_range[0]);
@@ -935,7 +911,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                 case DFNT_FLOAT32:
                 {
                     if (temp_attrcount != 2) 
-                            throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be 2 for the DFNT_FLOAT32 type.");
+                        throw BESInternalError("The number of attribute count should be 2 for the DFNT_FLOAT32 type.",__FILE__,__LINE__);
 
                     float* temp_valid_range = (float *)attrbuf.data();
                     orig_valid_min = temp_valid_range[0];
@@ -946,7 +922,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                 case DFNT_FLOAT64:
                 {
                     if (temp_attrcount != 2)
-                            throw InternalErr(__FILE__,__LINE__,"The number of attribute count should be 2 for the DFNT_FLOAT32 type.");
+                        throw BESInternalError("The number of attribute count should be 2 for the DFNT_FLOAT64 type.",__FILE__,__LINE__);
                     double* temp_valid_range = (double *)attrbuf.data();
 
                     // Notice: this approach will lose precision and possibly overflow. Fortunately it is not a problem for MODIS data.
@@ -957,7 +933,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                 }
                 break;
                 default:
-                        throw InternalErr(__FILE__,__LINE__,"Unsupported data type.");
+                    throw InternalErr("Unsupported data type.",__FILE__,__LINE__);
             }
         }
 
@@ -1070,10 +1046,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
     r = fieldinfofunc (swathid, const_cast < char *>(fieldname.c_str ()),
         &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
     if (r != 0) {
-        ostringstream eherr;
-        eherr << "Field " << fieldname.c_str () 
-              << " information cannot be obtained.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Field " + fieldname + " information cannot be obtained.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
 
@@ -1090,10 +1064,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             vector < int8 > total_val8;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val8, newdims);
             if (r != 0) {
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () 
-                      << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             check_num_elems_constraint(nelms,newdims);
@@ -1125,9 +1097,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             vector < uint8 > total_val_u8;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val_u8, newdims);
             if (r != 0) {
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + " cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             check_num_elems_constraint(nelms,newdims);
@@ -1146,9 +1117,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             vector < int16 > total_val16;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val16, newdims);
             if (r != 0) {
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + " cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }  
 
             check_num_elems_constraint(nelms,newdims);
@@ -1168,10 +1138,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             vector < uint16 > total_val_u16;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val_u16, newdims);
             if (r != 0) {
-                ostringstream eherr;
-
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + " cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             check_num_elems_constraint(nelms,newdims);
@@ -1191,10 +1159,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             vector < int32 > total_val32;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val32, newdims);
             if (r != 0) {
-                ostringstream eherr;
-
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + " cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             check_num_elems_constraint(nelms,newdims);
@@ -1215,9 +1181,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             vector < uint32 > total_val_u32;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val_u32, newdims);
             if (r != 0) {
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + " cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             check_num_elems_constraint(nelms,newdims);
@@ -1237,9 +1202,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             vector < float32 > total_val_f32;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val_f32, newdims);
             if (r != 0) {
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + " cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             check_num_elems_constraint(nelms,newdims);
@@ -1257,9 +1221,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             vector < float64 > total_val_f64;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val_f64, newdims);
             if (r != 0) {
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + " cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             check_num_elems_constraint(nelms,newdims);
@@ -1273,7 +1236,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
             break;
         default:
         {
-            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw BESInternalError("Unsupported data type.",__FILE__, __LINE__);
         }
     }
 
@@ -1312,9 +1275,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_disable_scale_comp(int32 swathid,
     r = fieldinfofunc (swathid, const_cast < char *>(fieldname.c_str ()),
         &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
     if (r != 0) {
-        ostringstream eherr;
-        eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Field " + fieldname + " information cannot be obtained.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
 
@@ -1331,9 +1293,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_disable_scale_comp(int32 swathid,
             vector < int8 > total_val8;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val8, newdims);
             if (r != 0) {
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             check_num_elems_constraint(nelms,newdims);
@@ -1364,9 +1325,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_disable_scale_comp(int32 swathid,
             vector < uint8 > total_val_u8;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val_u8, newdims);
             if (r != 0) {
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             check_num_elems_constraint(nelms,newdims);
@@ -1384,9 +1344,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_disable_scale_comp(int32 swathid,
             vector < int16 > total_val16;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val16, newdims);
             if (r != 0) {
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }  
 
             check_num_elems_constraint(nelms,newdims);
@@ -1405,9 +1364,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_disable_scale_comp(int32 swathid,
             vector < uint16 > total_val_u16;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val_u16, newdims);
             if (r != 0) {
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             check_num_elems_constraint(nelms,newdims);
@@ -1426,10 +1384,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_disable_scale_comp(int32 swathid,
             vector < int32 > total_val32;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val32, newdims);
             if (r != 0) {
-                ostringstream eherr;
-
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             check_num_elems_constraint(nelms,newdims);
@@ -1448,10 +1404,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_disable_scale_comp(int32 swathid,
             vector < uint32 > total_val_u32;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val_u32, newdims);
             if (r != 0) {
-                ostringstream eherr;
-
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             check_num_elems_constraint(nelms,newdims);
@@ -1470,10 +1424,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_disable_scale_comp(int32 swathid,
             vector < float32 > total_val_f32;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val_f32, newdims);
             if (r != 0) {
-                ostringstream eherr;
-
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             check_num_elems_constraint(nelms,newdims);
@@ -1492,10 +1444,8 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_disable_scale_comp(int32 swathid,
             vector < float64 > total_val_f64;
             r = GetFieldValue (swathid, fieldname, dimmaps, total_val_f64, newdims);
             if (r != 0) {
-                ostringstream eherr;
-
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + "cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             check_num_elems_constraint(nelms,newdims);
@@ -1509,7 +1459,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_disable_scale_comp(int32 swathid,
             break;
         default:
         {
-            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw BESInternalError("Unsupported data type. ", __FILE__, __LINE__);
         }
     }
 
@@ -1542,7 +1492,9 @@ bool HDFEOS2ArraySwathDimMapField::check_num_elems_constraint(const int num_elem
         ostringstream eherr;
         eherr << "The total number of elements for the array " << total_dim_size
               << "is less than the user-requested number of elements " << num_elems;
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "The total number of elements for the array " + to_string(total_dim_size);
+        msg = msg + " is less than the user-requested number of elements " + to_string(num_elems) + ".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     return false;

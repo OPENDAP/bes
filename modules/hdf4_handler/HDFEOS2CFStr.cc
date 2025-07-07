@@ -14,6 +14,7 @@
 #include <sstream>
 #include <cassert>
 #include <libdap/debug.h>
+#include <BESInternalError.h>
 #include <libdap/InternalErr.h>
 #include <BESDebug.h>
 #include <BESLog.h>
@@ -85,15 +86,12 @@ HDFEOS2CFStr::read ()
 
     int32 gfid = -1;
     if (false == check_pass_fileid_key) {
-
         // Obtain the EOS object ID(either grid or swath)
         gfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
         if (gfid < 0) {
-            ostringstream eherr;
-            eherr << "File " << filename.c_str () << " cannot be open.";
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg =  "File " +  filename + " cannot be open.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
-
     }
     else
         gfid = gsfd;
@@ -102,9 +100,8 @@ HDFEOS2CFStr::read ()
     if (gsid < 0) {
         if (false == check_pass_fileid_key)
             closefunc(gfid);
-        ostringstream eherr;
-        eherr << "Grid/Swath " << objname.c_str () << " cannot be attached.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Grid/Swath " + objname + " cannot be attached.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Initialize the temp. returned value.
@@ -120,9 +117,8 @@ HDFEOS2CFStr::read ()
         detachfunc(gsid);
         if (false == check_pass_fileid_key)
             closefunc(gfid);
-        ostringstream eherr;
-        eherr << "Field " << varname.c_str () << " information cannot be obtained.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Field " + varname + " information cannot be obtained.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
 
@@ -146,9 +142,8 @@ HDFEOS2CFStr::read ()
         detachfunc(gsid);
         if (false == check_pass_fileid_key)
             closefunc(gfid);
-        ostringstream eherr;
-        eherr << "swath or grid readdata failed.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Swath or grid readdata failed.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     string final_str(val.begin(),val.end());

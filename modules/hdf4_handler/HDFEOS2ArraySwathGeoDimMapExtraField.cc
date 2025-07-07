@@ -21,6 +21,7 @@
 #include "HDFEOS2.h"
 #include "HDFCFUtil.h"
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include "BESDebug.h"
 
 using namespace std;
@@ -90,9 +91,8 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 
     fileid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
     if (fileid < 0) {
-        ostringstream eherr;
-        eherr << "File " << filename.c_str () << " cannot be open.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "File " + filename + " cannot be open.";
+        throw InternalErr (__FILE__, __LINE__, msg);
     }
 
     // Check if this file only contains one swath
@@ -103,17 +103,15 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 
     if (numswath == -1) {
         closefunc (fileid);
-        ostringstream eherr;
-        eherr << "File " << filename.c_str () << " cannot obtain the swath list.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "File " + filename + " cannot obtain the swath list.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if (numswath != 1) {
         closefunc (fileid);
-        ostringstream eherr;
-        eherr << " Currently we only support reading geo-location fields from one swath."
-              << " This file has more than one swath. ";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg =  " Currently we only support reading geo-location fields from one swath.";
+        msg += " This file has more than one swath. ";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     vector<char> swathname(swathnamesize+1);
@@ -121,18 +119,16 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
                         &swathnamesize);
     if (numswath == -1) {
         closefunc (fileid);
-        ostringstream eherr;
-        eherr << "File " << filename.c_str () << " cannot obtain the swath list.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "File " + filename + " cannot obtain the swath list.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     swathid = attachfunc (fileid, swathname.data());
     if (swathid < 0) {
         closefunc (fileid);
-        ostringstream eherr;
         string swname_str(swathname.begin(),swathname.end());
-        eherr << "Grid/Swath " << swname_str.c_str() << " cannot be attached.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Grid/Swath " + swname_str + " cannot be attached.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
 
@@ -146,9 +142,8 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
     if (r != 0) {
         detachfunc (swathid);
         closefunc (fileid);
-        ostringstream eherr;
-        eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg =  "Field " + fieldname + " information cannot be obtained.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
 
@@ -163,9 +158,8 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + " cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
 #ifndef SIGNED_BYTE_TO_INT32
@@ -193,9 +187,8 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + " cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             set_value ((dods_byte *) val.data(), nelms);
@@ -211,9 +204,8 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + " cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             set_value ((dods_int16 *) val.data(), nelms);
@@ -228,9 +220,8 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + " cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             set_value ((dods_uint16 *) val.data(), nelms);
@@ -245,9 +236,8 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + " cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             set_value ((dods_int32 *) val.data(), nelms);
@@ -262,9 +252,8 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + " cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             set_value ((dods_uint32 *) val.data(), nelms);
@@ -279,9 +268,8 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + " cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             set_value ((dods_float32 *) val.data(), nelms);
@@ -296,9 +284,8 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
             if (r != 0) {
                 detachfunc (swathid);
                 closefunc (fileid);
-                ostringstream eherr;
-                eherr << "field " << fieldname.c_str () << "cannot be read.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "Field " + fieldname + " cannot be read.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             set_value ((dods_float64 *) val.data(), nelms);
         }
@@ -307,23 +294,21 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
         {
             detachfunc(swathid);
             closefunc(fileid);
-            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw BESInternalError ("Unsupported data type.",__FILE__, __LINE__);
         }
     }
 
     r = detachfunc (swathid);
     if (r != 0) {
         closefunc (fileid);
-        throw InternalErr (__FILE__, __LINE__, "The swath cannot be detached.");
+        throw BESInternalError("The swath cannot be detached.",__FILE__, __LINE__);
     }
 
 
     r = closefunc (fileid);
     if (r != 0) {
-        ostringstream eherr;
-
-        eherr << "Grid/Swath " << filename.c_str () << " cannot be closed.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg =  "Grid/Swath " + filename + " cannot be closed.";
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     return false;

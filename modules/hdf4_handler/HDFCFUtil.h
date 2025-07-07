@@ -37,6 +37,7 @@
 #include <libdap/DDS.h>
 #include <libdap/DAS.h>
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 
 #include <libdap/escaping.h> // for escattr
 

@@ -38,7 +38,7 @@ HDFDMRArray_EOS2LL::read ()
     vector<int>step;
     step.resize(ll_rank);
 
-    string err_msg;
+    string msg;
 
     // Obtain offset,step and count from the client expression constraint
     int nelms = format_constraint(offset.data(),step.data(),count.data());
@@ -46,16 +46,16 @@ HDFDMRArray_EOS2LL::read ()
     int32 gridfd = GDopen(const_cast < char *>(filename.c_str()), DFACC_READ);
     if (gridfd <0) {
         ostringstream eherr;
-        err_msg = "HDF-EOS: GDopen failed";
-        throw InternalErr (__FILE__, __LINE__, err_msg);
+        msg = "HDF-EOS: GDopen failed";
+        throw InternalErr (__FILE__, __LINE__, msg);
     }
 
     int32 gridid = GDattach(gridfd, const_cast<char *>(gridname.c_str()));
     if (gridid <0) {
         ostringstream eherr;
-        err_msg = "HDF-EOS: GDattach failed to attach " + gridname;
+        msg = "HDF-EOS: GDattach failed to attach " + gridname;
         GDclose(gridfd);
-        throw InternalErr (__FILE__, __LINE__, err_msg);
+        throw InternalErr (__FILE__, __LINE__, msg);
     }
 
     // Declare projection code, zone, etc grid parameters. 
@@ -73,8 +73,8 @@ HDFDMRArray_EOS2LL::read ()
     if (GDprojinfo (gridid, &projcode, &zone, &sphere, params) <0) {
         GDdetach(gridid);
         GDclose(gridfd);
-        err_msg = "GDprojinfo failed for grid name: " + gridname;
-        throw InternalErr (__FILE__, __LINE__, err_msg);
+        msg = "GDprojinfo failed for grid name: " + gridname;
+        throw InternalErr (__FILE__, __LINE__, msg);
     }
 
     // Retrieve dimensions and X-Y coordinates of corners
@@ -82,8 +82,8 @@ HDFDMRArray_EOS2LL::read ()
                    lowright) == -1) {
         GDdetach(gridid);
         GDclose(gridfd);
-        err_msg = "GDgridinfo failed for grid name: " + gridname;
-        throw InternalErr (__FILE__, __LINE__, err_msg);
+        msg = "GDgridinfo failed for grid name: " + gridname;
+        throw InternalErr (__FILE__, __LINE__, msg);
     }
  
     // Retrieve pixel registration information 
@@ -92,8 +92,8 @@ HDFDMRArray_EOS2LL::read ()
     if (r != 0) {
         GDdetach(gridid);
         GDclose(gridfd);
-        err_msg = "GDpixreginfo failed for grid name: " + gridname;
-        throw InternalErr (__FILE__, __LINE__, err_msg);
+        msg = "GDpixreginfo failed for grid name: " + gridname;
+        throw InternalErr (__FILE__, __LINE__, msg);
     }
 
     //Retrieve grid pixel origin 
@@ -102,8 +102,8 @@ HDFDMRArray_EOS2LL::read ()
     if (r != 0) {
         GDdetach(gridid);
         GDclose(gridfd);
-        err_msg = "GDoriginfo failed for grid name: " + gridname;
-        throw InternalErr (__FILE__, __LINE__, err_msg);
+        msg = "GDoriginfo failed for grid name: " + gridname;
+        throw InternalErr (__FILE__, __LINE__, msg);
     }
 
     vector<int32>rows;
@@ -143,8 +143,8 @@ HDFDMRArray_EOS2LL::read ()
     if (r != 0) {
         GDdetach(gridid);
         GDclose(gridfd);
-        err_msg = "cannot calculate grid latitude and longitude for grid name: " + gridname;
-        throw InternalErr (__FILE__, __LINE__, err_msg);
+        msg = "cannot calculate grid latitude and longitude for grid name: " + gridname;
+        throw InternalErr (__FILE__, __LINE__, msg);
     }
     
     if (is_lat) { 

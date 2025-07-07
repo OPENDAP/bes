@@ -484,8 +484,10 @@ void HDFCFUtil::correct_fvalue_type(AttrTable *at,int32 dtype) {
             find_fvalue = true;
             string fillvalue =""; 
             string fillvalue_type ="";
-            if((*at->get_attr_vector(it)).size() !=1) 
-                throw InternalErr(__FILE__,__LINE__,"The number of _FillValue must be 1.");
+            if((*at->get_attr_vector(it)).size() !=1) { 
+                string msg = "The number of _FillValue must be 1.";
+                throw InternalErr(__FILE__,__LINE__, msg);
+            }
             fillvalue =  (*at->get_attr_vector(it)->begin());
             fillvalue_type = at->get_type(it);
             string var_type = HDFCFUtil::print_type(dtype);
@@ -786,8 +788,10 @@ void HDFCFUtil::obtain_dimmap_info(const string& filename,HDFEOS2::Dataset*datas
     
                         // Go through the directory to see if we have the corresponding MODIS geolocation file
                         dirp = opendir(dirfilename.c_str());
-                        if (nullptr == dirp) 
-                            throw InternalErr(__FILE__,__LINE__,"opendir fails.");
+                        if (nullptr == dirp) { 
+                            string msg = "opendir fails.";
+                            throw InternalErr(__FILE__,__LINE__, msg);
+                        }
 
                         while ((dirs = readdir(dirp))!= nullptr){
                             if(strncmp(dirs->d_name,geofnamefp.c_str(),geofnamefp.size())==0){
@@ -795,7 +799,8 @@ void HDFCFUtil::obtain_dimmap_info(const string& filename,HDFEOS2::Dataset*datas
                                 int num_dimmap = HDFCFUtil::check_geofile_dimmap(modis_geofilename);
                                 if (num_dimmap < 0)  {
                                     closedir(dirp);
-                                    throw InternalErr(__FILE__,__LINE__,"this file is not a MODIS geolocation file.");
+                                    string msg = "This file is not a MODIS geolocation file.";
+                                    throw InternalErr(__FILE__,__LINE__, msg);
                                 }
                                 geofile_has_dimmap = (num_dimmap >0)?true:false;
                                 break;
@@ -1314,8 +1319,10 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
             }
 
             // Calculate the final valid_max and valid_min.
-            if (scale_min <= 0)
-                throw InternalErr(__FILE__,__LINE__,"the scale factor should always be greater than 0.");
+            if (scale_min <= 0) {
+                string msg = "The scale factor should always be greater than 0.";
+                throw InternalErr(__FILE__,__LINE__, msg);
+            }
 
             if (orig_valid_max > offset_min) 
                 valid_max = (orig_valid_max-offset_min)*scale_max;
@@ -1455,11 +1462,14 @@ void HDFCFUtil::handle_modis_vip_special_attrs(const std::string& valid_range_va
 
     size_t found = valid_range_value.find_first_of(",");
     size_t found_from_end = valid_range_value.find_last_of(",");
-    if (string::npos == found) 
-        throw InternalErr(__FILE__,__LINE__,"should find the separator ,");
-    if (found != found_from_end)
-        throw InternalErr(__FILE__,__LINE__,"There should be only one separator.");
-                        
+    if (string::npos == found) { 
+        string msg = "Should find the separator ,";
+        throw InternalErr(__FILE__,__LINE__, msg);
+    }
+    if (found != found_from_end) {
+        string msg = "There should be only one separator.";
+        throw InternalErr(__FILE__,__LINE__, msg);
+    }
 
     vip_orig_valid_min = (short) (atoi((valid_range_value.substr(0,found)).c_str()));
     vip_orig_valid_max = (short) (atoi((valid_range_value.substr(found+1)).c_str()));
@@ -1472,8 +1482,10 @@ void HDFCFUtil::handle_modis_vip_special_attrs(const std::string& valid_range_va
         valid_min = (float)(vip_orig_valid_min/scale_factor_number);
         valid_max = (float)(vip_orig_valid_max/scale_factor_number);
     }
-    else
-        throw InternalErr(__FILE__,__LINE__,"The scale_factor_number should not be zero.");
+    else {
+        string msg = "The scale_factor_number should not be zero.";
+        throw InternalErr(__FILE__,__LINE__, msg);
+    }
 }
 
 // Make AMSR-E attributes follow CF.
@@ -1604,8 +1616,10 @@ void HDFCFUtil::obtain_grid_latlon_dim_info(const HDFEOS2::GridDataset* gdset,
             }
         }
     }
-    if(""==dim0name || ""==dim1name || dim0size<0 || dim1size <0)
-        throw InternalErr (__FILE__, __LINE__,"Fail to obtain grid lat/lon dimension info.");
+    if(""==dim0name || ""==dim1name || dim0size<0 || dim1size <0) {
+        string msg = "Fail to obtain grid lat/lon dimension info.";
+        throw InternalErr (__FILE__, __LINE__, msg);
+    }
 
 }
 
@@ -1758,7 +1772,7 @@ void HDFCFUtil::add_cf_grid_cvs(DDS & dds, const HDFEOS2::GridDataset *gdset) {
                 delete ar_dim0;
             if(ar_dim1) 
                 delete ar_dim1;
-            throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFEOS2GeoCF1D instance.");
+            throw BESInternalError("Unable to allocate the HDFEOS2GeoCF1D instance.",__FILE__,__LINE__);
         }
 
         if(bt_dim0)
@@ -1826,7 +1840,7 @@ void HDFCFUtil::check_obpg_global_attrs(HDFSP::File *f, std::string & scaling,
                     GET_SLOPE(FLOAT32, float)
                     GET_SLOPE(FLOAT64, double)
                     default:
-                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+                        throw BESInternalError("unsupported data type.",__FILE__,__LINE__);
 #undef GET_SLOPE
                 } 
 #if 0
@@ -1850,7 +1864,7 @@ void HDFCFUtil::check_obpg_global_attrs(HDFSP::File *f, std::string & scaling,
                     GET_INTERCEPT(FLOAT32, float)
                     GET_INTERCEPT(FLOAT64, double)
                     default:
-                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+                        throw BESInternalError("unsupported data type.",__FILE__,__LINE__);
 #undef GET_INTERCEPT
                 } 
 #if 0
@@ -1908,7 +1922,7 @@ void HDFCFUtil::add_obpg_special_attrs(const HDFSP::File*f,DAS &das,
                 GET_SLOPE(FLOAT32, float)
                 GET_SLOPE(FLOAT64, double)
                 default:
-                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+                    throw BESInternalError("unsupported data type.",__FILE__,__LINE__);
 
 #undef GET_SLOPE
                 } 
@@ -1933,7 +1947,7 @@ void HDFCFUtil::add_obpg_special_attrs(const HDFSP::File*f,DAS &das,
                 GET_INTERCEPT(FLOAT32, float)
                 GET_INTERCEPT(FLOAT64, double)
                 default:
-                        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+                    throw BESInternalError("unsupported data type.",__FILE__,__LINE__);
 
 #undef GET_INTERCEPT
                 } 
@@ -2838,7 +2852,7 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS
                     else {//When field order is greater than 1,we want to print each record in group with single quote,'0 1 2','3 4 5', etc.
 
                         if (vdf->getValue().size() != (unsigned int)(DFKNTsize(vdf->getType())*(vdf->getFieldOrder())*(vdf->getNumRec()))){
-                            throw InternalErr(__FILE__,__LINE__,"the vdata field size doesn't match the vector value");
+                            throw BESInternalError("The vdata field size doesn't match the vector value.",__FILE__,__LINE__);
                         }
 
                         if(vdf->getNumRec()==1){
@@ -2855,7 +2869,6 @@ void HDFCFUtil::handle_vdata_attrs_with_desc_key(const HDFSP::File*f,libdap::DAS
                             }
 
                         }
-
                         else {
                             if(vdf->getType()==DFNT_UCHAR || vdf->getType() == DFNT_CHAR){
 
@@ -2918,13 +2931,15 @@ void HDFCFUtil::map_eos2_objects_attrs(libdap::DAS &das,const string &filename) 
     uint16 name_len = 0;
 
     file_id = Hopen (filename.c_str(), DFACC_READ, 0); 
-    if(file_id == FAIL) 
-        throw InternalErr(__FILE__,__LINE__,"Hopen failed.");
+    if(file_id == FAIL)  {
+        string msg = "Hopen failed for file " + filename + ".";
+        throw BESInternalError(msg, __FILE__,__LINE__);
+    }
 
     status_n = Vstart (file_id);
     if(status_n == FAIL) {
         Hclose(file_id);
-        throw InternalErr(__FILE__,__LINE__,"Vstart failed.");
+        throw BESInternalError("Vstart failed.",__FILE__,__LINE__);
     }
 
     string err_msg;
@@ -3015,7 +3030,7 @@ void HDFCFUtil::map_eos2_objects_attrs(libdap::DAS &das,const string &filename) 
                 Vdetach(vgroup_id);
                 Vend(file_id);
                 Hclose(file_id);
-                throw InternalErr(__FILE__,__LINE__,"map_eos2_one_object_attrs_wrapper failed.");
+                throw BESInternalError("map_eos2_one_object_attrs_wrapper failed.",__FILE__,__LINE__);
             }
             Vdetach (vgroup_id);
         }// for  
@@ -3026,7 +3041,7 @@ cleanFail:
     Vend (file_id);
     Hclose (file_id);
     if(true == unexpected_fail)
-        throw InternalErr(__FILE__,__LINE__,err_msg);
+        throw BESInternalError(err_msg,__FILE__,__LINE__);
 
     return;
 
@@ -3035,34 +3050,37 @@ cleanFail:
 void HDFCFUtil::map_eos2_one_object_attrs_wrapper(libdap:: DAS &das,int32 file_id,int32 vgroup_id, const string& vgroup_name,bool is_grid) {
 
     int32 num_gobjects = Vntagrefs (vgroup_id);
-    if(num_gobjects < 0) 
-        throw InternalErr(__FILE__,__LINE__,"Cannot obtain the number of objects under a vgroup.");
+    if(num_gobjects < 0) { 
+        string msg = "Cannot obtain the number of objects under a vgroup.";
+        throw InternalErr(__FILE__,__LINE__, msg);
+    }
     
     for(int i = 0; i<num_gobjects;i++) {
 
         int32 obj_tag;
         int32 obj_ref;
         if (Vgettagref (vgroup_id, i, &obj_tag, &obj_ref) == FAIL) 
-            throw InternalErr(__FILE__,__LINE__,"Failed to obtain the tag and reference of an object under a vgroup.");
+            throw BESInternalError("Failed to obtain the tag and reference of an object under a vgroup.",__FILE__,__LINE__);
 
         if (Visvg (vgroup_id, obj_ref) == TRUE) {
                                                                       
             int32 object_attr_vgroup = Vattach(file_id,obj_ref,"r");
-            if(object_attr_vgroup == FAIL) 
-                throw InternalErr(__FILE__,__LINE__,"Failed to attach an EOS2 vgroup.");
+            if(object_attr_vgroup == FAIL) {
+                throw BESInternalError("Failed to attach an EOS2 vgroup.",__FILE__,__LINE__);
+            }
 
             uint16 name_len = 0;
             int32 status_32 = Vgetnamelen(object_attr_vgroup, &name_len);
             if(status_32 == FAIL) {
                 Vdetach(object_attr_vgroup);
-                throw InternalErr(__FILE__,__LINE__,"Failed to obtain an EOS2 vgroup name length.");
+                throw BESInternalError("Failed to obtain an EOS2 vgroup name length.",__FILE__,__LINE__);
             }
             vector<char> attr_vgroup_name; 
             attr_vgroup_name.resize(name_len+1);
             status_32 = Vgetname (object_attr_vgroup, attr_vgroup_name.data());
             if(status_32 == FAIL) {
                 Vdetach(object_attr_vgroup);
-                throw InternalErr(__FILE__,__LINE__,"Failed to obtain an EOS2 vgroup name. ");
+                throw BESInternalError("Failed to obtain an EOS2 vgroup name. ",__FILE__,__LINE__);
             }
 
             string attr_vgroup_name_str(attr_vgroup_name.begin(),attr_vgroup_name.end());
@@ -3082,7 +3100,7 @@ void HDFCFUtil::map_eos2_one_object_attrs_wrapper(libdap:: DAS &das,int32 file_i
             }
             catch(...) {
                 Vdetach(object_attr_vgroup);
-                throw InternalErr(__FILE__,__LINE__,"Cannot map eos2 object attributes to DAP2.");
+                throw BESInternalError("Cannot map eos2 object attributes to DAP2.",__FILE__,__LINE__);
             }
             Vdetach(object_attr_vgroup);
 
@@ -3095,7 +3113,7 @@ void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32
 
     int32 num_gobjects = Vntagrefs(obj_attr_group_id);
     if(num_gobjects < 0) 
-        throw InternalErr(__FILE__,__LINE__,"Cannot obtain the number of objects under a vgroup.");
+        throw BESInternalError("Cannot obtain the number of objects under a vgroup.",__FILE__,__LINE__);
 
     string vgroup_cf_name = HDFCFUtil::get_CF_string(vgroup_name);
     AttrTable *at = das.get_table(vgroup_cf_name);
@@ -3108,13 +3126,13 @@ void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32
         int32 obj_ref;
 
         if (Vgettagref(obj_attr_group_id, i, &obj_tag, &obj_ref) == FAIL) 
-            throw InternalErr(__FILE__,__LINE__,"Failed to obtain the tag and reference of an object under a vgroup.");
+            throw BESInternalError("Failed to obtain the tag and reference of an object under a vgroup.",__FILE__,__LINE__);
 
         if(Visvs(obj_attr_group_id,obj_ref)) {
 
             int32 vdata_id = VSattach(file_id,obj_ref,"r");
             if(vdata_id == FAIL) 
-                throw InternalErr(__FILE__,__LINE__,"Failed to attach a vdata.");
+                throw BESInternalError("Failed to attach a vdata.",__FILE__,__LINE__);
             
             // EOS2 object vdatas are actually EOS2 object attributes.
             if(VSisattr(vdata_id)) {
@@ -3123,47 +3141,47 @@ void HDFCFUtil::map_eos2_one_object_attrs(libdap:: DAS &das,int32 file_id, int32
                 int32 num_field = VFnfields(vdata_id);
                 if(num_field !=1) { 
                     VSdetach(vdata_id);
-                    throw InternalErr(__FILE__,__LINE__,"Number of vdata field for an EOS2 object must be 1.");
+                    throw BESInternalError("Number of vdata field for an EOS2 object must be 1.",__FILE__,__LINE__);
                 }
                 int32 num_record = VSelts(vdata_id);
                 if(num_record !=1){
                     VSdetach(vdata_id);
-                    throw InternalErr(__FILE__,__LINE__,"Number of vdata record for an EOS2 object must be 1.");
+                    throw BESInternalError("Number of vdata record for an EOS2 object must be 1.",__FILE__,__LINE__);
                 }
                 char vdata_name[VSNAMELENMAX];
                 if(VSQueryname(vdata_id,vdata_name) == FAIL) {
                     VSdetach(vdata_id);
-                    throw InternalErr(__FILE__,__LINE__,"Failed to obtain EOS2 object vdata name.");
+                    throw BESInternalError("Failed to obtain EOS2 object vdata name.",__FILE__,__LINE__);
                 }
                 string vdatanamestr(vdata_name);
                 string vdataname_cfstr = HDFCFUtil::get_CF_string(vdatanamestr);
                 int32 fieldsize = VFfieldesize(vdata_id,0);
                 if(fieldsize == FAIL) {
                     VSdetach(vdata_id);
-                    throw InternalErr(__FILE__,__LINE__,"Failed to obtain EOS2 object vdata field size.");
+                    throw BESInternalError("Failed to obtain EOS2 object vdata field size.",__FILE__,__LINE__);
                 }
 
                 const char* fieldname = VFfieldname(vdata_id,0);
                 if(fieldname == nullptr) {
                     VSdetach(vdata_id);
-                    throw InternalErr(__FILE__,__LINE__,"Failed to obtain EOS2 object vdata field name.");
+                    throw BESInternalError("Failed to obtain EOS2 object vdata field name.",__FILE__,__LINE__);
                 }
                 int32 fieldtype = VFfieldtype(vdata_id,0);
                 if(fieldtype == FAIL) {
                     VSdetach(vdata_id);
-                    throw InternalErr(__FILE__,__LINE__,"Failed to obtain EOS2 object vdata field type.");
+                    throw BESInternalError("Failed to obtain EOS2 object vdata field type.",__FILE__,__LINE__);
                 }
 
                 if(VSsetfields(vdata_id,fieldname) == FAIL) {
                     VSdetach(vdata_id);
-                    throw InternalErr(__FILE__,__LINE__,"EOS2 object vdata: VSsetfields failed.");
+                    throw BESInternalError("EOS2 object vdata: VSsetfields failed.",__FILE__,__LINE__);
                 }
 
                 vector<char> vdata_value;
                 vdata_value.resize(fieldsize);
                 if(VSread(vdata_id,(uint8*)vdata_value.data(),1,FULL_INTERLACE) == FAIL) {
                     VSdetach(vdata_id);
-                    throw InternalErr(__FILE__,__LINE__,"EOS2 object vdata: VSread failed.");
+                    throw BESInternalError("EOS2 object vdata: VSread failed.",__FILE__,__LINE__);
                 }
 
                 // Map the attributes to DAP2.
@@ -3268,135 +3286,134 @@ void HDFCFUtil::parser_trmm_v7_gridheader(const vector<char>& value,
      // For the  MacOS clang compiler, the string vector size may become 11.
      // So we change the condition to be "<9" is wrong.
      if(ind_elems.size()<9)
-        throw InternalErr(__FILE__,__LINE__,"The number of elements in the TRMM level 3 GridHeader is not right.");
+        throw BESInternalError("The number of elements in the TRMM level 3 GridHeader is not right.", __FILE__,__LINE__);
 
      if(false == check_reg_orig) {
         if (0 != ind_elems[1].find("Registration=CENTER"))        
-            throw InternalErr(__FILE__,__LINE__,"The TRMM grid registration is not center.");
+            throw BESInternalError("The TRMM grid registration is not center.",__FILE__,__LINE__);
      }
         
      if (0 == ind_elems[2].find("LatitudeResolution")){ 
 
         size_t equal_pos = ind_elems[2].find_first_of('=');
         if(string::npos == equal_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for TRMM level 3 products");
+            throw BESInternalError("Cannot find latitude resolution for TRMM level 3 products.", __FILE__,__LINE__);
            
         size_t scolon_pos = ind_elems[2].find_first_of(';');
         if(string::npos == scolon_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for TRMM level 3 products");
+            throw BESInternalError("Cannot find latitude resolution for TRMM level 3 products.", __FILE__,__LINE__);
         if (equal_pos < scolon_pos){
 
             string latres_str = ind_elems[2].substr(equal_pos+1,scolon_pos-equal_pos-1);
             lat_res = strtof(latres_str.c_str(),nullptr);
         }
         else 
-            throw InternalErr(__FILE__,__LINE__,"latitude resolution is not right for TRMM level 3 products");
+            throw BESInternalError("latitude resolution is not right for TRMM level 3 products.",__FILE__,__LINE__);
     }
     else
-        throw InternalErr(__FILE__,__LINE__,"The TRMM grid LatitudeResolution doesn't exist.");
+        throw BESInternalError("The TRMM grid LatitudeResolution doesn't exist.",__FILE__,__LINE__);
 
     if (0 == ind_elems[3].find("LongitudeResolution")){ 
 
         size_t equal_pos = ind_elems[3].find_first_of('=');
         if(string::npos == equal_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find longitude resolution for TRMM level 3 products");
+            throw BESInternalError("Cannot find longitude resolution for TRMM level 3 products.",__FILE__,__LINE__);
            
         size_t scolon_pos = ind_elems[3].find_first_of(';');
         if(string::npos == scolon_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find longitude resolution for TRMM level 3 products");
+            throw BESInternalError("Cannot find longitude resolution for TRMM level 3 products.",__FILE__,__LINE__);
         if (equal_pos < scolon_pos){
             string lonres_str = ind_elems[3].substr(equal_pos+1,scolon_pos-equal_pos-1);
             lon_res = strtof(lonres_str.c_str(),nullptr);
         }
         else 
-            throw InternalErr(__FILE__,__LINE__,"longitude resolution is not right for TRMM level 3 products");
+            throw BESInternalError("longitude resolution is not right for TRMM level 3 products.",__FILE__,__LINE__);
     }
     else
-        throw InternalErr(__FILE__,__LINE__,"The TRMM grid LongitudeResolution doesn't exist.");
+        throw BESInternalError("The TRMM grid LongitudeResolution doesn't exist.",__FILE__,__LINE__);
 
     if (0 == ind_elems[4].find("NorthBoundingCoordinate")){ 
 
         size_t equal_pos = ind_elems[4].find_first_of('=');
         if(string::npos == equal_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for TRMM level 3 products");
+            throw BESInternalError("Cannot find north bound coordinate for TRMM level 3 products.",__FILE__,__LINE__);
            
         size_t scolon_pos = ind_elems[4].find_first_of(';');
         if(string::npos == scolon_pos)
-            throw InternalErr(__FILE__,__LINE__,"Cannot find latitude resolution for TRMM level 3 products");
+            throw BESInternalError("Cannot find latitude resolution for TRMM level 3 products.",__FILE__,__LINE__);
         if (equal_pos < scolon_pos){
             string north_bounding_str = ind_elems[4].substr(equal_pos+1,scolon_pos-equal_pos-1);
             lat_north = strtof(north_bounding_str.c_str(),nullptr);
         }
         else 
-            throw InternalErr(__FILE__,__LINE__,"NorthBoundingCoordinate is not right for TRMM level 3 products");
+            throw BESInternalError("NorthBoundingCoordinate is not right for TRMM level 3 products.",__FILE__,__LINE__);
  
     }
-     else
-        throw InternalErr(__FILE__,__LINE__,"The TRMM grid NorthBoundingCoordinate doesn't exist.");
+    else
+        throw BESInternalError("The TRMM grid NorthBoundingCoordinate doesn't exist.",__FILE__,__LINE__);
 
     if (0 == ind_elems[5].find("SouthBoundingCoordinate")){ 
 
             size_t equal_pos = ind_elems[5].find_first_of('=');
             if(string::npos == equal_pos)
-                throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+                throw BESInternalError("Cannot find south bound coordinate for TRMM level 3 products.",__FILE__,__LINE__);
            
             size_t scolon_pos = ind_elems[5].find_first_of(';');
             if(string::npos == scolon_pos)
-                throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+                throw BESInternalError("Cannot find south bound coordinate for TRMM level 3 products.",__FILE__,__LINE__);
             if (equal_pos < scolon_pos){
                 string lat_south_str = ind_elems[5].substr(equal_pos+1,scolon_pos-equal_pos-1);
                 lat_south = strtof(lat_south_str.c_str(),nullptr);
             }
             else 
-                throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for TRMM level 3 products");
- 
+                throw BESInternalError("South bound coordinate is not right for TRMM level 3 products.",__FILE__,__LINE__);
     }
     else
-        throw InternalErr(__FILE__,__LINE__,"The TRMM grid SouthBoundingCoordinate doesn't exist.");
+        throw BESInternalError("The TRMM grid SouthBoundingCoordinate doesn't exist.",__FILE__,__LINE__);
 
     if (0 == ind_elems[6].find("EastBoundingCoordinate")){ 
 
             size_t equal_pos = ind_elems[6].find_first_of('=');
             if(string::npos == equal_pos)
-                throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+                throw BESInternalError("Cannot find east bound coordinate for TRMM level 3 products.", __FILE__,__LINE__);
            
             size_t scolon_pos = ind_elems[6].find_first_of(';');
             if(string::npos == scolon_pos)
-                throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+                throw BESInternalError("Cannot find east bound coordinate for TRMM level 3 products.", __FILE__,__LINE__);
             if (equal_pos < scolon_pos){
                 string lon_east_str = ind_elems[6].substr(equal_pos+1,scolon_pos-equal_pos-1);
                 lon_east = strtof(lon_east_str.c_str(),nullptr);
             }
             else 
-                throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for TRMM level 3 products");
+                throw BESInternalError("East bound coordinate is not right for TRMM level 3 products.",__FILE__,__LINE__);
  
     }
     else
-        throw InternalErr(__FILE__,__LINE__,"The TRMM grid EastBoundingCoordinate doesn't exist.");
+        throw BESInternalError("The TRMM grid EastBoundingCoordinate doesn't exist.",__FILE__,__LINE__);
 
     if (0 == ind_elems[7].find("WestBoundingCoordinate")){ 
 
             size_t equal_pos = ind_elems[7].find_first_of('=');
             if(string::npos == equal_pos)
-                throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+                throw BESInternalError("Cannot find west bound coordinate for TRMM level 3 products.",__FILE__,__LINE__);
            
             size_t scolon_pos = ind_elems[7].find_first_of(';');
             if(string::npos == scolon_pos)
-                throw InternalErr(__FILE__,__LINE__,"Cannot find south bound coordinate for TRMM level 3 products");
+                throw BESInternalError("Cannot find west bound coordinate for TRMM level 3 products.",__FILE__,__LINE__);
             if (equal_pos < scolon_pos){
                 string lon_west_str = ind_elems[7].substr(equal_pos+1,scolon_pos-equal_pos-1);
                 lon_west = strtof(lon_west_str.c_str(),nullptr);
             }
             else 
-                throw InternalErr(__FILE__,__LINE__,"south bound coordinate is not right for TRMM level 3 products");
+                throw BESInternalError("East bound coordinate is not right for TRMM level 3 products.",__FILE__,__LINE__);
  
     }
     else
-        throw InternalErr(__FILE__,__LINE__,"The TRMM grid WestBoundingCoordinate doesn't exist.");
+        throw BESInternalError("The TRMM grid WestBoundingCoordinate doesn't exist.",__FILE__,__LINE__);
 
     if (false == check_reg_orig) {
         if (0 != ind_elems[8].find("Origin=SOUTHWEST")) 
-            throw InternalErr(__FILE__,__LINE__,"The TRMM grid origin is not SOUTHWEST.");
+            throw BESInternalError("The TRMM grid origin is not SOUTHWEST.",__FILE__,__LINE__);
     }
 
     // Since we only treat the case when the Registration is center, so the size should be the 
@@ -3732,7 +3749,7 @@ void HDFCFUtil::write_sp_sds_dds_cache(const HDFSP::File* spf,FILE*dds_file,size
         s_total_bytes_dds_cache << total_bytes_dds_cache;
         string msg = "DDs cached file "+ dds_filename +" buffer size should be " + s_total_bytes_dds_cache.str()  ;
         msg = msg + ". But the real size written in the buffer is " + s_total_written_count.str();
-        throw InternalErr (__FILE__, __LINE__,msg);
+        throw BESInternalError (msg,__FILE__, __LINE__);
     }
 
     size_t bytes_really_written = fwrite((const void*)temp_buf.data(),1,total_bytes_dds_cache,dds_file);
@@ -3744,7 +3761,7 @@ void HDFCFUtil::write_sp_sds_dds_cache(const HDFSP::File* spf,FILE*dds_file,size
         s_really_written_bytes << bytes_really_written;
         string msg = "DDs cached file "+ dds_filename +" size should be " + s_expected_bytes.str()  ;
         msg += ". But the real size written to the file is " + s_really_written_bytes.str();
-        throw InternalErr (__FILE__, __LINE__,msg);
+        throw BESInternalError (msg,__FILE__, __LINE__);
     }
 
 }
@@ -3758,9 +3775,9 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
     // Check the cache file size.
     struct stat sb;
     if(stat(cache_filename.c_str(),&sb)!=0) {
-        string err_mesg="The DDS cache file " + cache_filename;
-        err_mesg = err_mesg + " doesn't exist.  ";
-        throw InternalErr(__FILE__,__LINE__,err_mesg);
+        string msg="The DDS cache file " + cache_filename;
+        msg +=  " doesn't exist.  ";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     auto bytes_expected_read = (size_t)sb.st_size;
@@ -3778,7 +3795,7 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
         s_bytes_expected_read << bytes_expected_read;
         string msg = "The expected bytes to read from DDS cache file " + cache_filename +" is " + s_bytes_expected_read.str();
         msg = msg + ". But the real read size from the buffer is  " + s_bytes_really_read.str();
-        throw InternalErr (__FILE__, __LINE__,msg);
+        throw BESInternalError (msg,__FILE__, __LINE__);
     }
     char* temp_pointer = temp_buf.data();
 
@@ -3803,7 +3820,7 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
 
         vector<int32>dimsizes;
         if(sds_rank <=0) 
-            throw InternalErr (__FILE__, __LINE__,"SDS rank must be >0");
+            throw BESInternalError ("SDS rank must be >0",__FILE__, __LINE__);
              
         dimsizes.resize(sds_rank);
         for (int i = 0; i <sds_rank;i++) {
@@ -3865,12 +3882,12 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
         HANDLE_CASE(DFNT_UINT32, HDFUInt32) 
         HANDLE_CASE(DFNT_UCHAR8, HDFByte) 
         default: 
-            throw InternalErr(__FILE__,__LINE__,"unsupported data type."); 
+            throw BESInternalError("unsupported data type.",__FILE__,__LINE__);
 #undef HANDLE_CASE 
         } 
 
         if(nullptr == bt)
-            throw InternalErr(__FILE__,__LINE__,"Cannot create the basetype when creating DDS from a cache file.");
+            throw BESInternalError("Cannot create the basetype when creating DDS from a cache file.",__FILE__,__LINE__);
 
         SPType sptype = OTHERHDF;
 
@@ -3894,7 +3911,7 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
             }
             catch(...) {
                 delete bt;
-                throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFSPArray_RealField instance.");
+                throw BESInternalError("Unable to allocate the HDFSPArray_RealField instance.",__FILE__,__LINE__);
             }
 
             for(int i = 0; i <sds_rank; i++)
@@ -3915,7 +3932,7 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
                 }
                 catch(...) {
                     delete bt;
-                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFSPArray_RealField instance.");
+                    throw BESInternalError("Unable to allocate the HDFSPArray_RealField instance.",__FILE__,__LINE__);
                 }
 
                 ar->append_dim(dimsizes[0],dimnames[0]);
@@ -3924,14 +3941,14 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
                 delete ar;
             }
             else 
-                throw InternalErr(__FILE__,__LINE__,"SDS rank  must be 1 for the missing coordinate.");
+                throw BESInternalError("SDS rank  must be 1 for the missing coordinate.",__FILE__,__LINE__);
         }
 
         if(*temp_pointer == cend)
             end_file_flag = true;
         if((temp_pointer - temp_buf.data()) > (int)bytes_expected_read) {
             string msg = cache_filename + " doesn't have the end-line character at the end. The file may be corrupted.";
-            throw InternalErr (__FILE__, __LINE__,msg);
+            throw BESInternalError (msg, __FILE__, __LINE__);
         }
     } while(false == end_file_flag);
 
