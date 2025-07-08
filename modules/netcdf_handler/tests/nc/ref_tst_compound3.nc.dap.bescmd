@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <request reqID ="some_unique_value" >
+    <setContext name="dap4_checksums">true</setContext>
     <setContext name="xdap_accept">3.3</setContext>
     <setContainer name="c" space="catalog">/data/nc4_test_files/ref_tst_compounds3.nc</setContainer>
     <define name="d">
