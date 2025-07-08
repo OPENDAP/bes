@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<request reqID="some_unique_value" >
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<request reqID="some_unique_value">
+    <setContext name="dap4_checksums">true</setContext>
     <setContext name="dap_format">dap4</setContext>
     <setContainer name="d_regref" space="catalog">/data/d_regref.h5</setContainer>
     <define name="d">
-	<container name="d_regref" />
+        <container name="d_regref"/>
     </define>
-    <get type="dap" definition="d" />
+    <get type="dap" definition="d"/>
 </request>
