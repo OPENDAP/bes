@@ -185,11 +185,11 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST_NC4_ENHANCED],  [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -C -D -M -s -], [], [stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -C -D -M -s -], [], [stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$2 = zxfail])
         ])
@@ -328,11 +328,11 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST_NC4_ENHANCED_GRP],  [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -C -D -M -s -], [], [stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -C -D -M -s -], [], [stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$2 = zxfail])
         ])
@@ -686,11 +686,11 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST_NC4_ENHANCED_CFDMR],  [dnl
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -C -D -M -s -], [], [stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap4 -C -D -M -s -], [], [stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$2 = zxfail])
         ])

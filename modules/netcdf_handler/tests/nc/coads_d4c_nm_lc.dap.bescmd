@@ -1,10 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<request reqID="some_unique_value" >
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<request reqID="some_unique_value">
+    <setContext name="dap4_checksums">true</setContext>
     <setContainer name="c" space="catalog">/data/coads_climatology.nc</setContainer>
     <define name="d">
-      <container name="c">
+        <container name="c">
             <dap4constraint>TIME=[0:1:2]; COADSY=[0:2:3]; COADSX=[0:3:6]; /SST[0:1:2][0:2:3][0:3:6];/VWND[0:1:2][0:2:3][0:3:6]</dap4constraint>
         </container>
     </define>
-    <get type="dap" definition="d" />
+    <get type="dap" definition="d"/>
 </request>
