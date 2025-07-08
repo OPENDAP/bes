@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<request reqID="some_unique_value">
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
     <setContext name="dap_format">dap2</setContext>
     <setContainer name="c" space="gateway">http://test.opendap.org/opendap/data/nc/fnoc1.nc.dap</setContainer>
     <define name="d">
-        <container name="c"/>
+	<container name="c" />
     </define>
-    <get type="dmr" definition="d"/>
+    <get type="dmr" definition="d" />
 </request>
