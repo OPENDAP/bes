@@ -20,7 +20,6 @@
 #include <libdap/debug.h>
 #include "HDFEOS2.h"
 #include "HDFCFUtil.h"
-#include <libdap/InternalErr.h>
 #include <BESInternalError.h>
 #include "BESDebug.h"
 
@@ -92,7 +91,7 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
     fileid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
     if (fileid < 0) {
         string msg = "File " + filename + " cannot be open.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Check if this file only contains one swath

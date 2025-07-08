@@ -21,7 +21,6 @@
 #include <sstream>
 #include <cassert>
 #include <libdap/debug.h>
-#include <libdap/InternalErr.h>
 #include <BESInternalError.h>
 #include "BESDebug.h"
 #include <BESLog.h>
@@ -102,7 +101,7 @@ HDFEOS2ArraySwathDimMapField::read ()
 
         if (sfid < 0) {
             string msg = "File " + filename + " cannot be open.";
-            throw InternalErr (__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     }
     else
@@ -112,7 +111,7 @@ HDFEOS2ArraySwathDimMapField::read ()
     if (swathid < 0) {
         close_fileid (sfid,-1);
         string msg = "Cannot attach swath " + datasetname + ".";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // dimmaps was set to be empty in hdfdesc.cc if the extra geolocation file also 
@@ -659,7 +658,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                     SDend(sdfileid);
                 string msg = "Attribute 'scale_factor' in "; 
                 msg = msg + fieldname + " cannot be obtained.";
-                throw InternalErr (__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             // Appears that the assumption for the datatype of scale_factor 
@@ -933,7 +932,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
                 }
                 break;
                 default:
-                    throw InternalErr("Unsupported data type.",__FILE__,__LINE__);
+                    throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
             }
         }
 

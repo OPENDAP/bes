@@ -15,7 +15,6 @@
 #include <cassert>
 #include <libdap/debug.h>
 #include <BESInternalError.h>
-#include <libdap/InternalErr.h>
 #include <BESDebug.h>
 #include <BESLog.h>
 

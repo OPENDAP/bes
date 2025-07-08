@@ -11,7 +11,7 @@
 #include <libdap/debug.h>
 #include "hdf.h"
 #include "mfhdf.h"
-#include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include <BESDebug.h>
 #include "BESInternalError.h"
 #include "HDFCFUtil.h"
@@ -53,9 +53,9 @@ HDFSPArray_RealField::read ()
 
     short dtype_size = HDFCFUtil::obtain_type_size(dtype);
     if (-1 == dtype_size) {
-        string err_mesg = "Wrong data type size for the variable ";
-        err_mesg += name();
-        throw InternalErr(__FILE__,__LINE__,err_mesg);
+        string msg = "Wrong data type size for the variable ";
+        msg += name();
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     string cache_fpath;
@@ -72,27 +72,29 @@ HDFSPArray_RealField::read ()
         string bescacheprefix = HDF4RequestHandler::get_cache_latlon_prefix();
         long cachesize = HDF4RequestHandler::get_cache_latlon_size();
 
-        if (("" == bescachedir)||(""==bescacheprefix)||(cachesize <=0))
-            throw InternalErr (__FILE__, __LINE__, "Either the cached dir is empty or the prefix is NULL or the cache size is not set.");
+        if (("" == bescachedir)||(""==bescacheprefix)||(cachesize <=0)) {
+            string msg = "Either the cached dir is empty or the prefix is NULL or the cache size is not set.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
+        }
         else {
             struct stat sb;
             if (stat(bescachedir.c_str(),&sb) !=0) {
-                string err_mesg="The cached directory " + bescachedir;
-                err_mesg = err_mesg + " doesn't exist.  ";
-                throw InternalErr(__FILE__,__LINE__,err_mesg);
+                string msg="The cached directory " + bescachedir;
+                msg = msg + " doesn't exist.  ";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             else { 
                 if (true == S_ISDIR(sb.st_mode)) {
                         if (access(bescachedir.c_str(),R_OK|W_OK|X_OK) == -1) {
-                            string err_mesg="The cached directory " + bescachedir;
-                            err_mesg = err_mesg + " can NOT be read,written or executable.";
-                            throw InternalErr(__FILE__,__LINE__,err_mesg);
+                            string msg="The cached directory " + bescachedir;
+                            msg = msg + " can NOT be read,written or executable.";
+                            throw BESInternalError(msg,__FILE__,__LINE__);
                         }
                 }
                 else {
-                        string err_mesg="The cached directory " + bescachedir;
-                        err_mesg = err_mesg + " is not a directory.";
-                        throw InternalErr(__FILE__,__LINE__,err_mesg);
+                        string msg="The cached directory " + bescachedir;
+                        msg = msg + " is not a directory.";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                 }
             }
         }
@@ -105,9 +107,9 @@ HDFSPArray_RealField::read ()
             total_elems = total_elems*dimsizes[i];
         dtype_size = HDFCFUtil::obtain_type_size(dtype);
         if (-1 == dtype_size) {
-            string err_mesg = "Wrong data type size for the variable ";
-            err_mesg += name();
-            throw InternalErr(__FILE__,__LINE__,err_mesg);
+            string msg = "Wrong data type size for the variable ";
+            msg += name();
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         int expected_file_size = dtype_size *total_elems;
         int fd = 0;
@@ -167,9 +169,8 @@ HDFSPArray_RealField::read ()
     if (false == check_pass_fileid_key) {
         sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
         if (sdid < 0) {
-            ostringstream eherr;
-            eherr << "File " << filename.c_str () << " cannot be open.";
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "File " + filename + " cannot be open.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     }
     else {
@@ -180,9 +181,8 @@ HDFSPArray_RealField::read ()
 
             sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
             if (sdid < 0) {
-                ostringstream eherr;
-                eherr << "File " << filename.c_str () << " cannot be open.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg =  "File " + filename + " cannot be open.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             // Reset the pass file ID key to be false for resource clean-up.
             check_pass_fileid_key = false;
@@ -199,18 +199,16 @@ HDFSPArray_RealField::read ()
     int32 sdsindex = SDreftoindex (sdid, (int32) fieldref);
     if (sdsindex == -1) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "SDS index " << sdsindex << " is not right.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "SDS index " + to_string(sdsindex) + " is not right.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Obtain this SDS ID.
     sdsid = SDselect (sdid, sdsindex);
     if (sdsid < 0) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "SDselect failed.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "SDselect failed.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Initialize the temp. returned value.
@@ -227,9 +225,8 @@ HDFSPArray_RealField::read ()
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "SDreaddata failed.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "SDreaddata failed.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
 #ifndef SIGNED_BYTE_TO_INT32
@@ -250,9 +247,8 @@ HDFSPArray_RealField::read ()
                 catch(...) {
                     SDendaccess (sdsid);
                     HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                    ostringstream eherr;
-                    eherr << "write data to cache failed.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "write data to cache failed.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
  
                 }
             }
@@ -292,9 +288,8 @@ HDFSPArray_RealField::read ()
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "SDreaddata failed";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                string msg = "SDreaddata failed";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             if((basename(filename).size() >=7) && ((basename(filename)).compare(0,7,"MCD43GF")==0)) {
@@ -336,9 +331,8 @@ HDFSPArray_RealField::read ()
                 catch(...) {
                     SDendaccess (sdsid);
                     HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                    ostringstream eherr;
-                    eherr << "write data to cache failed.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "write data to cache failed.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
  
                 }
             }
@@ -347,15 +341,14 @@ HDFSPArray_RealField::read ()
         default:
             SDendaccess (sdsid);
             HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw BESInternalError("Unsupported data type.",__FILE__, __LINE__);
     }
 
     // Close the SDS interface
     r = SDendaccess (sdsid);
     if (r != 0) {
-        ostringstream eherr;
-        eherr << "SDendaccess failed.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "SDendaccess failed.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
 
@@ -605,7 +598,7 @@ bool HDFSPArray_RealField::obtain_cached_data(BESH4Cache *llcache,const string &
                 }
                     break;
                 default:
-                    throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
+                    throw BESInternalError("Unsupported data type.",__FILE__, __LINE__);
 
             }// end switch(dtype)
         }// end else (stride is not 1)
@@ -635,7 +628,7 @@ HDFSPArray_RealField::write_data_to_cache(int32 sdsid, const string& cache_fpath
         else {
             val.resize(dtype_size*total_nelem);
             if (SDreaddata (sdsid, woffset32.data(), wstep32.data(), wcount32.data(), val.data())<0)
-                throw InternalErr (__FILE__, __LINE__, "Cannot read the whole SDS for cache.");
+                throw BESInternalError("Cannot read the whole SDS for cache.",__FILE__, __LINE__);
             llcache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)val.data());
         }
  
@@ -651,7 +644,7 @@ HDFSPArray_RealField::write_data_to_cache(int32 sdsid, const string& cache_fpath
             vector<char>val2;
             val2.resize(total_nelem);
             if (SDreaddata (sdsid, woffset32.data(), wstep32.data(), wcount32.data(), val2.data())<0)
-                throw InternalErr (__FILE__, __LINE__, "Cannot read the whole SDS for cache.");
+                throw BESInternalError("Cannot read the whole SDS for cache.",__FILE__, __LINE__);
             for (int i = 0; i < total_nelem;i++)
                 newval[i] = (int)val2[i];
             llcache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)newval.data());
@@ -665,7 +658,7 @@ HDFSPArray_RealField::write_data_to_cache(int32 sdsid, const string& cache_fpath
         else {
             val.resize(dtype_size*total_nelem);
             if (SDreaddata (sdsid, woffset32.data(), wstep32.data(), wcount32.data(), val.data())<0)
-                throw InternalErr (__FILE__, __LINE__, "Cannot read the whole SDS for cache.");
+                throw BESInternalError("Cannot read the whole SDS for cache.",__FILE__, __LINE__);
 
             llcache->write_cached_data2(cache_fpath,dtype_size*total_nelem,(const void*)val.data());
         }

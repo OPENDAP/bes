@@ -19,7 +19,6 @@
 #include <libdap/debug.h>
 #include "mfhdf.h"
 #include "hdf.h"
-#include <libdap/InternalErr.h>
 #include <BESInternalError.h>
 #include <BESDebug.h>
 

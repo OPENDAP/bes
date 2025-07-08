@@ -15,7 +15,6 @@
 #include <cassert>
 #include <libdap/debug.h>
 #include "HDFEOS2.h"
-#include <libdap/InternalErr.h>
 #include <BESInternalError.h>
 #include <BESDebug.h>
 #include "HDFCFUtil.h"
@@ -120,7 +119,7 @@ HDFEOS2ArrayGridGeoField::read ()
         gfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
         if (gfid < 0) {
             string msg =  "File " + filename + " cannot be open.";
-            throw InternalErr (__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     }
 
@@ -129,7 +128,7 @@ HDFEOS2ArrayGridGeoField::read ()
     if (gridid < 0) {
         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
         string msg = "Grid " +  datasetname + " cannot be attached.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if (false == llflag) {
@@ -160,7 +159,7 @@ HDFEOS2ArrayGridGeoField::read ()
                     HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                     string msg="The cached directory " + bescachedir;
                     msg = msg + " doesn't exist.  ";
-                    throw InternalErr(__FILE__,__LINE__,msg);
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                     
                 }
                 else { 
@@ -169,14 +168,14 @@ HDFEOS2ArrayGridGeoField::read ()
                             HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                             string msg="The cached directory " + bescachedir;
                             msg = msg + " can NOT be read,written or executable.";
-                            throw InternalErr(__FILE__,__LINE__,msg);
+                            throw BESInternalError(msg,__FILE__,__LINE__);
                         }
                     }
                     else {
                         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                         string msg="The cached directory " + bescachedir;
                         msg = msg + " is not a directory.";
-                        throw InternalErr(__FILE__,__LINE__,msg);
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                     }
                 }
             }
@@ -785,7 +784,7 @@ HDFEOS2ArrayGridGeoField::read ()
                 detachfunc(gridid);
                 HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
                 string msg = "Unsupported data type.";
-                throw InternalErr (__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
         }
@@ -1290,7 +1289,7 @@ HDFEOS2ArrayGridGeoField::read ()
             detachfunc(gridid);
             HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
             string msg = "Unsupported data type.";
-            throw InternalErr (__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
     }
@@ -1782,8 +1781,7 @@ HDFEOS2ArrayGridGeoField::getCorrectSubset (const int *offset, const int *count,
         }
 
         else {// errors
-            throw InternalErr (__FILE__, __LINE__,
-                         "Lat/lon subset is wrong for condensed lat/lon");
+            throw BESInternalError("Lat/lon subset is wrong for condensed lat/lon.",__FILE__, __LINE__);
         }
     }
     else {
@@ -1812,7 +1810,7 @@ HDFEOS2ArrayGridGeoField::HandleFillLatLon(vector<T> total_latlon, T* latlon,boo
                 temp_lat[i] = total_latlon[i*xdim];
 
             if (false == CorLatLon(temp_lat.data(),gf_fieldtype,ydim,fv))
-                throw InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
+                throw BESInternalError("Cannot handle the fill values in lat/lon correctly.",__FILE__,__LINE__);
            
             for (int i = 0; i <(int)(count[0]); i++)
                 latlon[i] = temp_lat[offset[0] + i* step[0]];
@@ -1825,7 +1823,7 @@ HDFEOS2ArrayGridGeoField::HandleFillLatLon(vector<T> total_latlon, T* latlon,boo
 
 
             if (false == CorLatLon(temp_lon.data(),gf_fieldtype,xdim,fv))
-                throw InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
+                throw BESInternalError("Cannot handle the fill values in lat/lon correctly.",__FILE__,__LINE__);
            
             for (int i = 0; i <(int)(count[1]); i++)
                 latlon[i] = temp_lon[offset[1] + i* step[1]];
@@ -1840,7 +1838,7 @@ HDFEOS2ArrayGridGeoField::HandleFillLatLon(vector<T> total_latlon, T* latlon,boo
                 temp_lat[i] = total_latlon[i];
 
             if (false == CorLatLon(temp_lat.data(),gf_fieldtype,ydim,fv))
-                throw InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
+                throw BESInternalError("Cannot handle the fill values in lat/lon correctly.",__FILE__,__LINE__);
            
             for (int i = 0; i <(int)(count[1]); i++)
                 latlon[i] = temp_lat[offset[1] + i* step[1]];
@@ -1853,7 +1851,7 @@ HDFEOS2ArrayGridGeoField::HandleFillLatLon(vector<T> total_latlon, T* latlon,boo
 
 
             if (false == CorLatLon(temp_lon.data(),gf_fieldtype,xdim,fv))
-                throw InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
+                throw BESInternalError("Cannot handle the fill values in lat/lon correctly.",__FILE__,__LINE__);
            
             for (int i = 0; i <(int)(count[0]); i++)
                 latlon[i] = temp_lon[offset[0] + i* step[0]];
@@ -1973,7 +1971,7 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, const int *start, con
     }
     if (false == is_block_180) {
         string msg = "Number of Block is not " + to_string(NBLOCK)+"." ;
-        throw InternalErr(__FILE__,__LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     int32 xdim = 0; 

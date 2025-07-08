@@ -15,7 +15,6 @@
 #include <libdap/debug.h>
 #include "hdf.h"
 #include "mfhdf.h"
-#include <libdap/InternalErr.h>
 #include <BESInternalError.h>
 #include <BESDebug.h>
 #include "HDFCFUtil.h"

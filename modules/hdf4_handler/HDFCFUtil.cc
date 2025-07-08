@@ -486,7 +486,7 @@ void HDFCFUtil::correct_fvalue_type(AttrTable *at,int32 dtype) {
             string fillvalue_type ="";
             if((*at->get_attr_vector(it)).size() !=1) { 
                 string msg = "The number of _FillValue must be 1.";
-                throw InternalErr(__FILE__,__LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             fillvalue =  (*at->get_attr_vector(it)->begin());
             fillvalue_type = at->get_type(it);
@@ -790,7 +790,7 @@ void HDFCFUtil::obtain_dimmap_info(const string& filename,HDFEOS2::Dataset*datas
                         dirp = opendir(dirfilename.c_str());
                         if (nullptr == dirp) { 
                             string msg = "opendir fails.";
-                            throw InternalErr(__FILE__,__LINE__, msg);
+                            throw BESInternalError(msg,__FILE__,__LINE__);
                         }
 
                         while ((dirs = readdir(dirp))!= nullptr){
@@ -800,7 +800,7 @@ void HDFCFUtil::obtain_dimmap_info(const string& filename,HDFEOS2::Dataset*datas
                                 if (num_dimmap < 0)  {
                                     closedir(dirp);
                                     string msg = "This file is not a MODIS geolocation file.";
-                                    throw InternalErr(__FILE__,__LINE__, msg);
+                                    throw BESInternalError(msg,__FILE__,__LINE__);
                                 }
                                 geofile_has_dimmap = (num_dimmap >0)?true:false;
                                 break;
@@ -1321,7 +1321,7 @@ void HDFCFUtil::handle_modis_special_attrs(AttrTable *at, const string & filenam
             // Calculate the final valid_max and valid_min.
             if (scale_min <= 0) {
                 string msg = "The scale factor should always be greater than 0.";
-                throw InternalErr(__FILE__,__LINE__, msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             if (orig_valid_max > offset_min) 
@@ -1464,11 +1464,11 @@ void HDFCFUtil::handle_modis_vip_special_attrs(const std::string& valid_range_va
     size_t found_from_end = valid_range_value.find_last_of(",");
     if (string::npos == found) { 
         string msg = "Should find the separator ,";
-        throw InternalErr(__FILE__,__LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     if (found != found_from_end) {
         string msg = "There should be only one separator.";
-        throw InternalErr(__FILE__,__LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     vip_orig_valid_min = (short) (atoi((valid_range_value.substr(0,found)).c_str()));
@@ -1484,7 +1484,7 @@ void HDFCFUtil::handle_modis_vip_special_attrs(const std::string& valid_range_va
     }
     else {
         string msg = "The scale_factor_number should not be zero.";
-        throw InternalErr(__FILE__,__LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 }
 
@@ -1618,7 +1618,7 @@ void HDFCFUtil::obtain_grid_latlon_dim_info(const HDFEOS2::GridDataset* gdset,
     }
     if(""==dim0name || ""==dim1name || dim0size<0 || dim1size <0) {
         string msg = "Fail to obtain grid lat/lon dimension info.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
 }
@@ -3052,7 +3052,7 @@ void HDFCFUtil::map_eos2_one_object_attrs_wrapper(libdap:: DAS &das,int32 file_i
     int32 num_gobjects = Vntagrefs (vgroup_id);
     if(num_gobjects < 0) { 
         string msg = "Cannot obtain the number of objects under a vgroup.";
-        throw InternalErr(__FILE__,__LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     
     for(int i = 0; i<num_gobjects;i++) {

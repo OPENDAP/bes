@@ -14,7 +14,6 @@
 #include <iostream>
 #include <sstream>
 #include <libdap/debug.h>
-#include <libdap/InternalErr.h>
 #include <BESInternalError.h>
 #include <BESDebug.h>
 
@@ -45,7 +44,7 @@ HDFDMRArray_VD::read ()
     int32 file_id = Hopen (filename.c_str (), DFACC_READ, 0);
     if (file_id < 0) {
         string msg = "File " + filename +" cannot be open.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Start the Vdata interface
@@ -53,7 +52,7 @@ HDFDMRArray_VD::read ()
     if (Vstart (file_id) < 0) {
         Hclose(file_id);
         string msg = "This file cannot be open.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Attach the vdata
@@ -62,7 +61,7 @@ HDFDMRArray_VD::read ()
         Vend (file_id);
         Hclose(file_id);
         string msg = "Vdata cannot be attached.";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     int32 vs_nflds = VFnfields(vdata_id);
@@ -114,13 +113,13 @@ HDFDMRArray_VD::read_one_field_vdata(int32 vdata_id,const vector<int>&offset, co
     // Seek the position of the starting point
     if (VSseek (vdata_id, offset[0]) == -1) {
         string msg = "VSseek failed at " + to_string(offset[0]) + ".";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Prepare the vdata field
     if (VSsetfields (vdata_id, fieldname) == -1) {
         string msg = "VSsetfields failed with the name " +string(fieldname) + ".";
-        throw InternalErr (__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     int32 vdfelms = fdorder * count[0] * step[0];

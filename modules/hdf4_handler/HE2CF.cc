@@ -22,7 +22,7 @@
 //////////////////////////////////////////////////////////////////////////////
 #include "HE2CF.h"
 #include <libdap/escaping.h>
-#include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include "HDFCFUtil.h"
 #include <iomanip>
 
@@ -39,18 +39,16 @@ HE2CF::get_vgroup_field_refids(const string& _gname,
     int32 vrefid = Vfind(file_id, (char*)_gname.c_str());
     if (FAIL == vrefid) {
         Vend(file_id);
-        ostringstream error;
-        error <<"cannot obtain the reference number for vgroup "<<_gname;
-        throw_error(error.str());
+        string msg ="Cannot obtain the reference number for vgroup "+_gname+".";
+        throw_error(msg);
         return false;
     }
 
     int32 vgroup_id = Vattach(file_id, vrefid, "r");
     if (FAIL == vgroup_id) {
         Vend(file_id);
-        ostringstream error;
-        error <<"cannot obtain the group id for vgroup "<<_gname;
-        throw_error(error.str());
+        string msg = "Cannot obtain the group id for vgroup "+_gname+".";
+        throw_error(msg);
         return false;
     }
 
@@ -61,10 +59,8 @@ HE2CF::get_vgroup_field_refids(const string& _gname,
     if(npairs < 0){
         Vdetach(vgroup_id);
         Vend(file_id);
-        ostringstream error;
-        error << "Got " << npairs
-              << " npairs for " << _gname;
-        throw_error(error.str());
+        string msg = "Got "+to_string(npairs)+" npairs for " + _gname +".";
+        throw_error(msg);
         return false;
     }
 
@@ -79,9 +75,8 @@ HE2CF::get_vgroup_field_refids(const string& _gname,
             // I believe this is wrong. Use DAP's internal error to throw an error.KY 2011-4-26 
             Vdetach(vgroup_id);
             Vend(file_id);
-            ostringstream error;
-            error  << "failed to get tag / ref";
-            throw_error(error.str());
+            string msg = "Failed to get tag / ref.";
+            throw_error(msg);
             return false;            
         }
         
@@ -95,9 +90,8 @@ HE2CF::get_vgroup_field_refids(const string& _gname,
             if (FAIL == vgroup_cid) {
                 Vdetach(vgroup_id);
                 Vend(file_id);
-                ostringstream error;
-                error  << "cannot obtain the vgroup id";
-                throw_error(error.str());
+                string msg = "Cannot obtain the vgroup id.";
+                throw_error(msg);
                 return false;
             }
             
@@ -106,9 +100,8 @@ HE2CF::get_vgroup_field_refids(const string& _gname,
                 Vdetach(vgroup_cid);
                 Vdetach(vgroup_id);
                 Vend(file_id);
-                ostringstream error;
-                error  << "cannot obtain the vgroup id";
-                throw_error(error.str());
+                string msg = "Cannot obtain the vgroup id.";
+                throw_error(msg);
                 return false;
             }
 
@@ -123,9 +116,9 @@ HE2CF::get_vgroup_field_refids(const string& _gname,
             if (FAIL == Vdetach(vgroup_cid)) {
                 Vdetach(vgroup_id);
                 Vend(file_id);
-                ostringstream error;
-                error  << "cannot close the vgroup "<< cvgroup_name <<"Successfully";
-                throw_error(error.str());
+                ostringstream msg;
+                msg  << "cannot close the vgroup "<< cvgroup_name <<"Successfully";
+                throw_error(msg.str());
                 return false;
             }
 
@@ -136,9 +129,8 @@ HE2CF::get_vgroup_field_refids(const string& _gname,
 
     if (FAIL == Vdetach(vgroup_id)) {
         Vend(file_id);
-        ostringstream error;
-        error  << "cannot close the vgroup "<< _gname <<"Successfully";
-        throw_error(error.str());
+        string msg ="cannot close the vgroup "+ _gname + "Successfully.";
+        throw_error(msg);
         return false;
     }   
     return true;
@@ -153,11 +145,8 @@ HE2CF::open_sd(const string& _filename,const int sd_id_in)
         == FAIL){
         if(file_id != -1) 
             Vend(file_id);
-        ostringstream error;
-        error << "Failed to call SDfileinfo() on "
-              << _filename
-              <<  " file.";
-        throw_error(error.str());
+        string msg = "Failed to call SDfileinfo() on " +_filename + " file.";
+        throw_error(msg);
         return false;
     }
     return true;
@@ -169,9 +158,8 @@ HE2CF::open_vgroup(const string& _filename,const int file_id_in)
 
     file_id = file_id_in;
     if (Vstart(file_id) < 0){
-        ostringstream error;        
-        error << "Failed to call Vstart on " << _filename << endl;
-        throw_error(error.str());        
+        string msg = "Failed to call Vstart on " + _filename +".";
+        throw_error(msg);        
         return false;
     }
     return true;
@@ -193,9 +181,8 @@ bool HE2CF::set_non_ecsmetadata_attrs() {
         int32 attr_count = 0;
         if(SDattrinfo(sd_id, i, temp_name, &attr_type, &attr_count) == FAIL) {
             Vend(file_id);
-            ostringstream error;
-            error <<  "Fail to obtain SDS global attribute info."  << endl;
-            throw_error(error.str());
+            string msg = "Fail to obtain SDS global attribute info.";
+            throw_error(msg);
         }
        
         string attr_namestr(temp_name);
@@ -235,9 +222,8 @@ bool HE2CF::set_non_ecsmetadata_attrs() {
 
         if(SDreadattr(sd_id, i, attr_data.data()) == FAIL){
             Vend(file_id);
-            ostringstream error;
-            error <<  "Fail to read SDS global attributes"  << endl;
-            throw_error(error.str());
+            string msg = "Fail to read SDS global attributes.";
+            throw_error(msg);
 
         }
 
@@ -302,9 +288,8 @@ bool HE2CF::set_metadata(const string&  metadata_basename,vector<string>& non_nu
         int32 attr_count = 0;
         if(SDattrinfo(sd_id, i, temp_name, &attr_type, &attr_count) == FAIL) {
             Vend(file_id);
-            ostringstream error;
-            error <<  "Fail to obtain SDS global attribute info."  << endl;
-            throw_error(error.str());
+            string msg = "Fail to obtain SDS global attribute info.";
+            throw_error(msg);
         }
 
         string temp_name_str(temp_name);
@@ -369,7 +354,7 @@ void HE2CF::arrange_list(list<string> & sl1, list<string>&sl2,vector<string>&v1,
         size_t dot_pos = name.find_first_of(".");
 
         if((dot_pos+1)==name.size()) 
-            throw InternalErr(__FILE__, __LINE__,"Should have characters or numbers after ." );
+            throw BESInternalError("Should have characters or numbers after.",__FILE__, __LINE__);
 
         string str_after_dot = name.substr(dot_pos+1);
         stringstream sstr(str_after_dot);
@@ -390,9 +375,10 @@ void HE2CF::arrange_list(list<string> & sl1, list<string>&sl2,vector<string>&v1,
         }
         else {// .1 or .2 etc. after the main ECS metadata name 
             sl1.push_back(name);
-            if (3 == flag)
-                throw InternalErr(__FILE__, __LINE__,
-                      "ecs metadata suffix .1 and .0.1 cannot exist at the same file" );
+            if (3 == flag) {
+                string msg = "ecs metadata suffix .1 and .0.1 cannot exist at the same file.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
+            }
             if (flag !=2)
                 flag = 2;
         }
@@ -401,7 +387,7 @@ void HE2CF::arrange_list(list<string> & sl1, list<string>&sl2,vector<string>&v1,
         // have two dots in the ECS name.
         sl2.push_back(name);
         if (2 == flag)
-            throw InternalErr(__FILE__, __LINE__,"ecs metadata suffix .1 and .0.1 cannot exist at the same file" );
+            throw BESInternalError("ecs metadata suffix .1 and .0.1 cannot exist at the same file.",__FILE__, __LINE__);
         if (flag !=3)
             flag = 3;
     }
@@ -414,9 +400,8 @@ void HE2CF::obtain_SD_attr_value(const string& attrname, string &cur_data) const
     int32 sds_index = SDfindattr(sd_id, attrname.c_str());
     if(sds_index == FAIL){
         Vend(file_id);
-        ostringstream error;
-        error <<  "Failed to obtain the SDS global attribute"  << attrname << endl;
-        throw InternalErr(__FILE__, __LINE__,error.str());
+        string msg = "Failed to obtain the SDS global attribute " + attrname +".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // H4_MAX_NC_NAME is from the user guide example. It's 256.
@@ -426,9 +411,8 @@ void HE2CF::obtain_SD_attr_value(const string& attrname, string &cur_data) const
 
     if(SDattrinfo(sd_id, sds_index, temp_name, &type, &count) == FAIL) {
         Vend(file_id);
-        ostringstream error;
-        error <<  "Failed to obtain the SDS global attribute"  << attrname << "information" << endl;
-        throw InternalErr(__FILE__, __LINE__,error.str());
+        string msg = "Failed to obtain the SDS global attribute " + attrname + " information.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     vector<char> attrvalue;
@@ -436,10 +420,8 @@ void HE2CF::obtain_SD_attr_value(const string& attrname, string &cur_data) const
 
     if(SDreadattr(sd_id, sds_index, attrvalue.data()) == FAIL){
         Vend(file_id);
-        ostringstream error;
-        error <<  "Failed to read the SDS global attribute"  << attrname << endl;
-        throw InternalErr(__FILE__, __LINE__,error.str());
-
+        string msg = "Failed to read the SDS global attribute" + attrname +".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Leave the following #if 0 #endif block.
@@ -450,7 +432,7 @@ void HE2CF::obtain_SD_attr_value(const string& attrname, string &cur_data) const
 #endif
 
     if(attrvalue[count] != '\0') 
-        throw InternalErr(__FILE__,__LINE__,"the last character of the attribute buffer should be nullptr");
+        throw BESInternalError("The last character of the attribute buffer should be nullptr.",__FILE__,__LINE__);
 
     // No need to escape the special characters since they are ECS metadata. Will see. KY 2013-10-14
     cur_data.resize(attrvalue.size()-1);
@@ -474,9 +456,8 @@ bool HE2CF::set_vgroup_map(int32 _refid,bool isgeo)
     int32 vgroup_id = Vattach(file_id, _refid, "r");
     if (FAIL == vgroup_id) {
         Vend(file_id);
-        ostringstream error;
-        error <<  "Fail to attach the vgroup " ;
-        throw_error(error.str());
+        string msg = "Fail to attach the vgroup. " ;
+        throw_error(msg);
         return false;
     }
 
@@ -484,9 +465,8 @@ bool HE2CF::set_vgroup_map(int32 _refid,bool isgeo)
     if (FAIL == npairs) {
         Vdetach(vgroup_id);
         Vend(file_id);
-        ostringstream error;
-        error <<  "Fail to obtain the number of objects in a group " ;
-        throw_error(error.str());
+        string msg = "Fail to obtain the number of objects in a group. " ;
+        throw_error(msg);
         return false;
     }
     
@@ -499,9 +479,8 @@ bool HE2CF::set_vgroup_map(int32 _refid,bool isgeo)
         if (Vgettagref(vgroup_id, i, &tag2, &ref2) < 0){
             Vdetach(vgroup_id);
             Vend(file_id);
-            ostringstream error;
-            error <<  "Vgettagref failed for vgroup_id=."  << vgroup_id;
-            throw_error(error.str());
+            string msg = "Vgettagref failed for vgroup_id= " + to_string(vgroup_id)+".";
+            throw_error(msg);
             return false;
         }
         
@@ -511,9 +490,8 @@ bool HE2CF::set_vgroup_map(int32 _refid,bool isgeo)
             if (FAIL == sds_index) {
                 Vdetach(vgroup_id);
                 Vend(file_id);
-                ostringstream error;
-                error <<  "Cannot obtain the SDS index ";
-                throw_error(error.str());
+                string msg = "Cannot obtain the SDS index.";
+                throw_error(msg);
                 return false;
             }
 
@@ -521,9 +499,8 @@ bool HE2CF::set_vgroup_map(int32 _refid,bool isgeo)
             if (FAIL == sds_id) {
                 Vdetach(vgroup_id);
                 Vend(file_id);
-                ostringstream error;
-                error <<  "Cannot obtain the SDS ID ";
-                throw_error(error.str());
+                string msg = "Cannot obtain the SDS ID. ";
+                throw_error(msg);
                 return false;
             }
             
@@ -535,9 +512,8 @@ bool HE2CF::set_vgroup_map(int32 _refid,bool isgeo)
             if(FAIL == SDgetinfo(sds_id, buf, &rank, dimsizes, &datatype, &num_attrs)) {
                 Vdetach(vgroup_id);
                 Vend(file_id);
-                ostringstream error;
-                error <<  "Cannot obtain the SDS info.";
-                throw_error(error.str());
+                string msg = "Cannot obtain the SDS info.";
+                throw_error(msg);
                 return false;
             }
             if(false == isgeo) 
@@ -554,17 +530,15 @@ bool HE2CF::set_vgroup_map(int32 _refid,bool isgeo)
 
                 Vdetach(vgroup_id);
                 Vend(file_id);
-                ostringstream error;
-                error <<  "VSattach failed for file_id=."  << file_id;
-                throw_error(error.str());
+                string msg = "VSattach failed for file_id= " + to_string(file_id) + ".";
+                throw_error(msg);
             }
             if (FAIL == VSgetname(vid, buf)) {
 
                 Vdetach(vgroup_id);
                 Vend(file_id);
-                ostringstream error;
-                error <<  "VSgetname failed for file_id=."  << file_id;
-                throw_error(error.str());
+                string msg = "VSgetname failed for file_id= " +to_string(file_id) + ".";
+                throw_error(msg);
             }
             if(false == isgeo) 
                 vg_dvd_map[string(buf)] = ref2;
@@ -575,9 +549,8 @@ bool HE2CF::set_vgroup_map(int32 _refid,bool isgeo)
 
                 Vdetach(vgroup_id);
                 Vend(file_id);
-                ostringstream error;
-                error <<  "VSdetach failed for file_id=."  << file_id;
-                throw_error(error.str());
+                string msg = "VSdetach failed for file_id= "  + to_string(file_id) + ".";
+                throw_error(msg);
 
             }
         }// if 
@@ -585,9 +558,8 @@ bool HE2CF::set_vgroup_map(int32 _refid,bool isgeo)
 
     if (FAIL == Vdetach(vgroup_id)){
         Vend(file_id);
-        ostringstream error;
-        error <<  "VSdetach failed for file_id=."  << file_id;
-        throw_error(error.str());
+        string msg = "VSdetach failed for file_id= "  + to_string(file_id) + ".";
+        throw_error(msg);
     }
     
     return true;
@@ -647,9 +619,8 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname,int _fieldtype)
     if (FAIL == status) {
         Vend(file_id);
         SDendaccess(_sds_id);
-        ostringstream error;
-        error <<  "Cannot obtain the SDS info. ";
-        throw_error(error.str());
+        string msg = "Cannot obtain the SDS info. ";
+        throw_error(msg);
 
     }
     AttrTable *at = das->get_table(_newfname);
@@ -703,12 +674,11 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname,int _fieldtype)
         if(-1 == llcv_ignore_offset && 2 == llcv_ignore_scale){
             SDendaccess(_sds_id);
             Vend(file_id);
-            ostringstream error;
-            error <<"The latitude or longitude has <scale_factor> and <add_offset> attributes, "
-                  <<" the latitude or longitude have integer type and <add_offset> is not 0, "
-                  <<" we don't support such a case in the current implementation, "
-                  <<" please report to eoshelp@hdfgroup.org if you encounter this situation.";
-            throw_error(error.str());
+            string msg = "The latitude or longitude has <scale_factor> and <add_offset> attributes, ";
+            msg +=" the latitude or longitude have integer type and <add_offset> is not 0, ";
+            msg +=" we don't support such a case in the current implementation, ";
+            msg +=" please report to eoshelp@hdfgroup.org if you encounter this situation.";
+            throw_error(msg);
         }
     }
 
@@ -718,9 +688,8 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname,int _fieldtype)
         if (status < 0){
             Vend(file_id);
             SDendaccess(_sds_id);
-            ostringstream error;
-            error << "SDattrinfo() failed on " << buf_attr;
-            throw_error(error.str());
+            string msg = "SDattrinfo failed.";
+            throw_error(msg);
         }        
 
         if(true == v_has_coordinates) {
@@ -748,9 +717,9 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname,int _fieldtype)
         if (status < 0){
             Vend(file_id);
             SDendaccess(_sds_id);
-            ostringstream error;
-            error << "SDreadattr() failed on " << buf_attr << endl;
-            throw_error(error.str());
+            ostringstream msg;
+            msg << "SDreadattr() failed on " << buf_attr << endl;
+            throw_error(msg.str());
         }
 
         // Handle character type attribute as a string.
@@ -782,9 +751,8 @@ HE2CF::write_attr_sd(int32 _sds_id, const string& _newfname,int _fieldtype)
 
     status = SDendaccess(_sds_id); 
     if(status < 0) {
-        ostringstream error;
-        error << "SDendaccess failed on variable  " << _newfname;
-        throw_error(error.str());
+        string msg = "SDendaccess failed on variable  " + _newfname +".";
+        throw_error(msg);
     }
 
     return true;
@@ -800,30 +768,24 @@ bool HE2CF::write_attr_vdata(int32 _vd_id, const string& _newfname, int _fieldty
     int vid = 0;
     
     if ((vid = VSattach(file_id, _vd_id, "r")) < 0) {
-
         Vend(file_id);
-       
-        ostringstream error;
-        error <<  "VSattach failed.";
-        throw_error(error.str());
+        string msg = "VSattach failed.";
+        throw_error(msg);
     }
     
     // Don't use VSnattrs - it returns the TOTAL number of attributes 
     // of a vdata and its fields. We should use VSfnattrs.
     count = VSfnattrs(vid, _HDF_VDATA);      
     if (FAIL == count) {
-
         VSdetach(vid);
         Vend(file_id);
-        ostringstream error;
-        error <<  "VSfnattrs failed.";
-        throw_error(error.str());
+        string msg = "VSfnattrs failed.";
+        throw_error(msg);
     }
 
     AttrTable *at = das->get_table(_newfname);
     if (!at)
         at = das->add_table(_newfname, new AttrTable);
-
 
     //Check if having the "coordinates" attribute when fieldtype is 0
     bool v_has_coordinates = false;
@@ -846,9 +808,8 @@ bool HE2CF::write_attr_vdata(int32 _vd_id, const string& _newfname, int _fieldty
                        &number_type, &count_v, &size) < 0) {
             VSdetach(vid);
             Vend(file_id);
-            ostringstream error;
-            error << "VSattrinfo failed.";
-            throw_error(error.str());
+            string msg = "VSattrinfo failed.";
+            throw_error(msg);
         }
 
         if(true == v_has_coordinates) {
@@ -868,9 +829,8 @@ bool HE2CF::write_attr_vdata(int32 _vd_id, const string& _newfname, int _fieldty
             // problem: clean up and throw an exception
             VSdetach(vid);
             Vend(file_id);
-            ostringstream error;            
-            error << "VSgetattr failed.";
-            throw_error(error.str());
+            string msg = "VSgetattr failed.";
+            throw_error(msg);
         }
         // Handle character type attribute as a string.
 	if (number_type == DFNT_CHAR || number_type == DFNT_UCHAR8) {
@@ -906,8 +866,7 @@ bool HE2CF::write_attr_vdata(int32 _vd_id, const string& _newfname, int _fieldty
 void
 HE2CF::throw_error(const string& _error)
 {
-    throw InternalErr(__FILE__, __LINE__,
-                      _error);        
+    throw BESInternalError(_error,__FILE__, __LINE__);
 }
 
 
@@ -923,9 +882,8 @@ HE2CF::close()
     // Close Vgroup interface.
     int istat = Vend(file_id);
     if(istat == FAIL){
-        ostringstream error;                
-        error << "Failed to call Vend in HE2CF::close.";
-        throw_error(error.str());        
+        string msg = "Failed to call Vend in HE2CF::close.";
+        throw_error(msg);        
         return false;
     }
     
@@ -943,23 +901,20 @@ bool
 HE2CF::open(const string& _filename,const int hc_sd_id, const int hc_file_id)
 {
     if(_filename == ""){
-        ostringstream error;                
-        error << "=open(): filename is empty.";
-        throw_error(error.str());        
+        string msg = "=open(): filename is empty.";
+        throw_error(msg);        
         return false;
     }
     
     if(!open_vgroup(_filename,hc_file_id)){
-        ostringstream error;                
-        error << "=open(): failed to open vgroup.";
-        throw_error(error.str());        
+        string msg = "=open(): failed to open vgroup.";
+        throw_error(msg);        
         return false;        
     }
     
     if(!open_sd(_filename,hc_sd_id)){
-        ostringstream error;                
-        error << "=open(): failed to open sd.";
-        throw_error(error.str());        
+        string msg = "=open(): failed to open sd.";
+        throw_error(msg);        
         return false;
     }
     
@@ -1188,9 +1143,8 @@ HE2CF::check_scale_offset(int32 _sds_id, bool is_scale) {
                        &rank, dimsizes, &datatype, &num_attrs);
     if (FAIL == status) {
         SDendaccess(_sds_id);
-        ostringstream error;
-        error <<  "Cannot obtain the SDS info. ";
-        throw_error(error.str());
+        string msg = "Cannot obtain the SDS info. ";
+        throw_error(msg);
     }
  
     bool  has_so    = false;
@@ -1204,9 +1158,8 @@ HE2CF::check_scale_offset(int32 _sds_id, bool is_scale) {
         status = SDattrinfo(_sds_id, j, buf_attr, &datatype, &n_values);
         if (status < 0){
             SDendaccess(_sds_id);
-            ostringstream error;
-            error << "SDattrinfo() failed on " << buf_attr;
-            throw_error(error.str());
+            string msg =  "SDattrinfo() failed. ";
+            throw_error(msg);
         }        
      
         if(!strncmp(buf_attr, so_name.c_str(), H4_MAX_NC_NAME)) {
@@ -1227,9 +1180,8 @@ HE2CF::check_scale_offset(int32 _sds_id, bool is_scale) {
         status = SDreadattr(_sds_id, so_index, value.data());
         if (status < 0){
             SDendaccess(_sds_id);
-            ostringstream error;
-            error << "SDreadattr() failed on the attribute scale_factor."  << endl;
-            throw_error(error.str());
+            string msg = "SDreadattr() failed on the attribute scale_factor.";
+            throw_error(msg);
         }
         // If this attribute is "scale_factor",
         if(true == is_scale) {

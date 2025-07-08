@@ -13,7 +13,6 @@
 #include <sstream>
 #include <cassert>
 #include <libdap/debug.h>
-#include <libdap/InternalErr.h>
 #include <BESInternalError.h>
 #include <BESDebug.h>
 #include <BESLog.h>

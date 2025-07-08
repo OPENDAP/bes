@@ -12,9 +12,9 @@
 #include <sstream>
 #include <cassert>
 #include <libdap/debug.h>
-#include <libdap/InternalErr.h>
 #include <BESDebug.h>
 #include <BESLog.h>
+#include <BESInternalError.h>
 
 #include "HDFCFUtil.h"
 #include "HDFEOS2Array_RealField.h"
@@ -1510,7 +1510,7 @@ HDFEOS2Array_RealField::write_dap_data_scale_comp(int32 gridid,
         default:
             release_mod1b_res(reflectance_scales,reflectance_offsets,
                               radiance_scales,radiance_offsets);
-            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw BESInternalError("Unsupported data type.",__FILE__, __LINE__);
     }
 
     release_mod1b_res(reflectance_scales,reflectance_offsets,radiance_scales,radiance_offsets);
@@ -1553,7 +1553,7 @@ HDFEOS2Array_RealField::write_dap_data_disable_scale_comp(int32 gridid,
 
     }
     else 
-        throw InternalErr (__FILE__, __LINE__, "It should be either grid or swath.");
+        throw BESInternalError("It should be either grid or swath.",__FILE__, __LINE__);
 
 
     // tmp_rank and tmp_dimlist are two dummy variables 
