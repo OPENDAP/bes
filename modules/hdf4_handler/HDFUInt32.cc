@@ -41,7 +41,7 @@
 
 #ifndef DONT_HAVE_UINT
 
-#include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include "HDFUInt32.h"
 
 using namespace libdap;
@@ -60,8 +60,7 @@ BaseType *HDFUInt32::ptr_duplicate()
 
 bool HDFUInt32::read()
 {
-    throw InternalErr(__FILE__, __LINE__,
-                      "Unimplemented read method called.");
+    throw BESInternalError("Unimplemented read method called.",__FILE__, __LINE__);
 }
 
 #endif                          // DONT_HAVE_UINT
