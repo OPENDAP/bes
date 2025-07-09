@@ -120,7 +120,7 @@
 #include "BESStopWatch.h"
 #include "DapFunctionUtils.h"
 #include "RequestServiceTimer.h"
-#include "../dispatch/BESContextManager.h"
+#include "BESContextManager.h"
 
 using namespace std;
 using namespace libdap;
