@@ -698,7 +698,7 @@ read_objects_base_type(D4Group * d4_grp, hid_t pid, const string & varname, cons
         // This essentially stores in the struct.
         ar->set_memneed(dt_inst.need);
         ar->set_numdim(dt_inst.ndims);
-        ar->set_numelm((dt_inst.nelmts));
+        ar->set_numelm(dt_inst.nelmts);
         ar->set_varpath(varname);
 
         // If we have dimension names(dimension scale is used.),we will see if we can add the names.       
@@ -996,7 +996,7 @@ void map_h5_attrs_to_dap4(hid_t h5_objid,D4Group* d4g,BaseType* d4b,Structure * 
             sflag << flag;
             string msg = "The add_dap4_attr flag has to be either 0,1 or 2.";
             msg +="The current flag is "+sflag.str();
-            delete d4_attr;
+            d4_attr_unique.reset();
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
     } // for (int j = 0; j < num_attr; j++)
@@ -1094,15 +1094,15 @@ void map_h5_dset_hardlink_to_d4(hid_t h5_dsetid,const string & full_path, BaseTy
     if(false == oid.empty()) {
 
         auto d4_hlinfo_unique = make_unique<D4Attribute>("HDF5_HARDLINK",attr_str_c);
-        auto d4_hlinfo = d4_hlinfo_unique.release();
+        auto d4_hlinfo = d4_hlinfo_unique.get();
         d4_hlinfo->add_value(obj_paths.get_name(oid));
  
         if (1 == flag) 
-            d4b->attributes()->add_attribute_nocopy(d4_hlinfo);
+            d4b->attributes()->add_attribute_nocopy(d4_hlinfo_unique.release());
         else if ( 2 == flag)
-            d4s->attributes()->add_attribute_nocopy(d4_hlinfo);
+            d4s->attributes()->add_attribute_nocopy(d4_hlinfo_unique.release());
         else 
-            delete d4_hlinfo;
+            d4_hlinfo_unique.reset();
     }
 
 }
@@ -2464,8 +2464,8 @@ void add_coord_maps(D4Group *d4_grp, Array *var, vector<string> &coord_names,
                 if (*cv_it == t_a->FQN()) {
     
                     // Add the maps
-                    auto d4_map = new D4Map(t_a->FQN(), t_a);
-                    var->maps()->add_map(d4_map);
+                    auto d4_map_unique = make_unique<D4Map>(t_a->FQN(), t_a);
+                    var->maps()->add_map(d4_map_unique.release());
 
                     // Need to add this coordinate to the coname_array_maps 
                     coname_array_maps.emplace(t_a->FQN(),t_a);
