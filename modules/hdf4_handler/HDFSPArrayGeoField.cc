@@ -183,13 +183,13 @@ bool HDFSPArrayGeoField::read ()
         // We don't handle any OtherHDF products
         case OTHERHDF:
         {
-            throw BESInternalError("Unsupported HDF files",__FILE__, __LINE__);
+            throw BESInternalError("Unsupported HDF files.",__FILE__, __LINE__);
 
         }
         default:
         {
 
-            throw BESInternalError("Unsupported HDF files",__FILE__, __LINE__);
+            throw BESInternalError("Unsupported HDF files.",__FILE__, __LINE__);
 
         }
     }
@@ -578,7 +578,7 @@ HDFSPArrayGeoField::readtrmml3_v7 (const int32 * offset32,
     status = SDreadattr (sdid, attr_index, attr_value.data());
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw BESInternalError("SDreadattr failed ",__FILE__, __LINE__);
+        throw BESInternalError("SDreadattr failed.",__FILE__, __LINE__);
     }
 
     float lat_start = 0.;
@@ -832,7 +832,7 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
                 if ( 0 == last_tempseg || 0 == tempseg) {
                     SDendaccess(sdsid);
                     HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                    throw BESInternalError("Segments cannot be zero",__FILE__, __LINE__);
+                    throw BESInternalError("Segments cannot be zero.",__FILE__, __LINE__);
                 }
 
                 int interp_val_index = 0;
@@ -913,7 +913,7 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
         default:
             SDendaccess (sdsid);
             HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-            throw BESInternalError("unsupported data type.",__FILE__, __LINE__);
+            throw BESInternalError("Unsupported data type.",__FILE__, __LINE__);
     }
 
     r = SDendaccess (sdsid);
@@ -1393,7 +1393,7 @@ HDFSPArrayGeoField::readceravgsyn (int32 * offset32, int32 * count32,
         case DFNT_UINT32:
             SDendaccess (sdsid);
             HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-            throw BESInternalError("datatype is not float, unsupported.",__FILE__, __LINE__);
+            throw BESInternalError("Datatype is not float, unsupported.",__FILE__, __LINE__);
 
         case DFNT_FLOAT32:
         {
@@ -1446,7 +1446,7 @@ HDFSPArrayGeoField::readceravgsyn (int32 * offset32, int32 * count32,
         default:
             SDendaccess (sdsid);
             HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-            throw BESInternalError("unsupported data type.",__FILE__, __LINE__);
+            throw BESInternalError("Unsupported data type.",__FILE__, __LINE__);
     }
 
     r = SDendaccess (sdsid);
@@ -1529,7 +1529,7 @@ HDFSPArrayGeoField::readceres4ig (const int32 * offset32, const int32 * count32,
         case DFNT_FLOAT64:
             SDendaccess (sdsid);
             HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-            throw BESInternalError("datatype is not float, unsupported.",__FILE__, __LINE__);
+            throw BESInternalError("Datatype is not float, unsupported.",__FILE__, __LINE__);
         case DFNT_FLOAT32:
         {
             vector<float32> val;
@@ -1631,7 +1631,7 @@ HDFSPArrayGeoField::readceres4ig (const int32 * offset32, const int32 * count32,
         default:
             SDendaccess (sdsid);
             HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-            throw BESInternalError("unsupported data type.",__FILE__,__LINE__);
+            throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
     }
 
     r = SDendaccess (sdsid);

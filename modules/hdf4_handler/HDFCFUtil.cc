@@ -1840,7 +1840,7 @@ void HDFCFUtil::check_obpg_global_attrs(HDFSP::File *f, std::string & scaling,
                     GET_SLOPE(FLOAT32, float)
                     GET_SLOPE(FLOAT64, double)
                     default:
-                        throw BESInternalError("unsupported data type.",__FILE__,__LINE__);
+                        throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
 #undef GET_SLOPE
                 } 
 #if 0
@@ -1864,7 +1864,7 @@ void HDFCFUtil::check_obpg_global_attrs(HDFSP::File *f, std::string & scaling,
                     GET_INTERCEPT(FLOAT32, float)
                     GET_INTERCEPT(FLOAT64, double)
                     default:
-                        throw BESInternalError("unsupported data type.",__FILE__,__LINE__);
+                        throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
 #undef GET_INTERCEPT
                 } 
 #if 0
@@ -1922,7 +1922,7 @@ void HDFCFUtil::add_obpg_special_attrs(const HDFSP::File*f,DAS &das,
                 GET_SLOPE(FLOAT32, float)
                 GET_SLOPE(FLOAT64, double)
                 default:
-                    throw BESInternalError("unsupported data type.",__FILE__,__LINE__);
+                    throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
 
 #undef GET_SLOPE
                 } 
@@ -1947,7 +1947,7 @@ void HDFCFUtil::add_obpg_special_attrs(const HDFSP::File*f,DAS &das,
                 GET_INTERCEPT(FLOAT32, float)
                 GET_INTERCEPT(FLOAT64, double)
                 default:
-                    throw BESInternalError("unsupported data type.",__FILE__,__LINE__);
+                    throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
 
 #undef GET_INTERCEPT
                 } 
@@ -3030,7 +3030,7 @@ void HDFCFUtil::map_eos2_objects_attrs(libdap::DAS &das,const string &filename) 
                 Vdetach(vgroup_id);
                 Vend(file_id);
                 Hclose(file_id);
-                throw BESInternalError("map_eos2_one_object_attrs_wrapper failed.",__FILE__,__LINE__);
+                throw; 
             }
             Vdetach (vgroup_id);
         }// for  
@@ -3327,7 +3327,7 @@ void HDFCFUtil::parser_trmm_v7_gridheader(const vector<char>& value,
             lon_res = strtof(lonres_str.c_str(),nullptr);
         }
         else 
-            throw BESInternalError("longitude resolution is not right for TRMM level 3 products.",__FILE__,__LINE__);
+            throw BESInternalError("Longitude resolution is not right for TRMM level 3 products.",__FILE__,__LINE__);
     }
     else
         throw BESInternalError("The TRMM grid LongitudeResolution doesn't exist.",__FILE__,__LINE__);
@@ -3882,7 +3882,7 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
         HANDLE_CASE(DFNT_UINT32, HDFUInt32) 
         HANDLE_CASE(DFNT_UCHAR8, HDFByte) 
         default: 
-            throw BESInternalError("unsupported data type.",__FILE__,__LINE__);
+            throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
 #undef HANDLE_CASE 
         } 
 

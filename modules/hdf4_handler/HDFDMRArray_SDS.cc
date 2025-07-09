@@ -71,13 +71,13 @@ HDFDMRArray_SDS::read ()
     if (r != 0) {
         SDendaccess (sdsid);
         SDend(sdid);
-        string msg = "SDreaddata failed";
+        string msg = "SDreaddata failed.";
         throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     val2buf(buf.data());
     set_read_p(true);
-    SDendaccess (sdsid);
+    SDendaccess(sdsid);
     SDend(sdid);
     
     return true;

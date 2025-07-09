@@ -97,7 +97,7 @@ HDFDMRArray_VD::read_one_field_vdata(int32 vdata_id,const vector<int>&offset, co
 
     int32 fdorder = VFfieldorder(vdata_id,0);
     if (fdorder == FAIL) {
-        throw BESInternalError("VFfieldorder failed",__FILE__, __LINE__);
+        throw BESInternalError("VFfieldorder failed.",__FILE__, __LINE__);
     }
 
     const char *fieldname = VFfieldname(vdata_id,0);

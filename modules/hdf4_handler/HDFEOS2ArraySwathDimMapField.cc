@@ -618,7 +618,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
         if (FAIL == sdsindex) {
             if (true == isgeofile || false == check_pass_fileid_key) 
                 SDend(sdfileid);
-            string msg = "Cannot obtain the index of " + fieldname +".";;
+            string msg = "Cannot obtain the index of " + fieldname +".";
             throw BESInternalError(msg,__FILE__,__LINE__);
         }
 

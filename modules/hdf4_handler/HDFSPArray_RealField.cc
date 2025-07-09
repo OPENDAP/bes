@@ -54,7 +54,7 @@ HDFSPArray_RealField::read ()
     short dtype_size = HDFCFUtil::obtain_type_size(dtype);
     if (-1 == dtype_size) {
         string msg = "Wrong data type size for the variable ";
-        msg += name();
+        msg = msg + name() + ".";
         throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
@@ -108,7 +108,7 @@ HDFSPArray_RealField::read ()
         dtype_size = HDFCFUtil::obtain_type_size(dtype);
         if (-1 == dtype_size) {
             string msg = "Wrong data type size for the variable ";
-            msg += name();
+            msg = msg + name() +".";
             throw BESInternalError(msg,__FILE__,__LINE__);
         }
         int expected_file_size = dtype_size *total_elems;
@@ -288,7 +288,7 @@ HDFSPArray_RealField::read ()
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                string msg = "SDreaddata failed";
+                string msg = "SDreaddata failed.";
                 throw BESInternalError(msg,__FILE__,__LINE__);
             }
 

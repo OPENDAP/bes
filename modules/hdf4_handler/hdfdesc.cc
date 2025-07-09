@@ -359,7 +359,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
 
     // grid_or_swath - 0: grid, 1: swath
     if (grid_or_swath < 0 ||  grid_or_swath > 1)
-        throw BESInternalError("The current type should be either grid or swath",__FILE__,__LINE__);
+        throw BESInternalError("The current type should be either grid or swath.",__FILE__,__LINE__);
 
     /// I. This section retrieve Swath dimension map info.
 
@@ -672,7 +672,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                 }
                 else {
                     delete bt;
-                    throw BESInternalError("The current type should be either grid or swath",__FILE__,__LINE__);
+                    throw BESInternalError("The current type should be either grid or swath.",__FILE__,__LINE__);
                 }
             }
 
@@ -866,7 +866,7 @@ cerr<<"hdfdesc: dim1inc "<<dim1inc <<endl;
                 }
                 else {
                     delete bt;
-                    throw BESInternalError("The current type should be either grid or swath",__FILE__,__LINE__);
+                    throw BESInternalError("The current type should be either grid or swath.",__FILE__,__LINE__);
                 }
  
             }
@@ -876,7 +876,7 @@ cerr<<"hdfdesc: dim1inc "<<dim1inc <<endl;
 
                 if((*it_f)->getRank()!=1){
                     delete bt;
-                    throw BESInternalError("The rank of missing Z dimension field must be 1",__FILE__,__LINE__);
+                    throw BESInternalError("The rank of missing Z dimension field must be 1.",__FILE__,__LINE__);
                 }
 
                 int nelem = ((*it_f)->getCorrectedDimensions()[0])->getSize();
@@ -2931,7 +2931,7 @@ bool read_dds_special_1d_grid(DDS &dds,const HDFSP::File* spf,const string& file
                 else {
                     if(spsdsf->getRank()!=1){
                         delete bt;
-                        throw BESInternalError("The rank of missing Z dimension field must be 1",__FILE__,__LINE__);
+                        throw BESInternalError("The rank of missing Z dimension field must be 1.",__FILE__,__LINE__);
                     }
                     int nelem = (spsdsf->getDimensions()[0])->getSize();
                         
@@ -3736,7 +3736,7 @@ void read_das_simple_cf(DAS &das, int32 sdfd, int32 fileid) {
     // Obtain number of SDS objects and number of SD(file) attributes
     if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL){
         close_vgroup_fileids(fileid,sdfd,-1);
-        throw BESInternalError ("SDfileinfo failed ",__FILE__, __LINE__);
+        throw BESInternalError ("SDfileinfo failed. ",__FILE__, __LINE__);
     }
     
     AttrTable *at = das.add_table("HDF_GLOBAL", new AttrTable);
@@ -4905,14 +4905,14 @@ void exclude_all_sds_refs_in_vgroups(int32 file_id, int32 sdfd, unordered_set<in
     istat = Vstart(file_id);
     if (istat == FAIL) { 
         close_vgroup_fileids(file_id,sdfd,-1);
-        throw BESInternalError("unable to start hdf4 V interface.",__FILE__, __LINE__);
+        throw BESInternalError("Unable to start hdf4 V interface.",__FILE__, __LINE__);
     }
 
     num_lonevg = Vlone(file_id,nullptr,0);
 
     if (num_lonevg == FAIL) {
         close_vgroup_fileids(file_id,sdfd,-1);
-        throw BESInternalError("error in obtaining lone vgroup number.",__FILE__, __LINE__);
+        throw BESInternalError("Error in obtaining lone vgroup number.",__FILE__, __LINE__);
     }
 
     /* obtain object reference array. */
@@ -4935,14 +4935,14 @@ void exclude_all_sds_refs_in_vgroups(int32 file_id, int32 sdfd, unordered_set<in
         int32 vgroup_id = Vattach(file_id,ref_array[lone_vg_number],"r");
         if (vgroup_id ==FAIL) {
             close_vgroup_fileids(file_id,sdfd,-1);
-            throw BESInternalError("error in attaching lone vgroup.",__FILE__, __LINE__);
+            throw BESInternalError("Error in attaching lone vgroup.",__FILE__, __LINE__);
         }
 
         uint16  vclassnamelen; /*Vgroup class name length */
         vector<char> vclass_name;
         if (Vgetclassnamelen(vgroup_id,&vclassnamelen) == FAIL) {
             close_vgroup_fileids(file_id,sdfd,vgroup_id);
-            throw BESInternalError("error in obtaining vgroup class name length.",__FILE__, __LINE__);
+            throw BESInternalError("Error in obtaining vgroup class name length.",__FILE__, __LINE__);
         }
  
         if (vclassnamelen!=0) {
