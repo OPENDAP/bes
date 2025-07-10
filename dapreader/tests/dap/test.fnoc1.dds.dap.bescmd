@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <request reqID="some_unique_value" >
+    <setContext name="dap4_checksums">true</setContext>
     <setContainer name="c" space="catalog">data/dap2/fnoc1.dds</setContainer>
     <define name="d">
 	<container name="c" />

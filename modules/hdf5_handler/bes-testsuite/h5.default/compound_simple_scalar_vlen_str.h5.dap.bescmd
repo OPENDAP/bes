@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<request reqID="some_unique_value" >
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<request reqID="some_unique_value">
+    <setContext name="dap4_checksums">true</setContext>
     <setContext name="dap_format">dap2</setContext>
     <setContainer name="comp_scalar" space="catalog">/data/compound_simple_scalar_vlen_str.h5</setContainer>
     <define name="d">
-	<container name="comp_scalar" />
+        <container name="comp_scalar"/>
     </define>
-    <get type="dap" definition="d" />
+    <get type="dap" definition="d"/>
 </request>

@@ -2,7 +2,7 @@
 
 AT_INIT([bes/modules/netcdf_handler/tests testsuite])
 
-m4_include(AT_TOP_SRCDIR/modules/common//handler_tests_macros.m4)
+m4_include(AT_TOP_SRCDIR/modules/common/handler_tests_macros.m4)
 
 AT_BESCMD_BINARYDATA_RESPONSE_TEST([nc/bears.nc.1.bescmd])
 AT_BESCMD_RESPONSE_TEST([nc/bears.nc.2.bescmd])

@@ -4,9 +4,6 @@
         <Attribute name="DAP4_Checksum_CRC32" type="String">
             removed checksum
         </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
     </Int32>
 </Dataset>
 

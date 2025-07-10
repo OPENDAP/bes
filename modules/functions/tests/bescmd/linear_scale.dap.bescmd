@@ -4,6 +4,7 @@
   <bes:setContext name="dap_explicit_containers">no</bes:setContext>
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
+  <bes:setContext name="dap4_checksums">true</bes:setContext>
   
   <bes:setContainer name="catalogContainer" space="catalog">/functions/tests/data/fnoc.dap</bes:setContainer>
   
