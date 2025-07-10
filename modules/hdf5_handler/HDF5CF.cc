@@ -46,9 +46,23 @@
 
 using namespace HDF5CF;
 
-Var::Var(const Var *var)
+Var::Var(const Var *var):
+    newname(var->newname),
+    name(var->name),
+    fullpath(var->fullpath),
+    dtype(var->dtype),
+    rank(var->rank),
+    comp_ratio(var->comp_ratio),
+    total_elems(var->total_elems),
+    zero_storage_size(var->zero_storage_size),
+    unsupported_attr_dtype(var->unsupported_attr_dtype),
+    unsupported_attr_dspace(var->unsupported_attr_dspace),
+    unsupported_dspace(var->unsupported_dspace),
+    dimnameflag(var->dimnameflag),
+    coord_attr_add_path(var->coord_attr_add_path)
 {
 
+#if 0
     newname = var->newname;
     name = var->name;
     fullpath = var->fullpath;
@@ -63,6 +77,7 @@ Var::Var(const Var *var)
     unsupported_attr_dspace = var->unsupported_attr_dspace;
     dimnameflag = var->dimnameflag;
     coord_attr_add_path = var->coord_attr_add_path;
+#endif
 
     for (const auto &vattr:var->attrs) {
         auto attr_unique = make_unique<Attribute>();
@@ -2554,7 +2569,7 @@ bool File::ignored_dimscale_ref_list(const Var *var) const
 }
 
 // Check if the long string can should be dropped from a dataset or an attribute. Users can set up a BES key to turn it off or on.
-bool File::Check_DropLongStr(const Var *var, const Attribute * attr) 
+bool File::Check_DropLongStr(const Var *var, const Attribute * attr) const
 {
 
     bool drop_longstr = false;

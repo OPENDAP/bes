@@ -2973,13 +2973,14 @@ void EOS5File::Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, const s
         // 2.1. Check if we have the dimension name called "nLevels" for this swath
         if (true == has_vc_attr) {
             string dimname_candidate = "/SWATHS/" + cfswath->name + "/nLevels";
-            for (auto it = tempvardimnamelist.begin(); it != tempvardimnamelist.end(); ++it) {
-                if ((*it).find(dimname_candidate) != string::npos) {
+            //for (auto it = tempvardimnamelist.begin(); it != tempvardimnamelist.end(); ++it) {
+            for (const auto &tvar_dimname:tempvardimnamelist) {
+                if (tvar_dimname.find(dimname_candidate) != string::npos) {
                     hsize_t dimsize_candidate = 0;
-                    if ((cfswath->dimnames_to_dimsizes).find(*it) != (cfswath->dimnames_to_dimsizes).end())
-                        dimsize_candidate = cfswath->dimnames_to_dimsizes[*it];
+                    if ((cfswath->dimnames_to_dimsizes).find(tvar_dimname) != (cfswath->dimnames_to_dimsizes).end())
+                        dimsize_candidate = cfswath->dimnames_to_dimsizes[tvar_dimname];
                     else
-                        throw2("Cannot find the dimension size of the dimension name ", *it);
+                        throw2("Cannot find the dimension size of the dimension name ", tvar_dimname);
 
                     // Note: we don't have to use two loops to create the coordinate variables.
                     // However, there are only 3-4 attributes for this group and so far TES has only 
@@ -2991,7 +2992,7 @@ void EOS5File::Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, const s
 
                             // Should change the attr_value from char type to float type when reading the data
                             // Here just adding a coordinate variable by using this name.
-                            string reduced_dimname = HDF5CFUtil::obtain_string_after_lastslash(*it);
+                            string reduced_dimname = HDF5CFUtil::obtain_string_after_lastslash(tvar_dimname);
                             string orig_dimname = "nLevels";
                             auto EOS5cvar_unique = make_unique<EOS5CVar>();
                             auto EOS5cvar = EOS5cvar_unique.release();
@@ -3007,7 +3008,7 @@ void EOS5File::Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, const s
                             EOS5cvar->dtype = attr->dtype;
                             auto eos5cvar_dim_unique = make_unique<Dimension>(dimsize_candidate);
                             auto eos5cvar_dim = eos5cvar_dim_unique.release();
-                            eos5cvar_dim->name = *it;
+                            eos5cvar_dim->name = tvar_dimname;
                             if (1 == this->eos5cfswaths.size())
                                 eos5cvar_dim->newname = reduced_dimname;
                             else
