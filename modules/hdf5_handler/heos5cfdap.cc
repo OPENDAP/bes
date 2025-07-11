@@ -2261,7 +2261,7 @@ void gen_dap_oneeos5cvar_dmr(D4Group* d4_root,const EOS5CVar* cvar,const hid_t f
                     string msg = "The rank of missing Z dimension field must be 1.";
                     throw BESInternalError(msg,__FILE__,__LINE__);
                 }
-                int nelem = (int)((cvar->getDimensions()[0])->getSize());
+                auto nelem = (int)((cvar->getDimensions()[0])->getSize());
 
                 auto ar_unique = make_unique<HDFEOS5CFMissNonLLCVArray>(
                                                     cvar->getRank(),
@@ -2294,7 +2294,7 @@ void gen_dap_oneeos5cvar_dmr(D4Group* d4_root,const EOS5CVar* cvar,const hid_t f
                     delete bt;
                     throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
                 }
-                int nelem = (int)((cvar->getDimensions()[0])->getSize());
+                auto nelem = (int)((cvar->getDimensions()[0])->getSize());
                 auto ar_unique = make_unique<HDFEOS5CFSpecialCVArray> (
                                                       cvar->getRank(),
                                                       filename,

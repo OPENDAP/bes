@@ -137,7 +137,7 @@ bool HDF5CFStr::read()
         }
 
         char*temp_bp = strval.data();
-        char*onestring = nullptr;
+        const char*onestring = nullptr;
         string final_str ="";
                
         onestring = *(char**)temp_bp;

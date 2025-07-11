@@ -72,7 +72,7 @@ class HDF5Array:public libdap::Array {
     void m_array_of_object_reference(hid_t d_dset_id, std::vector<std::string>& v_str, int64_t nelms,
                                      const std::vector<int64_t>& offset, const std::vector<int64_t> &step) const;
 
-    bool m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id);
+    bool m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) const;
 
     void m_intern_plain_array_data(char *convbuf,hid_t memtype);
     void m_array_of_atomic(hid_t, hid_t,int64_t ,const int64_t *,const int64_t *,const int64_t *);
@@ -146,7 +146,7 @@ class HDF5Array:public libdap::Array {
     /// Reads HDF5 array data into local buffer
     bool read() override;
 
-    string get_VarPath() { return var_path;}
+    string get_VarPath() const { return var_path;}
     /// remembers memory size needed.    
     void set_memneed(size_t need);
 

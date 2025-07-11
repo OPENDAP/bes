@@ -573,7 +573,7 @@ void HDF5CFArray::read_data_NOT_from_mem_cache(bool add_mem_cache,void*buf) {
             vector<string>finstrval;
             finstrval.resize(nelms);
             char*temp_bp = strval.data();
-            char*onestring = nullptr;
+            const char*onestring = nullptr;
             for (int64_t i =0;i<nelms;i++) {
                 onestring = *(char**)temp_bp;
                 if(onestring!=nullptr ) 

@@ -2,7 +2,7 @@ netcdf test {
 dimensions:
 	CAR_Viewing_Angles = 361 ;
 	CentralWavelength = 14 ;
-	Scans = 46546 ;
+	Scans = UNLIMITED ; // (46546 currently)
 	SpectralRange_1032nm = 86 ;
 	SpectralRange_1222nm = 75 ;
 	SpectralRange_1275nm = 84 ;

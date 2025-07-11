@@ -1468,7 +1468,6 @@ BaseType *Get_float_bt(const string &vname, const string &vpath, const string &d
 /// \return pointer to Structure type
 ///
 ///////////////////////////////////////////////////////////////////////////////
-//static Structure *Get_structure(const string &varname,
 Structure *Get_structure(const string &varname,const string &vpath,
                                 const string &dataset,
                                 hid_t datatype,bool is_dap4)

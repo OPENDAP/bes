@@ -141,12 +141,4 @@ Dataset {
     Float32 SpectralParameters_snr_o2_l1b[FakeDim6 = 60][FakeDim5 = 2];
     Float32 SpectralParameters_snr_strong_co2_l1b[FakeDim6 = 60][FakeDim5 = 2];
     Float32 SpectralParameters_snr_weak_co2_l1b[FakeDim6 = 60][FakeDim5 = 2];
-    Int32 Metadata_FirstSoundingId_Time[FakeDim2 = 1];
-    Int32 Metadata_FirstSoundingId_Date[FakeDim2 = 1];
-    Int32 Metadata_LastSoundingId_Time[FakeDim2 = 1];
-    Int32 Metadata_LastSoundingId_Date[FakeDim2 = 1];
-    Int32 RetrievalResults_sounding_id_reference_Time[FakeDim6 = 60];
-    Int32 RetrievalResults_sounding_id_reference_Date[FakeDim6 = 60];
-    Int32 SoundingHeader_sounding_id_Time[FakeDim8 = 649];
-    Int32 SoundingHeader_sounding_id_Date[FakeDim8 = 649];
 } acos_L2s_110419_43_Production_v110110_L2s2800_r01_PolB_110430192739.h5;

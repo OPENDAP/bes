@@ -304,12 +304,4 @@ Dataset {
     Float32 SpectralParameters_signal_o2_fph[FakeDim0 = 6590];
     Float32 SpectralParameters_signal_strong_co2_fph[FakeDim0 = 6590];
     Float32 SpectralParameters_signal_weak_co2_fph[FakeDim0 = 6590];
-    Int32 L1bScSoundingReference_sounding_id_l1b_Time[FakeDim3 = 8364][FakeDim4 = 8];
-    Int32 L1bScSoundingReference_sounding_id_l1b_Date[FakeDim3 = 8364][FakeDim4 = 8];
-    Int32 Metadata_FirstSoundingId_Time[FakeDim5 = 1];
-    Int32 Metadata_FirstSoundingId_Date[FakeDim5 = 1];
-    Int32 Metadata_LastSoundingId_Time[FakeDim5 = 1];
-    Int32 Metadata_LastSoundingId_Date[FakeDim5 = 1];
-    Int32 RetrievalHeader_sounding_id_Time[FakeDim0 = 6590];
-    Int32 RetrievalHeader_sounding_id_Date[FakeDim0 = 6590];
 } oco2_L2StdND_03945a_150330_B6000_150331024816.h5;

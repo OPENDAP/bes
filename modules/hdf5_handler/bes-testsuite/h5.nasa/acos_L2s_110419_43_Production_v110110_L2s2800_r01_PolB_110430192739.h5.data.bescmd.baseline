@@ -5,6 +5,4 @@ Float32 SoundingGeometry_sounding_latitude[FakeDim6 = 2] = {69.0899, 25.2399};
 Float32 SoundingGeometry_sounding_longitude[FakeDim6 = 2] = {-144.955, -174.905};
 Byte SoundingHeader_l2_packaging_qual_flag[FakeDim8 = 1] = {4};
 UInt32 SoundingHeader_sounding_qual_flag[FakeDim6 = 60] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-Int32 SoundingHeader_sounding_id_Time[FakeDim8 = 3] = {1733, 4312, 10852};
-Int32 SoundingHeader_sounding_id_Date[FakeDim8 = 3] = {20110419, 20110419, 20110419};
 

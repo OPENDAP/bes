@@ -882,7 +882,7 @@ bool check_osmapl2s_acosl2s_oco2l1b(hid_t s_root_id, int which_pro) {
                     }
 
                     char *temp_bp = temp_buf.data();
-                    char *onestring = nullptr;
+                    const char *onestring = nullptr;
                     string total_string="";
                         
                     for (int temp_i = 0; temp_i <num_elem; temp_i++) {
@@ -1041,7 +1041,7 @@ void obtain_gm_attr_value(hid_t s_root_id, const char* s_attr_name, string & s_a
 
         char *temp_bp;
         temp_bp = temp_buf.data();
-        char* onestring;
+        const char* onestring;
         for (int temp_i = 0; temp_i <num_elm; temp_i++) {
 
             // This line will assure that we get the real variable length string value.

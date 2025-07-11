@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="S-MODE" space="catalog">/data/oco2_L2StdND_03945a_150330_B6000_150331024816.h5</setContainer>
+    <define name="d">
+	<container name="S-MODE" />
+        <dap4constraint>L1bScSoundingReference_sounding_id_l1b[0:4100:8363][2:3:7]</dap4constraint>
+    </define>
+    <get type="dap" definition="d" />
+</request>
