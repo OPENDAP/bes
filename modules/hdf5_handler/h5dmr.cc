@@ -233,6 +233,8 @@ bool breadth_first(hid_t file_id, hid_t pid, const char *gname,
     return true;
 }
 
+//Internal function to obtain the object names given the group ID and the  object index.
+// Note: the group name is passed as a parameter is for error handling. 
 void obtain_hdf5_object_name(hid_t pid, hsize_t obj_index, const char *gname, vector<char> &oname) {
 
     ssize_t oname_size;
@@ -259,6 +261,10 @@ void obtain_hdf5_object_name(hid_t pid, hsize_t obj_index, const char *gname, ve
     }
 }
 
+
+// Check if this object is an HDF5 external link or a softlink. return true if this is a soft or external link.
+// When handle_softlink is true, we save the softlink information as an attribute. 
+// We don't handle the softlink when the link is under the root now.(We may need to check why doing this way in the future.)
 bool check_soft_external_links(D4Group *par_grp, hid_t pid, int & slinkindex,
                                const char *gname, const vector<char> &oname, bool handle_softlink) {
 
@@ -289,6 +295,7 @@ bool check_soft_external_links(D4Group *par_grp, hid_t pid, int & slinkindex,
     return ret_value;
 }
 
+// Handle the actual dataset. the HDF-EOS5 case is an add-on. 
 void handle_actual_dataset(D4Group *par_grp, hid_t pid, const string &full_path_name, const string &fname,
                            bool use_dimscale, bool is_eos5, eos5_dim_info_t &eos5_dim_info) {
 
@@ -315,6 +322,7 @@ void handle_actual_dataset(D4Group *par_grp, hid_t pid, const string &full_path_
 
 }
 
+// Handle the case when the dimension doesn't have a dimension scale. This is a netCDF case.
 void handle_pure_dimension(D4Group *par_grp, hid_t pid, const vector<char>& oname, bool is_eos5,
                            const string &full_path_name) {
 
@@ -356,6 +364,7 @@ void handle_pure_dimension(D4Group *par_grp, hid_t pid, const vector<char>& onam
 
 }
 
+// Handle the HDF-EOS5 variable. 
 void handle_eos5_datasets(D4Group* par_grp, const char *gname, eos5_dim_info_t &eos5_dim_info) {
 
     // To support HDF-EOS5 grids, we have to add extra variables.
@@ -381,6 +390,7 @@ void handle_eos5_datasets(D4Group* par_grp, const char *gname, eos5_dim_info_t &
     // We need to ensure the special characters are handled.
     bool is_eos5_dims = obtain_eos5_grp_dim(par_grp_name,grppath_to_dims,dim_names);
 
+    // The DAP4 group dimension names need to be added.
     if (is_eos5_dims) {
 
         vector<HE5Dim> grp_eos5_dim = grppath_to_dims[par_grp_name];
@@ -397,6 +407,7 @@ void handle_eos5_datasets(D4Group* par_grp, const char *gname, eos5_dim_info_t &
     }
 }
 
+// Handle a child group. Dimension, coordinate, HDF-EOS5 and Hard link info are required.
 void handle_child_grp(hid_t file_id, hid_t pid, const char *gname,
                       D4Group* par_grp, const char *fname,
                       bool use_dimscale,bool is_eos5,
@@ -680,7 +691,7 @@ read_objects_base_type(D4Group * d4_grp, hid_t pid, const string & varname, cons
 
         // Mark this base type as an DAP4 object
         bt->set_is_dap4(true);
-        read_objects_basetype_attr_hl(varname, bt, dset_id, is_eos5);
+        read_objects_basetype_attr_hl_eos5(varname, bt, dset_id, is_eos5);
 
         // Attach this object to the DAP4 group
         d4_grp->add_var_nocopy(bt);
@@ -735,7 +746,7 @@ read_objects_base_type(D4Group * d4_grp, hid_t pid, const string & varname, cons
         // clear DAP4 dimnames_path vector
         dt_inst.dimnames_path.clear();
 
-        read_objects_basetype_attr_hl(varname, new_var, dset_id,  is_eos5);
+        read_objects_basetype_attr_hl_eos5(varname, new_var, dset_id,  is_eos5);
 
         // Here we need to add grid_mapping information if necessary.
         if (is_eos5_dims && !use_dimscale)
@@ -748,7 +759,7 @@ read_objects_base_type(D4Group * d4_grp, hid_t pid, const string & varname, cons
 }
 
 
-void read_objects_basetype_attr_hl(const string &varname, BaseType *bt, hid_t dset_id,  bool is_eos5) {
+void read_objects_basetype_attr_hl_eos5(const string &varname, BaseType *bt, hid_t dset_id,  bool is_eos5) {
 
     // Mark this base type as an DAP4 object
     bt->set_is_dap4(true);
@@ -2063,7 +2074,6 @@ void add_dap4_coverage_default(D4Group* d4_root, const vector<string>& handled_a
     unordered_map<string, Array*> dsname_array_maps;
     obtain_ds_name_array_maps(d4_root,dsname_array_maps, handled_all_cv_names);
 
-
     // Coordinate to array(Swath or other cases)
     unordered_map<string, Array*> coname_array_maps;
  
@@ -3316,6 +3326,7 @@ void make_attributes_to_cf(BaseType *var, const eos5_dim_info_t &eos5_dim_info) 
     }
 }
 
+//Handler variable length integer and float arrays.
 void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, const string &var_path,
                            const string &filename, hid_t dset_id) {
 
@@ -3406,7 +3417,7 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
     
     new_var = ar->h5dims_transform_to_dap4(d4_grp,temp_dimnames_path);
 
-    read_objects_basetype_attr_hl(var_path, new_var, dset_id,  false);
+    read_objects_basetype_attr_hl_eos5(var_path, new_var, dset_id,  false);
 
     auto vlen_d4_attr_unique = make_unique<D4Attribute>("orig_datatype",attr_str_c);
     auto vlen_d4_attr = vlen_d4_attr_unique.get();
