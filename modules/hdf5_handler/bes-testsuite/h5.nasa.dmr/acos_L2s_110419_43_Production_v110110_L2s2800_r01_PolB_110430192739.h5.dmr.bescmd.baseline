@@ -129,6 +129,21 @@
             <Value>/Metadata/DataFormatType</Value>
         </Attribute>
     </String>
+    <Int64 name="Metadata_FirstSoundingId">
+        <Dim name="/FakeDim2"/>
+        <Attribute name="Shape" type="String">
+            <Value>Scalar</Value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <Value>Signed64</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>FirstSoundingId</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Metadata/FirstSoundingId</Value>
+        </Attribute>
+    </Int64>
     <String name="Metadata_GapStartTime">
         <Dim name="/FakeDim3"/>
         <Attribute name="Shape" type="String">
@@ -294,6 +309,21 @@
             <Value>/Metadata/L2FullPhysicsOperationsVersion</Value>
         </Attribute>
     </String>
+    <Int64 name="Metadata_LastSoundingId">
+        <Dim name="/FakeDim2"/>
+        <Attribute name="Shape" type="String">
+            <Value>Scalar</Value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <Value>Signed64</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>LastSoundingId</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Metadata/LastSoundingId</Value>
+        </Attribute>
+    </Int64>
     <String name="Metadata_LongName">
         <Dim name="/FakeDim2"/>
         <Attribute name="Shape" type="String">
@@ -1076,6 +1106,21 @@
             <Value>/RetrievalResults/retrieved_aerosol_aod_by_type_mid</Value>
         </Attribute>
     </Float32>
+    <Int64 name="RetrievalResults_sounding_id_reference">
+        <Dim name="/FakeDim6"/>
+        <Attribute name="Shape" type="String">
+            <Value>Retrieval_Array</Value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <Value>Signed64</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>sounding_id_reference</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/RetrievalResults/sounding_id_reference</Value>
+        </Attribute>
+    </Int64>
     <Float32 name="RetrievalResults_surface_pressure_apriori_fph">
         <Dim name="/FakeDim6"/>
         <Attribute name="Shape" type="String">
@@ -1825,6 +1870,21 @@
             <Value>/SoundingHeader/retrieval_index</Value>
         </Attribute>
     </Int32>
+    <Int64 name="SoundingHeader_sounding_id">
+        <Dim name="/FakeDim8"/>
+        <Attribute name="Shape" type="String">
+            <Value>Exposure_Array</Value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <Value>Signed64</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>sounding_id</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/SoundingHeader/sounding_id</Value>
+        </Attribute>
+    </Int64>
     <UInt32 name="SoundingHeader_sounding_qual_flag">
         <Dim name="/FakeDim6"/>
         <Attribute name="Shape" type="String">
@@ -2417,126 +2477,6 @@
             <Value>/SpectralParameters/snr_weak_co2_l1b</Value>
         </Attribute>
     </Float32>
-    <Int32 name="Metadata_FirstSoundingId_Time">
-        <Dim name="/FakeDim2"/>
-        <Attribute name="Shape" type="String">
-            <Value>Scalar</Value>
-        </Attribute>
-        <Attribute name="Type" type="String">
-            <Value>Signed32</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>FirstSoundingId_Time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Metadata/FirstSoundingId</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="Metadata_FirstSoundingId_Date">
-        <Dim name="/FakeDim2"/>
-        <Attribute name="Shape" type="String">
-            <Value>Scalar</Value>
-        </Attribute>
-        <Attribute name="Type" type="String">
-            <Value>Signed32</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>FirstSoundingId_Date</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Metadata/FirstSoundingId</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="Metadata_LastSoundingId_Time">
-        <Dim name="/FakeDim2"/>
-        <Attribute name="Shape" type="String">
-            <Value>Scalar</Value>
-        </Attribute>
-        <Attribute name="Type" type="String">
-            <Value>Signed32</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>LastSoundingId_Time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Metadata/LastSoundingId</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="Metadata_LastSoundingId_Date">
-        <Dim name="/FakeDim2"/>
-        <Attribute name="Shape" type="String">
-            <Value>Scalar</Value>
-        </Attribute>
-        <Attribute name="Type" type="String">
-            <Value>Signed32</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>LastSoundingId_Date</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/Metadata/LastSoundingId</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="RetrievalResults_sounding_id_reference_Time">
-        <Dim name="/FakeDim6"/>
-        <Attribute name="Shape" type="String">
-            <Value>Retrieval_Array</Value>
-        </Attribute>
-        <Attribute name="Type" type="String">
-            <Value>Signed32</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>sounding_id_reference_Time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/RetrievalResults/sounding_id_reference</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="RetrievalResults_sounding_id_reference_Date">
-        <Dim name="/FakeDim6"/>
-        <Attribute name="Shape" type="String">
-            <Value>Retrieval_Array</Value>
-        </Attribute>
-        <Attribute name="Type" type="String">
-            <Value>Signed32</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>sounding_id_reference_Date</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/RetrievalResults/sounding_id_reference</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="SoundingHeader_sounding_id_Time">
-        <Dim name="/FakeDim8"/>
-        <Attribute name="Shape" type="String">
-            <Value>Exposure_Array</Value>
-        </Attribute>
-        <Attribute name="Type" type="String">
-            <Value>Signed32</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>sounding_id_Time</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SoundingHeader/sounding_id</Value>
-        </Attribute>
-    </Int32>
-    <Int32 name="SoundingHeader_sounding_id_Date">
-        <Dim name="/FakeDim8"/>
-        <Attribute name="Shape" type="String">
-            <Value>Exposure_Array</Value>
-        </Attribute>
-        <Attribute name="Type" type="String">
-            <Value>Signed32</Value>
-        </Attribute>
-        <Attribute name="origname" type="String">
-            <Value>sounding_id_Date</Value>
-        </Attribute>
-        <Attribute name="fullnamepath" type="String">
-            <Value>/SoundingHeader/sounding_id</Value>
-        </Attribute>
-    </Int32>
     <Attribute name="Dimensions" type="Container"/>
     <Attribute name="Dimensions_Aerosol" type="Container">
         <Attribute name="Size" type="UInt32">

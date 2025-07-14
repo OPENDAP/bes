@@ -1,6 +1,6 @@
 netcdf test {
 dimensions:
-	nscan = 2962 ;
+	nscan = UNLIMITED ; // (2962 currently)
 	npixel = 221 ;
 	nlyrs = 28 ;
 	nprf = 100 ;

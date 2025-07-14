@@ -2235,7 +2235,6 @@ void GMFile::Build_latg1D_latlon_candidate(const Var *lat,const vector<Var*> & l
             string lon_name_prefix1;
             string lon_name_prefix2;
 
-            //for(auto ilon = lon_final_candidate_path_vec.begin(); ilon!=lon_final_candidate_path_vec.end();++ilon) {
             for(const auto &ilon:lon_final_candidate_path_vec) {
                 string lon_name = HDF5CFUtil::obtain_string_after_lastslash(ilon);
                 if(lon_name.size() >3) {
@@ -3234,7 +3233,6 @@ void GMFile::Handle_CVar_Mea_Ozone() {
         } // end of for irv 
     } // end of for irs 
 
-    //for (auto irs = tempdimnamelist.begin(); irs != tempdimnamelist.end();irs++) {
     for (const auto&tdimname:tempdimnamelist) {
         auto GMcvar_unique = make_unique<GMCVar>();
         auto GMcvar = GMcvar_unique.release();

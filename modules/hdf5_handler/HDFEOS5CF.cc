@@ -2973,7 +2973,6 @@ void EOS5File::Handle_Special_NonLatLon_Swath_CVar(EOS5CFSwath *cfswath, const s
         // 2.1. Check if we have the dimension name called "nLevels" for this swath
         if (true == has_vc_attr) {
             string dimname_candidate = "/SWATHS/" + cfswath->name + "/nLevels";
-            //for (auto it = tempvardimnamelist.begin(); it != tempvardimnamelist.end(); ++it) {
             for (const auto &tvar_dimname:tempvardimnamelist) {
                 if (tvar_dimname.find(dimname_candidate) != string::npos) {
                     hsize_t dimsize_candidate = 0;
