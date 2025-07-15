@@ -137,7 +137,6 @@ void HDF5BaseArray::write_nature_number_buffer(int rank, int64_t tnumelm) {
     }
 }
 
-//#if 0
 void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<size_t> &h5_dimsizes,void* buf,const bool is_dap4){
 
     BESDEBUG("h5", "Coming to read_data_from_mem_cache"<<endl);
@@ -416,7 +415,9 @@ int HDF5BaseArray::subset(
             size_t cur_pos = INDEX_nD_TO_1D( dim, pos);
             void* tempbuf = (void*)((char*)input+cur_pos*sizeof(T));
             poutput->push_back(*(static_cast<T*>(tempbuf)));
+#if 0
             //"poutput->push_back(input[HDF5CFUtil::INDEX_nD_TO_1D( dim, pos)]);"
+#endif
         }
     } // end of for
     return 0;
@@ -435,12 +436,15 @@ size_t HDF5BaseArray::INDEX_nD_TO_1D (const std::vector < size_t > &dims,
     size_t sum = 0;
     size_t  start = 1;
 
-    for (size_t p = 0; p < pos.size (); p++) {
+#if 0
+    //for (size_t p = 0; p < pos.size (); p++) {
+#endif
+    for (const auto& pos_v:pos) {
         size_t m = 1;
 
         for (size_t j = start; j < dims.size (); j++)
             m *= dims[j];
-        sum += m * pos[p];
+        sum += m * pos_v;
         start++;
     }
     return sum;
