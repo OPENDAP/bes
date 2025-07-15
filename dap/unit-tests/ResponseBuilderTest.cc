@@ -80,6 +80,7 @@
 
 #include "test_utils.h"
 #include "test_config.h"
+#include "../../dispatch/TheBESKeys.h"
 
 using namespace CppUnit;
 using namespace std;
@@ -540,6 +541,11 @@ public:
 
         TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/input-files/test.keys";
         TheBESKeys::TheKeys()->set_key(BES_CATALOG_ROOT, (string) TEST_SRC_DIR);
+        TheBESKeys::TheKeys()->set_key(DAP_STORED_RESULTS_CACHE_SUBDIR_KEY, d_stored_result_subdir);
+        TheBESKeys::TheKeys()->set_key(DAP_STORED_RESULTS_CACHE_PREFIX_KEY, "sdrt-");
+        TheBESKeys::TheKeys()->set_key(DAP_STORED_RESULTS_CACHE_SIZE_KEY, "10000");
+
+
         ConstraintEvaluator ce;
 
         // Set this to be a stored result request
@@ -811,10 +817,10 @@ public:
 #endif
         CPPUNIT_TEST(dummy_test);
 
-#if 0
+#if 1
         // FIXME These tests have baselines that rely on hash values that are
         // machine dependent. jhrg 3/4/15
-        CPPUNIT_TEST(store_dap2_result_test);
+        //CPPUNIT_TEST(store_dap2_result_test);
         CPPUNIT_TEST(store_dap4_result_test);
 #endif
     CPPUNIT_TEST_SUITE_END();

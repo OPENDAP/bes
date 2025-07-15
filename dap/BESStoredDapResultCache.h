@@ -56,11 +56,10 @@ class BESDapResponseBuilder;
 class BESStoredDapResultCache: public BESFileLockingCache {
 private:
     static bool d_enabled;
-    static BESStoredDapResultCache *d_instance;
 
-    string d_storedResultsSubdir;
-    string d_dataRootDir;
-    string d_resultFilePrefix;
+    std::string d_storedResultsSubdir;
+    std::string d_dataRootDir;
+    std::string d_resultFilePrefix;
     unsigned long d_maxCacheSize;
 
     /** Initialize the cache using the default values for the cache. */
@@ -70,22 +69,22 @@ private:
 #ifdef DAP2_STORED_RESULTS
     bool read_dap2_data_from_cache(const string &cache_file_name, libdap::DDS *fdds);
 #endif
-    bool read_dap4_data_from_cache(const string &cache_file_name, libdap::DMR *dmr);
+    bool read_dap4_data_from_cache(const std::string &cache_file_name, libdap::DMR *dmr);
 
     friend class StoredDap2ResultTest;
     friend class StoredDap4ResultTest;
     friend class ResponseBuilderTest;
 
-    string get_stored_result_local_id(const string &dataset, const string &ce, libdap::DAPVersion version);
+    std::string get_stored_result_local_id(const std::string &dataset, const std::string &ce, libdap::DAPVersion version);
 
-    string getBesDataRootDirFromConfig();
-    string getSubDirFromConfig();
-    string getResultPrefixFromConfig();
+    std::string getBesDataRootDirFromConfig();
+    std::string getSubDirFromConfig();
+    std::string getResultPrefixFromConfig();
     unsigned long getCacheSizeFromConfig();
 
 protected:
 
-    BESStoredDapResultCache(const string &data_root_dir, const string &stored_results_subdir, const string &prefix,
+    BESStoredDapResultCache(const std::string &data_root_dir, const std::string &stored_results_subdir, const std::string &prefix,
         unsigned long long size);
 
 public:
@@ -99,9 +98,9 @@ public:
     BESStoredDapResultCache& operator=(const BESStoredDapResultCache&) = delete;
 
     ~BESStoredDapResultCache() override = default;
-
-    static BESStoredDapResultCache *get_instance(const string &bes_catalog_root_dir,
-        const string &stored_results_subdir, const string &prefix, unsigned long long size);
+    // void init();
+    // static BESStoredDapResultCache *get_instance(const string &bes_catalog_root_dir,
+    //    const string &stored_results_subdir, const string &prefix, unsigned long long size);
     static BESStoredDapResultCache *get_instance();
 
 #ifdef DAP2_STORED_RESULTS

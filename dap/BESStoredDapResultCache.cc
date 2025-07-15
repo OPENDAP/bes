@@ -89,7 +89,6 @@
 using namespace std;
 using namespace libdap;
 
-BESStoredDapResultCache *BESStoredDapResultCache::d_instance = 0;
 bool BESStoredDapResultCache::d_enabled = true;
 
 #if 0
@@ -202,6 +201,7 @@ BESStoredDapResultCache::BESStoredDapResultCache()
 /**
  *
  */
+/*
 BESStoredDapResultCache::BESStoredDapResultCache(const string &data_root_dir, const string &stored_results_subdir,
     const string &result_file_prefix, unsigned long long max_cache_size)
 {
@@ -212,14 +212,30 @@ BESStoredDapResultCache::BESStoredDapResultCache(const string &data_root_dir, co
     d_maxCacheSize = max_cache_size;
     initialize(BESUtil::assemblePath(d_dataRootDir, stored_results_subdir), d_resultFilePrefix, d_maxCacheSize);
 }
+*/
 
+/*
+BESStoredDapResultCache::init(
+    const string &data_root_dir,
+    const string &stored_results_subdir,
+    const string &result_file_prefix,
+    unsigned long long max_cache_size)
+{
+    get_instance()->d_dataRootDir = data_root_dir;
+    get_instance()->d_storedResultsSubdir = stored_results_subdir;
+    get_instance()->d_resultFilePrefix = result_file_prefix;
+    get_instance()->d_maxCacheSize = max_cache_size;
+
+}
+*/
+/*
 BESStoredDapResultCache *
 BESStoredDapResultCache::get_instance(const string &data_root_dir, const string &stored_results_subdir,
     const string &result_file_prefix, unsigned long long max_cache_size)
 {
-    if (d_enabled && dir_exists(data_root_dir)) {
-        static BESStoredDapResultCache instance;
+    static BESStoredDapResultCache instance;
 
+    if (d_enabled && dir_exists(data_root_dir)) {
         d_enabled = d_instance->cache_enabled(); // Why was this included in the original version of this code? jhrg 6/9/25
         if (!d_enabled)
             return nullptr;
@@ -227,6 +243,7 @@ BESStoredDapResultCache::get_instance(const string &data_root_dir, const string 
         return &instance;
     }
 }
+*/
 
 /** Get the default instance of the BESStoredDapResultCache object. This will read "TheBESKeys" looking for the values
  * of SUBDIR_KEY, PREFIX_KEY, an SIZE_KEY to initialize the cache.
@@ -234,14 +251,8 @@ BESStoredDapResultCache::get_instance(const string &data_root_dir, const string 
 BESStoredDapResultCache *
 BESStoredDapResultCache::get_instance()
 {
-    if (d_enabled && d_instance == 0) {
-        static BESStoredDapResultCache instance;
-        d_enabled = d_instance->cache_enabled();
-        if(!d_enabled){
-            return nullptr;
-        }
-        return &instance;
-    }
+    static BESStoredDapResultCache instance;
+    return &instance;
 }
 
 /**
