@@ -837,7 +837,7 @@ void HDF5Array:: m_array_of_object_reference(hid_t d_dset_id, vector<string>& v_
     }
 }
 
-bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
+bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) const {
 
 #if (H5_VERS_MAJOR == 1 && (H5_VERS_MINOR == 10 || H5_VERS_MINOR == 8 || H5_VERS_MINOR == 6))
     throw BESInternalError(
@@ -1236,6 +1236,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                 }
                 catch(...){
                     delete h5s;
+                    throw;
                 }
 
             } // end "for ( child_u = 0)"

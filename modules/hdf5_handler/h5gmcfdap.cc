@@ -176,12 +176,7 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
     }
 
     // generate DDS.
-    try {
-        gen_gmh5_cfdds(dds,f);
-    }
-    catch(...) {
-        throw;
-    }
+    gen_gmh5_cfdds(dds,f);
 
 }
 
@@ -257,12 +252,7 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
     }
 
     // Generate the DAS attributes.
-    try {
-        gen_gmh5_cfdas(das,f);
-    }   
-    catch (...) {
-        throw;
-    }
+    gen_gmh5_cfdas(das,f);
 
 }
 
@@ -378,12 +368,7 @@ void map_gmh5_cfdmr(D4Group *d4_root, hid_t file_id, const string& filename){
     }
     
     // generate DMR.
-    try {
-        gen_gmh5_cfdmr(d4_root,f);
-    }
-    catch(...) {
-        throw;
-    }
+    gen_gmh5_cfdmr(d4_root,f);
 
 }
 

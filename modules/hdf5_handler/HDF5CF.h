@@ -758,7 +758,7 @@ protected:
     void add_ignored_info_objs(bool is_dim_related, const std::string & obj_path);
     void add_no_ignored_info();
     bool ignored_dimscale_ref_list(const Var *var) const;
-    bool Check_DropLongStr(const Var *var, const Attribute *attr) ;
+    bool Check_DropLongStr(const Var *var, const Attribute *attr) const;
     void add_ignored_var_longstr_info(const Var*var, const Attribute *attr) ;
     void add_ignored_grp_longstr_info(const std::string& grp_path, const std::string& attr_name);
     void add_ignored_droplongstr_hdr();
@@ -929,7 +929,7 @@ public:
     void Update_Bounds_Attr();
    
     /// Update the netCDF-4 pure dimension size when the pure dimension is an unlimited dimension
-    void Update_NC4_PureDimSize();
+    void Update_NC4_PureDimSize() const;
 
     /// Obtain ignored info. flag
     bool Get_IgnoredInfo_Flag() override
@@ -971,7 +971,7 @@ protected:
 
     bool Check_LatLon_With_Coordinate_Attr_General_Product_Pattern() ;
     void Build_lat1D_latlon_candidate(const Var*, const std::vector<Var*>&);
-    void Build_latg1D_latlon_candidate(Var*, const std::vector<Var*>&);
+    void Build_latg1D_latlon_candidate(const Var*, const std::vector<Var*>&);
     void Build_unique_latlon_candidate();
     void Add_Dim_Name_LatLon1D_Or_CoordAttr_General_Product() ;
     void Add_Dim_Name_LatLon2D_General_Product() ;
@@ -1172,6 +1172,7 @@ private:
 
 /// This class is a derived class of File. It includes methods applied to HDF-EOS5 files only.
 class EOS5File: public File {
+
 public:
     EOS5File(const char*he5_path, hid_t file_id) :
         File(he5_path, file_id)
@@ -1179,7 +1180,6 @@ public:
     }
 
     ~EOS5File() override;
-public:
 
     /// Obtain coordinate variables for HDF-EOS5 products
     const std::vector<EOS5CVar *>&getCVars() const

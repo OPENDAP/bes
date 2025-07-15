@@ -58,7 +58,7 @@
 #include <libdap/InternalErr.h>
 #include <hdf5.h>
 
-
+/// Note: we may need to revisit these two constants.
 /// Maximum number of dimensions in an array(default option only).
 const int DODS_MAX_RANK=30;
 /// Maximum length of variable or attribute name(default option only).
@@ -76,6 +76,7 @@ typedef struct DS {
     //hid_t dset;
 #endif
     /// HDF5 data type id
+    /// For variable length int/float, the type is the basetype.
     hid_t type;
     /// HDF5 data space id
 #if 0

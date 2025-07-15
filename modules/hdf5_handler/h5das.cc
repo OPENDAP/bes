@@ -164,7 +164,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 
             // Read all attributes in this group and map to DAS.
             try {
-                read_objects(das, full_path_name.c_str(), cgroup, num_attr);
+                read_objects(das, full_path_name, cgroup, num_attr);
             }
             catch (...) {
                 H5Gclose(cgroup);
@@ -172,7 +172,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
             }
 
             // Check if this group has been visited by using the hardlink
-            string oid = get_hardlink(cgroup, full_path_name.c_str());
+            string oid = get_hardlink(cgroup, full_path_name);
 
             // Break the cyclic loop created by hard links.
             if (oid.empty()) {    // The group has never been visited, go to the next level.
@@ -315,7 +315,7 @@ void read_objects(DAS & das, const string & varname, hid_t oid, int num_attr)
     }
 
     // Add a DAP attribute that stores the HDF5 absolute path 
-    attr_table_ptr->append_attr(hdf5_path.c_str(), STRING, varname);
+    attr_table_ptr->append_attr(hdf5_path, STRING, varname);
 
     // Check the number of attributes in this HDF5 object and
     // put HDF5 attribute information into the DAS table.
@@ -484,8 +484,8 @@ void find_gloattr(hid_t file, DAS & das)
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
-        // Obtain the number of attributes
-        num_attrs = obj_info.num_attrs;
+        // Obtain the number of attributes.
+        num_attrs = (int)(obj_info.num_attrs);
         if (num_attrs < 0) {
             H5Gclose(root);
             string msg = "Unable to get the number of attributes for the HDF root group. ";

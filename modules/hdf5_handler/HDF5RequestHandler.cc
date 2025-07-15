@@ -1498,7 +1498,7 @@ bool HDF5RequestHandler::hdf5_build_dmr_from_file(BESDataHandlerInterface & dhi,
         // It is possible that a dimension variable has hardlinks. To make it
         // right for the netCDF-4 data model and the current DAP4 implementation,
         // we need to choose the shortest path of all hardlinks as the dimension path.
-        // So to avoid iterate all HDF5 objects multiple times, save the found
+        // So to avoid iterating all HDF5 objects multiple times, save the found
         // hardlinks and search them when necessary.  Note we have to search hardlinks from the root.
         // KY 2021-11-15
         vector<link_info_t> hdf5_hls;
