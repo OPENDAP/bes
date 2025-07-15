@@ -15,7 +15,7 @@
 #include <libdap/debug.h>
 #include "hdf.h"
 #include "mfhdf.h"
-#include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include <BESDebug.h>
 #include "HDFCFUtil.h"
 #include "HDF4RequestHandler.h"
@@ -55,9 +55,8 @@ HDFSPArray_VDField::read ()
         // Open the file
         file_id = Hopen (filename.c_str (), DFACC_READ, 0);
         if (file_id < 0) {
-            ostringstream eherr;
-            eherr << "File " << filename.c_str () << " cannot be open.";
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "File " + filename + " cannot be open.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     }
 
@@ -65,9 +64,8 @@ HDFSPArray_VDField::read ()
     int32 vdata_id = 0;
     if (Vstart (file_id) < 0) {
         HDFCFUtil::close_fileid(-1,file_id,-1,-1,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "This file cannot be open.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "This file cannot be open.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Attach the vdata
@@ -75,9 +73,8 @@ HDFSPArray_VDField::read ()
     if (vdata_id == -1) {
         Vend (file_id);
         HDFCFUtil::close_fileid(-1,file_id,-1,-1,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "Vdata cannot be attached.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Vdata cannot be attached.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     try {
@@ -85,16 +82,14 @@ HDFSPArray_VDField::read ()
 
         // Seek the position of the starting point
         if (VSseek (vdata_id, (int32) offset[0]) == -1) {
-            ostringstream eherr;
-            eherr << "VSseek failed at " << offset[0];
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "VSseek failed at " + to_string(offset[0]) + ".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         // Prepare the vdata field
         if (VSsetfields (vdata_id, fdname.c_str ()) == -1) {
-            ostringstream eherr;
-            eherr << "VSsetfields failed with the name " << fdname;
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "VSsetfields failed with the name " + fdname +".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         int32 vdfelms = fdorder * count[0] * step[0];
@@ -114,9 +109,8 @@ HDFSPArray_VDField::read ()
                 FULL_INTERLACE);
 
                 if (r == -1) {
-                    ostringstream eherr;
-                    eherr << "VSread failed.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "VSread failed.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 // Obtain the subset portion of the data
@@ -159,9 +153,8 @@ HDFSPArray_VDField::read ()
 
                 r = VSread (vdata_id, orival.data(), 1+(count[0] -1)* step[0], FULL_INTERLACE);
                 if (r == -1) {
-                    ostringstream eherr;
-                    eherr << "VSread failed.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "VSread failed.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 if (fdorder > 1) {
@@ -189,9 +182,8 @@ HDFSPArray_VDField::read ()
                 r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
                         FULL_INTERLACE);
                 if (r == -1) {
-                    ostringstream eherr;
-                    eherr << "VSread failed.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "VSread failed.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 if (fdorder > 1) {
@@ -220,9 +212,8 @@ HDFSPArray_VDField::read ()
                 r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
                         FULL_INTERLACE);
                 if (r == -1) {
-                    ostringstream eherr;
-                    eherr << "VSread failed.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "VSread failed.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 if (fdorder > 1) {
@@ -248,9 +239,8 @@ HDFSPArray_VDField::read ()
                 r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
                         FULL_INTERLACE);
                 if (r == -1) {
-                    ostringstream eherr;
-                    eherr << "VSread failed.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "VSread failed.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 if (fdorder > 1) {
@@ -279,9 +269,8 @@ HDFSPArray_VDField::read ()
                 r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
                         FULL_INTERLACE);
                 if (r == -1) {
-                    ostringstream eherr;
-                    eherr << "VSread failed.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "VSread failed.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 if (fdorder > 1) {
@@ -307,9 +296,8 @@ HDFSPArray_VDField::read ()
                 r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
                         FULL_INTERLACE);
                 if (r == -1) {
-                    ostringstream eherr;
-                    eherr << "VSread failed.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "VSread failed.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 if (fdorder > 1) {
@@ -337,9 +325,8 @@ HDFSPArray_VDField::read ()
                 r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
                         FULL_INTERLACE);
                 if (r == -1) {
-                    ostringstream eherr;
-                    eherr << "VSread failed.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "VSread failed.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 if (fdorder > 1) {
@@ -356,20 +343,17 @@ HDFSPArray_VDField::read ()
             }
                 break;
             default:
-                throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
+                throw BESInternalError ("Unsupported data type.",__FILE__, __LINE__);
         }
 
         if (VSdetach (vdata_id) == -1) {
-            ostringstream eherr;
-            eherr << "VSdetach failed.";
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "VSdetach failed.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         if (Vend (file_id) == -1) {
-            ostringstream eherr;
-
-            eherr << "VSdetach failed.";
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg ="VSdetach failed.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         HDFCFUtil::close_fileid(-1,file_id,-1,-1,check_pass_fileid_key);
    }

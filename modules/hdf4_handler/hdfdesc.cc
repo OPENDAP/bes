@@ -98,6 +98,7 @@
 
 #include <BESDebug.h>
 #include <BESLog.h>
+#include <BESInternalError.h>
 
 #include "HDF4RequestHandler.h"
 // DODS/HDF includes for the default option only
@@ -358,7 +359,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
 
     // grid_or_swath - 0: grid, 1: swath
     if (grid_or_swath < 0 ||  grid_or_swath > 1)
-        throw InternalErr(__FILE__, __LINE__, "The current type should be either grid or swath");
+        throw BESInternalError("The current type should be either grid or swath.",__FILE__,__LINE__);
 
     /// I. This section retrieve Swath dimension map info.
 
@@ -440,7 +441,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
             HANDLE_CASE2(DFNT_UINT32, HDFUInt32)
             HANDLE_CASE2(DFNT_UCHAR8, HDFByte)
             default:
-                throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+                throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
 #undef HANDLE_CASE
 #undef HANDLE_CASE2
         }
@@ -471,7 +472,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                     }
                     catch(...) {
                         delete bt;
-                        throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStr instance.");
+                        throw BESInternalError("Unable to allocate the HDFCFStr instance.",__FILE__,__LINE__);
                     }
                     for(it_d = dims.begin(); it_d != dims.begin()+dims.size()-1; it_d++){
                         ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
@@ -498,7 +499,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                     }
                     catch(...) {
                         delete bt;
-                        throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStr instance.");
+                        throw BESInternalError("Unable to allocate the HDFCFStr instance.",__FILE__,__LINE__);
                     }
                     dds.add_var(sca_str);
                     delete bt;
@@ -671,7 +672,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
                 }
                 else {
                     delete bt;
-                    throw InternalErr(__FILE__, __LINE__, "The current type should be either grid or swath");
+                    throw BESInternalError("The current type should be either grid or swath.",__FILE__,__LINE__);
                 }
             }
 
@@ -721,7 +722,7 @@ void read_dds_hdfeos2_grid_swath(DDS &dds, const string&filename, HDFEOS2::Datas
 
                     if (true == multi_dmap) {
                         if ((*it_f)->getRank() !=2) 
-                            throw InternalErr(__FILE__, __LINE__, "For the multi-dimmap case, the field rank must be 2.");
+                            throw BESInternalError("For the multi-dimmap case, the field rank must be 2.",__FILE__,__LINE__);
                         int dim0size = (dims[0])->getSize();
                         int dim1size = (dims[1])->getSize();
                         int dim0offset = (*it_f)->getLLDim0Offset();
@@ -865,7 +866,7 @@ cerr<<"hdfdesc: dim1inc "<<dim1inc <<endl;
                 }
                 else {
                     delete bt;
-                    throw InternalErr(__FILE__, __LINE__, "The current type should be either grid or swath");
+                    throw BESInternalError("The current type should be either grid or swath.",__FILE__,__LINE__);
                 }
  
             }
@@ -875,7 +876,7 @@ cerr<<"hdfdesc: dim1inc "<<dim1inc <<endl;
 
                 if((*it_f)->getRank()!=1){
                     delete bt;
-                    throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
+                    throw BESInternalError("The rank of missing Z dimension field must be 1.",__FILE__,__LINE__);
                 }
 
                 int nelem = ((*it_f)->getCorrectedDimensions()[0])->getSize();
@@ -895,7 +896,7 @@ cerr<<"hdfdesc: dim1inc "<<dim1inc <<endl;
             }
             else {
                 delete bt;
-                throw InternalErr(__FILE__, __LINE__, "Encounter unsupported datatype or The field type should be between 0 and 5. ");
+                throw BESInternalError("Encounter unsupported datatype or The field type should be between 0 and 5. ",__FILE__, __LINE__);
             }
 
         }
@@ -2828,7 +2829,7 @@ bool read_dds_special_1d_grid(DDS &dds,const HDFSP::File* spf,const string& file
         HANDLE_CASE(DFNT_UINT32, HDFUInt32)
         HANDLE_CASE(DFNT_UCHAR8, HDFByte)
         default:
-            throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+            throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
 #undef HANDLE_CASE
         }
 
@@ -2855,7 +2856,7 @@ bool read_dds_special_1d_grid(DDS &dds,const HDFSP::File* spf,const string& file
                     }
                     catch(...) {
                         delete bt;
-                        throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStr instance.");
+                        throw BESInternalError("Unable to allocate the HDFCFStr instance.",__FILE__,__LINE__);
                     }
                     dds.add_var(sca_str);
                     delete bt;
@@ -2880,7 +2881,7 @@ bool read_dds_special_1d_grid(DDS &dds,const HDFSP::File* spf,const string& file
                     }
                     catch(...) {
                         delete bt;
-                        throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStrField instance.");
+                        throw BESInternalError("Unable to allocate the HDFCFStrField instance.",__FILE__,__LINE__);
                     }
 
                     for(it_d = dims.begin(); it_d != dims.begin()+dims.size()-1; it_d++)
@@ -2919,7 +2920,7 @@ bool read_dds_special_1d_grid(DDS &dds,const HDFSP::File* spf,const string& file
                     }
                     catch(...) {
                         delete bt;
-                        throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFSPArray_RealField instance.");
+                        throw BESInternalError("Unable to allocate the HDFSPArray_RealField instance.",__FILE__,__LINE__);
                     }
                     for(it_d = dims.begin(); it_d != dims.end(); it_d++)
                         ar->append_dim((*it_d)->getSize(), (*it_d)->getName());
@@ -2930,7 +2931,7 @@ bool read_dds_special_1d_grid(DDS &dds,const HDFSP::File* spf,const string& file
                 else {
                     if(spsdsf->getRank()!=1){
                         delete bt;
-                        throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
+                        throw BESInternalError("The rank of missing Z dimension field must be 1.",__FILE__,__LINE__);
                     }
                     int nelem = (spsdsf->getDimensions()[0])->getSize();
                         
@@ -2945,8 +2946,8 @@ bool read_dds_special_1d_grid(DDS &dds,const HDFSP::File* spf,const string& file
                     }
                     catch(...) {                
                         delete bt;
-                        throw InternalErr(__FILE__,__LINE__,
-                                        "Unable to allocate the HDFSPArrayMissGeoField instance.");
+                        string msg = "Unable to allocate the HDFSPArrayMissGeoField instance.";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                     }   
 
 
@@ -2980,14 +2981,14 @@ bool read_dds_special_1d_grid(DDS &dds,const HDFSP::File* spf,const string& file
             FILE* dds_file =fopen(dds_filename.c_str(),"wb");
             if(nullptr == dds_file) {
                 string msg = "Cannot create the cache file. " + dds_filename + get_errno();
-                throw InternalErr(__FILE__,__LINE__,msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             int fd = fileno(dds_file);
             struct flock *l= lock(F_WRLCK);
             if (fcntl(fd, F_SETLKW, l) == -1) {
                 fclose(dds_file);
                 string msg = "Cannot hold the write lock for dds cached file "+ dds_filename;
-                throw InternalErr (__FILE__, __LINE__,msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             // TRY CATCH to close fclose.
             try {
@@ -2997,24 +2998,24 @@ bool read_dds_special_1d_grid(DDS &dds,const HDFSP::File* spf,const string& file
                 if (fcntl(fd, F_SETLK, lock(F_UNLCK)) == -1) {
                     fclose(dds_file);
                     string msg = "Cannot release the write lock for dds cached file "+ dds_filename;
-                    throw InternalErr (__FILE__, __LINE__,msg);
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
  
                 fclose(dds_file);
-                throw InternalErr(__FILE__,__LINE__,"Fail to generate a dds cache file.");
+                throw;
             }
             if (fcntl(fd, F_SETLK, lock(F_UNLCK)) == -1) {
                 fclose(dds_file);
                 string msg = "Cannot release the write lock for dds cached file "+ dds_filename;
-                throw InternalErr (__FILE__, __LINE__,msg);
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             fclose(dds_file);
             
         }
 
         else {
-            throw InternalErr (__FILE__, __LINE__, 
-                  "DDS/DAS metadata cache path cannot be found when 'H4.EnableMetaDataCacheFile' key is set to be true.");
+            string msg = "DDS/DAS metadata cache path cannot be found when 'H4.EnableMetaDataCacheFile' key is set to be true.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     }
 
@@ -3055,7 +3056,7 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,const HDFS
         HANDLE_CASE(DFNT_UINT32, HDFUInt32)
         HANDLE_CASE(DFNT_UCHAR, HDFByte)
         default:
-            throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+            throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
 #undef HANDLE_CASE
     }
     int fieldtype = spsds->getFieldType();// Whether the field is real field,lat/lon field or missing Z-dimension field 
@@ -3085,7 +3086,7 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,const HDFS
                 }
                 catch(...) {
                     delete bt;
-                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStr instance.");
+                    throw BESInternalError("Unable to allocate the HDFCFStr instance.",__FILE__,__LINE__);
                 }
                 dds.add_var(sca_str);
                 delete bt;
@@ -3109,7 +3110,7 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,const HDFS
                 }
                 catch(...) {
                     delete bt;
-                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStrField instance.");
+                    throw BESInternalError("Unable to allocate the HDFCFStrField instance.",__FILE__,__LINE__);
                 }
 
                 for(it_d = dims.begin(); it_d != dims.begin()+dims.size()-1; it_d++)
@@ -3146,7 +3147,7 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,const HDFS
             }
             catch(...) {
                 delete bt;
-                throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFSPArray_RealField instance.");
+                throw BESInternalError("Unable to allocate the HDFSPArray_RealField instance.",__FILE__,__LINE__);
             }
 
             for(it_d = dims.begin(); it_d != dims.end(); it_d++)
@@ -3183,8 +3184,8 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,const HDFS
                 }
                 catch(...) {
                     delete bt;
-                    throw InternalErr(__FILE__,__LINE__,
-                                "Unable to allocate the HDFSPArray_RealField instance.");
+                    string msg = "Unable to allocate the HDFSPArray_RealField instance.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
 
@@ -3214,8 +3215,8 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,const HDFS
                 }
                 catch(...) {
                     delete bt;
-                    throw InternalErr(__FILE__,__LINE__,
-                                "Unable to allocate the HDFSPArray_RealField instance.");
+                    string msg = "Unable to allocate the HDFSPArray_RealField instance.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 for(it_d = dims.begin(); it_d != dims.end(); it_d++)
@@ -3230,7 +3231,7 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,const HDFS
         else if(fieldtype == 4) { //missing Z dimensional field(or coordinate variables with missing values)
             if(spsds->getRank()!=1){
                 delete bt;
-                throw InternalErr(__FILE__, __LINE__, "The rank of missing Z dimension field must be 1");
+                throw BESInternalError("The rank of missing Z dimension field must be 1.",__FILE__, __LINE__);
             }
             int nelem = (spsds->getDimensions()[0])->getSize();
                         
@@ -3245,8 +3246,8 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,const HDFS
             }
             catch(...) {                
                 delete bt;
-                throw InternalErr(__FILE__,__LINE__,
-                                "Unable to allocate the HDFSPArrayMissGeoField instance.");
+                string msg = "Unable to allocate the HDFSPArrayMissGeoField instance.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }   
 
 
@@ -3262,7 +3263,7 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,const HDFS
 
             if(spsds->getRank()!=1){
                 delete bt;
-                throw InternalErr(__FILE__, __LINE__, "The rank of added coordinate variable  must be 1");
+                throw BESInternalError("The rank of added coordinate variable  must be 1",__FILE__, __LINE__);
             }
             int nelem = (spsds->getDimensions()[0])->getSize();
 
@@ -3278,8 +3279,8 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,const HDFS
             }
             catch(...) {
                     delete bt;
-                    throw InternalErr(__FILE__,__LINE__,
-                                "Unable to allocate the HDFSPArrayAddCVField instance.");
+                    string msg = "Unable to allocate the HDFSPArrayAddCVField instance.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
 
@@ -3291,7 +3292,7 @@ void read_dds_spfields(DDS &dds,const string& filename,const int sdfd,const HDFS
         }
         else {
             delete bt;
-            throw InternalErr(__FILE__, __LINE__, "The field type should be one of  0,1,2,3,4 or 6.");
+            throw BESInternalError("The field type should be one of  0,1,2,3,4 or 6.",__FILE__,__LINE__);
  
         }
     }
@@ -3327,7 +3328,7 @@ void read_dds_spvdfields(DDS &dds,const string & filename, const int fileid,int3
         //HANDLE_CASE(DFNT_CHAR8, HDFByte)
         //HANDLE_CASE(DFNT_CHAR8, HDFByte)
         default:
-            throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+            throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
 #undef HANDLE_CASE
     }
              
@@ -3355,7 +3356,7 @@ void read_dds_spvdfields(DDS &dds,const string & filename, const int fileid,int3
                 }
                 catch(...) {
                     delete bt;
-                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStr instance.");
+                    throw BESInternalError("Unable to allocate the HDFCFStr instance.",__FILE__,__LINE__);
                 }
                 dds.add_var(sca_str);
                 delete bt;
@@ -3381,7 +3382,7 @@ void read_dds_spvdfields(DDS &dds,const string & filename, const int fileid,int3
                 }
                 catch(...) {
                     delete bt;
-                    throw InternalErr(__FILE__,__LINE__,"Unable to allocate the HDFCFStrField instance.");
+                    throw BESInternalError("Unable to allocate the HDFCFStrField instance.",__FILE__,__LINE__);
                 }
 
                 string dimname0 = "VDFDim0_"+spvd->getNewName();  
@@ -3440,7 +3441,7 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
 
     // Obtain number of SDS objects and number of SD(file) attributes
     if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL){
-        throw InternalErr (__FILE__,__LINE__,"SDfileinfo failed ");
+        throw BESInternalError ("SDfileinfo failed. ",__FILE__,__LINE__);
     }
 
     char attr_name[H4_MAX_NC_NAME];
@@ -3451,7 +3452,7 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
     // Is this an HDF-EOS2 file? 
     for (int attr_index = 0; attr_index < n_sd_attrs;attr_index++) {
         if(SDattrinfo(sdfd,attr_index,attr_name,&attr_type,&attr_count) == FAIL) {
-            throw InternalErr (__FILE__,__LINE__,"SDattrinfo failed ");
+            throw BESInternalError ("SDattrinfo failed. ",__FILE__,__LINE__);
         }
 
         if(strcmp(attr_name,structmdname)==0)  {
@@ -3482,7 +3483,7 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
         
             sds_id = SDselect (sdfd, sds_index);
             if (sds_id == FAIL) {
-                throw InternalErr (__FILE__,__LINE__,"SDselect failed ");
+                throw BESInternalError ("SDselect failed. ",__FILE__,__LINE__);
             }
 
             // Obtain object name, rank, size, field type and number of SDS attributes
@@ -3490,7 +3491,7 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
                                               &sds_dtype, &n_sds_attrs);
             if (status == FAIL) {
                 SDendaccess(sds_id);
-                throw InternalErr (__FILE__,__LINE__,"SDgetinfo failed ");
+                throw BESInternalError ("SDgetinfo failed. ",__FILE__,__LINE__);
             }
 
             if (1 == sds_rank) {
@@ -3500,7 +3501,7 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
                     int32 sds_dimid = SDgetdimid(sds_id,0);          
                     if(sds_dimid == FAIL) {
                         SDendaccess(sds_id);
-                        throw InternalErr (__FILE__,__LINE__,"SDgetinfo failed ");
+                        throw BESInternalError ("SDgetdimid failed. ",__FILE__,__LINE__);
                     }
                     char dim_name[H4_MAX_NC_NAME];
                     int32 dim_size = 0;
@@ -3508,7 +3509,7 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
                     int32 num_dim_attrs = 0;
                     if(SDdiminfo(sds_dimid,dim_name,&dim_size,&dim_type,&num_dim_attrs) == FAIL) {
                         SDendaccess(sds_id);
-                        throw InternalErr(__FILE__,__LINE__,"SDdiminfo failed ");
+                        throw BESInternalError("SDdiminfo failed. ",__FILE__,__LINE__);
                     }
 
                     // No dimension scale and XDim exists
@@ -3534,7 +3535,7 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
                     int32 sds_dimid = SDgetdimid(sds_id,0);          
                     if(sds_dimid == FAIL) {
                         SDendaccess (sds_id);
-                        throw InternalErr (__FILE__,__LINE__,"SDgetinfo failed ");
+                        throw BESInternalError ("SDgetinfo failed. ",__FILE__,__LINE__);
                     }
                     char dim_name[H4_MAX_NC_NAME];
                     int32 dim_size = 0;
@@ -3542,7 +3543,7 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
                     int32 num_dim_attrs = 0;
                     if(SDdiminfo(sds_dimid,dim_name,&dim_size,&dim_type,&num_dim_attrs) == FAIL) {
                         SDendaccess(sds_id);
-                        throw InternalErr(__FILE__,__LINE__,"SDdiminfo failed ");
+                        throw BESInternalError("SDdiminfo failed. ",__FILE__,__LINE__);
                     }
 
                     // For this case, the dimension should not have dimension scales.
@@ -3587,7 +3588,7 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
         
                 sds_id = SDselect (sdfd, sds_index);
                 if (sds_id == FAIL) {
-                    throw InternalErr (__FILE__,__LINE__,"SDselect failed ");
+                    throw BESInternalError ("SDselect failed. ",__FILE__,__LINE__);
                 }
 
                 // Obtain object name, rank, size, field type and number of SDS attributes
@@ -3595,7 +3596,7 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
                                               &sds_dtype, &n_sds_attrs);
                 if (status == FAIL) {
                     SDendaccess(sds_id);
-                    throw InternalErr (__FILE__,__LINE__,"SDgetinfo failed ");
+                    throw BESInternalError ("SDgetinfo failed. ",__FILE__,__LINE__);
                 }
 
                 for (int dim_index = 0; dim_index<sds_rank; dim_index++) {
@@ -3603,7 +3604,7 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
                     int32 sds_dimid = SDgetdimid(sds_id,dim_index);          
                     if(sds_dimid == FAIL) {
                         SDendaccess(sds_id);
-                        throw InternalErr (__FILE__,__LINE__,"SDgetinfo failed ");
+                        throw BESInternalError ("SDgetdimid failed. ",__FILE__,__LINE__);
                     }
 
                     char dim_name[H4_MAX_NC_NAME];
@@ -3612,7 +3613,7 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
                     int32 num_dim_attrs = 0;
                     if(SDdiminfo(sds_dimid,dim_name,&dim_size,&dim_type,&num_dim_attrs) == FAIL) {
                         SDendaccess(sds_id);
-                        throw InternalErr(__FILE__,__LINE__,"SDdiminfo failed ");
+                        throw BESInternalError("SDdiminfo failed. ",__FILE__,__LINE__);
                     }
 
                     if(dim_type !=0) {
@@ -3648,7 +3649,7 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
                 sds_id = SDselect (sdid, sds_index);
                 if (sds_id == FAIL) {
                     SDend(sdid);
-                    throw InternalErr (__FILE__,__LINE__,"SDselect failed ");
+                    throw BESInternalError ("SDselect failed.",__FILE__,__LINE__);
                 }
 
                 // Obtain object name, rank, size, field type and number of SDS attributes
@@ -3657,7 +3658,7 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
                 if (status == FAIL) {
                     SDendaccess(sds_id);
                     SDend(sdid);
-                    throw InternalErr (__FILE__,__LINE__,"SDgetinfo failed ");
+                    throw BESInternalError ("SDgetinfo failed. ",__FILE__,__LINE__);
                 }
 
 
@@ -3667,7 +3668,7 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
                     if(sds_dimid == FAIL) {
                         SDendaccess(sds_id);
                         SDend(sdid);
-                        throw InternalErr (__FILE__,__LINE__,"SDgetinfo failed ");
+                        throw BESInternalError ("SDgetdimid failed. ",__FILE__,__LINE__);
                     }
                     char dim_name[H4_MAX_NC_NAME];
                     int32 dim_size = 0;
@@ -3676,7 +3677,7 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
                     if(SDdiminfo(sds_dimid,dim_name,&dim_size,&dim_type,&num_dim_attrs) == FAIL) {
                         SDendaccess(sds_id);
                         SDend(sdid);
-                        throw InternalErr(__FILE__,__LINE__,"SDdiminfo failed ");
+                        throw BESInternalError("SDdiminfo failed. ",__FILE__,__LINE__);
                     }
 
                     if(0 == dim_type) {
@@ -3735,7 +3736,7 @@ void read_das_simple_cf(DAS &das, int32 sdfd, int32 fileid) {
     // Obtain number of SDS objects and number of SD(file) attributes
     if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL){
         close_vgroup_fileids(fileid,sdfd,-1);
-        throw InternalErr (__FILE__,__LINE__,"SDfileinfo failed ");
+        throw BESInternalError ("SDfileinfo failed. ",__FILE__, __LINE__);
     }
     
     AttrTable *at = das.add_table("HDF_GLOBAL", new AttrTable);
@@ -3748,14 +3749,14 @@ void read_das_simple_cf(DAS &das, int32 sdfd, int32 fileid) {
  
         if (SDattrinfo(sdfd,attr_index,attr_name,&attr_type,&attr_count) == FAIL) {
             close_vgroup_fileids(fileid,sdfd,-1);
-            throw InternalErr (__FILE__,__LINE__,"SDattrinfo failed ");
+            throw BESInternalError ("SDattrinfo failed. ",__FILE__, __LINE__);
         }
 
         vector<char> attr_value;
         attr_value.resize(attr_count * DFKNTsize(attr_type));
         if (SDreadattr (sdfd, attr_index, attr_value.data()) == -1)  {
             close_vgroup_fileids(fileid,sdfd,-1);
-            throw InternalErr(__FILE__,__LINE__, "SDreadattr failed ");
+            throw BESInternalError( "SDreadattr failed. ",__FILE__, __LINE__);
         }
             
         string das_attrname(attr_name);
@@ -3784,13 +3785,13 @@ void read_das_simple_cf(DAS &das, int32 sdfd, int32 fileid) {
         int32 sds_id  = SDselect(sdfd,i);
         if (sds_id == FAIL) {
             close_vgroup_fileids(fileid,sdfd,-1);
-            throw InternalErr (__FILE__,__LINE__,"SDselect failed ");
+            throw BESInternalError ("SDselect failed.",__FILE__, __LINE__);
         }
 
         if (SDgetnamelen(sds_id, &name_len) == FAIL) {
             SDendaccess(sds_id);
             close_vgroup_fileids(fileid,sdfd,-1);  
-            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS name length.");
+            throw BESInternalError("Fail to obtain the SDS name length.",__FILE__, __LINE__);
         }
     
         sds_name.resize(name_len+1);
@@ -3801,7 +3802,7 @@ void read_das_simple_cf(DAS &das, int32 sdfd, int32 fileid) {
         if (FAIL == SDgetinfo (sds_id, sds_name.data(), nullptr, nullptr, nullptr, &n_sds_attrs)) {
             SDendaccess(sds_id);
             close_vgroup_fileids(fileid,sdfd,-1);  
-            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS ID.");
+            throw BESInternalError("Fail to obtain the SDS ID.",__FILE__, __LINE__);
         }                        
         
         string sds_name_str(sds_name.begin(),sds_name.end()-1);
@@ -3821,7 +3822,7 @@ void read_das_simple_cf(DAS &das, int32 sdfd, int32 fileid) {
             if (FAIL==SDattrinfo (sds_id, attrindex, attr_name, &sds_attr_type, &attr_value_count)) {
                 SDendaccess(sds_id);
                 close_vgroup_fileids(fileid,sdfd,-1);
-                throw InternalErr(__FILE__,__LINE__, "SDattrinfo failed ");
+                throw BESInternalError("SDattrinfo failed. ",__FILE__, __LINE__);
             }
     
             vector<char> attr_value;
@@ -3829,7 +3830,7 @@ void read_das_simple_cf(DAS &das, int32 sdfd, int32 fileid) {
             if (SDreadattr (sds_id, attrindex, attr_value.data()) == -1) { 
                 SDendaccess(sds_id);
                 close_vgroup_fileids(fileid,sdfd,-1);
-                throw InternalErr(__FILE__,__LINE__, "SDreadattr failed ");
+                throw BESInternalError("SDreadattr failed. ",__FILE__, __LINE__);
             }
                 
             string das_attrname (attr_name);
@@ -3864,13 +3865,13 @@ void obtain_cf_simple_lat_lon(int32 sdfd,int32 fileid,int32 n_sds, string &lat_n
         int32 sds_id  = SDselect(sdfd,i);
         if (sds_id == FAIL) {
             close_vgroup_fileids(fileid,sdfd,-1);
-            throw InternalErr (__FILE__,__LINE__,"SDselect failed ");
+            throw BESInternalError ("SDselect failed. ",__FILE__, __LINE__);
         }
 
         if (SDgetnamelen(sds_id, &name_len) == FAIL) {
             SDendaccess(sds_id);
             close_vgroup_fileids(fileid,sdfd,-1);  
-            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS name length.");
+            throw BESInternalError("Fail to obtain the SDS name length.",__FILE__, __LINE__);
         }
     
         sds_name.resize(name_len+1);
@@ -3883,7 +3884,7 @@ void obtain_cf_simple_lat_lon(int32 sdfd,int32 fileid,int32 n_sds, string &lat_n
         if (FAIL == SDgetinfo (sds_id, sds_name.data(), &sds_rank, dim_sizes, nullptr, &num_attrs)) {
             SDendaccess(sds_id);
             close_vgroup_fileids(fileid,sdfd,-1);  
-            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS ID.");
+            throw BESInternalError("Fail to obtain the SDS ID.",__FILE__, __LINE__);
         }                        
  
         // This simple CF grid only contains 1-D lat/lon.
@@ -3898,7 +3899,7 @@ void obtain_cf_simple_lat_lon(int32 sdfd,int32 fileid,int32 n_sds, string &lat_n
                 if (FAIL==SDattrinfo (sds_id, attrindex, attr_name, &sds_attr_type, &attr_value_count)) {
                     SDendaccess(sds_id);
                     close_vgroup_fileids(fileid,sdfd,-1);
-                    throw InternalErr(__FILE__,__LINE__, "SDattrinfo failed ");
+                    throw BESInternalError("SDattrinfo failed. ",__FILE__, __LINE__);
                 }
 
                 string attrname_str(attr_name);
@@ -3908,7 +3909,7 @@ void obtain_cf_simple_lat_lon(int32 sdfd,int32 fileid,int32 n_sds, string &lat_n
                     if (SDreadattr (sds_id, attrindex, attr_value.data()) == -1) { 
                         SDendaccess(sds_id);
                         close_vgroup_fileids(fileid,sdfd,-1);
-                        throw InternalErr(__FILE__,__LINE__, "SDreadattr failed ");
+                        throw BESInternalError("SDreadattr failed. ",__FILE__, __LINE__);
                     }
                     string tempstring(attr_value.begin(),attr_value.end());
                     auto tempfinalstr= string(tempstring.c_str());   
@@ -3949,7 +3950,7 @@ void read_dds_simple_cf(DDS &dds,const string & filename, int32 sdfd, int32 file
     // Obtain number of SDS objects and number of SD(file) attributes
     if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL){
         close_vgroup_fileids(fileid,sdfd,-1);
-        throw InternalErr (__FILE__,__LINE__,"SDfileinfo failed ");
+        throw BESInternalError ("SDfileinfo failed. ",__FILE__, __LINE__);
     }
  
     for (int i = 0; i <n_sds; i++) {
@@ -3960,20 +3961,20 @@ void read_dds_simple_cf(DDS &dds,const string & filename, int32 sdfd, int32 file
         int32 sds_id  = SDselect(sdfd,i);
         if (sds_id == FAIL) {
             close_vgroup_fileids(fileid,sdfd,-1);
-            throw InternalErr (__FILE__,__LINE__,"SDselect failed ");
+            throw BESInternalError ("SDselect failed. ",__FILE__, __LINE__);
         }
 
         int32 obj_ref = SDidtoref(sds_id);
         if (obj_ref == FAIL) {
             SDendaccess(sds_id);
             close_vgroup_fileids(fileid,sdfd,-1);
-            throw InternalErr (__FILE__,__LINE__,"SDidtoref failed ");
+            throw BESInternalError ("SDidtoref failed. ",__FILE__, __LINE__);
         }
  
         if (SDgetnamelen(sds_id, &name_len) == FAIL) {
             SDendaccess(sds_id);
             close_vgroup_fileids(fileid,sdfd,-1);  
-            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS name length.");
+            throw BESInternalError("Fail to obtain the SDS name length.",__FILE__, __LINE__);
         }
     
         sds_name.resize(name_len+1);
@@ -3985,7 +3986,7 @@ void read_dds_simple_cf(DDS &dds,const string & filename, int32 sdfd, int32 file
         if (FAIL == SDgetinfo (sds_id, sds_name.data(), &sds_rank, nullptr, &sds_type,nullptr)) {
             SDendaccess(sds_id);
             close_vgroup_fileids(fileid,sdfd,-1);  
-            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS ID.");
+            throw BESInternalError("SDgetinfo failed.",__FILE__, __LINE__);
         }                        
         
         string sds_name_str(sds_name.begin(),sds_name.end()-1);
@@ -4001,7 +4002,7 @@ void read_dds_simple_cf(DDS &dds,const string & filename, int32 sdfd, int32 file
             if (dimid == FAIL) {
                 SDendaccess (sds_id);
                 close_vgroup_fileids(fileid,sdfd,-1);
-                throw InternalErr(__FILE__, __LINE__, "SDgetdimid failed.");
+                throw BESInternalError("SDgetdimid failed.",__FILE__, __LINE__);
             }
             char dim_name[H4_MAX_NC_NAME];
             int32 dim_size = 0;
@@ -4016,14 +4017,14 @@ void read_dds_simple_cf(DDS &dds,const string & filename, int32 sdfd, int32 file
             if (status == FAIL) {
                 SDendaccess (sds_id);
                 close_vgroup_fileids(fileid,sdfd,-1);
-                throw InternalErr(__FILE__, __LINE__, "SDdiminfo failed.");
+                throw BESInternalError("SDdiminfo failed.",__FILE__, __LINE__);
             }
     
             if (dim_size == 0) {
                 // This is the unlimited dimension case. Currently we don't support this.
                 SDendaccess (sds_id);
                 close_vgroup_fileids(fileid,sdfd,-1);
-                throw InternalErr(__FILE__, __LINE__, "Currently not support the unlimited dimension for simple CF handling.");
+                throw BESInternalError("Currently not support the unlimited dimension for simple CF handling.",__FILE__, __LINE__);
             }
             string dim_name_str (dim_name);
 
@@ -4097,7 +4098,7 @@ void read_dds_simple_cf(DDS &dds,const string & filename, int32 sdfd, int32 file
 
             if (!find_lat_dim_name || !find_lon_dim_name) {
                 close_vgroup_fileids(fileid,sdfd,-1);
-                throw InternalErr(__FILE__, __LINE__, "Cannot find lat or lon dimension names for simple CF handling.");
+                throw BESInternalError("Cannot find lat or lon dimension names for simple CF handling.",__FILE__, __LINE__);
             }
  
             // Since a dimension name of a data variable may just contains the dimension name of lat/lon,
@@ -4711,7 +4712,7 @@ void read_dmr(DMR *dmr, const string &filename) {
         string invalid_file_msg="HDF4 SDstart error for the file ";
         invalid_file_msg +=filename;
         invalid_file_msg +=". It is very possible that this file is not an HDF4 file. ";
-        throw InternalErr(__FILE__,__LINE__,invalid_file_msg);
+        throw BESInternalError(invalid_file_msg,__FILE__, __LINE__);
     }
 
     int32 sdfd = SDstart(filename.c_str(), DFACC_READ);
@@ -4720,7 +4721,7 @@ void read_dmr(DMR *dmr, const string &filename) {
         string invalid_file_msg="HDF4 SDstart error for the file ";
         invalid_file_msg +=filename;
         invalid_file_msg +=". It is very possible that this file is not an HDF4 file. ";
-        throw InternalErr(__FILE__,__LINE__,invalid_file_msg);
+        throw BESInternalError(invalid_file_msg,__FILE__, __LINE__);
     }
 
     D4Group* root_grp = dmr->root();
@@ -4747,7 +4748,7 @@ void read_dmr(DMR *dmr, const string &filename) {
     bool is_sp_hdf4_file = add_sp_hdf4_info(root_grp, filename, err_msg);
     if (is_sp_hdf4_file  == false) {
         close_vgroup_fileids(fileid,sdfd,-1); 
-        throw InternalErr(__FILE__, __LINE__, err_msg);
+        throw BESInternalError(err_msg,__FILE__, __LINE__);
     }
 
     // Now go to handle HDF4 vgroups and the objects attached to these vgroups.
@@ -4770,7 +4771,7 @@ void handle_sds_dims(D4Group *root_grp, int32 fileid, int32 sdfd) {
     // Obtain number of SDS objects and number of SD(file) attributes
     if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL){
         close_vgroup_fileids(fileid,sdfd,-1);
-        throw InternalErr (__FILE__,__LINE__,"SDfileinfo failed ");
+        throw BESInternalError ("SDfileinfo failed. ",__FILE__, __LINE__);
     }
 
     D4Dimensions *dims = root_grp->dims();
@@ -4784,7 +4785,7 @@ void handle_sds_dims(D4Group *root_grp, int32 fileid, int32 sdfd) {
 
         if (sds_id == FAIL) {
             close_vgroup_fileids(fileid,sdfd,-1);
-            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS ID.");
+            throw BESInternalError("Fail to obtain the SDS ID.",__FILE__, __LINE__);
         }
 
         // Obtain object name, rank, size, field type and number of attributes of an SDS
@@ -4795,7 +4796,7 @@ void handle_sds_dims(D4Group *root_grp, int32 fileid, int32 sdfd) {
         if (FAIL == SDgetinfo (sds_id, nullptr, &sds_rank, dim_sizes, &sds_type, &n_sds_attrs)) {
             SDendaccess(sds_id);
             close_vgroup_fileids(fileid,sdfd,-1);
-            throw InternalErr(__FILE__, __LINE__, "Fail to obtain SDS info.");
+            throw BESInternalError("Fail to obtain SDS info.",__FILE__, __LINE__);
         }                        
 
         for (int dimindex = 0; dimindex <sds_rank; dimindex++) {
@@ -4804,7 +4805,7 @@ void handle_sds_dims(D4Group *root_grp, int32 fileid, int32 sdfd) {
             if (dimid == FAIL) {
                 SDendaccess (sds_id);
                 close_vgroup_fileids(fileid,sdfd,-1);
-                throw InternalErr(__FILE__, __LINE__, "SDgetdimid failed.");
+                throw BESInternalError("SDgetdimid failed.",__FILE__, __LINE__);
             }
             char dim_name[H4_MAX_NC_NAME];
             int32 dim_size = 0;
@@ -4819,7 +4820,7 @@ void handle_sds_dims(D4Group *root_grp, int32 fileid, int32 sdfd) {
             if (status == FAIL) {
                 SDendaccess (sds_id);
                 close_vgroup_fileids(fileid,sdfd,-1);
-                throw InternalErr(__FILE__, __LINE__, "SDdiminfo failed.");
+                throw BESInternalError("SDdiminfo failed.",__FILE__, __LINE__);
             }
     
             if (dim_size == 0 && dim_sizes[dimindex] == 0) 
@@ -4871,7 +4872,7 @@ void obtain_all_sds_refs(int32 file_id, int32 sdfd, unordered_set<int32>& sds_re
     // Obtain number of SDS objects and number of SD(file) attributes
     if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL){
         close_vgroup_fileids(file_id,sdfd,-1);
-        throw InternalErr (__FILE__,__LINE__,"SDfileinfo failed ");
+        throw BESInternalError("SDfileinfo failed. ",__FILE__, __LINE__);
     }
 
     for (int i = 0; i <n_sds; i++) {
@@ -4879,13 +4880,13 @@ void obtain_all_sds_refs(int32 file_id, int32 sdfd, unordered_set<int32>& sds_re
         int32 sds_id  = SDselect(sdfd,i);
         if (sds_id == FAIL) {
             close_vgroup_fileids(file_id,sdfd,-1);
-            throw InternalErr (__FILE__,__LINE__,"SDselect failed ");
+            throw BESInternalError("SDselect failed. ",__FILE__, __LINE__);
         }
         int32 obj_ref = SDidtoref(sds_id);
         if (obj_ref == FAIL) {
             SDendaccess(sds_id);
             close_vgroup_fileids(file_id,sdfd,-1);
-            throw InternalErr (__FILE__,__LINE__,"SDidtoref failed ");
+            throw BESInternalError("SDidtoref failed. ",__FILE__, __LINE__);
         }
         sds_ref.insert(obj_ref);
         SDendaccess(sds_id);
@@ -4904,14 +4905,14 @@ void exclude_all_sds_refs_in_vgroups(int32 file_id, int32 sdfd, unordered_set<in
     istat = Vstart(file_id);
     if (istat == FAIL) { 
         close_vgroup_fileids(file_id,sdfd,-1);
-        throw InternalErr(__FILE__, __LINE__, "unable to start hdf4 V interface.");
+        throw BESInternalError("Unable to start hdf4 V interface.",__FILE__, __LINE__);
     }
 
     num_lonevg = Vlone(file_id,nullptr,0);
 
     if (num_lonevg == FAIL) {
         close_vgroup_fileids(file_id,sdfd,-1);
-        throw InternalErr(__FILE__, __LINE__, "error in obtaining lone vgroup number.");
+        throw BESInternalError("Error in obtaining lone vgroup number.",__FILE__, __LINE__);
     }
 
     /* obtain object reference array. */
@@ -4934,21 +4935,21 @@ void exclude_all_sds_refs_in_vgroups(int32 file_id, int32 sdfd, unordered_set<in
         int32 vgroup_id = Vattach(file_id,ref_array[lone_vg_number],"r");
         if (vgroup_id ==FAIL) {
             close_vgroup_fileids(file_id,sdfd,-1);
-            throw InternalErr(__FILE__, __LINE__, "error in attaching lone vgroup.");
+            throw BESInternalError("Error in attaching lone vgroup.",__FILE__, __LINE__);
         }
 
         uint16  vclassnamelen; /*Vgroup class name length */
         vector<char> vclass_name;
         if (Vgetclassnamelen(vgroup_id,&vclassnamelen) == FAIL) {
             close_vgroup_fileids(file_id,sdfd,vgroup_id);
-            throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name length.");
+            throw BESInternalError("Error in obtaining vgroup class name length.",__FILE__, __LINE__);
         }
  
         if (vclassnamelen!=0) {
             vclass_name.resize(vclassnamelen+1);
             if (Vgetclass(vgroup_id,vclass_name.data()) == FAIL) {
                 close_vgroup_fileids(file_id,sdfd,vgroup_id);
-                throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
+                throw BESInternalError("Error in obtaining vgroup class name.",__FILE__, __LINE__);
             }
             if (reserved_vgroups(vclass_name)) {
                 Vdetach(vgroup_id);
@@ -4974,14 +4975,14 @@ void exclude_sds_refs_in_vgroup(int32 file_id, int32 sdfd, int32 vgroup_id, unor
     num_gobjects = Vntagrefs(vgroup_id);
     if (num_gobjects == FAIL) {
         close_vgroup_fileids(file_id,sdfd,vgroup_id);
-        throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
+        throw BESInternalError("Error in obtaining vgroup class name.",__FILE__, __LINE__);
     }
 
     for( int i = 0;i<num_gobjects;i++) { 
             
         if (Vgettagref(vgroup_id,i,&obj_tag,&obj_ref)==FAIL) {
             close_vgroup_fileids(file_id,sdfd,vgroup_id);
-            throw InternalErr(__FILE__, __LINE__, "fail to obtain object tag and ref. of Vgroup members");
+            throw BESInternalError("Fail to obtain object tag and ref. of Vgroup members.",__FILE__, __LINE__);
         }
  
         if (obj_tag == DFTAG_NDG || obj_tag == DFTAG_SDG) {
@@ -4989,7 +4990,7 @@ void exclude_sds_refs_in_vgroup(int32 file_id, int32 sdfd, int32 vgroup_id, unor
             if (0 == sds_ref.erase(obj_ref)) {
                 close_vgroup_fileids(file_id,sdfd,vgroup_id);
                 string err_msg = "Unable to remove the SDS object from the sds reference list for the reference number " + to_string(obj_ref);
-                throw InternalErr(__FILE__, __LINE__, err_msg);
+                throw BESInternalError(err_msg,__FILE__, __LINE__);
             }
 
         }
@@ -4998,7 +4999,7 @@ void exclude_sds_refs_in_vgroup(int32 file_id, int32 sdfd, int32 vgroup_id, unor
             int32 vgroup_cid = Vattach(file_id,obj_ref,"r");
             if (vgroup_cid == FAIL) {
                 close_vgroup_fileids(file_id,sdfd,vgroup_id);
-                throw InternalErr(__FILE__, __LINE__, "fail to attach vgroup_cid.");
+                throw BESInternalError("Fail to attach vgroup_cid.",__FILE__, __LINE__);
             }
                
             uint16  vclassnamelen; /*Vgroup class name length */
@@ -5006,7 +5007,7 @@ void exclude_sds_refs_in_vgroup(int32 file_id, int32 sdfd, int32 vgroup_id, unor
             if (Vgetclassnamelen(vgroup_cid,&vclassnamelen) == FAIL) {
                 Vdetach(vgroup_cid);
                 close_vgroup_fileids(file_id,sdfd,vgroup_id);
-                throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name length.");
+                throw BESInternalError("Error in obtaining vgroup class name length.",__FILE__, __LINE__);
             }
      
             if (vclassnamelen!=0) {
@@ -5014,7 +5015,7 @@ void exclude_sds_refs_in_vgroup(int32 file_id, int32 sdfd, int32 vgroup_id, unor
                 if (Vgetclass(vgroup_cid,vclass_name.data()) == FAIL) {
                     Vdetach(vgroup_cid);
                     close_vgroup_fileids(file_id,sdfd,vgroup_id);
-                    throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
+                    throw BESInternalError("Error in obtaining vgroup class name.",__FILE__, __LINE__);
                 }
                 if (reserved_vgroups(vclass_name)) {
                     Vdetach(vgroup_cid);
@@ -5038,7 +5039,7 @@ void read_sd_attrs(D4Group *root_grp, int32 fileid, int32 sdfd) {
     if (SDfileinfo (sdfd, &n_sds, &n_sd_attrs) == FAIL){
         Hclose(fileid);
         SDend(sdfd);
-        throw InternalErr (__FILE__,__LINE__,"SDfileinfo failed ");
+        throw BESInternalError("SDfileinfo failed.",__FILE__, __LINE__);
     }
 
     for (int attr_index = 0; attr_index < n_sd_attrs;attr_index++) {
@@ -5050,7 +5051,7 @@ void read_sd_attrs(D4Group *root_grp, int32 fileid, int32 sdfd) {
         if (SDattrinfo(sdfd,attr_index,attr_name,&attr_type,&attr_count) == FAIL) {
             Hclose(fileid);
             SDend(sdfd);
-            throw InternalErr (__FILE__,__LINE__,"SDattrinfo failed ");
+            throw BESInternalError("SDattrinfo failed.",__FILE__, __LINE__);
         }
 
         vector<char> attr_value;
@@ -5058,7 +5059,7 @@ void read_sd_attrs(D4Group *root_grp, int32 fileid, int32 sdfd) {
         if (SDreadattr (sdfd, attr_index, attr_value.data()) == -1)  {
             Hclose(fileid);
             SDend(sdfd);
-            throw InternalErr(__FILE__,__LINE__, "SDreadattr failed ");
+            throw BESInternalError( "SDreadattr failed. ",__FILE__, __LINE__);
         }
             
         string dap4_attrname (attr_name);
@@ -5076,14 +5077,14 @@ void read_lone_vdata(D4Group *root_grp, int32 file_id, int32 sdfd, const string 
     if (Vstart(file_id) == FAIL) {
         Hclose(file_id);
         SDend(sdfd);
-        throw InternalErr(__FILE__, __LINE__, "Fail to start the V interface.");
+        throw BESInternalError("Fail to start the V interface.",__FILE__,__LINE__);
     } 
     // Obtain number of lone vdata.
     int num_lone_vdata = VSlone (file_id, nullptr, 0);
 
     if (num_lone_vdata == FAIL) {
         close_vgroup_fileids(file_id,sdfd,-1);
-        throw InternalErr(__FILE__, __LINE__, "Fail to obtain the number of lone vdatas.");
+        throw BESInternalError("Fail to obtain the number of lone vdatas.",__FILE__, __LINE__);
     }
 
     if (num_lone_vdata > 0) {
@@ -5093,7 +5094,7 @@ void read_lone_vdata(D4Group *root_grp, int32 file_id, int32 sdfd, const string 
 
         if (VSlone (file_id, ref_array.data(), num_lone_vdata) == FAIL) {
             close_vgroup_fileids(file_id,sdfd,-1);
-            throw InternalErr(__FILE__, __LINE__, "Cannot obtain lone vdata reference arrays.");
+            throw BESInternalError("Cannot obtain lone vdata reference arrays.",__FILE__, __LINE__);
         }
 
         for (int i = 0; i < num_lone_vdata; i++) 
@@ -5115,14 +5116,14 @@ void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const s
     istat = Vstart(file_id);
     if (istat == FAIL) { 
         close_vgroup_fileids(file_id,sdfd,-1);
-        throw InternalErr(__FILE__, __LINE__, "Unable to start hdf4 V interface.");
+        throw BESInternalError("Unable to start hdf4 V interface.",__FILE__, __LINE__);
     }
 
     num_lonevg = Vlone(file_id,nullptr,0);
 
     if (num_lonevg == FAIL) {
         close_vgroup_fileids(file_id,sdfd,-1);
-        throw InternalErr(__FILE__, __LINE__, "error in obtaining the total number of lone vgroups.");
+        throw BESInternalError("Error in obtaining the total number of lone vgroups.",__FILE__, __LINE__);
     }
 
     // Obtain object reference array. 
@@ -5142,7 +5143,7 @@ void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const s
     bool ret_value = check_eos2_grids(filename,sdfd,eos2_grid_lls, eos2_grids_info);
     if (ret_value == false) {
         close_vgroup_fileids(file_id,sdfd,-1);
-        throw InternalErr(__FILE__, __LINE__, "error in the check_eos2_grid(). ");
+        throw BESInternalError("Error in the check_eos2_grid(). ",__FILE__, __LINE__);
     }
 //HDF-EOS2 DEBUG
 #if 0
@@ -5175,21 +5176,21 @@ for(const auto& eg:eos2_grids_info) {
         int32 vgroup_id = Vattach(file_id,ref_array[lone_vg_number],"r");
         if (vgroup_id ==FAIL) {
             close_vgroup_fileids(file_id,sdfd,vgroup_id);
-            throw InternalErr(__FILE__, __LINE__, "error in attaching lone vgroup.");
+            throw BESInternalError("Error in attaching lone vgroup.",__FILE__, __LINE__);
         }
 
         uint16  vclassnamelen = 0; /*Vgroup class name length */
         vector<char> vclass_name;
         if (Vgetclassnamelen(vgroup_id,&vclassnamelen) == FAIL) {
             close_vgroup_fileids(file_id,sdfd,vgroup_id);
-            throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name length.");
+            throw BESInternalError("Error in obtaining vgroup class name length.",__FILE__, __LINE__);
         }
  
         if (vclassnamelen!=0) {
             vclass_name.resize(vclassnamelen+1);
             if (Vgetclass(vgroup_id,vclass_name.data()) == FAIL) {
                 close_vgroup_fileids(file_id,sdfd,vgroup_id);
-                throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
+                throw BESInternalError("Error in obtaining vgroup class name.",__FILE__, __LINE__);
             }
             if (reserved_vgroups(vclass_name)) {
                 Vdetach(vgroup_id);
@@ -5200,7 +5201,7 @@ for(const auto& eg:eos2_grids_info) {
         uint16 vgroupnamelen = 0;
         if (Vgetnamelen(vgroup_id,&vgroupnamelen) == FAIL) {
             close_vgroup_fileids(file_id,sdfd,vgroup_id);
-            throw InternalErr(__FILE__, __LINE__, "cannot obtain vgroup name length.");
+            throw BESInternalError("Cannot obtain vgroup name length.",__FILE__, __LINE__);
         }
 
         if (vgroupnamelen == 0) {
@@ -5212,7 +5213,7 @@ for(const auto& eg:eos2_grids_info) {
 
         if (Vgetname(vgroup_id,vgroup_name.data())==FAIL){
             close_vgroup_fileids(file_id,sdfd,vgroup_id);
-            throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup name.");
+            throw BESInternalError("Error in obtaining vgroup name.",__FILE__, __LINE__);
         }
 
         string vgroup_name_orig_str(vgroup_name.begin(),vgroup_name.end()-1);
@@ -5277,14 +5278,14 @@ void vgroup_convert_sds_objects(int32 vgroup_id, int32 file_id, int32 sdfd, D4Gr
     num_gobjects = Vntagrefs(vgroup_id);
     if (num_gobjects == FAIL) {
         close_vgroup_fileids(file_id,sdfd,vgroup_id); 
-        throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
+        throw BESInternalError("Error in obtaining vgroup class name.",__FILE__, __LINE__);
     }
 
     for( int i = 0;i<num_gobjects;i++) { 
             
         if (Vgettagref(vgroup_id,i,&obj_tag,&obj_ref)==FAIL) {
             close_vgroup_fileids(file_id,sdfd,vgroup_id); 
-            throw InternalErr(__FILE__, __LINE__, "fail to obtain object tag and ref. of Vgroup members");
+            throw BESInternalError("Fail to obtain object tag and ref. of Vgroup members.",__FILE__, __LINE__);
         }
  
         if (obj_tag == DFTAG_NDG || obj_tag == DFTAG_SDG) {
@@ -5306,7 +5307,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
     num_gobjects = Vntagrefs(vgroup_id);
     if (num_gobjects == FAIL) {
         close_vgroup_fileids(file_id,sdfd,vgroup_id);
-        throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup class name.");
+        throw BESInternalError("Error in obtaining vgroup class name.",__FILE__, __LINE__);
     }
 
     // Need to convert objects first.
@@ -5314,7 +5315,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
             
         if (Vgettagref(vgroup_id,i,&obj_tag,&obj_ref)==FAIL) {
             close_vgroup_fileids(file_id,sdfd,vgroup_id);
-            throw InternalErr(__FILE__, __LINE__, "fail to obtain object tag and ref. of Vgroup members");
+            throw BESInternalError("Fail to obtain object tag and ref. of Vgroup members.",__FILE__, __LINE__);
         }
         
  
@@ -5334,7 +5335,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
             
         if (Vgettagref(vgroup_id,i,&obj_tag,&obj_ref)==FAIL) {
             close_vgroup_fileids(file_id,sdfd,vgroup_id);
-            throw InternalErr(__FILE__, __LINE__, "fail to obtain object tag and ref. of Vgroup members");
+            throw BESInternalError("Fail to obtain object tag and ref. of Vgroup members.",__FILE__, __LINE__);
         }
  
         if (Visvg(vgroup_id, obj_ref)) {
@@ -5342,7 +5343,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
             int32 vgroup_cid = Vattach(file_id,obj_ref,"r");
             if (vgroup_cid == FAIL) {
                 close_vgroup_fileids(file_id,sdfd,vgroup_id);
-                throw InternalErr(__FILE__, __LINE__, "fail to attach vgroup_cid.");
+                throw BESInternalError("Fail to attach vgroup_cid.",__FILE__, __LINE__);
             }
                
             uint16  vclassnamelen = 0; 
@@ -5350,7 +5351,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
             if (Vgetclassnamelen(vgroup_cid,&vclassnamelen) == FAIL) {
                 Vdetach(vgroup_cid);
                 close_vgroup_fileids(file_id,sdfd,vgroup_id);
-                throw InternalErr(__FILE__, __LINE__, "Error in obtaining vgroup class name length.");
+                throw BESInternalError("Error in obtaining vgroup class name length.",__FILE__, __LINE__);
             }
      
             if (vclassnamelen!=0) {
@@ -5358,7 +5359,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
                 if (Vgetclass(vgroup_cid,vclass_name.data()) == FAIL) {
                     Vdetach(vgroup_cid);
                     close_vgroup_fileids(file_id,sdfd,vgroup_id);
-                    throw InternalErr(__FILE__, __LINE__, "Error in obtaining vgroup class name.");
+                    throw BESInternalError("Error in obtaining vgroup class name.",__FILE__, __LINE__);
                 }
                 if (reserved_vgroups(vclass_name)) {
                     Vdetach(vgroup_cid);
@@ -5370,7 +5371,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
             if (Vgetnamelen(vgroup_cid,&vgroupnamelen) == FAIL) {
                 Vdetach(vgroup_cid);
                 close_vgroup_fileids(file_id,sdfd,vgroup_id);
-                throw InternalErr(__FILE__, __LINE__, "cannot obtain vgroup name length.");
+                throw BESInternalError("Cannot obtain vgroup name length.",__FILE__, __LINE__);
             }
     
             vector<char> vgroup_name;
@@ -5379,7 +5380,7 @@ void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4
             if (Vgetname(vgroup_cid,vgroup_name.data())==FAIL){
                 Vdetach(vgroup_cid);
                 close_vgroup_fileids(file_id,sdfd,vgroup_id);
-                throw InternalErr(__FILE__, __LINE__, "error in obtaining vgroup name.");
+                throw BESInternalError("Error in obtaining vgroup name.",__FILE__, __LINE__);
             }
 
             // Need to remove the last '/0'. 
@@ -5404,7 +5405,7 @@ void convert_vgroup_attrs(int32 vgroup_id,D4Group *d4g, const string &vgroupname
     intn n_attrs = Vnattrs2(vgroup_id);
     if (n_attrs == FAIL) {
         Vdetach(vgroup_id);
-        throw InternalErr(__FILE__,__LINE__,"Vnattrs failed");
+        throw BESInternalError("Vnattrs failed.",__FILE__, __LINE__);
     }
 
     for(int attr_index = 0; attr_index <n_attrs; attr_index++) {
@@ -5417,7 +5418,7 @@ void convert_vgroup_attrs(int32 vgroup_id,D4Group *d4g, const string &vgroupname
                             &attr_count, &attr_value_size, nullptr, nullptr);
         if (status_n == FAIL) {
             Vdetach(vgroup_id);
-            throw InternalErr(__FILE__,__LINE__,"Vattrinfo failed");
+            throw BESInternalError("Vattrinfo failed.",__FILE__, __LINE__);
         }
 
         // Create the DAP4 attribute 
@@ -5438,7 +5439,7 @@ void convert_vgroup_attrs(int32 vgroup_id,D4Group *d4g, const string &vgroupname
         status_n = Vgetattr2(vgroup_id,attr_index,attr_value.data());
         if (status_n == FAIL) {
             Vdetach(vgroup_id);
-            throw InternalErr(__FILE__,__LINE__,"Vgetattr failed");
+            throw BESInternalError("Vgetattr failed.",__FILE__, __LINE__);
         }
 
         string dap4_attrname = HDFCFUtil::get_CF_string(tempname);
@@ -5455,7 +5456,7 @@ void convert_vdata(int32 fileid, int32 sdfd, int32 vgroup_id,int32 obj_ref ,D4Gr
     int32 vdata_id = VSattach (fileid, obj_ref, "r");
     if (vdata_id == FAIL) {
         close_vgroup_fileids(fileid,sdfd,vgroup_id);  
-        throw InternalErr(__FILE__, __LINE__, "Cannot attach vdata.");
+        throw BESInternalError("Cannot attach vdata.",__FILE__, __LINE__);
     }
 
     // Vdata class
@@ -5464,7 +5465,7 @@ void convert_vdata(int32 fileid, int32 sdfd, int32 vgroup_id,int32 obj_ref ,D4Gr
     if (VSgetclass (vdata_id, vdata_class) == FAIL) {
         VSdetach (vdata_id);
         close_vgroup_fileids(fileid,sdfd,vgroup_id);  
-        throw InternalErr(__FILE__, __LINE__, "VSgetclass failed.");
+        throw BESInternalError("VSgetclass failed.",__FILE__,__LINE__);
     }
 
     if (VSisattr(vdata_id) == FALSE && VSisinternal(vdata_class) == FALSE) {
@@ -5473,14 +5474,14 @@ void convert_vdata(int32 fileid, int32 sdfd, int32 vgroup_id,int32 obj_ref ,D4Gr
         if (vs_nflds == FAIL) {
             VSdetach(vdata_id);
             close_vgroup_fileids(fileid,sdfd,vgroup_id);  
-            throw InternalErr(__FILE__, __LINE__, "Cannot get the number of fields of a vdata.");
+            throw BESInternalError("Cannot get the number of fields of a vdata.",__FILE__, __LINE__);
         }
         
         int32 num_elms = VSelts(vdata_id);
         if (num_elms == FAIL) {
             VSdetach(vdata_id);
             close_vgroup_fileids(fileid,sdfd,vgroup_id);  
-            throw InternalErr(__FILE__, __LINE__, "Cannot get the number of records of a vdata.");
+            throw BESInternalError("Cannot get the number of records of a vdata.",__FILE__, __LINE__);
         }
 
         // We map one field vdata to an atomic array; multi-field vdata to an array of structure.
@@ -5493,10 +5494,7 @@ void convert_vdata(int32 fileid, int32 sdfd, int32 vgroup_id,int32 obj_ref ,D4Gr
         catch(...) {
             VSdetach(vdata_id);
             close_vgroup_fileids(fileid,sdfd,vgroup_id);  
-            if (vs_nflds >1)
-                throw InternalErr(__FILE__, __LINE__, "Cannot map vdata to a dap structure array.");
-            else 
-                throw InternalErr(__FILE__, __LINE__, "Cannot map vdata to a dap atomic array.");
+            throw;
         }
     }
     VSdetach(vdata_id);
@@ -5508,19 +5506,19 @@ void map_vdata_to_dap4_atomic_array(int32 vdata_id, int32 num_elms, int32 obj_re
     // Only one field, so the index is 0.
     int32 vdata_field_order = VFfieldorder(vdata_id,0);
     if (vdata_field_order == FAIL) {
-        throw InternalErr(__FILE__, __LINE__, "VFfieldorder failed");
+        throw BESInternalError("VFfieldorder failed.",__FILE__, __LINE__);
     }
 
     char vdata_name[VSNAMELENMAX];       
     if (VSgetname(vdata_id,vdata_name) == FAIL) {
-        throw InternalErr(__FILE__, __LINE__, "Cannot get vdata name.");
+        throw BESInternalError("Cannot get vdata name.",__FILE__, __LINE__);
     }       
  
     string vdata_name_str(vdata_name);
 
     const char *fieldname = VFfieldname(vdata_id,0);
     if (fieldname == nullptr) {
-        throw InternalErr(__FILE__, __LINE__, "Cannot get vdata field name.");
+        throw BESInternalError("Cannot get vdata field name.",__FILE__, __LINE__);
     }
 
     string fieldname_str(fieldname);
@@ -5557,7 +5555,7 @@ void map_vdata_to_dap4_structure_array(int32 vdata_id, int32 num_elms, int32 nfl
 
     char vdata_name[VSNAMELENMAX];       
     if (VSgetname(vdata_id,vdata_name) == FAIL) {
-        throw InternalErr(__FILE__, __LINE__, "Cannot get vdata name.");
+        throw BESInternalError("Cannot get vdata name.",__FILE__, __LINE__);
     }       
     string vdata_name_str(vdata_name);
     vdata_name_str = HDFCFUtil::get_CF_string(vdata_name_str);
@@ -5569,12 +5567,12 @@ void map_vdata_to_dap4_structure_array(int32 vdata_id, int32 num_elms, int32 nfl
 
         int32 vdata_field_order = VFfieldorder(vdata_id,j);
         if (vdata_field_order == FAIL) {
-            throw InternalErr(__FILE__, __LINE__, "VFfieldorder failed");
+            throw BESInternalError("VFfieldorder failed.",__FILE__, __LINE__);
         }
     
         const char *fieldname = VFfieldname(vdata_id,j);
         if (fieldname == nullptr) {
-            throw InternalErr(__FILE__, __LINE__, "Cannot get vdata field name.");
+            throw BESInternalError("Cannot get vdata field name.",__FILE__, __LINE__);
         }
     
         string fieldname_str(fieldname);
@@ -5636,7 +5634,7 @@ void map_vdata_to_dap4_attrs(HDFDMRArray_VD *ar, int32 vdata_id, int32 obj_ref) 
             status = VSattrinfo (vdata_id, _HDF_VDATA, i, attr_name,
                                  &attr_type, &attr_count, &attrsize);
             if (status == FAIL) {
-                throw InternalErr(__FILE__, __LINE__, "VSattrinfo failed.");
+                throw BESInternalError("VSattrinfo failed.",__FILE__, __LINE__);
             }   
                 
             // Checking and handling the special characters for the vdata attribute name.
@@ -5645,7 +5643,7 @@ void map_vdata_to_dap4_attrs(HDFDMRArray_VD *ar, int32 vdata_id, int32 obj_ref) 
             attr_value.resize(attrsize);
 
             if (VSgetattr (vdata_id, _HDF_VDATA, i, attr_value.data()) == FAIL) {
-                throw InternalErr(__FILE__, __LINE__, "VSgetattr failed.");
+                throw BESInternalError("VSgetattr failed.",__FILE__, __LINE__);
             }
             string dap4_attrname = HDFCFUtil::get_CF_string(tempname);
             
@@ -5673,19 +5671,19 @@ void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Gr
     sds_index = SDreftoindex(sdfd,obj_ref);
     if (sds_index == FAIL) {
         close_vgroup_fileids(file_id,sdfd,vgroup_id);  
-        throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS index.");
+        throw BESInternalError("Fail to obtain the SDS index.",__FILE__, __LINE__);
     }
 
     sds_id = SDselect(sdfd,sds_index);
     if (sds_id == FAIL) {
         close_vgroup_fileids(file_id,sdfd,vgroup_id);  
-        throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS ID.");
+        throw BESInternalError("Fail to obtain the SDS ID.",__FILE__, __LINE__);
      }
 
     if (SDgetnamelen(sds_id, &name_len) == FAIL) {
         SDendaccess(sds_id);
         close_vgroup_fileids(file_id,sdfd,vgroup_id);  
-        throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS name length.");
+        throw BESInternalError("Fail to obtain the SDS name length.",__FILE__, __LINE__);
     }
 
     sds_name.resize(name_len+1);
@@ -5694,7 +5692,7 @@ void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Gr
     if (FAIL == SDgetinfo (sds_id, sds_name.data(), &sds_rank, dim_sizes, &sds_type, &n_sds_attrs)) {
         SDendaccess(sds_id);
         close_vgroup_fileids(file_id,sdfd,vgroup_id);  
-        throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS ID.");
+        throw BESInternalError("Fail to obtain the SDS ID.",__FILE__, __LINE__);
     }                        
     
     bool has_zero_dim_size = false;
@@ -5730,7 +5728,7 @@ void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Gr
             delete ar;
             SDendaccess (sds_id);
             close_vgroup_fileids(file_id,sdfd,vgroup_id);  
-            throw InternalErr(__FILE__, __LINE__, "SDgetdimid failed.");
+            throw BESInternalError("SDgetdimid failed.",__FILE__, __LINE__);
         }
         char dim_name[H4_MAX_NC_NAME];
         int32 dim_size = 0;
@@ -5747,7 +5745,7 @@ void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Gr
             delete bt;
             SDendaccess (sds_id);
             close_vgroup_fileids(file_id,sdfd,vgroup_id);  
-            throw InternalErr(__FILE__, __LINE__, "SDdiminfo failed.");
+            throw BESInternalError("SDdiminfo failed.",__FILE__, __LINE__);
         }
 
         string dim_name_str (dim_name);
@@ -5769,7 +5767,7 @@ void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Gr
             delete bt;
             SDendaccess (sds_id);
             close_vgroup_fileids(file_id,sdfd,vgroup_id);  
-            throw InternalErr(__FILE__, __LINE__, "Map SDS attributes to DAP4 failed.");
+            throw;
     }
 
     if (is_eos2_grid) {
@@ -5806,7 +5804,7 @@ void map_sds_var_dap4_attrs(HDFDMRArray_SDS *ar, int32 sds_id, int32 obj_ref, in
     intn emptySDS = 0;
     if (SDcheckempty(sds_id,&emptySDS) == FAIL) {
         SDendaccess(sds_id);
-        throw InternalErr(__FILE__, __LINE__, "SDcheckempty failed.");
+        throw BESInternalError("SDcheckempty failed.",__FILE__,__LINE__);
     }
     bool has_fv_attr = false;
 
@@ -5816,12 +5814,12 @@ void map_sds_var_dap4_attrs(HDFDMRArray_SDS *ar, int32 sds_id, int32 obj_ref, in
         int32 sds_attr_type = 0;
         int32 attr_value_count = 0;
         if (FAIL==SDattrinfo (sds_id, attrindex, attr_name, &sds_attr_type, &attr_value_count))
-                throw InternalErr(__FILE__,__LINE__, "SDattrinfo failed ");
+            throw BESInternalError("SDattrinfo failed. ",__FILE__, __LINE__);
 
         vector<char> attr_value;
         attr_value.resize(attr_value_count * DFKNTsize(sds_attr_type));
         if (SDreadattr (sds_id, attrindex, attr_value.data()) == -1) 
-            throw InternalErr(__FILE__,__LINE__, "SDreadattr failed ");
+            throw BESInternalError("SDreadattr failed. ",__FILE__, __LINE__);
             
         string dap4_attrname (attr_name);
         if (emptySDS == 1) {
@@ -5890,7 +5888,7 @@ BaseType * gen_dap_var(int32 h4_type, const string & h4_str, const string &filen
         break;
 
     default:
-        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+        throw BESInternalError("Unsupported data type.",__FILE__, __LINE__);
 
     }
     return ret_bt;
@@ -5944,7 +5942,7 @@ D4AttributeType h4type_to_dap4_attrtype(int32 h4_type) {
         break;
 
     default:
-        throw InternalErr(__FILE__,__LINE__,"unsupported data type.");
+        throw BESInternalError("Unsupported data type.",__FILE__, __LINE__);
 
     }
     return dap4_attr_type;
@@ -6081,7 +6079,7 @@ void map_vgroup_attr(D4Group *d4g, const string &dap4_attrname,int32 attr_type, 
 
     // We encounter an unsupported DAP4 attribute type.
     if (attr_null_c == dap4_attr_type) 
-        throw InternalErr(__FILE__, __LINE__, "unsupported DAP4 attribute type");
+        throw BESInternalError("Unsupported DAP4 attribute type.",__FILE__, __LINE__);
 
     // Create the DAP4 attribute 
     auto d4_attr_unique = make_unique<D4Attribute>(dap4_attrname, dap4_attr_type);
@@ -6098,7 +6096,7 @@ void map_vgroup_attr(D4Group *d4g, const string &dap4_attrname,int32 attr_type, 
             
             string print_rep = print_dap4_attr(attr_type, loc, (void*) (attr_value.data()));
             if (print_rep.empty())
-                throw InternalErr(__FILE__,__LINE__, "Cannot obtain the attribute value for DAP4 ");
+                throw BESInternalError( "Cannot obtain the attribute value for DAP4. ",__FILE__, __LINE__);
             else 
                 d4_attr->add_value(print_rep);
 
@@ -6114,7 +6112,7 @@ void map_sds_vdata_attr(BaseType *d4b, const string &attr_name,int32 attr_type, 
 
     // We encounter an unsupported DAP4 attribute type.
     if (attr_null_c == dap4_attr_type) 
-        throw InternalErr(__FILE__, __LINE__, "unsupported DAP4 attribute type");
+        throw BESInternalError("Unsupported DAP4 attribute type.",__FILE__, __LINE__);
 
     // Create the DAP4 attribute 
 
@@ -6132,7 +6130,7 @@ void map_sds_vdata_attr(BaseType *d4b, const string &attr_name,int32 attr_type, 
             
             string print_rep = print_dap4_attr(attr_type, loc, (void*) (attr_value.data()));
             if (print_rep.empty())
-                throw InternalErr(__FILE__,__LINE__, "Cannot obtain the attribute value for DAP4 ");
+                throw BESInternalError( "Cannot obtain the attribute value for DAP4. ",__FILE__, __LINE__);
             else 
                 d4_attr->add_value(print_rep);
 
@@ -6166,7 +6164,7 @@ void  add_sds_fvalue_attr(BaseType * d4b, int32 sdsid) {
     int32 sds_dtype = 0;
     if (FAIL == SDgetinfo (sdsid, nullptr, nullptr, nullptr, &sds_dtype, nullptr)) {
         SDendaccess(sdsid);
-        throw InternalErr(__FILE__, __LINE__, "Fail to obtain the SDS info.");
+        throw BESInternalError("Fail to obtain the SDS info.",__FILE__, __LINE__);
     }                        
  
     string fvalue_str;
@@ -6253,7 +6251,7 @@ void  add_sds_fvalue_attr(BaseType * d4b, int32 sdsid) {
 
     // We encounter an unsupported DAP4 attribute type.
     if (attr_null_c == dap4_attr_type) 
-        throw InternalErr(__FILE__, __LINE__, "unsupported DAP4 attribute type");
+        throw BESInternalError("Unsupported DAP4 attribute type.",__FILE__, __LINE__);
 
     auto d4_fvalue_attr_unique = make_unique<D4Attribute>("_FillValue", dap4_attr_type);
     D4Attribute *d4_fvalue_attr = d4_fvalue_attr_unique.get();
@@ -6815,7 +6813,7 @@ void dims_transform_to_dap4(Array *ar,D4Group *root_grp, bool missing_vars) {
                      (*d).dim = d4_dim;
                 }
                 else 
-                    throw InternalErr(__FILE__,__LINE__, "DAP4 Dimension name should be found. ");
+                    throw BESInternalError( "DAP4 Dimension name should be found. ",__FILE__, __LINE__);
             }
             else {
                 (*d).dim = d4_dim;

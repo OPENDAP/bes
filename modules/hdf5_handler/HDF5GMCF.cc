@@ -2167,7 +2167,7 @@ void GMFile::Build_lat1D_latlon_candidate(const Var *lat,const vector<Var*> &lon
 }
 
 // Build >1D latlon coordinate variables candidate for GENERAL_LATLON_COOR_ATTR.
-void GMFile::Build_latg1D_latlon_candidate(Var *lat,const vector<Var*> & lon_vec) {
+void GMFile::Build_latg1D_latlon_candidate(const Var *lat,const vector<Var*> & lon_vec) {
 
     BESDEBUG("h5", "Coming to Build_latg1D_latlon_candidate()"<<endl);
     set<string> lon_candidate_path;
@@ -2196,11 +2196,12 @@ void GMFile::Build_latg1D_latlon_candidate(Var *lat,const vector<Var*> & lon_vec
 
         string lat_path = HDF5CFUtil::obtain_string_before_lastslash(lat->fullpath);
         vector <string> lon_final_candidate_path_vec;
-        for(auto islon_path =lon_candidate_path.begin();islon_path!=lon_candidate_path.end();++islon_path) {
+        //for(auto islon_path =lon_candidate_path.begin();islon_path!=lon_candidate_path.end();++islon_path) {
+        for(const auto &islon_path:lon_candidate_path) {
 
             // Search the path.
-            if(HDF5CFUtil::obtain_string_before_lastslash(*islon_path)==lat_path) 
-                lon_final_candidate_path_vec.push_back(*islon_path);
+            if(HDF5CFUtil::obtain_string_before_lastslash(islon_path)==lat_path) 
+                lon_final_candidate_path_vec.push_back(islon_path);
         }
 
         if(lon_final_candidate_path_vec.size() == 1) {// insert this lat/lon pair to the struct
@@ -2234,8 +2235,8 @@ void GMFile::Build_latg1D_latlon_candidate(Var *lat,const vector<Var*> & lon_vec
             string lon_name_prefix1;
             string lon_name_prefix2;
 
-            for(auto ilon = lon_final_candidate_path_vec.begin(); ilon!=lon_final_candidate_path_vec.end();++ilon) {
-                string lon_name = HDF5CFUtil::obtain_string_after_lastslash(*ilon);
+            for(const auto &ilon:lon_final_candidate_path_vec) {
+                string lon_name = HDF5CFUtil::obtain_string_after_lastslash(ilon);
                 if(lon_name.size() >3) {
                     lon_name_prefix1 = lon_name.substr(0,lon_name.size()-3);
                     if(lon_name.size() >9)
@@ -2246,7 +2247,7 @@ void GMFile::Build_latg1D_latlon_candidate(Var *lat,const vector<Var*> & lon_vec
 
                     Name_Size_2Pairs latlon_pair;
                     latlon_pair.name1 = lat->fullpath;
-                    latlon_pair.name2 = *ilon;
+                    latlon_pair.name2 = ilon;
                     latlon_pair.size1 = lat->getDimensions()[0]->size;
                     latlon_pair.size2 = lat->getDimensions()[1]->size;
                     latlon_pair.rank = lat->rank;
@@ -3232,11 +3233,10 @@ void GMFile::Handle_CVar_Mea_Ozone() {
         } // end of for irv 
     } // end of for irs 
 
-    for (auto irs = tempdimnamelist.begin(); irs != tempdimnamelist.end();irs++) {
-
+    for (const auto&tdimname:tempdimnamelist) {
         auto GMcvar_unique = make_unique<GMCVar>();
         auto GMcvar = GMcvar_unique.release();
-        Create_Missing_CV(GMcvar,*irs);
+        Create_Missing_CV(GMcvar,tdimname);
         this->cvars.push_back(GMcvar);
     }
 }
@@ -6960,7 +6960,7 @@ void GMFile::Update_Bounds_Attr() {
 
 }
 
-void GMFile::Update_NC4_PureDimSize() {
+void GMFile::Update_NC4_PureDimSize() const{
 
     for (auto &cvar:this->cvars) {
         if (cvar->getRank() == 1) {

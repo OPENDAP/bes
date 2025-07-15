@@ -594,7 +594,7 @@ void HDF5CFUtil::rev_str(char *str, int len)
     {
         temp = str[i];
         str[i] = str[j];
-        str[j] = temp;
+        str[j] = (char)temp;
         i++; 
         j--;
     }
@@ -659,11 +659,11 @@ string HDF5CFUtil::get_int_str(int x) {
 
    string str;
    if(x > 0 && x <10)   
-      str.push_back(x+'0');
+      str.push_back((char)x+'0');
    
    else if (x >10 && x<100) {
-      str.push_back(x/10+'0');
-      str.push_back(x%10+'0');
+      str.push_back((char)(x/10)+'0');
+      str.push_back((char)(x%10)+'0');
    }
    else {
       int num_digit = 0;

@@ -27,7 +27,7 @@
 
 #include "config_hdf.h"
 
-#include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include "HDFFloat32.h"
 
 using namespace libdap;
@@ -46,7 +46,6 @@ BaseType *HDFFloat32::ptr_duplicate()
 
 bool HDFFloat32::read()
 {
-    throw InternalErr(__FILE__, __LINE__,
-                      "Unimplemented read method called.");
-}
+    throw BESInternalError("Unimplemented read method called.",__FILE__, __LINE__);
 
+}

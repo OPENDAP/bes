@@ -292,7 +292,7 @@ read_objects_base_type(DDS & dds_table, const string & varname,
         ar->set_numdim(dt_inst.ndims);
         ar->set_numelm((int) (dt_inst.nelmts));
 	    for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++)
-            ar->append_dim(dt_inst.size[dim_index]); 
+            ar->append_dim_ll((int64_t)(dt_inst.size[dim_index])); 
         dds_table.add_var(ar);
     }
     BESDEBUG("h5", "<read_objects_base_type(dds)" << endl);
@@ -337,7 +337,7 @@ read_objects_structure(DDS & dds_table, const string & varname,
             ar->set_length((int) (dt_inst.nelmts));
 
             for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
-                ar->append_dim(dt_inst.size[dim_index]);
+                ar->append_dim_ll((int64_t)(dt_inst.size[dim_index]));
                 BESDEBUG("h5", "=read_objects_structure(): append_dim = " <<
                     dt_inst.size[dim_index] << endl);
             }

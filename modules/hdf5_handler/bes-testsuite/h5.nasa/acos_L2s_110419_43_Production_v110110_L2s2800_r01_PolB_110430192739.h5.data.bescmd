@@ -4,7 +4,7 @@
     <setContainer name="acos_L2s_110419_43_Production_v110110_L2s2800_r01_PolB_110430192739" space="catalog">/data/acos_L2s_110419_43_Production_v110110_L2s2800_r01_PolB_110430192739.h5</setContainer>
     <define name="d">
 	<container name="acos_L2s_110419_43_Production_v110110_L2s2800_r01_PolB_110430192739">
-	     <constraint>SoundingGeometry_sounding_latitude[0:30:59],SoundingGeometry_sounding_longitude[0:30:59],Metadata_AerosolTypes[0],RetrievalResults_master_quality_flag[59],SoundingHeader_l2_packaging_qual_flag[648:648:648],SoundingHeader_sounding_qual_flag[0:1:59],SoundingHeader_sounding_id_Time[0:324:648],SoundingHeader_sounding_id_Date[0:324:648]</constraint>
+	     <constraint>SoundingGeometry_sounding_latitude[0:30:59],SoundingGeometry_sounding_longitude[0:30:59],Metadata_AerosolTypes[0],RetrievalResults_master_quality_flag[59],SoundingHeader_l2_packaging_qual_flag[648:648:648],SoundingHeader_sounding_qual_flag[0:1:59]</constraint>
 	</container>
     </define>
     <get type="dods" definition="d" />

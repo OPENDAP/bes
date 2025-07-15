@@ -19,7 +19,6 @@
 #endif
 
 #include <libdap/DMR.h>
-#include <libdap/InternalErr.h>
 
 
 /**
