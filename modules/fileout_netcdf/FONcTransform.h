@@ -28,6 +28,7 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+//      kyang       Kent Yang <myang6@hdfgroup.org> for the DAP4 support.
 
 #ifndef FONcTransfrom_h_
 #define FONcTransfrom_h_ 1
@@ -50,10 +51,10 @@ class FONcBaseType;
 class BESResponseObject;
 class BESDataHandlerInterface;
 
-/** @brief Transformation object that converts an OPeNDAP DataDDS to a
+/** @brief Transformation object that converts an OPeNDAP DataDDS or DMR to a
  * netcdf file
  *
- * This class transforms each variable of the DataDDS to a netcdf file. For
+ * This class transforms each variable of the DataDDS/DMR to a netcdf file. For
  * more information on the transformation please refer to the OpeNDAP
  * documents wiki.
  */
@@ -66,36 +67,42 @@ private:
     BESDataHandlerInterface *d_dhi = nullptr;
     std::string _localfile;
     std::string _returnAs;
+
+    // The following variables are for DMR group support.
     std::vector<FONcBaseType *> _fonc_vars;
     std::vector<FONcBaseType *> _total_fonc_vars_in_grp;
     std::set<std::string> _included_grp_names;
     std::map<std::string,int64_t> GFQN_dimname_to_dimsize;
     std::map<std::string,int64_t> VFQN_dimname_to_dimsize;
+
+    // The following is for enum support.
     std::unordered_map<std::string,std::vector<std::pair<std::string,int>>> GFQN_to_en_typeid_vec;
 
-    // TODO: This is for the temporary memory usage optimization. Once we can support the define() with or without dio for individual array.
-    //       This flag is not necessary and should be removed. KY 11/29/23
+    // Flag to check if we can do the direct IO optimization. 
+    // If this flag is false, we cannot do direct IO for this file at all.
+    // Even if this flag is true, it doesn't mean we can do direct IO for every variable. 
+    // Other conditions need to be fulfilled.
     bool global_dio_flag = false; 
 
+    // The module may add fake dimension name if dimension names are not provided. 
+    // The fake dimension names are just dim0, dim1,dim2 etc regardless of the dimension size.
+    // The following members are used to reduce the dimension names by having the 
+    // one dimension name for any dimension that has the same dimension size.
     bool do_reduce_dim = false;
     std::unordered_map<int64_t, std::vector<std::string>> dimsize_to_dup_dimnames;
     int reduced_dim_num = 0;
 
+    // Handle unlimited dimensions under the root.
     bool is_root_no_grp_unlimited_dim = false;
     std::vector<std::string> root_no_grp_unlimited_dimnames; 
 
 public:
     FONcTransform(BESResponseObject *obj, BESDataHandlerInterface *dhi, const std::string &localfile, const std::string &ncVersion = "netcdf");
     virtual ~FONcTransform();
-	virtual void transform_dap2();
-	virtual void transform_dap4();
+    virtual void transform_dap2();
+    virtual void transform_dap4();
 
-	virtual void dump(ostream &strm) const;
-
-    // TODO: This is for the temporary memory usage optimization. Once we can support the define() with or without dio for individual array.
-    //       This flag is not necessary and should be removed. KY 11/29/23
-    bool get_gdio_flag() const {return global_dio_flag; }
-    void set_gdio_flag(bool dio_flag_value = true) { global_dio_flag = dio_flag_value; }
+    virtual void dump(ostream &strm) const;
 
 
 private:
@@ -128,7 +135,7 @@ private:
             const string &ce);
     void set_max_size_and_encoding(unsigned long long &max_request_size_kb, string &return_encoding);
 
-    void set_constraint_var_dio_flag(libdap::BaseType*) const;
+    //void set_constraint_var_dio_flag(libdap::BaseType*) const;
     void set_constraint_var_dio_flag(libdap::Array*) const;
 
 };

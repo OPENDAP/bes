@@ -141,7 +141,7 @@ FONcTransform::~FONcTransform() {
 /**
  *
  * @param dap_version Dap version of the request 2 || 4)
- * @param return_encoding Should be netcdf-3|4 (classic)|{46-bit
+ * @param return_encoding Should be netcdf-3|4 (classic)|{64-bit
  * @param config_max_response_size_kb
  * @param contextual_max_response_size_kb
  * @param ce
@@ -361,25 +361,6 @@ void FONcTransform::transform_dap2() {
 
     _dds->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
-#if 0 //removed due not being needed
-    vector<BaseType *> projected_dap4_variable_inventory;
-    bool d4_true = d4_tools::is_dap4_projected(_dds, projected_dap4_variable_inventory);
-
-    /**
-     * Implementation check list:
-     * -X- Explain that the request cannot be fulfilled because the response contains types that are not compatible with the requested encoding.
-     * -_- Contain the inventory of incompatible types so the user can see exactly where the issue is.
-     * -_- Direct the user to a more compatible data model or encoding (i.e. DAP4 and NetCDF-4) by suggesting a change in request suffix or DAP4 Data Request Form page.
-     */
-
-    if (d4_true){
-        throw BESSyntaxUserError(
-                "request cannot be fulfilled because the response contains types that are not compatible with the requested encoding",
-                __FILE__,
-                __LINE__);
-    }
-#endif
-
     throw_if_dap2_response_too_big(_dds, besDRB.get_ce());
     dap_utils::throw_for_dap4_typed_vars_or_attrs(_dds,__FILE__,__LINE__);
 
@@ -403,7 +384,7 @@ void FONcTransform::transform_dap2() {
     fonc_history_util::updateHistoryAttributes(_dds, d_dhi->data[POST_CONSTRAINT]);
 
     // Open the file for writing
-    int stax;
+    int stax = NC_NOERR;
     if (FONcTransform::_returnAs == FONC_RETURN_AS_NETCDF4) {
         if (FONcRequestHandler::classic_model) {
             BESDEBUG(MODULE,  prolog << "Opening NetCDF-4 cache file in classic mode. fileName:  "
@@ -427,8 +408,9 @@ void FONcTransform::transform_dap2() {
         FONcUtils::handle_error(stax, prolog + "Call to nc_create() failed for file: " + _localfile, __FILE__, __LINE__);
     }
 
-    int current_fill_prop_vaule;
+    int current_fill_prop_vaule =-1;
 
+    // TODO: we may need to evaluate if using NC_NOFILL is always the best way.
     stax = nc_set_fill(_ncid, NC_NOFILL, &current_fill_prop_vaule);
     if (stax != NC_NOERR) {
         FONcUtils::handle_error(stax, "File out netcdf, unable to set fill to NC_NOFILL: " + _localfile, __FILE__,
@@ -439,6 +421,17 @@ void FONcTransform::transform_dap2() {
         // Here we will be defining the variables of the netcdf and
         // adding attributes. To do this we must be in define mode.
         nc_redef(_ncid);
+        // TODO: If I do the following the code, the code will fail for many tests. 
+        // According to https://docs.unidata.ucar.edu/netcdf-c/current/group__datasets.html,
+        // nc_redef is not necessary for netCDF-4. However, it still doesn't make sense to throw an error.
+        // Need to check later. KY 2025-07-14
+#if 0
+        int stax1 = nc_redef(_ncid);
+        if (stax1 != NC_NOERR) {
+            FONcUtils::handle_error(stax, "File out netcdf, unable to put netCDF dataset to the define mode: " + _localfile, __FILE__,
+                                    __LINE__);
+        }
+#endif
 
         // For each converted FONc object, call define on it to define
         // that object to the netcdf file. This also adds the attributes
@@ -724,7 +717,6 @@ void FONcTransform::transform_dap4() {
                 continue;
             else {
                 string temp_suffix = root_d4_dimname_list[i].substr(3);
-                //BESDEBUG(MODULE,  prolog << "temp_suffix: "<<temp_suffix<<endl);
                 bool ignored_suffix = false;
                 for (unsigned int j = 0; j < temp_suffix.size(); j++) {
                     if (!isdigit(temp_suffix[j])) {
@@ -786,14 +778,12 @@ void FONcTransform::transform_dap4_no_group() {
             stax = nc_create(_localfile.c_str(), NC_CLOBBER | NC_NETCDF4 | NC_CLASSIC_MODEL, &_ncid);
         }
         else {
-            BESDEBUG(MODULE, prolog << "Opening NetCDF-4 cache file. fileName:  " << _localfile
-                                                                                                           << endl);
+            BESDEBUG(MODULE, prolog << "Opening NetCDF-4 cache file. fileName:  " << _localfile << endl);
             stax = nc_create(_localfile.c_str(), NC_CLOBBER | NC_NETCDF4, &_ncid);
         }
     }
     else {
-        BESDEBUG(MODULE, prolog << "Opening NetCDF-3 cache file. fileName:  " << _localfile
-                                                                                                       << endl);
+        BESDEBUG(MODULE, prolog << "Opening NetCDF-3 cache file. fileName:  " << _localfile <<endl);
         if (FONcRequestHandler::nc3_classic_format)                                                    
             stax = nc_create(_localfile.c_str(), NC_CLOBBER, &_ncid);
         else 
@@ -803,7 +793,6 @@ void FONcTransform::transform_dap4_no_group() {
     if (stax != NC_NOERR) {
         FONcUtils::handle_error(stax, prolog + "Call to nc_create() failed for file: " + _localfile, __FILE__, __LINE__);
     }
-
 
     D4Group *root_grp = _dmr->root();
 
@@ -867,7 +856,6 @@ void FONcTransform::transform_dap4_no_group() {
                 }
                 // This is a factory class call, and 'fg' is specialized for 'v'
                 FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model, GFQN_to_en_typeid_vec,root_no_grp_unlimited_dimnames);
-    
                 
                 _fonc_vars.push_back(fb);
     
@@ -968,15 +956,15 @@ void FONcTransform::transform_dap4_group(D4Group *grp,
 
     bool included_grp = false;
 
+    // Obtain the whole file.
     if (_dmr->get_ce_empty()) {
         BESDEBUG(MODULE, prolog << "In group  - group name:  " << grp->FQN() << endl);
         included_grp = true;
     }
-        // Always include the root and its attributes.
     else if (is_root_grp == true)
         included_grp = true;
     else {
-        // Check if this group is in the group list kept in the file.
+        // Check if this group is in the group list.
         set<string>::iterator iset;
         if (_included_grp_names.find(grp->FQN()) != _included_grp_names.end())
             included_grp = true;
@@ -1010,6 +998,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
 
     if (is_root_grp == true) { 
         nc4_grp_id = _ncid;
+        // handle enum type.
         if(d4_grp->has_enum_defs()) 
             gen_nc4_enum_type(d4_grp,nc4_grp_id);
     }
@@ -1104,7 +1093,6 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
                 BESDEBUG(MODULE, prolog << "Converting variable '" << v->name() << "'" << endl);
     
                 // This is a factory class call, and 'fg' is specialized for 'v'
-                //FONcBaseType *fb = FONcUtils::convert(v,FONcTransform::_returnAs,FONcRequestHandler::classic_model);
                 FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums, GFQN_to_en_typeid_vec,root_no_grp_unlimited_dimnames);
     
                 fonc_vars_in_grp.push_back(fb);
@@ -1134,14 +1122,10 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
                             t_a->set_dio_flag(false);
                         else 
                             set_constraint_var_dio_flag(t_a);
- 
-                        set_constraint_var_dio_flag(t_a);
                     }
-    
                 }
     
                 // This is a factory class call, and 'fg' is specialized for 'v'
-                //FONcBaseType *fb = FONcUtils::convert(v,FONcTransform::_returnAs,FONcRequestHandler::classic_model);
                 FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums,GFQN_to_en_typeid_vec, root_no_grp_unlimited_dimnames);
     
                 fonc_vars_in_grp.push_back(fb);
@@ -1162,7 +1146,6 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
     else
         BESDEBUG(MODULE, prolog << "Has group" << endl);
 #endif
-
 
     try {
         // Here we will be defining the variables of the netcdf and
@@ -1203,7 +1186,6 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
             FONcBaseType *fbt = *i;
             RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmitting: " + fbt->name() , __FILE__, __LINE__);
             BESDEBUG(MODULE, prolog << "Writing data for variable:  " << fbt->name() << endl);
-            //fbt->write(_ncid);
             fbt->write(nc4_grp_id);
         }
 
@@ -1389,7 +1371,6 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp) {
 }
 void FONcTransform::set_constraint_var_dio_flag(libdap::Array* t_a) const {
 
-
     // The last check to see if the direct io can be done is to check if
     // this array is subset. If yes, we cannot use direct IO.
 
@@ -1407,6 +1388,7 @@ void FONcTransform::set_constraint_var_dio_flag(libdap::Array* t_a) const {
 
 }
 
+#if 0
 
 void FONcTransform::set_constraint_var_dio_flag(libdap::BaseType* bt) const{
 
@@ -1433,6 +1415,7 @@ void FONcTransform::set_constraint_var_dio_flag(libdap::BaseType* bt) const{
         }
     }
 }
+#endif
 
 bool FONcTransform::check_reduce_dim() {
 
