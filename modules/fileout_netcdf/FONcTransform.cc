@@ -1388,35 +1388,6 @@ void FONcTransform::set_constraint_var_dio_flag(libdap::Array* t_a) const {
 
 }
 
-#if 0
-
-void FONcTransform::set_constraint_var_dio_flag(libdap::BaseType* bt) const{
-
-    if (bt->type() == dods_array_c) {
-
-        auto t_a=dynamic_cast<Array *>(bt);
- 
-        // The last check to see if the direct io can be done is to check if
-        // this array is subset. If yes, we cannot use direct IO.
-        if (t_a->get_dio_flag()) {
-
-            bool partial_subset_array = false;
-            Array::Dim_iter di = t_a->dim_begin();
-            Array::Dim_iter de = t_a->dim_end();
-
-            for (; di != de; di++) {
-                if (t_a->dimension_size_ll(di,true) != t_a->dimension_size_ll(di, false)) {
-                    partial_subset_array = true;
-                    break;
-                }
-            }
-            if (partial_subset_array)
-                t_a->set_dio_flag(false);
-        }
-    }
-}
-#endif
-
 bool FONcTransform::check_reduce_dim() {
 
     bool ret_value = true;
