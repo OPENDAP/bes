@@ -1,10 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<request reqID="some_unique_value" >
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<request reqID="some_unique_value">
+    <setContext name="dap4_checksums">true</setContext>
     <setContext name="dap_format">dap2</setContext>
     <setContainer name="cea" space="catalog">/data/cea.hdf</setContainer>
     <define name="d">
-	<container name="cea" />
+        <container name="cea"/>
         <dap4constraint>/grid1/Latitude[1:2:7];/grid1/Longitude[1:2:7]</dap4constraint>
     </define>
-    <get type="dap" definition="d" />
+    <get type="dap" definition="d"/>
 </request>

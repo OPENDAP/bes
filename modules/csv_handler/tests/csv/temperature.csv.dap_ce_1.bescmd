@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <request reqID ="some_unique_value" >
     <setContainer name="c" space="catalog">/data/temperature.csv</setContainer>
+    <setContext name="dap4_checksums">true</setContext>
+
     <define name="d">
-	<container name="c">
-	   <dap4constraint>Station</dap4constraint>
-	</container>
+        <container name="c">
+            <dap4constraint>Station</dap4constraint>
+        </container>
     </define>
+
     <get type="dap" definition="d" />
+    
 </request>
