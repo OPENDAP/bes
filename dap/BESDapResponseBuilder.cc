@@ -1454,16 +1454,12 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mim
     }
 }
 
-const auto DAP4_CHECKSUMS_KEY="dap4_checksums";
 
 bool use_dap4_checksums() {
     bool found_it = false;
     string state = "unset";
-    state = BESContextManager::TheManager()->get_context(DAP4_CHECKSUMS_KEY, found_it);
-    if (!found_it) {
-        state="false";
-    }
-    BESDEBUG(MODULE, prolog << DAP4_CHECKSUMS_KEY << ": " << state << "\n");
+    state = BESContextManager::TheManager()->get_context(DAP4_CHECKSUMS_CONTEXT_KEY, found_it);
+    BESDEBUG(MODULE, prolog << DAP4_CHECKSUMS_CONTEXT_KEY << ": " << state << "\n");
     return found_it && (BESUtil::lowercase(state) == "true");
 }
 
