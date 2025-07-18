@@ -272,7 +272,6 @@ public:
     }
 
     CPPUNIT_TEST_SUITE( uncompressT );
-    //CPPUNIT_TEST( test_disabled_uncompress_cache );
     CPPUNIT_TEST_EXCEPTION( test_disabled_uncompress_cache, BESInternalError );
     CPPUNIT_TEST( gz_test );
     CPPUNIT_TEST( libz2_test );
