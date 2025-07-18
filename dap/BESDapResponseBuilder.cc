@@ -1454,7 +1454,6 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mim
     }
 }
 
-const auto DAP4_CHECKSUMS_KEY="dap4_checksums";
 
 bool use_dap4_checksums() {
     bool found_it = false;
