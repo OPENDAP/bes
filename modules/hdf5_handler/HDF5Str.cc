@@ -47,6 +47,7 @@
 #include <memory>
 
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 
 #include "h5dds.h"
 #include "HDF5Str.h"
@@ -74,7 +75,8 @@ bool HDF5Str::read()
 
     hid_t file_id = H5Fopen(dataset().c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
     if(file_id < 0) {
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the HDF5 file ID .");
+        string msg = "Fail to obtain the HDF5 file ID for the file " + dataset() +".";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
 
     hid_t dset_id = -1;
@@ -85,14 +87,16 @@ bool HDF5Str::read()
 
     if(dset_id < 0) {
         H5Fclose(file_id);
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
+        string msg = "Fail to obtain the HDF5 dataset ID for the variable " + var_path +".";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
 
     hid_t dtypeid = H5Dget_type(dset_id);
     if(dtypeid < 0) {
         H5Dclose(dset_id);
         H5Fclose(file_id);
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
+        string msg = "Fail to obtain the datatype for the variable " + var_path +".";
+        throw InternalErr(__FILE__,__LINE__, msg); 
     }
 
     size_t size = H5Tget_size(dtypeid);
@@ -101,7 +105,8 @@ bool HDF5Str::read()
         H5Tclose(dtypeid);
 	H5Dclose(dset_id);
         H5Fclose(file_id);
-        throw InternalErr(__FILE__, __LINE__, "cannot return the size of datatype");
+        string msg = "Fail to obtain the size of datatype for the variable " + var_path +".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     try {
 

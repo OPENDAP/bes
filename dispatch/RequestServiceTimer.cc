@@ -48,9 +48,6 @@ using namespace std::chrono;
 #define MODULE "RST"
 #define prolog string("RequestServiceTimer::").append(__func__).append("() - ")
 
-RequestServiceTimer *RequestServiceTimer::d_instance = nullptr;
-static std::once_flag d_rst_init_once;
-
 /** @brief Return a pointer to a singleton timer instance.  If an instance does not exist
  * it will create and initialize one.  The initialization sets the start_time to now and
  * time_out disabled.
@@ -58,20 +55,8 @@ static std::once_flag d_rst_init_once;
 RequestServiceTimer *
 RequestServiceTimer::TheTimer()
 {
-    std::call_once(d_rst_init_once,RequestServiceTimer::initialize_instance);
-    return d_instance;
-}
-
-void RequestServiceTimer::initialize_instance() {
-    d_instance = new RequestServiceTimer();
-#ifdef HAVE_ATEXIT
-    atexit(delete_instance);
-#endif
-}
-
-void RequestServiceTimer::delete_instance() {
-    delete d_instance;
-    d_instance = nullptr;
+    static RequestServiceTimer timer;
+    return &timer;
 }
 
 /** @brief Set/Reset the timer start_time to now().

@@ -30,6 +30,7 @@
 
 #include <memory>
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include "HDF5CFByte.h"
 #include <BESDebug.h>
 #include "h5common.h"
@@ -60,16 +61,20 @@ bool HDF5CFByte::read()
         return true;
 
     hid_t file_id = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
-    if(file_id < 0) {
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the HDF5 file ID .");
+    if (file_id < 0) {
+        string msg = "Fail to obtain the HDF5 file ID for the file " + dataset() +".";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
    
     hid_t dset_id = -1;
+
+    // Note: The libdap's dataset() method stores the full path of this variable.
     dset_id = H5Dopen2(file_id,dataset().c_str(),H5P_DEFAULT);
 
     if(dset_id < 0) {
         H5Fclose(file_id);
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the dataset .");
+        string msg = "Fail to obtain the HDF5 dataset ID for the variable " + dataset() +".";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
     
     try {
@@ -81,7 +86,8 @@ bool HDF5CFByte::read()
 
         // Release the handles.
         if (H5Dclose(dset_id) < 0) {
-            throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
+            string msg = "Unable to close the HDF5 dataset " + dataset() +".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         H5Fclose(file_id);
     }

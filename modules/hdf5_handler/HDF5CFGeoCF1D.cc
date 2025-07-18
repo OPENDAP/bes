@@ -50,14 +50,14 @@ bool HDF5CFGeoCF1D::read()
         val[i] = val[i-1] + step_v;
 
     if (nelms == tnumelm) {
-        set_value_ll((dods_float64 *) val.data(), nelms);
+        set_value_ll(val.data(), nelms);
     }
     else {
         vector<double>val_subset;
         val_subset.resize(nelms);
         for (int64_t i = 0; i < count[0]; i++)
             val_subset[i] = val[offset[0] + step[0] * i];
-        set_value_ll((dods_float64 *) val_subset.data(), nelms);
+        set_value_ll(val_subset.data(), nelms);
     }
  
     return false;

@@ -99,11 +99,15 @@ HDF5BaseArray::format_constraint (int64_t *offset, int64_t *step, int64_t *count
 
 void HDF5BaseArray::write_nature_number_buffer(int rank, int64_t tnumelm) {
 
-    if (rank != 1) 
-        throw InternalErr(__FILE__, __LINE__, "Currently the rank of the missing field should be 1");
+    if (rank != 1) { 
+        string msg =  "Currently the rank of the missing field should be 1";
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
 
-    if (tnumelm >DODS_INT_MAX)
-        throw InternalErr(__FILE__, __LINE__, "Currently the maximum number for this dimension is less than DODS_INT_MAX");
+    if (tnumelm >DODS_INT_MAX) {
+        string msg = "Currently the maximum number for this dimension is less than DODS_INT_MAX";
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
     
     vector<int64_t>offset;
     vector<int64_t>count;
@@ -133,7 +137,6 @@ void HDF5BaseArray::write_nature_number_buffer(int rank, int64_t tnumelm) {
     }
 }
 
-//#if 0
 void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<size_t> &h5_dimsizes,void* buf,const bool is_dap4){
 
     BESDEBUG("h5", "Coming to read_data_from_mem_cache"<<endl);
@@ -142,8 +145,10 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
     vector<int64_t>step;
 
     auto ndims = (int)(h5_dimsizes.size());
-    if(ndims == 0)
-        throw InternalErr(__FILE__, __LINE__, "Currently we only support array numeric data in the cache, the number of dimension for this file is 0");
+    if(ndims == 0) {
+        string msg = "Currently we only support array numeric data in the cache, the number of dimension for this file is 0.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
     
 
     offset.resize(ndims);
@@ -370,9 +375,10 @@ void HDF5BaseArray::read_data_from_mem_cache(H5DataType h5type, const vector<siz
         } // case H5FLOAT64
             break;
 
-        default:
-           throw InternalErr(__FILE__,__LINE__,"Non-supported datatype");
-
+        default: {
+           string msg = "Non-supported datatype for the variable " + name() + ".";
+           throw InternalErr(__FILE__,__LINE__, msg);
+        }
     }
 }
 
@@ -409,7 +415,9 @@ int HDF5BaseArray::subset(
             size_t cur_pos = INDEX_nD_TO_1D( dim, pos);
             void* tempbuf = (void*)((char*)input+cur_pos*sizeof(T));
             poutput->push_back(*(static_cast<T*>(tempbuf)));
+#if 0
             //"poutput->push_back(input[HDF5CFUtil::INDEX_nD_TO_1D( dim, pos)]);"
+#endif
         }
     } // end of for
     return 0;
@@ -421,17 +429,22 @@ size_t HDF5BaseArray::INDEX_nD_TO_1D (const std::vector < size_t > &dims,
     //  "int a[10][20][30]  // & a[1][2][3] == a + (20*30+1 + 30*2 + 1 *3)"
     //  "int b[10][2] // &b[1][1] == b + (2*1 + 1)"
     // 
-    if(dims.size () != pos.size ())
-        throw InternalErr(__FILE__,__LINE__,"dimension error in INDEX_nD_TO_1D routine.");
+    if(dims.size () != pos.size ()) {
+        string msg = "dimension error in INDEX_nD_TO_1D routine.";
+        throw InternalErr(__FILE__,__LINE__, msg);
+    }
     size_t sum = 0;
     size_t  start = 1;
 
-    for (size_t p = 0; p < pos.size (); p++) {
+#if 0
+    //for (size_t p = 0; p < pos.size (); p++) {
+#endif
+    for (const auto& pos_v:pos) {
         size_t m = 1;
 
         for (size_t j = start; j < dims.size (); j++)
             m *= dims[j];
-        sum += m * pos[p];
+        sum += m * pos_v;
         start++;
     }
     return sum;
@@ -533,8 +546,10 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
     }
 
 
-    if(mem_data_cache == nullptr)
-        throw InternalErr(__FILE__,__LINE__,"The memory data cache should NOT be nullptr.");
+    if (mem_data_cache == nullptr) {
+        string msg = "The memory data cache should NOT be nullptr.";
+        throw InternalErr(__FILE__,__LINE__, msg);
+    }
 
     auto mem_cache_ptr = static_cast<HDF5DataMemCache*>(mem_data_cache->get(cache_key));
     if(mem_cache_ptr) {
@@ -550,8 +565,10 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
 
         // Obtain the buffer and do subsetting
         const size_t var_size = mem_cache_ptr->get_var_buf_size();
-        if(!var_size) 
-            throw InternalErr(__FILE__,__LINE__,"The cached data buffer size is 0.");
+        if(!var_size) { 
+            string msg = "The cached data buffer size is 0.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
         else {
 
             void *buf = mem_cache_ptr->get_var_buf();
@@ -576,8 +593,10 @@ handle_data_with_mem_cache(H5DataType h5_dtype, size_t total_elems,const short c
         BESDEBUG("h5","Data Memory added to the cache, the variable name is "<<name() <<". The cache flag is "<< cache_flag<<endl);
 
         vector <char> buf;
-        if (total_elems == 0)
-                throw InternalErr(__FILE__,__LINE__,"The total number of elements is 0.");
+        if (total_elems == 0) {
+            string msg = "The total number of elements is 0.";
+            throw InternalErr(__FILE__,__LINE__, msg);
+        }
 
         buf.resize(total_elems*HDF5CFUtil::H5_numeric_atomic_type_size(h5_dtype));
 

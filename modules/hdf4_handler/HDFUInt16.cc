@@ -28,7 +28,7 @@
 
 #include "config_hdf.h"
 
-#include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 
 #include "HDFUInt16.h"
 
@@ -48,7 +48,6 @@ BaseType *HDFUInt16::ptr_duplicate()
 
 bool HDFUInt16::read()
 {
-    throw InternalErr(__FILE__, __LINE__,
-                      "Unimplemented read method called.");
+    throw BESInternalError("Unimplemented read method called.",__FILE__, __LINE__);
 }
 
