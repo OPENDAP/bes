@@ -58,6 +58,7 @@
 #include <libdap/util.h>
 #include <libdap/debug.h>
 #include <BESDebug.h>
+#include <BESInternalError.h>
 
 #include "HDFStructure.h"
 
@@ -124,11 +125,15 @@ bool HDFStructure::read_from_value(vector<uint8_t> &values, size_t &values_offse
                 // update values_offset.
                 values_offset +=t_a->width_ll();
             }
-            else 
-                throw InternalErr(__FILE__, __LINE__, "The base type of this structure is not integer or float.  Currently it is not supported.");
+            else {
+                string msg = "The base type of this structure is not integer or float.  Currently it is not supported.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
+            }
         } 
-        else 
-            throw InternalErr(__FILE__, __LINE__, "The base type of this structure is not integer or float.  Currently it is not supported.");
+        else {
+            string msg = "The base type of this structure is not integer or float.  Currently it is not supported.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
+        }
     }
 
     return true;

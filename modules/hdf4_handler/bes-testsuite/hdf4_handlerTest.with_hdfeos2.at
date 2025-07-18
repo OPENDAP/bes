@@ -131,10 +131,10 @@ m4_define([_AT_BESCMD_DAP4DATA_TEST],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK and REMOVE_DAP4_CHECKSUM lines to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap4 -D -M - > $2|| true], [], [stdout], [stderr])
+#AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap4 -C -D -M - > $2|| true], [], [stdout], [stderr])
 #REMOVE_DAP4_CHECKSUM([$2])
 
-AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap4 -D -M - || true], [], [stdout], [stderr])
+AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap4 -C -D -M - || true], [], [stdout], [stderr])
 # Here we add a macro to remove the DAP4 checksum.
 REMOVE_DAP4_CHECKSUM([stdout])
 

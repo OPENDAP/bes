@@ -11,9 +11,6 @@
         <Attribute name="DAP4_Checksum_CRC32" type="String">
             removed checksum
         </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
     </Int32>
     <Int32 name="lon">
         <Dim name="/lon"/>
@@ -23,17 +20,11 @@
         <Attribute name="DAP4_Checksum_CRC32" type="String">
             removed checksum
         </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
     </Int32>
     <Int32 name="time">
         <Dim name="/time"/>
         <Attribute name="units" type="String">
             <Value>seconds</Value>
-        </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
             removed checksum
@@ -55,9 +46,6 @@
         <Attribute name="DAP4_Checksum_CRC32" type="String">
             removed checksum
         </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
         <Map name="/lat"/>
         <Map name="/lon"/>
     </Float32>
@@ -67,18 +55,12 @@
         <Attribute name="DAP4_Checksum_CRC32" type="String">
             removed checksum
         </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
         <Map name="/lat"/>
         <Map name="/lon"/>
     </Float32>
     <Byte name="pixel">
         <Dim name="/lat"/>
         <Dim name="/lon"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
             removed checksum
         </Attribute>

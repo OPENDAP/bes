@@ -31,7 +31,6 @@
 /// All rights reserved.
 
 
-//#include <libdap/InternalErr.h>
 #ifndef _HDFSP_H
 #define _HDFSP_H
 

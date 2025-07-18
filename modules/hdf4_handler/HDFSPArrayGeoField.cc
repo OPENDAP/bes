@@ -15,7 +15,7 @@
 #include <libdap/debug.h>
 #include "hdf.h"
 #include "mfhdf.h"
-#include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include <BESDebug.h>
 #include "HDFCFUtil.h"
 #include "HDF4RequestHandler.h"
@@ -183,13 +183,13 @@ bool HDFSPArrayGeoField::read ()
         // We don't handle any OtherHDF products
         case OTHERHDF:
         {
-            throw InternalErr (__FILE__, __LINE__, "Unsupported HDF files");
+            throw BESInternalError("Unsupported HDF files.",__FILE__, __LINE__);
 
         }
         default:
         {
 
-            throw InternalErr (__FILE__, __LINE__, "Unsupported HDF files");
+            throw BESInternalError("Unsupported HDF files.",__FILE__, __LINE__);
 
         }
     }
@@ -215,9 +215,8 @@ HDFSPArrayGeoField::readtrmml2_v6 (const int32 * offset32, const int32 * count32
     if(false == check_pass_fileid_key) {
         sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
         if (sdid < 0) {
-            ostringstream eherr;
-            eherr << "File " << filename.c_str () << " cannot be open.";
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "File " + filename + " cannot be open.";
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
     }
     else 
@@ -256,17 +255,14 @@ HDFSPArrayGeoField::readtrmml2_v6 (const int32 * offset32, const int32 * count32
 
     if (sdsindex == -1) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "SDS index " << sdsindex << " is not right.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg =  "SDS index " + to_string(sdsindex) + " is not right.";
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     sdsid = SDselect (sdid, sdsindex);
     if (sdsid < 0) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "SDselect failed.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        throw BESInternalError("SDselect failed.",__FILE__, __LINE__);
     }
 
     int32 r = 0;
@@ -281,9 +277,7 @@ HDFSPArrayGeoField::readtrmml2_v6 (const int32 * offset32, const int32 * count32
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "SDreaddata failed.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                throw BESInternalError("SDreaddata failed.",__FILE__, __LINE__);
             }
 
 #ifndef SIGNED_BYTE_TO_INT32
@@ -308,9 +302,7 @@ HDFSPArrayGeoField::readtrmml2_v6 (const int32 * offset32, const int32 * count32
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "SDreaddata failed";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                throw BESInternalError("SDreaddata failed.",__FILE__, __LINE__);
             }
 
             set_value ((dods_byte *) val.data(), nelms);
@@ -325,9 +317,7 @@ HDFSPArrayGeoField::readtrmml2_v6 (const int32 * offset32, const int32 * count32
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "SDreaddata failed";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                throw BESInternalError("SDreaddata failed.",__FILE__, __LINE__);
             }
 
             set_value ((dods_int16 *) val.data(), nelms);
@@ -342,9 +332,7 @@ HDFSPArrayGeoField::readtrmml2_v6 (const int32 * offset32, const int32 * count32
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "SDreaddata failed";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                throw BESInternalError("SDreaddata failed.",__FILE__, __LINE__);
             }
 
             set_value ((dods_uint16 *) val.data(), nelms);
@@ -358,9 +346,7 @@ HDFSPArrayGeoField::readtrmml2_v6 (const int32 * offset32, const int32 * count32
             if (r != 0) {
 	        SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-	       	ostringstream eherr;
-                eherr << "SDreaddata failed";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                throw BESInternalError("SDreaddata failed.",__FILE__, __LINE__);
             }
 
             set_value ((dods_int32 *) val.data(), nelms);
@@ -374,9 +360,7 @@ HDFSPArrayGeoField::readtrmml2_v6 (const int32 * offset32, const int32 * count32
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "SDreaddata failed";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                throw BESInternalError("SDreaddata failed.",__FILE__, __LINE__);
             }
             set_value ((dods_uint32 *) val.data(), nelms);
         }
@@ -389,9 +373,7 @@ HDFSPArrayGeoField::readtrmml2_v6 (const int32 * offset32, const int32 * count32
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "SDreaddata failed";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                throw BESInternalError("SDreaddata failed.",__FILE__, __LINE__);
             }
 
             set_value ((dods_float32 *) val.data(), nelms);
@@ -405,9 +387,7 @@ HDFSPArrayGeoField::readtrmml2_v6 (const int32 * offset32, const int32 * count32
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "SDreaddata failed";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                throw BESInternalError("SDreaddata failed.",__FILE__, __LINE__);
             }
 
             set_value ((dods_float64 *) val.data(), nelms);
@@ -416,15 +396,13 @@ HDFSPArrayGeoField::readtrmml2_v6 (const int32 * offset32, const int32 * count32
         default:
             SDendaccess (sdsid);
             HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw BESInternalError("unsupported data type.",__FILE__, __LINE__);
         }
 
         r = SDendaccess (sdsid);
         if (r != 0) {
             HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-            ostringstream eherr;
-            eherr << "SDendaccess failed.";
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            throw BESInternalError("SDendaccess failed.",__FILE__, __LINE__);
         }
 
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -550,9 +528,8 @@ HDFSPArrayGeoField::readtrmml3_v7 (const int32 * offset32,
     if(false == check_pass_fileid_key) {
         sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
         if (sdid < 0) {
-            ostringstream eherr;
-            eherr << "File " << filename.c_str () << " cannot be open.";
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "File " + filename + " cannot be open.";
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
     }
     else 
@@ -565,8 +542,8 @@ HDFSPArrayGeoField::readtrmml3_v7 (const int32 * offset32,
     if(fieldref != -1) {  
 
         if (fieldref >9) {
-            throw InternalErr (__FILE__,__LINE__,
-            "The maximum number of grids to be supported in the current implementation is 9.");
+            string msg = "The maximum number of grids to be supported in the current implementation is 9.";
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
         else {
@@ -580,8 +557,8 @@ HDFSPArrayGeoField::readtrmml3_v7 (const int32 * offset32,
     attr_index = SDfindattr (sdid, gridinfo_name.c_str());
     if (attr_index == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        string err_mesg = "SDfindattr failed,should find attribute "+gridinfo_name+" .";
-        throw InternalErr (__FILE__, __LINE__, err_mesg);
+        string msg = "SDfindattr failed,should find attribute "+gridinfo_name+" .";
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     int32 attr_dtype = 0;
@@ -592,7 +569,7 @@ HDFSPArrayGeoField::readtrmml3_v7 (const int32 * offset32,
         SDattrinfo (sdid, attr_index, attr_name, &attr_dtype, &n_values);
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "SDattrinfo failed ");
+        throw BESInternalError("SDattrinfo failed. ",__FILE__, __LINE__);
     }
     
     vector<char> attr_value; 
@@ -601,7 +578,7 @@ HDFSPArrayGeoField::readtrmml3_v7 (const int32 * offset32,
     status = SDreadattr (sdid, attr_index, attr_value.data());
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "SDreadattr failed ");
+        throw BESInternalError("SDreadattr failed.",__FILE__, __LINE__);
     }
 
     float lat_start = 0.;
@@ -617,7 +594,7 @@ HDFSPArrayGeoField::readtrmml3_v7 (const int32 * offset32,
 
     if(0 == latsize || 0 == lonsize) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "Either latitude or longitude size is 0. ");
+        throw BESInternalError("Either latitude or longitude size is 0. ",__FILE__, __LINE__);
     }
 
 
@@ -660,9 +637,8 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
     if(false == check_pass_fileid_key) {
         sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
         if (sdid < 0) {
-            ostringstream eherr;
-            eherr << "File " << filename.c_str () << " cannot be open.";
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "File "+ filename + " cannot be open.";
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
     }
     else 
@@ -683,8 +659,8 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
     if (attr_index == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
         string attr_name(NUM_PIXEL_NAME);
-        string err_mesg = "SDfindattr failed,should find attribute "+attr_name+" .";
-        throw InternalErr (__FILE__, __LINE__, err_mesg);
+        string msg = "SDfindattr failed,should find attribute "+attr_name+" .";
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     char attr_name[H4_MAX_NC_NAME];
@@ -692,27 +668,26 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
         SDattrinfo (sdid, attr_index, attr_name, &attr_dtype, &n_values);
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "SDattrinfo failed ");
+        throw BESInternalError("SDattrinfo failed. ",__FILE__, __LINE__);
     }
 
     if (n_values != 1) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__,
-                           "Only one value of number of scan line ");
+        throw BESInternalError("Only one value of number of scan line. ",__FILE__, __LINE__);
     }
 
     status = SDreadattr (sdid, attr_index, &num_pixel_data);
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "SDreadattr failed ");
+        throw BESInternalError("SDreadattr failed. ",__FILE__, __LINE__);
     }
 
     attr_index = SDfindattr (sdid, NUM_POINTS_LINE_NAME);
     if (attr_index == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
         string attr_name(NUM_POINTS_LINE_NAME);
-        string err_mesg = "SDfindattr failed,should find attribute "+attr_name+" .";
-        throw InternalErr (__FILE__, __LINE__, err_mesg);
+        string msg = "SDfindattr failed,should find attribute "+attr_name+" .";
+        throw BESInternalError(msg,__FILE__, __LINE__);
 
     }
 
@@ -720,27 +695,26 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
         SDattrinfo (sdid, attr_index, attr_name, &attr_dtype, &n_values);
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "SDattrinfo failed ");
+        throw BESInternalError("SDattrinfo failed. ",__FILE__, __LINE__);
     }
 
     if (n_values != 1) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__,
-                           "Only one value of number of point ");
+        throw BESInternalError("Only one value of number of point ",__FILE__, __LINE__);
     }
 
     status = SDreadattr (sdid, attr_index, &num_point_data);
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "SDreadattr failed ");
+        throw BESInternalError("SDreadattr failed. ",__FILE__, __LINE__);
     }
 
     attr_index = SDfindattr (sdid, NUM_SCAN_LINE_NAME);
     if (attr_index == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
         string attr_name(NUM_SCAN_LINE_NAME);
-        string err_mesg = "SDfindattr failed,should find attribute "+attr_name+" .";
-        throw InternalErr (__FILE__, __LINE__, err_mesg);
+        string msg = "SDfindattr failed,should find attribute "+attr_name+" .";
+        throw BESInternalError(msg,__FILE__, __LINE__);
 
     }
 
@@ -748,30 +722,30 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
         SDattrinfo (sdid, attr_index, attr_name, &attr_dtype, &n_values);
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "SDattrinfo failed ");
+        throw BESInternalError("SDattrinfo failed. ",__FILE__, __LINE__);
     }
 
     if (n_values != 1) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__,"Only one value of number of point ");
+        throw BESInternalError("Only one value of number of point ",__FILE__, __LINE__);
     }
 
     status = SDreadattr (sdid, attr_index, &num_scan_data);
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "SDreadattr failed ");
+        throw BESInternalError("SDreadattr failed. ",__FILE__, __LINE__);
     }
 
 
     if ( 0 == num_scan_data || 0 == num_point_data || 0 == num_pixel_data) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "num_scan or num_point or num_pixel should not be zero. ");
+        throw BESInternalError("num_scan or num_point or num_pixel should not be zero. ",__FILE__, __LINE__);
     }
 
     if ( 1 == num_point_data && num_pixel_data != 1) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, 
-                           "num_point is 1 and  num_pixel is not 1, interpolation cannot be done ");
+        string msg = "num_point is 1 and  num_pixel is not 1, interpolation cannot be done.";
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     bool compmapflag = false;
@@ -781,17 +755,14 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
     int32 sdsindex = SDreftoindex (sdid, (int32) fieldref);
     if (sdsindex == -1) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "SDS index " << sdsindex << " is not right.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "SDS index " + to_string(sdsindex) + " is not right.";
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     sdsid = SDselect (sdid, sdsindex);
     if (sdsid < 0) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "SDselect failed.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        throw BESInternalError("SDselect failed.",__FILE__, __LINE__);
     }
 
     int32 r = 0;
@@ -808,7 +779,7 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
         case DFNT_FLOAT64:
             SDendaccess (sdsid);
             HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-            throw InternalErr (__FILE__, __LINE__,"datatype is not float, unsupported.");
+            throw BESInternalError("datatype is not float, unsupported.",__FILE__, __LINE__);
         case DFNT_FLOAT32:
         {
             vector<float32> val;
@@ -818,9 +789,7 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
                 if (r != 0) {
                     SDendaccess (sdsid);
                     HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                    ostringstream eherr;
-                    eherr << "SDreaddata failed";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    throw BESInternalError("SDreaddata failed.",__FILE__, __LINE__);
                 }
             }
             else {
@@ -841,9 +810,7 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
                 if (r != 0) {
                     SDendaccess (sdsid);
                     HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                    ostringstream eherr;
-                    eherr << "SDreaddata failed";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    throw BESInternalError("SDreaddata failed.",__FILE__, __LINE__);
                 }
                 int interpolate_elm = num_scan_data *num_pixel_data;
 
@@ -865,7 +832,7 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
                 if ( 0 == last_tempseg || 0 == tempseg) {
                     SDendaccess(sdsid);
                     HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                    throw InternalErr(__FILE__,__LINE__,"Segments cannot be zero");
+                    throw BESInternalError("Segments cannot be zero.",__FILE__, __LINE__);
                 }
 
                 int interp_val_index = 0;
@@ -946,15 +913,13 @@ HDFSPArrayGeoField::readobpgl2 (int32 * offset32, int32 * count32,
         default:
             SDendaccess (sdsid);
             HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw BESInternalError("Unsupported data type.",__FILE__, __LINE__);
     }
 
     r = SDendaccess (sdsid);
     if (r != 0) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "SDendaccess failed.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        throw BESInternalError("SDendaccess failed.",__FILE__, __LINE__);
     }
 
     HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -974,9 +939,8 @@ HDFSPArrayGeoField::readobpgl3 (const int *offset,  const int *step, const int n
     if(false == check_pass_fileid_key) {
         sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
         if (sdid < 0) {
-            ostringstream eherr;
-            eherr << "File " << filename.c_str () << " cannot be open.";
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "File " + filename + " cannot be open.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     }
     else 
@@ -1000,8 +964,8 @@ HDFSPArrayGeoField::readobpgl3 (const int *offset,  const int *step, const int n
     if (attr_index == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
         string attr_name(NUM_LAT_NAME);
-        string err_mesg = "SDfindattr failed,should find attribute "+attr_name+" .";
-        throw InternalErr (__FILE__, __LINE__, err_mesg);
+        string msg = "SDfindattr failed,should find attribute "+attr_name+" .";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     char attr_name[H4_MAX_NC_NAME];
@@ -1009,18 +973,18 @@ HDFSPArrayGeoField::readobpgl3 (const int *offset,  const int *step, const int n
         SDattrinfo (sdid, attr_index, attr_name, &attr_dtype, &n_values);
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "SDattrinfo failed ");
+        throw BESInternalError("SDattrinfo failed. ",__FILE__, __LINE__);
     }
 
     if (n_values != 1) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "Only should have one value ");
+        throw BESInternalError("Only should have one value. ",__FILE__, __LINE__);
     }
 
     status = SDreadattr (sdid, attr_index, &num_lat_data);
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "SDreadattr failed ");
+        throw BESInternalError("SDreadattr failed. " ,__FILE__, __LINE__);
     }
 
     // Obtain number of longitude
@@ -1028,26 +992,26 @@ HDFSPArrayGeoField::readobpgl3 (const int *offset,  const int *step, const int n
     if (attr_index == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
         string attr_name2(NUM_LON_NAME);
-        string err_mesg = "SDfindattr failed,should find attribute "+attr_name2+" .";
-        throw InternalErr (__FILE__, __LINE__, err_mesg);
+        string msg = "SDfindattr failed,should find attribute "+attr_name2+" .";
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     status =
         SDattrinfo (sdid, attr_index, attr_name, &attr_dtype, &n_values);
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "SDattrinfo failed ");
+        throw BESInternalError("SDattrinfo failed. ",__FILE__, __LINE__);
     }
 
     if (n_values != 1) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "Only should have one value ");
+        throw BESInternalError("Only should have one value. ",__FILE__, __LINE__);
     }
 
     status = SDreadattr (sdid, attr_index, &num_lon_data);
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "SDreadattr failed ");
+        throw BESInternalError("SDreadattr failed. ",__FILE__, __LINE__);
     }
 
     // obtain latitude step
@@ -1055,26 +1019,26 @@ HDFSPArrayGeoField::readobpgl3 (const int *offset,  const int *step, const int n
     if (attr_index == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
         string attr_name2(LAT_STEP_NAME);
-        string err_mesg = "SDfindattr failed,should find attribute "+attr_name2+" .";
-        throw InternalErr (__FILE__, __LINE__, err_mesg);
+        string msg = "SDfindattr failed,should find attribute "+attr_name2+" .";
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     status =
         SDattrinfo (sdid, attr_index, attr_name, &attr_dtype, &n_values);
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "SDattrinfo failed ");
+        throw BESInternalError("SDattrinfo failed. ",__FILE__, __LINE__);
     }
 
     if (n_values != 1) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "Only should have one value ");
+        throw BESInternalError("Only should have one value. ",__FILE__, __LINE__);
     }
 
     status = SDreadattr (sdid, attr_index, &lat_step);
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "SDreadattr failed ");
+        throw BESInternalError("SDreadattr failed. ",__FILE__, __LINE__);
     }
 
     // Obtain longitude step
@@ -1082,26 +1046,26 @@ HDFSPArrayGeoField::readobpgl3 (const int *offset,  const int *step, const int n
     if (attr_index == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
         string attr_name2(LON_STEP_NAME);
-        string err_mesg = "SDfindattr failed,should find attribute "+attr_name2+" .";
-        throw InternalErr (__FILE__, __LINE__, err_mesg);
+        string msg = "SDfindattr failed,should find attribute "+attr_name2+" .";
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     status =
         SDattrinfo (sdid, attr_index, attr_name, &attr_dtype, &n_values);
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "SDattrinfo failed ");
+        throw BESInternalError("SDattrinfo failed. ",__FILE__, __LINE__);
     }
 
     if (n_values != 1) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "Only should have one value ");
+        throw BESInternalError("Only should have one value. ",__FILE__, __LINE__);
     }
 
     status = SDreadattr (sdid, attr_index, &lon_step);
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "SDreadattr failed ");
+        throw BESInternalError("SDreadattr failed. ",__FILE__, __LINE__);
     }
 
     // obtain south west corner latitude
@@ -1109,26 +1073,26 @@ HDFSPArrayGeoField::readobpgl3 (const int *offset,  const int *step, const int n
     if (attr_index == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
         string attr_name2(SWP_LAT_NAME);
-        string err_mesg = "SDfindattr failed,should find attribute "+attr_name2+" .";
-        throw InternalErr (__FILE__, __LINE__, err_mesg);
+        string msg = "SDfindattr failed,should find attribute "+attr_name2+" .";
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     status =
         SDattrinfo (sdid, attr_index, attr_name, &attr_dtype, &n_values);
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "SDattrinfo failed ");
+        throw BESInternalError("SDattrinfo failed. ",__FILE__, __LINE__);
     }
 
     if (n_values != 1) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "Only should have one value ");
+        throw BESInternalError("Only should have one value. ",__FILE__, __LINE__);
     }
 
     status = SDreadattr (sdid, attr_index, &swp_lat);
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "SDreadattr failed ");
+        throw BESInternalError("SDreadattr failed. ",__FILE__, __LINE__);
     }
 
     // obtain south west corner longitude
@@ -1136,28 +1100,27 @@ HDFSPArrayGeoField::readobpgl3 (const int *offset,  const int *step, const int n
     if (attr_index == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
         string attr_name2(SWP_LON_NAME);
-        string err_mesg = "SDfindattr failed,should find attribute "+attr_name2+" .";
-        throw InternalErr (__FILE__, __LINE__, err_mesg);
+        string msg = "SDfindattr failed,should find attribute "+attr_name2+" .";
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     status =
         SDattrinfo (sdid, attr_index, attr_name, &attr_dtype, &n_values);
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "SDattrinfo failed ");
+        throw BESInternalError("SDattrinfo failed. ",__FILE__, __LINE__);
     }
 
     if (n_values != 1) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "Only should have one value ");
+        throw BESInternalError("Only should have one value. ",__FILE__, __LINE__);
     }
 
     status = SDreadattr (sdid, attr_index, &swp_lon);
     if (status == FAIL) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        throw InternalErr (__FILE__, __LINE__, "SDreadattr failed ");
+        throw BESInternalError("SDreadattr failed. ",__FILE__, __LINE__);
     }
-
 
     if (fieldtype == 1) {
 
@@ -1372,8 +1335,7 @@ HDFSPArrayGeoField::readcersavgid1 (const int *offset, const int *count, const i
         // Assume the longitude is 0 in average
         float32 val = 0;
         if (nelms > 1)
-            throw InternalErr (__FILE__, __LINE__,
-                                        "the number of element must be 1");
+            throw BESInternalError("The number of element must be 1.",__FILE__, __LINE__);
         set_value ((dods_float32 *) (&val), nelms);
 
     }
@@ -1394,9 +1356,8 @@ HDFSPArrayGeoField::readceravgsyn (int32 * offset32, int32 * count32,
     if(false == check_pass_fileid_key) {
         sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
         if (sdid < 0) {
-            ostringstream eherr;
-            eherr << "File " << filename.c_str () << " cannot be open.";
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "File " + filename + " cannot be open.";
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
     }
     else 
@@ -1409,17 +1370,14 @@ HDFSPArrayGeoField::readceravgsyn (int32 * offset32, int32 * count32,
 
     if (sdsindex == -1) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "SDS index " << sdsindex << " is not right.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "SDS index " +to_string(sdsindex) + " is not right.";
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     sdsid = SDselect (sdid, sdsindex);
     if (sdsid < 0) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "SDselect failed.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        throw BESInternalError("SDselect failed.",__FILE__, __LINE__);
     }
 
     int32 r;
@@ -1435,8 +1393,8 @@ HDFSPArrayGeoField::readceravgsyn (int32 * offset32, int32 * count32,
         case DFNT_UINT32:
             SDendaccess (sdsid);
             HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-            throw InternalErr (__FILE__, __LINE__,
-                               "datatype is not float, unsupported.");
+            throw BESInternalError("Datatype is not float, unsupported.",__FILE__, __LINE__);
+
         case DFNT_FLOAT32:
         {
             vector<float32>val;
@@ -1445,9 +1403,7 @@ HDFSPArrayGeoField::readceravgsyn (int32 * offset32, int32 * count32,
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "SDreaddata failed";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                throw BESInternalError("SDreaddata failed.",__FILE__, __LINE__);
             }
 
             if (fieldtype == 1) {
@@ -1472,9 +1428,7 @@ HDFSPArrayGeoField::readceravgsyn (int32 * offset32, int32 * count32,
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "SDreaddata failed";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                throw BESInternalError("SDreaddata failed.",__FILE__, __LINE__);
             }
 
             if (fieldtype == 1) {
@@ -1492,14 +1446,12 @@ HDFSPArrayGeoField::readceravgsyn (int32 * offset32, int32 * count32,
         default:
             SDendaccess (sdsid);
             HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw BESInternalError("Unsupported data type.",__FILE__, __LINE__);
     }
 
     r = SDendaccess (sdsid);
     if (r != 0) {
-        ostringstream eherr;
-        eherr << "SDendaccess failed.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        throw BESInternalError("SDendaccess failed.",__FILE__, __LINE__);
     }
 
     HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -1519,9 +1471,8 @@ HDFSPArrayGeoField::readceres4ig (const int32 * offset32, const int32 * count32,
     if(false == check_pass_fileid_key) {
         sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
         if (sdid < 0) {
-            ostringstream eherr;
-            eherr << "File " << filename.c_str () << " cannot be open.";
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "File " + filename + " cannot be open.";
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
     }
     else 
@@ -1534,17 +1485,14 @@ HDFSPArrayGeoField::readceres4ig (const int32 * offset32, const int32 * count32,
     int32 sdsindex = SDreftoindex (sdid, (int32) fieldref);
     if (sdsindex == -1) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "SDS index " << sdsindex << " is not right.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg ="SDS index " +  to_string(sdsindex) + " is not right.";
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     sdsid = SDselect (sdid, sdsindex);
     if (sdsid < 0) {
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "SDselect failed.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        throw BESInternalError("SDselect failed.",__FILE__, __LINE__);
     }
 
     int32 sdsrank = 0;
@@ -1558,11 +1506,8 @@ HDFSPArrayGeoField::readceres4ig (const int32 * offset32, const int32 * count32,
     if (status < 0) {
         SDendaccess (sdsid);
         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "SDgetinfo failed.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        throw BESInternalError("SDgetinfo failed.",__FILE__, __LINE__);
     }
-
     vector<int32> orioffset32;
     vector<int32> oricount32;
     vector<int32> oristep32;
@@ -1584,8 +1529,7 @@ HDFSPArrayGeoField::readceres4ig (const int32 * offset32, const int32 * count32,
         case DFNT_FLOAT64:
             SDendaccess (sdsid);
             HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-            throw InternalErr (__FILE__, __LINE__,
-                               "datatype is not float, unsupported.");
+            throw BESInternalError("Datatype is not float, unsupported.",__FILE__, __LINE__);
         case DFNT_FLOAT32:
         {
             vector<float32> val;
@@ -1595,8 +1539,8 @@ HDFSPArrayGeoField::readceres4ig (const int32 * offset32, const int32 * count32,
                     if (sdsrank != 3) {
                         SDendaccess (sdsid);
                         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                        throw InternalErr (__FILE__, __LINE__,
-                             "For CER_ISCCP-D2like-GEO case, lat/lon must be 3-D");
+                        string msg = "For CER_ISCCP-D2like-GEO case, lat/lon must be 3-D.";
+                        throw BESInternalError(msg,__FILE__, __LINE__);
                     }
                     orioffset32[0] = 0;
 
@@ -1614,8 +1558,8 @@ HDFSPArrayGeoField::readceres4ig (const int32 * offset32, const int32 * count32,
                     if (sdsrank != 2) {
                         SDendaccess (sdsid);
                         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                        throw InternalErr (__FILE__, __LINE__,
-                                           "For CER_ES4 case, lat/lon must be 2-D");
+                        string msg = "For CER_ES4 case, lat/lon must be 2-D.";
+                        throw BESInternalError(msg,__FILE__, __LINE__);
                     }
                     // The first dimension of the original latitude should be condensed
                     orioffset32[0] = offset32[0];	
@@ -1632,8 +1576,8 @@ HDFSPArrayGeoField::readceres4ig (const int32 * offset32, const int32 * count32,
                     if (sdsrank != 3) {
                         SDendaccess (sdsid);
                         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                        throw InternalErr (__FILE__, __LINE__,
-                              "For CER_ISCCP-D2like-GEO case, lat/lon must be 3-D");
+                        string msg = "For CER_ISCCP-D2like-GEO case, lat/lon must be 3-D.";
+                        throw BESInternalError(msg,__FILE__, __LINE__);
                     }
                     orioffset32[0] = 0;
                     orioffset32[2] = offset32[0];// The third dimension of the original latitude should be condensed
@@ -1649,8 +1593,8 @@ HDFSPArrayGeoField::readceres4ig (const int32 * offset32, const int32 * count32,
                     if (sdsrank != 2) {
                         SDendaccess (sdsid);
                         HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                        throw InternalErr (__FILE__, __LINE__,
-                                           "For CER_ES4 case, lat/lon must be 2-D");
+                        string msg = "For CER_ES4 case, lat/lon must be 2-D.";
+                        throw BESInternalError(msg,__FILE__, __LINE__);
                     }
                     orioffset32[1] = offset32[0]; // The second dimension of the original latitude should be condensed
                     orioffset32[0] = 0;
@@ -1665,9 +1609,7 @@ HDFSPArrayGeoField::readceres4ig (const int32 * offset32, const int32 * count32,
             if (r != 0) {
                 SDendaccess (sdsid);
                 HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "SDreaddata failed";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                throw BESInternalError("SDreaddata failed.",__FILE__, __LINE__);
             }
 
             if (fieldtype == 1)
@@ -1689,14 +1631,12 @@ HDFSPArrayGeoField::readceres4ig (const int32 * offset32, const int32 * count32,
         default:
             SDendaccess (sdsid);
             HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
-            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw BESInternalError("Unsupported data type.",__FILE__,__LINE__);
     }
 
     r = SDendaccess (sdsid);
     if (r != 0) {
-        ostringstream eherr;
-        eherr << "SDendaccess failed.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        throw BESInternalError("SDendaccess failed.",__FILE__,__LINE__);
     }
 
     HDFCFUtil::close_fileid(sdid,-1,-1,-1,check_pass_fileid_key);
@@ -1722,9 +1662,10 @@ HDFSPArrayGeoField::readcerzavg (const int32 * offset32, const int32 * count32,
     }
 
     if (fieldtype == 2) {
-        if (count32[0] != 1 || nelms != 1)
-            throw InternalErr (__FILE__, __LINE__,
-                               "Longitude should only have one value for zonal mean");
+        if (count32[0] != 1 || nelms != 1) {
+            string msg = "Longitude should only have one value for zonal mean.";
+            throw BESInternalError(msg,__FILE__, __LINE__);
+        }
 
         // We don't need to specify the longitude value.
         float32 val = 0.;// our convention

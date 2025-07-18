@@ -3,6 +3,7 @@
   <bes:setContext name="dap_explicit_containers">no</bes:setContext>
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
+  <bes:setContext name="dap4_checksums">true</bes:setContext>
   
   <bes:setContainer name="c" space="catalog">/functions/stare/data/sample_data/336-23xx.20201211/MOD05_L2.A2019336.2315.061.2019337071952.hdf</bes:setContainer>
   
