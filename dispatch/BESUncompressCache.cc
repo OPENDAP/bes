@@ -161,7 +161,7 @@ BESUncompressCache::BESUncompressCache()
 
 /** Get the default instance of the GatewayCache object. This will read "TheBESKeys" looking for the values
  * of SUBDIR_KEY, PREFIX_KEY, an SIZE_KEY to initialize the cache.
- * @note if fct is called without cache dir set code with throw internal error
+ * @note if fct is called without cache dir being set, the code will throw an internal error
  */
 BESUncompressCache *
 BESUncompressCache::get_instance()
@@ -173,22 +173,6 @@ BESUncompressCache::get_instance()
     else{
         return nullptr;
     }
-#if 0
-    if (d_enabled && d_instance == 0) {
-        static BESUncompressCache cache;
-        d_enabled = d_instance->cache_enabled();
-        if(!d_enabled){
-            delete d_instance;
-            d_instance = NULL;
-            BESDEBUG( MODULE, prolog << "Cache is DISABLED"<< endl);
-        }
-        else {
-            BESDEBUG( MODULE, prolog << "Cache is ENABLED"<< endl);
-        }
-    }
-
-    return d_instance;
-#endif
 }
 
 BESUncompressCache::~BESUncompressCache() {}
