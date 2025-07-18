@@ -198,7 +198,7 @@ BESStoredDapResultCache::BESStoredDapResultCache()
 
     BESDEBUG("cache", "BESStoredDapResultCache::BESStoredDapResultCache() -  END" << endl);
 }
-
+#if 0
 /**
  *
  */
@@ -227,6 +227,7 @@ BESStoredDapResultCache::get_instance(const string &data_root_dir, const string 
         return &instance;
     }
 }
+#endif
 
 /** Get the default instance of the BESStoredDapResultCache object. This will read "TheBESKeys" looking for the values
  * of SUBDIR_KEY, PREFIX_KEY, an SIZE_KEY to initialize the cache.
@@ -234,6 +235,14 @@ BESStoredDapResultCache::get_instance(const string &data_root_dir, const string 
 BESStoredDapResultCache *
 BESStoredDapResultCache::get_instance()
 {
+    static BESStoredDapResultCache cache;
+    if (cache.cache_enabled()){
+        return &cache;
+    }
+    else{
+        return nullptr;
+    }
+#if 0
     if (d_enabled && d_instance == 0) {
         static BESStoredDapResultCache instance;
         d_enabled = d_instance->cache_enabled();
@@ -242,6 +251,7 @@ BESStoredDapResultCache::get_instance()
         }
         return &instance;
     }
+#endif
 }
 
 /**
