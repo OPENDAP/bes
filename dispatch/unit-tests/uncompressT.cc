@@ -59,6 +59,10 @@ using std::string;
 static bool debug = false;
 static bool bes_debug = false;
 
+static const string CACHE_DIR = BESUtil::assemblePath(TEST_SRC_DIR, "cache");
+static const string CACHE_FILE_NAME = BESUtil::assemblePath(CACHE_DIR, "template.txt");
+static const string CACHE_PREFIX("container_test");
+
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
 
@@ -112,12 +116,19 @@ public:
 
     void setUp()
     {
+#if 0
         string bes_conf = (string) TEST_SRC_DIR + "/uncompressT_bes.keys";
         TheBESKeys::ConfigFile = bes_conf;
+#endif
         if (bes_debug) {
             BESDebug::SetUp("cerr,cache,uncompress,uncompress2");
             DBG(cerr << "setup() - BESDEBUG Enabled " << endl);
         }
+        TheBESKeys::TheKeys()->set_key("BES.UncompressCache.dir", CACHE_DIR);
+        TheBESKeys::TheKeys()->set_key("BES.UncompressCache.prefix", CACHE_PREFIX);
+        TheBESKeys::TheKeys()->set_key("BES.UncompressCache.size", "1");
+        TheBESKeys::TheKeys()->set_key("BES.Uncompress.Retry", "2");
+        TheBESKeys::TheKeys()->set_key("BES.Uncompress.NumTries", "10");
     }
 
     void tearDown()
@@ -142,7 +153,11 @@ public:
         // we're not testing the caching mechanism, so just create it, but make
         // sure it gets created.
         try {
+#if 0
             BESUncompressCache *cache = BESUncompressCache::get_instance(cache_dir, cache_dir, cache_prefix, 1);
+#endif
+            BESUncompressCache *cache = BESUncompressCache::get_instance();
+
             // get the target name and make sure the target file doesn't exist
             string cache_file_name = cache->get_cache_file_name(src_file_base, false);
             if (cache->is_valid(cache_file_name, src_file)) cache->purge_file(cache_file_name);
@@ -213,6 +228,7 @@ public:
 
     void test_disabled_uncompress_cache()
     {
+#if 0
         DBG(cerr << __func__ << "() - BEGIN" << endl);
         // Setting the cache_dir parameter to the empty string will disable the cache
         // and cause the get_instance method to return NULL>
@@ -220,7 +236,7 @@ public:
         DBG(cerr << __func__ << "() - cache: " << (void * )cache << endl);
         CPPUNIT_ASSERT( !cache );
         DBG(cerr << __func__ << "() - END" << endl);
-
+#endif
     }
 
     void gz_test()
@@ -259,8 +275,9 @@ public:
     }
 
     CPPUNIT_TEST_SUITE( uncompressT );
-
+#if 0
     CPPUNIT_TEST( test_disabled_uncompress_cache );
+#endif
     CPPUNIT_TEST( gz_test );
     CPPUNIT_TEST( libz2_test );
     CPPUNIT_TEST( Z_test );

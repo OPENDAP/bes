@@ -158,54 +158,24 @@ BESUncompressCache::BESUncompressCache()
     BESDEBUG( MODULE, prolog << "END" << endl);
 
 }
-BESUncompressCache::BESUncompressCache(const string &data_root_dir, const string &cache_dir, const string &prefix,
-    unsigned long long size)
-{
-    BESDEBUG( MODULE, prolog << "BEGIN" << endl);
-    d_enabled = true;
-
-    d_dataRootDir = data_root_dir;
-    d_dimCacheDir = cache_dir;
-    d_dimCacheFilePrefix = prefix;
-    d_maxCacheSize = size;
-
-    initialize(d_dimCacheDir, d_dimCacheFilePrefix, d_maxCacheSize);
-
-    BESDEBUG( MODULE, prolog << "END" << endl);
-}
-
-BESUncompressCache *
-BESUncompressCache::get_instance(const string &data_root_dir, const string &cache_dir, const string &result_file_prefix,
-    unsigned long long max_cache_size)
-{
-    if (d_enabled && d_instance == 0) {
-        if (dir_exists(cache_dir)) {
-            d_instance = new BESUncompressCache(data_root_dir, cache_dir, result_file_prefix, max_cache_size);
-            d_enabled = d_instance->cache_enabled();
-            if(!d_enabled){
-                delete d_instance;
-                d_instance = NULL;
-                BESDEBUG( MODULE, prolog <<  "Cache is DISABLED"<< endl);
-           }
-            else {
-    #ifdef HAVE_ATEXIT
-                atexit(delete_instance);
-    #endif
-                BESDEBUG( MODULE, prolog << "Cache is ENABLED"<< endl);
-           }
-        }
-    }
-    return d_instance;
-}
 
 /** Get the default instance of the GatewayCache object. This will read "TheBESKeys" looking for the values
  * of SUBDIR_KEY, PREFIX_KEY, an SIZE_KEY to initialize the cache.
+ * @note if fct is called without cache dir set code with throw internal error
  */
 BESUncompressCache *
 BESUncompressCache::get_instance()
 {
+    static BESUncompressCache cache;
+    if (cache.cache_enabled()){
+        return &cache;
+    }
+    else{
+        return nullptr;
+    }
+#if 0
     if (d_enabled && d_instance == 0) {
-        d_instance = new BESUncompressCache();
+        static BESUncompressCache cache;
         d_enabled = d_instance->cache_enabled();
         if(!d_enabled){
             delete d_instance;
@@ -213,14 +183,12 @@ BESUncompressCache::get_instance()
             BESDEBUG( MODULE, prolog << "Cache is DISABLED"<< endl);
         }
         else {
-#ifdef HAVE_ATEXIT
-            atexit(delete_instance);
-#endif
             BESDEBUG( MODULE, prolog << "Cache is ENABLED"<< endl);
         }
     }
 
     return d_instance;
+#endif
 }
 
 BESUncompressCache::~BESUncompressCache() {}

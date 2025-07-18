@@ -293,7 +293,10 @@ public:
         DBG(cerr << __func__ << "() - access a compressed file" << endl);
         if (!isdotdot) {
             try {
+#if 0
                 BESUncompressCache *cache = BESUncompressCache::get_instance(CACHE_DIR, CACHE_DIR, CACHE_PREFIX, 1);
+#endif
+                BESUncompressCache *cache = BESUncompressCache::get_instance();
 
                 string cache_file_name = cache->get_cache_file_name(com_file);
                 ifstream f(cache_file_name.c_str());
@@ -319,7 +322,10 @@ public:
         }
         else {
             try {
+#if 0
                 BESUncompressCache *cache = BESUncompressCache::get_instance(CACHE_DIR, CACHE_DIR, CACHE_PREFIX, 1);
+#endif
+                BESUncompressCache *cache = BESUncompressCache::get_instance();
 
                 string cache_file_name = cache->get_cache_file_name(com_file);
                 ifstream f(cache_file_name.c_str());
