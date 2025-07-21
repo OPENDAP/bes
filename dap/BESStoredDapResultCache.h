@@ -83,11 +83,6 @@ private:
     string getResultPrefixFromConfig();
     unsigned long getCacheSizeFromConfig();
 
-protected:
-
-    BESStoredDapResultCache(const string &data_root_dir, const string &stored_results_subdir, const string &prefix,
-        unsigned long long size);
-
 public:
 #if 0
     static const string SUBDIR_KEY;
@@ -100,8 +95,6 @@ public:
 
     ~BESStoredDapResultCache() override = default;
 
-    static BESStoredDapResultCache *get_instance(const string &bes_catalog_root_dir,
-        const string &stored_results_subdir, const string &prefix, unsigned long long size);
     static BESStoredDapResultCache *get_instance();
 
 #ifdef DAP2_STORED_RESULTS
