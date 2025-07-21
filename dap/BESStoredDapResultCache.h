@@ -83,13 +83,6 @@ private:
     string getResultPrefixFromConfig();
     unsigned long getCacheSizeFromConfig();
 
-#if 0
-protected:
-
-    BESStoredDapResultCache(const string &data_root_dir, const string &stored_results_subdir, const string &prefix,
-        unsigned long long size);
-#endif
-
 public:
 #if 0
     static const string SUBDIR_KEY;
@@ -101,11 +94,6 @@ public:
     BESStoredDapResultCache& operator=(const BESStoredDapResultCache&) = delete;
 
     ~BESStoredDapResultCache() override = default;
-
-#if 0
-    static BESStoredDapResultCache *get_instance(const string &bes_catalog_root_dir,
-        const string &stored_results_subdir, const string &prefix, unsigned long long size);
-#endif
 
     static BESStoredDapResultCache *get_instance();
 
