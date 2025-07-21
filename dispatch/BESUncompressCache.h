@@ -42,7 +42,6 @@ private:
     unsigned long d_maxCacheSize;
 
     BESUncompressCache();
-    BESUncompressCache(const BESUncompressCache &src);
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset_file_name);
 
@@ -50,18 +49,14 @@ private:
     static std::string getCachePrefixFromConfig();
     static unsigned long getCacheSizeFromConfig();
 
-protected:
-
-    BESUncompressCache(const std::string &data_root_dir, const std::string &cache_dir, const std::string &prefix,
-        unsigned long long size);
-
 public:
     static const std::string DIR_KEY;
     static const std::string PREFIX_KEY;
     static const std::string SIZE_KEY;
 
-    static BESUncompressCache *get_instance(const std::string &bes_catalog_root_dir, const std::string &cache_dir,
-        const std::string &prefix, unsigned long long size);
+    BESUncompressCache(const BESUncompressCache&) = delete;
+    BESUncompressCache& operator=(const BESUncompressCache&) = delete;
+
     static BESUncompressCache *get_instance();
 
     std::string get_cache_file_name(const std::string &src, bool mangle = true) override;
