@@ -512,10 +512,9 @@ public:
                 curl::http_get(url, buf);
                 DBG(cerr << "buf.data() = " << string(buf.data()) << "\n");
                 CPPUNIT_ASSERT_MESSAGE("Should be able to find 'Test data''",
-                                       string(buf.data()).find("Test data") == 0);
+                                       buf.find("Test data") == 0);
                 CPPUNIT_ASSERT_MESSAGE("Should be able to find 'Do not edit.''",
-                                       string(buf.data()).find("Do not edit.")
-                                       != string::npos);
+                                       buf.find("Do not edit.") != string::npos);
 
                 DBG(cerr << "buf.size() = " << buf.size() << "\n");
                 CPPUNIT_ASSERT_MESSAGE("Size should be 94", buf.size() == 94);
