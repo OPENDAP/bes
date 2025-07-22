@@ -8,26 +8,17 @@
         <Attribute name="units" type="String">
             <Value>degrees_north</Value>
         </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>535a6f2c</Value>
-        </Attribute>
     </Int32>
     <Int32 name="lon">
         <Dim name="/lon"/>
         <Attribute name="units" type="String">
             <Value>degrees_east</Value>
         </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>a793a1fc</Value>
-        </Attribute>
     </Int32>
     <Int32 name="time">
         <Dim name="/time"/>
         <Attribute name="units" type="String">
             <Value>seconds</Value>
-        </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>00000000</Value>
         </Attribute>
     </Int32>
     <Float32 name="z">
@@ -43,27 +34,18 @@
         <Attribute name="_FillValue" type="Float32">
             <Value>1.00000000</Value>
         </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>230409a7</Value>
-        </Attribute>
         <Map name="/lat"/>
         <Map name="/lon"/>
     </Float32>
     <Float32 name="t">
         <Dim name="/lat"/>
         <Dim name="/lon"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>85962e3b</Value>
-        </Attribute>
         <Map name="/lat"/>
         <Map name="/lon"/>
     </Float32>
     <Byte name="pixel">
         <Dim name="/lat"/>
         <Dim name="/lon"/>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>2af4c771</Value>
-        </Attribute>
         <Map name="/lat"/>
         <Map name="/lon"/>
     </Byte>

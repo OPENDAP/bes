@@ -11,7 +11,6 @@
 #include <cassert>
 #include <libdap/debug.h>
 
-#include <libdap/InternalErr.h>
 #include <BESDebug.h>
 
 using namespace libdap;

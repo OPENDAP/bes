@@ -35,9 +35,6 @@
         <Attribute name="DAP4_Checksum_CRC32" type="String">
             removed checksum
         </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
     </Int16>
     <Int16 name="v">
         <Dim name="/time_a"/>
@@ -61,17 +58,11 @@
         <Attribute name="DAP4_Checksum_CRC32" type="String">
             removed checksum
         </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
     </Int16>
     <Float32 name="lat">
         <Dim name="/lat"/>
         <Attribute name="units" type="String">
             <Value>degree North</Value>
-        </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
             removed checksum
@@ -85,17 +76,11 @@
         <Attribute name="DAP4_Checksum_CRC32" type="String">
             removed checksum
         </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
-        </Attribute>
     </Float32>
     <Float32 name="time">
         <Dim name="/time"/>
         <Attribute name="units" type="String">
             <Value>hours from base_time</Value>
-        </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
             removed checksum

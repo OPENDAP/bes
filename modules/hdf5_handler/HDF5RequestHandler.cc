@@ -483,7 +483,7 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
     // Convert to the BES DAS response
     auto bdas = dynamic_cast < BESDASResponse * >(response) ;
     if( !bdas )
-        throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+        throw BESInternalError( "Cannot cast the BESResponse Object to a BESDASResponse object", __FILE__, __LINE__ ) ;
 
     try {
         bdas->set_container( dhi.container->get_symbolic_name() ) ;
@@ -507,10 +507,25 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
             hdf5_build_das_internal_no_mem_cache(filename, das, cf_fileid);
         bdas->clear_container() ;
     }
+
     catch(const BESSyntaxUserError & e) {
         if (cf_fileid !=-1)
             H5Fclose(cf_fileid);
         BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch(const BESInternalError & e) {
+        if (cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESInternalError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch(const BESDapError & e) {
+        if (cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESDapError! Message: " << e.get_message() << endl);
         throw;
     }
 
@@ -520,17 +535,26 @@ bool HDF5RequestHandler::hdf5_build_das(BESDataHandlerInterface & dhi)
         BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
         throw;
     }
-    catch(const InternalErr & e) {
+    catch (InternalErr & e) {
         if (cf_fileid !=-1)
             H5Fclose(cf_fileid);
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
-                       __FILE__, __LINE__);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
     }
-    catch(const Error & e) {
+    catch (Error & e) {
         if (cf_fileid !=-1)
             H5Fclose(cf_fileid);
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
-                       __FILE__, __LINE__);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    }
+
+    catch (std::exception &e) {
+        if (cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        string s = string("C++ Exception: ") + e.what();
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
     catch(...) {
         if (cf_fileid !=-1)
@@ -605,8 +629,8 @@ void HDF5RequestHandler::hdf5_build_das_internal_no_mem_cache(const string& file
             depth_first(fileid, "/", *das);
             close_fileid(fileid);
         }
-
         Ancillary::read_ancillary_das( *das, filename ) ;
+
 
 #if 0
 // Dump all attribute contents
@@ -674,7 +698,7 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
             BESDEBUG(HDF5_NAME, prolog << "DDS Metadata Cached hit for : " << filename << endl);
             *dds = *cached_dds_ptr; // Copy the referenced object
         }
-        else if (true ==dds_from_dc) {//Currently the dds_from_ds is always false by default. 
+        else if (true ==dds_from_dc) {//Currently the dds_from_dc is always false by default. 
             read_dds_from_disk_cache(bdds,data_bdds,build_data,container_name,filename,dds_cache_fname,
                                      das_cache_fname,-1,das_from_dc);
         }
@@ -697,20 +721,44 @@ void HDF5RequestHandler::get_dds_with_attributes( BESDDSResponse*bdds,BESDataDDS
         }
     
     }
-    catch(const InternalErr & e) {
-        close_h5_files(cf_fileid, fileid);
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
-                       __FILE__, __LINE__);
-    }
-    catch(const Error & e) {
-        close_h5_files(cf_fileid, fileid);
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
-                       __FILE__, __LINE__);
-    }
+    
     catch(const BESSyntaxUserError & e) {
         close_h5_files(cf_fileid, fileid);
         BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
         throw;
+    }
+
+    catch(const BESInternalError & e) {
+        close_h5_files(cf_fileid, fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESInternalError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch(const BESDapError & e) {
+        close_h5_files(cf_fileid, fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESDapError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch(const BESError & e) {
+        close_h5_files(cf_fileid, fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
+        throw;
+    }
+    catch(const InternalErr & e) {
+        close_h5_files(cf_fileid, fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught InternalErr! Message: " << e.get_error_message() << endl);
+        throw; 
+    }
+    catch(const Error & e) {
+        close_h5_files(cf_fileid, fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught Err! Message: " << e.get_error_message() << endl);
+        throw; 
+    }
+    catch (std::exception &e) {
+        close_h5_files(cf_fileid, fileid);
+        string s = string("C++ Exception: ") + e.what();
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
     catch(...) {
         close_h5_files(cf_fileid, fileid);
@@ -820,28 +868,48 @@ void HDF5RequestHandler::get_dds_without_attributes_datadds(BESDataDDSResponse*d
     
     }
     catch(const BESSyntaxUserError & e) {
-
         BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
         close_h5_files(cf_fileid, fileid);
         throw;
     }
-
-    catch(const InternalErr & e) {
-
+    catch(const BESInternalError & e) {
         close_h5_files(cf_fileid, fileid);
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
-                       __FILE__, __LINE__);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESInternalError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch(const BESDapError & e) {
+        close_h5_files(cf_fileid, fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESDapError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch(const BESError & e) {
+        close_h5_files(cf_fileid, fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
+        throw;
+    }
+ 
+    catch(const InternalErr & e) {
+        close_h5_files(cf_fileid, fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught libdap InternalError! Message: " << e.get_error_message() << endl);
+        throw;
     }
     catch(const Error & e) {
-
         close_h5_files(cf_fileid, fileid);
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
-                       __FILE__, __LINE__);
+        BESDEBUG(HDF5_NAME, prolog << "Caught libdap Error! Message: " << e.get_error_message() << endl);
+        throw;
+    }
+    catch (std::exception &e) {
+        close_h5_files(cf_fileid, fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught standard exception Error! Message: " << e.what() << endl);
+        string s = string("C++ Exception: ") + e.what();
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
     catch(...) {
-
        close_h5_files(cf_fileid, fileid);
-       string s = "unknown exception caught building HDF5 DDS";
+       BESDEBUG(HDF5_NAME, prolog << "Caught unknown exception Error! in get_dds_without_attributes_datadds() when building HDF5 DDS" << endl);
+       string s = "unknown exception caught in get_dds_without_attributes_datadds() when building HDF5 DDS";
        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 }
@@ -917,7 +985,7 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
     BESResponseObject *response = dhi.response_handler->get_response_object();
     auto bdds = dynamic_cast < BESDDSResponse * >(response);
     if( !bdds )
-        throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+        throw BESInternalError( "Cannot cast the BESResponse Object to a BESDDSResponse object", __FILE__, __LINE__ ) ;
     bdds->set_container(container_name);
 
     try {
@@ -957,20 +1025,39 @@ bool HDF5RequestHandler::hdf5_build_dds(BESDataHandlerInterface & dhi)
         BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
         throw;
     }
+    catch(const BESInternalError & e) {
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESInternalError! Message: " << e.get_message() << endl);
+        throw;
+    }
+    catch(const BESDapError & e) {
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESDapError! Message: " << e.get_message() << endl);
+        throw;
+    }
     catch(const BESError & e) {
         BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
         throw;
     }
     catch(const InternalErr & e) {
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
-                       __FILE__, __LINE__);
+        BESDEBUG(HDF5_NAME, prolog << "Caught libdap InternalError! Message: " << e.get_error_message() << endl);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+
     }
     catch(const Error & e) {
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
-                       __FILE__, __LINE__);
+        BESDEBUG(HDF5_NAME, prolog << "Caught libdap Error! Message: " << e.get_error_message() << endl);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    }
+    catch (std::exception &e) {
+        BESDEBUG(HDF5_NAME, prolog << "Caught standard Exception! Message: " << e.what() << endl);
+        string s = string("C++ Exception: ") + e.what();
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
     catch(...) {
-       string s = "unknown exception caught building HDF5 DDS";
+        BESDEBUG(HDF5_NAME, prolog << "Caught unknown Exception! Message: "  << endl);
+        string s = "unknown exception caught building HDF5 DDS";
         throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 
@@ -994,7 +1081,7 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
     BESResponseObject *response = dhi.response_handler->get_response_object();
     auto bdds = dynamic_cast < BESDataDDSResponse * >(response);
     if( !bdds )
-        throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+        throw BESInternalError( "Cannot cast the BESResponse Object to a BESDataDDSResponse object", __FILE__, __LINE__ ) ;
     bdds->set_container(container_name);
 
     try {
@@ -1035,17 +1122,35 @@ bool HDF5RequestHandler::hdf5_build_data(BESDataHandlerInterface & dhi)
         BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
         throw;
     }
+
+    catch(const BESInternalError & e) {
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESInternalError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch(const BESDapError & e) {
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESDapError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
     catch(const BESError & e) {
         BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
         throw;
     }
+
     catch(const InternalErr & e) {
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
-                       __FILE__, __LINE__);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
     }
     catch(const Error & e) {
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
-                       __FILE__, __LINE__);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    }
+    catch (std::exception &e) {
+        string s = string("C++ Exception: ") + e.what();
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
     catch(...) {
        string s = "unknown exception caught building HDF5 DDS";
@@ -1082,8 +1187,10 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
 
     BESResponseObject *response = dhi.response_handler->get_response_object();
     auto bdds = dynamic_cast < BESDataDDSResponse * >(response);
-    if( !bdds )
-        throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
+    if( !bdds ) {
+        H5Fclose(cf_fileid);
+        throw BESInternalError( "Cannot cast the BESResponse Object to a BESDataDDSResponse object", __FILE__, __LINE__ ) ;
+    }
 
     try {
 
@@ -1100,8 +1207,8 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
 
         if (!hdds->check_semantics()) {   // DDS didn't comply with the DAP semantics 
             hdds->print(cerr);
-            throw InternalErr(__FILE__, __LINE__,
-                              "DDS check_semantics() failed. This can happen when duplicate variable names are defined.");
+            string s = "DDS check_semantics() failed. This can happen when duplicate variable names are defined.";
+            throw InternalErr(__FILE__,__LINE__,s);
         }
         
         Ancillary::read_ancillary_dds( *hdds, filename ) ;
@@ -1111,6 +1218,7 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
         BESDASResponse bdas( das ) ;
         bdas.set_container( dhi.container->get_symbolic_name() ) ;
         read_cfdas( *das,filename,cf_fileid);
+
         Ancillary::read_ancillary_das( *das, filename ) ;
 
         hdds->transfer_attributes(das);
@@ -1121,11 +1229,24 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
 
     catch(const BESSyntaxUserError & e) {
         BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
-
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
         throw;
     }
+    catch(const BESInternalError & e) {
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESInternalError! Message: " << e.get_message() << endl);
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        throw;
+    }
+
+    catch(const BESDapError & e) {
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESDapError! Message: " << e.get_message() << endl);
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        throw;
+    }
+
     catch(const BESError & e) {
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
@@ -1143,6 +1264,12 @@ bool HDF5RequestHandler::hdf5_build_data_with_IDs(BESDataHandlerInterface & dhi)
             H5Fclose(cf_fileid);
         throw BESDapError(e.get_error_message(), false, e.get_error_code(),
                        __FILE__, __LINE__);
+    }
+    catch (std::exception &e) {
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        string s = string("C++ Exception: ") + e.what();
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
     catch(...) {
         if(cf_fileid !=-1)
@@ -1194,26 +1321,51 @@ bool HDF5RequestHandler::hdf5_build_dmr(BESDataHandlerInterface & dhi)
                 return true;
         }// else no cache
     }// try
+
+    catch(const BESSyntaxUserError & e) {
+        close_h5_files(cf_fileid, fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+        throw;
+    }
+    catch(const BESInternalError & e) {
+        close_h5_files(cf_fileid, fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESInternalError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch(const BESDapError & e) {
+        close_h5_files(cf_fileid, fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESDapError! Message: " << e.get_message() << endl);
+        throw;
+    }
     catch(const BESError & e) {
         close_h5_files(cf_fileid, fileid);
         BESDEBUG(HDF5_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
         throw;
     }
     catch(const InternalErr & e) {
-
         close_h5_files(cf_fileid, fileid);
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
-                       __FILE__, __LINE__);
+        BESDEBUG(HDF5_NAME, prolog << "Caught libdap InternalError! Message: " << e.get_error_message() << endl);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
     }
     catch(const Error & e) {
-
         close_h5_files(cf_fileid, fileid);
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
-                       __FILE__, __LINE__);
+        BESDEBUG(HDF5_NAME, prolog << "Caught libdap Error! Message: " << e.get_error_message() << endl);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    }
+    catch (std::exception &e) {
+        close_h5_files(cf_fileid, fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught standard Exception! Message: " << e.what() << endl);
+        string s = string("C++ Exception: ") + e.what();
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
     catch(...) {
-
         close_h5_files(cf_fileid, fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught unknown Exception! Message: "  << endl);
         string s = "unknown exception caught building HDF5 DMR";
         throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
@@ -1346,7 +1498,7 @@ bool HDF5RequestHandler::hdf5_build_dmr_from_file(BESDataHandlerInterface & dhi,
         // It is possible that a dimension variable has hardlinks. To make it
         // right for the netCDF-4 data model and the current DAP4 implementation,
         // we need to choose the shortest path of all hardlinks as the dimension path.
-        // So to avoid iterate all HDF5 objects multiple times, save the found
+        // So to avoid iterating all HDF5 objects multiple times, save the found
         // hardlinks and search them when necessary.  Note we have to search hardlinks from the root.
         // KY 2021-11-15
         vector<link_info_t> hdf5_hls;
@@ -1434,6 +1586,25 @@ bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
         ////Don't close the file ID,it will be closed by the derived class.
 
     }
+
+    catch(const BESSyntaxUserError & e) {
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+        throw;
+    }
+    catch(const BESInternalError & e) {
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESInternalError! Message: " << e.get_message() << endl);
+        throw;
+    }
+    catch(const BESDapError & e) {
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught BESDapError! Message: " << e.get_message() << endl);
+        throw;
+    }
     catch(const BESError & e) {
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
@@ -1441,26 +1612,27 @@ bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
         throw;
     }
     catch(const InternalErr & e) {
-
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
-
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
-                       __FILE__, __LINE__);
+        BESDEBUG(HDF5_NAME, prolog << "Caught libdap InternalError! Message: " << e.get_error_message() << endl);
+        throw;
     }
     catch(const Error & e) {
-
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
-
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
-                       __FILE__, __LINE__);
+        BESDEBUG(HDF5_NAME, prolog << "Caught libdap Error! Message: " << e.get_error_message() << endl);
+        throw;
+    }
+    catch (std::exception &e) {
+        if(cf_fileid !=-1)
+            H5Fclose(cf_fileid);
+        BESDEBUG(HDF5_NAME, prolog << "Caught standard exception Error! Message: " << e.what() << endl);
+        string s = string("C++ Exception: ") + e.what();
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
     catch(...) {
-
         if(cf_fileid !=-1)
             H5Fclose(cf_fileid);
-
         string s = "unknown exception caught building HDF5 DataDDS";
         throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
@@ -1682,7 +1854,7 @@ bool HDF5RequestHandler::read_das_from_disk_cache(const string & cache_filename,
             buf.resize(bytes_expected_read);
             size_t bytes_to_read =fread((void*)buf.data(),1,bytes_expected_read,md_file);
             if (bytes_to_read != bytes_expected_read)
-                throw InternalErr(__FILE__,__LINE__,"Fail to read the data from the das cache file.");
+                throw BESInternalError("Fail to read the data from the das cache file.",__FILE__,__LINE__);
 
             char* temp_pointer =buf.data();
 
@@ -1697,7 +1869,7 @@ bool HDF5RequestHandler::read_das_from_disk_cache(const string & cache_filename,
             }
 
             fclose(md_file);
-            throw InternalErr(__FILE__,__LINE__,"Fail to parse a das cache file.");
+            throw BESInternalError("Fail to parse a das cache file.",__FILE__,__LINE__);
         }
 
         // Unlock the cache file
@@ -1745,7 +1917,7 @@ bool HDF5RequestHandler::write_dds_to_disk_cache(const string& dds_cache_fname,D
             }
 
             fclose(dds_file);
-            throw InternalErr(__FILE__,__LINE__,"Fail to parse a dds cache file.");
+            throw BESInternalError("Fail to parse a dds cache file.",__FILE__,__LINE__);
         }
 
         if (fcntl(fd_md,F_SETLK,lock(F_UNLCK)) == -1) {
@@ -1791,7 +1963,7 @@ bool HDF5RequestHandler::write_das_to_disk_cache(const string & das_cache_fname,
             }
 
             fclose(das_file);
-            throw InternalErr(__FILE__,__LINE__,"Fail to parse a dds cache file.");
+            throw BESInternalError("Fail to parse a dds cache file.",__FILE__,__LINE__);
         }
 
         if(fcntl(fd_md,F_SETLK,lock(F_UNLCK)) == -1) { 
@@ -1887,7 +2059,7 @@ void write_container_name_to_file(const string& cont_name,FILE *das_file) {
 
     size_t bytes_to_be_written = fwrite((const void*)buf.data(),1,bytes_to_write,das_file);
     if (bytes_to_be_written != bytes_to_write)
-        throw InternalErr(__FILE__, __LINE__,"Failed to write a DAS container name to a cache");
+        throw BESInternalError("Failed to write a DAS container name to a cache", __FILE__, __LINE__);
 
 }
 
@@ -1937,7 +2109,7 @@ void write_das_attr_info(AttrTable* dtp,const string& attr_name, const string & 
 
     size_t bytes_to_be_written = fwrite((const void*)attr_buf.data(),1,bytes_to_write_attr,das_file);
     if (bytes_to_be_written != bytes_to_write_attr)
-        throw InternalErr(__FILE__, __LINE__,"Failed to write a DAS attribute to a cache");
+        throw BESInternalError("Failed to write a DAS attribute to a cache",__FILE__, __LINE__);
 
 }
 
@@ -2300,7 +2472,15 @@ void HDF5RequestHandler::add_attributes(BESDataHandlerInterface &dhi) {
         if (true == _usecf) {
             // go to the CF option
             h5_fd = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
-
+            if (h5_fd < 0){
+                string invalid_file_msg="Could not open this HDF5 file ";
+                invalid_file_msg +=filename;
+                invalid_file_msg +=". It is very possible that this file is not an HDF5 file ";
+                invalid_file_msg +=" but with the .h5/.HDF5 suffix. Please check with the data";
+                invalid_file_msg +=" distributor.";
+                throw BESInternalError(invalid_file_msg,__FILE__,__LINE__);
+            }
+ 
             read_cfdas( *das,filename,h5_fd);
             
             H5Fclose(h5_fd);

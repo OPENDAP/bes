@@ -32,9 +32,6 @@
         <Attribute name="WOA01" type="Url">
             <Value>&quot;http://localhost/junk&quot;</Value>
         </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>27ce2f38</Value>
-        </Attribute>
     </Int16>
     <Int16 name="v">
         <Dim name="/time_a"/>
@@ -55,17 +52,11 @@
         <Attribute name="DODS_Name" type="String">
             <Value>VWind</Value>
         </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>74832eab</Value>
-        </Attribute>
     </Int16>
     <Float32 name="lat">
         <Dim name="/lat"/>
         <Attribute name="units" type="String">
             <Value>degree North</Value>
-        </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>7a46fda5</Value>
         </Attribute>
     </Float32>
     <Float32 name="lon">
@@ -73,17 +64,11 @@
         <Attribute name="units" type="String">
             <Value>degree East</Value>
         </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>7c0a7931</Value>
-        </Attribute>
     </Float32>
     <Float32 name="time">
         <Dim name="/time"/>
         <Attribute name="units" type="String">
             <Value>hours from base_time</Value>
-        </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>9eb60397</Value>
         </Attribute>
     </Float32>
     <Attribute name="NC_GLOBAL" type="Container">

@@ -76,13 +76,15 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
     int64_t nelms = 0;
 
     if((otype != H5INT64 && otype !=H5UINT64) 
-       || (dtype !=H5INT32)) 
-        throw InternalErr (__FILE__, __LINE__,
-                          "The datatype of the special product is not right.");
+       || (dtype !=H5INT32)) { 
+        string msg = "The datatype of the special product is not right.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
 
-    if (rank <= 0) 
-        throw InternalErr (__FILE__, __LINE__,
-                          "The number of dimension of the variable is <=0 for this array.");
+    if (rank <= 0) { 
+        string msg = "The number of dimension of the variable is <=0 for this array.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
     else {
 
         offset.resize(rank);
@@ -110,96 +112,73 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
 
     if(false == check_pass_fileid_key) {
         if ((fileid = H5Fopen(filename.c_str(),H5F_ACC_RDONLY,H5P_DEFAULT))<0) {
-            ostringstream eherr;
-            eherr << "HDF5 File " << filename 
-                  << " cannot be opened. "<<endl;
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg = "HDF5 File " + filename + " cannot be opened. ";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     }
 
     if ((dsetid = H5Dopen(fileid,varname.c_str(),H5P_DEFAULT))<0) {
-
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "HDF5 dataset " << varname
-              << " cannot be opened. "<<endl;
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "HDF5 dataset " + varname + " cannot be opened. ";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if ((dspace = H5Dget_space(dsetid))<0) {
-
         H5Dclose(dsetid);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "Space id of the HDF5 dataset " << varname
-              << " cannot be obtained. "<<endl;
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Space id of the HDF5 dataset " + varname + " cannot be obtained. ";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
 
     if (H5Sselect_hyperslab(dspace, H5S_SELECT_SET,
                            hoffset.data(), hstep.data(),
                            hcount.data(), nullptr) < 0) {
-
-            H5Sclose(dspace);
-            H5Dclose(dsetid);
-            HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-            ostringstream eherr;
-            eherr << "The selection of hyperslab of the HDF5 dataset " << varname
-                  << " fails. "<<endl;
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        H5Sclose(dspace);
+        H5Dclose(dsetid);
+        HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
+        string msg = "The selection of hyperslab of the HDF5 dataset " + varname + " fails. ";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     mspace = H5Screate_simple(rank, (const hsize_t*)hcount.data(),nullptr);
     if (mspace < 0) {
-            H5Sclose(dspace);
-            H5Dclose(dsetid);
-            HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-            ostringstream eherr;
-            eherr << "The creation of the memory space of the  HDF5 dataset " << varname
-                  << " fails. "<<endl;
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        H5Sclose(dspace);
+        H5Dclose(dsetid);
+        HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
+        string msg = "The creation of the memory space of the  HDF5 dataset " + varname + "fails. ";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
-
 
     if ((dtypeid = H5Dget_type(dsetid)) < 0) {
         H5Sclose(mspace);
         H5Sclose(dspace);
         H5Dclose(dsetid);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "Obtaining the datatype of the HDF5 dataset " << varname
-              << " fails. "<<endl;
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Obtaining the datatype of the HDF5 dataset " + varname + " fails.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if ((memtype = H5Tget_native_type(dtypeid, H5T_DIR_ASCEND))<0) {
-
         H5Sclose(mspace);
         H5Tclose(dtypeid);
         H5Sclose(dspace);
         H5Dclose(dsetid);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "Obtaining the memory type of the HDF5 dataset " << varname
-              << " fails. "<<endl;
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
-
+        string msg = "Obtaining the memory type of the HDF5 dataset " + varname + " fails. ";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     H5T_class_t ty_class = H5Tget_class(dtypeid);
     if (ty_class < 0) {
-
         H5Sclose(mspace);
         H5Tclose(dtypeid);
         H5Tclose(memtype);
         H5Sclose(dspace);
         H5Dclose(dsetid);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "Obtaining the type class of the HDF5 dataset " << varname
-              << " fails. "<<endl;
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Obtaining the type class of the HDF5 dataset " + varname + " fails. ";
+        throw BESInternalError(msg,__FILE__,__LINE__);
 
     }
 
@@ -210,10 +189,8 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
         H5Sclose(dspace);
         H5Dclose(dsetid);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "The type class of the HDF5 dataset " << varname
-              << " is not H5T_INTEGER. "<<endl;
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "The type class of the HDF5 dataset " + varname + " is not H5T_INTEGER. ";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     size_t ty_size = H5Tget_size(dtypeid);
@@ -224,10 +201,8 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
         H5Sclose(dspace);
         H5Dclose(dsetid);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "The type size of the HDF5 dataset " << varname
-              << " is not right. "<<endl;
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "The type size of the HDF5 dataset " + varname + " is not right. ";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     hid_t read_ret = -1;
@@ -247,10 +222,8 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
         H5Sclose(dspace);
         H5Dclose(dsetid);
         HDF5CFUtil::close_fileid(fileid,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "Cannot read the HDF5 dataset " << varname
-              <<" with type of 64-bit integer"<<endl;
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Cannot read the HDF5 dataset " + varname + " with type of 64-bit integer.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Create "Time" or "Date" part of the original array. 
@@ -285,48 +258,3 @@ void HDF5GMSPCFArray::read_data_NOT_from_mem_cache(bool /*add_cache*/,void*/*buf
 
     return;
 }
-#if 0        
-// parse constraint expr. and make hdf5 coordinate point location.
-// return number of elements to read. 
-int
-HDF5GMSPCFArray::format_constraint (int *offset, int *step, int *count)
-{
-        long nels = 1;
-        int id = 0;
-
-        Dim_iter p = dim_begin ();
-
-        while (p != dim_end ()) {
-
-                int start = dimension_start (p, true);
-                int stride = dimension_stride (p, true);
-                int stop = dimension_stop (p, true);
-
-                // Check for illegal  constraint
-                if (start > stop) {
-                   ostringstream oss;
-
-                   oss << "Array/Grid hyperslab start point "<< start <<
-                         " is greater than stop point " <<  stop <<".";
-                   throw Error(malformed_expr, oss.str());
-                }
-
-
-                offset[id] = start;
-                step[id] = stride;
-                count[id] = ((stop - start) / stride) + 1;      // count of elements
-                nels *= count[id];              // total number of values for variable
-
-                BESDEBUG ("h5",
-                         "=format_constraint():"
-                         << "id=" << id << " offset=" << offset[id]
-                         << " step=" << step[id]
-                         << " count=" << count[id]
-                         << endl);
-
-                id++;
-                p++;
-        }
-        return nels;
-}
-#endif

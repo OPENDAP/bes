@@ -45,18 +45,17 @@ class BESReporter ;
 class BESReporterList : public BESObj
 {
 private:
-    static BESReporterList * d_instance ;
     mutable std::recursive_mutex d_cache_lock_mutex;
-
-    static void initialize_instance();
-    static void delete_instance();
 
     std::map< std::string, BESReporter * > _reporter_list ;
 
-public:
     BESReporterList() ;
 
-    virtual	~BESReporterList() ;
+public:
+    ~BESReporterList() override = default;
+
+    BESReporterList(const BESReporterList&) = delete;
+    BESReporterList& operator=(const BESReporterList&) = delete;
 
     typedef std::map< std::string, BESReporter * >::const_iterator Reporter_citer ;
     typedef std::map< std::string, BESReporter * >::iterator Reporter_iter ;

@@ -14,7 +14,7 @@
 #include <iostream>
 #include <sstream>
 #include <libdap/debug.h>
-#include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include <BESDebug.h>
 
 using namespace std;
@@ -28,7 +28,6 @@ HDFDMRArray_VD::read ()
     BESDEBUG("h4","Coming to HDFDMRArray_VD read "<<endl);
     if (length() == 0)
         return true; 
-
 
     // Declaration of offset,count and step
     vector<int>offset;
@@ -44,18 +43,16 @@ HDFDMRArray_VD::read ()
     // Open the file
     int32 file_id = Hopen (filename.c_str (), DFACC_READ, 0);
     if (file_id < 0) {
-        ostringstream eherr;
-        eherr << "File " << filename.c_str () << " cannot be open.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "File " + filename +" cannot be open.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Start the Vdata interface
     int32 vdata_id = 0;
     if (Vstart (file_id) < 0) {
         Hclose(file_id);
-        ostringstream eherr;
-        eherr << "This file cannot be open.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "This file cannot be open.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Attach the vdata
@@ -63,9 +60,8 @@ HDFDMRArray_VD::read ()
     if (vdata_id == -1) {
         Vend (file_id);
         Hclose(file_id);
-        ostringstream eherr;
-        eherr << "Vdata cannot be attached.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Vdata cannot be attached.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     int32 vs_nflds = VFnfields(vdata_id);
@@ -73,7 +69,7 @@ HDFDMRArray_VD::read ()
         VSdetach(vdata_id);
         Vend (file_id);
         Hclose(file_id);
-        throw InternalErr(__FILE__, __LINE__, "Cannot get the number of fields of a vdata.");
+        throw BESInternalError("Cannot get the number of fields of a vdata.",__FILE__, __LINE__);
     }
 
     try {
@@ -101,37 +97,35 @@ HDFDMRArray_VD::read_one_field_vdata(int32 vdata_id,const vector<int>&offset, co
 
     int32 fdorder = VFfieldorder(vdata_id,0);
     if (fdorder == FAIL) {
-        throw InternalErr(__FILE__, __LINE__, "VFfieldorder failed");
+        throw BESInternalError("VFfieldorder failed.",__FILE__, __LINE__);
     }
 
     const char *fieldname = VFfieldname(vdata_id,0);
     if (fieldname == nullptr) {
-        throw InternalErr(__FILE__, __LINE__, "Cannot get vdata field name.");
+        throw BESInternalError("Cannot get vdata field name.",__FILE__, __LINE__);
     }
 
     int32 fdtype = VFfieldtype(vdata_id,0);
     if (fdtype == FAIL) {
-        throw InternalErr(__FILE__, __LINE__, "VFfieldtype failed");
+        throw BESInternalError("VFfieldtype failed.",__FILE__, __LINE__);
     }
 
     // Seek the position of the starting point
     if (VSseek (vdata_id, offset[0]) == -1) {
-        ostringstream eherr;
-        eherr << "VSseek failed at " << offset[0];
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "VSseek failed at " + to_string(offset[0]) + ".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Prepare the vdata field
     if (VSsetfields (vdata_id, fieldname) == -1) {
-        ostringstream eherr;
-        eherr << "VSsetfields failed with the name " << fieldname;
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "VSsetfields failed with the name " +string(fieldname) + ".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     int32 vdfelms = fdorder * count[0] * step[0];
     int32 fieldtype = VFfieldtype(vdata_id,0);
     if (fieldtype == -1) 
-        throw InternalErr (__FILE__, __LINE__, "VFfieldtype failed");
+        throw BESInternalError("VFfieldtype failed.", __FILE__, __LINE__);
 
     int32 r = -1;
     // TODO: reduce the following code by not checking each datatype.
@@ -150,11 +144,8 @@ HDFDMRArray_VD::read_one_field_vdata(int32 vdata_id,const vector<int>&offset, co
 
             // Read the data
             r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],FULL_INTERLACE);
-            if (r == -1) {
-                ostringstream eherr;
-                eherr << "VSread failed.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-            }
+            if (r == -1) 
+                throw BESInternalError("VSread failed.",__FILE__, __LINE__);
 
             // Obtain the subset portion of the data
             if (fdorder > 1) {
@@ -184,11 +175,8 @@ HDFDMRArray_VD::read_one_field_vdata(int32 vdata_id,const vector<int>&offset, co
             orival.resize(vdfelms);
 
             r = VSread (vdata_id, orival.data(), 1+(count[0] -1)* step[0], FULL_INTERLACE);
-            if (r == -1) {
-                ostringstream eherr;
-                eherr << "VSread failed.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-            }
+            if (r == -1) 
+                throw BESInternalError("VSread failed.",__FILE__, __LINE__);
 
             if (fdorder > 1) {
                 for (int i = 0; i < count[0]; i++)
@@ -214,11 +202,8 @@ HDFDMRArray_VD::read_one_field_vdata(int32 vdata_id,const vector<int>&offset, co
 
             r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
                     FULL_INTERLACE);
-            if (r == -1) {
-                ostringstream eherr;
-                eherr << "VSread failed.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-            }
+            if (r == -1) 
+                throw BESInternalError("VSread failed.",__FILE__, __LINE__);
 
             if (fdorder > 1) {
                 for (int i = 0; i < count[0]; i++)
@@ -245,11 +230,8 @@ HDFDMRArray_VD::read_one_field_vdata(int32 vdata_id,const vector<int>&offset, co
 
             r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
                     FULL_INTERLACE);
-            if (r == -1) {
-                ostringstream eherr;
-                eherr << "VSread failed.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-            }
+            if (r == -1) 
+                throw BESInternalError("VSread failed.",__FILE__, __LINE__);
 
             if (fdorder > 1) {
                 for (int i = 0; i < count[0]; i++)
@@ -273,11 +255,8 @@ HDFDMRArray_VD::read_one_field_vdata(int32 vdata_id,const vector<int>&offset, co
 
             r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
                     FULL_INTERLACE);
-            if (r == -1) {
-                ostringstream eherr;
-                eherr << "VSread failed.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-            }
+            if (r == -1) 
+                throw BESInternalError("VSread failed.",__FILE__, __LINE__);
 
             if (fdorder > 1) {
                 for (int i = 0; i < count[0]; i++)
@@ -304,11 +283,8 @@ HDFDMRArray_VD::read_one_field_vdata(int32 vdata_id,const vector<int>&offset, co
 
             r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
                     FULL_INTERLACE);
-            if (r == -1) {
-                ostringstream eherr;
-                eherr << "VSread failed.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-            }
+            if (r == -1) 
+                throw BESInternalError("VSread failed.",__FILE__, __LINE__);
 
             if (fdorder > 1) {
                 for (int i = 0; i < count[0]; i++)
@@ -332,11 +308,8 @@ HDFDMRArray_VD::read_one_field_vdata(int32 vdata_id,const vector<int>&offset, co
 
             r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
                     FULL_INTERLACE);
-            if (r == -1) {
-                ostringstream eherr;
-                eherr << "VSread failed.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-            }
+            if (r == -1) 
+                throw BESInternalError("VSread failed.",__FILE__, __LINE__);
 
             if (fdorder > 1) {
                 for (int i = 0; i < count[0]; i++)
@@ -362,11 +335,8 @@ HDFDMRArray_VD::read_one_field_vdata(int32 vdata_id,const vector<int>&offset, co
 
             r = VSread (vdata_id, (uint8 *) orival.data(), 1+(count[0] -1)* step[0],
                     FULL_INTERLACE);
-            if (r == -1) {
-                ostringstream eherr;
-                eherr << "VSread failed.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
-            }
+            if (r == -1) 
+                throw BESInternalError("VSread failed.",__FILE__, __LINE__);
 
             if (fdorder > 1) {
                 for (int i = 0; i < count[0]; i++)
@@ -382,7 +352,7 @@ HDFDMRArray_VD::read_one_field_vdata(int32 vdata_id,const vector<int>&offset, co
         }
             break;
         default:
-            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            throw BESInternalError("Unsupported data type.",__FILE__, __LINE__);
     }
 
 }
@@ -393,28 +363,28 @@ HDFDMRArray_VD::read_multi_fields_vdata(int32 vdata_id,const vector<int>&offset,
     int32 n_records = 0;
     int32 vdata_size = 0;
     if (VSQueryvsize(vdata_id,&vdata_size)==FAIL) 
-        throw InternalErr(__FILE__,__LINE__,"unable to query vdata size");
+        throw BESInternalError("Unable to query vdata size.",__FILE__,__LINE__);
 
     if (VSQuerycount(vdata_id,&n_records) == FAIL) 
-        throw InternalErr(__FILE__,__LINE__,"unable to query number of records of vdata");
+        throw BESInternalError("Unable to query number of records of vdata.",__FILE__,__LINE__);
 
     char            field_name_list[VSFIELDMAX*FIELDNAMELENMAX];
     if(VSinquire(vdata_id,nullptr,nullptr,
                      field_name_list,nullptr,nullptr) == FAIL) {
-        throw InternalErr(__FILE__,__LINE__,"unable to query number of records of vdata");
+        throw BESInternalError("Unable to query number of records of vdata.",__FILE__,__LINE__);
     }
     if(VSsetfields(vdata_id,field_name_list) == FAIL) 
-        throw InternalErr(__FILE__,__LINE__,"unable to set vdata fields");
+        throw BESInternalError("Unable to set vdata fields.",__FILE__,__LINE__);
 
     vector<uint8_t> data_buf;
     data_buf.resize(n_records * vdata_size);
     if (VSread (vdata_id, (uint8 *)data_buf.data(),n_records,FULL_INTERLACE)<0)  
-        throw InternalErr(__FILE__,__LINE__,"unable to read vdata");
+        throw BESInternalError("Unable to read vdata.",__FILE__,__LINE__);
 
     vector<uint8_t> subset_buf;
     subset_buf.resize(nelms*vdata_size);
     if (rank !=1) 
-        throw InternalErr(__FILE__,__LINE__,"vdata must be 1-D array of structure");
+        throw BESInternalError("Vdata must be 1-D array of structure.",__FILE__,__LINE__);
 
     const uint8_t *tmp_buf = data_buf.data() + offset[0]*vdata_size;
     uint8_t *tmp_subset_buf = subset_buf.data();
@@ -451,7 +421,7 @@ for (const auto &fn:field_names)
         size_t struct_elem_offset = values_offset + vdata_size*element;
 
         if(!vdata_s)
-            throw InternalErr(__FILE__, __LINE__, "Cannot obtain the structure pointer.");
+            throw BESInternalError("Cannot obtain the structure pointer.",__FILE__, __LINE__);
 	
         try {
             int field_offset = 0;
@@ -473,7 +443,7 @@ for (const auto &fn:field_names)
         catch(...) {
             delete vdata_s;
             string err_msg = "Cannot read the data of a vdata  " + var()->name();
-            throw InternalErr(__FILE__, __LINE__, err_msg);
+            throw BESInternalError(err_msg,__FILE__, __LINE__);
         }
         vdata_s->set_read_p(true);
         set_vec_ll((uint64_t)element,vdata_s);

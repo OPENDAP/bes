@@ -110,24 +110,24 @@ void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(const int64_t* offset, const int
     // Read File attributes
     // Latitude Step, SW Point Latitude, Number of Lines
     // Longitude Step, SW Point Longitude, Number of Columns
-    if (1 != rank)
-        throw InternalErr(__FILE__, __LINE__, "The number of dimension for Aquarius Level 3 map data must be 1");
+    if (1 != rank) {
+        string msg = "The number of dimension for Aquarius Level 3 map data must be 1.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
 
     bool check_pass_fileid_key = HDF5RequestHandler::get_pass_fileid();
     if (false == check_pass_fileid_key) {
         if ((fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT)) < 0) {
-            ostringstream eherr;
-            eherr << "HDF5 File " << filename << " cannot be opened. " << endl;
-            throw InternalErr(__FILE__, __LINE__, eherr.str());
+            string msg = "HDF5 File " + filename + " cannot be opened. ";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     }
 
     hid_t rootid = -1;
     if ((rootid = H5Gopen(fileid, "/", H5P_DEFAULT)) < 0) {
         HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "HDF5 dataset " << varname << " cannot be opened. " << endl;
-        throw InternalErr(__FILE__, __LINE__, eherr.str());
+        string msg = "HDF5 dataset " + varname + " cannot be opened. ";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     float LL_first_point = 0.0;
@@ -159,7 +159,8 @@ void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(const int64_t* offset, const int
         if (Num_lines <= 0) {
             H5Gclose(rootid);
             HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
-            throw InternalErr(__FILE__, __LINE__, "The number of line must be >0");
+            string msg = "The number of line must be >0.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         // The first number of the latitude is at the north west corner
@@ -194,7 +195,8 @@ void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(const int64_t* offset, const int
         if (Num_cols <= 0) {
             H5Gclose(rootid);
             HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
-            throw InternalErr(__FILE__, __LINE__, "The number of line must be >0");
+            string msg = "The number of line must be >0.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         // The first number of the latitude is at the north west corner
@@ -209,8 +211,8 @@ void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(const int64_t* offset, const int
     if (nelms > LL_total_num) {
         H5Gclose(rootid);
         HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
-        throw InternalErr(__FILE__, __LINE__,
-            "The number of elements exceeds the total number of  Latitude or Longitude");
+        string msg = "The number of elements exceeds the total number of  Latitude or Longitude.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     for (int64_t i = 0; i < nelms; ++i)
@@ -233,16 +235,17 @@ void HDF5GMCFMissLLArray::obtain_aqu_obpg_l3_ll(const int64_t* offset, const int
 void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(const int64_t* offset, const int64_t* step, int64_t nelms, bool add_cache, void*buf)
 {
 
-    if (1 != rank)
-        throw InternalErr(__FILE__, __LINE__, "The number of dimension for GPM Level 3 map data must be 1");
+    if (1 != rank) {
+        string msg = "The number of dimension for GPM Level 3 map data must be 1.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
 
     bool check_pass_fileid_key = HDF5RequestHandler::get_pass_fileid();
 
     if (false == check_pass_fileid_key) {
         if ((fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT)) < 0) {
-            ostringstream eherr;
-            eherr << "HDF5 File " << filename << " cannot be opened. " << endl;
-            throw InternalErr(__FILE__, __LINE__, eherr.str());
+            string msg = "HDF5 File " + filename + " cannot be opened. ";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     }
 
@@ -260,93 +263,63 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(const int64_t* offset, const int64_t*
         hid_t grid_grp_id = -1;
         string grid_grp_name;
 
-    if ((name() == "nlat") || (name() == "nlon")) {
-
-        string temp_grid_grp_name(GPM_GRID_GROUP_NAME1, strlen(GPM_GRID_GROUP_NAME1));
-        temp_grid_grp_name = "/" + temp_grid_grp_name;
-        if (H5Lexists(fileid, temp_grid_grp_name.c_str(), H5P_DEFAULT) > 0)
-            grid_grp_name = temp_grid_grp_name;
-        else {
-            string temp_grid_grp_name2(GPM_GRID_GROUP_NAME2, strlen(GPM_GRID_GROUP_NAME2));
-            temp_grid_grp_name2 = "/" + temp_grid_grp_name2;
-            if (H5Lexists(fileid, temp_grid_grp_name2.c_str(), H5P_DEFAULT) > 0)
-                grid_grp_name = temp_grid_grp_name2;
-            else
-                throw InternalErr(__FILE__, __LINE__, "Unknown GPM grid group name ");
-
-        }
-    }
-
-    else {
-        string temp_grids_group_name(GPM_GRID_MULTI_GROUP_NAME, strlen(GPM_GRID_MULTI_GROUP_NAME));
-        if (name() == "lnH" || name() == "ltH")
-            grid_grp_name = temp_grids_group_name + "/G2";
-        else if (name() == "lnL" || name() == "ltL") grid_grp_name = temp_grids_group_name + "/G1";
-    }
-// varname is supposed to include the full path. However, it takes too much effort to obtain the full path 
-// for a created coordiate variable based on the dimension name only. Since GPM has a fixed group G1 
-// for lnL and ltL and another fixed group G2 for lnH and ltH. We just use these names. These information
-// is from GPM file specification.
-#if 0
-    if(name() == "lnH" || name() == "ltH" ||
-        name() == "lnL" || name() == "ltL") {
-        string temp_grids_group_name(GPM_GRID_MULTI_GROUP_NAME,strlen(GPM_GRID_MULTI_GROUP_NAME));
-
-//cerr<<"varname is "<<varname <<endl;
-        size_t grids_group_pos = varname.find(temp_grids_group_name);
-        if(string::npos == grids_group_pos) {
-            throw InternalErr (__FILE__, __LINE__,
-                "Cannot find group Grids.");
-        }
-
-        string grids_cgroup_path = varname.substr(grids_group_pos+1);
-        size_t grids_cgroup_pos = varname.find_first_of("/");
-        if(string::npos == grids_cgroup_pos) {
-            throw InternalErr (__FILE__, __LINE__,
-                "Cannot find child group of group Grids.");
-        }
-
-        string temp_sub_grp_name = grids_cgroup_path.substr(0,grids_cgroup_pos);
-        if(name() == "lnH" || name() == "ltH")
-        sub_grp1_name = temp_sub_grp_name;
-        else if(name() == "lnL" || name() == "ltL")
-        sub_grp2_name = temp_sub_grp_name;
-
-        grid_grp_name = temp_grids_group_name + "/" + temp_sub_grp_name;
-
-    }
-#endif
-   
-    if ((grid_grp_id = H5Gopen(fileid, grid_grp_name.c_str(), H5P_DEFAULT)) < 0) {
-        HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "HDF5 dataset " << varname << " cannot be opened. " << endl;
-        throw InternalErr(__FILE__, __LINE__, eherr.str());
-    }
-
-    // GPMDPR: update grid_info_name. 
-    string grid_info_name(GPM_ATTR2_NAME, strlen(GPM_ATTR2_NAME));
-    if (name() == "lnL" || name() == "ltL")
-        grid_info_name = "G1_" + grid_info_name;
-    else if (name() == "lnH" || name() == "ltH") grid_info_name = "G2_" + grid_info_name;
-
-    float dummy_value = 0.0;
-    try {
-        obtain_ll_attr_value(fileid, grid_grp_id, grid_info_name, dummy_value, grid_info_value);
-        HDF5CFUtil::parser_gpm_l3_gridheader(grid_info_value, latsize, lonsize, lat_start, lon_start, lat_res, lon_res,
-        false);
-
-       H5Gclose(grid_grp_id);
-    }
-    catch (...) {
-        H5Gclose(grid_grp_id);
-        H5Fclose(fileid);
-        throw;
-
-    }
+        if ((name() == "nlat") || (name() == "nlon")) {
     
-
-}
+            string temp_grid_grp_name(GPM_GRID_GROUP_NAME1, strlen(GPM_GRID_GROUP_NAME1));
+            temp_grid_grp_name = "/" + temp_grid_grp_name;
+            if (H5Lexists(fileid, temp_grid_grp_name.c_str(), H5P_DEFAULT) > 0)
+                grid_grp_name = temp_grid_grp_name;
+            else {
+                string temp_grid_grp_name2(GPM_GRID_GROUP_NAME2, strlen(GPM_GRID_GROUP_NAME2));
+                temp_grid_grp_name2 = "/" + temp_grid_grp_name2;
+                if (H5Lexists(fileid, temp_grid_grp_name2.c_str(), H5P_DEFAULT) > 0)
+                    grid_grp_name = temp_grid_grp_name2;
+                else {
+                    string msg = "Unknown GPM grid group name. ";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
+                }
+            }
+        }
+    
+        else {
+            string temp_grids_group_name(GPM_GRID_MULTI_GROUP_NAME, strlen(GPM_GRID_MULTI_GROUP_NAME));
+            if (name() == "lnH" || name() == "ltH")
+                grid_grp_name = temp_grids_group_name + "/G2";
+            else if (name() == "lnL" || name() == "ltL") grid_grp_name = temp_grids_group_name + "/G1";
+        }
+    
+        // varname is supposed to include the full path. However, it takes too much effort to obtain the full path 
+        // for a created coordiate variable based on the dimension name only. Since GPM has a fixed group G1 
+        // for lnL and ltL and another fixed group G2 for lnH and ltH. We just use these names. These information
+        // is from GPM file specification.
+       
+        if ((grid_grp_id = H5Gopen(fileid, grid_grp_name.c_str(), H5P_DEFAULT)) < 0) {
+            HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
+            string msg = "HDF5 dataset " + varname + " cannot be opened. ";
+            throw BESInternalError(msg,__FILE__,__LINE__);
+        }
+    
+        // GPMDPR: update grid_info_name. 
+        string grid_info_name(GPM_ATTR2_NAME, strlen(GPM_ATTR2_NAME));
+        if (name() == "lnL" || name() == "ltL")
+            grid_info_name = "G1_" + grid_info_name;
+        else if (name() == "lnH" || name() == "ltH") grid_info_name = "G2_" + grid_info_name;
+    
+        float dummy_value = 0.0;
+        try {
+            obtain_ll_attr_value(fileid, grid_grp_id, grid_info_name, dummy_value, grid_info_value);
+            HDF5CFUtil::parser_gpm_l3_gridheader(grid_info_value, latsize, lonsize, lat_start, lon_start, lat_res, lon_res,
+            false);
+    
+           H5Gclose(grid_grp_id);
+        }
+        catch (...) {
+            H5Gclose(grid_grp_id);
+            H5Fclose(fileid);
+            throw;
+        }
+    
+    }
     else {
         vector<char> grid_info_value1;
         vector<char> grid_info_value2;
@@ -362,93 +335,6 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_ll(const int64_t* offset, const int64_t*
     catch (...) {
         throw;
     }
-#if 0
-    float lat_start = 0;
-    float lon_start = 0.;
-    float lat_res = 0.;
-    float lon_res = 0.;
-
-    int latsize = 0;
-    int lonsize = 0;
-
-    HDF5CFUtil::parser_gpm_l3_gridheader(grid_info_value, latsize, lonsize, lat_start, lon_start, lat_res, lon_res,
-        false);
-
-    if (0 == latsize || 0 == lonsize) {
-        HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
-        throw InternalErr(__FILE__, __LINE__, "Either latitude or longitude size is 0. ");
-    }
-
-    vector<float> val;
-    val.resize(nelms);
-
-    if (CV_LAT_MISS == cvartype) {
-
-        if (nelms > latsize) {
-            H5Gclose(grid_grp_id);
-            HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
-            throw InternalErr(__FILE__, __LINE__, "The number of elements exceeds the total number of  Latitude ");
-
-        }
-        for (int64_t i = 0; i < nelms; ++i)
-            val[i] = lat_start + offset[0] * lat_res + lat_res / 2 + i * lat_res * step[0];
-
-        if (add_cache == true) {
-            vector<float> total_val;
-            total_val.resize(latsize);
-            for (int total_i = 0; total_i < latsize; total_i++)
-                total_val[total_i] = lat_start + lat_res / 2 + total_i * lat_res;
-            memcpy(buf, total_val.data(), 4 * latsize);
-        }
-    }
-    else if (CV_LON_MISS == cvartype) {
-
-        if (nelms > lonsize) {
-            H5Gclose(grid_grp_id);
-            HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
-            throw InternalErr(__FILE__, __LINE__, "The number of elements exceeds the total number of  Longitude");
-
-        }
-
-        for (int i = 0; i < nelms; ++i)
-            val[i] = lon_start + offset[0] * lon_res + lon_res / 2 + i * lon_res * step[0];
-
-        if (add_cache == true) {
-            vector<float> total_val;
-            total_val.resize(lonsize);
-            for (int total_i = 0; total_i < lonsize; total_i++)
-                total_val[total_i] = lon_start + lon_res / 2 + total_i * lon_res;
-            memcpy(buf, total_val.data(), 4 * lonsize);
-        }
-
-    }
-
-    set_value((dods_float32 *) val.data(), nelms);
-
-    H5Gclose(grid_grp_id);
-    HDF5CFUtil::close_fileid(fileid, check_pass_fileid_key);
-#endif
-
-#if 0
-
-    vector<float>val;
-    val.resize(nelms);
-
-    if (nelms > LL_total_num) {
-        H5Gclose(rootid);
-        //H5Fclose(fileid);
-        throw InternalErr (__FILE__, __LINE__,
-            "The number of elements exceeds the total number of  Latitude or Longitude");
-    }
-
-    for (int i = 0; i < nelms; ++i)
-    val[i] = LL_first_point + (offset[0] + i*step[0])*LL_step;
-
-    set_value ((dods_float32 *) val.data(), nelms);
-    H5Gclose(rootid);
-    //H5Fclose(fileid);
-#endif
-
 }
 
 
@@ -466,7 +352,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
         string msg = "Cannot open the HDF5 attribute  ";
         msg += s_attr_name;
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     hid_t attr_type = -1;
@@ -475,7 +361,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
         msg += s_attr_name;
         H5Aclose(s_attr_id);
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     hid_t attr_space = -1;
@@ -485,7 +371,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
         H5Tclose(attr_type);
         H5Aclose(s_attr_id);
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     hssize_t num_elm = H5Sget_simple_extent_npoints(attr_space);
@@ -497,7 +383,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
         H5Aclose(s_attr_id);
         H5Sclose(attr_space);
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     if (1 != num_elm) {
@@ -507,7 +393,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
         H5Aclose(s_attr_id);
         H5Sclose(attr_space);
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     size_t atype_size = H5Tget_size(attr_type);
@@ -518,7 +404,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
         H5Aclose(s_attr_id);
         H5Sclose(attr_space);
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     if (H5T_STRING == H5Tget_class(attr_type)) {
@@ -527,8 +413,8 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
             H5Aclose(s_attr_id);
             H5Sclose(attr_space);
             H5Gclose(s_root_id);
-            throw InternalErr(__FILE__, __LINE__,
-                "Currently we assume the attributes we use to retrieve lat and lon are NOT variable length string.");
+            string msg = "Currently we assume the attributes we use to retrieve lat and lon are NOT variable length string.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         else {
             str_attr_value.resize(atype_size);
@@ -539,7 +425,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
                 H5Aclose(s_attr_id);
                 H5Sclose(attr_space);
                 H5Gclose(s_root_id);
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
 
             }
         }
@@ -552,7 +438,7 @@ void HDF5GMCFMissLLArray::obtain_ll_attr_value(hid_t /*file_id*/, hid_t s_root_i
         H5Aclose(s_attr_id);
         H5Sclose(attr_space);
         H5Gclose(s_root_id);
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
 
     }
 
@@ -577,20 +463,10 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_new_grid_info(hid_t file,
    herr_t ret_o= H5OVISIT(file, H5_INDEX_NAME, H5_ITER_INC, visit_obj_cb, (void*)&attr_na);
    if(ret_o < 0){
         H5Fclose(file);
-        throw InternalErr(__FILE__, __LINE__, "H5OVISIT failed. ");
+        string msg = "H5OVISIT failed. ";
+        throw BESInternalError(msg,__FILE__,__LINE__);
    }
    else if(ret_o >0) {
-#if 0
-        //printf("Found the attribute.\n");
-        //string grid_info_name_1(attr_na.name);
-        //string grid_info_name_2;
-
-        //string grid_info_value_1(attr_na.value);
-
-        vector<char> grid_info_value_1(attr_na.value,attr_na.value+strlen(attr_na.value));
-        vector<char> grid_info_value_2;
-        //grid_info_value1(attr_na.value,attr_na.value+strlen(attr_na.value));
-#endif
         BESDEBUG("h5","Found the GPM level 3 Grid_info attribute."<<endl);
         grid_info_value1.resize(strlen(attr_na.value));
         memcpy(grid_info_value1.data(),attr_na.value,strlen(attr_na.value));
@@ -607,7 +483,8 @@ void HDF5GMCFMissLLArray::obtain_gpm_l3_new_grid_info(hid_t file,
         herr_t ret_o2= H5OVISIT(file, H5_INDEX_NAME, H5_ITER_INC, visit_obj_cb, (void*)&attr_na);
         if(ret_o2 < 0) {
             H5Fclose(file);
-            throw InternalErr(__FILE__, __LINE__, "H5OVISIT failed again. ");
+            string msg = "H5OVISIT failed again. ";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         else if(ret_o2>0) {
             if(attr_na.name) {
@@ -842,28 +719,13 @@ visit_obj_cb(hid_t  group_id, const char *name, const H5O_info_t *oinfo,
  
 }
 
-
-
-#if 0
-void HDF5GMCFMissLLArray::send_gpm_l3_ll_to_dap(const vector<char>& grid_info_value,int* offset,int* step,
-                                                int nelms,bool add_cache, void*buf) {
-
-    float lat_start = 0;
-    float lon_start = 0.;
-    float lat_res = 0.;
-    float lon_res = 0.;
-
-    int latsize = 0;
-    int lonsize = 0;
-#endif
-
 void HDF5GMCFMissLLArray::send_gpm_l3_ll_to_dap(const int latsize,const int lonsize,const float lat_start,const float lon_start,
                                                 const float lat_res,const float lon_res, const int64_t* offset,const int64_t* step,
                                                 const int64_t nelms,const bool add_cache, void*buf) {
 
-
     if (0 == latsize || 0 == lonsize) {
-        throw InternalErr(__FILE__, __LINE__, "Either latitude or longitude size is 0. ");
+        string msg = "Either latitude or longitude size is 0. ";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     vector<float> val;
@@ -872,7 +734,8 @@ void HDF5GMCFMissLLArray::send_gpm_l3_ll_to_dap(const int latsize,const int lons
     if (CV_LAT_MISS == cvartype) {
 
         if (nelms > latsize) {
-            throw InternalErr(__FILE__, __LINE__, "The number of elements exceeds the total number of  Latitude ");
+            string msg = "The number of elements exceeds the total number of  Latitude. ";
+            throw BESInternalError(msg,__FILE__,__LINE__);
 
         }
         for (int64_t i = 0; i < nelms; ++i)
@@ -888,12 +751,9 @@ void HDF5GMCFMissLLArray::send_gpm_l3_ll_to_dap(const int latsize,const int lons
     }
     else if (CV_LON_MISS == cvartype) {
 
-#if 0
-//cerr<<"nelms is "<<nelms <<endl;
-//cerr<<"lonsize is "<<lonsize <<endl;
-#endif
         if (nelms > lonsize) {
-            throw InternalErr(__FILE__, __LINE__, "The number of elements exceeds the total number of  Longitude");
+            string msg = "The number of elements exceeds the total number of  Longitude.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         for (int64_t i = 0; i < nelms; ++i)

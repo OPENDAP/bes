@@ -48,11 +48,6 @@ using std::string;
 
 #define BES_DEFAULT_INFO_TYPE "txt"
 
-BESInfoList *BESInfoList::d_instance = nullptr;
-static std::once_flag d_euc_init_once;
-
-BESInfoList::~BESInfoList() {}
-
 BESInfoList::BESInfoList() {}
 
 bool
@@ -144,20 +139,8 @@ BESInfoList::dump(ostream &strm) const {
     BESIndent::UnIndent();
 }
 
-void BESInfoList::initialize_instance() {
-    d_instance = new BESInfoList;
-#ifdef HAVE_ATEXIT
-    atexit(delete_instance);
-#endif
-}
-
-void BESInfoList::delete_instance() {
-    delete d_instance;
-    d_instance = 0;
-}
-
 BESInfoList *
 BESInfoList::TheList() {
-    std::call_once(d_euc_init_once,BESInfoList::initialize_instance);
-    return d_instance;
+    static BESInfoList infoList;
+    return &infoList;
 }

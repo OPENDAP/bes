@@ -34,6 +34,7 @@
 #include <iostream>
 #include <BESDebug.h>
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 
 #include "HDFEOS5CFMissLLArray.h"
 #include "HDF5RequestHandler.h"
@@ -104,9 +105,10 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
     vector<int64_t>count;
     vector<int64_t>step;
 
-    if (rank <=  0) 
-       throw InternalErr (__FILE__, __LINE__,
-                          "The number of dimension of this variable should be greater than 0");
+    if (rank <=  0) {
+        string msg = "The number of dimension of this variable should be greater than 0.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
     else {
          offset.resize(rank);
          count.resize(rank);
@@ -114,14 +116,16 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
          nelms = format_constraint (offset.data(), step.data(), count.data());
     }
 
-    if (nelms <= 0) 
-       throw InternalErr (__FILE__, __LINE__,
-                          "The number of elments is negative.");
+    if (nelms <= 0) { 
+        string msg = "The number of elments is negative.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
 
     int64_t total_elms = xdimsize*ydimsize;
-    if (total_elms > DODS_INT_MAX)
-       throw InternalErr (__FILE__, __LINE__,
-                          "Currently we cannot calculate lat/lon that is greater than 2G for HDF-EOS5.");
+    if (total_elms > DODS_INT_MAX) {
+        string msg = "Currently we cannot calculate lat/lon that is greater than 2G for HDF-EOS5.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
 
 
     vector<size_t>pos(rank,0);
@@ -237,9 +241,8 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
 #endif
             off_t fpos = lseek(fd,var_offset,SEEK_SET);
             if(fpos == -1) {
-                throw InternalErr (__FILE__, __LINE__,
-                          "Cannot seek the cached file offset.");
-
+                string msg = "Cannot seek the cached file offset.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             ssize_t ret_val = HDF5CFUtil::read_buffer_from_file(fd,(void*)var_value.data(),var_value.size()*sizeof(double));
             ll_cache->unlock_and_close(cache_fname);
@@ -278,11 +281,9 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache(bool add_cache,void*buf)
     r = GDij2ll (eos5_projcode, eos5_zone, eos5_params.data(), eos5_sphere, xdimsize, ydimsize, upleft, lowright,
                  xdimsize * ydimsize, rows.data(), cols.data(), lon.data(), lat.data(), eos5_pixelreg, eos5_origin);
     if (r != 0) {
-        ostringstream eherr;
-        eherr << "cannot calculate grid latitude and longitude";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Cannot calculate grid latitude and longitude.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
-
 
     // ll_read_from_cache may be redundant. It is good to remind that we will generate the cache file
     // when reading from the cache fails.
@@ -374,28 +375,29 @@ string HDFEOS5CFMissLLArray::obtain_ll_cache_name() {
     long cachesize = HDF5RequestHandler::get_latlon_disk_cache_size();
 
     if(("" == bescachedir)||(""==bescacheprefix)||(cachesize <=0)){
-        throw InternalErr (__FILE__, __LINE__, "Either the cached dir is empty or the prefix is nullptr or the cache size is not set.");
+        string msg = "Either the cached dir is empty or the prefix is nullptr or the cache size is not set.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     else {
         struct stat sb;
         if(stat(bescachedir.c_str(),&sb) !=0) {
-            string err_mesg="The cached directory " + bescachedir;
-            err_mesg = err_mesg + " doesn't exist.  ";
-            throw InternalErr(__FILE__,__LINE__,err_mesg);
+            string msg="The cached directory " + bescachedir;
+            msg += " doesn't exist.  ";
+            throw InternalErr(__FILE__,__LINE__,msg);
                     
         }
         else { 
             if(true == S_ISDIR(sb.st_mode)) {
                 if(access(bescachedir.c_str(),R_OK|W_OK|X_OK) == -1) {
-                    string err_mesg="The cached directory " + bescachedir;
-                    err_mesg = err_mesg + " can NOT be read,written or executable.";
-                    throw InternalErr(__FILE__,__LINE__,err_mesg);
+                    string msg="The cached directory " + bescachedir;
+                    msg += " can NOT be read,written or executable.";
+                    throw InternalErr(__FILE__,__LINE__,msg);
                 }
             }
             else {
-                string err_mesg="The cached directory " + bescachedir;
-                err_mesg = err_mesg + " is not a directory.";
-                throw InternalErr(__FILE__,__LINE__,err_mesg);
+                string msg="The cached directory " + bescachedir;
+                msg = msg + " is not a directory.";
+                throw InternalErr(__FILE__,__LINE__,msg);
             }
         }
     }
@@ -437,20 +439,23 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*
     vector<int64_t>step;
 
 
-    if (rank <=  0) 
-       throw InternalErr (__FILE__, __LINE__,
-                          "The number of dimension of this variable should be greater than 0");
+    if (rank <=  0) {
+       string msg = "The number of dimension of this variable should be greater than 0.";
+       msg += " The variable name is " + varname + ".";
+       throw BESInternalError(msg,__FILE__,__LINE__);
+    }
     else {
-
          offset.resize(rank);
          count.resize(rank);
          step.resize(rank);
          nelms = format_constraint (offset.data(), step.data(), count.data());
     }
 
-    if (nelms <= 0 || nelms >DODS_INT_MAX) 
-       throw InternalErr (__FILE__, __LINE__,
-                          "The number of elments for geographic lat/lon is negative or greater than 2G.");
+    if (nelms <= 0 || nelms >DODS_INT_MAX) {
+       string msg = "The number of elments for geographic lat/lon is negative or greater than 2G.";
+       msg += " The variable name is " + varname + ".";
+       throw BESInternalError(msg,__FILE__,__LINE__);
+    }
 
     float start = 0.0;
     float end   = 0.0;
@@ -473,9 +478,11 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*
 	    end = point_upper;
 	}
 
-	if(ydimsize <=0) 
-	    throw InternalErr (__FILE__, __LINE__,
-			    "The number of elments should be greater than 0.");
+	if (ydimsize <=0) {
+            string msg = "The number of elments should be greater than 0.";
+            msg += " The variable name is " + varname + ".";
+	    throw BESInternalError(msg,__FILE__,__LINE__);
+        }
            
 	float lat_step = (end - start) /ydimsize;
 
@@ -526,9 +533,10 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*
 	    end = point_left;
 	}
 
-	if(xdimsize <=0) 
-	    throw InternalErr (__FILE__, __LINE__,
-			"The number of elments should be greater than 0.");
+	if (xdimsize <=0) {
+            string msg = "The number of elments should be greater than 0.";
+            msg += " The variable name is " + varname + ".";
+        }
 	float lon_step = (end - start) /xdimsize;
 
 	if (HE5_HDFE_CENTER == eos5_pixelreg) {
@@ -562,62 +570,7 @@ void HDFEOS5CFMissLLArray::read_data_NOT_from_mem_cache_geo(bool add_cache,void*
 	}
     }
 
-#if 0
-for (int i =0; i <nelms; i++) 
-"h5","final data val "<< i <<" is " << val[i] <<endl;
-#endif
-
     set_value_ll(val.data(), nelms);
-    
  
     return;
 }
-
-#if 0
-// parse constraint expr. and make hdf5 coordinate point location.
-// return number of elements to read. 
-int
-HDFEOS5CFMissLLArray::format_constraint (int *offset, int *step, int *count)
-{
-        long nels = 1;
-        int id = 0;
-
-        Dim_iter p = dim_begin ();
-
-        while (p != dim_end ()) {
-
-                int start = dimension_start (p, true);
-                int stride = dimension_stride (p, true);
-                int stop = dimension_stop (p, true);
-
-                // Check for illegal  constraint
-                if (start > stop) {
-                   ostringstream oss;
-
-                   oss << "Array/Grid hyperslab start point "<< start <<
-                         " is greater than stop point " <<  stop <<".";
-                   throw Error(malformed_expr, oss.str());
-                }
-
-
-
-                offset[id] = start;
-                step[id] = stride;
-                count[id] = ((stop - start) / stride) + 1;      // count of elements
-                nels *= count[id];              // total number of values for variable
-
-                BESDEBUG ("h5",
-                         "=format_constraint():"
-                         << "id=" << id << " offset=" << offset[id]
-                         << " step=" << step[id]
-                         << " count=" << count[id]
-                         << endl);
-
-                id++;
-                p++;
-        }
-
-        return nels;
-}
-
-#endif

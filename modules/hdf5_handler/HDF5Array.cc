@@ -34,9 +34,11 @@
 #include <iostream>
 #include <memory>
 
-#include <BESDebug.h>
 #include <libdap/Error.h>
 #include <libdap/InternalErr.h>
+
+#include <BESDebug.h>
+#include <BESInternalError.h>
 
 #include "HDF5Array.h"
 #include "HDF5Structure.h"
@@ -126,7 +128,8 @@ bool HDF5Array::read()
     if(dtype_id < 0) {
         H5Dclose(dset_id);
         H5Fclose(file_id);
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
+        string msg = "Fail to obtain the datatype .";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
 
  
@@ -191,7 +194,8 @@ void HDF5Array::do_array_read(hid_t dset_id,hid_t dtype_id,vector<char>&values,
         H5Tclose(basetype);
     }
     else {
-        throw InternalErr(__FILE__,__LINE__,"Fail to read the data for Unsupported datatype.");
+        string msg = "Fail to read the data for Unsupported datatype.";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
     
 }
@@ -202,7 +206,8 @@ void HDF5Array:: m_array_of_atomic(hid_t dset_id, hid_t dtype_id, int64_t nelms,
     
     hid_t memtype = -1;
     if((memtype = H5Tget_native_type(dtype_id, H5T_DIR_ASCEND))<0) {
-        throw InternalErr (__FILE__, __LINE__, "Fail to obtain memory datatype.");
+        string msg = "Fail to obtain memory datatype.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // First handle variable-length string 
@@ -264,8 +269,10 @@ void HDF5Array::handle_array_read_slab(hid_t dset_id, hid_t memtype, int64_t nel
                                        const int64_t *offset, const int64_t *step, const int64_t *count)
 {
     size_t data_size = nelms * H5Tget_size(memtype);
-    if (data_size == 0)
-        throw InternalErr(__FILE__, __LINE__, "get_size failed");
+    if (data_size == 0) {
+        string msg = "H5Tget_size failed.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
 
     vector<char> convbuf(data_size);
     get_slabdata(dset_id, offset, step, count, d_num_dim, convbuf.data());
@@ -291,7 +298,8 @@ void HDF5Array::handle_vlen_string(hid_t dset_id, hid_t memtype, int64_t nelms, 
     }
     catch(...) {
         H5Tclose(memtype);
-        throw InternalErr(__FILE__,__LINE__,"Fail to read variable-length string.");
+        string msg = "Fail to read variable-length string.";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
     set_value_ll(finstrval,nelms);
     H5Tclose(memtype);
@@ -307,12 +315,15 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
     hid_t dtypeid  = -1;
     size_t ty_size = -1;
 
-    if ((dtypeid = H5Dget_type(dsetid)) < 0)
-        throw InternalErr (__FILE__, __LINE__, "Cannot obtain the datatype.");
+    if ((dtypeid = H5Dget_type(dsetid)) < 0) {
+        string msg = "Cannot obtain the datatype of the variable " + var_path + ".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
 
     if ((memtype = H5Tget_native_type(dtypeid, H5T_DIR_ASCEND))<0) {
         H5Tclose(dtypeid);
-        throw InternalErr (__FILE__, __LINE__, "Fail to obtain memory datatype.");
+        string msg = "Cannot obtain the memory datatype of the variable " + var_path + ".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     ty_size = H5Tget_size(memtype);
@@ -324,7 +335,8 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
         if ((dspace = H5Dget_space(dsetid))<0) {
             H5Tclose(memtype);
             H5Tclose(dtypeid);
-            throw InternalErr (__FILE__, __LINE__, "Cannot obtain data space.");
+            string msg = "Cannot obtain the data space of the variable " + var_path + ".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         d_num_dim = H5Sget_simple_extent_ndims(dspace);
@@ -332,7 +344,8 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
             H5Tclose(memtype);
             H5Tclose(dtypeid);
             H5Sclose(dspace);
-            throw InternalErr (__FILE__, __LINE__, "Cannot obtain the number of dimensions of the data space.");
+            string msg = "Cannot obtain the number of dimensions for the variable " + var_path + ".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         vector<hsize_t> hoffset;
@@ -353,7 +366,8 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
             H5Tclose(memtype);
             H5Tclose(dtypeid);
             H5Sclose(dspace);
-            throw InternalErr (__FILE__, __LINE__, "Cannot generate the hyperslab of the HDF5 dataset.");
+            string msg = "Cannot generate the hyperslab for the variable " + var_path + ".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         mspace = H5Screate_simple(d_num_dim, hcount.data(),nullptr);
@@ -361,7 +375,8 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
             H5Sclose(dspace);
             H5Tclose(memtype);
             H5Tclose(dtypeid);
-            throw InternalErr (__FILE__, __LINE__, "Cannot create the memory space.");
+            string msg = "Cannot create the memory space for the variable " + var_path + ".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         values.resize(nelms*ty_size);
@@ -372,7 +387,8 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
             H5Tclose(memtype);
             H5Tclose(dtypeid);
             H5Sclose(dspace);
-            throw InternalErr (__FILE__, __LINE__, "Fail to read the HDF5 compound datatype dataset.");
+            string msg = "Failed to read the data for the variable " + var_path + ".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         H5Sclose(dspace);
@@ -392,14 +408,18 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
             int                 nmembs           = 0;
             size_t              struct_elem_offset = values_offset + ty_size*element;
 
-            if ((nmembs = H5Tget_nmembers(memtype)) < 0)
-                throw InternalErr (__FILE__, __LINE__, "Fail to obtain number of HDF5 compound datatype.");
+            if ((nmembs = H5Tget_nmembers(memtype)) < 0) {
+                string msg = "Fail to obtain number of the HDF5 compound datatype members for the variable " + var_path + ".";
+                throw BESInternalError(msg,__FILE__,__LINE__);
+            }
 
             for (unsigned int u = 0; u < (unsigned)nmembs; u++) {
                 // Get member name
                 memb_name = H5Tget_member_name(memtype,u);
-                if (memb_name == nullptr)
-                    throw InternalErr (__FILE__, __LINE__, "Fail to obtain the name of an HDF5 compound datatype member.");
+                if (memb_name == nullptr) {
+                    string msg = "Fail to obtain the name of an HDF5 compound datatype member." + var_path + ".";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
+                }
 
                 BaseType *field = h5s->var(memb_name);
                 m_array_of_structure_member(field, memtype, u,dsetid, values, has_values, struct_elem_offset );
@@ -415,7 +435,6 @@ bool HDF5Array::m_array_of_structure(hid_t dsetid, vector<char>&values,bool has_
         m_array_of_structure_close_hdf5_ids(values, has_values, mspace, dtypeid, memtype);
     }
     catch(...) {
-
         m_array_of_structure_catch_close_hdf5_ids(memb_id, memb_name, values, has_values, mspace, dtypeid, memtype);
         delete h5s;
         throw;
@@ -435,12 +454,16 @@ void HDF5Array:: m_array_of_structure_member(BaseType *field, hid_t memtype, uns
     H5T_class_t         memb_cls         = H5T_NO_CLASS;
     size_t              memb_offset      = 0;
     // Get member type ID
-    if((memb_id = H5Tget_member_type(memtype, u)) < 0)
-        throw InternalErr (__FILE__, __LINE__, "Fail to obtain the datatype of an HDF5 compound datatype member.");
+    if((memb_id = H5Tget_member_type(memtype, u)) < 0) {
+        string msg = "Fail to obtain the datatype of an HDF5 compound datatype member for the variable " + var_path + ".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
 
     // Get member type class
-    if((memb_cls = H5Tget_member_class (memtype, u)) < 0)
-        throw InternalErr (__FILE__, __LINE__, "Fail to obtain the datatype class of an HDF5 compound datatype member.");
+    if((memb_cls = H5Tget_member_class (memtype, u)) < 0) {
+        string msg = "Fail to obtain the datatype class of an HDF5 compound datatype member for the variable " + var_path + ".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
 
     // Get member offset,H5Tget_member_offset only fails
     // when H5Tget_memeber_class fails. Sinc H5Tget_member_class
@@ -455,8 +478,10 @@ void HDF5Array:: m_array_of_structure_member(BaseType *field, hid_t memtype, uns
 
         // memb_id, obtain the number of dimensions
         int at_ndims = H5Tget_array_ndims(memb_id);
-        if(at_ndims <= 0)
-            throw InternalErr (__FILE__, __LINE__, "Fail to obtain number of dimensions of the array datatype.");
+        if(at_ndims <= 0) {
+            string msg =  "Fail to obtain number of dimensions of the array datatype for the variable " + var_path + ".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
+        }
 
         HDF5Array &h5_array_type = dynamic_cast<HDF5Array&>(*field);
         vector<int64_t> at_offset(at_ndims,0);
@@ -499,7 +524,8 @@ void HDF5Array:: m_array_of_structure_member(BaseType *field, hid_t memtype, uns
             size_t memb_size = H5Tget_size(memb_id);
             if (memb_size == 0) {
                 H5Tclose(memb_id);
-                throw InternalErr (__FILE__, __LINE__,"Fail to obtain the size of HDF5 compound datatype.");
+                string msg = "Fail to obtain the size of HDF5 compound datatype " + var_path +".";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             str_val.resize(memb_size);
             memcpy(str_val.data(),src,memb_size);
@@ -509,8 +535,9 @@ void HDF5Array:: m_array_of_structure_member(BaseType *field, hid_t memtype, uns
     }
     else {
         H5Tclose(memb_id);
-        throw InternalErr (__FILE__, __LINE__,
-         "Only support the field of compound datatype when the field type class is integer, float, string, array or compound..");
+        string msg = "Only support the field of compound datatype when the field type class is integer, float, string, array or compound.";
+        msg += " The compound datatype of this variable " + var_path + " contains other datatypes.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Close member type ID
@@ -523,12 +550,15 @@ void HDF5Array::m_array_of_structure_close_hdf5_ids(vector<char> &values, bool h
                                                     hid_t dtypeid, hid_t memtype) const
 {
     if (true == has_values) {
-        if (-1 == mspace)
-            throw InternalErr(__FILE__, __LINE__,
-                              "memory type and memory space for this compound datatype should be valid.");
+        if (-1 == mspace) {
+            string msg = "Memory type and memory space for this compound datatype should be valid. the variable name is " + var_path +".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
+        }
 
-        if (H5Dvlen_reclaim(memtype,mspace,H5P_DEFAULT,(void*)values.data())<0)
-            throw InternalErr(__FILE__, __LINE__, "Unable to reclaim the compound datatype array.");
+        if (H5Dvlen_reclaim(memtype,mspace,H5P_DEFAULT,(void*)values.data())<0) {
+            string msg = "Unable to reclaim the compound datatype array for the variable " + var_path +".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
+        }
         H5Sclose(mspace);
     }
 
@@ -574,16 +604,19 @@ bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
 		<< "nelms=" << nelms << " full_size=" << d_num_elm << endl);
 
 	// Handle regional reference.
-	if (H5Tequal(dtype_id, H5T_STD_REF_DSETREG) < 0) {
-	    throw InternalErr(__FILE__, __LINE__, "H5Tequal() failed");
+	if (H5Tequal(dtype_id, H5T_STD_REF_DSETREG) < 0) { 
+            string msg = "H5Tequal() failed for the reference type variable " + var_path + ".";
+	    throw BESInternalError(msg,__FILE__,__LINE__);
 	}
 
 	if (H5Tequal(dtype_id, H5T_STD_REF_DSETREG) > 0)
         m_array_of_region_reference(d_dset_id,v_str, nelms, offset, step);
 
 	// Handle object reference.
-	if (H5Tequal(dtype_id, H5T_STD_REF_OBJ) < 0)
-	    throw InternalErr(__FILE__, __LINE__, "H5Tequal() failed.");
+	if (H5Tequal(dtype_id, H5T_STD_REF_OBJ) < 0) {
+            string msg = "H5Tequal() failed for the reference type variable " + var_path + ".";
+	    throw BESInternalError(msg,__FILE__,__LINE__);
+        }
 
 	if (H5Tequal(dtype_id, H5T_STD_REF_OBJ) > 0)
         m_array_of_object_reference( d_dset_id,  v_str, nelms,offset,step);
@@ -607,10 +640,13 @@ void HDF5Array:: m_array_of_region_reference(hid_t d_dset_id, vector<string>& v_
     // Vector doesn't work for this case. somehow it doesn't support the type.
     rbuf = new hdset_reg_ref_t[d_num_elm];
     if (rbuf == nullptr){
-        throw InternalErr(__FILE__, __LINE__, "new() failed.");
+        string msg = "memory allocation for region reference variable " + var_path +".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
-    if (H5Dread(d_dset_id, H5T_STD_REF_DSETREG, H5S_ALL, H5S_ALL, H5P_DEFAULT, rbuf) < 0)
-        throw InternalErr(__FILE__, __LINE__, "H5Dread() failed.");
+    if (H5Dread(d_dset_id, H5T_STD_REF_DSETREG, H5S_ALL, H5S_ALL, H5P_DEFAULT, rbuf) < 0) {
+        string msg = "H5Dread() failed for region reference variable " + var_path +".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
 
     for (int64_t i = 0; i < nelms; i++) {
 
@@ -622,22 +658,29 @@ void HDF5Array:: m_array_of_region_reference(hid_t d_dset_id, vector<string>& v_
             char r_name[DODS_NAMELEN];
 
             hid_t did_r = H5RDEREFERENCE(d_dset_id, H5R_DATASET_REGION, (const void*)(temp_rbuf));
-            if (did_r < 0)
-                throw InternalErr(__FILE__, __LINE__, "H5RDEREFERENCE() failed.");
+            if (did_r < 0) {
+                string msg = "H5RDEREFERENCE() failed for region reference variable " + var_path +".";
+                throw BESInternalError(msg,__FILE__,__LINE__);
+            }
 
-            if (H5Iget_name(did_r, (char *) r_name, DODS_NAMELEN) < 0)
-                throw InternalErr(__FILE__, __LINE__, "H5Iget_name() failed.");
+            if (H5Iget_name(did_r, (char *) r_name, DODS_NAMELEN) < 0) {
+                string msg = "H5Iget_name() failed for region reference variable " + var_path + ".";
+                throw BESInternalError(msg,__FILE__,__LINE__);
+            }
 
             BESDEBUG("h5", "=read() dereferenced name is " << r_name << endl);
 
             string varname(r_name);
             hid_t space_id = H5Rget_region(did_r, H5R_DATASET_REGION, (const void*)(temp_rbuf));
-            if (space_id < 0)
-                throw InternalErr(__FILE__, __LINE__, "H5Rget_region() failed.");
+            if (space_id < 0) {
+                string msg = "H5Rget_region() failed for region reference variable " + var_path + ".";
+                throw BESInternalError(msg,__FILE__,__LINE__);
+            }
 
             int ndim = H5Sget_simple_extent_ndims(space_id);
             if (ndim < 0) {
-                throw InternalErr(__FILE__, __LINE__, "H5Sget_simple_extent_ndims() failed.");
+                string msg = "H5Sget_simple_extent_ndims() failed for region reference variable " + var_path + ".";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             BESDEBUG("h5", "=read() dim is " << ndim << endl);
@@ -681,15 +724,17 @@ void HDF5Array:: m_array_of_region_reference_point_selection(hid_t space_id, int
     BESDEBUG("h5", "=read() Points selected." << endl);
     hssize_t npoints = H5Sget_select_npoints(space_id);
     if (npoints < 0) {
-        throw InternalErr(__FILE__, __LINE__,
-                          "Cannot determine number of elements in the dataspace selection");
+        string msg = "Cannot determine number of elements in the dataspace selection for the variable " + var_path + ".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     BESDEBUG("h5", "=read() npoints are " << npoints << endl);
 
     vector<hsize_t> buf(npoints * ndim);
-    if (H5Sget_select_elem_pointlist(space_id, 0, npoints, buf.data()) < 0)
-        throw InternalErr(__FILE__, __LINE__, "H5Sget_select_elem_pointlist() failed.");
+    if (H5Sget_select_elem_pointlist(space_id, 0, npoints, buf.data()) < 0) {
+        string msg = "H5Sget_select_elem_pointlist() failed for the variable " + var_path +".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
 
     for (int64_t j = 0; j < (int) npoints; j++) {
         // Name of the dataset.
@@ -722,13 +767,15 @@ void HDF5Array:: m_array_of_region_reference_hyperslab_selection(hid_t space_id,
     BESDEBUG("h5", "=read() nblock is " << H5Sget_select_hyper_nblocks(space_id) << endl);
 
 #if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 8)
-    if (H5Sget_select_bounds(space_id, start.data(), end.data()) < 0) {
-        throw InternalErr(__FILE__, __LINE__, "H5Sget_select_bounds() failed.");
+    if (H5Sget_select_bounds(space_id, start.data(), end.data()) < 0) { 
+        string msg = "H5Sget_select_bounds() failed for region reference variable "+var_path + ".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 #else
     if (H5Sget_regular_hyperslab(space_id, start.data(), stride.data(), s_count.data(),
                                  block.data()) < 0) {
-        throw InternalErr(__FILE__, __LINE__, "H5Sget_regular_hyperslab() failed.");
+        string msg = "H5Sget_regular_hyperslab() failed for region reference variable "+var_path + ".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 #endif
 
@@ -763,19 +810,24 @@ void HDF5Array:: m_array_of_object_reference(hid_t d_dset_id, vector<string>& v_
     orbuf.resize(d_num_elm);
     if (H5Dread(d_dset_id, H5T_STD_REF_OBJ, H5S_ALL, H5S_ALL,
                 H5P_DEFAULT, orbuf.data()) < 0) {
-        throw InternalErr(__FILE__, __LINE__, "H5Dread failed()");
+        string msg = "H5Dread failed() for object reference variable " + var_path + ".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     for (int64_t i = 0; i < nelms; i++) {
 
         // Let's assume that URL array is always 1 dimension.
         hid_t did_r = H5RDEREFERENCE(d_dset_id, H5R_OBJECT, &orbuf[offset[0] + i * step[0]]);
-        if (did_r < 0)
-            throw InternalErr(__FILE__, __LINE__, "H5RDEREFERENCE() failed.");
+        if (did_r < 0) {
+            string msg = "H5RDEREFERENCE() failed for object reference variable " + var_path + ".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
+        }
 
         char r_name[DODS_NAMELEN];
-        if (H5Iget_name(did_r, (char *) r_name, DODS_NAMELEN) < 0)
-            throw InternalErr(__FILE__, __LINE__, "H5Iget_name() failed.");
+        if (H5Iget_name(did_r, (char *) r_name, DODS_NAMELEN) < 0) {
+            string msg = "H5Iget_name() failed for object reference variable " + var_path + ".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
+        }
 
         // Shorten the dataset name
         string varname(r_name);
@@ -785,11 +837,11 @@ void HDF5Array:: m_array_of_object_reference(hid_t d_dset_id, vector<string>& v_
     }
 }
 
-bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
+bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) const {
 
 #if (H5_VERS_MAJOR == 1 && (H5_VERS_MINOR == 10 || H5_VERS_MINOR == 8 || H5_VERS_MINOR == 6))
-    throw InternalErr(__FILE__, __LINE__, 
-       "The HDF5 handler compiled with earlier version (<=110)of the HDF5 library should not call method that uses new reference APIs");
+    throw BESInternalError(
+       "The HDF5 handler compiled with earlier version (<=110)of the HDF5 library should not call method that uses new reference APIs",__FILE__,__LINE__);
     return false;
 #else
     
@@ -820,21 +872,29 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
         rbuf = new H5R_ref_t[nelms];
 
 	file_space_id = H5Dget_space(dset_id);
-        if(file_space_id < 0)
-            throw InternalErr(__FILE__, __LINE__, "Fail to obtain reference dataset file space.");
+        if (file_space_id < 0) {
+            string msg = "Fail to obtain reference dataset file space for varaible " + var_path + ".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
+        }
 
         if (H5Sselect_hyperslab(file_space_id, H5S_SELECT_SET,
                                hoffset.data(), hstep.data(),
-                               hcount.data(), nullptr) < 0)
-            throw InternalErr (__FILE__, __LINE__, "Fail to select the hyperslab for reference dataset.");
+                               hcount.data(), nullptr) < 0) {
+            string msg = "Fail to select the hyperslab for reference dataset for the variable " + var_path + ".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
+        }
       
 
         mem_space_id = H5Screate_simple(d_num_dim,hcount.data(),nullptr);
-        if(mem_space_id < 0) 
-            throw InternalErr(__FILE__, __LINE__, "Fail to obtain reference dataset memory space.");
+        if (mem_space_id < 0) {
+            string msg = "Fail to obtain reference dataset memory space for the variable " + var_path + ".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
+        }
 
-        if(H5Dread(dset_id,H5T_STD_REF,mem_space_id,file_space_id,H5P_DEFAULT,&rbuf[0])<0)
-            throw InternalErr(__FILE__, __LINE__, "Fail to read hyperslab reference dataset.");
+        if (H5Dread(dset_id,H5T_STD_REF,mem_space_id,file_space_id,H5P_DEFAULT,&rbuf[0])<0) {
+            string msg = "Fail to obtain read of eference dataset for the variable " + var_path + ".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
+        }
 
         H5Sclose(mem_space_id);
         H5Sclose(file_space_id);
@@ -845,25 +905,31 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
         H5R_type_t ref_type = H5Rget_type((const H5R_ref_t *)&rbuf[0]);
 
         // The referenced objects can only be either objects or dataset regions.
-        if(ref_type != H5R_OBJECT2 && ref_type !=H5R_DATASET_REGION2)
-            throw InternalErr(__FILE__, __LINE__, "Unsupported reference: neither object nor region references");
+        if (ref_type != H5R_OBJECT2 && ref_type !=H5R_DATASET_REGION2) {
+            string msg = "Unsupported reference: neither object nor region references for the variable " + var_path + "."; 
+            throw BESInternalError(msg,__FILE__,__LINE__);
+        }
            
         for (int64_t i = 0; i < nelms; i++) {
 
             hid_t obj_id = H5Ropen_object((H5R_ref_t *)&rbuf[i], H5P_DEFAULT, H5P_DEFAULT);
-            if(obj_id < 0) 
-                throw InternalErr(__FILE__, __LINE__, "Cannot open the object the reference points to");
+            if (obj_id < 0) {
+                string msg = "Cannot open the object the reference points to for the variable " + var_path + ".";
+                throw BESInternalError(msg,__FILE__,__LINE__);
+            }
                 
             vector<char> objname;
             ssize_t objnamelen = -1;
             if ((objnamelen= H5Iget_name(obj_id,nullptr,0))<=0) {
                 H5Oclose(obj_id);
-                throw InternalErr(__FILE__, __LINE__, "Cannot obtain the name length of the object the reference points to");
+                string msg = "Cannot obtain the name length of the object the reference points to for the variable " + var_path + ".";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
             objname.resize(objnamelen+1);
             if ((objnamelen= H5Iget_name(obj_id,objname.data(),objnamelen+1))<=0) {
                 H5Oclose(obj_id);
-                throw InternalErr(__FILE__, __LINE__, "Cannot obtain the name length of the object the reference points to");
+                string msg = "Cannot obtain the name of the object the reference points to for the variable " + var_path + ".";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
             string objname_str = string(objname.begin(),objname.end());
@@ -876,23 +942,27 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
                 H5O_type_t obj_type;
                 if(H5Rget_obj_type3((H5R_ref_t *)&rbuf[i], H5P_DEFAULT, &obj_type) < 0){
                     H5Oclose(obj_id);
-                    throw InternalErr(__FILE__, __LINE__, "H5Rget_obj_type3() failed.");
+                    string msg = "H5Rget_obj_type3() failed for the variable " + var_path + ".";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 if(obj_type != H5O_TYPE_DATASET) {
                     H5Oclose(obj_id);
-                    throw InternalErr(__FILE__, __LINE__, "Region reference must point to a dataset.");
+                    string msg = "Region reference must point to a dataset. This is related to the variable " + var_path + ".";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 hid_t region_space_id = H5Ropen_region(&rbuf[i],H5P_DEFAULT,H5P_DEFAULT);
                 if (region_space_id < 0) {
                     H5Oclose(obj_id);
-                    throw InternalErr(__FILE__, __LINE__, "Cannot obtain the space ID the reference points to");
+                    string msg = "Cannot obtain the space ID the reference points to. This is related to the variable " + var_path + ".";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 int ndim = H5Sget_simple_extent_ndims(region_space_id);
                 if (ndim < 0) {
                     H5Sclose(region_space_id);
                     H5Oclose(obj_id);
-                    throw InternalErr(__FILE__, __LINE__, "H5Sget_simple_extent_ndims() failed.");
+                    string msg = "H5Sget_simple_extent_ndims() failed. This is related to the variable " + var_path + ".";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
 	        }
 
 		string expression;
@@ -908,8 +978,8 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
 			if (npoints < 0) { 
                             H5Sclose(region_space_id);
                             H5Oclose(obj_id);
-			    throw InternalErr(__FILE__, __LINE__,
-				    "Cannot determine number of elements in the dataspace selection");
+                            string msg = "Cannot determine number of elements in the dataspace selection. This is related to the variable " + var_path + ".";
+			    throw BESInternalError(msg,__FILE__,__LINE__);
 			}
 
 			BESDEBUG("h5", "=read() npoints are " << npoints
@@ -918,7 +988,8 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
 			if (H5Sget_select_elem_pointlist(region_space_id, 0, npoints, buf.data()) < 0) {
                             H5Sclose(region_space_id);
                             H5Oclose(obj_id);
-			    throw InternalErr(__FILE__, __LINE__, "H5Sget_select_elem_pointlist() failed.");
+                            string msg = "H5Sget_select_elem_pointlist() failed. This is related to the variable " + var_path + ".";
+			    throw BESInternalError(msg,__FILE__,__LINE__);
 			}
 
 #if 0
@@ -957,7 +1028,8 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
 			if (H5Sget_regular_hyperslab(region_space_id, start.data(), stride.data(), s_count.data(), block.data()) < 0) {
 	                    H5Sclose(region_space_id);
                             H5Oclose(obj_id);
-			    throw InternalErr(__FILE__, __LINE__, "H5Sget_regular_hyperslab() failed.");
+                            string msg = "H5Sget_regular_hyperslab() failed. This is related to the variable " + var_path + ".";
+			    throw BESInternalError(msg,__FILE__,__LINE__);
 			}
 
 			expression.append(trim_objname);
@@ -1021,7 +1093,8 @@ void HDF5Array::m_intern_plain_array_data(char *convbuf,hid_t memtype)
         vector<string> v_str(d_num_elm);
         size_t elesize = H5Tget_size(memtype);
         if (elesize == 0) {
-            throw InternalErr(__FILE__, __LINE__, "H5Tget_size() failed.");
+            string msg = "H5Tget_size() failed for the variable " + var_path + ".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
         vector<char> strbuf(elesize + 1);
         BESDEBUG("h5", "=read()<check_h5str()  element size=" << elesize
@@ -1046,19 +1119,26 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
 
     //1. Call do array first(datatype must be derived) and the value must be set. We don't support Array datatype 
     //   unless it is inside a compound datatype
-    if(has_values != true) 
-        throw InternalErr (__FILE__, __LINE__,
-                           "Only support the retrieval of HDF5 Array datatype values from the parent compound datatype read.");
+    if (has_values != true) {
+        string msg =  "Only support the retrieval of HDF5 Array datatype values from the parent compound datatype read.";
+        msg += "This is related to the variable " + var_path + ".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
 
     hid_t at_base_type = H5Tget_super(memb_id);
-    if (at_base_type < 0)
-        throw InternalErr (__FILE__, __LINE__, "Fail to obtain the basetype of the array datatype.");
+    if (at_base_type < 0) {
+        string msg = "Fail to obtain the basetype of the array datatype.";
+        msg += "This is related to the variable " + var_path + ".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
 
     // memb_id, obtain the number of dimensions
     int at_ndims = H5Tget_array_ndims(memb_id);
     if (at_ndims <= 0) {
         H5Tclose(at_base_type);
-        throw InternalErr (__FILE__, __LINE__, "Fail to obtain number of dimensions of the array datatype.");
+        string msg = "Fail to obtain number of dimensions of the array datatype.";
+        msg += "This is related to the variable " + var_path + ".";
+        throw BESInternalError(msg,__FILE__,__LINE__); 
     }
 
     vector<hsize_t>at_dims_h(at_ndims,0);
@@ -1066,7 +1146,9 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
     // Obtain the number of elements for each dims
     if (H5Tget_array_dims(memb_id,at_dims_h.data())<0) {
         H5Tclose(at_base_type);
-        throw InternalErr (__FILE__, __LINE__, "Fail to obtain dimensions of the array datatype.");
+        string msg = "Fail to obtain dimensions of the array datatype.";
+        msg += "This is related to the variable " + var_path + ".";
+        throw BESInternalError(msg,__FILE__,__LINE__); 
     }
     vector<int64_t>at_dims(at_ndims,0);
     for (int64_t i = 0;i<at_ndims;i++)
@@ -1105,7 +1187,9 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
             if ((child_nmembs = H5Tget_nmembers(at_base_type)) < 0) {
                 H5Tclose(at_base_type);
                 delete h5s;
-                throw InternalErr(__FILE__, __LINE__, "Fail to obtain number of HDF5 compound datatype.");
+                string msg = "Fail to obtain number of HDF5 compound datatype.";
+                msg += "This is related to the variable " + var_path + ".";
+                throw BESInternalError(msg,__FILE__,__LINE__); 
             }
 
             for (unsigned child_u = 0; child_u < (unsigned) child_nmembs; child_u++) {
@@ -1114,8 +1198,9 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                 if ((child_memb_id = H5Tget_member_type(at_base_type, child_u)) < 0) {
                     H5Tclose(at_base_type);
                     delete h5s;
-                    throw InternalErr(__FILE__, __LINE__,
-                                      "Fail to obtain the datatype of an HDF5 compound datatype member.");
+                    string msg = "Fail to obtain the datatype of an HDF5 compound datatype member.";
+                    msg += "This is related to the variable " + var_path + ".";
+                    throw BESInternalError(msg,__FILE__,__LINE__); 
                 }
 
                 // Get member type class 
@@ -1123,8 +1208,9 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                     H5Tclose(child_memb_id);
                     H5Tclose(at_base_type);
                     delete h5s;
-                    throw InternalErr(__FILE__, __LINE__,
-                                      "Fail to obtain the datatype class of an HDF5 compound datatype member.");
+                    string msg = "Fail to obtain the datatype class of an HDF5 compound datatype member.";
+                    msg += "This is related to the variable " + var_path + ".";
+                    throw BESInternalError(msg,__FILE__,__LINE__); 
                 }
 
                 // Get member offset
@@ -1136,8 +1222,9 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                     H5Tclose(child_memb_id);
                     H5Tclose(at_base_type);
                     delete h5s;
-                    throw InternalErr(__FILE__, __LINE__,
-                                      "Fail to obtain the name of an HDF5 compound datatype member.");
+                    string msg = "Fail to obtain the name of an HDF5 compound datatype member.";
+                    msg += "This is related to the variable " + var_path + ".";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 BaseType *field = h5s->var(child_memb_name);
@@ -1149,6 +1236,7 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
                 }
                 catch(...){
                     delete h5s;
+                    throw;
                 }
 
             } // end "for ( child_u = 0)"
@@ -1248,8 +1336,9 @@ bool HDF5Array::do_h5_array_type_read(hid_t dsetid, hid_t memb_id,vector<char>&v
     }
     else {
         H5Tclose(at_base_type);
-        throw InternalErr (__FILE__, __LINE__, 
-                     "Only support the field of compound datatype when the field type class is integer, float, string, array or compound..");
+        string msg = "Only support the field of compound datatype when the field type class is integer, float, string, array or compound.";
+        msg += "This is related to the variable " + var_path + ".";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
  
     H5Tclose(at_base_type);
@@ -1292,8 +1381,9 @@ void HDF5Array:: do_h5_array_type_read_base_compound_member(hid_t dsetid, BaseTy
         int child_at_ndims = H5Tget_array_ndims(child_memb_id);
         if (child_at_ndims <= 0) {
             H5Tclose(child_memb_id);
-            throw InternalErr(__FILE__, __LINE__,
-                              "Fail to obtain number of dimensions of the array datatype.");
+            string msg = "Fail to obtain number of dimensions of the array datatype.";
+            msg += "This is related to the variable " + var_path + ".";
+            throw BESInternalError(msg,__FILE__,__LINE__); 
         }
 
         HDF5Array &h5_array_type = dynamic_cast<HDF5Array &>(*field);
@@ -1344,7 +1434,9 @@ void HDF5Array:: do_h5_array_type_read_base_compound_member(hid_t dsetid, BaseTy
     }
     else {
         H5Tclose(child_memb_id);
-        throw InternalErr(__FILE__, __LINE__, "Unsupported datatype class for the array base type.");
+        string msg = "Unsupported datatype class for the array base type.";
+        msg += "This is related to the variable " + var_path + ".";
+        throw BESInternalError(msg,__FILE__,__LINE__); 
     }
     field->set_read_p(true);
     H5Tclose(child_memb_id);
@@ -1356,7 +1448,6 @@ void HDF5Array:: do_h5_array_type_read_base_compound_member_string(BaseType *fie
     // distinguish between variable length and fixed length
     auto src = (void *) (values.data() + data_offset);
     if (true == H5Tis_variable_str(child_memb_id)) {
-
         string final_str;
         auto temp_bp = (char *) src;
         get_vlen_str_data(temp_bp, final_str);
@@ -1367,7 +1458,9 @@ void HDF5Array:: do_h5_array_type_read_base_compound_member_string(BaseType *fie
         size_t memb_size = H5Tget_size(child_memb_id);
         if (memb_size == 0) {
             H5Tclose(child_memb_id);
-            throw InternalErr(__FILE__, __LINE__, "Fail to obtain the size of HDF5 compound datatype.");
+            string msg =  "Fail to obtain the size of HDF5 compound datatype.";
+            msg += "This is related to the variable " + var_path + ".";
+            throw BESInternalError(msg,__FILE__,__LINE__); 
         }
         str_val.resize(memb_size);
         memcpy(str_val.data(), src, memb_size);
@@ -1568,8 +1661,9 @@ void HDF5Array::do_h5_array_type_read_base_atomic(H5T_class_t array_cls, hid_t a
 
         } else {
             H5Tclose(at_base_type);
-            throw InternalErr(__FILE__, __LINE__,
-                              "Non-supported integer or float datatypes");
+            string msg = "Non-supported integer or float datatypes";
+            msg += "This is related to the variable " + var_path + ".";
+            throw BESInternalError(msg,__FILE__,__LINE__); 
         }
     }
 }
@@ -1719,11 +1813,11 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> 
             // The following block is fine, but to avoid the complaint from sonarcloud.
             // Use a bool.
             if (true == is_dim_nonc4_grp) {
-                 string err= "The variable " + var_path +" has dimension ";
-                 err += dimpath[k] + ". This dimension is not under its ancestor or the current group.";
-                 err += " This is not supported.";
+                 string msg= "The variable " + var_path +" has dimension ";
+                 msg += dimpath[k] + ". This dimension is not under its ancestor or the current group.";
+                 msg += " This is not supported.";
                  delete dest;
-                 throw InternalErr(__FILE__,__LINE__,err); 
+                 throw InternalErr(__FILE__,__LINE__, msg); 
             }
 
             bool d4_dim_null = ((d4_dim==nullptr)?true:false);

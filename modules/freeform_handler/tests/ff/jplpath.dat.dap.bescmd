@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <request reqID="some_unique_value" >
+    <setContext name="dap4_checksums">true</setContext>
     <setContainer name="c" space="catalog">/data/jplpath.dat</setContainer>
     <define name="d">
-	<container name="c" />
+	    <container name="c"/>
     </define>
-    <get type="dap" definition="d" />
+    <get type="dap" definition="d"/>
 </request>
