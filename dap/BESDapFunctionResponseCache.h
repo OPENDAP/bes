@@ -72,22 +72,16 @@ class BaseTypeFactory;
 class BESDapFunctionResponseCache: public BESFileLockingCache {
 private:
     static bool d_enabled;
+#if 0
     static BESDapFunctionResponseCache *d_instance;
+#endif
 
-//    /**
-//     * Called by atexit()
-//     */
-//    static void delete_instance() {
-//        delete d_instance;
-//        d_instance = 0;
-//    }
 
     /** @name Suppressed constructors
      *  Do not use.
      */
     ///@{
     BESDapFunctionResponseCache();
-    // BESDapFunctionResponseCache(const BESDapFunctionResponseCache &src);
     ///@}
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
@@ -105,6 +99,7 @@ private:
     friend class FunctionResponseCacheTest;
     friend class StoredResultTest;
 
+#if 0
 protected:
     /**
      * @brief Protected constructor that takes as arguments keys to the cache directory,
@@ -124,6 +119,7 @@ protected:
         BESFileLockingCache(cache_dir, prefix, size)
     {
     }
+#endif
 
 public:
     static const std::string PATH_KEY;
@@ -133,8 +129,11 @@ public:
     BESDapFunctionResponseCache(const BESDapFunctionResponseCache&) = delete;
     BESDapFunctionResponseCache& operator=(const BESDapFunctionResponseCache&) = delete;
 
+#if 0
     static BESDapFunctionResponseCache *get_instance(const std::string &cache_dir, const std::string &prefix,
                                                      unsigned long long size);
+#endif
+
     static BESDapFunctionResponseCache *get_instance();
 
     ~BESDapFunctionResponseCache() override = default;
