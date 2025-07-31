@@ -6,3 +6,10 @@
 
 <!-- Description of task -->
 TODO
+
+## Tasks
+<!-- Ignore or delete any irrelevant items -->
+- [ ] Ticket exists and is linked in title
+- [ ] Tests added/updated
+- [ ] Dead code removed
+- [ ] No TODOs added
