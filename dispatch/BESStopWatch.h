@@ -85,9 +85,13 @@ besTimer.start((message), DHI)
 #define BES_COMMAND_TIMING(message, DHI) BESStopWatch commandTimer; \
     commandTimer.start(string("Command timing: ") + (message) + (DHI->data[LOG_INFO]), DHI)
 
+#define BES_PROFILE_TIMING(message) BESStopWatch profileTimer; \
+    profileTimer.start(string("Profile timing: ") + (message))
+
 #else
 #define BES_MODULE_TIMING(message)
 #define BES_COMMAND_TIMING(message, DHI)
+#define BES_PROFILE_TIMING(message)
 #endif
 
 class BESStopWatch;

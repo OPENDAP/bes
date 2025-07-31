@@ -213,16 +213,17 @@ bool NgapOwnedContainer::file_to_string(int fd, string &content) {
  */
 string NgapOwnedContainer::build_data_url_to_daac_bucket(const string &rest_path) {
     BES_MODULE_TIMING(prolog + rest_path);
+    BES_PROFILE_TIMING("Get URL for DAAC bucket");
 
     bool found;
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
     BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
-
     // If using the cache, look there. Note that the UID is part of the key to the cached data.
     string url_key = rest_path + ':' + uid;
     string data_url;
     if (NgapOwnedContainer::d_use_cmr_cache) {
         if (NgapOwnedContainer::d_cmr_mem_cache.get(url_key, data_url)) {
+            BES_PROFILE_TIMING("Get URL for DAAC bucket from cache");
             CACHE_LOG(prolog + "CMR Cache hit, translated URL: " + data_url + '\n');
             return data_url;
         } else {
@@ -466,7 +467,10 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
     INFO_LOG(prolog + "Look in the DAAC-bucket for the DMRpp for: " + dmrpp_url_str);
 
     try {
-        curl::http_get(dmrpp_url_str, dmrpp_string);
+        {
+            BES_PROFILE_TIMING(string("Request DMRpp from DAAC bucket - ") + dmrpp_url_str);
+            curl::http_get(dmrpp_url_str, dmrpp_string);
+        }
         // filter the DMRPP from the DAAC's bucket to replace the template href with the data_url
         map <string, string, std::less<>> content_filters;
         if (!get_daac_content_filters(data_url, content_filters)) {
