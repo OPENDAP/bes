@@ -55,10 +55,6 @@ private:
 
     CredentialsManager() = default;   // only called here to build the singleton
 
-    // These are static because they must use C-linkage.
-    static void initialize_instance();
-    static void delete_instance();
-
     void load_credentials();
     AccessCredentials *load_credentials_from_env();
 
@@ -66,9 +62,10 @@ private:
     friend class CurlUtilsTest;
 
 public:
-    static CredentialsManager *theMngr;
+    ~CredentialsManager() = default;
 
-    ~CredentialsManager();
+    CredentialsManager(const CredentialsManager&) = delete;
+    CredentialsManager& operator=(const CredentialsManager&) = delete;
 
     static CredentialsManager *theCM();
 
