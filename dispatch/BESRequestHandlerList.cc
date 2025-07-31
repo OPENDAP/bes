@@ -37,6 +37,7 @@
 #include "BESRequestHandlerList.h"
 #include "BESRequestHandler.h"
 #include "BESInternalError.h"
+#include "BESStopWatch.h"
 
 using std::endl;
 using std::ostream;
