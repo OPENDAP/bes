@@ -510,7 +510,7 @@ public:
                 string buf;
                 DBG(cerr << prolog << "Retrieving " << url << "\n");
                 curl::http_get(url, buf);
-                DBG(cerr << "buf.data() = " << string(buf.data()) << "\n");
+                DBG(cerr << "buf.data() = " << string(buf) << "\n");
                 CPPUNIT_ASSERT_MESSAGE("Should be able to find 'Test data''",
                                        buf.find("Test data") == 0);
                 CPPUNIT_ASSERT_MESSAGE("Should be able to find 'Do not edit.''",
