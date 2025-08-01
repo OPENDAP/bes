@@ -27,6 +27,7 @@
 #define _bes_dap_function_response_cache_h
 
 #include <string>
+#include <mutex>
 
 #include "BESFileLockingCache.h"
 
@@ -72,6 +73,7 @@ class BaseTypeFactory;
 class BESDapFunctionResponseCache: public BESFileLockingCache {
 private:
     static bool d_enabled;
+    static std::once_flag d_initialize;
 #if 0
     static BESDapFunctionResponseCache *d_instance;
 #endif
@@ -81,7 +83,7 @@ private:
      *  Do not use.
      */
     ///@{
-    BESDapFunctionResponseCache();
+    BESDapFunctionResponseCache() = default;
     ///@}
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);

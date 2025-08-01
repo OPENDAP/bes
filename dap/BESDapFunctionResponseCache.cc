@@ -94,6 +94,7 @@ const string default_cache_dir = ""; // I'm making the default empty so that no 
 const string BESDapFunctionResponseCache::PATH_KEY = "DAP.FunctionResponseCache.path";
 const string BESDapFunctionResponseCache::PREFIX_KEY = "DAP.FunctionResponseCache.prefix";
 const string BESDapFunctionResponseCache::SIZE_KEY = "DAP.FunctionResponseCache.size";
+std::once_flag BESDapFunctionResponseCache::d_initialize;
 
 //BESDapFunctionResponseCache *BESDapFunctionResponseCache::d_instance = 0;
 bool BESDapFunctionResponseCache::d_enabled = true;
@@ -143,6 +144,7 @@ string BESDapFunctionResponseCache::get_cache_dir_from_config()
     return cacheDir;
 }
 
+#if 0
 BESDapFunctionResponseCache::BESDapFunctionResponseCache() {
     BESDEBUG("cache", "BESDapFunctonResponseCache::BESDapFunctonResponseCache() -  BEGIN" << endl);
 
@@ -158,7 +160,6 @@ BESDapFunctionResponseCache::BESDapFunctionResponseCache() {
     BESDEBUG("cache", "BESDapFunctonResponseCache::BESDapFunctonResponseCache() -  END" << endl);
 }
 
-#if 0
 /**
  * @name Get the singleton instance
  * Get an instance of the BESDapFunctionResponseCache object. This class is a singleton, so the
@@ -207,6 +208,20 @@ BESDapFunctionResponseCache *
 BESDapFunctionResponseCache::get_instance()
 {
     static BESDapFunctionResponseCache cache;
+    std::call_once(d_initialize, [&](){
+        string cache_dir = get_cache_dir_from_config();
+        string cache_prefix = get_cache_prefix_from_config();
+        long cache_size = get_cache_size_from_config();
+
+        if (cache_dir.empty()){
+            cache.disable();
+            //throw BESInternalError("DapFunctionResponseCache: directory is empty", __FILE__, __LINE__);
+        }
+        else{
+            cache.enable();
+            cache.initialize(cache_dir, cache_prefix, cache_size);
+        }
+    });
     if (cache.cache_enabled()){
         return &cache;
     }
