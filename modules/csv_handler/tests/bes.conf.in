@@ -35,6 +35,10 @@ BES.UncompressCache.dir=/tmp
 BES.UncompressCache.prefix=uncompress_cache
 BES.UncompressCache.size=500
 
+DAP.FunctionResponseCache.path=./response_cache
+DAP.FunctionResponseCache.prefix=/rc
+DAP.FunctionResponseCache.size=500
+
 BES.Container.Persistence=strict
 
 BES.Memory.GlobalArea.EmergencyPoolSize=1

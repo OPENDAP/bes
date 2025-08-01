@@ -89,6 +89,8 @@
 using namespace std;
 using namespace libdap;
 
+std::once_flag BESStoredDapResultCache::d_initialize;
+
 BESStoredDapResultCache *BESStoredDapResultCache::d_instance = 0;
 bool BESStoredDapResultCache::d_enabled = true;
 
@@ -180,6 +182,7 @@ string BESStoredDapResultCache::getBesDataRootDirFromConfig()
 
 }
 
+#if 0
 BESStoredDapResultCache::BESStoredDapResultCache()
 {
     BESDEBUG("cache", "BESStoredDapResultCache::BESStoredDapResultCache() -  BEGIN" << endl);
@@ -198,6 +201,7 @@ BESStoredDapResultCache::BESStoredDapResultCache()
 
     BESDEBUG("cache", "BESStoredDapResultCache::BESStoredDapResultCache() -  END" << endl);
 }
+#endif
 
 /** Get the default instance of the BESStoredDapResultCache object. This will read "TheBESKeys" looking for the values
  * of SUBDIR_KEY, PREFIX_KEY, an SIZE_KEY to initialize the cache.
@@ -206,6 +210,23 @@ BESStoredDapResultCache *
 BESStoredDapResultCache::get_instance()
 {
     static BESStoredDapResultCache cache;
+    std::call_once(d_initialize, [&](){
+        string d_storedResultsSubdir = getSubDirFromConfig();
+        string d_dataRootDir = getBesDataRootDirFromConfig();
+        string resultsDir = BESUtil::assemblePath(d_dataRootDir, d_storedResultsSubdir);
+
+        string d_resultFilePrefix = getResultPrefixFromConfig();
+        long d_maxCacheSize = getCacheSizeFromConfig();
+
+        if(resultsDir.empty()){
+            cache.disable();
+            // throw BESInternalError("BESStoredDapResultCache: directory is empty", __FILE__, __LINE__);
+        }
+        else{
+            cache.enable();
+            cache.initialize(resultsDir, d_resultFilePrefix, d_maxCacheSize);
+        }
+    });
     if (cache.cache_enabled()){
         return &cache;
     }
