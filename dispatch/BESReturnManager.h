@@ -52,9 +52,13 @@ private:
     mutable std::recursive_mutex d_cache_lock_mutex;
     std::map<std::string, BESTransmitter *> transmitter_list_;
 
-public:
     BESReturnManager() = default;
-    ~BESReturnManager() override;
+
+public:
+    ~BESReturnManager() override = default;
+
+    BESReturnManager(const BESReturnManager&) = delete;
+    BESReturnManager& operator=(const BESReturnManager&) = delete;
 
     virtual bool add_transmitter(const std::string &name, BESTransmitter *transmitter);
 

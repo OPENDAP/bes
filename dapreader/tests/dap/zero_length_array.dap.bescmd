@@ -4,6 +4,7 @@
   <setContext name="dap_explicit_containers">no</setContext>
   <setContext name="errors">xml</setContext>
   <setContext name="max_response_size">0</setContext>
+  <setContext name="dap4_checksums">true</setContext>
     
     <setContainer name="c" space="catalog">data/dap2/zero_length_array.data</setContainer>
     <define name="d">

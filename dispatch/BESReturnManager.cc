@@ -38,11 +38,6 @@ using std::endl;
 using std::ostream;
 using std::string;
 
-BESReturnManager::~BESReturnManager() {
-    for (const auto& transmitter: transmitter_list_)
-        delete transmitter.second;
-}
-
 BESReturnManager *
 BESReturnManager::TheManager() {
     static BESReturnManager the_manager;

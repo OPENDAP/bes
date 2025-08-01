@@ -832,7 +832,7 @@ dnl is done here and then the text is used with diff against a text baseline.
 dnl jhrg 8/1/18
  
 m4_define([PRINT_DAP4_DATA_RESPONSE], [dnl
-    getdap4 -D -M -s $1 > $1.txt
+    getdap4 -C -D -M -s $1 > $1.txt
     mv $1.txt $1
 ])
 

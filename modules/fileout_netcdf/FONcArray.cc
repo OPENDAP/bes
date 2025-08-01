@@ -216,10 +216,6 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
         // This turns out to be good enough for most NASA files so far. KY 2023-01-31
         else if (d_a->dimensions() ==2) 
             d_chunksizes.push_back(size <= MAX_CHUNK_SIZE ? size : MAX_CHUNK_SIZE);
-        // We found an array that has 3-D 365x8075*7814 elements. This will make the chunk size 365*1024*1024, which
-        // is too big and will cause potential bad performance for the application that uses the generated
-        // netcdf file. So reduce the chunk size when the similar case occurs. 
-        // This will be handled in a separate for-loop below. KY 2023-01-25
 
         BESDEBUG("fonc", "FONcArray::convert() - dim num: " << dimnum << ", dim size: " << size << endl);
         BESDEBUG("fonc", "FONcArray::convert() - dim name: " << d_a->dimension_name(di) << endl);
@@ -259,9 +255,9 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
     // is too big and will cause potential bad performance for the application that uses the generated
     // netcdf file. So reduce the chunk size when the similar case occurs.
     // The following rules handle the cases described above.
-    // Given there may be a very large size array and also the chunk size cannot too big,
+    // Given there may be a very large size array and also the chunk size cannot be too big,
     // we modify the maximum chunk size according to the array size if necessary. 
-    // The idea is we don't want to have too many chunks and we don't want to have the chunk size too big.
+    // The idea is that we don't want to have too many chunks and we don't want to have the chunk size too big.
     // So we do the following. 
     // 1. We start from 1M(1024x1024), if the number of chunks for the array is >64, we increase the chunk size to be 2048x2048.
     // 2. We can increase the chunk size to 16M(4096x4096) if the number of chunks is still >64.
@@ -303,7 +299,7 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
         BESDEBUG("fonc", "FONcArray::CHUNK - two fastest dimchunk_sizes " << two_fastest_chunk_dim_sizes << endl);
 
         // Set the chunk sizes for the rest dimensions if the array size is not too big.
-        // Calculate the dimension index when the size of the total chunk size exceeds 1024x1024.
+        // Calculate the dimension index when the size of the total chunk exceeds 1024x1024.
         // Without doing this, an extreme case such as a 511x1x1 array will set chunk size to 1x1x1, we don't want this to happen.
  
         size_t rest_dim_stop_index = d_a->dimensions()-2;
@@ -334,7 +330,7 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
         BESDEBUG("fonc", "FONcArray::CHUNK - rest_dim_stop_index: " << rest_dim_stop_index << endl);
             
 
-        // Now if our chunk size is already 1M and there are too many chunks in this big array. 
+        // Now if our chunk size is already 1M and there are still too many chunks in this big array. 
         // We may increase the chunk size. 512 is the current maximum number of chunks.
 
         size_t higher_dimension_size = 1;
@@ -399,19 +395,6 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
 
         // get the data from the dap array
         int array_length = d_a->length();
-#if 0
-        d_str_data.reserve(array_length);
-        d_a->value(d_str_data);
-
-        // determine the max length of the strings
-        size_t max_length = 0;
-        for (int i = 0; i < array_length; i++) {
-            if (d_str_data[i].size() > max_length) {
-                max_length = d_str_data[i].size();
-            }
-        }
-        max_length++;
-#endif
         size_t max_length = 0;
         for (int i = 0; i < array_length; i++) {
             if (d_a->get_str()[i].size() > max_length) {
@@ -435,9 +418,8 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
         else
             lendim_name = d_varname + "_len";
 
-
         FONcDim *use_dim = find_dim(empty_embed, lendim_name, max_length, true);
-        // Added static_cast to suppress warning. 12.27.2011 jhrg
+
         if (use_dim->size() < static_cast<int>(max_length)) {
             use_dim->update_size(max_length);
         }
@@ -567,24 +549,6 @@ void FONcArray::define(int ncid) {
 
         BESDEBUG("fonc", "FONcArray::define() - defining array ' defined already: " << d_varname << "'" << endl);
 
-        // Note: the following #if 0 #endif block is only for future development.
-        //       Don't delete or change it for debugging.
-#if 0
-        if(d4_dim_ids.size() >0) {
-           if(d_array_type == NC_CHAR) {
-               if(d_dims.size() == 1) {
-                   FONcDim *fd = *(d_dims.begin());
-                   fd->define(ncid);
-                   d_dim_ids[d_ndims-1] = fd->dimid();
-
-               }
-               else {
-
-               }
-           }
-        }
-        else {
-#endif
         // If not defined DAP4 dimensions(mostly DAP2 or DAP4 no groups)
         if (false == d4_def_dim) {
             vector<FONcDim *>::iterator i = d_dims.begin();
@@ -669,18 +633,6 @@ void FONcArray::define(int ncid) {
         }
 
         
-#endif
-
- 
-#if 0
-        // Check if the direct IO flag is really set. Note intern_data() is called in define() if fdio_flag is true.
-        // TODO: the following should be NOT necessary with further optimization of the memory usage in the future. KY 2023-11-30
-        if (d_array_type != NC_CHAR && fdio_flag == true) {
-            if (d_is_dap4)
-                d_a->intern_data();
-            else    
-                d_a->intern_data(*get_eval(), *get_dds());
-        }
 #endif
 
         // Obtain the direct IO flag
@@ -829,7 +781,6 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
     if (d_io_flag) {
         // direct IO operation.
         write_direct_io_data(ncid,d_varid);
-
         d_a->clear_local_data();
         return;
     }
@@ -907,8 +858,6 @@ void FONcArray::write_enum_array(int ncid) {
         FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
     }
 
-   
- 
 
 #if CLEAR_LOCAL_DATA
     if (!FONcGrid::InMaps(d_a))
@@ -930,6 +879,7 @@ void FONcArray::write_enum_array(int ncid) {
  * to the netcdf file
  */
 void FONcArray::write(int ncid) {
+
     BESDEBUG("fonc", "FONcArray::write() BEGIN  var: " << d_varname << "[" << d_nelements << "]" << endl);
     BESDEBUG("fonc", "FONcArray::write() BEGIN  var type: " << d_array_type << " " << endl);
 
@@ -963,6 +913,7 @@ void FONcArray::write(int ncid) {
         // We don't need to consider the above special case after we optimize the general
         // string write routine with one netcdf write call. In fact, the calculation
         // of the equal_length increases the execution time.
+        // ky ?/?/25
         write_string_array(ncid);
     }
     else if (isNetCDF4_ENHANCED()) {

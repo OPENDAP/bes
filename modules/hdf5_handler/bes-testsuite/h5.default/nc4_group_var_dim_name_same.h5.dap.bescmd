@@ -1,9 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<request reqID="some_unique_value" >
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<request reqID="some_unique_value">
+    <setContext name="dap4_checksums">true</setContext>
     <setContext name="dap_format">dap2</setContext>
     <setContainer name="nc4_group_var_dim_name_same" space="catalog">/data/nc4_group_var_dim_name_same.h5</setContainer>
     <define name="d">
-	<container name="nc4_group_var_dim_name_same" />
+        <container name="nc4_group_var_dim_name_same"/>
     </define>
-    <get type="dap" definition="d" />
+    <get type="dap" definition="d"/>
 </request>

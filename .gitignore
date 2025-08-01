@@ -15,6 +15,7 @@ make_files.txt
 merged.txt
 **/unused
 /build
+__pycache__
 
 ## files
 *~

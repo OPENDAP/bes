@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="[thread:http-nio-8080-exec-8-33][bes_client:/-1]">
+  <bes:setContext name="dap4_checksums">true</bes:setContext>
  <bes:setContext name="bes_timeout">300</bes:setContext>
  <bes:setContext name="xdap_accept">3.2</bes:setContext>
  <bes:setContext name="dap_explicit_containers">no</bes:setContext>

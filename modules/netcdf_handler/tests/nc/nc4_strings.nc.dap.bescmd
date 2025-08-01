@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <request reqID="some_unique_value" >
+    <setContext name="dap4_checksums">true</setContext>
     <setContext name="dap_format">dap2</setContext>
     <setContainer name="c" space="catalog">/data/nc4_test_files/nc4_strings.nc</setContainer>
     <define name="d">
