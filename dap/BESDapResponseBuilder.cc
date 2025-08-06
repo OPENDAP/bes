@@ -1477,6 +1477,7 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
     bool ucs = use_dap4_checksums();
     BESDEBUG(MODULE, prolog << "use_dap4_checksums: " << (ucs?"true":"false") << "\n");
     dmr.use_checksums(ucs);
+    BESDEBUG(MODULE, prolog << "dmr.use_checksums(): " << (dmr.use_checksums()?"true":"false") << "\n");
 
     if (with_mime_headers) set_mime_binary(out, dap4_data, x_plain, last_modified_time(d_dataset), dmr.dap_version());
 
@@ -1501,7 +1502,7 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
     cos << xml.get_doc() << CRLF << flush;
 
     // Write the data, chunked with checksums
-    D4StreamMarshaller m(cos);
+    D4StreamMarshaller m(cos, true, dmr.use_checksums());
     dmr.root()->serialize(m, dmr, !d_dap4ce.empty());
 #ifdef CLEAR_LOCAL_DATA
     dmr.root()->clear_local_data();
