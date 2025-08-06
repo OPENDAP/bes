@@ -48,8 +48,8 @@
 #include <libdap/XDRStreamUnMarshaller.h>
 #include <libdap/XDRFileUnMarshaller.h>
 
-// #include <libdap/D4StreamMarshaller.h>
-// #include <libdap/D4StreamUnMarshaller.h>
+#include <libdap/D4StreamMarshaller.h>
+#include <libdap/D4StreamUnMarshaller.h>
 
 #include <libdap/Sequence.h>   // We have to special-case these; see read_data_ddx()
 
