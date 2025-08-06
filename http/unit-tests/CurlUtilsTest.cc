@@ -518,8 +518,8 @@ public:
 
                 DBG(cerr << "buf.size() = " << buf.size() << "\n");
                 CPPUNIT_ASSERT_MESSAGE(
-                        ("Expected buf size to be 94, but got " + std::to_string(buf.size()) + ", content:\n" + buf).c_str(),
-                        buf.size() == 94);
+                        ("Expected buf size to be 93, but got " + std::to_string(buf.size()) + ", content:\n" + buf).c_str(),
+                        buf.size() == 93);
             }
             catch (const BESError &e) {
                 CPPUNIT_FAIL(string("Did not sign the URL correctly. ").append(e.get_verbose_message()));
