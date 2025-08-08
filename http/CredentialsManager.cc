@@ -58,6 +58,8 @@ const char *CredentialsManager::ENV_REGION_KEY = "CMAC_REGION";
 const char *CredentialsManager::ENV_URL_KEY = "CMAC_URL";
 
 const char *CredentialsManager::USE_ENV_CREDS_KEY_VALUE = "ENV_CREDS";
+/// Run once_flag for initializing the singleton instance.
+std::once_flag d_cmac_init_once;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //
@@ -93,7 +95,11 @@ std::string get_env_value(const string &key) {
  * @return Returns the singleton instance of the CredentialsManager
  */
 CredentialsManager *CredentialsManager::theCM() {
+    //std::call_once(d_cmac_init_once, CredentialsManager::initialize_instance);
     static CredentialsManager theMngr;
+    std::call_once(d_cmac_init_once,[&](){
+        theMngr.load_credentials(); // Only call this here.
+    });
     return &theMngr;
 }
 
