@@ -1242,6 +1242,7 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
  */
 void http_get(const string &target_url, string &buf) {
     BESDEBUG(MODULE, prolog << "BEGIN\n");
+    BES_PROFILE_TIMING(string("Make HTTP GET request - ") + target_url);
 
     vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
     CURL *ceh = nullptr;     ///< The libcurl handle object.
@@ -1503,6 +1504,7 @@ curl_slist *add_edl_auth_headers(curl_slist *request_headers) {
  */
 curl_slist *
 sign_s3_url(const string &target_url, AccessCredentials *ac, curl_slist *req_headers) {
+    BES_PROFILE_TIMING(string("Sign url - ") + target_url);
     const time_t request_time = time(nullptr);
     const auto url_obj = http::url(target_url); // parse the URL using the http::url object. jhrg 2/20/25
     const string auth_header = compute_awsv4_signature(url_obj.path(), url_obj.query(), url_obj.host(),
