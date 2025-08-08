@@ -39,7 +39,7 @@
 
 #include "config_hdf.h"
 
-#include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include "HDFByte.h"
 using namespace libdap;
 using namespace std;
@@ -57,7 +57,6 @@ BaseType *HDFByte::ptr_duplicate()
 
 bool HDFByte::read()
 {
-    throw InternalErr(__FILE__, __LINE__,
-                      "Unimplemented read method called.");
+    throw BESInternalError("Unimplemented read method called.",__FILE__, __LINE__);
 }
 

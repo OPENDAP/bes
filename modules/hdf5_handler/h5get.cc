@@ -630,8 +630,9 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
 /// \param[in] dname  dataset name
 /// \param[in] use_dimscale whether dimscale is used. 
 /// \param[in] is_pure_dim whether this dimension is a pure dimension. 
-/// \param[in\out] vector to store hardlink info. of a dataset.
-/// \param[out] dt_inst_ptr  pointer to the attribute struct(* attr_inst_ptr)
+/// \param[in\out] hdf5_hls vector to store hardlink info. of a dataset.
+/// \param[in\out] handled_cv_names vector to store the coordinate variable names(This is for DAP4 coverage)
+/// \param[in\out] dt_inst_ptr  pointer to the dataset(variable) struct
 ///////////////////////////////////////////////////////////////////////////////
 void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_inst_ptr,bool use_dimscale,
                      bool is_eos5, bool &is_pure_dim, vector<link_info_t> &hdf5_hls,vector<string> &handled_cv_names)
@@ -669,19 +670,10 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
-    // These datatype classes are unsupported. Note we do support
-    // variable length string and the variable length string class is
-    // H5T_STRING rather than H5T_VLEN.
-#if 0
-    if ((ty_class == H5T_TIME) || (ty_class == H5T_BITFIELD)
-        || (ty_class == H5T_OPAQUE) || (ty_class == H5T_ENUM) || (ty_class == H5T_VLEN)) {
-        string msg = "unexpected datatype of HDF5 dataset  ";
-        msg += dname;
-        msg += ".";
-        throw BESInternalError(msg,__FILE__, __LINE__);
-    }
-#endif
-
+    // These datatype classes are unsupported. Note we add the support of
+    // variable length(H5T_VLEN) of float and integer array recently. KY 2025-07-14
+    // We already support variable length string and the variable length string 
+    // class is H5T_STRING rather than H5T_VLEN.
     if ((ty_class == H5T_TIME) || (ty_class == H5T_BITFIELD)
         || (ty_class == H5T_OPAQUE) ) {
         string msg = "unexpected datatype of HDF5 dataset  ";
@@ -710,11 +702,6 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
         H5Dclose(dset);
         return;
     }
-
-    // It is better to use the dynamic allocation of the array.
-    // However, since the DODS_MAX_RANK is not big and it is also
-    // used in other location, we still keep the original code.
-    // KY 2011-11-17
 
     int ndims = H5Sget_simple_extent_ndims(dspace);
     if (ndims < 0) {
@@ -751,7 +738,6 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
         H5Dclose(dset);
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
-
     
     hsize_t nelmts = 1;
     if (ndims !=0) {
@@ -842,6 +828,8 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
  
 }
 
+// This function will retrieve the dimension names for all dimensions in this variable. The variable is
+// represented as the HDF5 dataset id dset. 
 bool handle_dimscale_dmr(hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
                          DS_t * dt_inst_ptr,vector<link_info_t> &hdf5_hls,vector<string> &handled_cv_names)
 {
@@ -1196,6 +1184,7 @@ D4AttributeType daptype_strrep_to_dap4_attrtype(const string & s){
 /// \param varname object name
 /// \param dataset name of dataset where this object comes from
 /// \param datatype datatype id
+/// \param is_dap4  boolean to indicate if this variable is for a DAP4 response
 /// \return pointer to BaseType
 ///////////////////////////////////////////////////////////////////////////////
 BaseType *Get_bt(const string &vname,
@@ -1258,7 +1247,7 @@ BaseType *Get_bt(const string &vname,
 /// returns the pointer to the base type
 ///
 /// This function will create a new DODS object that corresponds to HDF5
-/// dataset and return the pointer of a new object of DODS datatype. If an
+/// dataset and return the pointer of a new object of DAP4 datatype. If an
 /// error is found, an exception of type InternalErr is thrown. 
 ///
 /// \param d4_grp DAP4 group
@@ -1267,6 +1256,7 @@ BaseType *Get_bt(const string &vname,
 /// \param dataset name of dataset where this object comes from
 /// \param datatype datatype id
 /// \return pointer to BaseType
+/// Note: this function is used for DAP4 only. Enum is handled.
 ///////////////////////////////////////////////////////////////////////////////
 BaseType *Get_bt_enhanced(D4Group *d4_grp,
                           hid_t pid,
@@ -1425,6 +1415,7 @@ BaseType *Get_byte_bt(const string &vname, const string &vpath, const string &da
     }
     return btp;
 }
+
 BaseType *Get_float_bt(const string &vname, const string &vpath, const string &dataset,
                         hid_t datatype) {
 
@@ -1452,14 +1443,15 @@ BaseType *Get_float_bt(const string &vname, const string &vpath, const string &d
 
     return btp;
 }
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn Get_structure(const string& varname, const string &dataset,
 ///     hid_t datatype)
 /// returns a pointer of structure type. An exception is thrown if an error
 /// is encountered.
 /// 
-/// This function will create a new DODS object that corresponds to HDF5
-/// compound dataset and return a pointer of a new structure object of DODS.
+/// This function will create a new DODS/DAP4 object that corresponds to HDF5
+/// compound dataset and return a pointer of a new structure object of DODS/DAP4.
 ///
 /// \param varname object name
 /// \param dataset name of the dataset from which this structure created
@@ -1468,7 +1460,6 @@ BaseType *Get_float_bt(const string &vname, const string &vpath, const string &d
 /// \return pointer to Structure type
 ///
 ///////////////////////////////////////////////////////////////////////////////
-//static Structure *Get_structure(const string &varname,
 Structure *Get_structure(const string &varname,const string &vpath,
                                 const string &dataset,
                                 hid_t datatype,bool is_dap4)
@@ -1546,23 +1537,7 @@ Structure *Get_structure(const string &varname,const string &vpath,
 }
 
 
-///////////////////////////////////////////////////////////////////////////////
-/// \fn Get_structure(const string& varname, const string &dataset,
-///     hid_t datatype)
-/// returns a pointer of structure type. An exception is thrown if an error
-/// is encountered.
-/// 
-/// This function will create a new DODS object that corresponds to HDF5
-/// compound dataset and return a pointer of a new structure object of DODS.
-///
-/// \param varname object name
-/// \param dataset name of the dataset from which this structure created
-/// \param datatype datatype id
-/// \param is_dap4 whether this is for dap4
-/// \return pointer to Structure type
-///
-///////////////////////////////////////////////////////////////////////////////
-
+// Handle the array in a structure.
 void Get_structure_array_type(Structure *structure_ptr, hid_t memb_type, const string &memb_name,
                               const string &dataset, bool is_dap4 ) {
 
@@ -1716,7 +1691,6 @@ int64_t obtain_enum_def_value(hid_t base_datatype,hid_t datatype, int i) {
         string msg = "Sign of enum base datatype is invalid.";
         throw BESInternalError(msg,__FILE__,__LINE__);
     }
-
 
     switch (dsize) {
 
@@ -2009,7 +1983,7 @@ bool has_dimscale_attr(hid_t dataset) {
 /// \param[in]  ainfo pointer to the HDF5 attribute's info struct
 /// \param[in] opdata pointer to the operator data passed to H5Aiterate2
 /// \return returns a non-negative value if successful
-/// \throw InternalError 
+/// \throw BESInternalError 
 ///////////////////////////////////////////////////////////////////////////////
 
 static herr_t
@@ -2366,7 +2340,6 @@ void write_vlen_str_attrs(hid_t attr_id,hid_t ty_id, const DSattr_t * attr_inst_
     BESDEBUG("h5","attribute size " <<attr_inst_ptr->need <<endl);
     BESDEBUG("h5","attribute type size " <<(int)(H5Tget_size(ty_id))<<endl);
 
-
     bool is_utf8_str = false;
     if (is_dap4 == false)
         is_utf8_str = check_if_utf8_str(ty_id);
@@ -2635,6 +2608,7 @@ visit_link_cb(hid_t  group_id, const char *name, const H5L_info_t *linfo, void *
 // Obtain the assigned object names
 // It will assign an object name based on the obj_name_mark out of obj_names. 
 // Currently the assigned object name is the obj_name_mark+max(suffix_number of objects)+1.
+// This function is used for an HDF5 enum type that doesn't have a name.
 std::string obtain_assigned_obj_name(const vector<string>& obj_names, const string &obj_name_mark) {
 
     int assigned_suffix =0;

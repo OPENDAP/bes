@@ -120,17 +120,26 @@ typedef struct {
  
 } eos5_grid_info_t;
 
+// This is used for the CF grid mapping. The struct is to store HDFEOS5 grid's dimension names such as YDim and XDim.
 typedef struct {
     std::string dpath0;
     std::string dpath1;
 } eos5_dname_info_t;
 
+// This is used for the CF grid mapping. The struct is to store HDFEOS5 grid's latitude, longitude and grid_mapping names.
 typedef struct {
     std::string vpath0;
     std::string vpath1;
     std::string cf_gmap_path;
 } eos5_cname_info_t;
 
+// We need to remember all the HDF-EOS5 dimension and variable assocication information to have the correct 
+// mapping from HDF-EOS5 dimension/CF grid to DMR.
+// The information includes variable path and their corresponding  dimension names.
+// The HDF-EOS5 grid path to the corresponding dimension info. The dimension info HE5Dim includes name and size.
+// The grid information for each HDF-EOS5 grid.
+// Unordered maps are used to store the above information for quick retrieval.
+// We also store all the CF grid mapping information with a vector of pair of CF dimension names and coordinate variables.
 typedef struct {
     std::unordered_map<std::string,std::vector<std::string>> varpath_to_dims;
     std::unordered_map<std::string,std::vector<HE5Dim>> grppath_to_dims;
@@ -158,7 +167,7 @@ void read_objects(libdap::D4Group* d4_grp,hid_t, const std::string & varname, co
                   eos5_dim_info_t &);
 void read_objects_base_type(libdap::D4Group* d4_grp,hid_t, const std::string & varname, const std::string & filename, hid_t,
                             bool, bool, eos5_dim_info_t &);
-void read_objects_basetype_attr_hl(const std::string &varname, libdap::BaseType *bt, hid_t dset_id,  bool is_eos5);
+void read_objects_basetype_attr_hl_eos5(const std::string &varname, libdap::BaseType *bt, hid_t dset_id,  bool is_eos5);
 
 void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,
                             hid_t, bool, bool);

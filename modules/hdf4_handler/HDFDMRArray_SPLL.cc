@@ -14,7 +14,7 @@
 #include <iostream>
 #include <sstream>
 #include <libdap/debug.h>
-#include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include <BESDebug.h>
 
 using namespace std;
@@ -39,7 +39,7 @@ HDFDMRArray_SPLL::read ()
     int nelms = format_constraint(offset.data(),step.data(),count.data());
 
     if (sp_type != 0) 
-        throw InternalErr (__FILE__, __LINE__, "Currently we only support TRMM version 7");
+        throw BESInternalError("Currently we only support TRMM version 7.",__FILE__, __LINE__);
     vector<float> val;
     val.resize(nelms);
     for (int i = 0; i < nelms; ++i)

@@ -19,7 +19,6 @@
 #endif
 
 #include <libdap/DDS.h>
-#include <libdap/InternalErr.h>
 
 
 /**

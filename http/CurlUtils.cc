@@ -1294,8 +1294,6 @@ void http_get(const string &target_url, string &buf) {
             curl_easy_cleanup(ceh);
             BESDEBUG(MODULE, prolog << "Called curl_easy_cleanup()." << endl);
         }
-
-        buf.push_back('\0');    // add a trailing null byte
     }
     catch (...) {
         curl_slist_free_all(request_headers);

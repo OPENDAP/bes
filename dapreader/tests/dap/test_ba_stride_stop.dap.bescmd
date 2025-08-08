@@ -4,6 +4,7 @@
   <bes:setContext name="dap_explicit_containers">no</bes:setContext>
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
+  <setContext name="dap4_checksums">true</setContext>
   
   <bes:setContainer name="c" space="catalog">data/dap4/dmr-testsuite/test_big_array.xml</bes:setContainer>
   

@@ -1,6 +1,6 @@
 netcdf test {
 dimensions:
-	nTimes = 1643 ;
+	nTimes = UNLIMITED ; // (1643 currently)
 	nXtrack = 60 ;
 	StructMetadata_0_len = 5703 ;
 variables:

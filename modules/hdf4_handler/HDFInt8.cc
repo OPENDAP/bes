@@ -24,7 +24,7 @@
 
 #include "config_hdf.h"
 
-#include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include "HDFInt8.h"
 using namespace libdap;
 using namespace std;
@@ -42,7 +42,6 @@ BaseType *HDFInt8::ptr_duplicate()
 
 bool HDFInt8::read()
 {
-    throw InternalErr(__FILE__, __LINE__,
-                      "Unimplemented read method called.");
+    throw BESInternalError("Unimplemented read method called.",__FILE__, __LINE__);
 }
 

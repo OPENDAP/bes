@@ -39,7 +39,7 @@
 
 #include "config_hdf.h"
 
-#include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include "HDFStr.h"
 
 using namespace libdap;
@@ -57,7 +57,6 @@ BaseType *HDFStr::ptr_duplicate()
 
 bool HDFStr::read()
 {
-    throw InternalErr(__FILE__, __LINE__,
-                      "Unimplemented read method called.");
+    throw BESInternalError("Unimplemented read method called.",__FILE__, __LINE__);
 }
 

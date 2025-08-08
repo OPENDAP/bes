@@ -15,7 +15,7 @@
 #include <cassert>
 #include <libdap/debug.h>
 #include "HDFEOS2.h"
-#include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include <BESDebug.h>
 #include "HDFCFUtil.h"
 
@@ -52,7 +52,7 @@ HDFEOS2ArrayGridGeoField::read ()
     // Currently The latitude and longitude rank from HDF-EOS2 grid must be either 1-D or 2-D.
     // However, For SOM projection the final rank will become 3. 
     if (rank < 1 || rank > 2) {
-        throw InternalErr (__FILE__, __LINE__, "The rank of geo field is greater than 2, currently we don't support 3-D lat/lon cases.");
+        throw BESInternalError("The rank of geo field is greater than 2, currently we don't support 3-D lat/lon cases.",__FILE__, __LINE__);
     }
 
     // MISR SOM file's final rank is 3. So declare a new variable. 
@@ -118,9 +118,8 @@ HDFEOS2ArrayGridGeoField::read ()
     else {
         gfid = openfunc (const_cast < char *>(filename.c_str ()), DFACC_READ);
         if (gfid < 0) {
-            ostringstream eherr;
-            eherr << "File " << filename.c_str () << " cannot be open.";
-            throw InternalErr (__FILE__, __LINE__, eherr.str ());
+            string msg =  "File " + filename + " cannot be open.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
     }
 
@@ -128,9 +127,8 @@ HDFEOS2ArrayGridGeoField::read ()
     gridid = attachfunc (gfid, const_cast < char *>(datasetname.c_str ()));
     if (gridid < 0) {
         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "Grid " << datasetname.c_str () << " cannot be attached.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Grid " +  datasetname + " cannot be attached.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if (false == llflag) {
@@ -153,33 +151,31 @@ HDFEOS2ArrayGridGeoField::read ()
 
             if (("" == bescachedir)||(""==bescacheprefix)||(cachesize <=0)){
                 HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                throw InternalErr (__FILE__, __LINE__, "Either the cached dir is empty or the prefix is nullptr or the cache size is not set.");
+                throw BESInternalError("Either the cached dir is empty or the prefix is nullptr or the cache size is not set.",__FILE__, __LINE__);
             }
             else {
                 struct stat sb;
                 if (stat(bescachedir.c_str(),&sb) !=0) {
                     HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                    string err_mesg="The cached directory " + bescachedir;
-                    err_mesg = err_mesg + " doesn't exist.  ";
-                    throw InternalErr(__FILE__,__LINE__,err_mesg);
+                    string msg="The cached directory " + bescachedir;
+                    msg = msg + " doesn't exist.  ";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                     
                 }
                 else { 
                      if (true == S_ISDIR(sb.st_mode)) {
                         if (access(bescachedir.c_str(),R_OK|W_OK|X_OK) == -1) {
                             HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                            string err_mesg="The cached directory " + bescachedir;
-                            err_mesg = err_mesg + " can NOT be read,written or executable.";
-                            throw InternalErr(__FILE__,__LINE__,err_mesg);
+                            string msg="The cached directory " + bescachedir;
+                            msg = msg + " can NOT be read,written or executable.";
+                            throw BESInternalError(msg,__FILE__,__LINE__);
                         }
-
                     }
                     else {
                         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                        string err_mesg="The cached directory " + bescachedir;
-                        err_mesg = err_mesg + " is not a directory.";
-                        throw InternalErr(__FILE__,__LINE__,err_mesg);
-
+                        string msg="The cached directory " + bescachedir;
+                        msg = msg + " is not a directory.";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                     }
                 }
             }
@@ -191,7 +187,7 @@ HDFEOS2ArrayGridGeoField::read ()
             if (r!=0) {
                 detachfunc(gridid);
                 HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                throw InternalErr (__FILE__, __LINE__, "GDprojinfo failed");
+                throw BESInternalError("GDprojinfo failed.",__FILE__, __LINE__);
             }
 
             // Retrieve dimensions and X-Y coordinates of corners
@@ -199,7 +195,7 @@ HDFEOS2ArrayGridGeoField::read ()
                            lowright) == -1) {
                 detachfunc(gridid);
                 HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                throw InternalErr (__FILE__, __LINE__, "GDgridinfo failed");
+                throw BESInternalError("GDgridinfo failed.",__FILE__, __LINE__);
             }
 
             // Retrieve pixel registration information 
@@ -208,9 +204,7 @@ HDFEOS2ArrayGridGeoField::read ()
             if (r != 0) {
                 detachfunc(gridid);
                 HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "cannot obtain grid pixel registration info.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                throw BESInternalError("Cannot obtain grid pixel registration info.",__FILE__, __LINE__);
             }
 
             //Retrieve grid pixel origin 
@@ -219,9 +213,7 @@ HDFEOS2ArrayGridGeoField::read ()
             if (r != 0) {
                 detachfunc(gridid);
                 HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                ostringstream eherr;
-                eherr << "cannot obtain grid origin info.";
-                throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                throw BESInternalError("Cannot obtain grid origin info.",__FILE__, __LINE__);
             }
 
 
@@ -462,7 +454,7 @@ HDFEOS2ArrayGridGeoField::read ()
             if (r!=0) {
                 detachfunc(gridid);
                 HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                throw InternalErr (__FILE__, __LINE__, "GDprojinfo failed");
+                throw BESInternalError("GDprojinfo failed.",__FILE__, __LINE__);
             }
 
             // Retrieve dimensions and X-Y coordinates of corners
@@ -470,7 +462,7 @@ HDFEOS2ArrayGridGeoField::read ()
                            lowright) == -1) {
                 detachfunc(gridid);
                 HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                throw InternalErr (__FILE__, __LINE__, "GDgridinfo failed");
+                throw BESInternalError("GDgridinfo failed.",__FILE__, __LINE__);
             }
        }
 
@@ -597,9 +589,8 @@ HDFEOS2ArrayGridGeoField::read ()
     if (r != 0) {
         detachfunc(gridid);
         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "Field " << fieldname.c_str () << " information cannot be obtained.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Field " + fieldname + " information cannot be obtained.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Retrieve dimensions and X-Y coordinates of corners
@@ -607,9 +598,8 @@ HDFEOS2ArrayGridGeoField::read ()
     if (r != 0) {
         detachfunc(gridid);
         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "Grid " << datasetname.c_str () << " information cannot be obtained.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Grid " + datasetname + " information cannot be obtained.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Retrieve all GCTP projection information
@@ -617,9 +607,8 @@ HDFEOS2ArrayGridGeoField::read ()
     if (r != 0) {
         detachfunc(gridid);
         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-        ostringstream eherr;
-        eherr << "Grid " << datasetname.c_str () << " projection info. cannot be obtained.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Grid " + datasetname + " projection info. cannot be obtained.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     if (projcode != GCTP_GEO) {	// Just retrieve the data like other fields
@@ -635,9 +624,8 @@ HDFEOS2ArrayGridGeoField::read ()
                 if (r != 0) {
                     detachfunc(gridid);
                     HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                    ostringstream eherr;
-                    eherr << "field " << fieldname.c_str () << "cannot be read.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Field "+ fieldname + "cannot be read.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 // DAP2 requires the map of SIGNED_BYTE to INT32 if
@@ -668,9 +656,8 @@ HDFEOS2ArrayGridGeoField::read ()
                 if (r != 0) {
                     detachfunc(gridid);
                     HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                    ostringstream eherr;
-                    eherr << "field " << fieldname.c_str () << "cannot be read.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Field "+ fieldname + "cannot be read.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 set_value ((dods_byte *) val.data(), nelms);
 
@@ -688,9 +675,8 @@ HDFEOS2ArrayGridGeoField::read ()
                 if (r != 0) {
                     detachfunc(gridid);
                     HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                    ostringstream eherr;
-                    eherr << "field " << fieldname.c_str () << "cannot be read.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Field "+ fieldname + "cannot be read.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 set_value ((dods_int16 *) val.data(), nelms);
@@ -709,9 +695,8 @@ HDFEOS2ArrayGridGeoField::read ()
                 if (r != 0) {
                     detachfunc(gridid);
                     HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                    ostringstream eherr;
-                    eherr << "field " << fieldname.c_str () << "cannot be read.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Field "+ fieldname + "cannot be read.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 set_value ((dods_uint16 *) val.data(), nelms);
@@ -729,9 +714,8 @@ HDFEOS2ArrayGridGeoField::read ()
                 if (r != 0) {
                     detachfunc(gridid);
                     HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                    ostringstream eherr;
-                    eherr << "field " << fieldname.c_str () << "cannot be read.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Field "+ fieldname + "cannot be read.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 set_value ((dods_int32 *) val.data(), nelms);
@@ -749,9 +733,8 @@ HDFEOS2ArrayGridGeoField::read ()
                 if (r != 0) {
                     detachfunc(gridid);
                     HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                    ostringstream eherr;
-                    eherr << "field " << fieldname.c_str () << "cannot be read.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Field "+ fieldname + "cannot be read.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 set_value ((dods_uint32 *) val.data(), nelms);
             }
@@ -768,9 +751,8 @@ HDFEOS2ArrayGridGeoField::read ()
                 if (r != 0) {
                     detachfunc(gridid);
                     HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                    ostringstream eherr;
-                    eherr << "field " << fieldname.c_str () << "cannot be read.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Field "+ fieldname + "cannot be read.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 set_value ((dods_float32 *) val.data(), nelms);
@@ -789,9 +771,8 @@ HDFEOS2ArrayGridGeoField::read ()
                 if (r != 0) {
                     detachfunc(gridid);
                     HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                    ostringstream eherr;
-                    eherr << "field " << fieldname.c_str () << "cannot be read.";
-                    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                    string msg = "Field "+ fieldname + "cannot be read.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 set_value ((dods_float64 *) val.data(), nelms);
@@ -802,7 +783,8 @@ HDFEOS2ArrayGridGeoField::read ()
             {
                 detachfunc(gridid);
                 HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
+                string msg = "Unsupported data type.";
+                throw BESInternalError(msg,__FILE__,__LINE__);
             }
 
         }
@@ -837,9 +819,8 @@ HDFEOS2ArrayGridGeoField::read ()
                     if (r != 0) {
                         detachfunc(gridid);
                         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                        ostringstream eherr;
-                        eherr << "field " << fieldname.c_str () << "cannot be read.";
-                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                        string msg = "Field "+ fieldname + "cannot be read.";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                     }
 
                     try {
@@ -862,9 +843,8 @@ HDFEOS2ArrayGridGeoField::read ()
                     if (r != 0) {
                         detachfunc(gridid);
                         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                        ostringstream eherr;
-                        eherr << "field " << fieldname.c_str () << "cannot be read.";
-                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                        string msg = "Field "+ fieldname + "cannot be read.";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                     }
                 }
 
@@ -913,9 +893,8 @@ HDFEOS2ArrayGridGeoField::read ()
                     if (r != 0) {
                         detachfunc(gridid);
                         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                        ostringstream eherr;
-                        eherr << "field " << fieldname.c_str () << "cannot be read.";
-                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                        string msg = "Field "+ fieldname + "cannot be read.";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                     }
 
                     try {
@@ -937,9 +916,8 @@ HDFEOS2ArrayGridGeoField::read ()
                     if (r != 0) {
                         detachfunc(gridid);
                         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                        ostringstream eherr;
-                        eherr << "field " << fieldname.c_str () << "cannot be read.";
-                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                        string msg = "Field "+ fieldname + "cannot be read.";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                     }
                 }
 	    
@@ -973,9 +951,8 @@ HDFEOS2ArrayGridGeoField::read ()
                     if (r != 0) {
                         detachfunc(gridid);
                         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                        ostringstream eherr;
-                        eherr << "field " << fieldname.c_str () << "cannot be read.";
-                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                        string msg = "Field "+ fieldname + "cannot be read.";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                     }
 
                     try {
@@ -997,9 +974,8 @@ HDFEOS2ArrayGridGeoField::read ()
                     if (r != 0) {
                         detachfunc(gridid);
                         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                        ostringstream eherr;
-                        eherr << "field " << fieldname.c_str () << "cannot be read.";
-                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                        string msg = "Field "+ fieldname + "cannot be read.";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                     }
                 }
 
@@ -1035,9 +1011,8 @@ HDFEOS2ArrayGridGeoField::read ()
                     if (r != 0) {
                         detachfunc(gridid);
                         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                        ostringstream eherr;
-                        eherr << "field " << fieldname.c_str () << "cannot be read.";
-                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                        string msg = "Field "+ fieldname + "cannot be read.";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                     }
 
                     try {
@@ -1058,9 +1033,8 @@ HDFEOS2ArrayGridGeoField::read ()
                     if (r != 0) {
                         detachfunc(gridid);
                         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                        ostringstream eherr;
-                        eherr << "field " << fieldname.c_str () << "cannot be read.";
-                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                        string msg = "Field "+ fieldname + "cannot be read.";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                     } 
                 }
 
@@ -1094,11 +1068,10 @@ HDFEOS2ArrayGridGeoField::read ()
                         nullptr, nullptr, nullptr, (void *)(temp_total_val.data()));
 
                     if (r != 0) {
-                        ostringstream eherr;
                         detachfunc(gridid);
                         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                        eherr << "field " << fieldname.c_str () << "cannot be read.";
-                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                        string msg = "Field "+ fieldname + "cannot be read.";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                     }
 
                     try {
@@ -1120,9 +1093,8 @@ HDFEOS2ArrayGridGeoField::read ()
                     if (r != 0) {
                         detachfunc(gridid);
                         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                        ostringstream eherr;
-                        eherr << "field " << fieldname.c_str () << "cannot be read.";
-                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                        string msg = "Field "+ fieldname + "cannot be read.";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                     } 
 
                 }
@@ -1157,9 +1129,8 @@ HDFEOS2ArrayGridGeoField::read ()
                     if (r != 0) {
                         detachfunc(gridid);
                         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                        ostringstream eherr;
-                        eherr << "field " << fieldname.c_str () << "cannot be read.";
-                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                        string msg = "Field "+ fieldname + "cannot be read.";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                     }
 
                     try {
@@ -1181,9 +1152,8 @@ HDFEOS2ArrayGridGeoField::read ()
                     if (r != 0) {
                         detachfunc(gridid);
                         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                        ostringstream eherr;
-                        eherr << "field " << fieldname.c_str () << "cannot be read.";
-                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                        string msg = "Field "+ fieldname + "cannot be read.";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                     } 
 
                 }
@@ -1221,9 +1191,8 @@ HDFEOS2ArrayGridGeoField::read ()
                     if (r != 0) {
                         detachfunc(gridid);
                         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                        ostringstream eherr;
-                        eherr << "field " << fieldname.c_str () << "cannot be read.";
-                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                        string msg = "Field "+ fieldname + "cannot be read.";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                     }
 
                     try {
@@ -1244,9 +1213,8 @@ HDFEOS2ArrayGridGeoField::read ()
                     if (r != 0) {
                         detachfunc(gridid);
                         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                        ostringstream eherr;
-                        eherr << "field " << fieldname.c_str () << "cannot be read.";
-                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                        string msg = "Field "+ fieldname + "cannot be read.";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                     }
 
                 }
@@ -1282,9 +1250,8 @@ HDFEOS2ArrayGridGeoField::read ()
                     if (r != 0) {
                         detachfunc(gridid);
                         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                        ostringstream eherr;
-                        eherr << "field " << fieldname.c_str () << "cannot be read.";
-                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                        string msg = "Field "+ fieldname + "cannot be read.";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                     }
 
                     try {
@@ -1306,9 +1273,8 @@ HDFEOS2ArrayGridGeoField::read ()
                     if (r != 0) {
                         detachfunc(gridid);
                         HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-                        ostringstream eherr;
-                        eherr << "field " << fieldname.c_str () << "cannot be read.";
-                        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+                        string msg = "Field "+ fieldname + "cannot be read.";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
                     } 
 
                 }
@@ -1322,16 +1288,16 @@ HDFEOS2ArrayGridGeoField::read ()
         default:
             detachfunc(gridid);
             HDFCFUtil::close_fileid(-1,-1,gfid,-1,check_pass_fileid_key);
-            throw InternalErr (__FILE__, __LINE__, "unsupported data type.");
+            string msg = "Unsupported data type.";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
     }
 
     r = detachfunc (gridid);
     if (r != 0) {
-        ostringstream eherr;
-        eherr << "Grid " << datasetname.c_str () << " cannot be detached.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Grid "+ datasetname  + "cannot be detached.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
 
@@ -1403,9 +1369,8 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int g_fieldtype,
 
     r = GDgridinfo (gridid, &xdim, &ydim, upleft, lowright);
     if (r != 0) {
-        ostringstream eherr;
-        eherr << "cannot obtain grid information.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Cannot obtain grid information.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // The coordinate values(MCD products) are set to -180.0, -90.0, etc.
@@ -1437,9 +1402,8 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int g_fieldtype,
 
     r = GDprojinfo (gridid, &projcode, &zone, &sphere, params);
     if (r != 0) {
-        ostringstream eherr;
-        eherr << "cannot obtain grid projection information";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Cannot obtain grid projection information.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Retrieve pixel registration information 
@@ -1447,9 +1411,8 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int g_fieldtype,
 
     r = GDpixreginfo (gridid, &pixreg);
     if (r != 0) {
-        ostringstream eherr;
-        eherr << "cannot obtain grid pixel registration info.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Cannot obtain grid pixel registration info.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
 
@@ -1458,9 +1421,8 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int g_fieldtype,
 
     r = GDorigininfo (gridid, &origin);
     if (r != 0) {
-        ostringstream eherr;
-        eherr << "cannot obtain grid origin info.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Cannot obtain grid origin info.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     vector<int32>rows;
@@ -1516,9 +1478,8 @@ HDFEOS2ArrayGridGeoField::CalculateLatLon (int32 gridid, int g_fieldtype,
                  xdim * ydim, rows.data(), cols.data(), lon.data(), lat.data(), pixreg, origin);
 
     if (r != 0) {
-        ostringstream eherr;
-        eherr << "cannot calculate grid latitude and longitude";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Cannot calculate grid latitude and longitude.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // ADDING CACHE file routine,save lon and lat to a cached file. lat first, lon second.
@@ -1698,9 +1659,8 @@ template < class T > bool HDFEOS2ArrayGridGeoField::CorLatLon (T * latlon,
     // Find the first fill value
     index = findfirstfv (latlon, 0, elms - 1, fv);
     if (index < 2) {
-        ostringstream eherr;
-        eherr << "cannot calculate the fill value. ";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Cannot calculate the fill value. ";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     for (int i = index; i < elms; i++) {
@@ -1821,8 +1781,7 @@ HDFEOS2ArrayGridGeoField::getCorrectSubset (const int *offset, const int *count,
         }
 
         else {// errors
-            throw InternalErr (__FILE__, __LINE__,
-                         "Lat/lon subset is wrong for condensed lat/lon");
+            throw BESInternalError("Lat/lon subset is wrong for condensed lat/lon.",__FILE__, __LINE__);
         }
     }
     else {
@@ -1851,7 +1810,7 @@ HDFEOS2ArrayGridGeoField::HandleFillLatLon(vector<T> total_latlon, T* latlon,boo
                 temp_lat[i] = total_latlon[i*xdim];
 
             if (false == CorLatLon(temp_lat.data(),gf_fieldtype,ydim,fv))
-                throw InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
+                throw BESInternalError("Cannot handle the fill values in lat/lon correctly.",__FILE__,__LINE__);
            
             for (int i = 0; i <(int)(count[0]); i++)
                 latlon[i] = temp_lat[offset[0] + i* step[0]];
@@ -1864,7 +1823,7 @@ HDFEOS2ArrayGridGeoField::HandleFillLatLon(vector<T> total_latlon, T* latlon,boo
 
 
             if (false == CorLatLon(temp_lon.data(),gf_fieldtype,xdim,fv))
-                throw InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
+                throw BESInternalError("Cannot handle the fill values in lat/lon correctly.",__FILE__,__LINE__);
            
             for (int i = 0; i <(int)(count[1]); i++)
                 latlon[i] = temp_lon[offset[1] + i* step[1]];
@@ -1879,7 +1838,7 @@ HDFEOS2ArrayGridGeoField::HandleFillLatLon(vector<T> total_latlon, T* latlon,boo
                 temp_lat[i] = total_latlon[i];
 
             if (false == CorLatLon(temp_lat.data(),gf_fieldtype,ydim,fv))
-                throw InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
+                throw BESInternalError("Cannot handle the fill values in lat/lon correctly.",__FILE__,__LINE__);
            
             for (int i = 0; i <(int)(count[1]); i++)
                 latlon[i] = temp_lat[offset[1] + i* step[1]];
@@ -1892,7 +1851,7 @@ HDFEOS2ArrayGridGeoField::HandleFillLatLon(vector<T> total_latlon, T* latlon,boo
 
 
             if (false == CorLatLon(temp_lon.data(),gf_fieldtype,xdim,fv))
-                throw InternalErr(__FILE__,__LINE__,"Cannot handle the fill values in lat/lon correctly");
+                throw BESInternalError("Cannot handle the fill values in lat/lon correctly.",__FILE__,__LINE__);
            
             for (int i = 0; i <(int)(count[0]); i++)
                 latlon[i] = temp_lon[offset[0] + i* step[0]];
@@ -1946,9 +1905,8 @@ HDFEOS2ArrayGridGeoField::CalculateSpeLatLon (int32 gridid, int gf_fieldtype,
 
     r = GDgridinfo (gridid, &xdim, &ydim, upleft, lowright);
     if (r != 0) {
-        ostringstream eherr;
-        eherr << "cannot obtain grid information.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "Cannot obtain grid information.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     //Since this is a special calcuation out of using the GDij2ll function,
     // the rank is always assumed to be 2 and we condense to 1. So the 
@@ -1959,7 +1917,7 @@ HDFEOS2ArrayGridGeoField::CalculateSpeLatLon (int32 gridid, int gf_fieldtype,
     // for details. KY 2012-09-10
 
     if (0 == xdim || 0 == ydim) 
-        throw InternalErr(__FILE__,__LINE__,"xdim or ydim cannot be zero");
+        throw BESInternalError("Xdim or ydim cannot be zero",__FILE__,__LINE__);
 
     if (gf_fieldtype == 1) {
         double latstep = 180.0 / ydim;
@@ -1991,7 +1949,7 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, const int *start, con
 
     r = GDprojinfo (gridid, &projcode, &zone, &sphere, params);
     if (r!=0)
-        throw InternalErr (__FILE__, __LINE__, "GDprojinfo doesn't return the correct values");
+        throw BESInternalError("GDprojinfo doesn't return the correct values",__FILE__, __LINE__);
 
     int MAXNDIM = 10;
     int32 dim[MAXNDIM];
@@ -2000,7 +1958,7 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, const int *start, con
     // r is the number of dims. or 0.
     // So the valid returned value can be greater than 0. Only throw error when r is less than 0.
     if (r<0)
-        throw InternalErr (__FILE__, __LINE__, "GDinqdims doesn't return the correct values");
+        throw BESInternalError("GDinqdims doesn't return the correct values.",__FILE__, __LINE__);
 
     bool is_block_180 = false;
     for(int i=0; i<MAXNDIM; i++)
@@ -2012,9 +1970,8 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, const int *start, con
         }
     }
     if (false == is_block_180) {
-        ostringstream eherr;
-        eherr <<"Number of Block is not " << NBLOCK ;
-        throw InternalErr(__FILE__,__LINE__,eherr.str());
+        string msg = "Number of Block is not " + to_string(NBLOCK)+"." ;
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     int32 xdim = 0; 
@@ -2024,24 +1981,24 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, const int *start, con
 
     r = GDgridinfo (gridid, &xdim, &ydim, ulc, lrc);
     if (r!=0) 
-        throw InternalErr(__FILE__,__LINE__,"GDgridinfo doesn't return the correct values");
+        throw BESInternalError("GDgridinfo doesn't return the correct values.",__FILE__,__LINE__);
 
 
     float32 offset[NOFFSET]; 
     char som_rw_code[]="r";
     r = GDblkSOMoffset(gridid, offset, NOFFSET, som_rw_code);
     if (r!=0) 
-        throw InternalErr(__FILE__,__LINE__,"GDblkSOMoffset doesn't return the correct values");
+        throw BESInternalError("GDblkSOMoffset doesn't return the correct values.",__FILE__,__LINE__);
 
     int status = misr_init(NBLOCK, xdim, ydim, offset, ulc, lrc);
     if (status!=0) 
-        throw InternalErr(__FILE__,__LINE__,"misr_init doesn't return the correct values");
+        throw BESInternalError("misr_init doesn't return the correct values.",__FILE__,__LINE__);
 
     int iflg = 0;
     int (*inv_trans[MAXPROJ+1])(double, double, double*, double*);
     inv_init((int)projcode, (int)zone, (double*)params, (int)sphere, nullptr, nullptr, (int*)&iflg, inv_trans);
     if (iflg) 
-        throw InternalErr(__FILE__,__LINE__,"inv_init doesn't return correct values");
+        throw BESInternalError("inv_init doesn't return correct values.",__FILE__,__LINE__);
 
     // Change to vector in the future. KY 2012-09-20
     double somx = 0.;
@@ -2161,23 +2118,22 @@ HDFEOS2ArrayGridGeoField::CalculateLargeGeoLatLon(int32 gridid,  int gf_fieldtyp
     int r = 0;
     r = GDgridinfo (gridid, &xdim, &ydim, upleft, lowright);
     if (r!=0) {
-        throw InternalErr(__FILE__,__LINE__, "GDgridinfo failed");
+        throw BESInternalError("GDgridinfo failed.",__FILE__,__LINE__);
     }
 
     if (0 == xdim || 0 == ydim) {
-        throw InternalErr(__FILE__,__LINE__, "xdim or ydim should not be zero. ");
+        throw BESInternalError("Xdim or ydim should not be zero. ",__FILE__,__LINE__);
     }
 
     if (upleft[0]>180.0 || upleft[0] <-180.0 ||
         upleft[1]>90.0 || upleft[1] <-90.0 ||
         lowright[0] >180.0 || lowright[0] <-180.0 ||
         lowright[1] >90.0 || lowright[1] <-90.0) {
-
-        throw InternalErr(__FILE__,__LINE__, "lat/lon corner points are out of range. ");
+        throw BESInternalError("Lat/lon corner points are out of range. ",__FILE__,__LINE__);
     }
 
     if (count[0] != nelms) {
-        throw InternalErr(__FILE__,__LINE__, "rank is not 1 ");
+        throw BESInternalError("Rank is not 1. ",__FILE__,__LINE__);
     }
     float lat_step = (float)(lowright[1] - upleft[1])/ydim;
     float lon_step = (float)(lowright[0] - upleft[0])/xdim;
@@ -2223,7 +2179,7 @@ HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int gf_fieldtype, f
 
     r = GDgridinfo (gridid, &xdim, &ydim, upleft, lowright);
     if (r != 0)
-        throw InternalErr(__FILE__,__LINE__,"GDgridinfo failed");
+        throw BESInternalError("GDgridinfo failed.",__FILE__,__LINE__);
 
     vector<float64> tmp1;
     tmp1.resize(xdim*ydim);
