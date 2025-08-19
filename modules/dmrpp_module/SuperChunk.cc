@@ -717,7 +717,7 @@ void SuperChunk::retrieve_data() {
     }
 
     if (get_data_url() != nullptr) {
-        BES_PROFILE_TIMING(string("Retrieve SuperChunk data - ") + get_data_url()->str() + string(" - size: ") + ::to_string(get_size()) + string(" - offset: ") + ::to_string(get_offset()));
+        BES_PROFILE_TIMING(string("Request SuperChunk data - ") + get_data_url()->str() + string(" - size: ") + ::to_string(get_size()) + string(" - offset: ") + ::to_string(get_offset()));
     }
 
     // TODO Move this into read_aggregate_bytes(), move map_chunks_to_buffer()
@@ -772,7 +772,7 @@ void SuperChunk::retrieve_data_dio() {
     }
 
     if (get_data_url() != nullptr) {
-        BES_PROFILE_TIMING(string("Retrieve SuperChunk data dio - ") + get_data_url()->str() + string(" - size: ") + ::to_string(get_size()) + string(" - offset: ") + ::to_string(get_offset()));
+        BES_PROFILE_TIMING(string("Request SuperChunk data dio - ") + get_data_url()->str() + string(" - size: ") + ::to_string(get_size()) + string(" - offset: ") + ::to_string(get_offset()));
     }
 
     if (!d_read_buffer) {

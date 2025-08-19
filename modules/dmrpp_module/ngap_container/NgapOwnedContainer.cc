@@ -213,7 +213,7 @@ bool NgapOwnedContainer::file_to_string(int fd, string &content) {
  */
 string NgapOwnedContainer::build_data_url_to_daac_bucket(const string &rest_path) {
     BES_MODULE_TIMING(prolog + rest_path);
-    BES_PROFILE_TIMING("Get URL for DAAC bucket");
+    BES_PROFILE_TIMING(string("Build granule URL - ") + rest_path);
 
     bool found;
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
@@ -223,7 +223,6 @@ string NgapOwnedContainer::build_data_url_to_daac_bucket(const string &rest_path
     string data_url;
     if (NgapOwnedContainer::d_use_cmr_cache) {
         if (NgapOwnedContainer::d_cmr_mem_cache.get(url_key, data_url)) {
-            BES_PROFILE_TIMING("Get URL for DAAC bucket from cache");
             CACHE_LOG(prolog + "CMR Cache hit, translated URL: " + data_url + '\n');
             return data_url;
         } else {
