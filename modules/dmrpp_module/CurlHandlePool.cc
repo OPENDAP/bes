@@ -32,7 +32,6 @@
 #include "CurlUtils.h"
 #include "HttpError.h"
 #include "BESForbiddenError.h"
-#include "BESStopWatch.h"
 #include "AllowedHosts.h"
 
 #include "DmrppCommon.h"
@@ -228,8 +227,6 @@ dmrpp_easy_handle::~dmrpp_easy_handle() {
  * all cleanup.
  */
 void dmrpp_easy_handle::read_data() {
-    BES_PROFILE_TIMING(string("DMRPP read data request - ") + d_url->str());
-
     // Treat HTTP/S requests specially; retry some kinds of failures.
     if (d_url->protocol() == HTTPS_PROTOCOL || d_url->protocol() == HTTP_PROTOCOL) {
         try {
