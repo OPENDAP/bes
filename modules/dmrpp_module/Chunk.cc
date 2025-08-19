@@ -40,6 +40,7 @@
 #define PUGIXML_HEADER_ONLY
 #include <pugixml.hpp>
 
+#include "BESStopWatch.h"
 #include "Chunk.h"
 #include "CurlUtils.h"
 #include "CurlHandlePool.h"
@@ -1228,6 +1229,10 @@ void Chunk::read_chunk() {
     if (d_is_read)
         return;
 
+    if (get_data_url() != nullptr) {
+        BES_PROFILE_TIMING(string("Read chunk - ") + get_data_url()->str() + string(" - size: ") + ::to_string(get_size()) + string(" - offset: ") + ::to_string(get_offset()));
+    }
+
     // By default, d_read_buffer_is_mine is true. But if this is part of a SuperChunk
     // then the SuperChunk will have allocated memory and d_read_buffer_is_mine is false.
     if (d_read_buffer_is_mine)
@@ -1269,10 +1274,13 @@ void Chunk::read_chunk() {
 
 // direct IO method that reads chunks.
 void Chunk::read_chunk_dio() {
-
     // Read chunk for dio - use read_chunk() as a reference.
     if (d_is_read)
         return;
+
+    if (get_data_url() != nullptr) {
+        BES_PROFILE_TIMING(string("Read chunk dio - ") + get_data_url()->str() + string(" - size: ") + ::to_string(get_size()) + string(" - offset: ") + ::to_string(get_offset()));
+    }
 
     // By default, d_read_buffer_is_mine is true. But if this is part of a SuperChunk
     // then the SuperChunk will have allocated memory and d_read_buffer_is_mine is false.

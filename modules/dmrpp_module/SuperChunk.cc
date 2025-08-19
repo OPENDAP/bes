@@ -30,6 +30,7 @@
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
+#include "BESStopWatch.h"
 #include "DmrppRequestHandler.h"
 #include "CurlHandlePool.h"
 #include "DmrppArray.h"
@@ -714,6 +715,11 @@ void SuperChunk::retrieve_data() {
         BESDEBUG(SUPER_CHUNK_MODULE, prolog << "SuperChunk (" << (void **) this << ") has already been read! Returning." << endl);
         return;
     }
+
+    if (get_data_url() != nullptr) {
+        BES_PROFILE_TIMING(string("Retrieve SuperChunk data - ") + get_data_url()->str() + string(" - size: ") + ::to_string(get_size()) + string(" - offset: ") + ::to_string(get_offset()));
+    }
+
     // TODO Move this into read_aggregate_bytes(), move map_chunks_to_buffer()
     //  after read_aggregate_bytes() and modify map_chunks_to_buffer() to set
     //  the chunk size and read state so the last for loop can be removed.
@@ -763,6 +769,10 @@ void SuperChunk::retrieve_data_dio() {
     if (d_is_read) {
         BESDEBUG(SUPER_CHUNK_MODULE, prolog << "SuperChunk (" << (void **) this << ") has already been read! Returning." << endl);
         return;
+    }
+
+    if (get_data_url() != nullptr) {
+        BES_PROFILE_TIMING(string("Retrieve SuperChunk data dio - ") + get_data_url()->str() + string(" - size: ") + ::to_string(get_size()) + string(" - offset: ") + ::to_string(get_offset()));
     }
 
     if (!d_read_buffer) {
