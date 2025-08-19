@@ -411,7 +411,10 @@ int BESInterface::execute_request(const string &from)
         // HK-474. The exception caused by the errant config file in the ticket is
         // thrown from inside SaxParserWrapper::rethrowException(). It will be caught
         // below. jhrg 11/12//19
-        execute_data_request_plan();
+        {
+            BES_PROFILE_TIMING("Execute data request plan");
+            execute_data_request_plan();
+        }
 
         // clear the timeout
         clear_bes_timeout();
