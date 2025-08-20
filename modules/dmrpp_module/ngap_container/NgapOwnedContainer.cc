@@ -213,7 +213,6 @@ bool NgapOwnedContainer::file_to_string(int fd, string &content) {
  */
 string NgapOwnedContainer::build_data_url_to_daac_bucket(const string &rest_path) {
     BES_MODULE_TIMING(prolog + rest_path);
-    BES_PROFILE_TIMING(string("Build granule URL - ") + rest_path);
 
     bool found;
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
