@@ -217,6 +217,7 @@ string NgapOwnedContainer::build_data_url_to_daac_bucket(const string &rest_path
     bool found;
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
     BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
+
     // If using the cache, look there. Note that the UID is part of the key to the cached data.
     string url_key = rest_path + ':' + uid;
     string data_url;

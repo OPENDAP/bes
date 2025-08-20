@@ -1269,6 +1269,7 @@ void Chunk::read_chunk() {
 
 // direct IO method that reads chunks.
 void Chunk::read_chunk_dio() {
+
     // Read chunk for dio - use read_chunk() as a reference.
     if (d_is_read)
         return;

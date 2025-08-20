@@ -1242,7 +1242,6 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
  */
 void http_get(const string &target_url, string &buf) {
     BESDEBUG(MODULE, prolog << "BEGIN\n");
-    BES_PROFILE_TIMING(string("Make HTTP GET request - ") + target_url);
 
     vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
     CURL *ceh = nullptr;     ///< The libcurl handle object.
@@ -1840,7 +1839,6 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
  * @return The redirect URL string.
  */
 std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http::url> &origin_url) {
-
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     // Before we do anything, make sure that the URL is OK to pursue.
     if (!http::AllowedHosts::theHosts()->is_allowed(origin_url)) {
@@ -1851,6 +1849,7 @@ std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http:
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
+    BES_PROFILE_TIMING("Request redirect url - " + origin_url->str());
     std::shared_ptr<http::EffectiveUrl> redirect_url;
 
     unsigned int attempt = 0;
