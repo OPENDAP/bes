@@ -1839,6 +1839,7 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
  * @return The redirect URL string.
  */
 std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http::url> &origin_url) {
+
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     // Before we do anything, make sure that the URL is OK to pursue.
     if (!http::AllowedHosts::theHosts()->is_allowed(origin_url)) {

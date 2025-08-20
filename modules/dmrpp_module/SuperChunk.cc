@@ -716,7 +716,7 @@ void SuperChunk::retrieve_data() {
         return;
     }
 
-    BES_PROFILE_TIMING(string("Request SuperChunk data - ") + (get_data_url() ? get_data_url()->get_url_no_query() : "") + string(" - size: ") + ::to_string(get_size()) + string(" - quantity: ") + ::to_string(get_chunks_size()));
+    BES_PROFILE_TIMING(string("Request SuperChunk data - ") + (get_data_url() ? get_data_url()->get_url_no_query() : "") + string(" - ") + ::to_string(get_size()) + string(" byte(s) - ") + ::to_string(get_chunks_size()) + " chunk(s)");
 
     // TODO Move this into read_aggregate_bytes(), move map_chunks_to_buffer()
     //  after read_aggregate_bytes() and modify map_chunks_to_buffer() to set
@@ -769,7 +769,7 @@ void SuperChunk::retrieve_data_dio() {
         return;
     }
 
-    BES_PROFILE_TIMING(string("Request SuperChunk data dio - ") + (get_data_url() ? get_data_url()->get_url_no_query() : "") + string(" - size: ") + ::to_string(get_size()) + string(" - quantity: ") + ::to_string(get_chunks_size()));
+    BES_PROFILE_TIMING(string("Request SuperChunk data dio - ") + (get_data_url() ? get_data_url()->get_url_no_query() : "") + string(" - ") + ::to_string(get_size()) + string(" byte(s) - ") + ::to_string(get_chunks_size()) + " chunk(s)");
 
     if (!d_read_buffer) {
         // Allocate memory for SuperChunk receive buffer.
