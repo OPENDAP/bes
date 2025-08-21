@@ -48,6 +48,7 @@
 #include "BESObj.h"
 
 #define COMMAND_TIMING 1
+#define PROFILE_TIMING 1
 
 static const std::string TIMING_LOG_KEY = "timing";
 static const std::string MISSING_LOG_PARAM;
@@ -85,12 +86,15 @@ besTimer.start((message), DHI)
 #define BES_COMMAND_TIMING(message, DHI) BESStopWatch commandTimer; \
     commandTimer.start(string("Command timing: ") + (message) + (DHI->data[LOG_INFO]), DHI)
 
-#define BES_PROFILE_TIMING(message) BESStopWatch profileTimer; \
-    profileTimer.start(string("Profile timing: ") + (message))
-
 #else
 #define BES_MODULE_TIMING(message)
 #define BES_COMMAND_TIMING(message, DHI)
+#endif
+
+#ifdef PROFILE_TIMING
+#define BES_PROFILE_TIMING(message) BESStopWatch profileTimer; \
+    profileTimer.start(string("Profile timing: ") + (message))
+#else
 #define BES_PROFILE_TIMING(message)
 #endif
 
