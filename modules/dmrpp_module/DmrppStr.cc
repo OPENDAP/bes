@@ -65,7 +65,7 @@ DmrppStr::read()
     // string code requires special processing of the data array and requires information
     // about the chunk size to produce correct answers.
 
-    if (get_chunk_count() != 1)
+    if (get_chunks_size() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
 
     auto chunk = get_immutable_chunks()[0];

@@ -478,7 +478,7 @@ unsigned long DmrppCommon::add_chunk(
 char *
 DmrppCommon::read_atomic(const string &name)
 {
-    if (get_chunk_count() != 1)
+    if (get_chunks_size() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name, __FILE__, __LINE__);
 
     auto chunk = get_immutable_chunks()[0];
@@ -491,7 +491,7 @@ DmrppCommon::read_atomic(const string &name)
 // Need to obtain the buffer size for scalar structure.
 char * DmrppCommon::read_atomic(const string &name, size_t & buf_size)
 {
-    if (get_chunk_count() != 1)
+    if (get_chunks_size() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name, __FILE__, __LINE__);
 
     auto chunk = get_immutable_chunks()[0];
@@ -794,7 +794,7 @@ void DmrppCommon::print_dmrpp(XMLWriter &xml, bool constrained /*false*/)
 
     // This is the code added to libdap::BaseType::print_dap4(). jhrg 5/10/18
     // If the scalar variable with contiguous contains a fillvalue, also needs to output. ky 07/12/22
-    if (DmrppCommon::d_print_chunks && (get_chunk_count() > 0 || get_uses_fill_value()))
+    if (DmrppCommon::d_print_chunks && (get_chunks_size() > 0 || get_uses_fill_value()))
         print_chunks_element(xml, DmrppCommon::d_ns_prefix);
 
     // print scalar value for special missing variables. 

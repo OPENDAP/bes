@@ -2326,7 +2326,7 @@ void DMZ::load_chunks(BaseType *btp)
             auto const &array_shape = get_array_dims(array);
             size_t num_logical_chunks = logical_chunks(array_shape, dc(btp));
             // do we need to run this code?
-            if (num_logical_chunks != dc(btp)->get_chunk_count()) {
+            if (num_logical_chunks != dc(btp)->get_chunks_size()) {
                 auto const &chunk_map = get_chunk_map(dc(btp)->get_immutable_chunks());
                 // Since the variable has some chunks that hold only fill values, add those chunks
                 // to the vector of chunks.
