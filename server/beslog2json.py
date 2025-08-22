@@ -72,7 +72,7 @@ TRANSMIT_INFO_LOG    = True
 TRANSMIT_ERROR_LOG   = True
 TRANSMIT_VERBOSE_LOG = True
 TRANSMIT_TIMING_LOG  = False
-TRANSMIT_PROFILING_LOG  = False
+TRANSMIT_PROFILING_LOG  = True
 
 ###############################################################################
 # Sort the keys in the JSON (including debugging)
@@ -398,7 +398,7 @@ def timing_log_to_json(log_fields, json_log_record):
             json_log_record[TIMER_NAME_KEY] = log_fields[12]
             send_it = True
     else:
-        debug(f"TRANSMIT_TIMING_LOG is {eord(TRANSMIT_TIMING_LOG)}; TRANSMIT_PROFILING_LOG is {eord(TRANSMIT_PROFILING_LOG)}")
+        debug(f"TRANSMIT_TIMING_LOG is {eord(TRANSMIT_TIMING_LOG)} and TRANSMIT_PROFILING_LOG is {eord(TRANSMIT_PROFILING_LOG)}")
 
     return send_it
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -483,7 +483,7 @@ def square_bracket_timing_record(log_fields, json_log_record):
         else:
             return processing_error(f"{prolog} Failed to identify timing data in log_fields: {log_fields}", json_log_record)
     else:
-        debug(f"TRANSMIT_TIMING_LOG: {eord(TRANSMIT_TIMING_LOG)}; TRANSMIT_PROFILING_LOG: {eord(TRANSMIT_PROFILING_LOG)}")
+        debug(f"TRANSMIT_TIMING_LOG: {eord(TRANSMIT_TIMING_LOG)} and TRANSMIT_PROFILING_LOG: {eord(TRANSMIT_PROFILING_LOG)}")
 
     debug(f"{prolog} END")
 
