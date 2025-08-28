@@ -274,7 +274,7 @@ DmrppStructure::print_dap4(libdap::XMLWriter &writer, bool constrained) {
         bt->print_dap4(writer);
     }
 
-    if (DmrppCommon::d_print_chunks && (get_chunks_size() > 0 || get_uses_fill_value()))
+    if (DmrppCommon::d_print_chunks && (get_chunk_count() > 0 || get_uses_fill_value()))
         print_chunks_element(writer, DmrppCommon::d_ns_prefix);
 
     // Special structure string array.
