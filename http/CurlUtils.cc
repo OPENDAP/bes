@@ -1850,6 +1850,7 @@ std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http:
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
+    BES_PROFILE_TIMING("Request redirect url - " + origin_url->get_url_no_query());
     std::shared_ptr<http::EffectiveUrl> redirect_url;
 
     unsigned int attempt = 0;
