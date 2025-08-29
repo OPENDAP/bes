@@ -72,6 +72,7 @@ TRANSMIT_INFO_LOG    = True
 TRANSMIT_ERROR_LOG   = True
 TRANSMIT_VERBOSE_LOG = True
 TRANSMIT_TIMING_LOG  = False
+TRANSMIT_PROFILING_LOG  = True
 
 ###############################################################################
 # Sort the keys in the JSON (including debugging)
@@ -219,6 +220,7 @@ def show_config():
         debug(f"  TRANSMIT_ERROR_LOG:   {eord(TRANSMIT_ERROR_LOG)}")
         debug(f"  TRANSMIT_VERBOSE_LOG: {eord(TRANSMIT_VERBOSE_LOG)}")
         debug(f"  TRANSMIT_TIMING_LOG:  {eord(TRANSMIT_TIMING_LOG)}")
+        debug(f"  TRANSMIT_PROFILING_LOG:  {eord(TRANSMIT_PROFILING_LOG)}")
         debug("")
 
 ###############################################################################
@@ -385,7 +387,9 @@ def timing_log_to_json(log_fields, json_log_record):
     """
     debug("Processing TIMING_MESSAGE_TYPE")
     send_it = False
-    if TRANSMIT_TIMING_LOG:
+
+    transmit_log = TRANSMIT_TIMING_LOG or (TRANSMIT_PROFILING_LOG and log_fields[12].startswith("Profile timing:"))
+    if transmit_log:
         if log_fields[5] == ELAPSED_TIME_KEY_BASE :
             json_log_record[ELAPSED_TIME_KEY] = int(log_fields[6])
             json_log_record[START_TIME_KEY] = int(log_fields[8])
@@ -394,7 +398,7 @@ def timing_log_to_json(log_fields, json_log_record):
             json_log_record[TIMER_NAME_KEY] = log_fields[12]
             send_it = True
     else:
-        debug(f"TRANSMIT_TIMING_LOG is {eord(TRANSMIT_TIMING_LOG)}")
+        debug(f"TRANSMIT_TIMING_LOG is {eord(TRANSMIT_TIMING_LOG)} and TRANSMIT_PROFILING_LOG is {eord(TRANSMIT_PROFILING_LOG)}")
 
     return send_it
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -450,7 +454,13 @@ def square_bracket_timing_record(log_fields, json_log_record):
     prolog ="square_bracket_timing_record()"
     debug(f"{prolog} BEGIN")
     send_it = False
-    if TRANSMIT_TIMING_LOG:
+
+    timer_name = log_fields[11]
+    if timer_name.endswith("]"):
+        timer_name = timer_name[:-1]
+    transmit_log = TRANSMIT_TIMING_LOG or (TRANSMIT_PROFILING_LOG and timer_name.startswith("Profile timing:"))
+
+    if transmit_log:
         debug(f"{prolog} Processing timing log line")
         if log_fields[4] == "ELAPSED":
             debug(f"{prolog} Found ELAPSED ")
@@ -467,16 +477,13 @@ def square_bracket_timing_record(log_fields, json_log_record):
             json_log_record[STOP_TIME_KEY] = int(stop_us)
 
             json_log_record[REQUEST_ID_KEY] = log_fields[10]
-            timer_name = log_fields[11]
-            if timer_name.endswith("]"):
-                timer_name = timer_name[:-1]
             json_log_record[TIMER_NAME_KEY] = timer_name
             send_it = True
             debug(f"{prolog} json: {json.dumps(json_log_record, sort_keys=SORT_KEYS)} ")
         else:
             return processing_error(f"{prolog} Failed to identify timing data in log_fields: {log_fields}", json_log_record)
     else:
-        debug(f"TRANSMIT_TIMING_LOG: {eord(TRANSMIT_TIMING_LOG)}")
+        debug(f"TRANSMIT_TIMING_LOG: {eord(TRANSMIT_TIMING_LOG)} and TRANSMIT_PROFILING_LOG: {eord(TRANSMIT_PROFILING_LOG)}")
 
     debug(f"{prolog} END")
 
@@ -662,7 +669,7 @@ NAME
     beslog2json.py - Convert BES log lines to valid json formatted kvp.
 
 SYNOPSIS
-    beslog2json.py [-h][-d][-a][-r value][-i value][-e value][-v value][-t value][-p value][-f value][-s value]
+    beslog2json.py [-h][-d][-a][-r value][-i value][-e value][-v value][-t value][-P value][-p value][-f value][-s value]
 
 DESCRIPTION
     Reads BES log lines from stdin (default) or from a file 
@@ -704,11 +711,18 @@ DESCRIPTION
             output. Passing 'value' that begins with an 'f' 
             or 'F' will evaluate to False. All else evaluates to True.
             (set to: {TRANSMIT_TIMING_LOG})
+
+        -P value, --profiling value
+            Adds BES log lines of type 'timing' and a timer name
+            that starts with 'Profile timing:' to the json
+            output. Passing 'value' that begins with an 'f'
+            or 'F' will evaluate to False. All else evaluates to True.
+            (set to: {TRANSMIT_PROFILING_LOG})
             
         -a, --all
             Causes all of the BES log lines to be transmitted. 
             This is essentially the same as using the arguments:
-            '-r true -i true -e true -v true -t true'             
+            '-r true -i true -e true -v true -t true -P true'
             
         -p value, --prefix value
             A (short) string that will be prepended to the 
@@ -754,13 +768,14 @@ def main(argv):
     global TRANSMIT_ERROR_LOG
     global TRANSMIT_VERBOSE_LOG
     global TRANSMIT_TIMING_LOG
+    global TRANSMIT_PROFILING_LOG
     global SORT_KEYS
     global the_prefix
 
     input_filename=""
 
     try:
-        opts, args = getopt.getopt(argv, "hadsvr:i:e:t:p:f:", ["help", "debug", "all", "sort=", "requests=", "info=", "error=", "verbose=", "timing=", "prefix=", "filename="])
+        opts, args = getopt.getopt(argv, "hadsvr:i:e:t:P:p:f:", ["help", "debug", "all", "sort=", "requests=", "info=", "error=", "verbose=", "timing=", "profiling=", "prefix=", "filename="])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -788,6 +803,7 @@ def main(argv):
             TRANSMIT_ERROR_LOG   = True
             TRANSMIT_VERBOSE_LOG = True
             TRANSMIT_TIMING_LOG  = True
+            TRANSMIT_PROFILING_LOG  = True
 
         elif opt in ("-i", "--info"):
             TRANSMIT_INFO_LOG    = not arg.lower().startswith("f")
@@ -797,6 +813,9 @@ def main(argv):
 
         elif opt in ("-t", "--timing"):
             TRANSMIT_TIMING_LOG  = not arg.lower().startswith("f")
+
+        elif opt in ("-P", "--profiling"):
+            TRANSMIT_PROFILING_LOG  = not arg.lower().startswith("f")
 
         elif opt in ("-p", "--prefix"):
             the_prefix = arg
