@@ -1134,6 +1134,7 @@ void BESFileLockingCache::purge_file(const string &file)
 
         // Grab an exclusive lock on the file. SonarScan will complain about nested trys... jhrg 11/16/22
         int cfile_fd;
+        int fd;
         try {
             if (get_exclusive_lock(file, cfile_fd)) {
                 // Get the file's size
@@ -1151,6 +1152,12 @@ void BESFileLockingCache::purge_file(const string &file)
                             __LINE__);
 
                 // FIXME The exception above could result in a leak. jhrg 11/16/22
+                fd = m_remove_descriptor(file);
+                if (fd != cfile_fd){
+                    throw BESInternalError(
+                            prolog + "File descriptor does not match purged file descriptor for " + file, __FILE__,
+                            __LINE__);
+                }
                 unlock(cfile_fd);
                 cfile_fd = -1;
                 unsigned long long cache_size = get_cache_size() - size;

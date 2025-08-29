@@ -35,7 +35,7 @@
 using std::endl;
 using std::string;
 
-BESUncompressCache *BESUncompressCache::d_instance = 0;
+// BESUncompressCache *BESUncompressCache::d_instance = 0;
 bool BESUncompressCache::d_enabled = true;
 
 const string BESUncompressCache::DIR_KEY = "BES.UncompressCache.dir";

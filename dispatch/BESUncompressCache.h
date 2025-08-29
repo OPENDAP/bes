@@ -31,12 +31,14 @@ class BESUncompressCache: public BESFileLockingCache {
 private:
     static bool d_enabled;
     static std::once_flag d_initialize;
+#if 0
     static BESUncompressCache * d_instance;
     static void delete_instance()
     {
         delete d_instance;
         d_instance = 0;
     }
+#endif
 
     std::string d_dimCacheDir;
     std::string d_dataRootDir;
