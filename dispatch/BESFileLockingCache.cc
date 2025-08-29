@@ -1149,10 +1149,18 @@ void BESFileLockingCache::purge_file(const string &file)
                     throw BESInternalError(
                             prolog + "Unable to purge the file " + file + " from the cache: " + get_errno(), __FILE__,
                             __LINE__);
+#if 0
+                //  The exception above could result in a leak. jhrg 11/16/22 fixed 8/29/25
+                  fd = m_remove_descriptor(file);
+                  if (fd != cfile_fd){
+                    throw BESInternalError(
+                            prolog + "File descriptor does not match purged file descriptor for " + file, __FILE__,
+                            __LINE__);
+                }
 
-                // FIXME The exception above could result in a leak. jhrg 11/16/22
                 unlock(cfile_fd);
-                cfile_fd = -1;
+#endif
+                unlock_and_close(file);
                 unsigned long long cache_size = get_cache_size() - size;
 
                 if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
@@ -1165,8 +1173,11 @@ void BESFileLockingCache::purge_file(const string &file)
             }
         }
         catch (...) {
-            if (cfile_fd != -1)
+            unlock_and_close(file);
+#if 0
+              if (cfile_fd != -1)
                 unlock(cfile_fd);
+#endif
         }
 #if 0
         unlock_cache();

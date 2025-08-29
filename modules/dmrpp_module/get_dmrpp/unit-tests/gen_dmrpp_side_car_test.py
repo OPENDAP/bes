@@ -25,8 +25,8 @@ class TestSample(unittest.TestCase):
         #result = filecmp.cmp("grid_2_2d_ps.hdf.dmrpp","grid_2_2d_ps.hdf.dmrpp.baseline")
         #self.assertEqual(result ,True )
         
-        # Since we also add the dmrpp metadata generation informatio for the HDF4 files,
-        # we need to ignore those information when doing comparision.
+        # Since we also add the dmrpp metadata generation information for the HDF4 files,
+        # we need to ignore that information when doing comparison.
         with open('grid_2_2d_ps.hdf.dmrpp') as f:
             dmrpp_lines_after_79 = f.readlines()[79:]
         with open('grid_2_2d_ps.hdf.dmrpp.baseline') as f1:

@@ -22,6 +22,7 @@
 #define DISPATCH_BESUNCOMPRESSCACHE_H_
 
 #include <string>
+#include <mutex>
 
 #include "BESFileLockingCache.h"
 
@@ -29,19 +30,22 @@ class BESUncompressCache: public BESFileLockingCache {
     friend class uncompressT;
 private:
     static bool d_enabled;
+    static std::once_flag d_initialize;
+#if 0
     static BESUncompressCache * d_instance;
     static void delete_instance()
     {
         delete d_instance;
         d_instance = 0;
     }
+#endif
 
     std::string d_dimCacheDir;
     std::string d_dataRootDir;
     std::string d_dimCacheFilePrefix;
     unsigned long d_maxCacheSize;
 
-    BESUncompressCache();
+    BESUncompressCache() = default;
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset_file_name);
 
