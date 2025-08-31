@@ -1,4 +1,10 @@
 AUTOMAKE_OPTIONS = foreign
+
+# Added NOTPARALLEL because this Makefile.am requires targets to run in a certain
+# order and this makes that requirement explicit. jhrg 8/31/25
+
+.NOTPARALLEL:
+
 HDF_FILES = *.hdf
 HDF5_FILES = *.h5
 PYTHON_FILES = *.py
@@ -6,6 +12,27 @@ BASELINE_FILES = *.baseline
 
 EXTRA_DIST = *.hdf *.h5 *.py *.baseline
 
+# This target shows the values of these variables. For 'make check' they
+# are: srcdir: "."
+#      builddir: "."
+# With 'make distcheck,' the values are
+#   srcdir: "../../../../../../modules/dmrpp_module/get_dmrpp/unit-tests"
+#   builddir: "."
+#
+# jhrg 8/31/25
+#
+echo-variables:
+	@echo "srcdir: \"$(srcdir)\""
+	@echo "builddir: \"$(builddir)\""
+	@echo "srcdir path manipulation: \"`echo $(srcdir) | rev | cut -c 11- | rev`\""
+
+# This target copies the executable scripts from the directory above to either
+# this dir (when 'make check' is run) or the build dir (when 'make distcheck' is
+# run). This is because the scripts must _write_ files and distcheck does not
+# allow writing to the source directory.
+#
+# I do not understand why the module *.so files are copied. jhrg 8/31/25
+#
 cp_build_script:
 	if test $(srcdir) != .; then \
 	cp -f `echo $(srcdir) | rev | cut -c 11- | rev`/gen_dmrpp_side_car $(builddir); \
@@ -27,9 +54,10 @@ cp_build_script:
 	cp -f  ../$(srcdir)/get_dmrpp_h5 $(builddir); \
 	fi;
 
-check-local: check-local-gen-dmrpp 
+# See the comment about NOTPARALLEL above. With parallel make, these target dependencies
+# would run in parallel. jhrg 8/31/25
 
-check-local-gen-dmrpp: cp_build_script
+check-local: echo-variables cp_build_script check-local-gen-dmrpp
 
 check-local-gen-dmrpp:
 	if test $(srcdir) != .; then \
@@ -37,9 +65,6 @@ check-local-gen-dmrpp:
 	else \
 	python3 -m unittest gen_dmrpp_side_car_test; \
     fi;
-
-# Removed from the else clause above. jhrg 8/31/25
-# (PATH=$(abs_top_srcdir)/modules/dmrpp_module:$(abs_top_srcdir)/modules/dmrpp_module/build_dmrpp_h4:$(abs_top_srcdir)/standalone:$(abs_srcdir):$$PATH; python3 -m unittest gen_dmrpp_side_car_test)
 
 clean-local:
 	rm -f $(builddir)/gen_dmrpp_side_car; \
