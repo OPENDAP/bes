@@ -35,8 +35,11 @@ check-local-gen-dmrpp:
 	if test $(srcdir) != .; then \
 	(PATH=$(abs_top_builddir)/modules/dmrpp_module:$(abs_top_builddir)/modules/dmrpp_module/build_dmrpp_h4:$(abs_top_builddir)/standalone:$(abs_builddir):$$PATH; python3 -m unittest gen_dmrpp_side_car_test) \
 	else \
-	(PATH=$(abs_top_srcdir)/modules/dmrpp_module:$(abs_top_srcdir)/modules/dmrpp_module/build_dmrpp_h4:$(abs_top_srcdir)/standalone:$(abs_srcdir):$$PATH; python3 -m unittest gen_dmrpp_side_car_test) \
+	python3 -m unittest gen_dmrpp_side_car_test; \
     fi;
+
+# Removed from the else clause above. jhrg 8/31/25
+# (PATH=$(abs_top_srcdir)/modules/dmrpp_module:$(abs_top_srcdir)/modules/dmrpp_module/build_dmrpp_h4:$(abs_top_srcdir)/standalone:$(abs_srcdir):$$PATH; python3 -m unittest gen_dmrpp_side_car_test)
 
 clean-local:
 	rm -f $(builddir)/gen_dmrpp_side_car; \
