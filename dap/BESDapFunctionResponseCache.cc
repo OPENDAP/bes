@@ -608,7 +608,6 @@ BESDapFunctionResponseCache::write_dataset_to_cache(DDS *dds, const string &reso
         catch (...) {
             // Bummer. There was a problem doing The Stuff. Now we gotta clean up.
             cache_file_ostream.close();
-            //purge_file(cache_file_name);
             unlock_and_close(cache_file_name);
             throw;
         }
