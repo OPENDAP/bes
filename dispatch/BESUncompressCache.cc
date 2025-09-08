@@ -169,18 +169,16 @@ BESUncompressCache *
 BESUncompressCache::get_instance()
 {
     static BESUncompressCache cache;
-    std::call_once(d_initialize, [&](){
+    std::call_once(d_initialize, [&cache](){
         d_enabled = true;
-        string d_dimCacheDir = getCacheDirFromConfig();
-        string d_dimCacheFilePrefix = getCachePrefixFromConfig();
-        long d_maxCacheSize = getCacheSizeFromConfig();
+        string tmp_dimCacheDir = getCacheDirFromConfig();
 
-        if (d_dimCacheDir.empty()){
+        if (tmp_dimCacheDir.empty()){
             cache.disable();
         }
         else{
             cache.enable();
-            cache.initialize(d_dimCacheDir, d_dimCacheFilePrefix, d_maxCacheSize);
+            cache.initialize(tmp_dimCacheDir, getCachePrefixFromConfig(), getCacheSizeFromConfig());
         }
     });
     if (cache.cache_enabled()){

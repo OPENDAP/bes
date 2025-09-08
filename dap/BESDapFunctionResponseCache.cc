@@ -208,16 +208,15 @@ BESDapFunctionResponseCache::get_instance()
 {
     static BESDapFunctionResponseCache cache;
     std::call_once(d_initialize, [&](){
-        string cache_dir = get_cache_dir_from_config();
-        string cache_prefix = get_cache_prefix_from_config();
-        long cache_size = get_cache_size_from_config();
+        
+        string tmp_cache_dir = get_cache_dir_from_config();
 
-        if (cache_dir.empty()){
+        if (tmp_cache_dir.empty()){
             cache.disable();
         }
         else{
             cache.enable();
-            cache.initialize(cache_dir, cache_prefix, cache_size);
+            cache.initialize(tmp_cache_dir, get_cache_prefix_from_config(), get_cache_size_from_config());
         }
     });
     if (cache.cache_enabled()){

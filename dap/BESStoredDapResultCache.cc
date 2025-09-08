@@ -211,19 +211,15 @@ BESStoredDapResultCache::get_instance()
 {
     static BESStoredDapResultCache cache;
     std::call_once(d_initialize, [&](){
-        string d_storedResultsSubdir = getSubDirFromConfig();
-        string d_dataRootDir = getBesDataRootDirFromConfig();
-        string resultsDir = BESUtil::assemblePath(d_dataRootDir, d_storedResultsSubdir);
 
-        string d_resultFilePrefix = getResultPrefixFromConfig();
-        long d_maxCacheSize = getCacheSizeFromConfig();
+        string tmp_resultsDir = BESUtil::assemblePath(getSubDirFromConfig(), getBesDataRootDirFromConfig());
 
-        if(resultsDir.empty()){
+        if(tmp_resultsDir.empty()){
             cache.disable();
         }
         else{
             cache.enable();
-            cache.initialize(resultsDir, d_resultFilePrefix, d_maxCacheSize);
+            cache.initialize(tmp_resultsDir, getResultPrefixFromConfig(), getCacheSizeFromConfig());
         }
     });
     if (cache.cache_enabled()){
