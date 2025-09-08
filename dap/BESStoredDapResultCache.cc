@@ -220,7 +220,6 @@ BESStoredDapResultCache::get_instance()
 
         if(resultsDir.empty()){
             cache.disable();
-            // throw BESInternalError("BESStoredDapResultCache: directory is empty", __FILE__, __LINE__);
         }
         else{
             cache.enable();

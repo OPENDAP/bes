@@ -96,7 +96,6 @@ const string BESDapFunctionResponseCache::PREFIX_KEY = "DAP.FunctionResponseCach
 const string BESDapFunctionResponseCache::SIZE_KEY = "DAP.FunctionResponseCache.size";
 std::once_flag BESDapFunctionResponseCache::d_initialize;
 
-//BESDapFunctionResponseCache *BESDapFunctionResponseCache::d_instance = 0;
 bool BESDapFunctionResponseCache::d_enabled = true;
 
 unsigned long BESDapFunctionResponseCache::get_cache_size_from_config()
@@ -215,7 +214,6 @@ BESDapFunctionResponseCache::get_instance()
 
         if (cache_dir.empty()){
             cache.disable();
-            //throw BESInternalError("DapFunctionResponseCache: directory is empty", __FILE__, __LINE__);
         }
         else{
             cache.enable();
@@ -374,7 +372,7 @@ BESDapFunctionResponseCache::get_or_cache_dataset(DDS *dds, const string &constr
     // Use the parent class's get_cache_file_name() method and its associated machinery to get the file system path for the cache file.
     // We store it in a variable called basename because the value is later extended as part of the collision avoidance code.
     string cache_file_name = BESFileLockingCache::get_cache_file_name(hashed_id.str(), false);
-    
+
     BESDEBUG(DEBUG_KEY,  __FUNCTION__ << " cache_file_name: '" << cache_file_name << "'" << endl);
 
     // Does the cached dataset exist? if yes, ret_dds points to it. If no,
@@ -611,7 +609,7 @@ BESDapFunctionResponseCache::write_dataset_to_cache(DDS *dds, const string &reso
         catch (...) {
             // Bummer. There was a problem doing The Stuff. Now we gotta clean up.
             cache_file_ostream.close();
-            this->purge_file(cache_file_name);
+            //purge_file(cache_file_name);
             unlock_and_close(cache_file_name);
             throw;
         }

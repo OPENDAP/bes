@@ -35,7 +35,6 @@
 using std::endl;
 using std::string;
 
-// BESUncompressCache *BESUncompressCache::d_instance = 0;
 bool BESUncompressCache::d_enabled = true;
 
 const string BESUncompressCache::DIR_KEY = "BES.UncompressCache.dir";
@@ -178,7 +177,6 @@ BESUncompressCache::get_instance()
 
         if (d_dimCacheDir.empty()){
             cache.disable();
-            // throw BESInternalError("BESUncompressCache: directory is empty", __FILE__, __LINE__);
         }
         else{
             cache.enable();
