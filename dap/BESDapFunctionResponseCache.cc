@@ -207,7 +207,7 @@ BESDapFunctionResponseCache *
 BESDapFunctionResponseCache::get_instance()
 {
     static BESDapFunctionResponseCache cache;
-    std::call_once(d_initialize, [&](){
+    std::call_once(d_initialize, [](){
 
         string tmp_cache_dir = get_cache_dir_from_config();
 

@@ -210,7 +210,7 @@ BESStoredDapResultCache *
 BESStoredDapResultCache::get_instance()
 {
     static BESStoredDapResultCache cache;
-    std::call_once(d_initialize, [&](){
+    std::call_once(d_initialize, [](){
 
         string tmp_resultsDir = BESUtil::assemblePath(getSubDirFromConfig(), getBesDataRootDirFromConfig());
 
