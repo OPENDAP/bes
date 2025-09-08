@@ -169,7 +169,7 @@ BESUncompressCache *
 BESUncompressCache::get_instance()
 {
     static BESUncompressCache cache;
-    std::call_once(d_initialize, [&cache](){
+    std::call_once(d_initialize, [&](){
         d_enabled = true;
         string tmp_dimCacheDir = getCacheDirFromConfig();
 
