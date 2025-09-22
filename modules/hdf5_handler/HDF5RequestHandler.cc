@@ -1486,6 +1486,15 @@ bool HDF5RequestHandler::hdf5_build_dmr_from_file(BESDataHandlerInterface & dhi,
         if (is_eos5 && !use_dimscale)
             obtain_eos5_dims(fileid,eos5_dim_info);
 
+        bool eos5_use_dimscale_null_dims = false;
+        if (is_eos5 && use_dimscale) {
+            // Add code later.
+#if 0
+            bool has_var_null_dim_name = check_var_null_dim_name(fileid);
+            eos5_use_dimscale_null_dims = check_eos5_dimscale_null_dims(fileid);
+#endif
+        }
+
         dmr->set_name(name_path(filename));
         dmr->set_filename(name_path(filename));
 
