@@ -55,7 +55,7 @@ using namespace std;
 } // code requires
 
 %code {
-// This is a flag to indicate if parser is reading geolocatoin or data
+// This is a flag to indicate if parser is reading geolocation or data
 // variable.
 // This should be changed to a enum type parser state variable later.
 bool swath_is_geo_field = false;
