@@ -32,7 +32,7 @@
 #define YYERROR_VERBOSE 0
 
 // Uncomment the following line for debugging.
-// #define VERBOSE 
+#define VERBOSE 
 //#define YYPARSE_PARAM he5parser
 
 #include <stdio.h>
@@ -460,6 +460,9 @@ attribute_data_field_name: DATA_FIELD_NAME '=' STR
     cout << $3 << endl;
 #endif
     HE5Parser* p = (HE5Parser*)he5parser;
+#ifdef VERBOSE
+    cout << "again: " <<$3 << endl;
+#endif
     HE5Var v;
     // Save the data field name. 
     v.name = $3;

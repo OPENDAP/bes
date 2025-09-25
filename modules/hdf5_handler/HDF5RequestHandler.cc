@@ -35,6 +35,7 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -1460,6 +1461,7 @@ bool HDF5RequestHandler::hdf5_build_dmr_from_file(BESDataHandlerInterface & dhi,
 
     }// "if(true == _usecf)"
     else {// default option
+cerr<<"coming to testing"<<endl;
 
         // Obtain the HDF5 file ID.
         fileid = get_fileid(filename.c_str());
@@ -1485,12 +1487,21 @@ bool HDF5RequestHandler::hdf5_build_dmr_from_file(BESDataHandlerInterface & dhi,
         eos5_dim_info_t eos5_dim_info;
         if (is_eos5 && !use_dimscale)
             obtain_eos5_dims(fileid,eos5_dim_info);
-
-        bool eos5_use_dimscale_null_dims = false;
+        //bool eos5_use_dimscale_null_dims = false;
+        unordered_set<string> eos5_missing_dim_names;
         if (is_eos5 && use_dimscale) {
-            // Add code later.
-#if 0
+cerr<<"coming to is_eos5 and use_dimscale"<<endl;
             bool has_var_null_dim_name = check_var_null_dim_name(fileid);
+            if (has_var_null_dim_name) {
+cerr<<"coming to has_var_null_dim_name"<<endl;
+                obtain_eos5_dims(fileid,eos5_dim_info);
+                obtain_eos5_missing_dims(fileid,eos5_dim_info,eos5_missing_dim_names);
+
+for (const auto&emdn:eos5_missing_dim_names) 
+cerr<<"eos5 missing dim names: "<<emdn<<endl;
+            }
+#if 0
+            // We may need to use the code to handle the non-eos5-null-dim case. TODO later.
             eos5_use_dimscale_null_dims = check_eos5_dimscale_null_dims(fileid);
 #endif
         }
@@ -1514,7 +1525,7 @@ bool HDF5RequestHandler::hdf5_build_dmr_from_file(BESDataHandlerInterface & dhi,
         vector<string> handled_coord_names;
 
         breadth_first(fileid, fileid,(const char*)"/",root_grp,filename.c_str(),use_dimscale,is_eos5,hdf5_hls,
-                      eos5_dim_info,handled_coord_names);
+                      eos5_dim_info,handled_coord_names, eos5_missing_dim_names);
 
         if (is_eos5 == false)
             add_dap4_coverage_default(root_grp,handled_coord_names);
