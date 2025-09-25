@@ -1461,7 +1461,6 @@ bool HDF5RequestHandler::hdf5_build_dmr_from_file(BESDataHandlerInterface & dhi,
 
     }// "if(true == _usecf)"
     else {// default option
-cerr<<"coming to testing"<<endl;
 
         // Obtain the HDF5 file ID.
         fileid = get_fileid(filename.c_str());
@@ -1487,18 +1486,19 @@ cerr<<"coming to testing"<<endl;
         eos5_dim_info_t eos5_dim_info;
         if (is_eos5 && !use_dimscale)
             obtain_eos5_dims(fileid,eos5_dim_info);
-        //bool eos5_use_dimscale_null_dims = false;
+
+        // However, we find some HDF-EOS5 products that use dimension scales but miss some dimensions. This will cause
+        // the handler not able to retrieve the dimension names based on the dimension scales. To make the service continue,
+        // we have to find a way to obtain those dimension names and avoid the failure of dmr generation.
+
         unordered_set<string> eos5_missing_dim_names;
         if (is_eos5 && use_dimscale) {
-cerr<<"coming to is_eos5 and use_dimscale"<<endl;
+
             bool has_var_null_dim_name = check_var_null_dim_name(fileid);
+            // If we find the null dimension scale case, we need to obtain all the EOS5 information via parser.
             if (has_var_null_dim_name) {
-cerr<<"coming to has_var_null_dim_name"<<endl;
                 obtain_eos5_dims(fileid,eos5_dim_info);
                 obtain_eos5_missing_dims(fileid,eos5_dim_info,eos5_missing_dim_names);
-
-for (const auto&emdn:eos5_missing_dim_names) 
-cerr<<"eos5 missing dim names: "<<emdn<<endl;
             }
 #if 0
             // We may need to use the code to handle the non-eos5-null-dim case. TODO later.

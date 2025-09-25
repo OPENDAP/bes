@@ -2285,15 +2285,15 @@ void obtain_dimnames_internal(hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_
 
             string trim_objname;
             if (!is_eos5_missing_dimscale){
-            rbuf =((hobj_ref_t*)vlbuf[i].p)[0];
-
-            if ((ref_dset = H5RDEREFERENCE(attr_id, H5R_OBJECT, &rbuf)) < 0) {
-                string msg = "Cannot dereference from the DIMENSION_LIST attribute  for the variable " + string(dt_inst_ptr->name);
-                throw BESInternalError(msg,__FILE__, __LINE__);
-            }
-
-            trim_objname = obtain_dimname_deref(ref_dset,dt_inst_ptr);
-            obtain_dimname_hardlinks(file_id,ref_dset,hdf5_hls,trim_objname);
+                rbuf =((hobj_ref_t*)vlbuf[i].p)[0];
+    
+                if ((ref_dset = H5RDEREFERENCE(attr_id, H5R_OBJECT, &rbuf)) < 0) {
+                    string msg = "Cannot dereference from the DIMENSION_LIST attribute  for the variable " + string(dt_inst_ptr->name);
+                    throw BESInternalError(msg,__FILE__, __LINE__);
+                }
+    
+                trim_objname = obtain_dimname_deref(ref_dset,dt_inst_ptr);
+                obtain_dimname_hardlinks(file_id,ref_dset,hdf5_hls,trim_objname);
             }
 
             // Need to save the dimension names
@@ -2305,16 +2305,23 @@ void obtain_dimnames_internal(hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_
                 // However, we are paid to carry out the service. 
                 if (is_eos5_missing_dimscale) {
                     // Retrieve the dimension name from eos5_dim_info
-                    // STOP
-                    string var_full_path= string(dt_inst_ptr->name);
-cerr<<"var_full_path for eos5 missing dim scale: "<<var_full_path<<endl;
+                    auto var_full_path= string(dt_inst_ptr->name);
                     eos5_dim_info_t temp_eos5_dim_info = eos5_dim_info;
-                    string temp_dim_path = (temp_eos5_dim_info.varpath_to_dims[var_full_path])[i];
-                    string temp_dim_name = temp_dim_path.substr(temp_dim_path.find_last_of("/")+1);
-cerr<<"temp_dim_path: "<<temp_dim_path <<endl;
-cerr<<"temp_dim_name: "<<temp_dim_name <<endl;
-                    dt_inst_ptr->dimnames.push_back(temp_dim_name);
-                    dt_inst_ptr->dimnames_path.push_back(temp_dim_path);
+                    auto temp_eos5_varpath_to_dims = temp_eos5_dim_info.varpath_to_dims;
+                    if (temp_eos5_varpath_to_dims.find(var_full_path)!=temp_eos5_varpath_to_dims.end()) {
+                        if (temp_eos5_varpath_to_dims[var_full_path].size()>i) {
+                            string temp_dim_path = (temp_eos5_varpath_to_dims[var_full_path])[i];
+                            string temp_dim_name = temp_dim_path.substr(temp_dim_path.find_last_of("/")+1);
+                            dt_inst_ptr->dimnames.push_back(temp_dim_name);
+                            dt_inst_ptr->dimnames_path.push_back(temp_dim_path);
+                        }
+                        else { // TODO: add phony dim later. Now throw an error.
+                            throw BESInternalError("Cannot find eos5 dimension from the eos5 file to fill in the dimension.",__FILE__, __LINE__);
+                        }
+                    }
+                    else { // TODO: add phony dim later. Now throw an error.
+                        throw BESInternalError("Cannot find eos5 dimension from the eos5 file to fill in the dimension.",__FILE__, __LINE__);
+                    }
                     
                 }
                 else {
