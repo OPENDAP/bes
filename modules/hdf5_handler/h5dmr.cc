@@ -2081,7 +2081,7 @@ hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, 
         hsize_t cur_unlimited_dim_size  = 0;
 
         int num_unlimited_dims = 0;
-        for (unsigned i = 0; i<did_space_num_dims; i++) {
+        for (int i = 0; i<did_space_num_dims; i++) {
             if (did_max_dims[i] == H5S_UNLIMITED) {
                 cur_unlimited_dim_size = did_dims[i];
                 num_unlimited_dims++;
@@ -2230,13 +2230,16 @@ void loop_all_variables_for_missing_dim_names(hid_t pid, const char *gname, cons
                     vector<char> objname;
             
                     // The dimension names of variables will be the HDF5 dataset names de-referenced from the DIMENSION_LIST attribute.
-                    for (int i = 0; i < ndims; i++) {
+                    for (unsigned int j = 0; j < (unsigned int)ndims; j++) {
             
-                        if (vlbuf[i].p == nullptr) {
+                        if (vlbuf[j].p == nullptr) {
                             unordered_map<string,vector<string>> varpath_to_dims = eos5_dim_info.varpath_to_dims;
-                            string dim_path = (varpath_to_dims[full_path_name])[i];
-                            eos5_missing_dim_names.insert(dim_path);
-                            
+                            if (varpath_to_dims.find(full_path_name)!= varpath_to_dims.end()) {
+                                if (varpath_to_dims[full_path_name].size() >j) {
+                                    string dim_path = (varpath_to_dims[full_path_name])[j];
+                                    eos5_missing_dim_names.insert(dim_path);
+                                }
+                            }
                         }
                     }
                     H5Tclose(amemtype_id);
