@@ -30,9 +30,9 @@ BES.Catalog.catalog.TypeMatch+=dapreader:.*\.(das|dds|dods|data|dmr|dap)$;
 #                                                                       #
 #-----------------------------------------------------------------------#
 
-# DAP.FunctionResponseCache.path=@abs_top_builddir@/functions/tests/dap_cache
-# DAP.FunctionResponseCache.prefix=func_
-# DAP.FunctionResponseCache.size=20000
+DAP.FunctionResponseCache.path=@abs_top_builddir@/functions/tests/dap_cache
+DAP.FunctionResponseCache.prefix=func_
+DAP.FunctionResponseCache.size=20000
 
 DR.UseTestTypes=true
 

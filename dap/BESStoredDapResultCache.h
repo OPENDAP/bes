@@ -26,7 +26,6 @@
 #define _bes_store_result_cache_h
 
 #include <string>
-#include <mutex>
 
 #include <libdap/DapXmlNamespaces.h>   // needed for libdap::DAPVersion
 //#include <libdap/DMR.h>
@@ -58,7 +57,6 @@ class BESStoredDapResultCache: public BESFileLockingCache {
 private:
     static bool d_enabled;
     static BESStoredDapResultCache *d_instance;
-    static std::once_flag d_initialize;
 
     string d_storedResultsSubdir;
     string d_dataRootDir;
@@ -66,7 +64,7 @@ private:
     unsigned long d_maxCacheSize;
 
     /** Initialize the cache using the default values for the cache. */
-    BESStoredDapResultCache() = default;
+    BESStoredDapResultCache();
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
 #ifdef DAP2_STORED_RESULTS
@@ -80,10 +78,10 @@ private:
 
     string get_stored_result_local_id(const string &dataset, const string &ce, libdap::DAPVersion version);
 
-    static string getBesDataRootDirFromConfig();
-    static string getSubDirFromConfig();
-    static string getResultPrefixFromConfig();
-    static unsigned long getCacheSizeFromConfig();
+    string getBesDataRootDirFromConfig();
+    string getSubDirFromConfig();
+    string getResultPrefixFromConfig();
+    unsigned long getCacheSizeFromConfig();
 
 public:
 #if 0

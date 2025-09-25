@@ -225,6 +225,17 @@ public:
 
     }
 
+    void test_disabled_uncompress_cache()
+    {
+        DBG(cerr << __func__ << "() - BEGIN" << endl);
+        // Setting the cache_dir parameter to the empty string will disable the cache
+        // and cause the get_instance method to return NULL>
+        BESUncompressCache *cache = BESUncompressCache::get_instance();
+        DBG(cerr << __func__ << "() - cache: " << (void * )cache << endl);
+        CPPUNIT_FAIL( "Should of thrown BESInternalError" );
+        DBG(cerr << __func__ << "() - END" << endl);
+    }
+
     void gz_test()
     {
         DBG(cerr << __func__ << "() - BEGIN" << endl);
@@ -261,6 +272,7 @@ public:
     }
 
     CPPUNIT_TEST_SUITE( uncompressT );
+    CPPUNIT_TEST_EXCEPTION( test_disabled_uncompress_cache, BESInternalError );
     CPPUNIT_TEST( gz_test );
     CPPUNIT_TEST( libz2_test );
     CPPUNIT_TEST( Z_test );
