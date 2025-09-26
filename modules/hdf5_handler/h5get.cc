@@ -2159,19 +2159,27 @@ bool has_null_dim_name(hid_t dataset) {
             if (H5T_VLEN == H5Tget_class(atype_id)) { 
                 vector<hvl_t> vlbuf;
 
-                // TODO: Add error check later.
                 hid_t dspace = H5Dget_space(dataset);
+                if (dspace < 0) 
+                    throw BESInternalError("H5Dget_space failed.",__FILE__,__LINE__);
+                 
                 int ndims = H5Sget_simple_extent_ndims(dspace);
+                if (ndims < 0) {
+                    H5Sclose(dspace);
+                    throw BESInternalError("H5Sget_simple_extent_ndims failed.",__FILE__,__LINE__);
+                }
 
                 vlbuf.resize(ndims);
                 hid_t amemtype_id = H5Tget_native_type(atype_id, H5T_DIR_ASCEND);
                 if (amemtype_id < 0) {
+                    H5Sclose(dspace);
                     string msg = "Cannot get the memory datatype of the attribute " + dim_attr_name + " in the has_null_dim_name function.";
                     throw BESInternalError(msg,__FILE__, __LINE__);
-        
                 }
         
                 if (H5Aread(attr_id,amemtype_id,vlbuf.data()) <0)  {
+                    H5Sclose(dspace);
+                    H5Aclose(amemtype_id);
                     string msg = "Cannot obtain the referenced object in the has_null_dim_name function.";
                     throw BESInternalError(msg,__FILE__, __LINE__);
                 }
@@ -2185,6 +2193,27 @@ bool has_null_dim_name(hid_t dataset) {
                         ret_value = true;
                         break;
                     }
+                }
+
+                if (vlbuf.empty()== false) {
+
+                    hid_t aspace_id;
+                    if ((aspace_id = H5Aget_space(attr_id)) < 0) {
+                        H5Sclose(dspace);
+                        H5Aclose(amemtype_id);
+                        string msg = "Cannot close the HDF5 attribute space successfully for <DIMENSION_LIST> ";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
+                    }
+        
+                    if (H5Dvlen_reclaim(amemtype_id,aspace_id,H5P_DEFAULT,(void*)vlbuf.data())<0) {
+                        H5Sclose(dspace);
+                        H5Aclose(amemtype_id);
+                        string msg = "Cannot reclaim the variable length memory in the function obtain_dimnames().";
+                        throw BESInternalError(msg,__FILE__,__LINE__);
+                    }
+        
+                    H5Sclose(aspace_id);
+
                 }
             }
         }

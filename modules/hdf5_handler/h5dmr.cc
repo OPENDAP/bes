@@ -2226,7 +2226,34 @@ void loop_all_variables_for_missing_dim_names(hid_t pid, const char *gname, cons
                         H5Sclose(dspace);
                         throw BESInternalError(msg,__FILE__, __LINE__);
                     }
+                    if (vlbuf.empty()== false) {
+
+                        hid_t aspace_id;
+                        if ((aspace_id = H5Aget_space(attr_id)) < 0) {
+                            H5Dclose(dataset);
+                            H5Aclose(attr_id);
+                            H5Tclose(atype_id);
+                            H5Tclose(amemtype_id);
+                            H5Sclose(dspace);
+                            string msg = "Cannot close the HDF5 attribute space successfully for <DIMENSION_LIST> ";
+                            throw BESInternalError(msg,__FILE__,__LINE__);
+                        }
             
+                        if (H5Dvlen_reclaim(amemtype_id,aspace_id,H5P_DEFAULT,(void*)vlbuf.data())<0) {
+                            H5Dclose(dataset);
+                            H5Aclose(attr_id);
+                            H5Tclose(atype_id);
+                            H5Tclose(amemtype_id);
+                            H5Sclose(dspace);
+                            H5Sclose(aspace_id);
+                            string msg = "Cannot reclaim the variable length memory in the function obtain_dimnames().";
+                            throw BESInternalError(msg,__FILE__,__LINE__);
+                        }
+            
+                        H5Sclose(aspace_id);
+
+                    }
+
                     vector<char> objname;
             
                     // The dimension names of variables will be the HDF5 dataset names de-referenced from the DIMENSION_LIST attribute.
