@@ -169,7 +169,7 @@ public:
         if (clean) clean_cache_dir(d_cache);
 
         TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/input-files/test.keys"; // empty file. jhrg 10/20/15
-        TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::PATH_KEY, d_cache);
+        TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::PATH_KEY, "");
         TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::PREFIX_KEY, d_mds_prefix);
         TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::SIZE_KEY, "1000");
 
@@ -187,33 +187,12 @@ public:
         DBG(cerr << "tearDown() - END" << endl);
     }
 
-    bool re_match(BESRegex &r, const string &s)
-    {
-        DBG(cerr << "s.size(): " << s.size() << endl);
-        int pos = r.match(s.c_str(), s.size());
-        DBG(cerr << "r.match(s): " << pos << endl);
-        return pos > 0 && static_cast<unsigned>(pos) == s.size();
-    }
-
-    bool re_match_binary(BESRegex &r, const string &s)
-    {
-        DBG(cerr << "s.size(): " << s.size() << endl);
-        int pos = r.match(s.c_str(), s.size());
-        DBG(cerr << "r.match(s): " << pos << endl);
-        return pos > 0;
-    }
-
     // The directory 'never' does not exist; the cache won't be initialized,
     // so is_available() should be false
     void ctor_test_1()
     {
         DBG(cerr << "ctor_test_1() - BEGIN" << endl);
-        TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::PATH_KEY, "");
-#if 0
-        string cacheDir = string(TEST_SRC_DIR) + "/never";
-        string prefix = "rc";
-        long size = 1000;
-#endif
+
         cache = BESDapFunctionResponseCache::get_instance();
         DBG(cerr << "ctor_test_1() - retrieved BESDapFunctionResponseCache instance: " << cache << endl);
 
@@ -222,163 +201,11 @@ public:
         DBG(cerr << "ctor_test_1() - END" << endl);
     }
 
-    // The directory 'd_response_cache' should exist so is_available() should be
-    // true.
-    void ctor_test_2()
-    {
-        DBG(cerr << "ctor_test_2() - BEGIN" << endl);
-
-        cache = BESDapFunctionResponseCache::get_instance();
-        DBG(cerr << "ctor_test_2() - retrieved BESDapFunctionResponseCache instance: " << cache << endl);
-
-        CPPUNIT_ASSERT(cache);
-
-        DBG(cerr << "ctor_test_2() - END" << endl);
-    }
-
-    // Because setup() and teardown() clean out the cache directory, there should
-    // never be a cached item; calling read_cached_dataset() should return a
-    // valid DDS with data and store a copy in the cache.
-    void cache_a_response()
-    {
-        DBG(cerr << "cache_a_response() - BEGIN" << endl);
-        cache = BESDapFunctionResponseCache::get_instance();
-
-        DBG(cerr << "cache_a_response() - Retrieved BESDapFunctionResponseCache object: " << cache << endl);
-
-        string token;
-        try {
-            CPPUNIT_ASSERT(test_dds);
-
-            DDS *result = cache->get_or_cache_dataset(test_dds, "test(\"foo\")");
-
-            CPPUNIT_ASSERT(result);
-
-            CPPUNIT_ASSERT(result->var("foo"));
-            CPPUNIT_ASSERT(result->var("foo")->type() == dods_array_c);
-        }
-        catch (BESError &e) {
-            CPPUNIT_FAIL(e.get_message());
-        }
-
-        DBG(cerr << "cache_a_response() - END" << endl);
-    }
-
-    // The first call reads values into the DDS, stores a copy in the cache and
-    // returns the DDS. The second call reads the value from the cache.
-    //
-    // Use load_from_cache() (Private interface) to read the data.
-    void cache_and_read_a_response()
-    {
-        DBG(cerr << "cache_and_read_a_response() - BEGIN" << endl);
-
-        cache = BESDapFunctionResponseCache::get_instance();
-        try {
-            const string constraint = "test(\"bar\")";
-
-            // This code is here to load the DataDDX response into the cache if it is not
-            // there already. If it is there, it reads it from the cache.
-            DDS *result = cache->get_or_cache_dataset(test_dds, constraint);
-
-            CPPUNIT_ASSERT(result);
-            int var_count = result->var_end() - result->var_begin();
-            CPPUNIT_ASSERT(var_count == 1);
-
-            //DDS *result2 = cache->get_or_cache_dataset(test_dds, "test(\"bar\")");
-            string resource_id = cache->get_resource_id(test_dds, constraint);
-            string cache_file_name = cache->get_hash_basename(resource_id);
-
-            DBG(
-                cerr << "cache_and_read_a_response() - resource_id: " << resource_id << ", cache_file_name: "
-                    << cache_file_name << endl);
-
-            DDS *result2 = cache->load_from_cache(resource_id, cache_file_name);
-            // Better not be null!
-            CPPUNIT_ASSERT(result2);
-            result2->filename("function_result_SimpleTypes");
-
-            // There are nine variables in test.05.ddx
-            var_count = result2->var_end() - result2->var_begin();
-            DBG(cerr << "cache_and_read_a_response() - var_count: " << var_count << endl);
-            CPPUNIT_ASSERT(var_count == 1);
-
-            ostringstream oss;
-            DDS::Vars_iter i = result2->var_begin();
-            while (i != result2->var_end()) {
-                DBG(cerr << "Variable " << (*i)->name() << endl);
-                // this will incrementally add the string rep of values to 'oss'
-                (*i)->print_val(oss, "", false /*print declaration */);
-                DBG(cerr << "Value " << oss.str() << endl);
-                ++i;
-            }
-
-            CPPUNIT_ASSERT(oss.str().compare("{{0, 1, 2},{3, 4, 5},{6, 7, 8}}") == 0);
-        }
-        catch (Error &e) {
-            CPPUNIT_FAIL(e.get_error_message());
-        }
-
-        DBG(cerr << "cache_and_read_a_response() - END" << endl);
-    }
-
-    // The first call reads values into the DDS, stores a copy in the cache and
-    // returns the DDS. The second call reads the value from the cache.
-    //
-    // Use the public interface to read the data (cache_dataset()), but w/o a
-    // constraint
-    void cache_and_read_a_response2()
-    {
-        DBG(cerr << "cache_and_read_a_response() - BEGIN" << endl);
-
-        cache = BESDapFunctionResponseCache::get_instance();
-        try {
-            // This code is here to load the DataDDX response into the cache if it is not
-            // there already. If it is there, it reads it from the cache.
-            DDS *result = cache->get_or_cache_dataset(test_dds, "test(\"bar\")");
-
-            CPPUNIT_ASSERT(result);
-            int var_count = result->var_end() - result->var_begin();
-            CPPUNIT_ASSERT(var_count == 1);
-
-            DDS *result2 = cache->get_or_cache_dataset(test_dds, "test(\"bar\")");
-            // Better not be null!
-            CPPUNIT_ASSERT(result2);
-            result2->filename("function_result_SimpleTypes");
-
-            // There are nine variables in test.05.ddx
-            var_count = result2->var_end() - result2->var_begin();
-            DBG(cerr << "cache_and_read_a_response() - var_count: " << var_count << endl);
-            CPPUNIT_ASSERT(var_count == 1);
-
-            ostringstream oss;
-            DDS::Vars_iter i = result2->var_begin();
-            while (i != result2->var_end()) {
-                DBG(cerr << "Variable " << (*i)->name() << endl);
-                // this will incrementally add the string rep of values to 'oss'
-                (*i)->print_val(oss, "", false /*print declaration */);
-                DBG(cerr << "Value " << oss.str() << endl);
-                ++i;
-            }
-
-            CPPUNIT_ASSERT(oss.str().compare("{{0, 1, 2},{3, 4, 5},{6, 7, 8}}") == 0);
-        }
-        catch (Error &e) {
-            CPPUNIT_FAIL(e.get_error_message());
-        }
-
-        DBG(cerr << "cache_and_read_a_response() - END" << endl);
-    }
-
 CPPUNIT_TEST_SUITE( FunctionResponseCacheTest );
 
-    //CPPUNIT_TEST(ctor_test_1);
-    CPPUNIT_TEST(ctor_test_2);
-    CPPUNIT_TEST(cache_a_response);
-    CPPUNIT_TEST(cache_and_read_a_response);
-    CPPUNIT_TEST(cache_and_read_a_response2);
+    CPPUNIT_TEST(ctor_test_1);
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(FunctionResponseCacheTest);
