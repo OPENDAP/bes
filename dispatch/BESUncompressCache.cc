@@ -35,12 +35,12 @@
 using std::endl;
 using std::string;
 
+BESUncompressCache *BESUncompressCache::d_instance = 0;
 bool BESUncompressCache::d_enabled = true;
 
 const string BESUncompressCache::DIR_KEY = "BES.UncompressCache.dir";
 const string BESUncompressCache::PREFIX_KEY = "BES.UncompressCache.prefix";
 const string BESUncompressCache::SIZE_KEY = "BES.UncompressCache.size";
-std::once_flag BESUncompressCache::d_initialize;
 
 #define MODULE "cache"
 #define prolog std::string("BESUncompressCache::").append(__func__).append("() - ")
@@ -142,7 +142,6 @@ string BESUncompressCache::get_cache_file_name(const string &src, bool mangle)
     return cache_file_name;
 }
 
-#if 0
 BESUncompressCache::BESUncompressCache()
 {
     BESDEBUG( MODULE, prolog << "BEGIN" << endl);
@@ -159,7 +158,6 @@ BESUncompressCache::BESUncompressCache()
     BESDEBUG( MODULE, prolog << "END" << endl);
 
 }
-#endif
 
 /** Get the default instance of the GatewayCache object. This will read "TheBESKeys" looking for the values
  * of SUBDIR_KEY, PREFIX_KEY, an SIZE_KEY to initialize the cache.
@@ -169,18 +167,6 @@ BESUncompressCache *
 BESUncompressCache::get_instance()
 {
     static BESUncompressCache cache;
-    std::call_once(d_initialize, [](){
-        d_enabled = true;
-        string tmp_dimCacheDir = getCacheDirFromConfig();
-
-        if (tmp_dimCacheDir.empty()){
-            cache.disable();
-        }
-        else{
-            cache.enable();
-            cache.initialize(tmp_dimCacheDir, getCachePrefixFromConfig(), getCacheSizeFromConfig());
-        }
-    });
     if (cache.cache_enabled()){
         return &cache;
     }
