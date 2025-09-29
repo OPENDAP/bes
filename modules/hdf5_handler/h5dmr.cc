@@ -2186,7 +2186,6 @@ void loop_all_variables_for_missing_dim_names(hid_t pid, const char *gname, cons
                 if (H5T_VLEN == H5Tget_class(atype_id)) { 
 
                     vector<hvl_t> vlbuf;
-                    // TODO: Add error check later.
                     hid_t dspace = H5Dget_space(dataset);
                     if (dspace <0) {
                         H5Dclose(dataset);
