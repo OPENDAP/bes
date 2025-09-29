@@ -149,7 +149,7 @@ typedef struct {
 
 
 bool breadth_first(hid_t, hid_t, const char *, libdap::D4Group* par_grp, const char *,bool,bool,
-                   std::vector<link_info_t>&, eos5_dim_info_t & ,std::vector<std::string> &);
+                   std::vector<link_info_t>&, eos5_dim_info_t & ,std::vector<std::string> &, std::unordered_set<std::string>&);
 void obtain_hdf5_object_name(hid_t pid, hsize_t obj_index, const char *gname, std::vector<char> &oname);
 bool check_soft_external_links(libdap::D4Group *par_grp, hid_t pid, int & slinkindex, const char *gname,
                                const std::vector<char> &oname, bool handle_softlink);
@@ -161,7 +161,7 @@ void handle_eos5_datasets(libdap::D4Group* par_grp, const char *gname, eos5_dim_
 void handle_child_grp(hid_t file_id, hid_t pid, const char *gname, libdap::D4Group* par_grp, const char *fname,
                       bool use_dimscale, bool is_eos5,std::vector<link_info_t> & hdf5_hls,
                       eos5_dim_info_t & eos5_dim_info, std::vector<std::string> & handled_cv_names,
-                      const std::vector<char>& oname);
+                      const std::vector<char>& oname, std::unordered_set<std::string>&);
 
 void read_objects(libdap::D4Group* d4_grp,hid_t, const std::string & varname, const std::string & filename, hid_t, bool, bool,
                   eos5_dim_info_t &);
@@ -247,6 +247,9 @@ bool obtain_eos5_dim(const std::string & varname, const std::unordered_map<std::
                      vector<std::string>>& varpath_to_dims, vector<std::string> & dimnames);
 bool obtain_eos5_grp_dim(const std::string & varname, const std::unordered_map<std::string,
                          vector<HE5Dim>>& grppath_to_dims, vector<std::string> & dimnames);
+
+void obtain_eos5_missing_dims(hid_t fileid, const eos5_dim_info_t &, unordered_set<string>& eos5_missing_dim_names);
+void loop_all_variables_for_missing_dim_names(hid_t pid,const char *gname, const eos5_dim_info_t &eos5_dim_info, unordered_set<string>& eos5_missing_dim_names);
 
 void add_possible_eos5_grid_vars(libdap::D4Group*,  eos5_dim_info_t &);
 void add_eos5_grid_vars_geo(libdap::D4Group* d4_grp,  const eos5_grid_info_t & eg_info);

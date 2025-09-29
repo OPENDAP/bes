@@ -110,6 +110,11 @@ $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/ASF/OPERA_L2_RT
 #$GET http://test.opendap.org/opendap/nasa-hdf/NASAHDF/NISAR_L0_PR_RRSD_001_005_A_128S_20081012T060910_20081012T060926_P01101_F_J_001.h5
 #$GET http://test.opendap.org/opendap/nasa-hdf/NASAHDF/NISAR_L0_PR_RRSD_001_005_A_128S_20081012T060910_20081012T060926_P01101_F_J_001.h5.dmrpp
 
+#HDF-EOS5 null dimension name in the DIMENSION_LIST
+$GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/LPDAAC/VNP18A2.A2022034.h09v05.002.2023022012753.h5
+$GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/LPDAAC/VNP18A2.A2022034.h09v05.002.2023022012753.h5.dmrpp
+
+
 #unlimited dimensions and structure
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/LAADS/XAERDT_L2_MODIS_Aqua.A2022365.2355.001.2023250134344.nc
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/LAADS/XAERDT_L2_MODIS_Aqua.A2022365.2355.001.2023250134344.nc.dmrpp
