@@ -455,7 +455,7 @@ void handle_child_grp(hid_t file_id, hid_t pid, const char *gname,
                 auto temp_eos5_missing_dim_names = eos5_missing_dim_names;
                 for (const auto &eos5_missing_dim_name:temp_eos5_missing_dim_names) {
 
-                    // eos5_missing_dim_name contains the full path of the missing dimensions. We need to retrieve the grp path onlu.
+                    // eos5_missing_dim_name contains the full path of the missing dimensions. We only need to retrieve the grp path.
                     string missing_grp_path = HDF5CFUtil::obtain_string_before_lastslash(eos5_missing_dim_name);
 
                     // We find the group.
@@ -472,7 +472,7 @@ void handle_child_grp(hid_t file_id, hid_t pid, const char *gname,
                             D4Dimensions *d4_dims = tem_d4_cgroup->dims();
                             for (unsigned grp_dim_idx = 0; grp_dim_idx < grp_eos5_dim.size(); grp_dim_idx++) {
                                 if (grp_eos5_dim[grp_dim_idx].name == eos5_missing_dim_name){
-                                    //No need to check if the new dimension exists since we just create the group. Will see.
+                                    //No need to check if the new dimension exists since we just created the group. Will see.
                                     auto d4_dim_unique =
                                         make_unique<D4Dimension>(missing_grp_dim_name, grp_eos5_dim[grp_dim_idx].size);
                                     d4_dims->add_dim_nocopy(d4_dim_unique.release());  
@@ -2225,6 +2225,24 @@ void loop_all_variables_for_missing_dim_names(hid_t pid, const char *gname, cons
                         H5Sclose(dspace);
                         throw BESInternalError(msg,__FILE__, __LINE__);
                     }
+
+                    vector<char> objname;
+            
+                    // The dimension names of variables will be the HDF5 dataset names de-referenced from the DIMENSION_LIST attribute.
+                    for (unsigned int j = 0; j < (unsigned int)ndims; j++) {
+            
+                        if (vlbuf[j].p == nullptr) {
+                            unordered_map<string,vector<string>> varpath_to_dims = eos5_dim_info.varpath_to_dims;
+                            if (varpath_to_dims.find(full_path_name)!= varpath_to_dims.end()) {
+                                if (varpath_to_dims[full_path_name].size() >j) {
+                                    string dim_path = (varpath_to_dims[full_path_name])[j];
+                                    eos5_missing_dim_names.insert(dim_path);
+                                }
+                            }
+                        }
+                    }
+
+                    // We need to release the memory of the vlen data.
                     if (vlbuf.empty()== false) {
 
                         hid_t aspace_id;
@@ -2253,21 +2271,6 @@ void loop_all_variables_for_missing_dim_names(hid_t pid, const char *gname, cons
 
                     }
 
-                    vector<char> objname;
-            
-                    // The dimension names of variables will be the HDF5 dataset names de-referenced from the DIMENSION_LIST attribute.
-                    for (unsigned int j = 0; j < (unsigned int)ndims; j++) {
-            
-                        if (vlbuf[j].p == nullptr) {
-                            unordered_map<string,vector<string>> varpath_to_dims = eos5_dim_info.varpath_to_dims;
-                            if (varpath_to_dims.find(full_path_name)!= varpath_to_dims.end()) {
-                                if (varpath_to_dims[full_path_name].size() >j) {
-                                    string dim_path = (varpath_to_dims[full_path_name])[j];
-                                    eos5_missing_dim_names.insert(dim_path);
-                                }
-                            }
-                        }
-                    }
                     H5Tclose(amemtype_id);
                     H5Sclose(dspace);
                 }
