@@ -135,6 +135,21 @@ HDFDMRArray_EOS2LL::read ()
         }
     }
 
+    // The following code aims to handle large MCD Grid(GCTP_GEO projection) such as 21600*43200 lat and lon.
+    // These MODIS MCD files don't follow HDF-EOS standard way to represent lat/lon (DDDMMMSSS);
+    // they simply represent lat/lon as the normal representation -180.0 or -90.0.
+    // For example, if the real longitude value is 180.0, HDF-EOS needs the value to be represented as 180000000 rather than 180.
+    // So we need to make the representation follow the HDF-EOS2 way.
+    if (((int)(lowright[0]/1000)==0) &&((int)(upleft[0]/1000)==0)
+               && ((int)(upleft[1]/1000)==0) && ((int)(lowright[1]/1000)==0)) {
+        if (projcode == GCTP_GEO){
+            for (int i =0; i<2;i++) {
+                lowright[i] = lowright[i]*1000000;
+                upleft[i] = upleft[i] *1000000;
+            }
+        }
+    }
+
 
     r = GDij2ll (projcode, zone, params, sphere, xdim, ydim, upleft, lowright,
                  xdim * ydim, rows.data(), cols.data(), lon.data(), lat.data(), pixreg, origin);
