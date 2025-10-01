@@ -2433,7 +2433,6 @@ void add_dap4_coverage_default_internal(D4Group* d4_grp, unordered_map<string, A
                 // Obtain FQN of  all coordinates 
                 make_coord_names_fpath(d4_grp,coord_names);
                 remove_empty_coord_names(coord_names);
-
                 // Add coordinates to the coordinate-array map. Also need to return handled dimension names.
                 add_coord_maps(d4_grp,t_a,coord_names,coname_array_maps,handled_dim_names);
 
@@ -2460,6 +2459,10 @@ void obtain_coord_names(Array* ar, vector<string> & coord_names) {
     if (d4_attr != nullptr && d4_attr->type() == attr_str_c) {
         if (d4_attr->num_values() == 1) {
             string tempstring = d4_attr->value(0);
+            // The last string character may be C or fortran delimiter. We need to eliminate it.
+            char str_last_char = tempstring.back();
+            if (str_last_char !='_' && false == isalnum(str_last_char))
+                tempstring = tempstring.substr(0,tempstring.size()-1);
             char sep=' ';
             HDF5CFUtil::Split_helper(coord_names,tempstring,sep);
         }
