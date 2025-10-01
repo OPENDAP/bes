@@ -87,7 +87,7 @@ $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/GESDISC/Arctas-
 
 #SMAP level 3
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/NSIDC/SMAP_L3_SM_P_20150406_R14010_001.h5
-$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/NASAHDF/SMAP_L1C_S0_HIRES_02298_A_20150707T160502_R13080_001.h5
+$GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/NSIDC/SMAP_L1C_S0_HIRES_02298_A_20150707T160502_R13080_001.h5
 
 #LPDAAC GEDI level 2: contains compound datatype data
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/LPDAAC/GEDI04_A_2019107224731_O01958_01_T02638_02_002_02_V002.h5
@@ -95,8 +95,10 @@ $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/LPDAAC/GEDI04.d
 $
 #ICESAT-2 ATL 
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/NSIDC/ATL03_20181014084920_02400109_003_01.h5
+$GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/NSIDC/ATL06_20250302230840_11732614_006_01.h5
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/NSIDC/ATL08_20181014084920_02400109_003_01.h5
-$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/NASAHDF/ATL13_20190330212241_00250301_002_01.h5
+$GET https:/test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/NSIDC/ATL13_20190330212241_00250301_002_01.h5
+
 #daymet, large variable
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/ORNL/daymet_v4_daily_na_prcp_2010.nc.h5
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/others/daymet_v4_daily_na_prcp_2010.nc.h5.dmrpp
@@ -113,7 +115,6 @@ $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/ASF/OPERA_L2_RT
 #HDF-EOS5 null dimension name in the DIMENSION_LIST
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/LPDAAC/VNP18A2.A2022034.h09v05.002.2023022012753.h5
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/LPDAAC/VNP18A2.A2022034.h09v05.002.2023022012753.h5.dmrpp
-
 
 #unlimited dimensions and structure
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/LAADS/XAERDT_L2_MODIS_Aqua.A2022365.2355.001.2023250134344.nc
