@@ -121,6 +121,9 @@ $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/NSIDC/AMSR_E_L2_Land_V11_201110031920_D.he5.dmrpp
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/NSIDC/AMSR_E_L2_Land_V11_201110031920_D.he5
 
+#HDF-EOS5 null dimension name in the DIMENSION_LIST
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/LPDAAC/VNP18A2.A2022034.h09v05.002.2023022012753.h5
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/LPDAAC/VNP18A2.A2022034.h09v05.002.2023022012753.h5.dmrpp
 
 #HDF5/DMRPP/fileout netCDF  big array size
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/others/d_dset_big.h5

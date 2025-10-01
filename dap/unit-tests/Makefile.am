@@ -91,7 +91,8 @@ bes.conf: $(srcdir)/$(BES_CONF_IN) $(top_srcdir)/configure.ac
 
 if CPPUNIT
 UNIT_TESTS = ResponseBuilderTest ObjMemCacheTest FunctionResponseCacheTest \
-ShowPathInfoTest TemporaryFileTest GlobalMetadataStoreTest DapUtilsTest
+ShowPathInfoTest TemporaryFileTest GlobalMetadataStoreTest DapUtilsTest \
+FunctionResponseCacheTest2
 
 else
 UNIT_TESTS =
@@ -119,6 +120,11 @@ FunctionResponseCacheTest_SOURCES = FunctionResponseCacheTest.cc $(TEST_SRC)
 FunctionResponseCacheTest_OBJS = ../BESDapFunctionResponseCache.o ../DapFunctionUtils.o \
 ../CachedSequence.o ../CacheTypeFactory.o ../CacheMarshaller.o ../CacheUnMarshaller.o 
 FunctionResponseCacheTest_LDADD = $(FunctionResponseCacheTest_OBJS) $(LDADD)
+
+FunctionResponseCacheTest2_SOURCES = FunctionResponseCacheTest2.cc $(TEST_SRC)
+# FunctionResponseCacheTest2_OBJS = ../BESDapFunctionResponseCache.o ../DapFunctionUtils.o \
+# ../CachedSequence.o ../CacheTypeFactory.o ../CacheMarshaller.o ../CacheUnMarshaller.o
+FunctionResponseCacheTest2_LDADD = $(FunctionResponseCacheTest_OBJS) $(LDADD)
 
 ObjMemCacheTest_SOURCES = ObjMemCacheTest.cc
 ObjMemCacheTest_OBJS = ../ObjMemCache.o

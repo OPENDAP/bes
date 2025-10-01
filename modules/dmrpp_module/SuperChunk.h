@@ -81,6 +81,7 @@ public:
     std::shared_ptr<http::url> get_data_url() { return d_data_url; }
     virtual unsigned long long get_size() const { return d_size; }
     virtual unsigned long long get_offset() const { return d_offset; }
+    virtual size_t get_chunk_count() const { return d_chunks.size(); }
 
     virtual void read() {
         process_child_chunks();

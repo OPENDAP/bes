@@ -1,12 +1,6 @@
 // This file is part of hdf5_handler - an HDF5 file handler for the OPeNDAP
 // data server.
-
-// Authors: 
-// Hyo-Kyung Lee <hyoklee@hdfgroup.org>
-// Kent Yang <myang6@hdfgroup.org> 
-//
-// Copyright (c) 2011-2023 The HDF Group, Inc. and OPeNDAP, Inc.
-//
+// Copyright (c) The HDF Group, Inc. and OPeNDAP, Inc.
 // This is free software; you can redistribute it and/or modify it under the
 // terms of the GNU Lesser General Public License as published by the Free
 // Software Foundation; either version 2.1 of the License, or (at your
@@ -24,6 +18,10 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 // You can contact The HDF Group, Inc. at 410 E University Ave,
 // Suite 200, Champaign IL 61820
+// Authors: 
+// Hyo-Kyung Lee <hyoklee@hdfgroup.org>
+// Kent Yang <myang6@hdfgroup.org> 
+// The code is mainly adopted from hdfeos.yy of the HDF4 handler. 
 
 %code requires {
 
@@ -32,7 +30,7 @@
 #define YYERROR_VERBOSE 0
 
 // Uncomment the following line for debugging.
-// #define VERBOSE 
+//#define VERBOSE 
 //#define YYPARSE_PARAM he5parser
 
 #include <stdio.h>
@@ -55,7 +53,7 @@ using namespace std;
 } // code requires
 
 %code {
-// This is a flag to indicate if parser is reading geolocatoin or data
+// This is a flag to indicate if parser is reading geolocation or data
 // variable.
 // This should be changed to a enum type parser state variable later.
 bool swath_is_geo_field = false;
@@ -488,6 +486,38 @@ attribute_data_field_name: DATA_FIELD_NAME '=' STR
     
 
 }
+| DATA_FIELD_NAME '=' PROJECTION
+{
+#ifdef VERBOSE
+    cout << "attribute_data_field_name, projection: " << $3 << endl;
+#endif
+    HE5Parser* p = (HE5Parser*)he5parser;
+    HE5Var v;
+    // Save the data field name.
+    v.name = $3;
+
+    // Push the variable into list.
+    switch(p->structure_state){
+
+    case HE5Parser::GRID:
+      p->grid_list.back().data_var_list.push_back(v);
+      break;
+
+    case HE5Parser::SWATH:
+      p->swath_list.back().data_var_list.push_back(v);
+      swath_is_geo_field = false;
+      break;
+
+    case HE5Parser::ZA:
+      p->za_list.back().data_var_list.push_back(v);
+      break;
+
+    default:
+      p->err_msg = "Unexpected parser structure state.";
+      YYERROR;
+      break;
+    }
+} 
 ;
 
 
