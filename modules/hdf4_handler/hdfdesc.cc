@@ -6317,7 +6317,7 @@ bool add_eos2_latlon_info(D4Group *d4_grp, D4Group *root_grp, const eos2_grid_t 
     //Here we find another exception, for the MCD43D GCTP_GEO data, the variable's dimensions are not ydim_path and xdim_path.
     // In order to follow the COARD, we have to make the latitude and longitude be the same dimension name as the variable's dimension names. 
     // We have to use the size to match the dimension name, since it may not be one to one mapping,we have to add a few restrictions to 
-    // make sure one size maps to one lat/lon dim. If we fail to find such a case, we just follow the general way not to follow COARDS.
+    // make sure one size maps to one lat/lon dim. If we fail to find such a case, we cannot follow COARDS.
     if (proj_code == GCTP_GEO && eos2_grid.ydim != eos2_grid.xdim) { 
         D4Dimensions *root_dims = root_grp->dims();
 

@@ -1079,7 +1079,7 @@ bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attrib
     if (((int)(lowright[0]/1000)==0) &&((int)(upleft[0]/1000)==0)
                && ((int)(upleft[1]/1000)==0) && ((int)(lowright[1]/1000)==0)) {
         if (projcode == GCTP_GEO){ 
-            for (int i =0; i<2;i++) {
+            for (i =0; i<2;i++) {
                 lowright[i] = lowright[i]*1000000;
                 upleft[i] = upleft[i] *1000000;
             }
