@@ -1,0 +1,13 @@
+{
+  "Rules": [
+    {
+      "ID": "expire-ci-test-data-30d",
+      "Status": "Enabled",
+      "Filter": {
+        "Prefix": "bes-autotest-"
+      },
+      "Expiration": { "Days": 30 },
+      "AbortIncompleteMultipartUpload": { "DaysAfterInitiation": 3 }
+    }
+  ]
+}
