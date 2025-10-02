@@ -2461,7 +2461,7 @@ void obtain_coord_names(Array* ar, vector<string> & coord_names) {
             string tempstring = d4_attr->value(0);
             // The last string character may be C or fortran delimiter. We need to eliminate it.
             char str_last_char = tempstring.back();
-            if (str_last_char !='_' && false == isalnum(str_last_char))
+            if (str_last_char !='_' && !isalnum(str_last_char))
                 tempstring = tempstring.substr(0,tempstring.size()-1);
             char sep=' ';
             HDF5CFUtil::Split_helper(coord_names,tempstring,sep);
