@@ -315,16 +315,16 @@ group: Data_40HZ {
 
   group: Geophysical {
     variables:
-    	double d_ldElv(DS_UTCTime_40) ;
-    		d_ldElv:units = "meters" ;
-    		d_ldElv:long_name = "Load Tide Elevation" ;
-    		d_ldElv:description = "The load tide elevation applied to each shot." ;
-    		d_ldElv:source = "Rel 34 GLAS Binary Data" ;
-    		d_ldElv:coordinates = "DS_UTCTime_40" ;
-    		d_ldElv:valid_min = -10. ;
-    		d_ldElv:valid_max = 10. ;
-    		d_ldElv:_FillValue = 1.79769313486232e+308 ;
-    		d_ldElv:hertz = "40" ;
+    	double d_DEMhiresArElv(DS_UTCTime_40, DS_DEMhiresArElv) ;
+    		d_DEMhiresArElv:units = "meters" ;
+    		d_DEMhiresArElv:hertz = "40" ;
+    		d_DEMhiresArElv:long_name = "DEMhiresArElv" ;
+    		d_DEMhiresArElv:description = "d_DEMhiresArElv is a 9 element array of high resolution DEM values.  The array index corresponds to the position of the DEM value relative to the spot. (5) is the footprint center." ;
+    		d_DEMhiresArElv:source = "Rel 34 GLAS Binary Data" ;
+    		d_DEMhiresArElv:coordinates = "DS_UTCTime_40, d_DEMhiresArElv" ;
+    		d_DEMhiresArElv:valid_min = -500. ;
+    		d_DEMhiresArElv:valid_max = 1300. ;
+    		d_DEMhiresArElv:_FillValue = 1.79769313486232e+308 ;
     	double d_ocElv(DS_UTCTime_40) ;
     		d_ocElv:units = "meters" ;
     		d_ocElv:hertz = "40" ;
@@ -410,16 +410,16 @@ group: Data_40HZ {
     		d_erElv:valid_min = -10. ;
     		d_erElv:valid_max = 10. ;
     		d_erElv:_FillValue = 1.79769313486232e+308 ;
-    	double d_DEMhiresArElv(DS_UTCTime_40, DS_DEMhiresArElv) ;
-    		d_DEMhiresArElv:units = "meters" ;
-    		d_DEMhiresArElv:hertz = "40" ;
-    		d_DEMhiresArElv:long_name = "DEMhiresArElv" ;
-    		d_DEMhiresArElv:description = "d_DEMhiresArElv is a 9 element array of high resolution DEM values.  The array index corresponds to the position of the DEM value relative to the spot. (5) is the footprint center." ;
-    		d_DEMhiresArElv:source = "Rel 34 GLAS Binary Data" ;
-    		d_DEMhiresArElv:coordinates = "DS_UTCTime_40, d_DEMhiresArElv" ;
-    		d_DEMhiresArElv:valid_min = -500. ;
-    		d_DEMhiresArElv:valid_max = 1300. ;
-    		d_DEMhiresArElv:_FillValue = 1.79769313486232e+308 ;
+    	double d_ldElv(DS_UTCTime_40) ;
+    		d_ldElv:units = "meters" ;
+    		d_ldElv:long_name = "Load Tide Elevation" ;
+    		d_ldElv:description = "The load tide elevation applied to each shot." ;
+    		d_ldElv:source = "Rel 34 GLAS Binary Data" ;
+    		d_ldElv:coordinates = "DS_UTCTime_40" ;
+    		d_ldElv:valid_min = -10. ;
+    		d_ldElv:valid_max = 10. ;
+    		d_ldElv:_FillValue = 1.79769313486232e+308 ;
+    		d_ldElv:hertz = "40" ;
     	byte i_DEM_hires_src_1(DS_UTCTime_40) ;
     		i_DEM_hires_src_1:hertz = "40" ;
     		i_DEM_hires_src_1:long_name = "High Resolution Source Flag" ;
