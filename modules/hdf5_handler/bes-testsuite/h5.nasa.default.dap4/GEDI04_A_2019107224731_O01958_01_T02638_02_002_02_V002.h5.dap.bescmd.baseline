@@ -35,25 +35,16 @@
             <Float32 name="bias_correction_value"/>
             <Byte name="npar"/>
             <Dim size="35"/>
-            <Attribute name="DAP4_Checksum_CRC32" type="String">
-                <Value>9ecd0f9f</Value>
-            </Attribute>
         </Structure>
         <Structure name="pft_lut">
             <Byte name="pft_class"/>
             <String name="pft_name"/>
             <Dim size="7"/>
-            <Attribute name="DAP4_Checksum_CRC32" type="String">
-                <Value>0bb659aa</Value>
-            </Attribute>
         </Structure>
         <Structure name="region_lut">
             <Byte name="region_class"/>
             <String name="region_name"/>
             <Dim size="7"/>
-            <Attribute name="DAP4_Checksum_CRC32" type="String">
-                <Value>634b2a18</Value>
-            </Attribute>
         </Structure>
     </Group>
 </Dataset>

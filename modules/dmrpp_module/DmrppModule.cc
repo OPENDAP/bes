@@ -85,6 +85,8 @@ void DmrppModule::terminate(const string &modname)
 {
     BESDEBUG(modname, prolog << "Cleaning DMR++ Reader Module " << modname << endl);
 
+    BESReturnManager::TheManager()->del_transmitter(RETURNAS_DMRPP);
+
     BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler(modname);
     delete rh;
 

@@ -41,9 +41,9 @@ m4_define([_AT_BESCMD_DAP4DATA_TEST],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 | getdap4 -D -M - > $2|| true], [], [stdout], [stderr])
+#AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 | getdap4 -C -D -M - > $2|| true], [], [stdout], [stderr])
 
-AT_CHECK([valgrind --trace-children=yes --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 | getdap4 -D -M - || true], [], [stdout], [stderr])
+AT_CHECK([valgrind --trace-children=yes --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 | getdap4 -C -D -M - || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CHECK([cat valgrind.txt >> /tmp/h5.cf.dmr.valgrind.log], [], [ignore],[],[])
 AT_CLEANUP])
@@ -120,9 +120,9 @@ m4_define([_AT_BESCMD_DAP4DATA_TEST_DEFAULT],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap4 -D -M - > $2|| true], [], [stdout], [stderr])
+#AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap4 -C -D -M - > $2|| true], [], [stdout], [stderr])
 
-AT_CHECK([valgrind --trace-children=yes --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap4 -D -M - || true], [], [stdout], [stderr])
+AT_CHECK([valgrind --trace-children=yes --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap4 -C -D -M - || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CHECK([cat valgrind.txt >> /tmp/h5.cf.dmr.valgrind.log], [], [ignore],[],[])
 AT_CLEANUP])

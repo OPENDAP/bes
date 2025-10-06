@@ -466,7 +466,10 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
     INFO_LOG(prolog + "Look in the DAAC-bucket for the DMRpp for: " + dmrpp_url_str);
 
     try {
-        curl::http_get(dmrpp_url_str, dmrpp_string);
+        {
+            BES_PROFILE_TIMING(string("Request DMRpp from DAAC bucket - ") + dmrpp_url_str);
+            curl::http_get(dmrpp_url_str, dmrpp_string);
+        }
         // filter the DMRPP from the DAAC's bucket to replace the template href with the data_url
         map <string, string, std::less<>> content_filters;
         if (!get_daac_content_filters(data_url, content_filters)) {
