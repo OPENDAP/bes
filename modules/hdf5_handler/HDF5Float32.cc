@@ -38,6 +38,7 @@
 #include "BESDebug.h"
 #include "h5dds.h"
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include "HDF5Float32.h"
 
 
@@ -60,19 +61,26 @@ bool HDF5Float32::read()
         return true;
 
     hid_t file_id = H5Fopen(dataset().c_str(),H5F_ACC_RDONLY,H5P_DEFAULT);
-    if(file_id < 0) {
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the HDF5 file ID .");
+    if (file_id < 0) {
+        string msg = "Fail to obtain the HDF5 file ID for the file " + dataset() +".";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
    
+    // We don't need to distingush dap4 from dap2 since var_path is the variable's absolute path.
+    hid_t dset_id = H5Dopen2(file_id,var_path.c_str(),H5P_DEFAULT);
+
+#if 0
     hid_t dset_id = -1;
     if(true == is_dap4())
         dset_id = H5Dopen2(file_id,var_path.c_str(),H5P_DEFAULT);
     else
         dset_id = H5Dopen2(file_id,name().c_str(),H5P_DEFAULT);
+#endif
 
     if(dset_id < 0) {
         H5Fclose(file_id);
-        throw InternalErr(__FILE__,__LINE__, "Fail to obtain the datatype .");
+        string msg = "Fail to obtain the HDF5 dataset ID for the variable " + var_path +".";
+        throw InternalErr(__FILE__,__LINE__, msg);
     }
     
 
@@ -84,7 +92,8 @@ bool HDF5Float32::read()
 
         // Release the handles.
         if (H5Dclose(dset_id) < 0) {
-            throw InternalErr(__FILE__, __LINE__, "Unable to close the dset.");
+            string msg = "Unable to close the HDF5 dataset " + var_path +".";
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
 
         H5Fclose(file_id);

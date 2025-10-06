@@ -87,7 +87,7 @@ atomic_uint transfer_thread_counter(0);
  *
  * When a valid, ready future is found future::get() is called and the thead_counter is decremented.
  * Returns true when it successfully "get"s a future (joins a thread), or if a future turns up as not valid, then
- * it is discarded and the thread is ":finished" and true is returned.
+ * it is discarded, and the thread is ":finished" and true is returned.
  *
  * @param futures The list of futures to scan
  * @param thread_counter This counter will be decremented when a future is "finished".
@@ -184,7 +184,7 @@ static void one_child_chunk_thread_new_sanity_check(const one_child_chunk_args_n
  *
  * This is only used for threads started by read_contiguous().
  *
- * @param arg_list A pointer to a one_child_chunk_args
+ * @param args A pointer to a one_child_chunk_args
  */
 bool one_child_chunk_thread_new(const unique_ptr<one_child_chunk_args_new> &args)
 {
@@ -838,7 +838,7 @@ void DmrppArray::read_contiguous()
     BES_STOPWATCH_START(MODULE, prolog + "Timing array name: "+name());
 
     // Get the single chunk that makes up this CONTIGUOUS variable.
-    if (get_chunks_size() != 1)
+    if (get_chunk_count() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
 
     // This is the original chunk for this 'contiguous' variable.
@@ -1021,7 +1021,7 @@ void DmrppArray::read_one_chunk_dio() {
 
     BESDEBUG(dmrpp_3, prolog << "Using direct IO " << endl);
     // Get the single chunk that makes up this one-chunk compressed variable.
-    if (get_chunks_size() != 1)
+    if (get_chunk_count() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
 
     // This is the chunk for this variable.
@@ -1128,7 +1128,7 @@ void DmrppArray::insert_chunk_unconstrained_dio(shared_ptr<Chunk> chunk) {
  */
 void DmrppArray::read_chunks_unconstrained()
 {
-    if (get_chunks_size() < 2)
+    if (get_chunk_count() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
     // Find all the required chunks to read. I used a queue to preserve the chunk order, which
@@ -1201,7 +1201,7 @@ void DmrppArray::read_chunks_unconstrained()
 void DmrppArray::read_chunks_dio_unconstrained()
 {
 
-    if (get_chunks_size() < 2)
+    if (get_chunk_count() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
     // Find all the required chunks to read. I used a queue to preserve the chunk order, which
@@ -1970,7 +1970,7 @@ void DmrppArray::insert_chunk(
  */
 void DmrppArray::read_chunks()
 {
-    if (get_chunks_size() < 2)
+    if (get_chunk_count() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
     // Find all the required chunks to read. I used a queue to preserve the chunk order, which
@@ -2051,13 +2051,13 @@ void DmrppArray::read_buffer_chunks()
 {
 
     BESDEBUG(dmrpp_3, prolog << "coming to read_buffer_chunks()  "  << endl);
-    if (get_chunks_size() < 2)
+    if (get_chunk_count() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
     // Prepare buffer size.
     unsigned long long max_buffer_end_position = 0;
 
-    // For highly compressed chunks, we need to make sure the buffer_size is not too big to exceed the file size.
+    // For highly compressed chunks, we need to make sure the buffer_size is not too big because it may exceed the file size.
     // For this variable we also need to find the maximum value of the end position of all the chunks.
     // Here we try to loop through all the needed chunks for the constraint case.
     bool first_needed_chunk = true;
@@ -2072,9 +2072,15 @@ void DmrppArray::read_buffer_chunks()
                 first_needed_chunk_size = chunk->get_size();
                 first_needed_chunk = false;
             }
-            unsigned long long temp_max_buffer_end_position= chunk->get_size() + chunk->get_offset();
-            if(max_buffer_end_position < temp_max_buffer_end_position)
-                max_buffer_end_position = temp_max_buffer_end_position;
+            // We may encounter the filled chunks. Since those chunks will be handled separately.
+            // when considering max_buffer_end_position, we should not consider them since
+            // the chunk size may be so big that it may  make the buffer exceed the file size.
+            // The offset of filled chunk is 0.
+            if (chunk->get_offset()!=0) {
+                unsigned long long temp_max_buffer_end_position= chunk->get_size() + chunk->get_offset();
+                if(max_buffer_end_position < temp_max_buffer_end_position)
+                    max_buffer_end_position = temp_max_buffer_end_position;
+            }
         }
     }
     if (max_buffer_end_position == 0) 
@@ -2597,8 +2603,12 @@ bool DmrppArray::read()
     // It's important to note that w.r.t. the compact data layout the DMZ parser reads the values into the
     // DmrppArray at the time it is parsed and the read flag is then set. Thus, the compact layout solution
     // does not explicitly appear in this method as it is handled by the parser.
-    if (read_p()) return true;
+    if (read_p()) 
+        return true;
 
+    // If it is zero size array, we just return empty data.
+    if (length_ll() == 0) 
+        return true;
 #if 0
     // Here we need to reset the dio_flag to false for the time being before calling the method use_direct_io_opt()
     // since the dio_flag may be set to true for reducing the memory usage with a temporary solution. 
@@ -2704,7 +2714,7 @@ bool DmrppArray::read()
             BESDEBUG(MODULE, prolog << msg << endl);
         }
         // Single chunk and 'contiguous' are the same for this code.
-        if (array_to_read->get_chunks_size() == 1) {
+        if (array_to_read->get_chunk_count() == 1) {
             BESDEBUG(MODULE, prolog << "Reading data from a single contiguous chunk." << endl);
             // KENT: here we need to add the handling of direct chunk IO for one chunk. 
             if (this->get_dio_flag())
@@ -2740,7 +2750,6 @@ bool DmrppArray::read()
                 }
             }
             else {
-
                 bool buffer_chunk_case = array_to_read->use_buffer_chunk();
             
                 if (!array_to_read->is_projected()) {
@@ -3238,7 +3247,7 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/) {
     // jhrg 5/10/18
     // Update: print the <chunks> element even if the chinks_size value is zero since this
     // might be a variable with all fill values. jhrg 4/24/22
-    if (DmrppCommon::d_print_chunks && (get_chunks_size() > 0 || get_uses_fill_value()))
+    if (DmrppCommon::d_print_chunks && (get_chunk_count() > 0 || get_uses_fill_value()))
         print_chunks_element(xml, DmrppCommon::d_ns_prefix);
 
     // If this variable uses the COMPACT layout, encode the values for
@@ -3474,7 +3483,7 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
     // Here we can adjust the buffer size as needed, for now we just use the whole array size as the starting point.
     unsigned long long buffer_size = bytes_per_element * this->get_size(false);
     
-    if (get_chunks_size() < 2)
+    if (get_chunk_count() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
     // Follow the general superchunk way.
@@ -3497,12 +3506,19 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
 
     unsigned long long max_buffer_end_position = 0;
 
-    // For highly compressed chunks, we need to make sure the buffer_size is not too big to exceed the file size.
+    // For highly compressed chunks, we need to make sure the buffer_size is not too big because it may exceed the file size.
     // For this variable we also need to find the maximum value of the end position of all the chunks.
     for (const auto &chunk: array_chunks) {
-        unsigned long long temp_max_buffer_end_position= chunk->get_size() + chunk->get_offset();
-        if(max_buffer_end_position < temp_max_buffer_end_position)
-            max_buffer_end_position = temp_max_buffer_end_position;
+
+        // We may encounter the filled chunks. Since those chunks will be handled separately.
+        // when considering max_buffer_end_position, we should not consider them since
+        // the chunk size may be so big that it may make the buffer exceed the file size.
+        // The offset of filled chunk is 0.
+        if (chunk->get_offset()!=0) {
+            unsigned long long temp_max_buffer_end_position= chunk->get_size() + chunk->get_offset();
+            if(max_buffer_end_position < temp_max_buffer_end_position)
+                max_buffer_end_position = temp_max_buffer_end_position;
+        }
     }
     
     // The end position of the buffer should not exceed the max_buffer_end_position.
@@ -3553,7 +3569,8 @@ bool DmrppArray::use_buffer_chunk() {
 
     // For our use case, we only need to check if the first chunk and the second chunk are adjacent.
     // To make the process clear and simple, we don't handle structure data.
-    if (chunks.size() >1 && this->var()->type() !=dods_structure_c){
+    // Also when all the chunks are filled with the fill values, we should not use the buffer chunk.
+    if (chunks.size() >1 && this->var()->type() !=dods_structure_c && this->get_var_chunks_storage_size()!=0){
         unsigned long long first_chunk_offset = (chunks[0])->get_offset();
         unsigned long long first_chunk_size = (chunks[0])->get_size();
         unsigned long long second_chunk_offset = (chunks[1])->get_offset();

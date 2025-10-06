@@ -2,10 +2,11 @@
 
 // This file is part of the Hyrax data server.
 
-// Copyright (c) 2022 OPeNDAP, Inc.
-// Author: James Gallagher <jgallagher@opendap.org>
 // Copyright (c) The HDF Group
+// Copyright (c) 2022 OPeNDAP, Inc.
 // Author: Kent Yang <myang6@hdfgroup.org>
+// Author: James Gallagher <jgallagher@opendap.org>
+
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
@@ -31,8 +32,8 @@
 
 #include "config.h"
 #include "hdf.h"  // HDF4 header file
-#include "mfhdf.h"  // Include the HDF4 header file
-#include "HdfEosDef.h"
+#include "mfhdf.h"  // HDF4 header file
+#include "HdfEosDef.h" // HDF-EOS2 header file
 
 #include <libdap/Str.h>
 #include <libdap/Structure.h>
@@ -53,21 +54,15 @@
 #include "DmrppByte.h"
 #include "D4ParserSax2.h"
 
-#define COMP_INFO 512 /*!< Max buffer size for compression information.  */
-
-#define ERROR(x) do { cerr << "ERROR: " << x << " " << __FILE__ << ":" << __LINE__ << endl; } while(false)
+#define ERROR(x) do { cerr << "Internal Error: " << x << " at " << __FILE__ << ":" << __LINE__ << endl; } while(false)
 
 /*
- * Hold mapping information for SDS objects.
+ * Hold number of data blocks, offset/length information for SDS objects.
  */
 using SD_mapping_info_t = struct {
-    int32 nblocks;              /*!< number of data blocks in dataset */
-    int32 *offsets;             /*!< offsets of data blocks */
-    int32 *lengths;             /*!< lengths (in bytes) of data blocks */
-    int32 id;                   /*!< SDS id  */
-    int32 data_type;            /*!< data type */
-    intn is_empty;              /*!< flag for checking empty  */
-    VOIDP fill_value;           /*!< fill value  */
+    int32 nblocks;              /* number of data blocks in dataset */
+    int32 *offsets;             /* offsets of data blocks */
+    int32 *lengths;             /* lengths (in bytes) of data blocks */
 };
 
 using namespace std;
@@ -83,13 +78,10 @@ bool verbose = false;   // Optionally set by build_dmrpp's main().
 
 constexpr auto INVOCATION_CONTEXT = "invocation";
 
-// This function is adapted from H4mapper implemented by the HDF group. 
-// h4mapper can be found from https://docs.hdfgroup.org/archive/support/projects/h4map/h4map_writer.html
 int SDfree_mapping_info(SD_mapping_info_t  *map_info)
 {
     intn  ret_value = SUCCEED;
 
-    /* nothing to free */
     if (map_info == nullptr)
         return SUCCEED;
 
@@ -119,13 +111,6 @@ size_t combine_linked_blocks(const SD_mapping_info_t &map_info, vector<int> & me
 
     int num_eles = map_info.nblocks;
 
-#if 0
-    for (int i = 0; i<offset.size(); i++) {
-       cout<<"offset["<<i<<"]= "<<offset[i] <<endl;
-       cout<<"length["<<i<<"]= "<<length[i] <<endl;
-    }
-#endif
-
     // The first element offset should always be fixed.
     merged_offsets.push_back(map_info.offsets[0]);
 
@@ -141,7 +126,7 @@ size_t combine_linked_blocks(const SD_mapping_info_t &map_info, vector<int> & me
             merged_offsets.push_back(map_info.offsets[i+1]);
             temp_length = map_info.lengths[i+1];
         }
-        else { // contiguous, just update the temp length variable.
+        else { // contiguous, just update the temp_length variable.
             temp_length +=map_info.lengths[i+1];
         }
 
@@ -176,7 +161,7 @@ write_chunk_position_in_array(int rank, const unsigned long long *lengths, const
 }
 
 /**
- * @brief Read chunk information from a HDF4 dataset
+ * @brief Read chunk information from an HDF4 dataset
  * @param sdsid
  * @param map_info
  * @param origin The parameter origin must be NULL when the data is not stored in chunking layout.
@@ -186,6 +171,7 @@ write_chunk_position_in_array(int rank, const unsigned long long *lengths, const
  * chunk in the whole array. For detailed description and illustration, check section 3.12.3 and FIGURE 3d of
  * the HDF4 user's guide that can be found under https://portal.hdfgroup.org/documentation/ .
  * Note: The code of this method is largely adapted from the HDF4 mapper software implemented by the HDF group.
+ *       h4mapper can be found from https://docs.hdfgroup.org/archive/support/projects/h4map/h4map_writer.html.
  * @return
  */
 
@@ -193,15 +179,6 @@ int read_chunk(int sdsid, SD_mapping_info_t *map_info, int *origin)
 {
     intn  ret_value = SUCCEED;
 
-#if 0
-    /* Free any info before resetting. */
-    SDfree_mapping_info(map_info);
-#endif
-    /* Reset map_info. */
-    /* HDmemset(map_info, 0, sizeof(SD_mapping_info_t)); */
-
-    /* Save SDS id since HDmemset reset it. map_info->id will be reused. */
-    /* map_info->id = sdsid; */
 
     // First check if this chunk/data stream has any block of data.
     intn info_count = SDgetdatainfo(sdsid, origin, 0, 0, nullptr, nullptr);
@@ -233,16 +210,19 @@ int read_chunk(int sdsid, SD_mapping_info_t *map_info, int *origin)
 
 } /* read_chunk */
 
-string get_sds_fill_value_str(int32 sdsid, int32 datatype) {
+
+string get_sds_fill_value_str(int32 sdsid, int32 datatype, bool &dmrpp_h4_error, string &err_msg) {
 
     intn emptySDS = 0;
+    string ret_value;
     
     if (SDcheckempty(sdsid,&emptySDS) == FAIL) {
         SDendaccess(sdsid);
-        throw BESInternalError("SDcheckempty fails. ",__FILE__,__LINE__);
+        dmrpp_h4_error = true;
+        err_msg = "SDcheckempty fails at "+string(__FILE__) +":" + to_string(__LINE__);
+        return ret_value;
     }
 
-    string ret_value;
     switch (datatype) {
 
         case DFNT_UINT8:
@@ -325,9 +305,17 @@ string get_sds_fill_value_str(int32 sdsid, int32 datatype) {
     }
     return ret_value;
 }
+
 bool SD_set_fill_value(int32 sdsid, int32 datatype, BaseType *btp) {
 
-    string fill_value = get_sds_fill_value_str(sdsid,datatype);
+    bool dmrpp_h4_error = false;
+    string err_msg;
+    string fill_value = get_sds_fill_value_str(sdsid,datatype,dmrpp_h4_error,err_msg);
+    if (dmrpp_h4_error) {
+        ERROR(err_msg);
+        return false;
+    }
+
     if (!fill_value.empty()) {
          auto dc = dynamic_cast<DmrppCommon *>(btp);
          if (!dc) {
@@ -339,6 +327,7 @@ bool SD_set_fill_value(int32 sdsid, int32 datatype, BaseType *btp) {
     }
     return true;
 }
+
 bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
 
     int32 sds_index = SDreftoindex(file, obj_ref);
@@ -465,18 +454,9 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
             }
 
         }
+
         dc->set_chunk_dimension_sizes(chunk_dimension_sizes);
 
-        // Leave the following code for the time being in case there are issues in the optimization 
-#if 0
-        SD_mapping_info_t map_info;
-        map_info.is_empty = 0;
-        map_info.nblocks = 0;
-        map_info.offsets = nullptr;
-        map_info.lengths = nullptr;
-        map_info.data_type = data_type;
-
-#endif
 
         vector<unsigned long long> position_in_array(rank, 0);
 
@@ -502,7 +482,8 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
         vector<uint32> info_count(number_of_chunks);
         intn max_num_blocks = SDgetallchunkdatainfo(sdsid,number_of_chunks,rank,steps.data(),0,info_count.data(),
                                                nullptr,nullptr);
-        if (max_num_blocks == FAIL) {
+        // The max_num_blocks should at least be 1.
+        if (max_num_blocks < 1) {
             ERROR("SDgetallchunkdatainfo failed.");
             SDendaccess(sdsid);
             return false;
@@ -513,7 +494,7 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
 
         max_num_blocks = SDgetallchunkdatainfo(sdsid,number_of_chunks,rank,steps.data(),max_num_blocks,info_count.data(),
                                                offsetarray.data(),lengtharray.data());
-        if (max_num_blocks == FAIL) {
+        if (max_num_blocks < 1) {
             ERROR("SDgetallchunkdatainfo failed.");
             SDendaccess(sdsid);
             return false;
@@ -563,6 +544,7 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
 
     // Leave the following code for the time being in case there are issues in the optimization.
 #if 0
+
     // Also need to consider the case when the variable is compressed but not chunked.
     if (chunk_flag == HDF_CHUNK || chunk_flag == HDF_COMP ) {
         vector<unsigned long long> chunk_dimension_sizes(rank, 0);
@@ -663,11 +645,9 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
 #endif
     else if (chunk_flag == HDF_NONE) {
         SD_mapping_info_t map_info;
-        map_info.is_empty = 0;
         map_info.nblocks = 0;
         map_info.offsets = nullptr;
         map_info.lengths = nullptr;
-        map_info.data_type = data_type;
 
          // Also need to consider the case when the variable is compressed but not chunked.
         if (comp_coder_type != COMP_CODE_NONE) {
@@ -737,13 +717,6 @@ size_t combine_linked_blocks_vdata( const vector<int>& lengths, const vector<int
 
     size_t num_eles = lengths.size();
 
-#if 0
-    for (int i = 0; i<offset.size(); i++) {
-       cout<<"offset["<<i<<"]= "<<offset[i] <<endl;
-       cout<<"length["<<i<<"]= "<<length[i] <<endl;
-    }
-#endif
-
     // The first element offset should always be fixed.
     merged_offsets.push_back(offsets[0]);
     int temp_length = lengths[0];
@@ -767,13 +740,6 @@ size_t combine_linked_blocks_vdata( const vector<int>& lengths, const vector<int
     // Update the last length.
     merged_lengths.push_back(temp_length);
 
-#if 0
-for (int i = 0; i <merged_lengths.size(); i++) {
-cout <<"merged_lengths["<<i<<"]= "<<merged_lengths[i]<<endl;
-cout <<"merged_offsets["<<i<<"]= "<<merged_offsets[i]<<endl;
-
-}
-#endif
     return merged_lengths.size();
 
 }
@@ -828,6 +794,9 @@ bool  ingest_vdata_info_to_chunk(int32 file_id, int32 obj_ref, BaseType *btp) {
             VSdetach(vdata_id);
             return false;
         }
+
+        VERBOSE(cerr << "vdata offset: " << offset << endl);
+        VERBOSE(cerr << "length: " << length << endl);
  
         auto dc = dynamic_cast<DmrppCommon *>(btp);
         if (!dc) {
@@ -848,18 +817,6 @@ bool  ingest_vdata_info_to_chunk(int32 file_id, int32 obj_ref, BaseType *btp) {
             return false;
         }
         dc->add_chunk(endian_name, (unsigned long long)length, (unsigned long long)offset,"");
-
-#if 0
-        int32 total_num_fields = VFnfields(vdata_id);
-        if (total_num_fields == 1) {
-            int32 offset = 0;
-            int32 length = 0; 
-            VSgetdatainfo(vdata_id,0,1,&offset,&length);           
-cout <<"offset is: "<<offset <<endl;
-cout <<"length is: "<<length <<endl;
-            
-        }
-#endif
 
     }
     else if (num_linked_blocks >1) {
@@ -884,6 +841,16 @@ cout <<"length is: "<<length <<endl;
             return false;
         }
 
+        VERBOSE(cerr << "merged block offsets: ");
+        VERBOSE(copy(merged_offsets.begin(), merged_offsets.end(),
+                     ostream_iterator<int32>(cerr, " ")));
+
+        VERBOSE(cerr << "merged block lengths: ");
+        VERBOSE(copy(merged_lengths.begin(), merged_lengths.end(),
+                     ostream_iterator<int32>(cerr, " ")));
+        VERBOSE(cerr<<endl);
+
+
         for (unsigned i = 0; i < merged_number_blocks; i++)
             dc->add_chunk(endian_name, merged_lengths[i], merged_offsets[i],true,i);
 
@@ -894,27 +861,8 @@ cout <<"length is: "<<length <<endl;
 
 }
 
-#if 0
-bool obtain_compress_encode_data(string &encoded_str, const Bytef*source_data,size_t source_data_size, string &err_msg) {
-
-    uLong ssize = (uLong)source_data_size;
-    uLongf csize = (uLongf)ssize*2;
-    vector<Bytef> compressed_src;
-    compressed_src.resize(source_data_size*2);
-
-    int retval = compress(compressed_src.data(), &csize, source_data, ssize);
-    if (retval != 0) {
-        err_msg = "Fail to compress the data";
-        return false;
-    }
-
-    encoded_str = base64::Base64::encode(compressed_src.data(),(int)csize);
-
-    return true;
-
-}
-#endif
-
+// Add the missing CF grid variables data. See Appendix F of CF conventions(https://cfconventions.org/)
+// This function won't be called if users choose not to insert the missing data inside the dmrpp file.
 bool add_missing_cf_grid(const string &filename,BaseType *btp, const D4Attribute *eos_cf_attr, string &err_msg) {
 
     VERBOSE(cerr<<"Coming to add_missing_cf_grid"<<endl);
@@ -934,6 +882,7 @@ bool add_missing_cf_grid(const string &filename,BaseType *btp, const D4Attribute
 
     VERBOSE(cerr<<"grid_name: "<<grid_name <<endl);
     VERBOSE(cerr<<"cf_name: "<<cf_name<<endl);
+
     bool is_xdim = true;
     if (cf_name =="YDim")
         is_xdim = false;
@@ -965,13 +914,6 @@ bool add_missing_cf_grid(const string &filename,BaseType *btp, const D4Attribute
         return false;
     }
 
-    auto dc = dynamic_cast<DmrppCommon *>(btp);
-    if (!dc) {
-        GDdetach(gridid);
-        GDclose(gridfd);
-        err_msg = "Expected to find a DmrppCommon instance but did not in add_missing_cf_grid";
-        return false;
-    }
     auto da = dynamic_cast<DmrppArray *>(btp);
     if (!da) {
         GDdetach(gridid);
@@ -1013,6 +955,8 @@ bool add_missing_cf_grid(const string &filename,BaseType *btp, const D4Attribute
 
 }
 
+// Add the missing eos latitude/longitude data. This function won't be called if users choose not to insert the data
+// inside the dmrpp file.
 bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attribute *eos_ll_attr, string &err_msg) {
 
     VERBOSE(cerr<<"Coming to add_missing_eos_latlon"<<endl);
@@ -1107,7 +1051,6 @@ bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attrib
     lon.resize(xdim*ydim);
     lat.resize(xdim*ydim);
 
-
     int i = 0;
     int j = 0;
     int k = 0; 
@@ -1128,6 +1071,20 @@ bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attrib
         }
     }
 
+    // The following code aims to handle large MCD Grid(GCTP_GEO projection) such as 21600*43200 lat and lon.
+    // These MODIS MCD files don't follow HDF-EOS standard way to represent lat/lon (DDDMMMSSS);
+    // they simply represent lat/lon as the normal representation -180.0 or -90.0.
+    // For example, if the real longitude value is 180.0, HDF-EOS needs the value to be represented as 180000000 rather than 180.
+    // So we need to make the representation follow the HDF-EOS2 way. 
+    if (((int)(lowright[0]/1000)==0) &&((int)(upleft[0]/1000)==0)
+               && ((int)(upleft[1]/1000)==0) && ((int)(lowright[1]/1000)==0)) {
+        if (projcode == GCTP_GEO){ 
+            for (i =0; i<2;i++) {
+                lowright[i] = lowright[i]*1000000;
+                upleft[i] = upleft[i] *1000000;
+            }
+        }
+    }
 
     r = GDij2ll (projcode, zone, params, sphere, xdim, ydim, upleft, lowright,
                  xdim * ydim, rows.data(), cols.data(), lon.data(), lat.data(), pixreg, origin);
@@ -1142,13 +1099,7 @@ bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attrib
     VERBOSE(cerr<<"The first value of longtitude: "<<lon[0]<<endl);
     VERBOSE(cerr<<"The first value of latitude: "<<lat[0]<<endl);
 
-    auto dc = dynamic_cast<DmrppCommon *>(btp);
-    if (!dc) {
-        GDdetach(gridid);
-        GDclose(gridfd);
-        err_msg = "Expected to find a DmrppCommon instance but did not in add_missing_eos_latlon";
-        return false;
-    }
+
     auto da = dynamic_cast<DmrppArray *>(btp);
     if (!da) {
         GDdetach(gridid);
@@ -1190,23 +1141,6 @@ bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attrib
     }
     da->set_read_p(true);
  
-#if 0
-    size_t orig_buf_size = tmp_data.size()*sizeof(double);
-    uLong ssize = (uLong)orig_buf_size;
-    uLongf csize = (uLongf)ssize*2;
-    vector<Bytef> compressed_src;
-    compressed_src.resize(orig_buf_size*2);
-
-    int retval = compress(compressed_src.data(), &csize, (const Bytef*)tmp_data.data(), ssize);
-    if (retval != 0) {
-        cout<<"Fail to compress the data"<<endl;
-        exit(1);
-    }
-
-    string encoded = base64::Base64::encode(compressed_src.data(),(int)csize);
-
-#endif
-
     GDdetach(gridid);
     GDclose(gridfd);
     
@@ -1214,6 +1148,7 @@ bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attrib
 
 }
 
+// Add the missing lat/lon for special HDF4 files. Currently only for TRMM level 3.
 bool add_missing_sp_latlon(BaseType *btp, const D4Attribute *sp_ll_attr, string &err_msg) {
 
     VERBOSE(cerr<<"Coming to add_missing_sp_latlon"<<endl);
@@ -1243,11 +1178,6 @@ bool add_missing_sp_latlon(BaseType *btp, const D4Attribute *sp_ll_attr, string 
     float ll_start = stof(ll_start_str);
     float ll_res   = stof(ll_res_str);
 
-    auto dc = dynamic_cast<DmrppCommon *>(btp);
-    if (!dc) {
-        err_msg = "Expected to find a DmrppCommon instance but did not in add_missing_sp_latlon";
-        return false;
-    }
     auto da = dynamic_cast<DmrppArray *>(btp);
     if (!da) {
         err_msg = "Expected to find a DmrppArray instance but did not in add_missing_sp_latlon";
@@ -1273,13 +1203,17 @@ bool add_missing_sp_latlon(BaseType *btp, const D4Attribute *sp_ll_attr, string 
 
 }
 /**
- * @param file
- * @param btp
+ * @param filename : File name
+ * @param sd_id : HDF4 SD interface ID
+ * @param file_id : HDF4 H interface ID
+ * @param btp the DAP4 object pointer
+ * @param disable_missing_data flag to disable the generation and storing of the missing data in the dmrpp file
  * @return true if the produced output that seems valid, false otherwise.
  */
 bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id, BaseType *btp, bool disable_missing_data) {
 
     VERBOSE(cerr<<"var name: "<<btp->name() <<endl);
+
     // Here we need to retrieve the attribute value dmr_sds_ref of btp.
     D4Attributes *d4_attrs = btp->attributes();
     if (!d4_attrs) {
@@ -1288,9 +1222,8 @@ bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id,
                                __FILE__, __LINE__);
     }
 
-    // Look for the full name path for this variable
-    // If one was not given via an attribute, use BaseType::FQN() which
-    // relies on the variable's position in the DAP dataset hierarchy.
+    // We need to find the object reference number to retrieve the offset and lenght.
+    // Currently we only support HDF4 SDS and Vdata. That's the HDF4 objects what NASA HDF4/HDF-EOS2 files contain.
     D4Attribute *attr = d4_attrs->find("dmr_sds_ref");
     int32 obj_ref = 0;
     bool is_sds = false;
@@ -1304,7 +1237,7 @@ bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id,
         if (is_sds) {
             if (false == ingest_sds_info_to_chunk(sd_id, obj_ref,btp)) {
                 close_hdf4_file_ids(sd_id,file_id);
-                throw BESInternalError("Cannot retrieve SDS information correctly for  " + btp->name() ,
+                throw BESInternalError("Cannot retrieve SDS information correctly for " + btp->name() ,
                                    __FILE__, __LINE__);
             }
         }
@@ -1312,7 +1245,7 @@ bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id,
         else {
             if (false == ingest_vdata_info_to_chunk(file_id, obj_ref,btp)) {
                 close_hdf4_file_ids(sd_id,file_id);
-                throw BESInternalError("Cannot retrieve vdata information correctly for  " + btp->name() ,
+                throw BESInternalError("Cannot retrieve vdata information correctly for " + btp->name() ,
                                    __FILE__, __LINE__);
             }
         }
@@ -1361,11 +1294,11 @@ bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id,
             
         }        
     }
- 
 
     return true;
 }
 
+// Currently this function is only for CF grid_mapping dummy variable.
 bool handle_chunks_for_none_array(BaseType *btp, bool disable_missing_data, string &err_msg) {
 
     bool ret_value = false;
@@ -1382,11 +1315,6 @@ bool handle_chunks_for_none_array(BaseType *btp, bool disable_missing_data, stri
             // Here we don't bother to check the attribute value since this CF grid variable value is dummy.
             if (attr) {
     
-                auto dc = dynamic_cast<DmrppCommon *>(btp);
-                if (!dc) {
-                    err_msg = "Expected to find a DmrppCommon instance but did not in handle_chunks_for_none_array";
-                    return false;
-                }
                 auto db = dynamic_cast<DmrppByte *>(btp);
                 if (!db) {
                     err_msg = "Expected to find a DmrppByte instance but did not in handle_chunks_for_none_array";
@@ -1409,18 +1337,11 @@ bool handle_chunks_for_none_array(BaseType *btp, bool disable_missing_data, stri
  
 }
 
+// Obtain offset/length information for a variable.
 bool get_chunks_for_a_variable(const string& filename,int32 sd_id, int32 file_id, BaseType *btp, bool disable_missing_data) {
 
     switch (btp->type()) {
         case dods_structure_c: {
-            //TODO: this needs to be re-written since the data of the whole structure is retrieved. KY-2024-02-26
-            // Handle this later. KY 2024-03-07
-            // Comment about the above "TODO", the current HDF4 to DMR direct mapping will never go here. So
-            // we may not need to handle this at all. KY 2024-03-12
-#if 0
-            auto sp = dynamic_cast<Structure *>(btp);
-            //for_each(sp->var_begin(), sp->var_end(), [file](BaseType *btp) { get_chunks_for_a_variable(file, btp); });
-#endif
             close_hdf4_file_ids(sd_id,file_id);
             throw BESInternalError("Structure scalar is not supported by DAP4 for HDF4 at this time.\n", __FILE__, __LINE__);
         }
@@ -1454,14 +1375,17 @@ bool get_chunks_for_a_variable(const string& filename,int32 sd_id, int32 file_id
  *
  * @param file The open HDF4 file; passed through to get_variable_chunk_info
  * @param group Read variables from this DAP4 Group. Call with the root Group
+ * @param sd_id : HDF4 SD interface ID
+ * @param file_id : HDF4 H interface ID
+ * @param disable_missing_data flag to disable the generation and storing of the missing data in the dmrpp file
  * to process all the variables in the DMR
  */
 void get_chunks_for_all_variables(const string& filename, int32 sd_id, int32 file_id, D4Group *group, bool disable_missing_data) {
 
-    // variables in the group
+    // Variables in the group
     for(auto btp : group->variables()) {
         if (btp->type() != dods_group_c) {
-            // if this is not a group, it is a variable
+            // If this is not a group, it is a variable
             // This is the part where we find out if a variable can be used with DMR++
             if (!get_chunks_for_a_variable(filename,sd_id,file_id, btp, disable_missing_data)) {
                 ERROR("Could not include DMR++ metadata for variable " << btp->FQN());
@@ -1486,6 +1410,7 @@ void get_chunks_for_all_variables(const string& filename, int32 sd_id, int32 fil
  * @brief Add chunk information about to a DMRpp object
  * @param h4_file_name Read information from this file
  * @param dmrpp Dump the chunk information here
+*  @param disable_missing_data flag to disable the generation and storing of the missing data in the dmrpp file
  */
 void add_chunk_information(const string &h4_file_name, DMRpp *dmrpp, bool disable_missing_data)
 {
@@ -1509,10 +1434,9 @@ void add_chunk_information(const string &h4_file_name, DMRpp *dmrpp, bool disabl
         msg << "Error: HDF4 file '" << h4_file_name << "' Vstart failed." << endl;
         throw BESNotFoundError(msg.str(), __FILE__, __LINE__);
     }
-
  
-    // iterate over all the variables in the DMR
-    get_chunks_for_all_variables(h4_file_name, sd_id,file_id, dmrpp->root(),disable_missing_data);
+    // Iterate over all the variables in the DMR
+    get_chunks_for_all_variables(h4_file_name, sd_id, file_id, dmrpp->root(),disable_missing_data);
 
     close_hdf4_file_ids(sd_id,file_id);
 }
@@ -1520,28 +1444,12 @@ void add_chunk_information(const string &h4_file_name, DMRpp *dmrpp, bool disabl
 /**
  * @brief Performs a quality control check on the user supplied data file.
  *
- * The supplied file is going to be used by build_dmrpp as the source of variable/dataset chunk information.
- * At the time of this writing only netcdf-4 and hdf5 file encodings are supported (Note that netcdf-4 is a subset of
- * hdf5 and all netcdf-4 files are defacto hdf5 files.)
- *
- * To that end this function will:
- * * Test that the file exists and can be read from.
- * * The first few bytes of the file will be checked to ensure that it is an hdf5 file.
- * * If it's not an hdf5 file the head bytes will checked to see if the file is a netcdf-3 file, as that is common
- *   mistake.
+ * * Test that the hdf4 file exists and can be read from.
  *
  * @param file_name
  */
 void qc_input_file(const string &file_fqn)
 {
-    //Use an ifstream file to run a check on the provided file's signature
-    // to see if it is an HDF4 file. - kln 11/20/23
-
-    if (file_fqn.empty()) {
-        stringstream msg;
-        msg << "HDF4 input file name must be provided (-f <input>) and be a fully qualified path name." << endl;
-        throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
-    }
 
     std::ifstream file(file_fqn, ios::binary);
     auto errnum = errno;
@@ -1753,7 +1661,7 @@ void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr
     parser.intern(in, &dmrpp, false);
 
     add_chunk_information(h4_file_fqn, &dmrpp,disable_missing_data);
-
+        
     if (add_production_metadata) {
         inject_version_and_configuration(argc,argv,bes_conf_file_used_to_create_dmr,&dmrpp);
     }

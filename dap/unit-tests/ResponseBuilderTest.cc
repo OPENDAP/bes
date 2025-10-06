@@ -682,9 +682,7 @@ public:
         catch (Error &e) {
             CPPUNIT_FAIL("Error: " + e.get_error_message());
         }
-
-        BESStoredDapResultCache *sdrc = BESStoredDapResultCache::get_instance();
-        sdrc->delete_instance();
+        
         TheBESKeys::TheKeys()->set_key(BES_CATALOG_ROOT, "");
         TheBESKeys::TheKeys()->set_key(DAP_STORED_RESULTS_CACHE_SUBDIR_KEY, "");
         TheBESKeys::TheKeys()->set_key(DAP_STORED_RESULTS_CACHE_PREFIX_KEY, "");

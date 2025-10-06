@@ -41,6 +41,7 @@ class DmrppD4Enum: public libdap::D4Enum, public DmrppCommon {
 public:
     DmrppD4Enum(const std::string &n, const string &enum_type) : libdap::D4Enum(n, enum_type), DmrppCommon() { }
     DmrppD4Enum(const std::string &n, libdap::Type type) : libdap::D4Enum(n, type), DmrppCommon() { }
+    DmrppD4Enum(const std::string &n, libdap::Type type, std::shared_ptr<DMZ>dmz) : libdap::D4Enum(n, type), DmrppCommon(std::move(dmz)) { }
     DmrppD4Enum(const std::string &n, const std::string &d, libdap::Type type) : libdap::D4Enum(n, d, type), DmrppCommon() { }
 
     DmrppD4Enum(const DmrppD4Enum &) = default;

@@ -118,4 +118,7 @@
 /// Context name used to select XML errors regardless of bes.conf setting.
 #define XML_ERRORS "xml"
 
+#define DAP4_CHECKSUMS_CONTEXT_KEY "dap4_checksums"
+
+
 #endif // D_BESDataNames_h

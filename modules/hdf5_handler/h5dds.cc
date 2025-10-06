@@ -37,9 +37,10 @@
 
 #include<memory>
 #include <libdap/InternalErr.h>
-#include <BESDebug.h>
-
 #include <libdap/mime_util.h>
+
+#include <BESDebug.h>
+#include <BESInternalError.h>
 
 #include "hdf5_handler.h"
 #include "HDF5Int32.h"
@@ -99,7 +100,7 @@ bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
       string msg =
             "h5_dds handler: counting hdf5 group elements error for ";
         msg += gname;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     nelems = g_info.nlinks;
@@ -116,7 +117,7 @@ bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
         if (oname_size <= 0) {
             string msg = "h5_dds handler: Error getting the size of the hdf5 object from the group: ";
             msg += gname;
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
         // Obtain the name of the object
@@ -127,7 +128,7 @@ bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
             string msg =
                     "h5_dds handler: Error getting the hdf5 object name from the group: ";
              msg += gname;
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
         // Check if it is the hard link or the soft link
@@ -135,7 +136,7 @@ bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
         if (H5Lget_info(pid,oname.data(),&linfo,H5P_DEFAULT)<0) {
             string msg = "hdf5 link name error from: ";
             msg += gname;
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
         // External links are not supported in this release
@@ -153,7 +154,7 @@ bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
                               i, &oinfo, H5P_DEFAULT)<0) {
             string msg = "h5_dds handler: Error obtaining the info for the object";
             msg += string(oname.begin(),oname.end());
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
         H5O_type_t obj_type = oinfo.type;
@@ -177,7 +178,8 @@ bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
 
                 hid_t cgroup = H5Gopen(pid, t_fpn.data(),H5P_DEFAULT);
                 if (cgroup < 0){
-                    throw InternalErr(__FILE__, __LINE__, "h5_dds handler: H5Gopen() failed.");
+                    string msg = "H5Gopen failed for the group name " + full_path_name + ".";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
 
                 // Check the hard link loop and break the loop if it exists.
@@ -194,7 +196,8 @@ bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
                 }
 
                 if (H5Gclose(cgroup) < 0){
-                    throw InternalErr(__FILE__, __LINE__, "Could not close the group.");
+                    string msg = "Could not close the group.";
+                    throw BESInternalError(msg,__FILE__,__LINE__);
                 }
                 break;
             }
@@ -267,9 +270,10 @@ read_objects_base_type(DDS & dds_table, const string & varname,
         // NB: We're throwing InternalErr even though it's possible that
         // someone might ask for an HDF5 varaible which this server cannot
         // handle.
+        string msg = "Unable to convert hdf5 datatype to dods basetype ";
+        msg += "for variable "+varname + ".";
         throw
-            InternalErr(__FILE__, __LINE__,
-                        "Unable to convert hdf5 datatype to dods basetype");
+            BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // First deal with scalar data. 
@@ -288,7 +292,7 @@ read_objects_base_type(DDS & dds_table, const string & varname,
         ar->set_numdim(dt_inst.ndims);
         ar->set_numelm((int) (dt_inst.nelmts));
 	    for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++)
-            ar->append_dim(dt_inst.size[dim_index]); 
+            ar->append_dim_ll((int64_t)(dt_inst.size[dim_index])); 
         dds_table.add_var(ar);
     }
     BESDEBUG("h5", "<read_objects_base_type(dds)" << endl);
@@ -333,7 +337,7 @@ read_objects_structure(DDS & dds_table, const string & varname,
             ar->set_length((int) (dt_inst.nelmts));
 
             for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
-                ar->append_dim(dt_inst.size[dim_index]);
+                ar->append_dim_ll((int64_t)(dt_inst.size[dim_index]));
                 BESDEBUG("h5", "=read_objects_structure(): append_dim = " <<
                     dt_inst.size[dim_index] << endl);
             }
@@ -379,7 +383,8 @@ read_objects(DDS & dds_table, const string &varname, const string &filename)
     case H5T_ARRAY:
     {
         H5Tclose(dt_inst.type);
-        throw InternalErr(__FILE__, __LINE__, "Currently don't support accessing data of Array datatype when array datatype is not inside the compound.");       
+        string msg = "Currently don't support accessing data of Array datatype when array datatype is not inside the compound.";
+        throw BESInternalError(msg,__FILE__,__LINE__);       
     }
     default:
         read_objects_base_type(dds_table, varname, filename);
@@ -387,7 +392,8 @@ read_objects(DDS & dds_table, const string &varname, const string &filename)
     }
     // We must close the datatype obtained in the get_dataset routine since this is the end of reading DDS.
     if(H5Tclose(dt_inst.type)<0) {
-        throw InternalErr(__FILE__, __LINE__, "Cannot close the HDF5 datatype.");       
+        string msg = "Cannot close the HDF5 datatype.";
+        throw BESInternalError(msg,__FILE__,__LINE__);       
     }
 }
 

@@ -88,8 +88,8 @@ netcdf test {
 
 group: Data_40HZ {
   dimensions:
-  	DS_DEMhiresArElv = 9 ;
-  	DS_UTCTime_40 = 43920 ;
+  	DS_DEMhiresArElv = UNLIMITED ; // (9 currently)
+  	DS_UTCTime_40 = UNLIMITED ; // (43920 currently)
   variables:
   	int DS_DEMhiresArElv(DS_DEMhiresArElv) ;
   		DS_DEMhiresArElv:hertz = "1" ;
@@ -107,6 +107,7 @@ group: Data_40HZ {
   		DS_UTCTime_40:source = "Rel 34 GLAS Binary Data" ;
 
   // group attributes:
+  		:DODS_EXTRA.Unlimited_Dimension = "DS_DEMhiresArElv\nDS_UTCTime_40" ;
   		:Description = "This group contains data with a rate of 40HZ. 40Hz data may be indexed to the 1HZ data using the i_rec_ndx parameter in each respective time group." ;
 
   group: Reflectivity {
@@ -244,7 +245,7 @@ group: Data_40HZ {
 
   group: Time {
     dimensions:
-    	d_UTCTime_40 = 43920 ;
+    	d_UTCTime_40 = UNLIMITED ; // (43920 currently)
     variables:
     	double d_UTCTime_40(d_UTCTime_40) ;
     		d_UTCTime_40:units = "seconds since removed date-time" ;
@@ -271,6 +272,7 @@ group: Data_40HZ {
     		i_shot_count:valid_max = 40 ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "d_UTCTime_40" ;
     		:Description = "This group contains the 40HZ index and time-related parameters" ;
     } // group Time
 
@@ -313,16 +315,16 @@ group: Data_40HZ {
 
   group: Geophysical {
     variables:
-    	double d_ldElv(DS_UTCTime_40) ;
-    		d_ldElv:units = "meters" ;
-    		d_ldElv:long_name = "Load Tide Elevation" ;
-    		d_ldElv:description = "The load tide elevation applied to each shot." ;
-    		d_ldElv:source = "Rel 34 GLAS Binary Data" ;
-    		d_ldElv:coordinates = "DS_UTCTime_40" ;
-    		d_ldElv:valid_min = -10. ;
-    		d_ldElv:valid_max = 10. ;
-    		d_ldElv:_FillValue = 1.79769313486232e+308 ;
-    		d_ldElv:hertz = "40" ;
+    	double d_DEMhiresArElv(DS_UTCTime_40, DS_DEMhiresArElv) ;
+    		d_DEMhiresArElv:units = "meters" ;
+    		d_DEMhiresArElv:hertz = "40" ;
+    		d_DEMhiresArElv:long_name = "DEMhiresArElv" ;
+    		d_DEMhiresArElv:description = "d_DEMhiresArElv is a 9 element array of high resolution DEM values.  The array index corresponds to the position of the DEM value relative to the spot. (5) is the footprint center." ;
+    		d_DEMhiresArElv:source = "Rel 34 GLAS Binary Data" ;
+    		d_DEMhiresArElv:coordinates = "DS_UTCTime_40, d_DEMhiresArElv" ;
+    		d_DEMhiresArElv:valid_min = -500. ;
+    		d_DEMhiresArElv:valid_max = 1300. ;
+    		d_DEMhiresArElv:_FillValue = 1.79769313486232e+308 ;
     	double d_ocElv(DS_UTCTime_40) ;
     		d_ocElv:units = "meters" ;
     		d_ocElv:hertz = "40" ;
@@ -408,16 +410,16 @@ group: Data_40HZ {
     		d_erElv:valid_min = -10. ;
     		d_erElv:valid_max = 10. ;
     		d_erElv:_FillValue = 1.79769313486232e+308 ;
-    	double d_DEMhiresArElv(DS_UTCTime_40, DS_DEMhiresArElv) ;
-    		d_DEMhiresArElv:units = "meters" ;
-    		d_DEMhiresArElv:hertz = "40" ;
-    		d_DEMhiresArElv:long_name = "DEMhiresArElv" ;
-    		d_DEMhiresArElv:description = "d_DEMhiresArElv is a 9 element array of high resolution DEM values.  The array index corresponds to the position of the DEM value relative to the spot. (5) is the footprint center." ;
-    		d_DEMhiresArElv:source = "Rel 34 GLAS Binary Data" ;
-    		d_DEMhiresArElv:coordinates = "DS_UTCTime_40, d_DEMhiresArElv" ;
-    		d_DEMhiresArElv:valid_min = -500. ;
-    		d_DEMhiresArElv:valid_max = 1300. ;
-    		d_DEMhiresArElv:_FillValue = 1.79769313486232e+308 ;
+    	double d_ldElv(DS_UTCTime_40) ;
+    		d_ldElv:units = "meters" ;
+    		d_ldElv:long_name = "Load Tide Elevation" ;
+    		d_ldElv:description = "The load tide elevation applied to each shot." ;
+    		d_ldElv:source = "Rel 34 GLAS Binary Data" ;
+    		d_ldElv:coordinates = "DS_UTCTime_40" ;
+    		d_ldElv:valid_min = -10. ;
+    		d_ldElv:valid_max = 10. ;
+    		d_ldElv:_FillValue = 1.79769313486232e+308 ;
+    		d_ldElv:hertz = "40" ;
     	byte i_DEM_hires_src_1(DS_UTCTime_40) ;
     		i_DEM_hires_src_1:hertz = "40" ;
     		i_DEM_hires_src_1:long_name = "High Resolution Source Flag" ;
@@ -1950,7 +1952,7 @@ group: ANCILLARY_DATA {
 
 group: Data_1HZ {
   dimensions:
-  	DS_UTCTime_1 = 1098 ;
+  	DS_UTCTime_1 = UNLIMITED ; // (1098 currently)
   variables:
   	double DS_UTCTime_1(DS_UTCTime_1) ;
   		DS_UTCTime_1:units = "seconds since removed date-time" ;
@@ -1961,6 +1963,7 @@ group: Data_1HZ {
   		DS_UTCTime_1:source = "Rel 34 GLAS Binary Data" ;
 
   // group attributes:
+  		:DODS_EXTRA.Unlimited_Dimension = "DS_UTCTime_1" ;
   		:Description = "This group contains data with a rate of 1HZ. 1Hz data may be indexed to the 40HZ data using the i_rec_ndx parameter in each respective time group." ;
 
   group: Reflectivity {
@@ -2012,7 +2015,7 @@ group: Data_1HZ {
 
   group: Time {
     dimensions:
-    	d_UTCTime_1 = 1098 ;
+    	d_UTCTime_1 = UNLIMITED ; // (1098 currently)
     variables:
     	double d_UTCTime_1(d_UTCTime_1) ;
     		d_UTCTime_1:units = "seconds since removed date-time" ;
@@ -2110,6 +2113,7 @@ group: Data_1HZ {
     		i_rec_ndx:valid_max = 2147483647 ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "d_UTCTime_1" ;
     		:Description = "This group contains the 1HZ index and time-related parameters" ;
     } // group Time
 

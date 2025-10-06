@@ -86,6 +86,7 @@ env:
     - CMAC_BUCKET="cloudydap"
 
 before_install:
+  - gem install bundler
   - pip install --user awscli
   # fix for Java 17 install for Sonar from Travis CI support. jhrg 1/23/24
   - curl -s "https://get.sdkman.io" | bash

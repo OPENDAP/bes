@@ -139,7 +139,7 @@ dnl module if the user supplies --without-ngap or --with-ngap=no. jhrg 3/31/20
 
 AC_ARG_WITH([ngap],
     AS_HELP_STRING([--without-ngap],
-    [Disable support for the NGAP service, no ngap_module. (Built by default)])
+    [Disable support for the NGAP container. (Built by default)])
 )
 AM_CONDITIONAL([WITH_NGAP], [test "x$with_ngap" != "xno"])
 AM_COND_IF([WITH_NGAP],
@@ -444,13 +444,7 @@ AC_ARG_WITH(libwrap,
 # Check for cppunit to enable unit testing.
 AM_PATH_CPPUNIT(1.12.0,
 	[AM_CONDITIONAL([CPPUNIT], [true])],
-	[
-	    PKG_CHECK_MODULES(CPPUNIT, [cppunit >= 1.12.0],
-		[AM_CONDITIONAL([CPPUNIT], [true])],
-		[AM_CONDITIONAL([CPPUNIT], [false])]
-	    )
-	]
-)
+	[AM_CONDITIONAL([CPPUNIT], [false])])
 
 dnl Check for RHEL 8 and tirpc
 OX_RHEL8_TIRPC
@@ -683,7 +677,7 @@ AS_IF([test -n "$with_gdal_prefix" -a $with_gdal_prefix = no],
     [test -n "$with_gdal_prefix"],
     dnl then
     [AC_MSG_NOTICE([You set the gdal-prefix directory to $with_gdal_prefix,])
-    AC_MSG_ERROR([but gdal-config is not there. Not building GDAL-dependent modules.])],
+    AC_MSG_WARN([but gdal-config is not there. Not building GDAL-dependent modules.])],
     
     dnl else
     [AC_MSG_NOTICE([Looking for GDAL.])
@@ -1145,11 +1139,6 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/cmr_module/tests/atlocal
     modules/cmr_module/unit-tests/Makefile
 
-    modules/ngap_module/Makefile
-    modules/ngap_module/tests/Makefile
-    modules/ngap_module/tests/atlocal
-    modules/ngap_module/unit-tests/Makefile
-    
     modules/s3_reader/Makefile
     modules/s3_reader/tests/Makefile
     modules/s3_reader/tests/atlocal
@@ -1171,9 +1160,14 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/dmrpp_module/tests_build_dmrpp/Makefile
     modules/dmrpp_module/tests_build_dmrpp/atlocal
     modules/dmrpp_module/data/Makefile
-    modules/dmrpp_module/writer/Makefile
+    modules/dmrpp_module/dmrpp_transmitter/Makefile
+
+    modules/dmrpp_module/ngap_container/Makefile
+    modules/dmrpp_module/ngap_container/unit-tests/Makefile
+
     modules/dmrpp_module/build_dmrpp_h4/Makefile
     modules/dmrpp_module/get_dmrpp/Makefile
+    modules/dmrpp_module/get_dmrpp/unit-tests/Makefile
 
     modules/fileout_json/Makefile
     modules/fileout_json/unit-tests/Makefile 
@@ -1251,9 +1245,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/w10n_handler/Makefile 
     modules/w10n_handler/unit-tests/Makefile
     modules/w10n_handler/tests/Makefile 
-    modules/w10n_handler/tests/atlocal
-
-    modules/builddmrpp_module/Makefile])
+    modules/w10n_handler/tests/atlocal])
 
     dnl Move these into the autotest.at files using an autotest option.
     AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
@@ -1279,7 +1271,6 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     AC_CONFIG_TESTDIR(modules/httpd_catalog_module/tests, [standalone])
 
     AC_CONFIG_TESTDIR(modules/cmr_module/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/ngap_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/s3_reader/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_json/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_covjson/tests, [standalone])

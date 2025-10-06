@@ -23,6 +23,7 @@ HDF5DiskCache *HDF5DiskCache::d_instance = nullptr;
 const string HDF5DiskCache::PATH_KEY = "H5.DiskCacheDataPath";
 const string HDF5DiskCache::PREFIX_KEY = "H5.DiskCacheFilePrefix";
 const string HDF5DiskCache::SIZE_KEY = "H5.DiskCacheSize";
+const int HDF5DiskCache::CACHE_BUF_SIZE = 1073741824;
 
 long HDF5DiskCache::getCacheSizeFromConfig(const long cache_size)
 {
@@ -199,7 +200,7 @@ bool HDF5DiskCache::write_cached_data(const string & cache_file_name, int64_t ex
 bool HDF5DiskCache::write_cached_data2(const string & cache_file_name, int64_t expected_file_size, const void *buf)
 {
 
-    BESDEBUG("cache", "In HDF5DiskCache::write_cached_data()" << endl);
+    BESDEBUG("cache", "In HDF5DiskCache::write_cached_data() - cache_file_name: " <<cache_file_name << endl);
     int fd = 0;
     bool ret_value = false;
 
@@ -209,10 +210,37 @@ bool HDF5DiskCache::write_cached_data2(const string & cache_file_name, int64_t e
         ssize_t ret_val = 0;
 
         // 2. write the file.
-        ret_val = write(fd, buf, expected_file_size);
+        
+        bool write_disk_cache = true;
+        
+        if (expected_file_size > HDF5DiskCache::CACHE_BUF_SIZE) {
+            ssize_t bytes_written = 0;
+            while (bytes_written < expected_file_size) {
+                int one_write_buf_size = HDF5DiskCache::CACHE_BUF_SIZE;
+                if (expected_file_size <(bytes_written+HDF5DiskCache::CACHE_BUF_SIZE)) 
+                    one_write_buf_size = expected_file_size - bytes_written;
+
+                ret_val = write(fd,buf,one_write_buf_size);
+                if (ret_val <0) {
+                    write_disk_cache = false;
+                    break;
+                }
+                bytes_written +=ret_val;
+                buf = (const char *)buf + ret_val;
+
+            }
+
+            
+        }
+        else  {
+            ret_val = write(fd, buf, expected_file_size);
+            if (ret_val != expected_file_size)
+                write_disk_cache = false;
+               
+        }
 
         // 3. If the written size is not the same as the expected file size, purge the file.
-        if (ret_val != expected_file_size) {
+        if (write_disk_cache == false) {
             if (unlink(cache_file_name.c_str()) != 0) {
                 string msg = "Cannot remove the corrupt cached file " + cache_file_name;
                 throw BESInternalError(msg, __FILE__, __LINE__);
@@ -221,7 +249,9 @@ bool HDF5DiskCache::write_cached_data2(const string & cache_file_name, int64_t e
         }
         else {
             unsigned long long size = update_cache_info(cache_file_name);
-            if (cache_too_big(size)) update_and_purge(cache_file_name);
+            if (cache_too_big(size)) {
+                update_and_purge(cache_file_name);
+            }
             ret_value = true;
         }
         // 4. release the lock.

@@ -46,14 +46,11 @@ using std::string;
 using std::ostream;
 
 BESContextManager *BESContextManager::d_instance = nullptr;
-static std::once_flag d_euc_init_once;
 
 #define MODULE "context"
 #define prolog std::string("BESContextManager::").append(__func__).append("() - ")
 
 BESContextManager::BESContextManager() {}
-
-BESContextManager::~BESContextManager() {}
 
 /** @brief set context in the BES
  *
@@ -95,13 +92,15 @@ string BESContextManager::get_context(const string &name, bool &found)
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     string ret;
-    found = false;
     // Use find() instead of operator[] to avoid inserting a default value at key
     // if it does not exist int he map. jhrg 2/26/25
     auto const i = _context_list.find(name);
     if (i != _context_list.end()) {
         ret = i->second;
         found = true;
+    }
+    else {
+        found = false;
     }
 
     BESDEBUG(MODULE, prolog << "name=\"" << name << "\", found=\"" << found << "\" value:\"" << ret << "\"" << endl);
@@ -213,8 +212,8 @@ void BESContextManager::dump(ostream &strm) const
 BESContextManager *
 BESContextManager::TheManager()
 {
-    std::call_once(d_euc_init_once,BESContextManager::initialize_instance);
-    return d_instance;
+    static BESContextManager manager;
+    return &manager;
 }
 
 void BESContextManager::initialize_instance() {

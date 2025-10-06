@@ -31,7 +31,7 @@ namespace bes {
 
 /** @brief A ResponseHandler that does nothing
  *
- * Many commands don't send a response back to the BES's client. Instead they
+ * Many commands don't send a response back to the BES's client. Instead, they
  * modify the BES's current state. This ResponseHandler is useful when the
  * entire command's action (like setContexts) can be performed during the
  * XMLInterface::build_data_request_plan() phase of command evaluation. This

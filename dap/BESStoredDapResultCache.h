@@ -26,6 +26,7 @@
 #define _bes_store_result_cache_h
 
 #include <string>
+#include <mutex>
 
 #include <libdap/DapXmlNamespaces.h>   // needed for libdap::DAPVersion
 //#include <libdap/DMR.h>
@@ -57,11 +58,7 @@ class BESStoredDapResultCache: public BESFileLockingCache {
 private:
     static bool d_enabled;
     static BESStoredDapResultCache *d_instance;
-    static void delete_instance()
-    {
-        delete d_instance;
-        d_instance = 0;
-    }
+    static std::once_flag d_initialize;
 
     string d_storedResultsSubdir;
     string d_dataRootDir;
@@ -69,9 +66,7 @@ private:
     unsigned long d_maxCacheSize;
 
     /** Initialize the cache using the default values for the cache. */
-    BESStoredDapResultCache();
-
-    BESStoredDapResultCache(const BESStoredDapResultCache &src);
+    BESStoredDapResultCache() = default;
 
     bool is_valid(const std::string &cache_file_name, const std::string &dataset);
 #ifdef DAP2_STORED_RESULTS
@@ -85,15 +80,10 @@ private:
 
     string get_stored_result_local_id(const string &dataset, const string &ce, libdap::DAPVersion version);
 
-    string getBesDataRootDirFromConfig();
-    string getSubDirFromConfig();
-    string getResultPrefixFromConfig();
-    unsigned long getCacheSizeFromConfig();
-
-protected:
-
-    BESStoredDapResultCache(const string &data_root_dir, const string &stored_results_subdir, const string &prefix,
-        unsigned long long size);
+    static string getBesDataRootDirFromConfig();
+    static string getSubDirFromConfig();
+    static string getResultPrefixFromConfig();
+    static unsigned long getCacheSizeFromConfig();
 
 public:
 #if 0
@@ -102,10 +92,11 @@ public:
     static const string SIZE_KEY;
 #endif
 
-    virtual ~BESStoredDapResultCache() { }
+    BESStoredDapResultCache(const BESStoredDapResultCache&) = delete;
+    BESStoredDapResultCache& operator=(const BESStoredDapResultCache&) = delete;
 
-    static BESStoredDapResultCache *get_instance(const string &bes_catalog_root_dir,
-        const string &stored_results_subdir, const string &prefix, unsigned long long size);
+    ~BESStoredDapResultCache() override = default;
+
     static BESStoredDapResultCache *get_instance();
 
 #ifdef DAP2_STORED_RESULTS

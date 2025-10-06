@@ -58,6 +58,8 @@ const char *CredentialsManager::ENV_REGION_KEY = "CMAC_REGION";
 const char *CredentialsManager::ENV_URL_KEY = "CMAC_URL";
 
 const char *CredentialsManager::USE_ENV_CREDS_KEY_VALUE = "ENV_CREDS";
+/// Run once_flag for initializing the singleton instance.
+std::once_flag d_cmac_init_once;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //
@@ -78,6 +80,94 @@ string get_env_value(const string &key) {
         return {env_var_value};
     }
     return {""};
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//
+// class CredentialsManager
+//
+
+/**
+ * @brief Returns the singleton instance of the CredentialsManager.
+ * @return Returns the singleton instance of the CredentialsManager
+ */
+CredentialsManager *CredentialsManager::theCM() {
+    //std::call_once(d_cmac_init_once, CredentialsManager::initialize_instance);
+    static CredentialsManager theMngr;
+    std::call_once(d_cmac_init_once,[&](){
+        theMngr.load_credentials(); // Only call this here.
+    });
+    return &theMngr;
+}
+
+/**
+ * Add the passed set of AccessCredentials to the collection, filed under key.
+ * @param key The key (URL) to associated with these credentials
+ * @param ac The credentials to use for access.
+ */
+void
+CredentialsManager::add(const std::string &key, AccessCredentials *ac) {
+    // This lock is a RAII implementation. It will block until the mutex is
+    // available and the lock will be released when the instance is destroyed.
+    std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
+
+    creds.insert(std::pair<std::string, AccessCredentials *>(key, ac));
+    BESDEBUG(HTTP_MODULE, prolog << "Added AccessCredentials to CredentialsManager.\n");
+    BESDEBUG(CREDS, prolog << "Credentials: \n" << ac->to_json() << "\n");
+}
+
+/**
+ * Retrieve the AccessCredentials, if any, associated with the passed url (key).
+ * @param url The URL for which AccessCredentials are desired
+ * @return If there are AccessCredentials associated with the URL/key then a pointer to
+ * them will be returned. Otherwise, NULL.
+ */
+AccessCredentials *
+CredentialsManager::get(const shared_ptr <http::url> &url) {
+    // This lock is a RAII implementation. It will block until the mutex is
+    // available and the lock will be released when the instance is destroyed.
+    std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
+
+    AccessCredentials *best_match = nullptr;
+    std::string best_key;
+
+    if (url->protocol() == HTTP_PROTOCOL || url->protocol() == HTTPS_PROTOCOL) {
+        for (auto &item: creds) {
+            const std::string &key = item.first;
+            if ((url->str().rfind(key, 0) == 0) && (key.size() > best_key.size())) {
+                // url starts with key
+                best_key = key;
+                best_match = item.second;
+            }
+        }
+    }
+
+    return best_match;
+}
+
+AccessCredentials *
+CredentialsManager::get(const std::string &url) {
+    // Check the protocol before locking the credential manager. jhrg 2/20/25
+    const auto protocol = url.substr(0, url.find(':'));
+    if (url.find(HTTP_PROTOCOL) != 0 && url.find(HTTPS_PROTOCOL) != 0)
+        return nullptr;
+
+    // This lock is a RAII implementation. It will block until the mutex is
+    // available and the lock will be released when the instance is destroyed.
+    std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
+
+    AccessCredentials *best_match = nullptr;
+    for (auto &item: creds) {
+        std::string best_key;
+        const std::string &key = item.first;
+        if ((url.rfind(key, 0) == 0) && (key.size() > best_key.size())) {
+            // url starts with key
+            best_key = key;
+            best_match = item.second;
+        }
+    }
+
+    return best_match;
 }
 
 

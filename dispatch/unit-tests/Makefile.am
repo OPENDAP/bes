@@ -32,7 +32,7 @@ if CPPUNIT
 # This determines what gets run by 'make check.'
 TESTS = keysT constraintT defT pfileT plistT pvolT replistT		\
 reqhandlerT reqlistT resplistT infoT utilT regexT scrubT		\
-checkT servicesT fsT urlT containerT uncompressT			\
+checkT servicesT fsT urlT containerT uncompressT uncompressT2			\
 BESCatalogListTest CatalogNodeTest CatalogItemTest \
 ServerAdministratorTest kvp_utils_test \
 RequestTimerTest BESFileLockingCacheTest FileCacheTest
@@ -146,6 +146,8 @@ resplistT_SOURCES = resplistT.cc TestResponseHandler.cc TestResponseHandler.h
 infoT_SOURCES = infoT.cc
 
 uncompressT_SOURCES = uncompressT.cc
+
+uncompressT2_SOURCES = uncompressT2.cc
 
 if BES_DEVELOPER
 debugT_SOURCES = debugT.cc

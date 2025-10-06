@@ -57,7 +57,7 @@ std::string get_dap_type(hid_t type, bool);
 std::string get_dap_integer_type(hid_t dtype, bool);
 
 void get_dataset_dmr(hid_t file_id, hid_t pid, const std::string &dname, DS_t * dt_inst_ptr, bool has_dimscale,
-                     bool is_eos5, bool &is_pure_dims, std::vector<link_info_t> &, std::vector<std::string> &);
+                     bool is_eos5, bool &is_pure_dims, std::vector<link_info_t> &, std::vector<std::string> &, const eos5_dim_info_t &);
 void get_dataset(hid_t pid, const std::string &dname, DS_t * dt_inst_ptr);
 
 hid_t get_fileid(const char *filename);
@@ -92,14 +92,17 @@ void handle_vlen_int_float(libdap::D4Group *d4_grp, hid_t pid, const std::string
 
 bool check_dimscale(hid_t fid);
 bool has_dimscale_attr(hid_t dataset);
-void obtain_dimnames(hid_t file_id, hid_t dset, int ndim, DS_t*dt_inst_ptr, std::vector<link_info_t>&, bool is_eos5);
+void obtain_dimnames(hid_t file_id, hid_t dset, int ndim, DS_t*dt_inst_ptr, std::vector<link_info_t>&, bool is_eos5, const eos5_dim_info_t &);
 void obtain_dimnames_internal(hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr,std::vector<link_info_t> & hdf5_hls,
-                              bool is_eos5, const string &dimlist_name);
+                              bool is_eos5, const string &dimlist_name, const eos5_dim_info_t &);
 std::string obtain_dimname_deref(hid_t ref_dset, const DS_t *dt_inst_ptr);
 void obtain_dimname_hardlinks(hid_t file_id, hid_t ref_dset, vector<link_info_t>& hdf5_hls, std::string & trim_objname);
 bool handle_dimscale_dmr(hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
-                         DS_t * dt_inst_ptr,std::vector<link_info_t> &hdf5_hls,std::vector<std::string> &handled_cv_names);
+                         DS_t * dt_inst_ptr,std::vector<link_info_t> &hdf5_hls,std::vector<std::string> &handled_cv_names,
+                         const eos5_dim_info_t &);
 
+bool check_var_null_dim_name(hid_t);
+bool has_null_dim_name(hid_t);
 void write_vlen_str_attrs(hid_t attr_id, hid_t ty_id, const DSattr_t *, libdap::D4Attribute *d4_attr,
                           libdap::AttrTable* d2_attr, bool is_dap4);
 

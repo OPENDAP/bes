@@ -31,6 +31,7 @@
 /// All rights reserved.
 
 #include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include "HDF5CFModule.h"
 #include "h5apicompatible.h"
 
@@ -69,7 +70,7 @@ bool check_eos5(hid_t file_id) {
 
             string msg = "cannot open the HDF5 group  ";
             msg += eos5_check_group;
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
         // check the existence of the EOS5 attribute
@@ -99,7 +100,7 @@ bool check_eos5(hid_t file_id) {
                 msg += eos5_dataset;
                 msg +=" exists ";
                 H5Gclose(eos_group_id);
-                throw InternalErr(__FILE__, __LINE__, msg);
+                throw BESInternalError(msg,__FILE__, __LINE__);
             }
         }
         else if(0 == has_eos_attr) 
@@ -109,7 +110,7 @@ bool check_eos5(hid_t file_id) {
             msg += eos5_check_attr;
             msg +=" exists ";
             H5Gclose(eos_group_id);
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
     }
     else if( 0 == has_eos_group) {
@@ -122,7 +123,7 @@ bool check_eos5(hid_t file_id) {
 #if 0
 //        H5Fclose(file_id);
 #endif
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 }
       
@@ -167,7 +168,7 @@ bool grp_has_dset(hid_t fileid, const string & grp_path ) {
     if((pid = H5Gopen(fileid,grp_path.c_str(),H5P_DEFAULT))<0){
         string msg = "Unable to open the HDF5 group ";
         msg += grp_path;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     H5G_info_t g_info;
@@ -176,7 +177,7 @@ bool grp_has_dset(hid_t fileid, const string & grp_path ) {
         H5Gclose(pid);
         string msg = "Unable to obtain the HDF5 group info. for ";
         msg += grp_path;
-        throw InternalErr(__FILE__, __LINE__, msg);
+        throw BESInternalError(msg,__FILE__, __LINE__);
     }
  
     hsize_t nelems = g_info.nlinks;
@@ -188,7 +189,7 @@ bool grp_has_dset(hid_t fileid, const string & grp_path ) {
         if (H5OGET_INFO_BY_IDX(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oinfo, H5P_DEFAULT) < 0) {
             string msg = "Cannot obtain the object info for the group";
             msg += grp_path;
-            throw InternalErr(__FILE__, __LINE__, msg);
+            throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
         if(oinfo.type == H5O_TYPE_DATASET) {

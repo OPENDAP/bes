@@ -37,9 +37,11 @@
 
 #include "BESInternalFatalError.h"
 
-#include "DmrppParserSax2.h"
 #include "DmrppTypeFactory.h"
 #include "DmrppMetadataStore.h"
+
+#include <D4Group.h>
+#include <DMZ.h>
 
 #include "DMRpp.h"
 
@@ -246,10 +248,11 @@ DmrppMetadataStore::get_dmr_object(const string &name)
     DmrppTypeFactory dmrpp_btf;
     unique_ptr<DMRpp> dmrpp(new DMRpp(&dmrpp_btf, "mds"));
 
-    DmrppParserSax2 parser;
-    parser.intern(oss.str(), dmrpp.get());
-
-    dmrpp->set_factory(0);
+    DMZ dmz;
+    dmz.parse_xml_string(oss.str());
+    dmz.build_thin_dmr(dmrpp.get());
+    dmz.load_all_attributes(dmrpp.get());
+    dmrpp->set_factory(nullptr);
 
     return dmrpp.release();
 }
@@ -275,10 +278,12 @@ DmrppMetadataStore::get_dmrpp_object(const string &name)
     DmrppTypeFactory dmrpp_btf;
     unique_ptr<DMRpp> dmrpp(new DMRpp(&dmrpp_btf, "mds"));
 
-    DmrppParserSax2 parser;
-    parser.intern(oss.str(), dmrpp.get());
-
-    dmrpp->set_factory(0);
+    DMZ dmz;
+    dmz.parse_xml_string(oss.str());
+    dmz.build_thin_dmr(dmrpp.get());
+    dmz.load_all_attributes(dmrpp.get());
+    dmz.load_chunks(dmrpp.get()->root());
+    dmrpp->set_factory(nullptr);
 
     return dmrpp.release();
 }

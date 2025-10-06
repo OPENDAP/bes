@@ -107,7 +107,7 @@ int BESModuleApp::loadModules()
     // was happening was a module named XdapX would match the find()
     // call below and would wind up being loaded _before_ the dap module.
     // That led to all sorts of runtime problems. See ticket 2258. Since
-    // we don't need this and it can cause problems, I'm removing it.
+    // we don't need this, and it can cause problems, I'm removing it.
     // jhrg 10/13/14
 #if 0
     // This is a kludge. But we want to be sure that the dap

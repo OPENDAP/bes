@@ -3,14 +3,14 @@
     <Int32 name="chunks_all_fill">
         <Dim size="4"/>
         <Dim size="4"/>
-        <dmrpp:chunks fillValue="-99">
+        <dmrpp:chunks fillValue="-99" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
         </dmrpp:chunks>
     </Int32>
     <Int32 name="chunks_fill_not_write">
         <Dim size="4"/>
         <Dim size="4"/>
-        <dmrpp:chunks fillValue="-99">
+        <dmrpp:chunks fillValue="-99" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
         </dmrpp:chunks>
     </Int32>

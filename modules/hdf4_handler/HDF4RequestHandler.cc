@@ -38,7 +38,6 @@
 #include <libdap/D4BaseTypeFactory.h>
 #include <BESDMRResponse.h>
 #include <libdap/mime_util.h>
-#include <libdap/InternalErr.h>
 #include <libdap/Ancillary.h>
 #include <libdap/debug.h>
 
@@ -57,6 +56,9 @@
 #include <libdap/InternalErr.h>
 #include <BESInternalError.h>
 #include <BESDapError.h>
+#include <BESInternalFatalError.h>
+#include <BESSyntaxUserError.h>
+
 #include <BESStopWatch.h>
 #include <BESDebug.h>
 #include "BESDataNames.h"
@@ -152,59 +154,59 @@ string HDF4RequestHandler::_cache_metadata_path            ="";
 HDF4RequestHandler::HDF4RequestHandler(const string & name) :
 	BESRequestHandler(name) {
 
-	BESRequestHandler::add_method(DAS_RESPONSE, HDF4RequestHandler::hdf4_build_das);
-	BESRequestHandler::add_method(DDS_RESPONSE, HDF4RequestHandler::hdf4_build_dds);
-	BESRequestHandler::add_method(DATA_RESPONSE, HDF4RequestHandler::hdf4_build_data);
-	BESRequestHandler::add_method(DMR_RESPONSE, HDF4RequestHandler::hdf4_build_dmr);
-	BESRequestHandler::add_method(DAP4DATA_RESPONSE, HDF4RequestHandler::hdf4_build_dmr);
-	BESRequestHandler::add_method(HELP_RESPONSE, HDF4RequestHandler::hdf4_build_help);
-	BESRequestHandler::add_method(VERS_RESPONSE, HDF4RequestHandler::hdf4_build_version);
+    BESRequestHandler::add_method(DAS_RESPONSE, HDF4RequestHandler::hdf4_build_das);
+    BESRequestHandler::add_method(DDS_RESPONSE, HDF4RequestHandler::hdf4_build_dds);
+    BESRequestHandler::add_method(DATA_RESPONSE, HDF4RequestHandler::hdf4_build_data);
+    BESRequestHandler::add_method(DMR_RESPONSE, HDF4RequestHandler::hdf4_build_dmr);
+    BESRequestHandler::add_method(DAP4DATA_RESPONSE, HDF4RequestHandler::hdf4_build_dmr);
+    BESRequestHandler::add_method(HELP_RESPONSE, HDF4RequestHandler::hdf4_build_help);
+    BESRequestHandler::add_method(VERS_RESPONSE, HDF4RequestHandler::hdf4_build_version);
 
-        if (true == is_beskey_exist("H4.EnableDirectDMR"))
-            _direct_dmr=check_beskeys("H4.EnableDirectDMR");
-        _usecf = check_beskeys("H4.EnableCF");
+    if (true == is_beskey_exist("H4.EnableDirectDMR"))
+        _direct_dmr=check_beskeys("H4.EnableDirectDMR");
+    _usecf = check_beskeys("H4.EnableCF");
 
-        // The following keys are only effective when usecf is true.
-        // Keys to tune the performance -general
-        _pass_fileid                       = check_beskeys("H4.EnablePassFileID");
-        _disable_structmeta                = check_beskeys("H4.DisableStructMetaAttr");
-        _enable_special_eos                = check_beskeys("H4.EnableSpecialEOS");
-        _disable_scaleoffset_comp          = check_beskeys("H4.DisableScaleOffsetComp");
-        _disable_ecsmetadata_min           = check_beskeys("H4.DisableECSMetaDataMin");
-        _disable_ecsmetadata_all           = check_beskeys("H4.DisableECSMetaDataAll");
+    // The following keys are only effective when usecf is true.
+    // Keys to tune the performance -general
+    _pass_fileid                       = check_beskeys("H4.EnablePassFileID");
+    _disable_structmeta                = check_beskeys("H4.DisableStructMetaAttr");
+    _enable_special_eos                = check_beskeys("H4.EnableSpecialEOS");
+    _disable_scaleoffset_comp          = check_beskeys("H4.DisableScaleOffsetComp");
+    _disable_ecsmetadata_min           = check_beskeys("H4.DisableECSMetaDataMin");
+    _disable_ecsmetadata_all           = check_beskeys("H4.DisableECSMetaDataAll");
 
-        // Keys to tune the performance - cache
-        _enable_eosgeo_cachefile           = check_beskeys("H4.EnableEOSGeoCacheFile");
-        _enable_data_cachefile             = check_beskeys("H4.EnableDataCacheFile");
-        _enable_metadata_cachefile         = check_beskeys("H4.EnableMetaDataCacheFile");
+    // Keys to tune the performance - cache
+    _enable_eosgeo_cachefile           = check_beskeys("H4.EnableEOSGeoCacheFile");
+    _enable_data_cachefile             = check_beskeys("H4.EnableDataCacheFile");
+    _enable_metadata_cachefile         = check_beskeys("H4.EnableMetaDataCacheFile");
 
-        // Keys to handle vdata and vgroups
-        _enable_hybrid_vdata               = check_beskeys("H4.EnableHybridVdata");
-        _enable_ceres_vdata                = check_beskeys("H4.EnableCERESVdata");
-        _enable_vdata_attr                 = check_beskeys("H4.EnableVdata_to_Attr");
-        _enable_vdata_desc_attr            = check_beskeys("H4.EnableVdataDescAttr");
-        _disable_vdata_nameclashing_check  = check_beskeys("H4.DisableVdataNameclashingCheck");
-        _enable_vgroup_attr                = check_beskeys("H4.EnableVgroupAttr");
+    // Keys to handle vdata and vgroups
+    _enable_hybrid_vdata               = check_beskeys("H4.EnableHybridVdata");
+    _enable_ceres_vdata                = check_beskeys("H4.EnableCERESVdata");
+    _enable_vdata_attr                 = check_beskeys("H4.EnableVdata_to_Attr");
+    _enable_vdata_desc_attr            = check_beskeys("H4.EnableVdataDescAttr");
+    _disable_vdata_nameclashing_check  = check_beskeys("H4.DisableVdataNameclashingCheck");
+    _enable_vgroup_attr                = check_beskeys("H4.EnableVgroupAttr");
 
-        // Misc. keys
-        _enable_check_modis_geo_file       = check_beskeys("H4.EnableCheckMODISGeoFile");
-        _enable_swath_grid_attr            = check_beskeys("H4.EnableSwathGridAttr");
-        _enable_ceres_merra_short_name     = check_beskeys("H4.EnableCERESMERRAShortName");
-        _enable_check_scale_offset_type    = check_beskeys("H4.EnableCheckScaleOffsetType");
+    // Misc. keys
+    _enable_check_modis_geo_file       = check_beskeys("H4.EnableCheckMODISGeoFile");
+    _enable_swath_grid_attr            = check_beskeys("H4.EnableSwathGridAttr");
+    _enable_ceres_merra_short_name     = check_beskeys("H4.EnableCERESMERRAShortName");
+    _enable_check_scale_offset_type    = check_beskeys("H4.EnableCheckScaleOffsetType");
 
-        _disable_swath_dim_map             = check_beskeys("H4.DisableSwathDimMap");
+    _disable_swath_dim_map             = check_beskeys("H4.DisableSwathDimMap");
 
-        // Cache path etc. 
-        _cache_latlon_path_exist           =get_beskeys("HDF4.Cache.latlon.path",_cache_latlon_path);
-        _cache_latlon_prefix_exist         =get_beskeys("HDF4.Cache.latlon.prefix",_cache_latlon_prefix);
-        string temp_cache_latlon_size;
-        _cache_latlon_size_exist           =get_beskeys("HDF4.Cache.latlon.size",temp_cache_latlon_size);
-        if (_cache_latlon_size_exist == true) {
-            istringstream iss(temp_cache_latlon_size);
-            iss >> _cache_latlon_size;
-        }
+    // Cache path etc. 
+    _cache_latlon_path_exist           =get_beskeys("HDF4.Cache.latlon.path",_cache_latlon_path);
+    _cache_latlon_prefix_exist         =get_beskeys("HDF4.Cache.latlon.prefix",_cache_latlon_prefix);
+    string temp_cache_latlon_size;
+    _cache_latlon_size_exist           =get_beskeys("HDF4.Cache.latlon.size",temp_cache_latlon_size);
+    if (_cache_latlon_size_exist == true) {
+        istringstream iss(temp_cache_latlon_size);
+        iss >> _cache_latlon_size;
+    }
 
-        _cache_metadata_path_exist        =get_beskeys("H4.Cache.metadata.path",_cache_metadata_path);
+    _cache_metadata_path_exist        =get_beskeys("H4.Cache.metadata.path",_cache_metadata_path);
 
 }
 
@@ -240,7 +242,7 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
     BESResponseObject *response = dhi.response_handler->get_response_object();
     auto bdas = dynamic_cast<BESDASResponse *> (response);
     if (!bdas)
-        throw BESInternalError("cast error", __FILE__, __LINE__);
+        throw BESInternalError("BESDASResponse cast error", __FILE__, __LINE__);
 
     try {
         bdas->set_container(dhi.container->get_symbolic_name());
@@ -328,7 +330,6 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
             catch(...) {
                 close_hdf4_fileid(sdfd,fileid,h4file); 
                 throw;
-                //throw InternalErr(__FILE__,__LINE__,"read_das_hdfsp error");
             }
 #endif
             close_hdf4_fileid(sdfd,fileid,h4file);
@@ -340,21 +341,44 @@ bool HDF4RequestHandler::hdf4_build_das(BESDataHandlerInterface & dhi) {
         bdas->clear_container();
     } 
 
-    catch (BESError & e) {
-        throw BESError(e.what(), e.get_bes_error_type(),
-				__FILE__, __LINE__);
+    catch(const BESSyntaxUserError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch(const BESInternalError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESInternalError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch(const BESDapError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESDapError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch (const BESError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
+        throw;
     } 
-    catch (InternalErr & e) {
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
-				__FILE__, __LINE__);
-    } 
-    catch (Error & e) {
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
-				__FILE__, __LINE__);
-    } 
-    catch (...) {
+
+    catch(const InternalErr & e) { 
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    }
+    catch(const Error & e) {
+        string libdap_error="libdap4: "+ e.get_file(); 
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    }
+
+    catch (std::exception &e) {
+        string s = string("C++ Exception: ") + e.what();
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
+    }
+    catch(...) {
         string s = "unknown exception caught building HDF4 DAS";
-	throw BESDapError(s, true, unknown_error, __FILE__, __LINE__);
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 
     return true;
@@ -397,7 +421,7 @@ gettimeofday(&start_time,nullptr);
     BESResponseObject *response = dhi.response_handler->get_response_object();
     auto bdds = dynamic_cast<BESDDSResponse *> (response);
     if (!bdds)
-        throw BESInternalError("cast error", __FILE__, __LINE__);
+        throw BESInternalError("BESDDSResponse cast error", __FILE__, __LINE__);
 
     try {
 
@@ -523,21 +547,45 @@ cerr<<"total time spent for DDS buld is "<<total_time_spent<< "micro seconds "<<
 
 	bdds->clear_container();
     } 
-    catch (BESError & e) {
-        throw BESError(e.what(), e.get_bes_error_type(),
-				__FILE__, __LINE__);
+
+    catch(const BESSyntaxUserError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch(const BESInternalError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESInternalError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch(const BESDapError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESDapError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch (const BESError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
+        throw;
     } 
-    catch (InternalErr & e) {
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
-				__FILE__, __LINE__);
-    } 
-    catch (Error & e) {
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
-				__FILE__, __LINE__);
-    } 
-    catch (...) {
+
+    catch(const InternalErr & e) { 
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    }
+    catch(const Error & e) {
+        string libdap_error="libdap4: "+ e.get_file(); 
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    }
+
+    catch (std::exception &e) {
+        string s = string("C++ Exception: ") + e.what();
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
+    }
+    catch(...) {
         string s = "unknown exception caught building HDF4 DDS";
-        throw BESDapError(s, true, unknown_error, __FILE__, __LINE__);
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 
     return true;
@@ -592,7 +640,7 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
     auto bdds = dynamic_cast<BESDataDDSResponse *> (response);
 
     if (!bdds)
-        throw BESInternalError("cast error", __FILE__, __LINE__);
+        throw BESInternalError("BESDataDDSResponse cast error", __FILE__, __LINE__);
 
     try {
         bdds->set_container(dhi.container->get_symbolic_name());
@@ -717,21 +765,44 @@ bool HDF4RequestHandler::hdf4_build_data(BESDataHandlerInterface & dhi) {
 
     }
 
-    catch (BESError & e) {
-        throw BESError(e.what(), e.get_bes_error_type(),
-				__FILE__, __LINE__);
+    catch(const BESSyntaxUserError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+        throw;
     }
-    catch (InternalErr & e) {
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
-                                __FILE__, __LINE__);
+
+    catch(const BESInternalError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESInternalError! Message: " << e.get_message() << endl);
+        throw;
     }
-    catch (Error & e) {
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
-                                __FILE__, __LINE__);
+
+    catch(const BESDapError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESDapError! Message: " << e.get_message() << endl);
+        throw;
     }
-    catch (...) {
-        string s = "unknown exception caught building DAP2 Data Response from an HDF4 data resource";
-        throw BESDapError(s, true, unknown_error, __FILE__, __LINE__);
+
+    catch (const BESError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
+        throw;
+    } 
+
+    catch(const InternalErr & e) { 
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    }
+    catch(const Error & e) {
+        string libdap_error="libdap4: "+ e.get_file(); 
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    }
+
+    catch (std::exception &e) {
+        string s = string("C++ Exception: ") + e.what();
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
+    }
+    catch(...) {
+        string s = "unknown exception caught building HDF4 data response";
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 
     return true;
@@ -754,7 +825,7 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
     auto bdds = dynamic_cast<BESDataDDSResponse *> (response);
 
     if (!bdds)
-        throw BESInternalError("cast error", __FILE__, __LINE__);
+        throw BESInternalError("BESDataDDSResponse cast error", __FILE__, __LINE__);
 
     try {
         bdds->set_container(dhi.container->get_symbolic_name());
@@ -862,22 +933,95 @@ bool HDF4RequestHandler::hdf4_build_data_with_IDs(BESDataHandlerInterface & dhi)
 
     }
 
-    catch (InternalErr & e) {
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
-                                __FILE__, __LINE__);
-    }
-    catch (Error & e) {
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
-                                __FILE__, __LINE__);
-    }
-    catch (...) {
+    catch(const BESSyntaxUserError & e) {
 #ifdef USE_HDFEOS2_LIB
         close_fileid(sdfd,fileid,gridfd,swathfd,h4file,eosfile);
 #else
         close_hdf4_fileid(sdfd,fileid,h4file);
 #endif
-        string s = "unknown exception caught building DAP2 data response from an HDF4 data resource";
-        throw BESDapError(s, true, unknown_error, __FILE__, __LINE__);
+
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch(const BESInternalError & e) {
+#ifdef USE_HDFEOS2_LIB
+        close_fileid(sdfd,fileid,gridfd,swathfd,h4file,eosfile);
+#else
+        close_hdf4_fileid(sdfd,fileid,h4file);
+#endif
+
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESInternalError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch(const BESDapError & e) {
+#ifdef USE_HDFEOS2_LIB
+        close_fileid(sdfd,fileid,gridfd,swathfd,h4file,eosfile);
+#else
+        close_hdf4_fileid(sdfd,fileid,h4file);
+#endif
+
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESDapError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch (const BESError & e) {
+#ifdef USE_HDFEOS2_LIB
+        close_fileid(sdfd,fileid,gridfd,swathfd,h4file,eosfile);
+#else
+        close_hdf4_fileid(sdfd,fileid,h4file);
+#endif
+
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
+        throw;
+    } 
+
+    catch (const InternalErr & e) {
+#ifdef USE_HDFEOS2_LIB
+        close_fileid(sdfd,fileid,gridfd,swathfd,h4file,eosfile);
+#else
+        close_hdf4_fileid(sdfd,fileid,h4file);
+#endif
+
+        BESDEBUG(HDF4_NAME, prolog << "Caught InternalErr! Message: " << e.get_error_message() << endl);
+
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    } 
+    catch (const Error & e) {
+#ifdef USE_HDFEOS2_LIB
+        close_fileid(sdfd,fileid,gridfd,swathfd,h4file,eosfile);
+#else
+        close_hdf4_fileid(sdfd,fileid,h4file);
+#endif
+
+        BESDEBUG(HDF4_NAME, prolog << "Caught Err! Message: " << e.get_error_message() << endl);
+        string libdap_error="libdap4: "+ e.get_file(); 
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+
+    } 
+    catch (std::exception &e) {
+#ifdef USE_HDFEOS2_LIB
+        close_fileid(sdfd,fileid,gridfd,swathfd,h4file,eosfile);
+#else
+        close_hdf4_fileid(sdfd,fileid,h4file);
+#endif
+
+        string s = string("C++ Exception: ") + e.what();
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
+    }
+    catch(...) {
+#ifdef USE_HDFEOS2_LIB
+        close_fileid(sdfd,fileid,gridfd,swathfd,h4file,eosfile);
+#else
+        close_hdf4_fileid(sdfd,fileid,h4file);
+#endif
+
+        string s = "unknown exception caught building HDF4 data response";
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 
     // Note: HDF4 file IDs are closed by the HDF4_DDS derived class. 
@@ -991,28 +1135,63 @@ bool HDF4RequestHandler::hdf4_build_dds_cf_sds(BESDataHandlerInterface &dhi){
 
     }
 
-    catch (BESError & e) {
-        throw BESError(e.what(), e.get_bes_error_type(),
-				__FILE__, __LINE__);
-    }
-    catch (InternalErr & e) {
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
-                                __FILE__, __LINE__);
-    }
-    catch (Error & e) {
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
-                                __FILE__, __LINE__);
-    }
-    catch (...) {
-        if(sdfd != -1)
-            SDend(sdfd);
-        if(h4file != nullptr)
-            delete h4file;
-        string s = "unknown exception caught building HDF4 DataDDS";
-        throw BESDapError(s, true, unknown_error, __FILE__, __LINE__);
+    catch(const BESSyntaxUserError & e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+        throw;
     }
 
-   return true;
+    catch(const BESInternalError & e) {
+
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESInternalError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch(const BESDapError & e) {
+
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESDapError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch (const BESError & e) {
+
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
+        throw;
+    } 
+
+    catch (const InternalErr & e) {
+
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught InternalErr! Message: " << e.get_error_message() << endl);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    } 
+    catch (const Error & e) {
+
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught Err! Message: " << e.get_error_message() << endl);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    } 
+    catch (std::exception &e) {
+
+        close_hdf4_fileid(sdfd, -1,h4file);
+        string s = string("C++ Exception: ") + e.what();
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
+    }
+    catch(...) {
+
+        close_hdf4_fileid(sdfd, -1,h4file);
+        string s = "unknown exception caught building HDF4 cf sds dds response";
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
+    }
+
+    return true;
 }
 
 // Special function to build DAS for HDF4 SDS-only DDS. One can turn
@@ -1091,26 +1270,55 @@ bool HDF4RequestHandler::hdf4_build_das_cf_sds(BESDataHandlerInterface &dhi){
 
     }
 
-    catch (BESError & e) {
-       throw BESError(e.what(), e.get_bes_error_type(),
-                                __FILE__, __LINE__);
+    catch(const BESSyntaxUserError & e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+        throw;
     }
-    catch (InternalErr & e) {
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
-                                __FILE__, __LINE__);
+
+    catch(const BESInternalError & e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESInternalError! Message: " << e.get_message() << endl);
+        throw;
     }
-    catch (Error & e) {
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
-                                __FILE__, __LINE__);
+
+    catch(const BESDapError & e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESDapError! Message: " << e.get_message() << endl);
+        throw;
     }
-    catch (...) {
-        if(sdfd != -1)
-            SDend(sdfd);
-        if(h4file != nullptr)
-            delete h4file;
-        string s = "unknown exception caught building HDF4 DataDDS";
-        throw BESDapError(s, true, unknown_error, __FILE__, __LINE__);
+
+    catch (const BESError & e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
+        throw;
+    } 
+
+    catch (const InternalErr & e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught InternalErr! Message: " << e.get_error_message() << endl);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    } 
+    catch (const Error & e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught Err! Message: " << e.get_error_message() << endl);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    } 
+    catch (std::exception &e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        string s = string("C++ Exception: ") + e.what();
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
+    catch(...) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        string s = "unknown exception caught building HDF4 cf sds das response";
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
+    }
+
     return true;
 }
 
@@ -1218,26 +1426,55 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds(BESDataHandlerInterface &dhi){
             SDend(sdfd);  
     }
 
-    catch (BESError & e) {
-       throw BESError(e.what(), e.get_bes_error_type(),
-                                __FILE__, __LINE__);
+    catch(const BESSyntaxUserError & e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+        throw;
     }
-    catch (InternalErr & e) {
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
-                                __FILE__, __LINE__);
+
+    catch(const BESInternalError & e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESInternalError! Message: " << e.get_message() << endl);
+        throw;
     }
-    catch (Error & e) {
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
-                                __FILE__, __LINE__);
+
+    catch(const BESDapError & e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESDapError! Message: " << e.get_message() << endl);
+        throw;
     }
-    catch (...) {
-        if(sdfd != -1)
-            SDend(sdfd);
-        if(h4file != nullptr)
-            delete h4file;
-        string s = "unknown exception caught building HDF4 DataDDS";
-        throw BESDapError(s, true, unknown_error, __FILE__, __LINE__);
+
+    catch (const BESError & e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
+        throw;
+    } 
+
+    catch (const InternalErr & e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught InternalErr! Message: " << e.get_error_message() << endl);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    } 
+    catch (const Error & e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught Err! Message: " << e.get_error_message() << endl);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    } 
+    catch (std::exception &e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        string s = string("C++ Exception: ") + e.what();
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
+    catch(...) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        string s = "unknown exception caught building HDF4 cf sds data response";
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
+    }
+
 
     return true;
 }
@@ -1263,11 +1500,9 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds_with_IDs(BESDataHandlerInterface
 
         auto hdds = new HDF4DDS(bdds->get_dds());
 
-
         delete bdds->get_dds();
 
         bdds->set_dds(hdds);
-
 
         string accessed = dhi.container->access();
         hdds->filename(accessed);
@@ -1322,26 +1557,55 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds_with_IDs(BESDataHandlerInterface
 
     }
 
-    catch (BESError & e) {
-       throw BESError(e.what(), e.get_bes_error_type(),
-                                __FILE__, __LINE__);
+    catch(const BESSyntaxUserError & e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+        throw;
     }
-    catch (InternalErr & e) {
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
-                                __FILE__, __LINE__);
+
+    catch(const BESInternalError & e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESInternalError! Message: " << e.get_message() << endl);
+        throw;
     }
-    catch (Error & e) {
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
-                                __FILE__, __LINE__);
+
+    catch(const BESDapError & e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESDapError! Message: " << e.get_message() << endl);
+        throw;
     }
-    catch (...) {
-        if(sdfd != -1)
-            SDend(sdfd);
-        if(h4file != nullptr)
-            delete h4file;
-        string s = "unknown exception caught building HDF4 DataDDS";
-        throw BESDapError(s, true, unknown_error, __FILE__, __LINE__);
+
+    catch (const BESError & e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
+        throw;
+    } 
+
+    catch (const InternalErr & e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught InternalErr! Message: " << e.get_error_message() << endl);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    } 
+    catch (const Error & e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        BESDEBUG(HDF4_NAME, prolog << "Caught Err! Message: " << e.get_error_message() << endl);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    } 
+    catch (std::exception &e) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        string s = string("C++ Exception: ") + e.what();
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
+    catch(...) {
+        close_hdf4_fileid(sdfd, -1,h4file);
+        string s = "unknown exception caught building HDF4 cf sds data response with IDs";
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
+    }
+
 
     // Note: HDF4 file IDs are closed by the HDF4_DDS derived class. 
     // See the #if 0 #endif block of the method hdf4_build_dmr_with_IDs for the IDs.
@@ -1360,7 +1624,6 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
     // the DMR ctor that builds a DMR using a 'full DDS' (a DDS with attributes).
     // First step, build the 'full DDS'
     string data_path = dhi.container->access();
-
     
     BaseTypeFactory factory;
     DDS dds(&factory, name_path(data_path), "3.2");
@@ -1375,12 +1638,9 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
     // causes the management of code structure messy, we first handle this with
     // another method.
     if(true == _usecf) {
-       
         if(true == _pass_fileid)
             return hdf4_build_dmr_with_IDs(dhi);
-
     }
-
 
     try {
 
@@ -1487,7 +1747,6 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
             catch(...) {
                 close_hdf4_fileid(sdfd,fileid,h4file);
                 throw;
-                //throw InternalErr(__FILE__,__LINE__,"read_dds_hdfsp error");
             }
 #endif
             close_hdf4_fileid(sdfd,fileid,h4file);
@@ -1506,17 +1765,45 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
 
     }
 
-    catch (InternalErr & e) {
-        throw BESDapError(e.get_error_message(), true, e.get_error_code(),
-                                __FILE__, __LINE__);
+    catch(const BESSyntaxUserError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+        throw;
     }
-    catch (Error & e) {
-        throw BESDapError(e.get_error_message(), false, e.get_error_code(),
-                                __FILE__, __LINE__);
+
+    catch(const BESInternalError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESInternalError! Message: " << e.get_message() << endl);
+        throw;
     }
-    catch (...) {
-        string s = "unknown exception caught building HDF4 DataDDS";
-        throw BESDapError(s, true, unknown_error, __FILE__, __LINE__);
+
+    catch(const BESDapError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESDapError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch (const BESError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
+        throw;
+    } 
+
+    catch (const InternalErr & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught InternalErr! Message: " << e.get_error_message() << endl);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    } 
+    catch (const Error & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught Err! Message: " << e.get_error_message() << endl);
+        string libdap_error="libdap4: "+ e.get_file(); 
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    } 
+    catch (std::exception &e) {
+        string s = string("C++ Exception: ") + e.what();
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
+    }
+    catch(...) {
+        string s = "unknown exception caught building HDF4 data response";
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
     }
 
 #if 0
@@ -1531,25 +1818,60 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
 
     DMR *dmr = bes_dmr.get_dmr();
 
-    D4BaseTypeFactory MyD4TypeFactory;
-    dmr->set_factory(&MyD4TypeFactory);
-#if 0
-    //dmr->set_factory(new D4BaseTypeFactory);
-#endif
-    dmr->build_using_dds(dds);
+    try {
+        D4BaseTypeFactory MyD4TypeFactory;
+        dmr->set_factory(&MyD4TypeFactory);
+        dmr->build_using_dds(dds);
+    
+        // Instead of fiddling with the internal storage of the DHI object,
+        // (by setting dhi.data[DAP4_CONSTRAINT], etc., directly) use these
+        // methods to set the constraints. But, why? Ans: from Patrick is that
+        // in the 'container' mode of BES each container can have a different
+        // CE.
+        bes_dmr.set_dap4_constraint(dhi);
+        bes_dmr.set_dap4_function(dhi);
+        dmr->set_factory(nullptr);
+    }
+    catch(const BESSyntaxUserError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+        throw;
+    }
 
-#if 0
-    //dmr->print(cout);
-#endif
+    catch(const BESInternalError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESInternalError! Message: " << e.get_message() << endl);
+        throw;
+    }
 
-    // Instead of fiddling with the internal storage of the DHI object,
-    // (by setting dhi.data[DAP4_CONSTRAINT], etc., directly) use these
-    // methods to set the constraints. But, why? Ans: from Patrick is that
-    // in the 'container' mode of BES each container can have a different
-    // CE.
-    bes_dmr.set_dap4_constraint(dhi);
-    bes_dmr.set_dap4_function(dhi);
-    dmr->set_factory(nullptr);
+    catch(const BESDapError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESDapError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch (const BESError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
+        throw;
+    } 
+
+    catch (const InternalErr & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught InternalErr! Message: " << e.get_error_message() << endl);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    } 
+    catch (const Error & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught Err! Message: " << e.get_error_message() << endl);
+        string libdap_error="libdap4: "+ e.get_file(); 
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    } 
+    catch (std::exception &e) {
+        string s = string("C++ Exception: ") + e.what();
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
+    }
+    catch(...) {
+        string s = "unknown exception caught building HDF4 dmr response";
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
+    }
 
     return true;
 }
@@ -1570,17 +1892,58 @@ bool HDF4RequestHandler::hdf4_build_direct_dmr(BESDataHandlerInterface & dhi) {
     D4BaseTypeFactory MyD4TypeFactory;
     dmr->set_factory(&MyD4TypeFactory);
 
+    try {
+        BESDEBUG("h4", "build_direct_dmr - begin"<< endl);
+        read_dmr(dmr, filename);
+        BESDEBUG("h4", "build_direct_dmr - end"<< endl);
+    
+        bes_dmr_response.set_dap4_constraint(dhi);
+        bes_dmr_response.set_dap4_function(dhi);
+        dmr->set_factory(nullptr);
+    }
 
-    BESDEBUG("h4", "build_direct_dmr - begin"<< endl);
-    read_dmr(dmr, filename);
-    BESDEBUG("h4", "build_direct_dmr - end"<< endl);
+    catch(const BESSyntaxUserError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+        throw;
+    }
 
-    bes_dmr_response.set_dap4_constraint(dhi);
-    bes_dmr_response.set_dap4_function(dhi);
-    dmr->set_factory(nullptr);
+    catch(const BESInternalError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESInternalError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch(const BESDapError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESDapError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch (const BESError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
+        throw;
+    } 
+
+    catch (const InternalErr & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught InternalErr! Message: " << e.get_error_message() << endl);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    } 
+    catch (const Error & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught Err! Message: " << e.get_error_message() << endl);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    } 
+    catch (std::exception &e) {
+        string s = string("C++ Exception: ") + e.what();
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
+    }
+    catch(...) {
+        string s = "unknown exception caught building HDF4 direct dmr response";
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
+    }
 
     return false;
-    
 
 }
 
@@ -1707,54 +2070,97 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
     if(h4file != nullptr)
         delete h4file;
 
-    Ancillary::read_ancillary_dds(dds, data_path);
-
-    dds.transfer_attributes(&das);
-
-
-    // Note: HDF4 file IDs are closed by the HDF4_DDS derived class.
+    try {
+        Ancillary::read_ancillary_dds(dds, data_path);
+    
+        dds.transfer_attributes(&das);
+    
+    
+        // Note: HDF4 file IDs are closed by the HDF4_DDS derived class.
 #if 0
-        if(true == usecf) {     
+            if(true == usecf) {     
 #ifdef USE_HDFEOS2_LIB
-            GDclose(gridfd);
-            SWclose(swathfd);
-
+                GDclose(gridfd);
+                SWclose(swathfd);
+    
 #endif
-            SDend(sdfd);  
-            Hclose(fileid);
-        }
+                SDend(sdfd);  
+                Hclose(fileid);
+            }
 #endif
-
-    // Extract the DMR Response object - this holds the DMR used by the
-    // other parts of the framework.
-    BESResponseObject *response = dhi.response_handler->get_response_object();
-    BESDMRResponse &bes_dmr = dynamic_cast<BESDMRResponse &>(*response);
-
-    // In this handler we use a different pattern since the handler specializes the DDS/DMR.
-    // First, build the DMR adding the open handle to the HDF4 dataset, then free the DMR
-    // the BES built and add this one. The HDF4DMR object will close the open dataset when
-    // the BES runs the DMR's destructor.
-    DMR *dmr = bes_dmr.get_dmr();
-    D4BaseTypeFactory MyD4TypeFactory;
-    dmr->set_factory(&MyD4TypeFactory);
-    dmr->build_using_dds(dds);
-    auto hdf4_dmr = new HDF4DMR(dmr);
+    
+        // Extract the DMR Response object - this holds the DMR used by the
+        // other parts of the framework.
+        BESResponseObject *response = dhi.response_handler->get_response_object();
+        BESDMRResponse &bes_dmr = dynamic_cast<BESDMRResponse &>(*response);
+    
+        // In this handler we use a different pattern since the handler specializes the DDS/DMR.
+        // First, build the DMR adding the open handle to the HDF4 dataset, then free the DMR
+        // the BES built and add this one. The HDF4DMR object will close the open dataset when
+        // the BES runs the DMR's destructor.
+        DMR *dmr = bes_dmr.get_dmr();
+        D4BaseTypeFactory MyD4TypeFactory;
+        dmr->set_factory(&MyD4TypeFactory);
+        dmr->build_using_dds(dds);
+        auto hdf4_dmr = new HDF4DMR(dmr);
 #ifdef USE_HDFEOS2_LIB
-    hdf4_dmr->setHDF4Dataset(sdfd,fileid,gridfd,swathfd);
+        hdf4_dmr->setHDF4Dataset(sdfd,fileid,gridfd,swathfd);
 #else
-    hdf4_dmr->setHDF4Dataset(sdfd,fileid);
+        hdf4_dmr->setHDF4Dataset(sdfd,fileid);
 #endif
-    delete dmr;     // The call below will make 'dmr' unreachable; delete it now to avoid a leak.
-    bes_dmr.set_dmr(hdf4_dmr); // BESDMRResponse will delete hdf4_dmr
+        delete dmr;     // The call below will make 'dmr' unreachable; delete it now to avoid a leak.
+        bes_dmr.set_dmr(hdf4_dmr); // BESDMRResponse will delete hdf4_dmr
+    
+        // Instead of fiddling with the internal storage of the DHI object,
+        // (by setting dhi.data[DAP4_CONSTRAINT], etc., directly) use these
+        // methods to set the constraints. But, why? Ans: from Patrick is that
+        // in the 'container' mode of BES each container can have a different
+        // CE.
+        bes_dmr.set_dap4_constraint(dhi);
+        bes_dmr.set_dap4_function(dhi);
+        hdf4_dmr->set_factory(nullptr);
+    }
 
-    // Instead of fiddling with the internal storage of the DHI object,
-    // (by setting dhi.data[DAP4_CONSTRAINT], etc., directly) use these
-    // methods to set the constraints. But, why? Ans: from Patrick is that
-    // in the 'container' mode of BES each container can have a different
-    // CE.
-    bes_dmr.set_dap4_constraint(dhi);
-    bes_dmr.set_dap4_function(dhi);
-    hdf4_dmr->set_factory(nullptr);
+    catch(const BESSyntaxUserError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESSyntaxUserError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch(const BESInternalError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESInternalError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch(const BESDapError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESDapError! Message: " << e.get_message() << endl);
+        throw;
+    }
+
+    catch (const BESError & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught BESError! Message: " << e.get_message() << endl);
+        throw;
+    } 
+
+    catch (const InternalErr & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught InternalErr! Message: " << e.get_error_message() << endl);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), true, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    } 
+    catch (const Error & e) {
+        BESDEBUG(HDF4_NAME, prolog << "Caught Err! Message: " << e.get_error_message() << endl);
+        string libdap_error="libdap4: "+ e.get_file();
+        BESDapError ex(e.get_error_message(), false, e.get_error_code(), libdap_error, e.get_line());
+        throw ex;
+    } 
+    catch (std::exception &e) {
+        string s = string("C++ Exception: ") + e.what();
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
+    }
+    catch(...) {
+        string s = "unknown exception caught building HDF4 dmr response";
+        throw BESInternalFatalError(s, __FILE__, __LINE__);
+    }
 
     return true;
 
@@ -1878,7 +2284,7 @@ bool rw_das_cache_file(const string & filename, DAS *das_ptr,bool w_flag) {
                     throw BESInternalError( "An error occurred trying to unlock the file" + get_errno(), __FILE__, __LINE__);
                 }
                 fclose(das_file);
-                throw InternalErr(__FILE__,__LINE__,"Fail to parse the das from a das file.");
+                throw BESInternalError("Fail to parse the das from a das file.",__FILE__,__LINE__);
             }
         }
         else  {
@@ -1893,7 +2299,7 @@ bool rw_das_cache_file(const string & filename, DAS *das_ptr,bool w_flag) {
                     throw BESInternalError( "An error occurred trying to unlock the file" + get_errno(), __FILE__, __LINE__);
                 }
                 fclose(das_file);
-                throw InternalErr(__FILE__,__LINE__,"Fail to generate a das cache file.");
+                throw BESInternalError("Fail to generate a das cache file.", __FILE__,__LINE__);
             }
 
         }
@@ -1952,7 +2358,7 @@ bool r_dds_cache_file(const string & cache_filename, DDS *dds_ptr,const string &
             }
 
             fclose(dds_file);
-            throw InternalErr(__FILE__,__LINE__,"Fail to generate a dds cache file.");
+            throw BESInternalError("Fail to generate a dds cache file.",__FILE__,__LINE__);
         }
 
         if(fcntl(fd_dds,F_SETLK,lock(F_UNLCK)) == -1) { 

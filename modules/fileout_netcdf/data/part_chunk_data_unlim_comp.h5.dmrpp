@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="part_chunk_data_unlim_comp.h5" dmrpp:href="data/part_chunk_data_unlim_comp.h5" dmrpp:version="3.21.1">
+    <Int16 name="p_cd">
+        <Dim size="3"/>
+        <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>1</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="3496" nBytes="10" chunkPositionInArray="[0]"/>
+            <dmrpp:chunk offset="3506" nBytes="10" chunkPositionInArray="[1]"/>
+            <dmrpp:chunk offset="3516" nBytes="10" chunkPositionInArray="[2]"/>
+        </dmrpp:chunks>
+    </Int16>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2025-06-02T19:52:48Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/no_unlimited_dimesion_direct_io/bes/modules/fileout_netcdf/data/part_chunk_data_unlim_comp.h5 -r part_chunk_data_unlim_comp.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

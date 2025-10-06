@@ -47,31 +47,28 @@ class BESTransmitter;
  * knows how to transmit response objects in particular ways.
  *
  */
-class BESReturnManager: public BESObj {
+class BESReturnManager : public BESObj {
 private:
-	static BESReturnManager * d_instance;
     mutable std::recursive_mutex d_cache_lock_mutex;
+    std::map<std::string, BESTransmitter *> transmitter_list_;
 
-    static void initialize_instance();
-    static void delete_instance();
-
-	std::map<std::string, BESTransmitter *> _transmitter_list;
+    BESReturnManager() = default;
 
 public:
+    ~BESReturnManager() override = default;
 
-	BESReturnManager();
-	virtual ~BESReturnManager();
+    BESReturnManager(const BESReturnManager&) = delete;
+    BESReturnManager& operator=(const BESReturnManager&) = delete;
 
-	typedef std::map<std::string, BESTransmitter *>::const_iterator Transmitter_citer;
-	typedef std::map<std::string, BESTransmitter *>::iterator Transmitter_iter;
+    virtual bool add_transmitter(const std::string &name, BESTransmitter *transmitter);
 
-	virtual bool add_transmitter(const std::string &name, BESTransmitter *transmitter);
-	virtual bool del_transmitter(const std::string &name);
-	virtual BESTransmitter * find_transmitter(const std::string &name);
+    virtual bool del_transmitter(const std::string &name);
 
-	virtual void dump(std::ostream &strm) const;
+    virtual BESTransmitter *find_transmitter(const std::string &name);
 
-	static BESReturnManager * TheManager();
+    void dump(std::ostream &strm) const override;
+
+    static BESReturnManager *TheManager();
 };
 
 #endif // I_BESReturnManager_h

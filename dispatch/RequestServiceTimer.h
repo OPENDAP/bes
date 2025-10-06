@@ -40,20 +40,20 @@
 
 class RequestServiceTimer {
 private:
-    static RequestServiceTimer *d_instance;
     mutable std::recursive_mutex d_rst_lock_mutex;
 
     std::chrono::milliseconds d_bes_timeout{0};
     std::chrono::steady_clock::time_point start_time{std::chrono::steady_clock::now()};
     bool timeout_enabled{false};
 
-    RequestServiceTimer()=default;
-    ~RequestServiceTimer()=default;
-
-    static void delete_instance();
-    static void initialize_instance();
+    RequestServiceTimer() = default;
 
 public:
+
+    ~RequestServiceTimer() = default;
+
+    RequestServiceTimer(const RequestServiceTimer&) = delete;
+    RequestServiceTimer& operator=(const RequestServiceTimer&) = delete;
 
     static RequestServiceTimer *TheTimer();
 

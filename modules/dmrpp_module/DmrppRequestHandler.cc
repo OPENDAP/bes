@@ -115,7 +115,7 @@ bool DmrppRequestHandler::d_use_object_cache = true;
 unsigned int DmrppRequestHandler::d_object_cache_entries = 100;
 double DmrppRequestHandler::d_object_cache_purge_level = 0.2;
 
-bool DmrppRequestHandler::d_use_transfer_threads = true;
+bool DmrppRequestHandler::d_use_transfer_threads = false;
 unsigned int DmrppRequestHandler::d_max_transfer_threads = 8;
 
 bool DmrppRequestHandler::d_use_compute_threads = true;

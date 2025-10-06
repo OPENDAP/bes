@@ -39,24 +39,7 @@ using std::endl;
 using std::ostream;
 using std::string;
 
-BESReporterList *BESReporterList::d_instance = nullptr ;
-static std::once_flag d_euc_init_once;
-
 BESReporterList::BESReporterList() {}
-
-BESReporterList::~BESReporterList()
-{
-    BESReporter *reporter = 0 ;
-    BESReporterList::Reporter_iter i = _reporter_list.begin() ;
-    for( ; i != _reporter_list.end(); i++ )
-    {
-	reporter = (*i).second ;
-	if( reporter ) { delete reporter ; (*i).second = 0 ; }
-	// instead of erasing each element as I go, call clear outside
-	// of the for loop
-    }
-    _reporter_list.clear() ;
-}
 
 bool
 BESReporterList::add_reporter( string reporter_name,
@@ -157,19 +140,7 @@ BESReporterList::dump( ostream &strm ) const
 BESReporterList *
 BESReporterList::TheList()
 {
-    std::call_once(d_euc_init_once,BESReporterList::initialize_instance);
-    return d_instance;
-}
-
-void BESReporterList::initialize_instance() {
-    d_instance = new BESReporterList;
-#ifdef HAVE_ATEXIT
-    atexit(delete_instance);
-#endif
-}
-
-void BESReporterList::delete_instance() {
-    delete d_instance;
-    d_instance = 0;
+    static BESReporterList list;
+    return &list;
 }
 

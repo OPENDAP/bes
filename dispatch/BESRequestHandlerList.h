@@ -65,7 +65,6 @@ class BESDataHandlerInterface;
  */
 class BESRequestHandlerList: public BESObj {
 private:
-    static BESRequestHandlerList * d_instance;
     mutable std::recursive_mutex d_cache_lock_mutex;
 
     static void initialize_instance();
@@ -73,12 +72,16 @@ private:
 
     std::map<std::string, BESRequestHandler *> _handler_list;
 
-public:
     BESRequestHandlerList() = default;
+
+public:
     ~BESRequestHandlerList() override = default;
 
-    using handler_citer = std::map<std::string, BESRequestHandler *>::const_iterator;
-    using handler_iter = std::map<std::string, BESRequestHandler *>::iterator;
+    BESRequestHandlerList(const BESRequestHandlerList&) = delete;
+    BESRequestHandlerList& operator=(const BESRequestHandlerList&) = delete;
+
+    using Handler_citer = std::map<std::string, BESRequestHandler *>::const_iterator;
+    using Handler_iter = std::map<std::string, BESRequestHandler *>::iterator;
 
     virtual bool add_handler(const std::string &handler_name, BESRequestHandler * handler);
     virtual BESRequestHandler * remove_handler(const std::string &handler_name);

@@ -29,26 +29,25 @@
 // Authors:
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
+//
+// Updated to C++14 using Google Gemini jhrg 4/18/25
 
 #ifndef I_BESContainerStorageList_H
 #define I_BESContainerStorageList_H 1
 
-#include <string>
-#include <mutex>
+#include <vector>          // For std::vector
+#include <string>          // For std::string
+#include <mutex>           // For std::recursive_mutex
+#include <ostream>         // For dump method parameter
+#include <stdexcept>       // For potential exceptions (though none shown here yet)
+#include <algorithm>       // For std::find_if
+#include <memory>          // Although not using unique_ptr, still good practice include
 
 #include "BESObj.h"
+#include "BESContainerStorage.h"
 
-class BESContainerStorage;
 class BESContainer;
 class BESInfo;
-
-#ifndef DEFAULT
-#define DEFAULT "default"
-#endif
-
-#ifndef CATALOG
-#define CATALOG "catalog"
-#endif
 
 /** @brief Provides a mechanism for accessing container information from
  * different container stores registered with this server.
@@ -57,55 +56,140 @@ class BESInfo;
  * from different container stores, such as from a MySQL database, a file, or
  * volatile stores.
  *
- * Users can add different BESContainerStorage instances to this
- * persistent list. Then, when a user looks for a symbolic name, that search
- * goes through the list of persistent stores in order.
+ * Uses a list (vector) to manage different BESContainerStorage instances.
+ * Searches for symbolic names proceed through the list of persistent stores in order.
  *
- * If the symbolic name is not found then a flag is checked to determine
- * whether to simply log the fact that the symbolic name was not found, or to
- * throw an exception of type BESContainerStorageException.
+ * If a symbolic name is not found then a flag is checked (logic within methods)
+ * to determine whether to simply log the fact or throw an exception.
  *
  * @see BESContainerStorage
  * @see BESContainer
- * @see BESContainerStorageException
+ * @see BESContainerStorageException (Assuming this exception class exists)
  */
-class BESContainerStorageList: public BESObj {
+class BESContainerStorageList : public BESObj {
 private:
-    static BESContainerStorageList * d_instance;
-    mutable std::recursive_mutex d_cache_lock_mutex;
+    // Structure to hold the managed storage object and its application-level reference count.
+    struct StorageEntry {
+        std::unique_ptr<BESContainerStorage> storage_obj; // Manages ownership
+        unsigned int reference_count = 0;                   // Application-level ref count
 
-    typedef struct _persistence_list {
-        BESContainerStorage *_persistence_obj;
-        unsigned int _reference;
-        BESContainerStorageList::_persistence_list *_next;
-    } persistence_list;
+        // Constructor takes ownership of the provided storage object
+        // Note: Prefer passing unique_ptr directly if possible in add_persistence.
+        explicit StorageEntry(BESContainerStorage* obj)
+                : storage_obj(obj)  // Takes ownership, starts with 0 refs
+        {
+            if (!obj) {
+                // Handle null input if necessary, perhaps throw?
+                // For now, allowing it, but unique_ptr will be null.
+            }
+        }
 
-    BESContainerStorageList::persistence_list *_first;
+        // Constructor for moving a unique_ptr in (preferred)
+        explicit StorageEntry(std::unique_ptr<BESContainerStorage> obj_ptr)
+                : storage_obj(std::move(obj_ptr)) {}
 
-    static void initialize_instance();
-    static void delete_instance();
+        // Deleted copy operations because unique_ptr is not copyable
+        StorageEntry(const StorageEntry&) = delete;
+        StorageEntry& operator=(const StorageEntry&) = delete;
+
+        // Default move operations are fine
+        StorageEntry(StorageEntry&&) = default;
+        StorageEntry& operator=(StorageEntry&&) = default;
+
+        // Helper to get the name from the storage object.
+        // Assumes BESContainerStorage has a method like get_name() const.
+        // Replace 'get_name' with the actual method name if different.
+        const std::string& get_name() const {
+            if (storage_obj) {
+                // return storage_obj->get_name(); // Hypothetical method call
+                // If get_name() is not const, you might need a const_cast or redesign.
+                // Let's assume a hypothetical getPersistenceName() const method exists:
+                return storage_obj->get_name();
+            }
+            static const std::string empty_name = ""; // Return empty if no object
+            return empty_name;
+        }
+    };
+
+    mutable std::recursive_mutex d_cache_lock_mutex; // Mutex for thread safety
+    std::vector<StorageEntry> d_storage_entries;     // Use std::vector to hold entries
+
+    // Private helper to find an entry by name (implementation detail)
+    // Returns an iterator to the found entry or d_storage_entries.end() if not found.
+    // Note: Lock should be held by the caller.
+    auto find_entry_iterator(const std::string& persist_name) {
+        return std::find_if(d_storage_entries.begin(), d_storage_entries.end(),
+                            [&persist_name](const StorageEntry& entry) {
+                                // Check if storage_obj is valid before calling get_name()
+                                return entry.storage_obj && entry.get_name() == persist_name;
+                            });
+    }
+
+    // Const version of the helper
+    auto find_entry_iterator(const std::string& persist_name) const {
+        return std::find_if(d_storage_entries.begin(), d_storage_entries.end(),
+                            [&persist_name](const StorageEntry& entry) {
+                                return entry.storage_obj && entry.get_name() == persist_name;
+                            });
+    }
+
 
 public:
-    BESContainerStorageList();
-    virtual ~BESContainerStorageList();
+    // Default constructor is acceptable
+    BESContainerStorageList() = default;
 
-    virtual bool add_persistence(BESContainerStorage *p);
+    // Destructor is implicitly defaulted.
+    // std::vector will destroy its elements.
+    // StorageEntry's destructor calls std::unique_ptr's destructor, which deletes the object.
+    ~BESContainerStorageList() override = default;
+
+    // --- Singleton Pattern ---
+    // Make the singleton non-copyable and non-movable
+    BESContainerStorageList(const BESContainerStorageList&) = delete;
+    BESContainerStorageList& operator=(const BESContainerStorageList&) = delete;
+    BESContainerStorageList(BESContainerStorageList&&) = delete;
+    BESContainerStorageList& operator=(BESContainerStorageList&&) = delete;
+
+    /**
+     * @brief Get the singleton instance of the list.
+     * @return Pointer to the singleton BESContainerStorageList.
+     */
+    static BESContainerStorageList* TheList() {
+        // C++11 guarantees thread-safe initialization of static locals
+        static BESContainerStorageList instance;
+        return &instance;
+    }
+
+    // It might make better sense to call these methods add_storage(), ref_storage(), ...
+    // jhrg 4/17/25
+    virtual bool add_persistence(BESContainerStorage *cp);
     virtual bool ref_persistence(const std::string &persist_name);
     virtual bool deref_persistence(const std::string &persist_name);
     virtual BESContainerStorage *find_persistence(const std::string &persist_name);
-    virtual bool isnice();
 
-    // These methods scan all of the container stores. Currently, this is used
-    // by both <setContainer> and <define>. However, a better design would disentangle
-    // the ContainerStorage from the Container creation. jhrg 1/8/19
+    virtual bool is_nice(); // Implementation depends on its original purpose
+
+    // These methods look through every BESContainerStorage object in the list
+    // looking for sym_name and return/delete the first one found. jhrg 4//17/25
     virtual BESContainer *look_for(const std::string &sym_name);
     virtual void delete_container(const std::string &sym_name);
-
+    // This method also operates on all the containers in all the Storages. jhrg 4/17/25
     virtual void show_containers(BESInfo &info);
 
-    virtual void dump(std::ostream &strm) const;
+    /**
+     * @brief Dumps the state of the storage list to an output stream.
+     * @param strm The output stream.
+     */
+    void dump(std::ostream &strm) const override;
 
-    static BESContainerStorageList *TheList();
+    /**
+     * @brief Gets the number of registered persistence stores.
+     * @return The count of stores.
+     */
+    size_t get_store_count() const noexcept { // Can be noexcept if mutex lock doesn't throw
+        std::lock_guard<std::recursive_mutex> lock(d_cache_lock_mutex);
+        return d_storage_entries.size();
+    }
 };
 
 #endif // I_BESContainerStorageList_H

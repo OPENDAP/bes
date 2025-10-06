@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="grid_2_2d_ps.hdf" dmrpp:href="OPeNDAP_DMRpp_DATA_ACCESS_URL">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="grid_2_2d_ps.hdf" dmrpp:href="OPeNDAP_DMRpp_DATA_ACCESS_URL" dmrpp:version="3.21.1">
     <Dimension name="YDim_NPGrid" size="5"/>
     <Dimension name="XDim_NPGrid" size="4"/>
     <Dimension name="YDim_SPGrid" size="4"/>
@@ -59,6 +59,23 @@ END_GROUP=PointStructure
 END
 </Value>
     </Attribute>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2025-06-16T11:59:01Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp_h4 -f /Users/myang6/work/opendap/hyrax-1781/bes/modules/dmrpp_module/get_dmrpp/unit-tests/grid_2_2d_ps.hdf -r grid_2_2d_ps.hdf.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -D -M</Value>
+        </Attribute>
+    </Attribute>
     <Group name="NPGrid">
         <Byte name="eos_cf_projection">
             <Attribute name="grid_mapping_name" type="String">
@@ -86,10 +103,10 @@ END
                 <Value>NPGrid eos_cf_projection</Value>
             </Attribute>
             <dmrpp:chunks fillValue="0" byteOrder="LE">
-                <dmrpp:chunk offset="9746" nBytes="1" href="grid_2_2d_ps.hdf_mvs.h5" />
+                <dmrpp:chunk offset="9786" nBytes="1" href="grid_2_2d_ps.hdf_mvs.h5" />
             </dmrpp:chunks>
         </Byte>
-        <Float64 name="XDim">
+        <Float64 name="XDim_NPGrid">
             <Dim name="/XDim_NPGrid"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_x_coordinate</Value>
@@ -108,10 +125,10 @@ END
             </Attribute>
             <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                 <dmrpp:chunkDimensionSizes>4</dmrpp:chunkDimensionSizes>
-                <dmrpp:chunk offset="9747" nBytes="33" chunkPositionInArray="[0]" href="grid_2_2d_ps.hdf_mvs.h5" />
+                <dmrpp:chunk offset="9787" nBytes="33" chunkPositionInArray="[0]" href="grid_2_2d_ps.hdf_mvs.h5" />
             </dmrpp:chunks>
         </Float64>
-        <Float64 name="YDim">
+        <Float64 name="YDim_NPGrid">
             <Dim name="/YDim_NPGrid"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_y_coordinate</Value>
@@ -130,7 +147,7 @@ END
             </Attribute>
             <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                 <dmrpp:chunkDimensionSizes>5</dmrpp:chunkDimensionSizes>
-                <dmrpp:chunk offset="9780" nBytes="38" chunkPositionInArray="[0]" href="grid_2_2d_ps.hdf_mvs.h5" />
+                <dmrpp:chunk offset="9820" nBytes="38" chunkPositionInArray="[0]" href="grid_2_2d_ps.hdf_mvs.h5" />
             </dmrpp:chunks>
         </Float64>
         <Float64 name="Latitude">
@@ -144,7 +161,7 @@ END
             </Attribute>
             <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                 <dmrpp:chunkDimensionSizes>5 4</dmrpp:chunkDimensionSizes>
-                <dmrpp:chunk offset="9818" nBytes="171" chunkPositionInArray="[0,0]" href="grid_2_2d_ps.hdf_mvs.h5" />
+                <dmrpp:chunk offset="9858" nBytes="171" chunkPositionInArray="[0,0]" href="grid_2_2d_ps.hdf_mvs.h5" />
             </dmrpp:chunks>
         </Float64>
         <Float64 name="Longitude">
@@ -158,7 +175,7 @@ END
             </Attribute>
             <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                 <dmrpp:chunkDimensionSizes>5 4</dmrpp:chunkDimensionSizes>
-                <dmrpp:chunk offset="9989" nBytes="171" chunkPositionInArray="[0,0]" href="grid_2_2d_ps.hdf_mvs.h5" />
+                <dmrpp:chunk offset="10029" nBytes="171" chunkPositionInArray="[0,0]" href="grid_2_2d_ps.hdf_mvs.h5" />
             </dmrpp:chunks>
         </Float64>
         <Group name="Data_Fields">
@@ -208,10 +225,10 @@ END
                 <Value>SPGrid eos_cf_projection</Value>
             </Attribute>
             <dmrpp:chunks fillValue="0" byteOrder="LE">
-                <dmrpp:chunk offset="10160" nBytes="1" href="grid_2_2d_ps.hdf_mvs.h5" />
+                <dmrpp:chunk offset="10200" nBytes="1" href="grid_2_2d_ps.hdf_mvs.h5" />
             </dmrpp:chunks>
         </Byte>
-        <Float64 name="XDim">
+        <Float64 name="XDim_SPGrid">
             <Dim name="/XDim_SPGrid"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_x_coordinate</Value>
@@ -230,10 +247,10 @@ END
             </Attribute>
             <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                 <dmrpp:chunkDimensionSizes>3</dmrpp:chunkDimensionSizes>
-                <dmrpp:chunk offset="10161" nBytes="26" chunkPositionInArray="[0]" href="grid_2_2d_ps.hdf_mvs.h5" />
+                <dmrpp:chunk offset="10201" nBytes="26" chunkPositionInArray="[0]" href="grid_2_2d_ps.hdf_mvs.h5" />
             </dmrpp:chunks>
         </Float64>
-        <Float64 name="YDim">
+        <Float64 name="YDim_SPGrid">
             <Dim name="/YDim_SPGrid"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_y_coordinate</Value>
@@ -252,7 +269,7 @@ END
             </Attribute>
             <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                 <dmrpp:chunkDimensionSizes>4</dmrpp:chunkDimensionSizes>
-                <dmrpp:chunk offset="10187" nBytes="32" chunkPositionInArray="[0]" href="grid_2_2d_ps.hdf_mvs.h5" />
+                <dmrpp:chunk offset="10227" nBytes="32" chunkPositionInArray="[0]" href="grid_2_2d_ps.hdf_mvs.h5" />
             </dmrpp:chunks>
         </Float64>
         <Float64 name="Latitude">
@@ -266,7 +283,7 @@ END
             </Attribute>
             <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                 <dmrpp:chunkDimensionSizes>4 3</dmrpp:chunkDimensionSizes>
-                <dmrpp:chunk offset="10219" nBytes="83" chunkPositionInArray="[0,0]" href="grid_2_2d_ps.hdf_mvs.h5" />
+                <dmrpp:chunk offset="10259" nBytes="83" chunkPositionInArray="[0,0]" href="grid_2_2d_ps.hdf_mvs.h5" />
             </dmrpp:chunks>
         </Float64>
         <Float64 name="Longitude">
@@ -280,7 +297,7 @@ END
             </Attribute>
             <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                 <dmrpp:chunkDimensionSizes>4 3</dmrpp:chunkDimensionSizes>
-                <dmrpp:chunk offset="10302" nBytes="62" chunkPositionInArray="[0,0]" href="grid_2_2d_ps.hdf_mvs.h5" />
+                <dmrpp:chunk offset="10342" nBytes="62" chunkPositionInArray="[0,0]" href="grid_2_2d_ps.hdf_mvs.h5" />
             </dmrpp:chunks>
         </Float64>
         <Group name="Data_Fields">

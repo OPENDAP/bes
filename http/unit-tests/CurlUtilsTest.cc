@@ -205,19 +205,35 @@ public:
 
     void filter_effective_url_test() {
         DBG(cerr << prolog << "BEGIN\n");
-        string url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-Security-Token=Foo&X-Amz-SignedHeaders=host&X-Amz-Signature=...";
-        string filtered_url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax";
+
+        string source_url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-Security-Token=Foo&X-Amz-SignedHeaders=host&X-Amz-Signature=smooze&boogie=woogie";
+        DBG(cerr << prolog << "source_url: " << source_url << "\n");
+
+        string baseline = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax&boogie=woogie";
+        DBG(cerr << prolog << "  baseline: " << baseline << "\n");
+
+        string result_url = curl::filter_aws_url(source_url);
+        DBG(cerr << prolog << "result_url: " << result_url << "\n");
+
         CPPUNIT_ASSERT_MESSAGE("The URL should have the AWS security tokens removed",
-                               filtered_url == curl::filter_aws_url(url));
+                               baseline == result_url);
         DBG(cerr << prolog << "END\n");
     }
 
     void filter_effective_url_token_first_test() {
         DBG(cerr << prolog << "BEGIN\n");
-        string url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?X-Amz-Security-Token=Foo&A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=...";
-        string filtered_url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc";
+
+        string source_url = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?X-Amz-Security-Token=Foo&A-userid=hyrax&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIASF4N-AWS-Creds-00808%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20200808T032623Z&X-Amz-Expires=86400&X-Amz-SignedHeaders=host&X-Amz-Signature=...";
+        DBG(cerr << prolog << "source_url: " << source_url << "\n");
+
+        string baseline = "https://ghrcwuat-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20031229v7.nc?A-userid=hyrax";
+        DBG(cerr << prolog << "  baseline: " << baseline << "\n");
+
+        string result_url = curl::filter_aws_url(source_url);
+        DBG(cerr << prolog << "result_url: " << result_url << "\n");
+
         CPPUNIT_ASSERT_MESSAGE("The URL should have the AWS security tokens removed",
-                               filtered_url == curl::filter_aws_url(url));
+                               baseline == result_url);
         DBG(cerr << prolog << "END\n");
     }
 
@@ -263,7 +279,6 @@ public:
             DBG(cerr << prolog << "effective_url is " << (effective_url->is_trusted() ? "" : "NOT ") << "trusted."
                      << "\n");
             CPPUNIT_ASSERT(effective_url->is_trusted() == trusted_target_url->is_trusted());
-
 
         }
         catch (const BESError &be) {
@@ -493,15 +508,16 @@ public:
                 string buf;
                 DBG(cerr << prolog << "Retrieving " << url << "\n");
                 curl::http_get(url, buf);
-                DBG(cerr << "buf.data() = " << string(buf.data()) << "\n");
+                DBG(cerr << "buf.data() = " << buf.data() << "\n");
                 CPPUNIT_ASSERT_MESSAGE("Should be able to find 'Test data''",
                                        string(buf.data()).find("Test data") == 0);
                 CPPUNIT_ASSERT_MESSAGE("Should be able to find 'Do not edit.''",
-                                       string(buf.data()).find("Do not edit.")
-                                       != string::npos);
+                                       string(buf.data()).find("Do not edit.") != string::npos);
 
                 DBG(cerr << "buf.size() = " << buf.size() << "\n");
-                CPPUNIT_ASSERT_MESSAGE("Size should be 94", buf.size() == 94);
+                CPPUNIT_ASSERT_MESSAGE(
+                        ("Expected buf size to be 93, but got " + std::to_string(buf.size()) + ", content:\n" + buf).c_str(),
+                        buf.size() == 93);
             }
             catch (const BESError &e) {
                 CPPUNIT_FAIL(string("Did not sign the URL correctly. ").append(e.get_verbose_message()));

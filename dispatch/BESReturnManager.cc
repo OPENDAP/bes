@@ -38,59 +38,46 @@ using std::endl;
 using std::ostream;
 using std::string;
 
-BESReturnManager *BESReturnManager::d_instance = nullptr;
-std::once_flag d_euc_init_once;
-
-BESReturnManager::BESReturnManager() {}
-
-BESReturnManager::~BESReturnManager()
-{
-	BESReturnManager::Transmitter_iter i;
-	BESTransmitter *t = 0;
-	for (i = _transmitter_list.begin(); i != _transmitter_list.end(); i++) {
-		t = (*i).second;
-		delete t;
-	}
+BESReturnManager *
+BESReturnManager::TheManager() {
+    static BESReturnManager the_manager;
+    return &the_manager;
 }
 
-bool BESReturnManager::add_transmitter(const string &name, BESTransmitter *transmitter)
-{
+bool BESReturnManager::add_transmitter(const string &name, BESTransmitter *transmitter) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-	if (find_transmitter(name) == 0) {
-		_transmitter_list[name] = transmitter;
-		return true;
-	}
-	return false;
+    if (find_transmitter(name) == nullptr) {
+        transmitter_list_[name] = transmitter;
+        return true;
+    }
+    return false;
 }
 
-bool BESReturnManager::del_transmitter(const string &name)
-{
+bool BESReturnManager::del_transmitter(const string &name) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-	bool ret = false;
-	BESReturnManager::Transmitter_iter i;
-	i = _transmitter_list.find(name);
-	if (i != _transmitter_list.end()) {
-		BESTransmitter *obj = (*i).second;
-		_transmitter_list.erase(i);
-		if (obj) delete obj;
-		ret = true;
-	}
-	return ret;
+    bool ret = false;
+
+    auto i = transmitter_list_.find(name);
+    if (i != transmitter_list_.end()) {
+        auto *obj = i->second;
+        transmitter_list_.erase(i);
+        delete obj;
+        ret = true;
+    }
+    return ret;
 }
 
 BESTransmitter *
-BESReturnManager::find_transmitter(const string &name)
-{
+BESReturnManager::find_transmitter(const string &name) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-	BESReturnManager::Transmitter_citer i;
-	i = _transmitter_list.find(name);
-	if (i != _transmitter_list.end()) {
-		return (*i).second;
-	}
-	return 0;
+    auto i = transmitter_list_.find(name);
+    if (i != transmitter_list_.end()) {
+        return i->second;
+    }
+    return nullptr;
 }
 
 /** @brief dumps information about this object
@@ -100,47 +87,24 @@ BESReturnManager::find_transmitter(const string &name)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESReturnManager::dump(ostream &strm) const
-{
+void BESReturnManager::dump(ostream &strm) const {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-	strm << BESIndent::LMarg << "BESReturnManager::dump - (" << (void *) this << ")" << endl;
-	BESIndent::Indent();
-	if (_transmitter_list.size()) {
-		strm << BESIndent::LMarg << "registered transmitters:" << endl;
-		BESIndent::Indent();
-		BESReturnManager::Transmitter_citer i = _transmitter_list.begin();
-		BESReturnManager::Transmitter_citer ie = _transmitter_list.end();
-		for (; i != ie; i++) {
-			strm << BESIndent::LMarg << (*i).first << endl;
-			BESIndent::Indent();
-			(*i).second->dump(strm);
-			BESIndent::UnIndent();
-		}
-		BESIndent::UnIndent();
-	}
-	else {
-		strm << BESIndent::LMarg << "registered transmitters: none" << endl;
-	}
-	BESIndent::UnIndent();
+    strm << BESIndent::LMarg << "BESReturnManager::dump - (" << (void *) this << ")" << endl;
+    BESIndent::Indent();
+    if (!transmitter_list_.empty()) {
+        strm << BESIndent::LMarg << "registered transmitters:" << endl;
+        BESIndent::Indent();
+        for (const auto& i: transmitter_list_) {
+            strm << BESIndent::LMarg << i.first << endl;
+            BESIndent::Indent();
+            i.second->dump(strm);
+            BESIndent::UnIndent();
+        }
+        BESIndent::UnIndent();
+    }
+    else {
+        strm << BESIndent::LMarg << "registered transmitters: none" << endl;
+    }
+    BESIndent::UnIndent();
 }
-
-BESReturnManager *
-BESReturnManager::TheManager()
-{
-    std::call_once(d_euc_init_once, BESReturnManager::initialize_instance);
-    return d_instance;
-}
-
-void BESReturnManager::initialize_instance() {
-    d_instance = new BESReturnManager;
-#ifdef HAVE_ATEXIT
-    atexit(delete_instance);
-#endif
-}
-
-void BESReturnManager::delete_instance() {
-    delete d_instance;
-    d_instance = 0;
-}
-

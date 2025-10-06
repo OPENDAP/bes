@@ -38,50 +38,42 @@
 #include "BESXMLCommand.h"
 #include "BESDataHandlerInterface.h"
 
-class BESXMLDefineCommand: public BESXMLCommand {
+class BESXMLDefineCommand : public BESXMLCommand {
 private:
-	std::string _default_constraint;
-	std::string _default_dap4_constraint;
-	std::string _default_dap4_function;
+    std::string _default_constraint;
+    std::string _default_dap4_constraint;
+    std::string _default_dap4_function;
 
-	std::vector<std::string> container_names;
+    std::vector<std::string> container_names{};
 
-	std::map<std::string, std::string> container_store_names;
+    std::map<std::string, std::string> container_store_names{};
 
-	std::map<std::string, std::string> container_constraints;
-	std::map<std::string, std::string> container_dap4constraints;
-	std::map<std::string, std::string> container_dap4functions;
+    std::map<std::string, std::string> container_constraints{};
+    std::map<std::string, std::string> container_dap4constraints{};
+    std::map<std::string, std::string> container_dap4functions{};
 
-	std::map<std::string, std::string> container_attributes;
+    std::map<std::string, std::string> container_attributes{};
 
-    void handle_container_element(const std::string &action, xmlNode *node, const std::string &vallues,
-    		std::map<std::string, std::string> &props);
-
-#if 0
-    void handle_aggregate_element(const std::string &action, xmlNode *node, const std::string &vallues,
-    		std::map<std::string, std::string> &props);
-#endif
+    void m_handle_container_element(const std::string &action, xmlNode *node, const std::string &values,
+                                  std::map<std::string, std::string> &props);
+    void m_process_child_nodes(xmlNode* node, const std::string& action);
+    void m_process_container_constraints();
 
 public:
-    BESXMLDefineCommand(const BESDataHandlerInterface &base_dhi);
+    explicit BESXMLDefineCommand(const BESDataHandlerInterface &base_dhi) : BESXMLCommand(base_dhi) { }
+    ~BESXMLDefineCommand() override = default;
 
-    virtual ~BESXMLDefineCommand()
-    {
-    }
+    void parse_request(xmlNode *node) override;
 
-    virtual void parse_request(xmlNode *node);
-
-    virtual bool has_response()
-    {
+    bool has_response() override {
         return false;
     }
 
-    virtual void prep_request();
+    void prep_request() override;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
-    static BESXMLCommand * CommandBuilder(const BESDataHandlerInterface &base_dhi);
+    static BESXMLCommand *CommandBuilder(const BESDataHandlerInterface &base_dhi);
 };
 
 #endif // A_BESXMLDefineCommand_h
-

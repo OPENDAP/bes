@@ -120,17 +120,26 @@ typedef struct {
  
 } eos5_grid_info_t;
 
+// This is used for the CF grid mapping. The struct is to store HDFEOS5 grid's dimension names such as YDim and XDim.
 typedef struct {
     std::string dpath0;
     std::string dpath1;
 } eos5_dname_info_t;
 
+// This is used for the CF grid mapping. The struct is to store HDFEOS5 grid's latitude, longitude and grid_mapping names.
 typedef struct {
     std::string vpath0;
     std::string vpath1;
     std::string cf_gmap_path;
 } eos5_cname_info_t;
 
+// We need to remember all the HDF-EOS5 dimension and variable assocication information to have the correct 
+// mapping from HDF-EOS5 dimension/CF grid to DMR.
+// The information includes variable path and their corresponding  dimension names.
+// The HDF-EOS5 grid path to the corresponding dimension info. The dimension info HE5Dim includes name and size.
+// The grid information for each HDF-EOS5 grid.
+// Unordered maps are used to store the above information for quick retrieval.
+// We also store all the CF grid mapping information with a vector of pair of CF dimension names and coordinate variables.
 typedef struct {
     std::unordered_map<std::string,std::vector<std::string>> varpath_to_dims;
     std::unordered_map<std::string,std::vector<HE5Dim>> grppath_to_dims;
@@ -140,7 +149,7 @@ typedef struct {
 
 
 bool breadth_first(hid_t, hid_t, const char *, libdap::D4Group* par_grp, const char *,bool,bool,
-                   std::vector<link_info_t>&, eos5_dim_info_t & ,std::vector<std::string> &);
+                   std::vector<link_info_t>&, eos5_dim_info_t & ,std::vector<std::string> &, std::unordered_set<std::string>&);
 void obtain_hdf5_object_name(hid_t pid, hsize_t obj_index, const char *gname, std::vector<char> &oname);
 bool check_soft_external_links(libdap::D4Group *par_grp, hid_t pid, int & slinkindex, const char *gname,
                                const std::vector<char> &oname, bool handle_softlink);
@@ -152,13 +161,13 @@ void handle_eos5_datasets(libdap::D4Group* par_grp, const char *gname, eos5_dim_
 void handle_child_grp(hid_t file_id, hid_t pid, const char *gname, libdap::D4Group* par_grp, const char *fname,
                       bool use_dimscale, bool is_eos5,std::vector<link_info_t> & hdf5_hls,
                       eos5_dim_info_t & eos5_dim_info, std::vector<std::string> & handled_cv_names,
-                      const std::vector<char>& oname);
+                      const std::vector<char>& oname, std::unordered_set<std::string>&);
 
 void read_objects(libdap::D4Group* d4_grp,hid_t, const std::string & varname, const std::string & filename, hid_t, bool, bool,
                   eos5_dim_info_t &);
 void read_objects_base_type(libdap::D4Group* d4_grp,hid_t, const std::string & varname, const std::string & filename, hid_t,
                             bool, bool, eos5_dim_info_t &);
-void read_objects_basetype_attr_hl(const std::string &varname, libdap::BaseType *bt, hid_t dset_id,  bool is_eos5);
+void read_objects_basetype_attr_hl_eos5(const std::string &varname, libdap::BaseType *bt, hid_t dset_id,  bool is_eos5);
 
 void read_objects_structure(libdap::D4Group* d4_grp,const std::string & varname, const std::string & filename,
                             hid_t, bool, bool);
@@ -239,6 +248,9 @@ bool obtain_eos5_dim(const std::string & varname, const std::unordered_map<std::
 bool obtain_eos5_grp_dim(const std::string & varname, const std::unordered_map<std::string,
                          vector<HE5Dim>>& grppath_to_dims, vector<std::string> & dimnames);
 
+void obtain_eos5_missing_dims(hid_t fileid, const eos5_dim_info_t &, unordered_set<string>& eos5_missing_dim_names);
+void loop_all_variables_for_missing_dim_names(hid_t pid,const char *gname, const eos5_dim_info_t &eos5_dim_info, unordered_set<string>& eos5_missing_dim_names);
+
 void add_possible_eos5_grid_vars(libdap::D4Group*,  eos5_dim_info_t &);
 void add_eos5_grid_vars_geo(libdap::D4Group* d4_grp,  const eos5_grid_info_t & eg_info);
 void add_eos5_grid_vars_non_geo(libdap::D4Group* d4_grp, eos5_dim_info_t &eos5_dim_info,  const eos5_grid_info_t & eg_info);
@@ -256,5 +268,8 @@ void add_ps_cf_grid_mapping_attrs(libdap::BaseType *dummy_proj_cf, const eos5_gr
 void add_lamaz_cf_grid_mapping_attrs(libdap::BaseType *dummy_proj_cf, const eos5_grid_info_t &);
 void add_possible_var_cv_info(libdap::BaseType *, const eos5_dim_info_t &eos5_dim_info);
 void make_attributes_to_cf(libdap::BaseType *, const eos5_dim_info_t &eos5_dim_info);
+
+// Handle unlimited dimension
+void add_unlimited_dimension_info(libdap::D4Group *d4_grp);
 
 #endif

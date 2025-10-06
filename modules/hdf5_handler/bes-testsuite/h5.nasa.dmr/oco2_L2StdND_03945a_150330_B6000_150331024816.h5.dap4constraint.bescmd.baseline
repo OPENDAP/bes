@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="oco2_L2StdND_03945a_150330_B6000_150331024816.h5">
+    <Int64 name="L1bScSoundingReference_sounding_id_l1b">
+        <Dim size="3"/>
+        <Dim size="2"/>
+        <Attribute name="Shape" type="String">
+            <Value>Frame_Sounding_Array</Value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <Value>Unique identifier for each sounding</Value>
+        </Attribute>
+        <Attribute name="Type" type="String">
+            <Value>Signed64</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>sounding_id_l1b</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/L1bScSoundingReference/sounding_id_l1b</Value>
+        </Attribute>
+    </Int64>
+    <Attribute name="AerosolResults" type="Container"/>
+    <Attribute name="AlbedoResults" type="Container"/>
+    <Attribute name="Dimensions" type="Container"/>
+    <Attribute name="Dimensions_AerosolGaussianLogParam" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <Value>3</Value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <Value>Parameters of gaussian log aerosol shape.</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Dimensions/AerosolGaussianLogParam</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_AerosolType" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <Value>4</Value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <Value>Retrieved aerosol type.</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Dimensions/AerosolType</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_AlbedoWavelength" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <Value>Values at 785 and 755 nm respectively.</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Dimensions/AlbedoWavelength</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_AncFile" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <Value>4</Value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <Value>Number of ancillary input files.</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Dimensions/AncFile</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_ECMWFLevel" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <Value>137</Value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <Value>Atmospheric model levels from ECMWF.</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Dimensions/ECMWFLevel</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_EuclidDim" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <Value>3</Value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <Value>x, y, z.</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Dimensions/EuclidDim</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_Frame" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <Value>8364</Value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <Value>Index of frame in granule.</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Dimensions/Frame</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_Gap" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <Value>Number of gaps.</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Dimensions/Gap</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_InputPtr" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <Value>Number of primary input files.</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Dimensions/InputPtr</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_L2FullPhysicsInputPtr" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <Value>13</Value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <Value>Number of full physics input files.</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Dimensions/L2FullPhysicsInputPtr</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_Layer" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <Value>19</Value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <Value>Atmospheric retrieval layers.</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Dimensions/Layer</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_Level" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <Value>20</Value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <Value>Atmospheric retrieval levels.</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Dimensions/Level</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_OrbitParamPtr" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <Value>Attitude and ephemeris files.</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Dimensions/OrbitParamPtr</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_Retrieval" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <Value>6590</Value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <Value>Number retrievals reported.</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Dimensions/Retrieval</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_Sounding" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <Value>8</Value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <Value>Index of downlinked sounding in granule.</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Dimensions/Sounding</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_SoundingPosition" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <Value>8</Value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <Value>Sounding positions</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Dimensions/SoundingPosition</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_Spectrum" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <Value>3</Value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <Value>Spectrum index(O2, WeakCO2, StrongCO2).</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Dimensions/Spectrum</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Dimensions_Vertex" type="Container">
+        <Attribute name="Size" type="UInt32">
+            <Value>4</Value>
+        </Attribute>
+        <Attribute name="Description" type="String">
+            <Value>Footprint corner vertex</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Dimensions/Vertex</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="DispersionResults" type="Container"/>
+    <Attribute name="L1bScSoundingReference" type="Container"/>
+    <Attribute name="L1bScSpectralParameters" type="Container"/>
+    <Attribute name="Metadata" type="Container"/>
+    <Attribute name="PreprocessingResults" type="Container"/>
+    <Attribute name="RetrievalGeometry" type="Container"/>
+    <Attribute name="RetrievalHeader" type="Container"/>
+    <Attribute name="RetrievalResults" type="Container"/>
+    <Attribute name="Shapes" type="Container"/>
+    <Attribute name="Shapes_AncFile_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <Value>AncFile</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Shapes/AncFile_Array</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Frame_Sounding_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <Value>Frame</Value>
+            <Value>Sounding</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Shapes/Frame_Sounding_Array</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Gap_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <Value>Gap</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Shapes/Gap_Array</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_InputPtr_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <Value>InputPtr</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Shapes/InputPtr_Array</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_L2FullPhysicsInputPtr_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <Value>L2FullPhysicsInputPtr</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Shapes/L2FullPhysicsInputPtr_Array</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_OrbitParamPtr_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <Value>OrbitParamPtr</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Shapes/OrbitParamPtr_Array</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Retrieval_AerosolGaussianLogParam_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <Value>Retrieval</Value>
+            <Value>AerosolGaussianLogParam</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Shapes/Retrieval_AerosolGaussianLogParam_Array</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Retrieval_AerosolType_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <Value>Retrieval</Value>
+            <Value>AerosolType</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Shapes/Retrieval_AerosolType_Array</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Retrieval_AlbedoWavelength_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <Value>Retrieval</Value>
+            <Value>AlbedoWavelength</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Shapes/Retrieval_AlbedoWavelength_Array</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Retrieval_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <Value>Retrieval</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Shapes/Retrieval_Array</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Retrieval_ECMWFLevel_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <Value>Retrieval</Value>
+            <Value>ECMWFLevel</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Shapes/Retrieval_ECMWFLevel_Array</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Retrieval_EuclidDim_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <Value>Retrieval</Value>
+            <Value>EuclidDim</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Shapes/Retrieval_EuclidDim_Array</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Retrieval_Layer_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <Value>Retrieval</Value>
+            <Value>Layer</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Shapes/Retrieval_Layer_Array</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Retrieval_Level_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <Value>Retrieval</Value>
+            <Value>Level</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Shapes/Retrieval_Level_Array</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Retrieval_Level_Level_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <Value>3</Value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <Value>Retrieval</Value>
+            <Value>Level</Value>
+            <Value>Level</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Shapes/Retrieval_Level_Level_Array</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Retrieval_Spectrum_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <Value>2</Value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <Value>Retrieval</Value>
+            <Value>Spectrum</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Shapes/Retrieval_Spectrum_Array</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Retrieval_Spectrum_Vertex_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <Value>3</Value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <Value>Retrieval</Value>
+            <Value>Spectrum</Value>
+            <Value>Vertex</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Shapes/Retrieval_Spectrum_Vertex_Array</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Scalar" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Shapes/Scalar</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_SoundingPosition_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <Value>SoundingPosition</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Shapes/SoundingPosition_Array</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="Shapes_Spectrum_Array" type="Container">
+        <Attribute name="Rank" type="UInt32">
+            <Value>1</Value>
+        </Attribute>
+        <Attribute name="Dimensions" type="String">
+            <Value>Spectrum</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/Shapes/Spectrum_Array</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="SpectralParameters" type="Container"/>
+</Dataset>
+
+The data:
+Int64 L1bScSoundingReference_sounding_id_l1b[3][2] = {{2015033004183933, 2015033004183936},{2015033004412603, 2015033004412606},{2015033005041273, 2015033005041276}};
+

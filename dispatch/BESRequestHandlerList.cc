@@ -42,9 +42,6 @@ using std::endl;
 using std::ostream;
 using std::string;
 
-BESRequestHandlerList *BESRequestHandlerList::d_instance = nullptr;
-static std::once_flag d_euc_init_once;
-
 /** @brief add a request handler to the list of registered handlers for this
  * server
  *
@@ -149,7 +146,7 @@ string BESRequestHandlerList::get_handler_names()
 
     string ret;
     bool first_name = true;
-    for (auto const &handler_pair: _handler_list) {
+    for (const auto &handler_pair: _handler_list) {
         if (!first_name) ret += ", ";
         ret += handler_pair.first;
         first_name = false;
@@ -210,7 +207,7 @@ void BESRequestHandlerList::execute_all(BESDataHandlerInterface &dhi)
 {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    for (auto const &handler_pair: _handler_list) {
+    for (const auto &handler_pair: _handler_list) {
         auto p = handler_pair.second->find_method(dhi.action);
         if (p)
             p(dhi);
@@ -291,7 +288,7 @@ void BESRequestHandlerList::dump(ostream &strm) const
     if (!_handler_list.empty()) {
         strm << BESIndent::LMarg << "registered handlers:" << endl;
         BESIndent::Indent();
-        for (auto const &handler_pair: _handler_list) {
+        for (const auto &handler_pair: _handler_list) {
             handler_pair.second->dump(strm);
         }
         BESIndent::UnIndent();
@@ -305,21 +302,8 @@ void BESRequestHandlerList::dump(ostream &strm) const
 BESRequestHandlerList *
 BESRequestHandlerList::TheList()
 {
-    std::call_once(d_euc_init_once,BESRequestHandlerList::initialize_instance);
-    return d_instance;
+    static BESRequestHandlerList list;
+    return &list;
 }
-
-void BESRequestHandlerList::initialize_instance() {
-    d_instance = new BESRequestHandlerList;
-#ifdef HAVE_ATEXIT
-    atexit(delete_instance);
-#endif
-}
-
-void BESRequestHandlerList::delete_instance() {
-    delete d_instance;
-    d_instance = nullptr;
-}
-
 
 

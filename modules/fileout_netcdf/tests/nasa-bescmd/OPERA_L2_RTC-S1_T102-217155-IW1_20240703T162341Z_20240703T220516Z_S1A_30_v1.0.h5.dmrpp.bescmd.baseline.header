@@ -1,0 +1,394 @@
+netcdf test {
+
+// global attributes:
+		:contact = "operasds@jpl.nasa.gov" ;
+		:institution = "NASA JPL" ;
+		:project = "OPERA" ;
+		:reference_document = "Product Specification Document for the OPERA Radiometric Terrain-Corrected SAR Backscatter from Sentinel-1, JPL D-108758, Rev. Working Version 1, Aug 31, 2023" ;
+		:title = "OPERA RTC-S1 Product" ;
+		:Conventions = "CF-1.8" ;
+		:build_dmrpp_metadata.created = "removed date-time" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.21.1" ;
+		:build_dmrpp_metadata.bes = "3.21.1" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -f /scr/kent/opendap/hyrax-dev/hyrax-new/hyrax-1490/bes/modules/fileout_netcdf/data/OPERA_L2_RTC-S1_T102-217155-IW1_20240703T162341Z_20240703T220516Z_S1A_30_v1.0.h5 -r OPERA_L2_RTC-S1_T102-217155-IW1_20240703T162341Z_20240703T220516Z_S1A_30_v1.0.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M" ;
+		:history = "removed date-timex OPERA_L2_RTC-S1_T102-217155-IW1_20240703T162341Z_20240703T220516Z_S1A_30_v1.0.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"OPERA_L2_RTC-S1_T102-217155-IW1_20240703T162341Z_20240703T220516Z_S1A_30_v1.0.h5.dmrpp\"}]}]" ;
+
+group: data {
+  dimensions:
+  	dim2 = 2 ;
+  	listOfPolarizations_len1 = 3 ;
+  	dim3 = 3316 ;
+  	dim4 = 1656 ;
+  variables:
+  	char listOfPolarizations(dim2, listOfPolarizations_len1) ;
+  		listOfPolarizations:description = "List of processed polarization layers" ;
+  	int projection ;
+  		projection:semi_major_axis = 6378137. ;
+  		projection:inverse_flattening = 298.257223563 ;
+  		projection:ellipsoid = "WGS84" ;
+  		projection:epsg_code = 32634LL ;
+  		projection:spatial_ref = "PROJCS[\"WGS 84 / UTM zone 34N\",GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]],PROJECTION[\"Transverse_Mercator\"],PARAMETER[\"latitude_of_origin\",0],PARAMETER[\"central_meridian\",21],PARAMETER[\"scale_factor\",0.9996],PARAMETER[\"false_easting\",500000],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"Easting\",EAST],AXIS[\"Northing\",NORTH],AUTHORITY[\"EPSG\",\"32634\"]]" ;
+  		projection:grid_mapping_name = "WGS 84 / UTM zone 34N" ;
+  		projection:utm_zone_number = 34LL ;
+  		projection:false_easting = 500000. ;
+  		projection:false_northing = 0. ;
+  		projection:latitude_of_projection_origin = 0. ;
+  		projection:longitude_of_projection_origin = 0. ;
+  	double xCoordinateSpacing ;
+  		xCoordinateSpacing:description = "Nominal spacing in m between consecutive pixels" ;
+  		xCoordinateSpacing:units = "m" ;
+  		xCoordinateSpacing:long_name = "x coordinate spacing" ;
+  	double xCoordinates(dim3) ;
+  		xCoordinates:standard_name = "projection_x_coordinate" ;
+  		xCoordinates:description = "CF compliant dimension associated with the X coordinate" ;
+  		xCoordinates:units = "m" ;
+  		xCoordinates:long_name = "x coordinate of projection" ;
+  	double yCoordinateSpacing ;
+  		yCoordinateSpacing:description = "Nominal spacing in m between consecutive lines" ;
+  		yCoordinateSpacing:units = "m" ;
+  		yCoordinateSpacing:long_name = "y coordinates spacing" ;
+  	double yCoordinates(dim4) ;
+  		yCoordinates:standard_name = "projection_y_coordinate" ;
+  		yCoordinates:description = "CF compliant dimension associated with the Y coordinate" ;
+  		yCoordinates:units = "m" ;
+  		yCoordinates:long_name = "y coordinate of projection" ;
+  } // group data
+
+group: identification {
+  types:
+    byte enum NoNameEnum0 {FALSE = 0, TRUE = 1} ;
+  dimensions:
+  	acquisitionMode_len5 = 3 ;
+  	dim6 = 4 ;
+  	boundingPolygon_len7 = 1587 ;
+  	burstID_len8 = 16 ;
+  	ceosAnalysisReadyDataDocumentIdentifier_len9 = 64 ;
+  	ceosAnalysisReadyDataProductType_len10 = 29 ;
+  	contactInformation_len11 = 22 ;
+  	dataAccess_len12 = 67 ;
+  	institution_len13 = 9 ;
+  	instrumentName_len14 = 17 ;
+  	lookDirection_len15 = 6 ;
+  	orbitPassDirection_len16 = 10 ;
+  	platform_len17 = 12 ;
+  	processingDateTime_len18 = 28 ;
+  	processingType_len19 = 8 ;
+  	productLevel_len20 = 3 ;
+  	productSpecificationVersion_len21 = 4 ;
+  	productType_len22 = 7 ;
+  	productVersion_len23 = 4 ;
+  	project_len24 = 6 ;
+  	radarBand_len25 = 2 ;
+  	staticLayersDataAccess_len26 = 118 ;
+  	subSwathID_len27 = 4 ;
+  	zeroDopplerEndTime_len28 = 28 ;
+  	zeroDopplerStartTime_len29 = 28 ;
+  variables:
+  	int64 absoluteOrbitNumber ;
+  		absoluteOrbitNumber:description = "Absolute orbit number" ;
+  	char acquisitionMode(acquisitionMode_len5) ;
+  		acquisitionMode:description = "Acquisition mode" ;
+  	double boundingBox(dim6) ;
+  		boundingBox:description = "Bounding box of the product, in order of xmin, ymin, xmax, ymax" ;
+  		boundingBox:epsg = "32634" ;
+  		boundingBox:pixel_coordinate_convention = "Edges/corners. Xmin, Ymin, Xmax, Ymax." ;
+  	char boundingPolygon(boundingPolygon_len7) ;
+  		boundingPolygon:description = "OGR compatible WKT representation of the product bounding polygon" ;
+  		boundingPolygon:epsg = "4326" ;
+  	char burstID(burstID_len8) ;
+  		burstID:description = "Burst identification (burst ID)" ;
+  	char ceosAnalysisReadyDataDocumentIdentifier(ceosAnalysisReadyDataDocumentIdentifier_len9) ;
+  		ceosAnalysisReadyDataDocumentIdentifier:description = "CEOS Analysis Ready Data (CARD) document identifier" ;
+  	char ceosAnalysisReadyDataProductType(ceosAnalysisReadyDataProductType_len10) ;
+  		ceosAnalysisReadyDataProductType:description = "CEOS Analysis Ready Data (CARD) product type" ;
+  	char contactInformation(contactInformation_len11) ;
+  		contactInformation:description = "Contact information for producer of this product" ;
+  	char dataAccess(dataAccess_len12) ;
+  		dataAccess:description = "Location from where this product can be retrieved (URL or DOI)" ;
+  	char institution(institution_len13) ;
+  		institution:description = "Institution that created this product" ;
+  	char instrumentName(instrumentName_len14) ;
+  		instrumentName:description = "Name of the instrument used to collect the remote sensing data provided in this product" ;
+  	NoNameEnum0 isGeocoded ;
+  		isGeocoded:description = "Flag to indicate whether the primary product data is in radar geometry (\"False\") or map geometry (\"True\")" ;
+  	char lookDirection(lookDirection_len15) ;
+  		lookDirection:description = "Look direction can be left or right" ;
+  	char orbitPassDirection(orbitPassDirection_len16) ;
+  		orbitPassDirection:description = "Orbit direction can be ascending or descending" ;
+  	char platform(platform_len17) ;
+  		platform:description = "Platform name" ;
+  	char processingDateTime(processingDateTime_len18) ;
+  		processingDateTime:description = "Processing date and time in the format YYYY-MM-DDThh:mm:ss.sZ" ;
+  	char processingType(processingType_len19) ;
+  		processingType:description = "Processing type: \"NOMINAL\", \"URGENT\", \"CUSTOM\", or \"UNDEFINED\"" ;
+  	char productLevel(productLevel_len20) ;
+  		productLevel:description = "Product level. L0A: Unprocessed instrument data; L0B: Reformatted, unprocessed instrument data; L1: Processed instrument data in radar coordinates system; and L2: Processed instrument data in geocoded coordinates system" ;
+  	char productSpecificationVersion(productSpecificationVersion_len21) ;
+  		productSpecificationVersion:description = "Product specification version which represents the schema of this product" ;
+  	char productType(productType_len22) ;
+  		productType:description = "Product type" ;
+  	char productVersion(productVersion_len23) ;
+  		productVersion:description = "Product version which represents the structure of the product and the science content governed by the algorithm, input data, and processing parameter" ;
+  	char project(project_len24) ;
+  		project:description = "Project name" ;
+  	char radarBand(radarBand_len25) ;
+  		radarBand:description = "Acquired frequency band" ;
+  	char staticLayersDataAccess(staticLayersDataAccess_len26) ;
+  		staticLayersDataAccess:description = "Location of the static layers product associated with this product (URL or DOI)" ;
+  	char subSwathID(subSwathID_len27) ;
+  		subSwathID:description = "Sub-swath identification" ;
+  	int64 trackNumber ;
+  		trackNumber:description = "Track number" ;
+  	char zeroDopplerEndTime(zeroDopplerEndTime_len28) ;
+  		zeroDopplerEndTime:description = "Azimuth stop time of the product in the format YYYY-MM-DDThh:mm:ss.sZ" ;
+  	char zeroDopplerStartTime(zeroDopplerStartTime_len29) ;
+  		zeroDopplerStartTime:description = "Azimuth start time of the product in the format YYYY-MM-DDThh:mm:ss.sZ" ;
+  } // group identification
+
+group: metadata {
+
+  group: orbit {
+    dimensions:
+    	interpMethod_len30 = 8 ;
+    	orbitType_len31 = 21 ;
+    	dim32 = 13 ;
+    	dim33 = 3 ;
+    	referenceEpoch_len34 = 30 ;
+    	dim35 = 13 ;
+    	dim36 = 13 ;
+    	dim37 = 3 ;
+    variables:
+    	char interpMethod(interpMethod_len30) ;
+    	char orbitType(orbitType_len31) ;
+    		orbitType:description = "Type of orbit file used in processing" ;
+    	double position(dim32, dim33) ;
+    		position:units = "meters" ;
+    		position:description = "Position vector record. This record contains the platform position data with respect to WGS84 G1762 reference frame" ;
+    	char referenceEpoch(referenceEpoch_len34) ;
+    	double time(dim35) ;
+    		time:units = "seconds since removed date-time" ;
+    		time:description = "Time vector record. This record contains the time corresponding to position, velocity, acceleration records" ;
+    	double velocity(dim36, dim37) ;
+    		velocity:units = "meters per second" ;
+    		velocity:description = "Velocity vector record. This record contains the platform velocity data with respect to WGS84 G1762 reference frame" ;
+    } // group orbit
+
+  group: processingInformation {
+
+    group: algorithms {
+      dimensions:
+      	demEgmModel_len38 = 41 ;
+      	demInterpolation_len39 = 10 ;
+      	geocoding_len40 = 61 ;
+      	geocodingAlgorithmReference_len41 = 279 ;
+      	isce3Version_len42 = 7 ;
+      	noiseCorrectionAlgorithmReference_len43 = 234 ;
+      	radiometricTerrainCorrection_len44 = 55 ;
+      	radiometricTerrainCorrectionAlgorithmReference_len45 = 279 ;
+      	s1ReaderVersion_len46 = 6 ;
+      	softwareVersion_len47 = 6 ;
+      variables:
+      	char demEgmModel(demEgmModel_len38) ;
+      		demEgmModel:description = "Earth Gravitational Model associated with the DEM" ;
+      	char demInterpolation(demInterpolation_len39) ;
+      		demInterpolation:description = "DEM interpolation method" ;
+      	char geocoding(geocoding_len40) ;
+      		geocoding:description = "Geocoding algorithm" ;
+      	char geocodingAlgorithmReference(geocodingAlgorithmReference_len41) ;
+      		geocodingAlgorithmReference:description = "A reference to the geocoding algorithm applied" ;
+      	char isce3Version(isce3Version_len42) ;
+      		isce3Version:description = "Version of the ISCE3 framework used for processing" ;
+      	char noiseCorrectionAlgorithmReference(noiseCorrectionAlgorithmReference_len43) ;
+      		noiseCorrectionAlgorithmReference:description = "A reference to the noise removal algorithm applied" ;
+      	char radiometricTerrainCorrection(radiometricTerrainCorrection_len44) ;
+      		radiometricTerrainCorrection:description = "Radiometric terrain correction (RTC) algorithm" ;
+      	char radiometricTerrainCorrectionAlgorithmReference(radiometricTerrainCorrectionAlgorithmReference_len45) ;
+      		radiometricTerrainCorrectionAlgorithmReference:description = "A reference to the radiometric terrain correction (RTC) algorithm applied" ;
+      	char s1ReaderVersion(s1ReaderVersion_len46) ;
+      		s1ReaderVersion:description = "Version of the OPERA s1-reader used for processing" ;
+      	char softwareVersion(softwareVersion_len47) ;
+      		softwareVersion:description = "Software version" ;
+      } // group algorithms
+
+    group: inputs {
+      dimensions:
+      	dim51 = 2 ;
+      	annotationFiles_len48 = 81 ;
+      	demSource_len52 = 163 ;
+      	dim53 = 1 ;
+      	l1SlcGranules_len49 = 72 ;
+      	dim54 = 1 ;
+      	orbitFiles_len50 = 78 ;
+      variables:
+      	char annotationFiles(dim51, annotationFiles_len48) ;
+      		annotationFiles:description = "List of input annotation files used" ;
+      	char demSource(demSource_len52) ;
+      		demSource:description = "Description of the input digital elevation model (DEM)" ;
+      	char l1SlcGranules(dim53, l1SlcGranules_len49) ;
+      		l1SlcGranules:description = "List of input L1 SLC products used" ;
+      	char orbitFiles(dim54, orbitFiles_len50) ;
+      		orbitFiles:description = "List of input orbit files used" ;
+      } // group inputs
+
+    group: parameters {
+      types:
+        byte enum NoNameEnum0 {FALSE = 0, TRUE = 1} ;
+        byte enum NoNameEnum1 {FALSE = 0, TRUE = 1} ;
+        byte enum NoNameEnum2 {FALSE = 0, TRUE = 1} ;
+        byte enum NoNameEnum3 {FALSE = 0, TRUE = 1} ;
+        byte enum NoNameEnum4 {FALSE = 0, TRUE = 1} ;
+        byte enum NoNameEnum5 {FALSE = 0, TRUE = 1} ;
+        byte enum NoNameEnum6 {FALSE = 0, TRUE = 1} ;
+      dimensions:
+      	inputBackscatterNormalizationConvention_len55 = 6 ;
+      	outputBackscatterDecibelConversionEquation_len56 = 29 ;
+      	outputBackscatterExpressionConvention_len57 = 29 ;
+      	outputBackscatterNormalizationConvention_len58 = 7 ;
+      variables:
+      	NoNameEnum0 bistaticDelayCorrectionApplied ;
+      		bistaticDelayCorrectionApplied:description = "Flag to indicate if the bistatic delay correction has been applied" ;
+      	NoNameEnum0 filteringApplied ;
+      		filteringApplied:description = "Flag to indicate if post-processing filtering has been applied" ;
+      	char inputBackscatterNormalizationConvention(inputBackscatterNormalizationConvention_len55) ;
+      		inputBackscatterNormalizationConvention:description = "Backscatter normalization convention of the source data" ;
+      	NoNameEnum0 noiseCorrectionApplied ;
+      		noiseCorrectionApplied:description = "Flag to indicate if noise removal has been applied" ;
+      	char outputBackscatterDecibelConversionEquation(outputBackscatterDecibelConversionEquation_len56) ;
+      		outputBackscatterDecibelConversionEquation:description = "Equation to convert provided backscatter to decibel (dB)" ;
+      	char outputBackscatterExpressionConvention(outputBackscatterExpressionConvention_len57) ;
+      		outputBackscatterExpressionConvention:description = "Backscatter expression convention" ;
+      	char outputBackscatterNormalizationConvention(outputBackscatterNormalizationConvention_len58) ;
+      		outputBackscatterNormalizationConvention:description = "Backscatter normalization convention of the radar imagery associated with this product" ;
+      	NoNameEnum0 preprocessingMultilookingApplied ;
+      		preprocessingMultilookingApplied:description = "Flag to indicate if a preprocessing multilooking has been applied" ;
+      	NoNameEnum0 radiometricTerrainCorrectionApplied ;
+      		radiometricTerrainCorrectionApplied:description = "Flag to indicate if radiometric terrain correction (RTC) has been applied" ;
+      	NoNameEnum0 staticTroposphericGeolocationCorrectionApplied ;
+      		staticTroposphericGeolocationCorrectionApplied:description = "Flag to indicate if the static tropospheric correction has been applied" ;
+      	NoNameEnum0 wetTroposphericGeolocationCorrectionApplied ;
+      		wetTroposphericGeolocationCorrectionApplied:description = "Flag to indicate if the wet tropospheric correction has been applied" ;
+
+      group: geocoding {
+        variables:
+        	double burstGeogridSnapX ;
+        		burstGeogridSnapX:description = "Burst geogrid snap for Coordinate X (W/E)" ;
+        	double burstGeogridSnapY ;
+        		burstGeogridSnapY:description = "Burst geogrid snap for Coordinate Y (S/N)" ;
+        } // group geocoding
+      } // group parameters
+    } // group processingInformation
+
+  group: qa {
+
+    group: geometricAccuracy {
+
+      group: bias {
+        variables:
+        	double x ;
+        		x:description = "An estimate of the localization error bias in the easting direction" ;
+        	double y ;
+        		y:description = "An estimate of the localization error bias in the northing direction" ;
+        } // group bias
+
+      group: stddev {
+        variables:
+        	double x ;
+        		x:description = "An estimate of the localization error standard deviation in the easting direction" ;
+        	double y ;
+        		y:description = "An estimate of the localization error standard deviation in the northing direction" ;
+        } // group stddev
+      } // group geometricAccuracy
+
+    group: rfi {
+      types:
+        byte enum NoNameEnum0 {FALSE = 0, TRUE = 1} ;
+      dimensions:
+      	rfiMitigationDomain_len59 = 17 ;
+      	rfiMitigationPerformed_len60 = 17 ;
+      variables:
+      	NoNameEnum0 isRfiInfoAvailable ;
+      		isRfiInfoAvailable:description = "A flag to indicate whether RFI information is available in the source data" ;
+      	char rfiMitigationDomain(rfiMitigationDomain_len59) ;
+      		rfiMitigationDomain:description = "Domain in which the RFI mitigation was performed" ;
+      	char rfiMitigationPerformed(rfiMitigationPerformed_len60) ;
+      		rfiMitigationPerformed:description = "RFI detection and mitigation strategy" ;
+
+      group: rfiBurstReport {
+        dimensions:
+        	azimuthTime_len61 = 28 ;
+        	swath_len62 = 4 ;
+        variables:
+        	char azimuthTime(azimuthTime_len61) ;
+        		azimuthTime:description = "Sensing start time of the burst that corresponds to the RFI report in the format YYYY-MM-DDThh:mm:ss.sZ" ;
+        	double inBandOutBandPowerRatio ;
+        		inBandOutBandPowerRatio:description = "Ratio between the in-band and out-of-band power of the burst." ;
+        	char swath(swath_len62) ;
+        		swath:description = "Swath associated with the IW RFI burst report list" ;
+        } // group rfiBurstReport
+      } // group rfi
+    } // group qa
+
+  group: sourceData {
+    dimensions:
+    	dataAccess_len63 = 69 ;
+    	institution_len64 = 4 ;
+    	processingCenter_len65 = 72 ;
+    	processingDateTime_len66 = 27 ;
+    	productLevel_len67 = 3 ;
+    	softwareVersion_len68 = 5 ;
+    	zeroDopplerEndTime_len69 = 28 ;
+    	zeroDopplerStartTime_len70 = 28 ;
+    variables:
+    	double averageZeroDopplerSpacingInMeters ;
+    		averageZeroDopplerSpacingInMeters:description = "Average pixel spacing in meters between consecutive lines in the along-track direction of the source data" ;
+    	int64 azimuthLooks ;
+    		azimuthLooks:description = "Number of looks in azimuth used to generate source data" ;
+    	double azimuthResolutionInMeters ;
+    		azimuthResolutionInMeters:description = "Azimuth resolution of the source data in meters" ;
+    	double centerFrequency ;
+    		centerFrequency:description = "Center frequency of the processed image in Hz" ;
+    	char dataAccess(dataAccess_len63) ;
+    		dataAccess:description = "Location from where the source data can be retrieved (URL or DOI)" ;
+    	double farRangeIncidenceAngle ;
+    		farRangeIncidenceAngle:description = "Far range incidence angle in degrees" ;
+    	char institution(institution_len64) ;
+    		institution:description = "Institution that created the source data product" ;
+    	double maxNoiseEquivalentSigmaZero ;
+    		maxNoiseEquivalentSigmaZero:description = "Maximum Noise equivalent sigma0 in dB" ;
+    	double nearRangeIncidenceAngle ;
+    		nearRangeIncidenceAngle:description = "Near range incidence angle in degrees" ;
+    	int64 numberOfAcquisitions ;
+    		numberOfAcquisitions:description = "Number of source data acquisitions" ;
+    	int64 numberOfAzimuthLines ;
+    		numberOfAzimuthLines:description = "Number of azimuth lines within the source data product" ;
+    	int64 numberOfRangeSamples ;
+    		numberOfRangeSamples:description = "Number of slant range samples for each azimuth line within the source data" ;
+    	char processingCenter(processingCenter_len65) ;
+    		processingCenter:description = "Source data processing center" ;
+    	char processingDateTime(processingDateTime_len66) ;
+    		processingDateTime:description = "Processing UTC date and time of the source data product (SLC post processing date time) in the format YYYY-MM-DDThh:mm:ss.sZ" ;
+    	char productLevel(productLevel_len67) ;
+    		productLevel:description = "Product level of the source data. L0A: Unprocessed instrument data; L0B: Reformatted, unprocessed instrument data; L1: Processed instrument data in radar coordinates system; and L2: Processed instrument data in geocoded coordinates system" ;
+    	double rangeBandwidth ;
+    		rangeBandwidth:description = "Processed range bandwidth in Hz" ;
+    	int64 slantRangeLooks ;
+    		slantRangeLooks:description = "Number of looks in slant range used to generate source data" ;
+    	double slantRangeResolutionInMeters ;
+    		slantRangeResolutionInMeters:description = "Slant-range resolution of the source data in meters" ;
+    	double slantRangeSpacing ;
+    		slantRangeSpacing:description = "Distance in meters between consecutive range samples of the source data" ;
+    	double slantRangeStart ;
+    		slantRangeStart:description = "Slant-range start distance of the source data" ;
+    	char softwareVersion(softwareVersion_len68) ;
+    		softwareVersion:description = "Version of the software used to create the source data (IPF version)" ;
+    	char zeroDopplerEndTime(zeroDopplerEndTime_len69) ;
+    		zeroDopplerEndTime:description = "Azimuth stop time of the input product in the format YYYY-MM-DDThh:mm:ss.sZ" ;
+    	char zeroDopplerStartTime(zeroDopplerStartTime_len70) ;
+    		zeroDopplerStartTime:description = "Azimuth start time of the input product in the format YYYY-MM-DDThh:mm:ss.sZ" ;
+    	double zeroDopplerTimeSpacing ;
+    		zeroDopplerTimeSpacing:description = "Time interval in the along-track direction of the source data" ;
+    } // group sourceData
+  } // group metadata
+}

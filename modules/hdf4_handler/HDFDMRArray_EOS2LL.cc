@@ -15,7 +15,7 @@
 #include <iostream>
 #include <sstream>
 #include <libdap/debug.h>
-#include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include <BESDebug.h>
 
 using namespace std;
@@ -38,24 +38,23 @@ HDFDMRArray_EOS2LL::read ()
     vector<int>step;
     step.resize(ll_rank);
 
-    string err_msg;
+    string msg;
 
     // Obtain offset,step and count from the client expression constraint
     int nelms = format_constraint(offset.data(),step.data(),count.data());
 
     int32 gridfd = GDopen(const_cast < char *>(filename.c_str()), DFACC_READ);
     if (gridfd <0) {
-        ostringstream eherr;
-        err_msg = "HDF-EOS: GDopen failed";
-        throw InternalErr (__FILE__, __LINE__, err_msg);
+        msg = "HDF-EOS: GDopen failed";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     int32 gridid = GDattach(gridfd, const_cast<char *>(gridname.c_str()));
     if (gridid <0) {
         ostringstream eherr;
-        err_msg = "HDF-EOS: GDattach failed to attach " + gridname;
+        msg = "HDF-EOS: GDattach failed to attach " + gridname;
         GDclose(gridfd);
-        throw InternalErr (__FILE__, __LINE__, err_msg);
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Declare projection code, zone, etc grid parameters. 
@@ -73,8 +72,8 @@ HDFDMRArray_EOS2LL::read ()
     if (GDprojinfo (gridid, &projcode, &zone, &sphere, params) <0) {
         GDdetach(gridid);
         GDclose(gridfd);
-        err_msg = "GDprojinfo failed for grid name: " + gridname;
-        throw InternalErr (__FILE__, __LINE__, err_msg);
+        msg = "GDprojinfo failed for grid name: " + gridname;
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Retrieve dimensions and X-Y coordinates of corners
@@ -82,8 +81,8 @@ HDFDMRArray_EOS2LL::read ()
                    lowright) == -1) {
         GDdetach(gridid);
         GDclose(gridfd);
-        err_msg = "GDgridinfo failed for grid name: " + gridname;
-        throw InternalErr (__FILE__, __LINE__, err_msg);
+        msg = "GDgridinfo failed for grid name: " + gridname;
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
  
     // Retrieve pixel registration information 
@@ -92,8 +91,8 @@ HDFDMRArray_EOS2LL::read ()
     if (r != 0) {
         GDdetach(gridid);
         GDclose(gridfd);
-        err_msg = "GDpixreginfo failed for grid name: " + gridname;
-        throw InternalErr (__FILE__, __LINE__, err_msg);
+        msg = "GDpixreginfo failed for grid name: " + gridname;
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     //Retrieve grid pixel origin 
@@ -102,8 +101,8 @@ HDFDMRArray_EOS2LL::read ()
     if (r != 0) {
         GDdetach(gridid);
         GDclose(gridfd);
-        err_msg = "GDoriginfo failed for grid name: " + gridname;
-        throw InternalErr (__FILE__, __LINE__, err_msg);
+        msg = "GDoriginfo failed for grid name: " + gridname;
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     vector<int32>rows;
@@ -136,6 +135,21 @@ HDFDMRArray_EOS2LL::read ()
         }
     }
 
+    // The following code aims to handle large MCD Grid(GCTP_GEO projection) such as 21600*43200 lat and lon.
+    // These MODIS MCD files don't follow HDF-EOS standard way to represent lat/lon (DDDMMMSSS);
+    // they simply represent lat/lon as the normal representation -180.0 or -90.0.
+    // For example, if the real longitude value is 180.0, HDF-EOS needs the value to be represented as 180000000 rather than 180.
+    // So we need to make the representation follow the HDF-EOS2 way.
+    if (((int)(lowright[0]/1000)==0) &&((int)(upleft[0]/1000)==0)
+               && ((int)(upleft[1]/1000)==0) && ((int)(lowright[1]/1000)==0)) {
+        if (projcode == GCTP_GEO){
+            for (i =0; i<2;i++) {
+                lowright[i] = lowright[i]*1000000;
+                upleft[i] = upleft[i] *1000000;
+            }
+        }
+    }
+
 
     r = GDij2ll (projcode, zone, params, sphere, xdim, ydim, upleft, lowright,
                  xdim * ydim, rows.data(), cols.data(), lon.data(), lat.data(), pixreg, origin);
@@ -143,8 +157,8 @@ HDFDMRArray_EOS2LL::read ()
     if (r != 0) {
         GDdetach(gridid);
         GDclose(gridfd);
-        err_msg = "cannot calculate grid latitude and longitude for grid name: " + gridname;
-        throw InternalErr (__FILE__, __LINE__, err_msg);
+        msg = "cannot calculate grid latitude and longitude for grid name: " + gridname;
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     
     if (is_lat) { 

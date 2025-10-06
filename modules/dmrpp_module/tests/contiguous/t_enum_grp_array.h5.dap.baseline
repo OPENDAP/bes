@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="enum_grp_array.h5">
+    <Group name="g1">
+        <Enumeration name="NoNameEnum0" basetype="Int8">
+            <EnumConst name="FALSE" value="0"/>
+            <EnumConst name="TRUE" value="1"/>
+        </Enumeration>
+        <Enum name="g1_enum" enum="/g1/NoNameEnum0">
+            <Dim size="4"/>
+            <Attribute name="DAP4_Checksum_CRC32" type="String">
+                removed checksum
+            </Attribute>
+        </Enum>
+        <Group name="g2">
+            <Enumeration name="NoNameEnum0" basetype="Int8">
+                <EnumConst name="FALSE" value="0"/>
+                <EnumConst name="TRUE" value="1"/>
+            </Enumeration>
+            <Enum name="g2_enum" enum="/g1/g2/NoNameEnum0">
+                <Dim size="3"/>
+                <Attribute name="DAP4_Checksum_CRC32" type="String">
+                    removed checksum
+                </Attribute>
+            </Enum>
+        </Group>
+    </Group>
+</Dataset>
+
+The data:
+Enum g1_enum[4] = {0, 1, 0, 1};
+Enum g2_enum[3] = {0, 1, 0};
+

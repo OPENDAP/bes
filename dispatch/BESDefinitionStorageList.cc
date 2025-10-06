@@ -47,25 +47,9 @@ using std::ostream;
 #include "BESDefine.h"
 #include "BESInfo.h"
 
-BESDefinitionStorageList *BESDefinitionStorageList::d_instance = nullptr;
-static std::once_flag d_euc_init_once;
-
 BESDefinitionStorageList::BESDefinitionStorageList() :
     _first(0)
 {
-}
-
-BESDefinitionStorageList::~BESDefinitionStorageList()
-{
-    BESDefinitionStorageList::persistence_list *pl = _first;
-    while (pl) {
-        if (pl->_persistence_obj) {
-            delete pl->_persistence_obj;
-        }
-        BESDefinitionStorageList::persistence_list *next = pl->_next;
-        delete pl;
-        pl = next;
-    }
 }
 
 /** @brief Add a persistent store to the list
@@ -339,19 +323,7 @@ void BESDefinitionStorageList::dump(ostream &strm) const
 BESDefinitionStorageList *
 BESDefinitionStorageList::TheList()
 {
-    std::call_once(d_euc_init_once,BESDefinitionStorageList::initialize_instance);
-    return d_instance;
-}
-
-void BESDefinitionStorageList::initialize_instance() {
-    d_instance = new BESDefinitionStorageList;
-#ifdef HAVE_ATEXIT
-    atexit(delete_instance);
-#endif
-}
-
-void BESDefinitionStorageList::delete_instance() {
-    delete d_instance;
-    d_instance = 0;
+    static BESDefinitionStorageList list;
+    return &list;
 }
 

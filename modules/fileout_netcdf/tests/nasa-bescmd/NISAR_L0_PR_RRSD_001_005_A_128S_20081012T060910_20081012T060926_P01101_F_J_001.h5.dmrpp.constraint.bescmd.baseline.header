@@ -1,0 +1,46 @@
+netcdf test {
+
+// global attributes:
+		:build_dmrpp_metadata.created = "removed date-time" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.21.1" ;
+		:build_dmrpp_metadata.bes = "3.21.1" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -f /scr/kent/opendap/hyrax-dev/hyrax-new/hyrax-1490/bes/modules/fileout_netcdf/data/NISAR_L0_PR_RRSD_001_005_A_128S_20081012T060910_20081012T060926_P01101_F_J_001.h5 -r NISAR_L0_PR_RRSD_001_005_A_128S_20081012T060910_20081012T060926_P01101_F_J_001.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M" ;
+		:history = "removed date-timex NISAR_L0_PR_RRSD_001_005_A_128S_20081012T060910_20081012T060926_P01101_F_J_001.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"NISAR_L0_PR_RRSD_001_005_A_128S_20081012T060910_20081012T060926_P01101_F_J_001.h5.dmrpp\"}]}]" ;
+
+group: science {
+
+  group: LSAR {
+
+    group: RRSD {
+
+      group: swaths {
+
+        group: frequencyA {
+
+          group: txH {
+            types:
+              ubyte enum NoNameEnum0 {BYPASS = 2, HPA = 0, LNA = 1} ;
+            dimensions:
+            	dim1 = 30540 ;
+            variables:
+            	NoNameEnum0 calType(dim1) ;
+
+            group: rxH {
+              dimensions:
+              	sdim1 = 4 ;
+              	sdim2 = 3 ;
+              	sdim3 = 4 ;
+              	sdim4 = 3 ;
+              variables:
+              	ushort HH.r(sdim1, sdim2) ;
+              	ushort HH.i(sdim3, sdim4) ;
+              } // group rxH
+            } // group txH
+          } // group frequencyA
+        } // group swaths
+      } // group RRSD
+    } // group LSAR
+  } // group science
+}

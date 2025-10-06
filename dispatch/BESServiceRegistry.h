@@ -62,18 +62,18 @@ private:
     	std::string _description ;
     	std::map<std::string,std::string> _formats ;
     } service_cmd ;
-    static BESServiceRegistry *		d_instance ;
     mutable std::recursive_mutex d_cache_lock_mutex;
-
-    static void initialize_instance();
-    static void delete_instance();
 
     std::map<std::string,std::map<std::string,service_cmd> >_services ;
     std::map<std::string,std::map<std::string,std::string> >	_handles ;
 
-public:
     BESServiceRegistry() ;
-    virtual	~BESServiceRegistry() ;
+
+public:
+    ~BESServiceRegistry() override = default;
+
+    BESServiceRegistry(const BESServiceRegistry&) = delete;
+    BESServiceRegistry& operator=(const BESServiceRegistry&) = delete;
 
     virtual void		add_service( const std::string &name ) ;
     virtual void		add_to_service( const std::string &service,

@@ -1,0 +1,19 @@
+netcdf test {
+dimensions:
+	dim1 = 5 ;
+	string_array_len = 9 ;
+variables:
+	char string_array(dim1, string_array_len) ;
+
+// global attributes:
+		:history = "removed date-timex chunked_string_array_c.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"chunked_string_array_c.h5\"}]}]" ;
+data:
+
+ string_array =
+  "wqwqt",
+  "jhgjhgjh",
+  "kjhkjhk",
+  "ddsfdsg",
+  "njiuh" ;
+}

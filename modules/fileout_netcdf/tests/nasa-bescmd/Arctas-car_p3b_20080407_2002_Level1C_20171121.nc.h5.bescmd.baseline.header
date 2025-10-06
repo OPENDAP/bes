@@ -12,7 +12,7 @@ dimensions:
 	SpectralRange_1222nm = 75 ;
 	SpectralRange_677nm = 71 ;
 	SpectralRange_480nm = 46 ;
-	Scans = 46546 ;
+	Scans = UNLIMITED ; // (46546 currently)
 	SpectralRange_1731nm = 131 ;
 	SpectralRange_1559nm = 95 ;
 	SpectralRange_1649nm = 110 ;
@@ -259,6 +259,7 @@ variables:
 		SRF_873nm:_FillValue = -9999.f ;
 
 // global attributes:
+		:DODS_EXTRA.Unlimited_Dimension = "Scans" ;
 		:title = "Cloud Absorption Radiometer (CAR) Level-1C NetCDF data" ;
 		:experiment_name = "ARCTAS" ;
 		:flight_number = "2002" ;

@@ -91,7 +91,7 @@ BESContainerStorageFile::BESContainerStorageFile(const string &n) :
     string key = "BES.Container.Persistence.File." + n;
     bool found = false;
     TheBESKeys::TheKeys()->get_value(key, _file, found);
-    if (_file == "") {
+    if (_file.empty()) {
         string s = key + " not defined in BES configuration file";
         throw BESSyntaxUserError(s, __FILE__, __LINE__);
     }
@@ -117,19 +117,19 @@ BESContainerStorageFile::BESContainerStorageFile(const string &n) :
             persistence_file.getline(cline, 80);
             if (!persistence_file.eof()) {
                 strm << cline;
-                BESContainerStorageFile::container *c = new BESContainerStorageFile::container;
+                auto *c = new BESContainerStorageFile::container;
                 strm >> c->_symbolic_name;
                 strm >> c->_real_name;
                 strm >> c->_container_type;
                 string dummy;
                 strm >> dummy;
-                if (c->_symbolic_name == "" || c->_real_name == "" || c->_container_type == "") {
+                if (c->_symbolic_name.empty() || c->_real_name.empty() || c->_container_type.empty()) {
                     delete c;
                     persistence_file.close();
                     string s = "Incomplete container persistence line in file " + _file;
                     throw BESInternalError(s, __FILE__, __LINE__);
                 }
-                if (dummy != "") {
+                if (!dummy.empty()) {
                     persistence_file.close();
                     delete c;
                     string s = "Too many fields in persistence file " + _file;
@@ -150,7 +150,7 @@ BESContainerStorageFile::~BESContainerStorageFile()
 {
     BESContainerStorageFile::Container_citer i = _container_list.begin();
     BESContainerStorageFile::Container_citer ie = _container_list.end();
-    for (; i != ie; i++) {
+    for (; i != ie; ++i) {
         BESContainerStorageFile::container *c = (*i).second;
         delete c;
     }
@@ -160,17 +160,20 @@ BESContainerStorageFile::~BESContainerStorageFile()
  * from the file.
  *
  * If a match is made with the specified symbolic name then a BESFileContainer
- * instance is created using the the information found (real name and
- * container type). If not found then NULL is returned.
+ * instance is created using the information found (real name and
+ * container type). If not found then nullptr is returned.
+ *
+ * @note It is the caller's responsibility to delete this raw pointer. This would
+ * be a place where a shared_ptr or weak_ptr could be used. jhrg 4/15/25
  *
  * @param sym_name name of the container to look for
- * @return a new BESFileContainer if the sym_name is found in the file, else 0
+ * @return a new BESFileContainer if the sym_name is found in the file, else nullptr.
  * @see BESFileContainer
  */
 BESContainer *
 BESContainerStorageFile::look_for(const string &sym_name)
 {
-    BESFileContainer *ret_container = 0;
+    BESFileContainer *ret_container = nullptr;
     BESContainerStorageFile::Container_citer i;
     i = _container_list.find(sym_name);
     if (i != _container_list.end()) {

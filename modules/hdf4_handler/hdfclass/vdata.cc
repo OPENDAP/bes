@@ -55,12 +55,12 @@
 #include <algorithm>
 
 // libdap
-#include <libdap/InternalErr.h>
 #include <libdap/util.h>
 #include <libdap/debug.h>
 
 // bes
 #include <BESDebug.h>
+#include <BESInternalError.h>
 #include <hcstream.h>
 #include <hdfclass.h>
 
@@ -441,7 +441,8 @@ static void LoadField(int32 vid, int index, int32 begin, int32 end,
 		}
 
 		if (VSread(vid, (uchar8 *)data.data(), nrecs, FULL_INTERLACE) < 0) {
-			throw InternalErr(__FILE__, __LINE__, "VSread error with the field: " + f.name + " (" + long_to_string(vid) + ").");
+                        string msg = "VSread error with the field: " + f.name + " (" + long_to_string(vid) + ").";
+			throw BESInternalError(msg,__FILE__, __LINE__);
 		}
 #if 0
 		if ((VSsetfields(vid, fieldname) < 0) || (VSread(vid, (uchar8 *) data,

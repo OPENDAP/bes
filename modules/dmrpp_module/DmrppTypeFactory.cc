@@ -244,7 +244,7 @@ DmrppTypeFactory::NewOpaque(const string &n) const
 D4Enum *
 DmrppTypeFactory::NewEnum(const string &name, Type type) const
 {
-	return new DmrppD4Enum(name, type);
+	return new DmrppD4Enum(name, type, d_dmz);
 }
 
 Array *

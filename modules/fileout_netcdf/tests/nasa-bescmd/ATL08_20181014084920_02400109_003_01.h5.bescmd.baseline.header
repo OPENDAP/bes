@@ -83,8 +83,8 @@ variables:
 
 group: orbit_info {
   dimensions:
-  	crossing_time = 1 ;
-  	sc_orient_time = 1 ;
+  	crossing_time = UNLIMITED ; // (1 currently)
+  	sc_orient_time = UNLIMITED ; // (1 currently)
   variables:
   	double crossing_time(crossing_time) ;
   		crossing_time:contentType = "referenceInformation" ;
@@ -149,6 +149,7 @@ group: orbit_info {
   		lan:valid_min = -180. ;
 
   // group attributes:
+  		:DODS_EXTRA.Unlimited_Dimension = "crossing_time\nsc_orient_time" ;
   		:Description = "Contains orbit information." ;
   		:data_rate = "Varies. Data are only provided when one of the stored values (besides time) changes." ;
   } // group orbit_info
@@ -548,7 +549,7 @@ group: gt1r {
 
   group: signal_photons {
     dimensions:
-    	delta_time = 1185 ;
+    	delta_time = UNLIMITED ; // (1185 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:description = "Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
@@ -588,14 +589,24 @@ group: gt1r {
     		ph_segment_id:units = "1" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters related to individual photons." ;
     		:data_rate = "Data are stored at the signal-photon classification rate." ;
     } // group signal_photons
 
   group: land_segments {
     dimensions:
-    	delta_time = 5 ;
+    	delta_time = UNLIMITED ; // (5 currently)
     variables:
+    	float longitude(delta_time) ;
+    		longitude:coordinates = "delta_time latitude" ;
+    		longitude:description = "Longitude of the center-most signal photon within each segment." ;
+    		longitude:long_name = "longitude" ;
+    		longitude:source = "Land ATBD section 2.4" ;
+    		longitude:standard_name = "longitude" ;
+    		longitude:units = "degrees" ;
+    		longitude:valid_max = 180.f ;
+    		longitude:valid_min = -180.f ;
     	float latitude(delta_time) ;
     		latitude:coordinates = "delta_time longitude" ;
     		latitude:description = "Latitude of the center-most signal photon within each segment." ;
@@ -612,15 +623,6 @@ group: gt1r {
     		delta_time:source = "Land ATBD section 2.4" ;
     		delta_time:standard_name = "time" ;
     		delta_time:units = "seconds since 2018-01-01" ;
-    	short rgt(delta_time) ;
-    		rgt:contentType = "referenceInformation" ;
-    		rgt:coordinates = "delta_time latitude longitude" ;
-    		rgt:description = "The reference ground track (RGT) is the track on the earth at which a specified unit vector within the observatory is pointed. Under nominal operating conditions, there will be no data collected along the RGT, as the RGT is spanned by GT3 and GT4.  During slews or off-pointing, it is possible that ground tracks may intersect the RGT. The ICESat-2 mission has 1387 RGTs." ;
-    		rgt:long_name = "reference ground track" ;
-    		rgt:source = "Operations" ;
-    		rgt:units = "1" ;
-    		rgt:valid_max = 1387s ;
-    		rgt:valid_min = 1s ;
     	byte dem_flag(delta_time) ;
     		dem_flag:_FillValue = 127b ;
     		dem_flag:contentType = "referenceInformation" ;
@@ -711,15 +713,6 @@ group: gt1r {
     		psf_flag:units = "1" ;
     		psf_flag:valid_max = 1b ;
     		psf_flag:valid_min = 0b ;
-    	float longitude(delta_time) ;
-    		longitude:coordinates = "delta_time latitude" ;
-    		longitude:description = "Longitude of the center-most signal photon within each segment." ;
-    		longitude:long_name = "longitude" ;
-    		longitude:source = "Land ATBD section 2.4" ;
-    		longitude:standard_name = "longitude" ;
-    		longitude:units = "degrees" ;
-    		longitude:valid_max = 180.f ;
-    		longitude:valid_min = -180.f ;
     	int segment_watermask(delta_time) ;
     		segment_watermask:_FillValue = 255 ;
     		segment_watermask:coordinates = "delta_time latitude longitude" ;
@@ -731,6 +724,13 @@ group: gt1r {
     		segment_watermask:units = "1" ;
     		segment_watermask:valid_max = 1 ;
     		segment_watermask:valid_min = 0 ;
+    	double delta_time_end(delta_time) ;
+    		delta_time_end:contentType = "referenceInformation" ;
+    		delta_time_end:coordinates = "delta_time latitude longitude" ;
+    		delta_time_end:description = "Time of the last photon contained within the data segment, in seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
+    		delta_time_end:long_name = "delta time end" ;
+    		delta_time_end:source = "Derived (gps_seconds-gps_sec_offset)" ;
+    		delta_time_end:units = "seconds since 2018-01-01" ;
     	int segment_id_end(delta_time) ;
     		segment_id_end:contentType = "referenceInformation" ;
     		segment_id_end:coordinates = "delta_time latitude longitude" ;
@@ -883,13 +883,15 @@ group: gt1r {
     		solar_elevation:long_name = "solar elevation" ;
     		solar_elevation:source = "ATL03g ATBD" ;
     		solar_elevation:units = "degrees" ;
-    	double delta_time_end(delta_time) ;
-    		delta_time_end:contentType = "referenceInformation" ;
-    		delta_time_end:coordinates = "delta_time latitude longitude" ;
-    		delta_time_end:description = "Time of the last photon contained within the data segment, in seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
-    		delta_time_end:long_name = "delta time end" ;
-    		delta_time_end:source = "Derived (gps_seconds-gps_sec_offset)" ;
-    		delta_time_end:units = "seconds since 2018-01-01" ;
+    	short rgt(delta_time) ;
+    		rgt:contentType = "referenceInformation" ;
+    		rgt:coordinates = "delta_time latitude longitude" ;
+    		rgt:description = "The reference ground track (RGT) is the track on the earth at which a specified unit vector within the observatory is pointed. Under nominal operating conditions, there will be no data collected along the RGT, as the RGT is spanned by GT3 and GT4.  During slews or off-pointing, it is possible that ground tracks may intersect the RGT. The ICESat-2 mission has 1387 RGTs." ;
+    		rgt:long_name = "reference ground track" ;
+    		rgt:source = "Operations" ;
+    		rgt:units = "1" ;
+    		rgt:valid_max = 1387s ;
+    		rgt:valid_min = 1s ;
     	byte cloud_fold_flag(delta_time) ;
     		cloud_fold_flag:coordinates = "delta_time latitude longitude" ;
     		cloud_fold_flag:description = "Flag that indicates this profile likely contains cloud signal folded down from above 15 km to the last 2-3 km of the profile. See ATL09 ATBD Table 3.9 for detailed flag value meanings." ;
@@ -942,6 +944,7 @@ group: gt1r {
     		h_dif_ref:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains data categorized as land at 100 meter intervals." ;
     		:data_rate = "Data are stored as aggregates of 100 meters." ;
 

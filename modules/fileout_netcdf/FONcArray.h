@@ -100,12 +100,12 @@ private:
     // if DAP4 dim. is defined
     bool d4_def_dim = false;
 
-#if 0
-    // direct io flag, used in the define mode,the default is false. It should be set to true when direct io is supported.
-    // TODO: This is for the temporary memory usage optimization. Once we can support the define() with or without dio for individual array.
-    //       This flag is not necessary and should be removed. KY 11/29/23
-    bool farray_dio_flag = false;
-#endif
+    // For Enum handling
+    bool d_is_dap4_enum = false;
+    nc_type d_fa_nc_enum_base_type = NC_NAT;
+    int d_fa_nc4_enum_type_id = 0;
+
+    std::vector<std::string>unlimited_dim_names;
 
 
     FONcDim * find_dim(const std::vector<std::string> &embed, const std::string &name, int64_t size, bool ignore_size = false);
@@ -114,15 +114,16 @@ private:
     void write_for_nc4_types(int ncid);
     void write_for_nc3_types(int ncid);
     void write_nc_variable(int ncid, nc_type var_type);
-    static bool equal_length(vector<string> &the_strings);
+
     void write_string_array(int ncid);
-    void write_equal_length_string_array(int ncid);
+    void write_enum_array(int ncid);
 
     void define_dio_filters(int ncid, int d_varid);
     void obtain_dio_filters_order(const string&,bool &,bool &, bool &, bool &, bool &) const;
     void allocate_dio_nc4_def_filters(int, int, bool ,bool , bool , bool , bool, const vector<unsigned int> &) const; 
     void write_direct_io_data(int, int);
 
+    bool is_unlimited_dim(const string &dim_name) const;
     FONcArray() = default;      // Used in some unit tests
     friend class FONcArrayTest;
 
@@ -139,6 +140,10 @@ public:
     std::string name() override;
 
     virtual libdap::Array *array() { return d_a; }
+    void set_nc4_enum_type_id(int enum_type_id) { d_fa_nc4_enum_type_id = enum_type_id;}
+    void set_nc4_enum_basetype (nc_type enum_basetype) { d_fa_nc_enum_base_type = enum_basetype;}
+    void set_enum_flag(bool is_enum) {d_is_dap4_enum = is_enum; }
+    void set_unlimited_dim_names(const std::vector<std::string> & u_dnames) { unlimited_dim_names = u_dnames;}
 
     virtual void dump(std::ostream &strm) const override;
 
@@ -153,18 +158,6 @@ public:
         return chunk_dim_size;
 
     }
-#endif
-    // The below line is not necessary. Still keep it here for the future use.
-    // KY 2021-05-25
-#if 0
-    virtual libdap::AttrType getAttrType(nc_type nct) override;
-#endif
-
-#if 0
-    // TODO: This is for the temporary memory usage optimization. Once we can support the define() with or without dio for individual array.
-    //       The following methods are  not necessary and should be removed. KY 11/29/23
-    bool get_dio_flag() const {return farray_dio_flag; }
-    void set_dio_flag(bool dio_flag_value = true) { farray_dio_flag = dio_flag_value; }
 #endif
 
     static std::vector<FONcDim *> Dimensions;

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="compound_group_same_structure_name.h5" dmrpp:href="data/compound_group_same_structure_name.h5" dmrpp:version="3.21.1">
+    <Structure name="DSC_memb_array">
+        <Int32 name="Orbit"/>
+        <Float32 name="Temperature">
+            <Dim size="3"/>
+        </Float32>
+        <Dim size="2"/>
+        <dmrpp:chunks fillValue="0" byteOrder="LE" structOffset="4 16">
+            <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="6896" nBytes="32" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+    </Structure>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2025-03-25T13:14:19Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/hyrax-1695/bes/modules/fileout_netcdf/data/compound_group_same_structure_name.h5 -r compound_group_same_structure_name.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+        </Attribute>
+    </Attribute>
+    <Group name="g">
+        <Structure name="DSC_memb_array">
+            <Int32 name="Orbit"/>
+            <Float32 name="Temperature">
+                <Dim size="3"/>
+            </Float32>
+            <Dim size="2"/>
+            <dmrpp:chunks fillValue="0" byteOrder="LE" structOffset="4 16">
+                <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="6928" nBytes="32" chunkPositionInArray="[0]"/>
+            </dmrpp:chunks>
+        </Structure>
+    </Group>
+</Dataset>

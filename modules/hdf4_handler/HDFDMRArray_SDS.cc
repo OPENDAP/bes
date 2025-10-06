@@ -14,7 +14,7 @@
 #include <iostream>
 #include <sstream>
 #include <libdap/debug.h>
-#include <libdap/InternalErr.h>
+#include <BESInternalError.h>
 #include <BESDebug.h>
 
 using namespace std;
@@ -43,9 +43,8 @@ HDFDMRArray_SDS::read ()
 
     int32 sdid = SDstart (const_cast < char *>(filename.c_str ()), DFACC_READ);
     if (sdid < 0) {
-        ostringstream eherr;
-        eherr << "File " << filename.c_str () << " cannot be open.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg =  "File " + filename + " cannot be open.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     BESDEBUG("h4","Coming to HDFDMRArray_SDS read "<<endl);
@@ -53,19 +52,16 @@ HDFDMRArray_SDS::read ()
     // Obtain the SDS index based on the input sds reference number.
     int32 sdsindex = SDreftoindex (sdid, sds_ref);
     if (sdsindex == -1) {
-        SDend(sdid);
-        ostringstream eherr;
-        eherr << "SDS index " << sdsindex << " is not right.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "SDS index " + to_string(sdsindex) + " is not right.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     // Obtain this SDS ID.
     int32 sdsid = SDselect (sdid, sdsindex);
     if (sdsid < 0) {
         SDend(sdid);
-        ostringstream eherr;
-        eherr << "SDselect failed.";
-        throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        string msg = "SDselect failed.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     vector<char>buf;
@@ -73,16 +69,15 @@ HDFDMRArray_SDS::read ()
 
     int32 r = SDreaddata (sdsid, offset.data(), step.data(), count.data(), buf.data());
     if (r != 0) {
-	    SDendaccess (sdsid);
-            SDend(sdid);
-	    ostringstream eherr;
-	    eherr << "SDreaddata failed";
-	    throw InternalErr (__FILE__, __LINE__, eherr.str ());
+        SDendaccess (sdsid);
+        SDend(sdid);
+        string msg = "SDreaddata failed.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
     }
 
     val2buf(buf.data());
     set_read_p(true);
-    SDendaccess (sdsid);
+    SDendaccess(sdsid);
     SDend(sdid);
     
     return true;

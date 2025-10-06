@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="vlen_dim.h5">
+    <Dimension name="dim" size="3"/>
+    <Dimension name="var_vlen" size="3"/>
+    <Int32 name="var">
+        <Dim name="/dim"/>
+        <Dim name="/var_vlen"/>
+        <Attribute name="orig_datatype" type="String">
+            <Value>VLEN</Value>
+        </Attribute>
+        <Attribute name="vlen_description" type="String">
+            <Value>The original variable-length array data is stored as the regular array data that has an extra dimension. The data gap is filled with 0. The actual length of each original variable-length element is stored in another array. The variable name of this array is var_vlen_index.</Value>
+        </Attribute>
+    </Int32>
+    <Int32 name="var_vlen_index">
+        <Dim name="/dim"/>
+        <Attribute name="orig_datatype" type="String">
+            <Value>VLEN_INDEX</Value>
+        </Attribute>
+    </Int32>
+</Dataset>

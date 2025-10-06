@@ -4,7 +4,8 @@
   <bes:setContext name="dap_explicit_containers">no</bes:setContext>
   <bes:setContext name="errors">xml</bes:setContext>
   <bes:setContext name="max_response_size">0</bes:setContext>
-  
+  <bes:setContext name="dap4_checksums">true</bes:setContext>
+
   <bes:setContainer name="c" space="catalog">/data/s3/AIRS.2015.12.30.L3.RetStd_IR001.v6.0.31.0.G16116184203.nc.h5.dmrpp</bes:setContainer>
   
   <!-- GPHeight_MW_A_sdev is 24 x 180 x 360 -->

@@ -267,7 +267,7 @@ public:
 
     /// @brief Use this when the number of chunks is needed
     /// @return the number of Chunk objects for this variable
-    virtual size_t get_chunks_size() const { return d_chunks.size(); }
+    virtual size_t get_chunk_count() const { return d_chunks.size(); }
 
     /// @brief The chunk dimension sizes held in a const vector
     /// @return A reference to a const vector of chunk dimension sizes
@@ -339,6 +339,7 @@ public:
 
     virtual void ingest_byte_order(const std::string &byte_order_string);
     virtual std::string get_byte_order() const { return d_byte_order; }
+    virtual void set_byte_order(const std::string &byte_order_string)  { d_byte_order = byte_order_string; }
 
     // There are two main versions of add_chunk: One that takes a size and offset
     // and one that takes a fill value. However, for each of those, there are versions

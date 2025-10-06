@@ -38,7 +38,8 @@
 #include "DmrppModule.h"
 #include "DmrppRequestHandler.h"
 
-#include "writer/FODmrppTransmitter.h"
+#include "ngap_container/NgapOwnedContainerStorage.h"
+#include "dmrpp_transmitter/ReturnAsDmrppTransmitter.h"
 
 #define RETURNAS_DMRPP "dmrpp"
 
@@ -69,11 +70,12 @@ void DmrppModule::initialize(const string &modname)
         BESContainerStorageList::TheList()->add_persistence(csc);
     }
 
-    /*BESDEBUG(modname, "    adding " << modname << " dmrpp-ngap container storage" << endl);
-    BESContainerStorageList::TheList()->add_persistence(new NgapBuildDmrppContainerStorage(modname));*/
+    /*BESDEBUG(modname, "    adding " << modname << " dmrpp-ngap container storage" << endl); */
+
+    BESContainerStorageList::TheList()->add_persistence(new ngap::NgapOwnedContainerStorage("ngap"));
 
     // This part of the handler sets up transmitters that return DMRPP responses
-    BESReturnManager::TheManager()->add_transmitter(RETURNAS_DMRPP, new FODmrppTransmitter());
+    BESReturnManager::TheManager()->add_transmitter(RETURNAS_DMRPP, new ReturnAsDmrppTransmitter());
     BESServiceRegistry::TheRegistry()->add_format(OPENDAP_SERVICE, DAP4DATA_SERVICE, RETURNAS_DMRPP);
 
     BESDEBUG(modname, prolog << "Done Initializing DMR++ Reader Module " << modname << endl);
@@ -83,8 +85,12 @@ void DmrppModule::terminate(const string &modname)
 {
     BESDEBUG(modname, prolog << "Cleaning DMR++ Reader Module " << modname << endl);
 
+    BESReturnManager::TheManager()->del_transmitter(RETURNAS_DMRPP);
+
     BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler(modname);
     delete rh;
+
+    BESContainerStorageList::TheList()->deref_persistence(modname);
 
     BESContainerStorageList::TheList()->deref_persistence(DAP_CATALOG);
 

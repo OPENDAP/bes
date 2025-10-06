@@ -309,7 +309,7 @@ static void unset_error_buffer(CURL *ceh) {
  *
  * @note used only by init() below. jhrg 3/7/23
  *
- * @param curl The cURL easy handle to configure.
+ * @param ceh The cURL easy handle to configure.
  * @param target_url The url used to configure the proxy
  * @return
  */
@@ -632,12 +632,25 @@ static string get_effective_url(CURL *ceh, const string &requested_url) {
     return effective_url;
 }
 
+
+/**
+ * @brief A helper function for filter_aws_url()
+ * @param kvp_string The string to be evaluated and possibly added to the vector
+ * @param kvp A vector of strings to hold the kvp strings that are not obviously AWS things.
+ */
+void add_if_not_aws(const string &kvp_string, std::vector<std::string> &kvp) {
+    if (kvp_string.find("X-Amz-") == string::npos) {
+        kvp.push_back(kvp_string);
+    }
+}
+
+
 // https://<<host>>>/<<path>>?A-userid=jhrg&amp;X-Amz-Algorithm=AWS4-HMAC-SHA256&amp;X-Amz-Credential=...;
 // X-Amz-Date=20230417T193403Z&amp;X-Amz-Expires=3467&amp;X-Amz-Security-Token=...
 /**
  * @brief Remove AWS tokens from the URL
  * This function will look for the first ampersand and remove everything after it. Then
- * it will look any thing with an X-Amz- prefix if that is found it will remove the whole
+ * it will look anything with an X-Amz- prefix if that is found it will remove the whole
  * query string. This code should only be called if an error is being reported, so high
  * performance is not required.
  * @note Public only to enable testing.
@@ -645,18 +658,49 @@ static string get_effective_url(CURL *ceh, const string &requested_url) {
  * @return The URL with the tokens removed
  */
 string filter_aws_url(const string &eff_url) {
-    // It seems unlikely that the X-Amz prefix will be in the first part of the query string
-    // and the first part will likely be useful for the error message, so looking for the first
-    // '&' is a good start.
-    auto pos = eff_url.find('&');
-    string filtered_url = eff_url.substr(0, pos);
-    // Check to make sure that the X-Amz prefix is not in the first part of the query string
-    if (filtered_url.find("X-Amz-") == string::npos) {
-        return filtered_url;
-    } else {
-        pos = filtered_url.find('?');
-        return filtered_url.substr(0, pos);
+
+    std::vector<std::string> kvp;
+    string filtered_url = eff_url;
+    size_t start = 0;
+    auto position = eff_url.find('?');
+
+    if (position != string::npos) {
+        constexpr char delimiter = '&';
+        // We found a '?' which indicates that there may be a query string.
+        start = position + 1;
+
+        // Stash the URl's domain name and path for reconstruction...
+        filtered_url = eff_url.substr(0, position);
+
+        // Find the first delimiter in the query_string
+        position  = eff_url.find(delimiter, start);
+
+        while (position != std::string::npos) {
+
+            // Find the current kvp record and add it (or not if it's an AWS thing) to the kvp vector
+            add_if_not_aws(eff_url.substr(start, position - start), kvp);
+
+            // Start at the beginning of the next field (if there is one)
+            start = position + 1;
+            position = eff_url.find(delimiter, start);
+        }
+        // Handle any remaining chars in the query, add them (or not if they're an AWS thing) to the kvp vector
+        add_if_not_aws(eff_url.substr(start, position - start), kvp);
+
+        // Now rebuild the URL, but without the AWS stuff.
+        bool first = true;
+        for (const auto &kvp_str:kvp) {
+            if (!first) {
+                filtered_url += delimiter;
+            }
+            else {
+                filtered_url += '?';
+            }
+            filtered_url += kvp_str;
+            first = false;
+        }
     }
+    return filtered_url;
 }
 
 /**
@@ -706,18 +750,18 @@ bool is_retryable(const string &target_url) {
  *  - CURLE_SSL_CONNECT_ERROR
  *  - CURLE_SSL_CACERT_BADFILE
  *  - CURLE_GOT_NOTHING
- *  And for these values of curl_code the function returns false.
+ *  For these values of curl_code the function returns false.
  *
  *  The function returns success iff curl_code == CURLE_OK.
  *
- *  If the curl_code is another value a BESInternalError is thrown.
+ *  If the curl_code is another value, a BESInternalError is thrown.
  *
  * @param eff_req_url The requested URL - This should be the 'effective URL'.
  * @param curl_code The CURLcode value to evaluate.
  * @param error_buffer The CURLOPT_ERRORBUFFER used in the request.
  * @param attempt The number of attempts on the url that this request represents.
  *
- * @return True if the curl_easy_perform was successful, false if not but the request may be retried.
+ * @return True if the curl_easy_perform was successful, false if not, but the request may be retried.
  * @throws BESInternalError When the curl_code is an error that should not be retried.
  */
 static bool eval_curl_easy_perform_code(
@@ -1275,7 +1319,7 @@ bool http_head(const string &target_url, long &http_code) {
  *
  * @param target_url The URL to dereference.
  * @param buf The string into which to put the response. New data will be
- * appended to this string. In most cases this should be an empty string.
+ * appended to this string.
  * @exception Throws when libcurl encounters a problem.
  */
 void http_get(const string &target_url, string &buf) {
@@ -1332,8 +1376,6 @@ void http_get(const string &target_url, string &buf) {
             curl_easy_cleanup(ceh);
             BESDEBUG(MODULE, prolog << "Called curl_easy_cleanup()." << endl);
         }
-
-        buf.push_back('\0');    // add a trailing null byte
     }
     catch (...) {
         curl_slist_free_all(request_headers);
@@ -1887,6 +1929,7 @@ std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http:
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
 
+    BES_PROFILE_TIMING("Request redirect url - " + origin_url->get_url_no_query());
     std::shared_ptr<http::EffectiveUrl> redirect_url;
 
     unsigned int attempt = 0;

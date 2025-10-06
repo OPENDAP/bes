@@ -30,6 +30,7 @@
 #include "BESInternalError.h"
 #include "BESDebug.h"
 
+#include "BESStopWatch.h"
 #include "DmrppRequestHandler.h"
 #include "CurlHandlePool.h"
 #include "DmrppArray.h"
@@ -552,7 +553,10 @@ bool SuperChunk::add_chunk_non_contiguous(const std::shared_ptr<Chunk> candidate
     if(d_chunks.empty()){
         d_chunks.push_back(candidate_chunk);
         d_offset = candidate_chunk->get_offset();
-        d_size = buffer_end_position-d_offset;
+        if(candidate_chunk->get_uses_fill_value())
+            d_size = candidate_chunk->get_size();
+        else 
+            d_size = buffer_end_position-d_offset;
 
         BESDEBUG(SUPER_CHUNK_MODULE, prolog << "add_chunk_non d_size: "<<d_size<< endl);
         BESDEBUG(SUPER_CHUNK_MODULE, prolog << "add_chunk_non d_offset: "<<d_offset<< endl);
@@ -712,6 +716,8 @@ void SuperChunk::retrieve_data() {
         return;
     }
 
+    BES_PROFILE_TIMING(string("Request SuperChunk data - ") + (get_data_url() ? get_data_url()->get_url_no_query() : "") + string(" - ") + ::to_string(get_size()) + string(" byte(s) - ") + ::to_string(get_chunk_count()) + " chunk(s)");
+
     // TODO Move this into read_aggregate_bytes(), move map_chunks_to_buffer()
     //  after read_aggregate_bytes() and modify map_chunks_to_buffer() to set
     //  the chunk size and read state so the last for loop can be removed.
@@ -763,6 +769,8 @@ void SuperChunk::retrieve_data_dio() {
         return;
     }
 
+    BES_PROFILE_TIMING(string("Request SuperChunk data dio - ") + (get_data_url() ? get_data_url()->get_url_no_query() : "") + string(" - ") + ::to_string(get_size()) + string(" byte(s) - ") + ::to_string(get_chunk_count()) + " chunk(s)");
+
     if (!d_read_buffer) {
         // Allocate memory for SuperChunk receive buffer.
         // release memory in destructor.
@@ -801,6 +809,8 @@ void SuperChunk::process_child_chunks() {
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
     retrieve_data();
 
+    BES_PROFILE_TIMING(string("Handle SuperChunk data constrained - ") + (get_data_url() ? get_data_url()->get_url_no_query() : "") + string(" - ") + ::to_string(get_size()) + string(" byte(s) - ") + ::to_string(get_chunk_count()) + " chunk(s) - Using multithreading: " + (DmrppRequestHandler::d_use_compute_threads ? "true" : "false"));
+
     vector<unsigned long long> constrained_array_shape = d_parent_array->get_shape(true);
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "d_use_compute_threads: " << (DmrppRequestHandler::d_use_compute_threads ? "true" : "false") << endl);
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << endl);
@@ -837,6 +847,8 @@ void SuperChunk::process_child_chunks_unconstrained() {
 
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
     retrieve_data();
+
+    BES_PROFILE_TIMING(string("Handle SuperChunk data unconstrained - ") + (get_data_url() ? get_data_url()->get_url_no_query() : "") + string(" - ") + ::to_string(get_size()) + string(" byte(s) - ") + ::to_string(get_chunk_count()) + " chunk(s) - Using multithreading: " + (DmrppRequestHandler::d_use_compute_threads ? "true" : "false"));
 
     // The size in element of each of the array's dimensions
     const vector<unsigned long long> array_shape = d_parent_array->get_shape(true);
@@ -901,6 +913,8 @@ void SuperChunk::read_unconstrained_dio() {
 
     //Retrieve data for the direct IO case.
     retrieve_data_dio();
+
+    BES_PROFILE_TIMING(string("Handle SuperChunk data dio - ") + (get_data_url() ? get_data_url()->get_url_no_query() : "") + string(" - ") + ::to_string(get_size()) + string(" byte(s) - ") + ::to_string(get_chunk_count()) + " chunk(s) - Using multithreading: " + (DmrppRequestHandler::d_use_compute_threads ? "true" : "false"));
 
     // The size in element of each of the array's dimensions
     const vector<unsigned long long> array_shape = d_parent_array->get_shape(true);

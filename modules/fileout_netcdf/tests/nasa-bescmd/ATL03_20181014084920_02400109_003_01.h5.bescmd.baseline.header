@@ -74,8 +74,8 @@ variables:
 
 group: orbit_info {
   dimensions:
-  	crossing_time = 1 ;
-  	sc_orient_time = 1 ;
+  	crossing_time = UNLIMITED ; // (1 currently)
+  	sc_orient_time = UNLIMITED ; // (1 currently)
   variables:
   	double crossing_time(crossing_time) ;
   		crossing_time:contentType = "referenceInformation" ;
@@ -140,6 +140,7 @@ group: orbit_info {
   		lan:valid_min = -180. ;
 
   // group attributes:
+  		:DODS_EXTRA.Unlimited_Dimension = "crossing_time\nsc_orient_time" ;
   		:Description = "Contains data that are common among all beams for the granule.  These parameters are constants for a given granule." ;
   		:data_rate = "These parameters are constant for a given granule." ;
   } // group orbit_info
@@ -617,7 +618,7 @@ group: gt1r {
 
   group: bckgrd_atlas {
     dimensions:
-    	delta_time = 71814 ;
+    	delta_time = UNLIMITED ; // (71814 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:description = "Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
@@ -699,13 +700,23 @@ group: gt1r {
     		bckgrd_counts:units = "counts" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains data related to the 50-shot background count, including telemetry and range windows." ;
     } // group bckgrd_atlas
 
   group: geolocation {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
+    	double reference_photon_lon(delta_time) ;
+    		reference_photon_lon:coordinates = "delta_time" ;
+    		reference_photon_lon:description = "Longitude of each reference photon. Computed from the ECF Cartesian coordinates of the bounce point. In the case of no photons within the segment (segment_ph_cnt=0), the coordinates are the midpoint of the geolocation segment on the reference ground track." ;
+    		reference_photon_lon:long_name = "Segment Longitude" ;
+    		reference_photon_lon:source = "ATL03G ATBD, Section 3.4" ;
+    		reference_photon_lon:standard_name = "longitude" ;
+    		reference_photon_lon:units = "degrees_east" ;
+    		reference_photon_lon:valid_max = 180. ;
+    		reference_photon_lon:valid_min = -180. ;
     	double reference_photon_lat(delta_time) ;
     		reference_photon_lat:coordinates = "delta_time" ;
     		reference_photon_lat:description = "Latitude of each reference photon. Computed from the ECF Cartesian coordinates of the bounce point. In the case of no photons within the segment (segment_ph_cnt=0), the coordinates are the midpoint of the geolocation segment on the reference ground track." ;
@@ -723,13 +734,6 @@ group: gt1r {
     		delta_time:source = "Derived" ;
     		delta_time:standard_name = "time" ;
     		delta_time:units = "seconds since 2018-01-01" ;
-    	float range_bias_corr(delta_time) ;
-    		range_bias_corr:_FillValue = 3.402823e+38f ;
-    		range_bias_corr:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
-    		range_bias_corr:description = "The range_bias estimated from geolocation analysis." ;
-    		range_bias_corr:long_name = "range bias correction" ;
-    		range_bias_corr:source = "ATL03G ATBD, Section 3.6" ;
-    		range_bias_corr:units = "meters" ;
     	float neutat_delay_derivative(delta_time) ;
     		neutat_delay_derivative:_FillValue = 3.402823e+38f ;
     		neutat_delay_derivative:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -737,15 +741,13 @@ group: gt1r {
     		neutat_delay_derivative:long_name = "(Neutral Atmosphere delay)/dh" ;
     		neutat_delay_derivative:source = "ATL03a ATBD" ;
     		neutat_delay_derivative:units = "meters/meters" ;
-    	double reference_photon_lon(delta_time) ;
-    		reference_photon_lon:coordinates = "delta_time" ;
-    		reference_photon_lon:description = "Longitude of each reference photon. Computed from the ECF Cartesian coordinates of the bounce point. In the case of no photons within the segment (segment_ph_cnt=0), the coordinates are the midpoint of the geolocation segment on the reference ground track." ;
-    		reference_photon_lon:long_name = "Segment Longitude" ;
-    		reference_photon_lon:source = "ATL03G ATBD, Section 3.4" ;
-    		reference_photon_lon:standard_name = "longitude" ;
-    		reference_photon_lon:units = "degrees_east" ;
-    		reference_photon_lon:valid_max = 180. ;
-    		reference_photon_lon:valid_min = -180. ;
+    	int segment_ph_cnt(delta_time) ;
+    		segment_ph_cnt:_FillValue = 0 ;
+    		segment_ph_cnt:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
+    		segment_ph_cnt:description = "Number of photons in a given along-track segment. In the case of no photons within the segment (segment_ph_cnt=0), most other parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
+    		segment_ph_cnt:long_name = "Number of photons" ;
+    		segment_ph_cnt:source = "Derived" ;
+    		segment_ph_cnt:units = "counts" ;
     	float sigma_across(delta_time) ;
     		sigma_across:_FillValue = 3.402823e+38f ;
     		sigma_across:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -904,13 +906,12 @@ group: gt1r {
     		near_sat_fract:units = "1" ;
     		near_sat_fract:valid_max = 1.f ;
     		near_sat_fract:valid_min = 0.f ;
-    	int segment_ph_cnt(delta_time) ;
-    		segment_ph_cnt:_FillValue = 0 ;
-    		segment_ph_cnt:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
-    		segment_ph_cnt:description = "Number of photons in a given along-track segment. In the case of no photons within the segment (segment_ph_cnt=0), most other parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
-    		segment_ph_cnt:long_name = "Number of photons" ;
-    		segment_ph_cnt:source = "Derived" ;
-    		segment_ph_cnt:units = "counts" ;
+    	double segment_length(delta_time) ;
+    		segment_length:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
+    		segment_length:description = "The along-track length of the along-track segment.  Nominally these are 20m, but they vary from 19.8m to 20.2m." ;
+    		segment_length:long_name = "along-track segment length" ;
+    		segment_length:source = "ATL03 ATBD, Section 3.1" ;
+    		segment_length:units = "meters" ;
     	float solar_elevation(delta_time) ;
     		solar_elevation:_FillValue = 3.402823e+38f ;
     		solar_elevation:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -925,12 +926,13 @@ group: gt1r {
     		bounce_time_offset:long_name = "ground bounce time offset" ;
     		bounce_time_offset:source = "ATL03 ATBD, Section 3.3" ;
     		bounce_time_offset:units = "seconds" ;
-    	double segment_length(delta_time) ;
-    		segment_length:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
-    		segment_length:description = "The along-track length of the along-track segment.  Nominally these are 20m, but they vary from 19.8m to 20.2m." ;
-    		segment_length:long_name = "along-track segment length" ;
-    		segment_length:source = "ATL03 ATBD, Section 3.1" ;
-    		segment_length:units = "meters" ;
+    	float range_bias_corr(delta_time) ;
+    		range_bias_corr:_FillValue = 3.402823e+38f ;
+    		range_bias_corr:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
+    		range_bias_corr:description = "The range_bias estimated from geolocation analysis." ;
+    		range_bias_corr:long_name = "range bias correction" ;
+    		range_bias_corr:source = "ATL03G ATBD, Section 3.6" ;
+    		range_bias_corr:units = "meters" ;
     	int reference_photon_index(delta_time) ;
     		reference_photon_index:_FillValue = 0 ;
     		reference_photon_index:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -960,13 +962,14 @@ group: gt1r {
     		neutat_delay_total:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters related to geolocation.  The rate of all of these parameters is at the rate corresponding to the ICESat-2 Geolocation Along Track Segment interval (nominally 20 m along-track). In the case of no photons within the segment (segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "Data within this group are stored at the ICESat-2 20m segment rate." ;
     } // group geolocation
 
   group: geophys_corr {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:contentType = "referenceInformation" ;
@@ -1054,6 +1057,7 @@ group: gt1r {
     		tide_pole:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters used to correct photon heights for selected geophysical effects. Additional geophysical parameters (dac and tide_ocean) are not applied and provided for informational purposes only. All parameters are posted at the same interval as the ICESat-2 Geolocation Along-Track Segment interval (nominally 20m along-track). In the case of no photons within the segment (../geolocation/segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "These parameters are stored at the ICESat-2 Geolocation Along Track Segment rate (nominally every 20 m along-track)." ;
     } // group geophys_corr
@@ -1066,7 +1070,7 @@ group: gt1r {
 
     group: land {
       dimensions:
-      	delta_time = 12281 ;
+      	delta_time = UNLIMITED ; // (12281 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -1105,12 +1109,13 @@ group: gt1r {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group land
 
     group: ocean {
       dimensions:
-      	delta_time = 39472 ;
+      	delta_time = UNLIMITED ; // (39472 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -1149,22 +1154,24 @@ group: gt1r {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group ocean
     } // group signal_find_output
 
   group: heights {
     dimensions:
-    	delta_time = 357823 ;
+    	delta_time = UNLIMITED ; // (357823 currently)
     variables:
-    	double delta_time(delta_time) ;
-    		delta_time:contentType = "referenceInformation" ;
-    		delta_time:coordinates = "lat_ph lon_ph" ;
-    		delta_time:description = "The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
-    		delta_time:long_name = "Elapsed GPS seconds" ;
-    		delta_time:source = "Operations" ;
-    		delta_time:standard_name = "time" ;
-    		delta_time:units = "seconds since 2018-01-01" ;
+    	double lon_ph(delta_time) ;
+    		lon_ph:coordinates = "delta_time lat_ph" ;
+    		lon_ph:description = "Longitude of each received photon. Computed from the ECF Cartesian coordinates of the bounce point." ;
+    		lon_ph:long_name = "Longitude" ;
+    		lon_ph:source = "ATL03g ATBD, Section 3.4" ;
+    		lon_ph:standard_name = "longitude" ;
+    		lon_ph:units = "degrees_east" ;
+    		lon_ph:valid_max = 180. ;
+    		lon_ph:valid_min = -180. ;
     	double lat_ph(delta_time) ;
     		lat_ph:coordinates = "delta_time lon_ph" ;
     		lat_ph:description = "Latitude of each received photon. Computed from the ECF Cartesian coordinates of the bounce point." ;
@@ -1174,12 +1181,14 @@ group: gt1r {
     		lat_ph:units = "degrees_north" ;
     		lat_ph:valid_max = 90. ;
     		lat_ph:valid_min = -90. ;
-    	float dist_ph_along(delta_time) ;
-    		dist_ph_along:coordinates = "delta_time lat_ph lon_ph" ;
-    		dist_ph_along:description = "Along-track distance in a segment projected to the ellipsoid of the received photon, based on the Along-Track Segment algorithm.  Total along track distance can be found by adding this value to the sum of segment lengths measured from the start of the most recent reference groundtrack." ;
-    		dist_ph_along:long_name = "Distance from equator crossing." ;
-    		dist_ph_along:source = "ATL03 ATBD, Section 3.1" ;
-    		dist_ph_along:units = "meters" ;
+    	double delta_time(delta_time) ;
+    		delta_time:contentType = "referenceInformation" ;
+    		delta_time:coordinates = "lat_ph lon_ph" ;
+    		delta_time:description = "The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
+    		delta_time:long_name = "Elapsed GPS seconds" ;
+    		delta_time:source = "Operations" ;
+    		delta_time:standard_name = "time" ;
+    		delta_time:units = "seconds since 2018-01-01" ;
     	byte signal_conf_ph(delta_time, ds_surf_type) ;
     		signal_conf_ph:contentType = "qualityInformation" ;
     		signal_conf_ph:coordinates = "delta_time lat_ph lon_ph" ;
@@ -1215,15 +1224,6 @@ group: gt1r {
     		ph_id_channel:units = "1" ;
     		ph_id_channel:valid_max = 120UB ;
     		ph_id_channel:valid_min = 1UB ;
-    	double lon_ph(delta_time) ;
-    		lon_ph:coordinates = "delta_time lat_ph" ;
-    		lon_ph:description = "Longitude of each received photon. Computed from the ECF Cartesian coordinates of the bounce point." ;
-    		lon_ph:long_name = "Longitude" ;
-    		lon_ph:source = "ATL03g ATBD, Section 3.4" ;
-    		lon_ph:standard_name = "longitude" ;
-    		lon_ph:units = "degrees_east" ;
-    		lon_ph:valid_max = 180. ;
-    		lon_ph:valid_min = -180. ;
     	byte ph_id_count(delta_time) ;
     		ph_id_count:contentType = "referenceInformation" ;
     		ph_id_count:coordinates = "delta_time lat_ph lon_ph" ;
@@ -1231,6 +1231,12 @@ group: gt1r {
     		ph_id_count:long_name = "photon event counter" ;
     		ph_id_count:source = "Derived as part of Photon ID" ;
     		ph_id_count:units = "counts" ;
+    	float dist_ph_along(delta_time) ;
+    		dist_ph_along:coordinates = "delta_time lat_ph lon_ph" ;
+    		dist_ph_along:description = "Along-track distance in a segment projected to the ellipsoid of the received photon, based on the Along-Track Segment algorithm.  Total along track distance can be found by adding this value to the sum of segment lengths measured from the start of the most recent reference groundtrack." ;
+    		dist_ph_along:long_name = "Distance from equator crossing." ;
+    		dist_ph_along:source = "ATL03 ATBD, Section 3.1" ;
+    		dist_ph_along:units = "meters" ;
     	uint pce_mframe_cnt(delta_time) ;
     		pce_mframe_cnt:contentType = "referenceInformation" ;
     		pce_mframe_cnt:coordinates = "delta_time lat_ph lon_ph" ;
@@ -1246,6 +1252,7 @@ group: gt1r {
     		dist_ph_across:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains arrays of the parameters for each received photon." ;
     		:data_rate = "Data are stored at the photon detection rate." ;
     } // group heights
@@ -1264,7 +1271,7 @@ group: gt2r {
 
   group: bckgrd_atlas {
     dimensions:
-    	delta_time = 72243 ;
+    	delta_time = UNLIMITED ; // (72243 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:description = "Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
@@ -1346,13 +1353,23 @@ group: gt2r {
     		bckgrd_counts:units = "counts" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains data related to the 50-shot background count, including telemetry and range windows." ;
     } // group bckgrd_atlas
 
   group: geolocation {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
+    	double reference_photon_lon(delta_time) ;
+    		reference_photon_lon:coordinates = "delta_time" ;
+    		reference_photon_lon:description = "Longitude of each reference photon. Computed from the ECF Cartesian coordinates of the bounce point. In the case of no photons within the segment (segment_ph_cnt=0), the coordinates are the midpoint of the geolocation segment on the reference ground track." ;
+    		reference_photon_lon:long_name = "Segment Longitude" ;
+    		reference_photon_lon:source = "ATL03G ATBD, Section 3.4" ;
+    		reference_photon_lon:standard_name = "longitude" ;
+    		reference_photon_lon:units = "degrees_east" ;
+    		reference_photon_lon:valid_max = 180. ;
+    		reference_photon_lon:valid_min = -180. ;
     	double reference_photon_lat(delta_time) ;
     		reference_photon_lat:coordinates = "delta_time" ;
     		reference_photon_lat:description = "Latitude of each reference photon. Computed from the ECF Cartesian coordinates of the bounce point. In the case of no photons within the segment (segment_ph_cnt=0), the coordinates are the midpoint of the geolocation segment on the reference ground track." ;
@@ -1370,13 +1387,6 @@ group: gt2r {
     		delta_time:source = "Derived" ;
     		delta_time:standard_name = "time" ;
     		delta_time:units = "seconds since 2018-01-01" ;
-    	float range_bias_corr(delta_time) ;
-    		range_bias_corr:_FillValue = 3.402823e+38f ;
-    		range_bias_corr:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
-    		range_bias_corr:description = "The range_bias estimated from geolocation analysis." ;
-    		range_bias_corr:long_name = "range bias correction" ;
-    		range_bias_corr:source = "ATL03G ATBD, Section 3.6" ;
-    		range_bias_corr:units = "meters" ;
     	float neutat_delay_derivative(delta_time) ;
     		neutat_delay_derivative:_FillValue = 3.402823e+38f ;
     		neutat_delay_derivative:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -1384,15 +1394,13 @@ group: gt2r {
     		neutat_delay_derivative:long_name = "(Neutral Atmosphere delay)/dh" ;
     		neutat_delay_derivative:source = "ATL03a ATBD" ;
     		neutat_delay_derivative:units = "meters/meters" ;
-    	double reference_photon_lon(delta_time) ;
-    		reference_photon_lon:coordinates = "delta_time" ;
-    		reference_photon_lon:description = "Longitude of each reference photon. Computed from the ECF Cartesian coordinates of the bounce point. In the case of no photons within the segment (segment_ph_cnt=0), the coordinates are the midpoint of the geolocation segment on the reference ground track." ;
-    		reference_photon_lon:long_name = "Segment Longitude" ;
-    		reference_photon_lon:source = "ATL03G ATBD, Section 3.4" ;
-    		reference_photon_lon:standard_name = "longitude" ;
-    		reference_photon_lon:units = "degrees_east" ;
-    		reference_photon_lon:valid_max = 180. ;
-    		reference_photon_lon:valid_min = -180. ;
+    	int segment_ph_cnt(delta_time) ;
+    		segment_ph_cnt:_FillValue = 0 ;
+    		segment_ph_cnt:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
+    		segment_ph_cnt:description = "Number of photons in a given along-track segment. In the case of no photons within the segment (segment_ph_cnt=0), most other parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
+    		segment_ph_cnt:long_name = "Number of photons" ;
+    		segment_ph_cnt:source = "Derived" ;
+    		segment_ph_cnt:units = "counts" ;
     	float sigma_across(delta_time) ;
     		sigma_across:_FillValue = 3.402823e+38f ;
     		sigma_across:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -1551,13 +1559,12 @@ group: gt2r {
     		near_sat_fract:units = "1" ;
     		near_sat_fract:valid_max = 1.f ;
     		near_sat_fract:valid_min = 0.f ;
-    	int segment_ph_cnt(delta_time) ;
-    		segment_ph_cnt:_FillValue = 0 ;
-    		segment_ph_cnt:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
-    		segment_ph_cnt:description = "Number of photons in a given along-track segment. In the case of no photons within the segment (segment_ph_cnt=0), most other parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
-    		segment_ph_cnt:long_name = "Number of photons" ;
-    		segment_ph_cnt:source = "Derived" ;
-    		segment_ph_cnt:units = "counts" ;
+    	double segment_length(delta_time) ;
+    		segment_length:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
+    		segment_length:description = "The along-track length of the along-track segment.  Nominally these are 20m, but they vary from 19.8m to 20.2m." ;
+    		segment_length:long_name = "along-track segment length" ;
+    		segment_length:source = "ATL03 ATBD, Section 3.1" ;
+    		segment_length:units = "meters" ;
     	float solar_elevation(delta_time) ;
     		solar_elevation:_FillValue = 3.402823e+38f ;
     		solar_elevation:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -1572,12 +1579,13 @@ group: gt2r {
     		bounce_time_offset:long_name = "ground bounce time offset" ;
     		bounce_time_offset:source = "ATL03 ATBD, Section 3.3" ;
     		bounce_time_offset:units = "seconds" ;
-    	double segment_length(delta_time) ;
-    		segment_length:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
-    		segment_length:description = "The along-track length of the along-track segment.  Nominally these are 20m, but they vary from 19.8m to 20.2m." ;
-    		segment_length:long_name = "along-track segment length" ;
-    		segment_length:source = "ATL03 ATBD, Section 3.1" ;
-    		segment_length:units = "meters" ;
+    	float range_bias_corr(delta_time) ;
+    		range_bias_corr:_FillValue = 3.402823e+38f ;
+    		range_bias_corr:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
+    		range_bias_corr:description = "The range_bias estimated from geolocation analysis." ;
+    		range_bias_corr:long_name = "range bias correction" ;
+    		range_bias_corr:source = "ATL03G ATBD, Section 3.6" ;
+    		range_bias_corr:units = "meters" ;
     	int reference_photon_index(delta_time) ;
     		reference_photon_index:_FillValue = 0 ;
     		reference_photon_index:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -1607,13 +1615,14 @@ group: gt2r {
     		neutat_delay_total:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters related to geolocation.  The rate of all of these parameters is at the rate corresponding to the ICESat-2 Geolocation Along Track Segment interval (nominally 20 m along-track). In the case of no photons within the segment (segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "Data within this group are stored at the ICESat-2 20m segment rate." ;
     } // group geolocation
 
   group: geophys_corr {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:contentType = "referenceInformation" ;
@@ -1701,6 +1710,7 @@ group: gt2r {
     		tide_pole:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters used to correct photon heights for selected geophysical effects. Additional geophysical parameters (dac and tide_ocean) are not applied and provided for informational purposes only. All parameters are posted at the same interval as the ICESat-2 Geolocation Along-Track Segment interval (nominally 20m along-track). In the case of no photons within the segment (../geolocation/segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "These parameters are stored at the ICESat-2 Geolocation Along Track Segment rate (nominally every 20 m along-track)." ;
     } // group geophys_corr
@@ -1713,7 +1723,7 @@ group: gt2r {
 
     group: land {
       dimensions:
-      	delta_time = 12302 ;
+      	delta_time = UNLIMITED ; // (12302 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -1752,12 +1762,13 @@ group: gt2r {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group land
 
     group: ocean {
       dimensions:
-      	delta_time = 41711 ;
+      	delta_time = UNLIMITED ; // (41711 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -1796,22 +1807,24 @@ group: gt2r {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group ocean
     } // group signal_find_output
 
   group: heights {
     dimensions:
-    	delta_time = 307488 ;
+    	delta_time = UNLIMITED ; // (307488 currently)
     variables:
-    	double delta_time(delta_time) ;
-    		delta_time:contentType = "referenceInformation" ;
-    		delta_time:coordinates = "lat_ph lon_ph" ;
-    		delta_time:description = "The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
-    		delta_time:long_name = "Elapsed GPS seconds" ;
-    		delta_time:source = "Operations" ;
-    		delta_time:standard_name = "time" ;
-    		delta_time:units = "seconds since 2018-01-01" ;
+    	double lon_ph(delta_time) ;
+    		lon_ph:coordinates = "delta_time lat_ph" ;
+    		lon_ph:description = "Longitude of each received photon. Computed from the ECF Cartesian coordinates of the bounce point." ;
+    		lon_ph:long_name = "Longitude" ;
+    		lon_ph:source = "ATL03g ATBD, Section 3.4" ;
+    		lon_ph:standard_name = "longitude" ;
+    		lon_ph:units = "degrees_east" ;
+    		lon_ph:valid_max = 180. ;
+    		lon_ph:valid_min = -180. ;
     	double lat_ph(delta_time) ;
     		lat_ph:coordinates = "delta_time lon_ph" ;
     		lat_ph:description = "Latitude of each received photon. Computed from the ECF Cartesian coordinates of the bounce point." ;
@@ -1821,12 +1834,14 @@ group: gt2r {
     		lat_ph:units = "degrees_north" ;
     		lat_ph:valid_max = 90. ;
     		lat_ph:valid_min = -90. ;
-    	float dist_ph_along(delta_time) ;
-    		dist_ph_along:coordinates = "delta_time lat_ph lon_ph" ;
-    		dist_ph_along:description = "Along-track distance in a segment projected to the ellipsoid of the received photon, based on the Along-Track Segment algorithm.  Total along track distance can be found by adding this value to the sum of segment lengths measured from the start of the most recent reference groundtrack." ;
-    		dist_ph_along:long_name = "Distance from equator crossing." ;
-    		dist_ph_along:source = "ATL03 ATBD, Section 3.1" ;
-    		dist_ph_along:units = "meters" ;
+    	double delta_time(delta_time) ;
+    		delta_time:contentType = "referenceInformation" ;
+    		delta_time:coordinates = "lat_ph lon_ph" ;
+    		delta_time:description = "The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
+    		delta_time:long_name = "Elapsed GPS seconds" ;
+    		delta_time:source = "Operations" ;
+    		delta_time:standard_name = "time" ;
+    		delta_time:units = "seconds since 2018-01-01" ;
     	byte signal_conf_ph(delta_time, ds_surf_type) ;
     		signal_conf_ph:contentType = "qualityInformation" ;
     		signal_conf_ph:coordinates = "delta_time lat_ph lon_ph" ;
@@ -1862,15 +1877,6 @@ group: gt2r {
     		ph_id_channel:units = "1" ;
     		ph_id_channel:valid_max = 120UB ;
     		ph_id_channel:valid_min = 1UB ;
-    	double lon_ph(delta_time) ;
-    		lon_ph:coordinates = "delta_time lat_ph" ;
-    		lon_ph:description = "Longitude of each received photon. Computed from the ECF Cartesian coordinates of the bounce point." ;
-    		lon_ph:long_name = "Longitude" ;
-    		lon_ph:source = "ATL03g ATBD, Section 3.4" ;
-    		lon_ph:standard_name = "longitude" ;
-    		lon_ph:units = "degrees_east" ;
-    		lon_ph:valid_max = 180. ;
-    		lon_ph:valid_min = -180. ;
     	byte ph_id_count(delta_time) ;
     		ph_id_count:contentType = "referenceInformation" ;
     		ph_id_count:coordinates = "delta_time lat_ph lon_ph" ;
@@ -1878,6 +1884,12 @@ group: gt2r {
     		ph_id_count:long_name = "photon event counter" ;
     		ph_id_count:source = "Derived as part of Photon ID" ;
     		ph_id_count:units = "counts" ;
+    	float dist_ph_along(delta_time) ;
+    		dist_ph_along:coordinates = "delta_time lat_ph lon_ph" ;
+    		dist_ph_along:description = "Along-track distance in a segment projected to the ellipsoid of the received photon, based on the Along-Track Segment algorithm.  Total along track distance can be found by adding this value to the sum of segment lengths measured from the start of the most recent reference groundtrack." ;
+    		dist_ph_along:long_name = "Distance from equator crossing." ;
+    		dist_ph_along:source = "ATL03 ATBD, Section 3.1" ;
+    		dist_ph_along:units = "meters" ;
     	uint pce_mframe_cnt(delta_time) ;
     		pce_mframe_cnt:contentType = "referenceInformation" ;
     		pce_mframe_cnt:coordinates = "delta_time lat_ph lon_ph" ;
@@ -1893,6 +1905,7 @@ group: gt2r {
     		dist_ph_across:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains arrays of the parameters for each received photon." ;
     		:data_rate = "Data are stored at the photon detection rate." ;
     } // group heights
@@ -1911,7 +1924,7 @@ group: gt1l {
 
   group: bckgrd_atlas {
     dimensions:
-    	delta_time = 2355 ;
+    	delta_time = UNLIMITED ; // (2355 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:description = "Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
@@ -1993,13 +2006,23 @@ group: gt1l {
     		bckgrd_counts:units = "counts" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains data related to the 50-shot background count, including telemetry and range windows." ;
     } // group bckgrd_atlas
 
   group: geolocation {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
+    	double reference_photon_lon(delta_time) ;
+    		reference_photon_lon:coordinates = "delta_time" ;
+    		reference_photon_lon:description = "Longitude of each reference photon. Computed from the ECF Cartesian coordinates of the bounce point. In the case of no photons within the segment (segment_ph_cnt=0), the coordinates are the midpoint of the geolocation segment on the reference ground track." ;
+    		reference_photon_lon:long_name = "Segment Longitude" ;
+    		reference_photon_lon:source = "ATL03G ATBD, Section 3.4" ;
+    		reference_photon_lon:standard_name = "longitude" ;
+    		reference_photon_lon:units = "degrees_east" ;
+    		reference_photon_lon:valid_max = 180. ;
+    		reference_photon_lon:valid_min = -180. ;
     	double reference_photon_lat(delta_time) ;
     		reference_photon_lat:coordinates = "delta_time" ;
     		reference_photon_lat:description = "Latitude of each reference photon. Computed from the ECF Cartesian coordinates of the bounce point. In the case of no photons within the segment (segment_ph_cnt=0), the coordinates are the midpoint of the geolocation segment on the reference ground track." ;
@@ -2017,13 +2040,6 @@ group: gt1l {
     		delta_time:source = "Derived" ;
     		delta_time:standard_name = "time" ;
     		delta_time:units = "seconds since 2018-01-01" ;
-    	float range_bias_corr(delta_time) ;
-    		range_bias_corr:_FillValue = 3.402823e+38f ;
-    		range_bias_corr:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
-    		range_bias_corr:description = "The range_bias estimated from geolocation analysis." ;
-    		range_bias_corr:long_name = "range bias correction" ;
-    		range_bias_corr:source = "ATL03G ATBD, Section 3.6" ;
-    		range_bias_corr:units = "meters" ;
     	float neutat_delay_derivative(delta_time) ;
     		neutat_delay_derivative:_FillValue = 3.402823e+38f ;
     		neutat_delay_derivative:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -2031,15 +2047,13 @@ group: gt1l {
     		neutat_delay_derivative:long_name = "(Neutral Atmosphere delay)/dh" ;
     		neutat_delay_derivative:source = "ATL03a ATBD" ;
     		neutat_delay_derivative:units = "meters/meters" ;
-    	double reference_photon_lon(delta_time) ;
-    		reference_photon_lon:coordinates = "delta_time" ;
-    		reference_photon_lon:description = "Longitude of each reference photon. Computed from the ECF Cartesian coordinates of the bounce point. In the case of no photons within the segment (segment_ph_cnt=0), the coordinates are the midpoint of the geolocation segment on the reference ground track." ;
-    		reference_photon_lon:long_name = "Segment Longitude" ;
-    		reference_photon_lon:source = "ATL03G ATBD, Section 3.4" ;
-    		reference_photon_lon:standard_name = "longitude" ;
-    		reference_photon_lon:units = "degrees_east" ;
-    		reference_photon_lon:valid_max = 180. ;
-    		reference_photon_lon:valid_min = -180. ;
+    	int segment_ph_cnt(delta_time) ;
+    		segment_ph_cnt:_FillValue = 0 ;
+    		segment_ph_cnt:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
+    		segment_ph_cnt:description = "Number of photons in a given along-track segment. In the case of no photons within the segment (segment_ph_cnt=0), most other parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
+    		segment_ph_cnt:long_name = "Number of photons" ;
+    		segment_ph_cnt:source = "Derived" ;
+    		segment_ph_cnt:units = "counts" ;
     	float sigma_across(delta_time) ;
     		sigma_across:_FillValue = 3.402823e+38f ;
     		sigma_across:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -2198,13 +2212,12 @@ group: gt1l {
     		near_sat_fract:units = "1" ;
     		near_sat_fract:valid_max = 1.f ;
     		near_sat_fract:valid_min = 0.f ;
-    	int segment_ph_cnt(delta_time) ;
-    		segment_ph_cnt:_FillValue = 0 ;
-    		segment_ph_cnt:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
-    		segment_ph_cnt:description = "Number of photons in a given along-track segment. In the case of no photons within the segment (segment_ph_cnt=0), most other parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
-    		segment_ph_cnt:long_name = "Number of photons" ;
-    		segment_ph_cnt:source = "Derived" ;
-    		segment_ph_cnt:units = "counts" ;
+    	double segment_length(delta_time) ;
+    		segment_length:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
+    		segment_length:description = "The along-track length of the along-track segment.  Nominally these are 20m, but they vary from 19.8m to 20.2m." ;
+    		segment_length:long_name = "along-track segment length" ;
+    		segment_length:source = "ATL03 ATBD, Section 3.1" ;
+    		segment_length:units = "meters" ;
     	float solar_elevation(delta_time) ;
     		solar_elevation:_FillValue = 3.402823e+38f ;
     		solar_elevation:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -2219,12 +2232,13 @@ group: gt1l {
     		bounce_time_offset:long_name = "ground bounce time offset" ;
     		bounce_time_offset:source = "ATL03 ATBD, Section 3.3" ;
     		bounce_time_offset:units = "seconds" ;
-    	double segment_length(delta_time) ;
-    		segment_length:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
-    		segment_length:description = "The along-track length of the along-track segment.  Nominally these are 20m, but they vary from 19.8m to 20.2m." ;
-    		segment_length:long_name = "along-track segment length" ;
-    		segment_length:source = "ATL03 ATBD, Section 3.1" ;
-    		segment_length:units = "meters" ;
+    	float range_bias_corr(delta_time) ;
+    		range_bias_corr:_FillValue = 3.402823e+38f ;
+    		range_bias_corr:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
+    		range_bias_corr:description = "The range_bias estimated from geolocation analysis." ;
+    		range_bias_corr:long_name = "range bias correction" ;
+    		range_bias_corr:source = "ATL03G ATBD, Section 3.6" ;
+    		range_bias_corr:units = "meters" ;
     	int reference_photon_index(delta_time) ;
     		reference_photon_index:_FillValue = 0 ;
     		reference_photon_index:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -2254,13 +2268,14 @@ group: gt1l {
     		neutat_delay_total:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters related to geolocation.  The rate of all of these parameters is at the rate corresponding to the ICESat-2 Geolocation Along Track Segment interval (nominally 20 m along-track). In the case of no photons within the segment (segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "Data within this group are stored at the ICESat-2 20m segment rate." ;
     } // group geolocation
 
   group: geophys_corr {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:contentType = "referenceInformation" ;
@@ -2348,6 +2363,7 @@ group: gt1l {
     		tide_pole:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters used to correct photon heights for selected geophysical effects. Additional geophysical parameters (dac and tide_ocean) are not applied and provided for informational purposes only. All parameters are posted at the same interval as the ICESat-2 Geolocation Along-Track Segment interval (nominally 20m along-track). In the case of no photons within the segment (../geolocation/segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "These parameters are stored at the ICESat-2 Geolocation Along Track Segment rate (nominally every 20 m along-track)." ;
     } // group geophys_corr
@@ -2360,7 +2376,7 @@ group: gt1l {
 
     group: land {
       dimensions:
-      	delta_time = 179 ;
+      	delta_time = UNLIMITED ; // (179 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -2399,12 +2415,13 @@ group: gt1l {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group land
 
     group: ocean {
       dimensions:
-      	delta_time = 18879 ;
+      	delta_time = UNLIMITED ; // (18879 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -2443,22 +2460,24 @@ group: gt1l {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group ocean
     } // group signal_find_output
 
   group: heights {
     dimensions:
-    	delta_time = 62258 ;
+    	delta_time = UNLIMITED ; // (62258 currently)
     variables:
-    	double delta_time(delta_time) ;
-    		delta_time:contentType = "referenceInformation" ;
-    		delta_time:coordinates = "lat_ph lon_ph" ;
-    		delta_time:description = "The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
-    		delta_time:long_name = "Elapsed GPS seconds" ;
-    		delta_time:source = "Operations" ;
-    		delta_time:standard_name = "time" ;
-    		delta_time:units = "seconds since 2018-01-01" ;
+    	double lon_ph(delta_time) ;
+    		lon_ph:coordinates = "delta_time lat_ph" ;
+    		lon_ph:description = "Longitude of each received photon. Computed from the ECF Cartesian coordinates of the bounce point." ;
+    		lon_ph:long_name = "Longitude" ;
+    		lon_ph:source = "ATL03g ATBD, Section 3.4" ;
+    		lon_ph:standard_name = "longitude" ;
+    		lon_ph:units = "degrees_east" ;
+    		lon_ph:valid_max = 180. ;
+    		lon_ph:valid_min = -180. ;
     	double lat_ph(delta_time) ;
     		lat_ph:coordinates = "delta_time lon_ph" ;
     		lat_ph:description = "Latitude of each received photon. Computed from the ECF Cartesian coordinates of the bounce point." ;
@@ -2468,12 +2487,14 @@ group: gt1l {
     		lat_ph:units = "degrees_north" ;
     		lat_ph:valid_max = 90. ;
     		lat_ph:valid_min = -90. ;
-    	float dist_ph_along(delta_time) ;
-    		dist_ph_along:coordinates = "delta_time lat_ph lon_ph" ;
-    		dist_ph_along:description = "Along-track distance in a segment projected to the ellipsoid of the received photon, based on the Along-Track Segment algorithm.  Total along track distance can be found by adding this value to the sum of segment lengths measured from the start of the most recent reference groundtrack." ;
-    		dist_ph_along:long_name = "Distance from equator crossing." ;
-    		dist_ph_along:source = "ATL03 ATBD, Section 3.1" ;
-    		dist_ph_along:units = "meters" ;
+    	double delta_time(delta_time) ;
+    		delta_time:contentType = "referenceInformation" ;
+    		delta_time:coordinates = "lat_ph lon_ph" ;
+    		delta_time:description = "The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
+    		delta_time:long_name = "Elapsed GPS seconds" ;
+    		delta_time:source = "Operations" ;
+    		delta_time:standard_name = "time" ;
+    		delta_time:units = "seconds since 2018-01-01" ;
     	byte signal_conf_ph(delta_time, ds_surf_type) ;
     		signal_conf_ph:contentType = "qualityInformation" ;
     		signal_conf_ph:coordinates = "delta_time lat_ph lon_ph" ;
@@ -2509,15 +2530,6 @@ group: gt1l {
     		ph_id_channel:units = "1" ;
     		ph_id_channel:valid_max = 120UB ;
     		ph_id_channel:valid_min = 1UB ;
-    	double lon_ph(delta_time) ;
-    		lon_ph:coordinates = "delta_time lat_ph" ;
-    		lon_ph:description = "Longitude of each received photon. Computed from the ECF Cartesian coordinates of the bounce point." ;
-    		lon_ph:long_name = "Longitude" ;
-    		lon_ph:source = "ATL03g ATBD, Section 3.4" ;
-    		lon_ph:standard_name = "longitude" ;
-    		lon_ph:units = "degrees_east" ;
-    		lon_ph:valid_max = 180. ;
-    		lon_ph:valid_min = -180. ;
     	byte ph_id_count(delta_time) ;
     		ph_id_count:contentType = "referenceInformation" ;
     		ph_id_count:coordinates = "delta_time lat_ph lon_ph" ;
@@ -2525,6 +2537,12 @@ group: gt1l {
     		ph_id_count:long_name = "photon event counter" ;
     		ph_id_count:source = "Derived as part of Photon ID" ;
     		ph_id_count:units = "counts" ;
+    	float dist_ph_along(delta_time) ;
+    		dist_ph_along:coordinates = "delta_time lat_ph lon_ph" ;
+    		dist_ph_along:description = "Along-track distance in a segment projected to the ellipsoid of the received photon, based on the Along-Track Segment algorithm.  Total along track distance can be found by adding this value to the sum of segment lengths measured from the start of the most recent reference groundtrack." ;
+    		dist_ph_along:long_name = "Distance from equator crossing." ;
+    		dist_ph_along:source = "ATL03 ATBD, Section 3.1" ;
+    		dist_ph_along:units = "meters" ;
     	uint pce_mframe_cnt(delta_time) ;
     		pce_mframe_cnt:contentType = "referenceInformation" ;
     		pce_mframe_cnt:coordinates = "delta_time lat_ph lon_ph" ;
@@ -2540,6 +2558,7 @@ group: gt1l {
     		dist_ph_across:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains arrays of the parameters for each received photon." ;
     		:data_rate = "Data are stored at the photon detection rate." ;
     } // group heights
@@ -2931,8 +2950,8 @@ group: atlas_impulse_response {
 
     group: tep_histogram {
       dimensions:
-      	tep_tod = 1 ;
-      	tep_hist_time = 2000 ;
+      	tep_tod = UNLIMITED ; // (1 currently)
+      	tep_hist_time = UNLIMITED ; // (2000 currently)
       variables:
       	double tep_hist_time(tep_hist_time) ;
       		tep_hist_time:description = "The times associated with the TEP histogram bin centers, measured from the laser transmit time." ;
@@ -2981,6 +3000,7 @@ group: atlas_impulse_response {
       		tep_bckgrd:units = "counts" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "tep_tod\ntep_hist_time" ;
       		:Description = "Subgroup that contains the time of the histogram centers and the normalized histogram counts for each bin." ;
       } // group tep_histogram
     } // group pce1_spot1
@@ -2992,8 +3012,8 @@ group: atlas_impulse_response {
 
     group: tep_histogram {
       dimensions:
-      	tep_tod = 1 ;
-      	tep_hist_time = 2000 ;
+      	tep_tod = UNLIMITED ; // (1 currently)
+      	tep_hist_time = UNLIMITED ; // (2000 currently)
       variables:
       	double tep_hist_time(tep_hist_time) ;
       		tep_hist_time:description = "The times associated with the TEP histogram bin centers, measured from the laser transmit time." ;
@@ -3042,6 +3062,7 @@ group: atlas_impulse_response {
       		tep_bckgrd:units = "counts" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "tep_tod\ntep_hist_time" ;
       		:Description = "Subgroup that contains the time of the histogram centers and the normalized histogram counts for each bin." ;
       } // group tep_histogram
     } // group pce2_spot3
@@ -3060,7 +3081,7 @@ group: gt3l {
 
   group: bckgrd_atlas {
     dimensions:
-    	delta_time = 2359 ;
+    	delta_time = UNLIMITED ; // (2359 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:description = "Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
@@ -3142,13 +3163,23 @@ group: gt3l {
     		bckgrd_counts:units = "counts" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains data related to the 50-shot background count, including telemetry and range windows." ;
     } // group bckgrd_atlas
 
   group: geolocation {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
+    	double reference_photon_lon(delta_time) ;
+    		reference_photon_lon:coordinates = "delta_time" ;
+    		reference_photon_lon:description = "Longitude of each reference photon. Computed from the ECF Cartesian coordinates of the bounce point. In the case of no photons within the segment (segment_ph_cnt=0), the coordinates are the midpoint of the geolocation segment on the reference ground track." ;
+    		reference_photon_lon:long_name = "Segment Longitude" ;
+    		reference_photon_lon:source = "ATL03G ATBD, Section 3.4" ;
+    		reference_photon_lon:standard_name = "longitude" ;
+    		reference_photon_lon:units = "degrees_east" ;
+    		reference_photon_lon:valid_max = 180. ;
+    		reference_photon_lon:valid_min = -180. ;
     	double reference_photon_lat(delta_time) ;
     		reference_photon_lat:coordinates = "delta_time" ;
     		reference_photon_lat:description = "Latitude of each reference photon. Computed from the ECF Cartesian coordinates of the bounce point. In the case of no photons within the segment (segment_ph_cnt=0), the coordinates are the midpoint of the geolocation segment on the reference ground track." ;
@@ -3166,13 +3197,6 @@ group: gt3l {
     		delta_time:source = "Derived" ;
     		delta_time:standard_name = "time" ;
     		delta_time:units = "seconds since 2018-01-01" ;
-    	float range_bias_corr(delta_time) ;
-    		range_bias_corr:_FillValue = 3.402823e+38f ;
-    		range_bias_corr:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
-    		range_bias_corr:description = "The range_bias estimated from geolocation analysis." ;
-    		range_bias_corr:long_name = "range bias correction" ;
-    		range_bias_corr:source = "ATL03G ATBD, Section 3.6" ;
-    		range_bias_corr:units = "meters" ;
     	float neutat_delay_derivative(delta_time) ;
     		neutat_delay_derivative:_FillValue = 3.402823e+38f ;
     		neutat_delay_derivative:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -3180,15 +3204,13 @@ group: gt3l {
     		neutat_delay_derivative:long_name = "(Neutral Atmosphere delay)/dh" ;
     		neutat_delay_derivative:source = "ATL03a ATBD" ;
     		neutat_delay_derivative:units = "meters/meters" ;
-    	double reference_photon_lon(delta_time) ;
-    		reference_photon_lon:coordinates = "delta_time" ;
-    		reference_photon_lon:description = "Longitude of each reference photon. Computed from the ECF Cartesian coordinates of the bounce point. In the case of no photons within the segment (segment_ph_cnt=0), the coordinates are the midpoint of the geolocation segment on the reference ground track." ;
-    		reference_photon_lon:long_name = "Segment Longitude" ;
-    		reference_photon_lon:source = "ATL03G ATBD, Section 3.4" ;
-    		reference_photon_lon:standard_name = "longitude" ;
-    		reference_photon_lon:units = "degrees_east" ;
-    		reference_photon_lon:valid_max = 180. ;
-    		reference_photon_lon:valid_min = -180. ;
+    	int segment_ph_cnt(delta_time) ;
+    		segment_ph_cnt:_FillValue = 0 ;
+    		segment_ph_cnt:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
+    		segment_ph_cnt:description = "Number of photons in a given along-track segment. In the case of no photons within the segment (segment_ph_cnt=0), most other parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
+    		segment_ph_cnt:long_name = "Number of photons" ;
+    		segment_ph_cnt:source = "Derived" ;
+    		segment_ph_cnt:units = "counts" ;
     	float sigma_across(delta_time) ;
     		sigma_across:_FillValue = 3.402823e+38f ;
     		sigma_across:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -3347,13 +3369,12 @@ group: gt3l {
     		near_sat_fract:units = "1" ;
     		near_sat_fract:valid_max = 1.f ;
     		near_sat_fract:valid_min = 0.f ;
-    	int segment_ph_cnt(delta_time) ;
-    		segment_ph_cnt:_FillValue = 0 ;
-    		segment_ph_cnt:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
-    		segment_ph_cnt:description = "Number of photons in a given along-track segment. In the case of no photons within the segment (segment_ph_cnt=0), most other parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
-    		segment_ph_cnt:long_name = "Number of photons" ;
-    		segment_ph_cnt:source = "Derived" ;
-    		segment_ph_cnt:units = "counts" ;
+    	double segment_length(delta_time) ;
+    		segment_length:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
+    		segment_length:description = "The along-track length of the along-track segment.  Nominally these are 20m, but they vary from 19.8m to 20.2m." ;
+    		segment_length:long_name = "along-track segment length" ;
+    		segment_length:source = "ATL03 ATBD, Section 3.1" ;
+    		segment_length:units = "meters" ;
     	float solar_elevation(delta_time) ;
     		solar_elevation:_FillValue = 3.402823e+38f ;
     		solar_elevation:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -3368,12 +3389,13 @@ group: gt3l {
     		bounce_time_offset:long_name = "ground bounce time offset" ;
     		bounce_time_offset:source = "ATL03 ATBD, Section 3.3" ;
     		bounce_time_offset:units = "seconds" ;
-    	double segment_length(delta_time) ;
-    		segment_length:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
-    		segment_length:description = "The along-track length of the along-track segment.  Nominally these are 20m, but they vary from 19.8m to 20.2m." ;
-    		segment_length:long_name = "along-track segment length" ;
-    		segment_length:source = "ATL03 ATBD, Section 3.1" ;
-    		segment_length:units = "meters" ;
+    	float range_bias_corr(delta_time) ;
+    		range_bias_corr:_FillValue = 3.402823e+38f ;
+    		range_bias_corr:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
+    		range_bias_corr:description = "The range_bias estimated from geolocation analysis." ;
+    		range_bias_corr:long_name = "range bias correction" ;
+    		range_bias_corr:source = "ATL03G ATBD, Section 3.6" ;
+    		range_bias_corr:units = "meters" ;
     	int reference_photon_index(delta_time) ;
     		reference_photon_index:_FillValue = 0 ;
     		reference_photon_index:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -3403,13 +3425,14 @@ group: gt3l {
     		neutat_delay_total:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters related to geolocation.  The rate of all of these parameters is at the rate corresponding to the ICESat-2 Geolocation Along Track Segment interval (nominally 20 m along-track). In the case of no photons within the segment (segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "Data within this group are stored at the ICESat-2 20m segment rate." ;
     } // group geolocation
 
   group: geophys_corr {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:contentType = "referenceInformation" ;
@@ -3497,6 +3520,7 @@ group: gt3l {
     		tide_pole:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters used to correct photon heights for selected geophysical effects. Additional geophysical parameters (dac and tide_ocean) are not applied and provided for informational purposes only. All parameters are posted at the same interval as the ICESat-2 Geolocation Along-Track Segment interval (nominally 20m along-track). In the case of no photons within the segment (../geolocation/segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "These parameters are stored at the ICESat-2 Geolocation Along Track Segment rate (nominally every 20 m along-track)." ;
     } // group geophys_corr
@@ -3509,7 +3533,7 @@ group: gt3l {
 
     group: land {
       dimensions:
-      	delta_time = 9784 ;
+      	delta_time = UNLIMITED ; // (9784 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -3548,12 +3572,13 @@ group: gt3l {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group land
 
     group: ocean {
       dimensions:
-      	delta_time = 19218 ;
+      	delta_time = UNLIMITED ; // (19218 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -3592,22 +3617,24 @@ group: gt3l {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group ocean
     } // group signal_find_output
 
   group: heights {
     dimensions:
-    	delta_time = 70351 ;
+    	delta_time = UNLIMITED ; // (70351 currently)
     variables:
-    	double delta_time(delta_time) ;
-    		delta_time:contentType = "referenceInformation" ;
-    		delta_time:coordinates = "lat_ph lon_ph" ;
-    		delta_time:description = "The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
-    		delta_time:long_name = "Elapsed GPS seconds" ;
-    		delta_time:source = "Operations" ;
-    		delta_time:standard_name = "time" ;
-    		delta_time:units = "seconds since 2018-01-01" ;
+    	double lon_ph(delta_time) ;
+    		lon_ph:coordinates = "delta_time lat_ph" ;
+    		lon_ph:description = "Longitude of each received photon. Computed from the ECF Cartesian coordinates of the bounce point." ;
+    		lon_ph:long_name = "Longitude" ;
+    		lon_ph:source = "ATL03g ATBD, Section 3.4" ;
+    		lon_ph:standard_name = "longitude" ;
+    		lon_ph:units = "degrees_east" ;
+    		lon_ph:valid_max = 180. ;
+    		lon_ph:valid_min = -180. ;
     	double lat_ph(delta_time) ;
     		lat_ph:coordinates = "delta_time lon_ph" ;
     		lat_ph:description = "Latitude of each received photon. Computed from the ECF Cartesian coordinates of the bounce point." ;
@@ -3617,12 +3644,14 @@ group: gt3l {
     		lat_ph:units = "degrees_north" ;
     		lat_ph:valid_max = 90. ;
     		lat_ph:valid_min = -90. ;
-    	float dist_ph_along(delta_time) ;
-    		dist_ph_along:coordinates = "delta_time lat_ph lon_ph" ;
-    		dist_ph_along:description = "Along-track distance in a segment projected to the ellipsoid of the received photon, based on the Along-Track Segment algorithm.  Total along track distance can be found by adding this value to the sum of segment lengths measured from the start of the most recent reference groundtrack." ;
-    		dist_ph_along:long_name = "Distance from equator crossing." ;
-    		dist_ph_along:source = "ATL03 ATBD, Section 3.1" ;
-    		dist_ph_along:units = "meters" ;
+    	double delta_time(delta_time) ;
+    		delta_time:contentType = "referenceInformation" ;
+    		delta_time:coordinates = "lat_ph lon_ph" ;
+    		delta_time:description = "The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
+    		delta_time:long_name = "Elapsed GPS seconds" ;
+    		delta_time:source = "Operations" ;
+    		delta_time:standard_name = "time" ;
+    		delta_time:units = "seconds since 2018-01-01" ;
     	byte signal_conf_ph(delta_time, ds_surf_type) ;
     		signal_conf_ph:contentType = "qualityInformation" ;
     		signal_conf_ph:coordinates = "delta_time lat_ph lon_ph" ;
@@ -3658,15 +3687,6 @@ group: gt3l {
     		ph_id_channel:units = "1" ;
     		ph_id_channel:valid_max = 120UB ;
     		ph_id_channel:valid_min = 1UB ;
-    	double lon_ph(delta_time) ;
-    		lon_ph:coordinates = "delta_time lat_ph" ;
-    		lon_ph:description = "Longitude of each received photon. Computed from the ECF Cartesian coordinates of the bounce point." ;
-    		lon_ph:long_name = "Longitude" ;
-    		lon_ph:source = "ATL03g ATBD, Section 3.4" ;
-    		lon_ph:standard_name = "longitude" ;
-    		lon_ph:units = "degrees_east" ;
-    		lon_ph:valid_max = 180. ;
-    		lon_ph:valid_min = -180. ;
     	byte ph_id_count(delta_time) ;
     		ph_id_count:contentType = "referenceInformation" ;
     		ph_id_count:coordinates = "delta_time lat_ph lon_ph" ;
@@ -3674,6 +3694,12 @@ group: gt3l {
     		ph_id_count:long_name = "photon event counter" ;
     		ph_id_count:source = "Derived as part of Photon ID" ;
     		ph_id_count:units = "counts" ;
+    	float dist_ph_along(delta_time) ;
+    		dist_ph_along:coordinates = "delta_time lat_ph lon_ph" ;
+    		dist_ph_along:description = "Along-track distance in a segment projected to the ellipsoid of the received photon, based on the Along-Track Segment algorithm.  Total along track distance can be found by adding this value to the sum of segment lengths measured from the start of the most recent reference groundtrack." ;
+    		dist_ph_along:long_name = "Distance from equator crossing." ;
+    		dist_ph_along:source = "ATL03 ATBD, Section 3.1" ;
+    		dist_ph_along:units = "meters" ;
     	uint pce_mframe_cnt(delta_time) ;
     		pce_mframe_cnt:contentType = "referenceInformation" ;
     		pce_mframe_cnt:coordinates = "delta_time lat_ph lon_ph" ;
@@ -3689,6 +3715,7 @@ group: gt3l {
     		dist_ph_across:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains arrays of the parameters for each received photon." ;
     		:data_rate = "Data are stored at the photon detection rate." ;
     } // group heights
@@ -3707,7 +3734,7 @@ group: gt2l {
 
   group: bckgrd_atlas {
     dimensions:
-    	delta_time = 2355 ;
+    	delta_time = UNLIMITED ; // (2355 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:description = "Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
@@ -3789,13 +3816,23 @@ group: gt2l {
     		bckgrd_counts:units = "counts" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains data related to the 50-shot background count, including telemetry and range windows." ;
     } // group bckgrd_atlas
 
   group: geolocation {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
+    	double reference_photon_lon(delta_time) ;
+    		reference_photon_lon:coordinates = "delta_time" ;
+    		reference_photon_lon:description = "Longitude of each reference photon. Computed from the ECF Cartesian coordinates of the bounce point. In the case of no photons within the segment (segment_ph_cnt=0), the coordinates are the midpoint of the geolocation segment on the reference ground track." ;
+    		reference_photon_lon:long_name = "Segment Longitude" ;
+    		reference_photon_lon:source = "ATL03G ATBD, Section 3.4" ;
+    		reference_photon_lon:standard_name = "longitude" ;
+    		reference_photon_lon:units = "degrees_east" ;
+    		reference_photon_lon:valid_max = 180. ;
+    		reference_photon_lon:valid_min = -180. ;
     	double reference_photon_lat(delta_time) ;
     		reference_photon_lat:coordinates = "delta_time" ;
     		reference_photon_lat:description = "Latitude of each reference photon. Computed from the ECF Cartesian coordinates of the bounce point. In the case of no photons within the segment (segment_ph_cnt=0), the coordinates are the midpoint of the geolocation segment on the reference ground track." ;
@@ -3813,13 +3850,6 @@ group: gt2l {
     		delta_time:source = "Derived" ;
     		delta_time:standard_name = "time" ;
     		delta_time:units = "seconds since 2018-01-01" ;
-    	float range_bias_corr(delta_time) ;
-    		range_bias_corr:_FillValue = 3.402823e+38f ;
-    		range_bias_corr:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
-    		range_bias_corr:description = "The range_bias estimated from geolocation analysis." ;
-    		range_bias_corr:long_name = "range bias correction" ;
-    		range_bias_corr:source = "ATL03G ATBD, Section 3.6" ;
-    		range_bias_corr:units = "meters" ;
     	float neutat_delay_derivative(delta_time) ;
     		neutat_delay_derivative:_FillValue = 3.402823e+38f ;
     		neutat_delay_derivative:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -3827,15 +3857,13 @@ group: gt2l {
     		neutat_delay_derivative:long_name = "(Neutral Atmosphere delay)/dh" ;
     		neutat_delay_derivative:source = "ATL03a ATBD" ;
     		neutat_delay_derivative:units = "meters/meters" ;
-    	double reference_photon_lon(delta_time) ;
-    		reference_photon_lon:coordinates = "delta_time" ;
-    		reference_photon_lon:description = "Longitude of each reference photon. Computed from the ECF Cartesian coordinates of the bounce point. In the case of no photons within the segment (segment_ph_cnt=0), the coordinates are the midpoint of the geolocation segment on the reference ground track." ;
-    		reference_photon_lon:long_name = "Segment Longitude" ;
-    		reference_photon_lon:source = "ATL03G ATBD, Section 3.4" ;
-    		reference_photon_lon:standard_name = "longitude" ;
-    		reference_photon_lon:units = "degrees_east" ;
-    		reference_photon_lon:valid_max = 180. ;
-    		reference_photon_lon:valid_min = -180. ;
+    	int segment_ph_cnt(delta_time) ;
+    		segment_ph_cnt:_FillValue = 0 ;
+    		segment_ph_cnt:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
+    		segment_ph_cnt:description = "Number of photons in a given along-track segment. In the case of no photons within the segment (segment_ph_cnt=0), most other parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
+    		segment_ph_cnt:long_name = "Number of photons" ;
+    		segment_ph_cnt:source = "Derived" ;
+    		segment_ph_cnt:units = "counts" ;
     	float sigma_across(delta_time) ;
     		sigma_across:_FillValue = 3.402823e+38f ;
     		sigma_across:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -3994,13 +4022,12 @@ group: gt2l {
     		near_sat_fract:units = "1" ;
     		near_sat_fract:valid_max = 1.f ;
     		near_sat_fract:valid_min = 0.f ;
-    	int segment_ph_cnt(delta_time) ;
-    		segment_ph_cnt:_FillValue = 0 ;
-    		segment_ph_cnt:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
-    		segment_ph_cnt:description = "Number of photons in a given along-track segment. In the case of no photons within the segment (segment_ph_cnt=0), most other parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
-    		segment_ph_cnt:long_name = "Number of photons" ;
-    		segment_ph_cnt:source = "Derived" ;
-    		segment_ph_cnt:units = "counts" ;
+    	double segment_length(delta_time) ;
+    		segment_length:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
+    		segment_length:description = "The along-track length of the along-track segment.  Nominally these are 20m, but they vary from 19.8m to 20.2m." ;
+    		segment_length:long_name = "along-track segment length" ;
+    		segment_length:source = "ATL03 ATBD, Section 3.1" ;
+    		segment_length:units = "meters" ;
     	float solar_elevation(delta_time) ;
     		solar_elevation:_FillValue = 3.402823e+38f ;
     		solar_elevation:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -4015,12 +4042,13 @@ group: gt2l {
     		bounce_time_offset:long_name = "ground bounce time offset" ;
     		bounce_time_offset:source = "ATL03 ATBD, Section 3.3" ;
     		bounce_time_offset:units = "seconds" ;
-    	double segment_length(delta_time) ;
-    		segment_length:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
-    		segment_length:description = "The along-track length of the along-track segment.  Nominally these are 20m, but they vary from 19.8m to 20.2m." ;
-    		segment_length:long_name = "along-track segment length" ;
-    		segment_length:source = "ATL03 ATBD, Section 3.1" ;
-    		segment_length:units = "meters" ;
+    	float range_bias_corr(delta_time) ;
+    		range_bias_corr:_FillValue = 3.402823e+38f ;
+    		range_bias_corr:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
+    		range_bias_corr:description = "The range_bias estimated from geolocation analysis." ;
+    		range_bias_corr:long_name = "range bias correction" ;
+    		range_bias_corr:source = "ATL03G ATBD, Section 3.6" ;
+    		range_bias_corr:units = "meters" ;
     	int reference_photon_index(delta_time) ;
     		reference_photon_index:_FillValue = 0 ;
     		reference_photon_index:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -4050,13 +4078,14 @@ group: gt2l {
     		neutat_delay_total:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters related to geolocation.  The rate of all of these parameters is at the rate corresponding to the ICESat-2 Geolocation Along Track Segment interval (nominally 20 m along-track). In the case of no photons within the segment (segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "Data within this group are stored at the ICESat-2 20m segment rate." ;
     } // group geolocation
 
   group: geophys_corr {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:contentType = "referenceInformation" ;
@@ -4144,6 +4173,7 @@ group: gt2l {
     		tide_pole:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters used to correct photon heights for selected geophysical effects. Additional geophysical parameters (dac and tide_ocean) are not applied and provided for informational purposes only. All parameters are posted at the same interval as the ICESat-2 Geolocation Along-Track Segment interval (nominally 20m along-track). In the case of no photons within the segment (../geolocation/segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "These parameters are stored at the ICESat-2 Geolocation Along Track Segment rate (nominally every 20 m along-track)." ;
     } // group geophys_corr
@@ -4156,7 +4186,7 @@ group: gt2l {
 
     group: land {
       dimensions:
-      	delta_time = 9634 ;
+      	delta_time = UNLIMITED ; // (9634 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -4195,12 +4225,13 @@ group: gt2l {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group land
 
     group: ocean {
       dimensions:
-      	delta_time = 18350 ;
+      	delta_time = UNLIMITED ; // (18350 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -4239,22 +4270,24 @@ group: gt2l {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group ocean
     } // group signal_find_output
 
   group: heights {
     dimensions:
-    	delta_time = 60110 ;
+    	delta_time = UNLIMITED ; // (60110 currently)
     variables:
-    	double delta_time(delta_time) ;
-    		delta_time:contentType = "referenceInformation" ;
-    		delta_time:coordinates = "lat_ph lon_ph" ;
-    		delta_time:description = "The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
-    		delta_time:long_name = "Elapsed GPS seconds" ;
-    		delta_time:source = "Operations" ;
-    		delta_time:standard_name = "time" ;
-    		delta_time:units = "seconds since 2018-01-01" ;
+    	double lon_ph(delta_time) ;
+    		lon_ph:coordinates = "delta_time lat_ph" ;
+    		lon_ph:description = "Longitude of each received photon. Computed from the ECF Cartesian coordinates of the bounce point." ;
+    		lon_ph:long_name = "Longitude" ;
+    		lon_ph:source = "ATL03g ATBD, Section 3.4" ;
+    		lon_ph:standard_name = "longitude" ;
+    		lon_ph:units = "degrees_east" ;
+    		lon_ph:valid_max = 180. ;
+    		lon_ph:valid_min = -180. ;
     	double lat_ph(delta_time) ;
     		lat_ph:coordinates = "delta_time lon_ph" ;
     		lat_ph:description = "Latitude of each received photon. Computed from the ECF Cartesian coordinates of the bounce point." ;
@@ -4264,12 +4297,14 @@ group: gt2l {
     		lat_ph:units = "degrees_north" ;
     		lat_ph:valid_max = 90. ;
     		lat_ph:valid_min = -90. ;
-    	float dist_ph_along(delta_time) ;
-    		dist_ph_along:coordinates = "delta_time lat_ph lon_ph" ;
-    		dist_ph_along:description = "Along-track distance in a segment projected to the ellipsoid of the received photon, based on the Along-Track Segment algorithm.  Total along track distance can be found by adding this value to the sum of segment lengths measured from the start of the most recent reference groundtrack." ;
-    		dist_ph_along:long_name = "Distance from equator crossing." ;
-    		dist_ph_along:source = "ATL03 ATBD, Section 3.1" ;
-    		dist_ph_along:units = "meters" ;
+    	double delta_time(delta_time) ;
+    		delta_time:contentType = "referenceInformation" ;
+    		delta_time:coordinates = "lat_ph lon_ph" ;
+    		delta_time:description = "The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
+    		delta_time:long_name = "Elapsed GPS seconds" ;
+    		delta_time:source = "Operations" ;
+    		delta_time:standard_name = "time" ;
+    		delta_time:units = "seconds since 2018-01-01" ;
     	byte signal_conf_ph(delta_time, ds_surf_type) ;
     		signal_conf_ph:contentType = "qualityInformation" ;
     		signal_conf_ph:coordinates = "delta_time lat_ph lon_ph" ;
@@ -4305,15 +4340,6 @@ group: gt2l {
     		ph_id_channel:units = "1" ;
     		ph_id_channel:valid_max = 120UB ;
     		ph_id_channel:valid_min = 1UB ;
-    	double lon_ph(delta_time) ;
-    		lon_ph:coordinates = "delta_time lat_ph" ;
-    		lon_ph:description = "Longitude of each received photon. Computed from the ECF Cartesian coordinates of the bounce point." ;
-    		lon_ph:long_name = "Longitude" ;
-    		lon_ph:source = "ATL03g ATBD, Section 3.4" ;
-    		lon_ph:standard_name = "longitude" ;
-    		lon_ph:units = "degrees_east" ;
-    		lon_ph:valid_max = 180. ;
-    		lon_ph:valid_min = -180. ;
     	byte ph_id_count(delta_time) ;
     		ph_id_count:contentType = "referenceInformation" ;
     		ph_id_count:coordinates = "delta_time lat_ph lon_ph" ;
@@ -4321,6 +4347,12 @@ group: gt2l {
     		ph_id_count:long_name = "photon event counter" ;
     		ph_id_count:source = "Derived as part of Photon ID" ;
     		ph_id_count:units = "counts" ;
+    	float dist_ph_along(delta_time) ;
+    		dist_ph_along:coordinates = "delta_time lat_ph lon_ph" ;
+    		dist_ph_along:description = "Along-track distance in a segment projected to the ellipsoid of the received photon, based on the Along-Track Segment algorithm.  Total along track distance can be found by adding this value to the sum of segment lengths measured from the start of the most recent reference groundtrack." ;
+    		dist_ph_along:long_name = "Distance from equator crossing." ;
+    		dist_ph_along:source = "ATL03 ATBD, Section 3.1" ;
+    		dist_ph_along:units = "meters" ;
     	uint pce_mframe_cnt(delta_time) ;
     		pce_mframe_cnt:contentType = "referenceInformation" ;
     		pce_mframe_cnt:coordinates = "delta_time lat_ph lon_ph" ;
@@ -4336,6 +4368,7 @@ group: gt2l {
     		dist_ph_across:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains arrays of the parameters for each received photon." ;
     		:data_rate = "Data are stored at the photon detection rate." ;
     } // group heights
@@ -7275,7 +7308,7 @@ group: gt3r {
 
   group: bckgrd_atlas {
     dimensions:
-    	delta_time = 72094 ;
+    	delta_time = UNLIMITED ; // (72094 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:description = "Elapsed GPS Seconds from the ATLAS SDP GPS Epoch, referenced to the start of the 50-shot sum. This is based on every fiftieth laser fire time, which leads to a very close alignment with major frame boundaries (+/- 1 shot). The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
@@ -7357,13 +7390,23 @@ group: gt3r {
     		bckgrd_counts:units = "counts" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains data related to the 50-shot background count, including telemetry and range windows." ;
     } // group bckgrd_atlas
 
   group: geolocation {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
+    	double reference_photon_lon(delta_time) ;
+    		reference_photon_lon:coordinates = "delta_time" ;
+    		reference_photon_lon:description = "Longitude of each reference photon. Computed from the ECF Cartesian coordinates of the bounce point. In the case of no photons within the segment (segment_ph_cnt=0), the coordinates are the midpoint of the geolocation segment on the reference ground track." ;
+    		reference_photon_lon:long_name = "Segment Longitude" ;
+    		reference_photon_lon:source = "ATL03G ATBD, Section 3.4" ;
+    		reference_photon_lon:standard_name = "longitude" ;
+    		reference_photon_lon:units = "degrees_east" ;
+    		reference_photon_lon:valid_max = 180. ;
+    		reference_photon_lon:valid_min = -180. ;
     	double reference_photon_lat(delta_time) ;
     		reference_photon_lat:coordinates = "delta_time" ;
     		reference_photon_lat:description = "Latitude of each reference photon. Computed from the ECF Cartesian coordinates of the bounce point. In the case of no photons within the segment (segment_ph_cnt=0), the coordinates are the midpoint of the geolocation segment on the reference ground track." ;
@@ -7381,13 +7424,6 @@ group: gt3r {
     		delta_time:source = "Derived" ;
     		delta_time:standard_name = "time" ;
     		delta_time:units = "seconds since 2018-01-01" ;
-    	float range_bias_corr(delta_time) ;
-    		range_bias_corr:_FillValue = 3.402823e+38f ;
-    		range_bias_corr:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
-    		range_bias_corr:description = "The range_bias estimated from geolocation analysis." ;
-    		range_bias_corr:long_name = "range bias correction" ;
-    		range_bias_corr:source = "ATL03G ATBD, Section 3.6" ;
-    		range_bias_corr:units = "meters" ;
     	float neutat_delay_derivative(delta_time) ;
     		neutat_delay_derivative:_FillValue = 3.402823e+38f ;
     		neutat_delay_derivative:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -7395,15 +7431,13 @@ group: gt3r {
     		neutat_delay_derivative:long_name = "(Neutral Atmosphere delay)/dh" ;
     		neutat_delay_derivative:source = "ATL03a ATBD" ;
     		neutat_delay_derivative:units = "meters/meters" ;
-    	double reference_photon_lon(delta_time) ;
-    		reference_photon_lon:coordinates = "delta_time" ;
-    		reference_photon_lon:description = "Longitude of each reference photon. Computed from the ECF Cartesian coordinates of the bounce point. In the case of no photons within the segment (segment_ph_cnt=0), the coordinates are the midpoint of the geolocation segment on the reference ground track." ;
-    		reference_photon_lon:long_name = "Segment Longitude" ;
-    		reference_photon_lon:source = "ATL03G ATBD, Section 3.4" ;
-    		reference_photon_lon:standard_name = "longitude" ;
-    		reference_photon_lon:units = "degrees_east" ;
-    		reference_photon_lon:valid_max = 180. ;
-    		reference_photon_lon:valid_min = -180. ;
+    	int segment_ph_cnt(delta_time) ;
+    		segment_ph_cnt:_FillValue = 0 ;
+    		segment_ph_cnt:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
+    		segment_ph_cnt:description = "Number of photons in a given along-track segment. In the case of no photons within the segment (segment_ph_cnt=0), most other parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
+    		segment_ph_cnt:long_name = "Number of photons" ;
+    		segment_ph_cnt:source = "Derived" ;
+    		segment_ph_cnt:units = "counts" ;
     	float sigma_across(delta_time) ;
     		sigma_across:_FillValue = 3.402823e+38f ;
     		sigma_across:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -7562,13 +7596,12 @@ group: gt3r {
     		near_sat_fract:units = "1" ;
     		near_sat_fract:valid_max = 1.f ;
     		near_sat_fract:valid_min = 0.f ;
-    	int segment_ph_cnt(delta_time) ;
-    		segment_ph_cnt:_FillValue = 0 ;
-    		segment_ph_cnt:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
-    		segment_ph_cnt:description = "Number of photons in a given along-track segment. In the case of no photons within the segment (segment_ph_cnt=0), most other parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
-    		segment_ph_cnt:long_name = "Number of photons" ;
-    		segment_ph_cnt:source = "Derived" ;
-    		segment_ph_cnt:units = "counts" ;
+    	double segment_length(delta_time) ;
+    		segment_length:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
+    		segment_length:description = "The along-track length of the along-track segment.  Nominally these are 20m, but they vary from 19.8m to 20.2m." ;
+    		segment_length:long_name = "along-track segment length" ;
+    		segment_length:source = "ATL03 ATBD, Section 3.1" ;
+    		segment_length:units = "meters" ;
     	float solar_elevation(delta_time) ;
     		solar_elevation:_FillValue = 3.402823e+38f ;
     		solar_elevation:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -7583,12 +7616,13 @@ group: gt3r {
     		bounce_time_offset:long_name = "ground bounce time offset" ;
     		bounce_time_offset:source = "ATL03 ATBD, Section 3.3" ;
     		bounce_time_offset:units = "seconds" ;
-    	double segment_length(delta_time) ;
-    		segment_length:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
-    		segment_length:description = "The along-track length of the along-track segment.  Nominally these are 20m, but they vary from 19.8m to 20.2m." ;
-    		segment_length:long_name = "along-track segment length" ;
-    		segment_length:source = "ATL03 ATBD, Section 3.1" ;
-    		segment_length:units = "meters" ;
+    	float range_bias_corr(delta_time) ;
+    		range_bias_corr:_FillValue = 3.402823e+38f ;
+    		range_bias_corr:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
+    		range_bias_corr:description = "The range_bias estimated from geolocation analysis." ;
+    		range_bias_corr:long_name = "range bias correction" ;
+    		range_bias_corr:source = "ATL03G ATBD, Section 3.6" ;
+    		range_bias_corr:units = "meters" ;
     	int reference_photon_index(delta_time) ;
     		reference_photon_index:_FillValue = 0 ;
     		reference_photon_index:coordinates = "delta_time reference_photon_lat reference_photon_lon" ;
@@ -7618,13 +7652,14 @@ group: gt3r {
     		neutat_delay_total:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters related to geolocation.  The rate of all of these parameters is at the rate corresponding to the ICESat-2 Geolocation Along Track Segment interval (nominally 20 m along-track). In the case of no photons within the segment (segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "Data within this group are stored at the ICESat-2 20m segment rate." ;
     } // group geolocation
 
   group: geophys_corr {
     dimensions:
-    	delta_time = 128400 ;
+    	delta_time = UNLIMITED ; // (128400 currently)
     variables:
     	double delta_time(delta_time) ;
     		delta_time:contentType = "referenceInformation" ;
@@ -7712,6 +7747,7 @@ group: gt3r {
     		tide_pole:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains parameters used to correct photon heights for selected geophysical effects. Additional geophysical parameters (dac and tide_ocean) are not applied and provided for informational purposes only. All parameters are posted at the same interval as the ICESat-2 Geolocation Along-Track Segment interval (nominally 20m along-track). In the case of no photons within the segment (../geolocation/segment_ph_cnt=0), most parameters are filled with invalid or best-estimate values. Maintaining geolocation segments with no photons allows for the geolocation segment arrays to be directly aligned across the gtx groups." ;
     		:data_rate = "These parameters are stored at the ICESat-2 Geolocation Along Track Segment rate (nominally every 20 m along-track)." ;
     } // group geophys_corr
@@ -7724,7 +7760,7 @@ group: gt3r {
 
     group: land {
       dimensions:
-      	delta_time = 12386 ;
+      	delta_time = UNLIMITED ; // (12386 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -7763,12 +7799,13 @@ group: gt3r {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group land
 
     group: ocean {
       dimensions:
-      	delta_time = 31142 ;
+      	delta_time = UNLIMITED ; // (31142 currently)
       variables:
       	double delta_time(delta_time) ;
       		delta_time:contentType = "physicalMeasurement" ;
@@ -7807,22 +7844,24 @@ group: gt3r {
       		z_pc_delta:units = "meters" ;
 
       // group attributes:
+      		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
       		:Description = "Surface-type specific parameters output for each time interval for which signal photons were selected, based on the algorithm in Section 5.  Histogram parameters are from the histogram that was used to identify signal photons and set the confidence parameter for a given time increment." ;
       } // group ocean
     } // group signal_find_output
 
   group: heights {
     dimensions:
-    	delta_time = 501627 ;
+    	delta_time = UNLIMITED ; // (501627 currently)
     variables:
-    	double delta_time(delta_time) ;
-    		delta_time:contentType = "referenceInformation" ;
-    		delta_time:coordinates = "lat_ph lon_ph" ;
-    		delta_time:description = "The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
-    		delta_time:long_name = "Elapsed GPS seconds" ;
-    		delta_time:source = "Operations" ;
-    		delta_time:standard_name = "time" ;
-    		delta_time:units = "seconds since 2018-01-01" ;
+    	double lon_ph(delta_time) ;
+    		lon_ph:coordinates = "delta_time lat_ph" ;
+    		lon_ph:description = "Longitude of each received photon. Computed from the ECF Cartesian coordinates of the bounce point." ;
+    		lon_ph:long_name = "Longitude" ;
+    		lon_ph:source = "ATL03g ATBD, Section 3.4" ;
+    		lon_ph:standard_name = "longitude" ;
+    		lon_ph:units = "degrees_east" ;
+    		lon_ph:valid_max = 180. ;
+    		lon_ph:valid_min = -180. ;
     	double lat_ph(delta_time) ;
     		lat_ph:coordinates = "delta_time lon_ph" ;
     		lat_ph:description = "Latitude of each received photon. Computed from the ECF Cartesian coordinates of the bounce point." ;
@@ -7832,12 +7871,14 @@ group: gt3r {
     		lat_ph:units = "degrees_north" ;
     		lat_ph:valid_max = 90. ;
     		lat_ph:valid_min = -90. ;
-    	float dist_ph_along(delta_time) ;
-    		dist_ph_along:coordinates = "delta_time lat_ph lon_ph" ;
-    		dist_ph_along:description = "Along-track distance in a segment projected to the ellipsoid of the received photon, based on the Along-Track Segment algorithm.  Total along track distance can be found by adding this value to the sum of segment lengths measured from the start of the most recent reference groundtrack." ;
-    		dist_ph_along:long_name = "Distance from equator crossing." ;
-    		dist_ph_along:source = "ATL03 ATBD, Section 3.1" ;
-    		dist_ph_along:units = "meters" ;
+    	double delta_time(delta_time) ;
+    		delta_time:contentType = "referenceInformation" ;
+    		delta_time:coordinates = "lat_ph lon_ph" ;
+    		delta_time:description = "The transmit time of a given photon, measured in seconds from the ATLAS Standard Data Product Epoch. Note that multiple received photons associated with a single transmit pulse will have the same delta_time. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
+    		delta_time:long_name = "Elapsed GPS seconds" ;
+    		delta_time:source = "Operations" ;
+    		delta_time:standard_name = "time" ;
+    		delta_time:units = "seconds since 2018-01-01" ;
     	byte signal_conf_ph(delta_time, ds_surf_type) ;
     		signal_conf_ph:contentType = "qualityInformation" ;
     		signal_conf_ph:coordinates = "delta_time lat_ph lon_ph" ;
@@ -7873,15 +7914,6 @@ group: gt3r {
     		ph_id_channel:units = "1" ;
     		ph_id_channel:valid_max = 120UB ;
     		ph_id_channel:valid_min = 1UB ;
-    	double lon_ph(delta_time) ;
-    		lon_ph:coordinates = "delta_time lat_ph" ;
-    		lon_ph:description = "Longitude of each received photon. Computed from the ECF Cartesian coordinates of the bounce point." ;
-    		lon_ph:long_name = "Longitude" ;
-    		lon_ph:source = "ATL03g ATBD, Section 3.4" ;
-    		lon_ph:standard_name = "longitude" ;
-    		lon_ph:units = "degrees_east" ;
-    		lon_ph:valid_max = 180. ;
-    		lon_ph:valid_min = -180. ;
     	byte ph_id_count(delta_time) ;
     		ph_id_count:contentType = "referenceInformation" ;
     		ph_id_count:coordinates = "delta_time lat_ph lon_ph" ;
@@ -7889,6 +7921,12 @@ group: gt3r {
     		ph_id_count:long_name = "photon event counter" ;
     		ph_id_count:source = "Derived as part of Photon ID" ;
     		ph_id_count:units = "counts" ;
+    	float dist_ph_along(delta_time) ;
+    		dist_ph_along:coordinates = "delta_time lat_ph lon_ph" ;
+    		dist_ph_along:description = "Along-track distance in a segment projected to the ellipsoid of the received photon, based on the Along-Track Segment algorithm.  Total along track distance can be found by adding this value to the sum of segment lengths measured from the start of the most recent reference groundtrack." ;
+    		dist_ph_along:long_name = "Distance from equator crossing." ;
+    		dist_ph_along:source = "ATL03 ATBD, Section 3.1" ;
+    		dist_ph_along:units = "meters" ;
     	uint pce_mframe_cnt(delta_time) ;
     		pce_mframe_cnt:contentType = "referenceInformation" ;
     		pce_mframe_cnt:coordinates = "delta_time lat_ph lon_ph" ;
@@ -7904,6 +7942,7 @@ group: gt3r {
     		dist_ph_across:units = "meters" ;
 
     // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
     		:Description = "Contains arrays of the parameters for each received photon." ;
     		:data_rate = "Data are stored at the photon detection rate." ;
     } // group heights

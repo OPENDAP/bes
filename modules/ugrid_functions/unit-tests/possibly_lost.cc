@@ -44,10 +44,13 @@ class SingletonList {
 
     friend class PossiblyLost;
 
-public:
     SingletonList() = default;
+
+public:
+
     SingletonList(const SingletonList&) = delete;
     SingletonList& operator=(const SingletonList&) = delete;
+
     virtual ~SingletonList()
     {
         for (const auto& fit: d_func_list) {

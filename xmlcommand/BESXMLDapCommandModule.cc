@@ -51,12 +51,13 @@ using std::cout;
 using std::ostream;
 using std::string;
 
-/** @brief Adds the basic DAP XML command objects to the XMLCommand list of
- * possible commands
+/** @brief Adds catalog and site map commands to the BES
  *
- * Once this module is dynamically loaded, this function is called in
- * order to add the DAP request commands to the list of possible
- * commands that this BES can handle
+ * Add to the request commands this BES can handle. The showCatalog and showNode
+ * commands provide a way for a client of the BES to learn about a catalog. The
+ * buildSiteMap command returns a site map of the BES's catalogs. For the
+ * buildSiteMap command, this method also adds a ResponseHandler. The showCatalog
+ * and showNode commands use the existing
  *
  * @param modname The name of the module being loaded and initialized
  */
