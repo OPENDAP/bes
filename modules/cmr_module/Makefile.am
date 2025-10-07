@@ -20,8 +20,7 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-SUBDIRS = . tests
-# Removed unit-tests because they are currently broken. jhrg 3/20/25
+SUBDIRS = . unit-tests tests
 
 # These tests will fail if the DmrApiTest also fails: tests jhrg 6/29/23
 
