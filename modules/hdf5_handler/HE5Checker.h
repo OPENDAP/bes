@@ -29,6 +29,7 @@
 #define _HE5Checker_H
 
 #include "HE5Parser.h"
+#include <hdf5.h>
 
 /// \file HE5Checker.h
 /// \brief A class for parsing NASA HDF-EOS5 StructMetadata.
@@ -50,7 +51,8 @@ class HE5Checker {
     bool check_grids_missing_projcode(const HE5Parser*p) const;
     bool check_grids_unknown_parameters(const HE5Parser* p) const;
     bool check_grids_support_projcode(const HE5Parser*p) const;
-    
+    void update_unlimited_dim_sizes(HE5Parser* p,hid_t file_id);
+    int obtain_correct_dim_size(hid_t file_id, const std::string &var_path, int var_dim_index);
     void set_grids_missing_pixreg_orig(HE5Parser* p) const;
 
 };

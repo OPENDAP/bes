@@ -42,8 +42,8 @@ DIMENSION_NAME  	DimensionName
 DATA_FIELD_NAME		DataFieldName
 GEO_FIELD_NAME		GeoFieldName
 DIMENSION_LIST		DimList
-/* UNCOMMENT OUT the line for maximum dimension list. ALSO NEED TO ADD MAX_DIMENSION_LIST around line 86.
-/*MAX_DIMENSION_LIST      MaxdimList */
+/* UNCOMMENT OUT the line for maximum dimension list. ALSO NEED TO ADD MAX_DIMENSION_LIST around line 86. */
+MAX_DIMENSION_LIST      MaxdimList 
 COMPRESSION_TYPE        CompressionType
 PIXELREGISTRATION	PixelRegistration=
 GRIDORIGIN		GridOrigin=
@@ -88,6 +88,7 @@ NEVER                   [^a-zA-Z0-9_/.+\-{}:;,%]
 {DIMENSION_SIZE} 	he5ddslval = yytext; return DIMENSION_SIZE;
 {DIMENSION_NAME} 	he5ddslval = yytext; return DIMENSION_NAME;
 {DIMENSION_LIST} 	he5ddslval = yytext; return DIMENSION_LIST;
+{MAX_DIMENSION_LIST} 	he5ddslval = yytext; return MAX_DIMENSION_LIST;
 {COMPRESSION_TYPE} 	he5ddslval = yytext; return COMPRESSION_TYPE;
 {DATA_FIELD_NAME} 	he5ddslval = yytext; return DATA_FIELD_NAME;
 {GEO_FIELD_NAME} 	he5ddslval = yytext; return GEO_FIELD_NAME;

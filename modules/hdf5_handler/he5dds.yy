@@ -101,7 +101,7 @@ int  he5ddslex(void);
 %token DATA_TYPE 
 %token DIMENSION_LIST
 // UNCOMMENT OUT the line below to retrieve the maximum dimension list. ALSO NEED TO ADD MAX_DIMENSION_LIST at  he5dds.lex.
-//%token MAX_DIMENSION_LIST 
+%token MAX_DIMENSION_LIST 
 %token COMPRESSION_TYPE
 
 %token INT
@@ -162,7 +162,6 @@ data: // empty
         }
     }
 // UNCOMMENT OUT the block below to retrieve the maximum dimension list. ALSO NEED TO ADD MAX_DIMENSION_LIST at  he5dds.lex.
-/*
     else if(p->parser_state == 12){ // THis is parsing the MaxDimList. 
         string a;
         a = a.append($$);
@@ -186,7 +185,6 @@ data: // empty
             p->za_list.back().data_var_list.back().max_dim_list.push_back(d);
         }
     }
-*/
 }
 | FLOAT
 {
@@ -246,7 +244,6 @@ data: // empty
     }
 
 // UNCOMMENT OUT the block below to retrieve the maximum dimension list. ALSO NEED TO ADD MAX_DIMENSION_LIST at  he5dds.lex.
-/*
     else if(p->parser_state == 12){
         string a;
         a = a.append($$);
@@ -270,7 +267,6 @@ data: // empty
             p->za_list.back().data_var_list.back().max_dim_list.push_back(d);
         }
     }
-*/
 
 }
 
@@ -284,7 +280,7 @@ attribute: attribute_grid_name
 | attribute_dimension_list
 
 // UNCOMMENT OUT the line below to retrieve the maximum dimension list. ALSO NEED TO ADD MAX_DIMENSION_LIST at  he5dds.lex.
-//| attribute_max_dimension_list
+| attribute_max_dimension_list
 | attribute_data_field_name
 | attribute_geo_field_name
 | attribute_upperleft
@@ -439,7 +435,7 @@ attribute_dimension_list: DIMENSION_LIST
 }
 ;
 // UNCOMMENT OUT the lines below to retrieve the maximum dimension list. ALSO NEED TO ADD MAX_DIMENSION_LIST at  he5dds.lex.
-/*
+
 attribute_max_dimension_list: MAX_DIMENSION_LIST
 {
     ((HE5Parser*)(he5parser))->parser_state = 12;
@@ -449,7 +445,7 @@ attribute_max_dimension_list: MAX_DIMENSION_LIST
     ((HE5Parser*)(he5parser))->parser_state = 13;
 }
 ;
-*/
+
 
 
 attribute_data_field_name: DATA_FIELD_NAME '=' STR

@@ -37,9 +37,130 @@
 #include <math.h>
 #include <BESDebug.h>
 #include "HE5Checker.h"
+#include <unordered_map>
+#include <unordered_set>
+#include <string>
+#include <BESInternalError.h>
 
 using namespace std;
 
+void
+HE5Checker::update_unlimited_dim_sizes(HE5Parser* p, hid_t fileid) 
+{
+//cerr<<"coming to update_unlimited_dim_sizes"<<endl;
+    for (auto &g:p->swath_list) {
+
+        unordered_set<string> wrong_size_dim_names;
+        unordered_map<string, string> wrong_size_dim_var_names;
+        unordered_map<string, int> wrong_size_dim_name_to_var_dim_index;
+        unordered_map<string, int> corrected_dim_name_size;
+        
+        for (const auto &md:g.dim_list) {
+            if (md.name == "Unlimited") {
+                for (const auto &v:g.data_var_list) {
+//cerr<<"v name: "<<v.name<<endl;
+                    if (v.dim_list.size() == v.max_dim_list.size()) {
+                    for (unsigned i = 0; i < v.dim_list.size(); i++) {
+//cerr<<"dim name: "<<(v.dim_list[i]).name <<endl;
+                        if ((v.max_dim_list[i]).name == "Unlimited") {
+//cerr<<"max_dim name: "<<(v.max_dim_list[i]).name <<endl;
+                            if (wrong_size_dim_names.find((v.dim_list[i]).name) ==wrong_size_dim_names.end()) {
+                                wrong_size_dim_names.insert((v.dim_list[i]).name);
+                                wrong_size_dim_var_names[(v.dim_list[i]).name] = v.name;
+                                wrong_size_dim_name_to_var_dim_index[(v.dim_list[i]).name] = i;
+//cerr<<"after setting "<<endl;
+                            }
+                        }
+
+                    }
+                    }
+                }
+                break;
+            }
+        }
+//cerr<<"after filling in the corrected info."<<endl;
+        if (wrong_size_dim_names.empty() == false) {
+
+            for (const auto &wdv:wrong_size_dim_var_names) {
+                string var_name = wdv.second;
+                string var_path = "/HDFEOS/SWATHS/" + g.name + "/Data Fields/" + var_name;
+//cerr<<"var_path: "<<var_path <<endl;
+                int var_dim_index = -1;
+                if (wrong_size_dim_name_to_var_dim_index.find(wdv.first) != wrong_size_dim_name_to_var_dim_index.end())
+                    var_dim_index = wrong_size_dim_name_to_var_dim_index[wdv.first];
+                else  {
+                    string msg = "Cannot find the dimension index to search the dimension size for the variable " + var_path;
+                    BESInternalError(msg,__FILE__,__LINE__);
+                }
+                int correct_dim_size = obtain_correct_dim_size(fileid,var_path,var_dim_index);
+                if (corrected_dim_name_size.find(wdv.first)==corrected_dim_name_size.end())
+                    corrected_dim_name_size[wdv.first] = correct_dim_size;
+                else {
+                    string msg = "Cannot find the dimension name to correct the size for the variable " + var_path;
+                    BESInternalError(msg,__FILE__,__LINE__);
+                }
+//cerr<<"correct_dim_size: "<<correct_dim_size <<endl;
+//cerr<<"correct_dim_name: "<<wdv.first <<endl;
+            }
+
+            for (auto &d:g.dim_list) {
+//cerr<<"d.name: "<<d.name <<endl;
+                for (const auto& cdns: corrected_dim_name_size) {
+//cerr<<"cdns.first: "<<cdns.first <<endl;
+                    if (d.name == cdns.first) {
+//cerr<<"coming to the corrected dim name "<<endl;
+//cerr<<"corrected dim size is: "<<cdns.second;
+                        d.size = cdns.second;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
+ 
+int HE5Checker::obtain_correct_dim_size(hid_t file_id, const string &var_path, int var_dim_index) {
+
+    hid_t dset_id = H5Dopen2(file_id,var_path.c_str(),H5P_DEFAULT);
+    if (dset_id <0) {
+        string msg = "Cannot open the HDF5 dataset " + var_path + ".";
+        BESInternalError(msg,__FILE__,__LINE__);
+    }
+
+    hid_t space_id = H5Dget_space(dset_id);
+    if (space_id <0) {
+        string msg = "Cannot get the space id of the HDF5 dataset " + var_path + ".";
+        H5Dclose(dset_id);
+        BESInternalError(msg,__FILE__,__LINE__);
+    }
+
+    int ndims = H5Sget_simple_extent_ndims(space_id);
+    if (ndims < 0) {
+        string msg = "cannot get the number of dimension for the HDF5 dataset " + var_path +".";
+        H5Dclose(dset_id);
+        H5Sclose(space_id);
+        throw BESInternalError(msg,__FILE__, __LINE__);
+    }
+
+    if (var_dim_index >= ndims || var_dim_index <0) {
+        string msg = "the requested dimension index is invalid for the HDF5 dataset " + var_path +".";
+        H5Dclose(dset_id);
+        H5Sclose(space_id);
+        throw BESInternalError(msg,__FILE__, __LINE__);
+    }
+    vector<hsize_t> dim_sizes(ndims);
+    if (H5Sget_simple_extent_dims(space_id, dim_sizes.data(),NULL) <0) {
+        string msg = "cannot get the number of dimension for the HDF5 dataset " + var_path +".";
+        H5Dclose(dset_id);
+        H5Sclose(space_id);
+        throw BESInternalError(msg,__FILE__, __LINE__);
+    }
+
+    H5Sclose(space_id);
+    H5Dclose(dset_id);
+    return dim_sizes[var_dim_index];
+
+}
 
 bool
 HE5Checker::check_grids_missing_projcode(const HE5Parser* p) const

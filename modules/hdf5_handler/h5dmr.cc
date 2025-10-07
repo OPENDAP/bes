@@ -1678,9 +1678,11 @@ void obtain_eos5_dims(hid_t fileid, eos5_dim_info_t &eos5_dim_info) {
     // Retrieve ProjParams from StructMetadata
     p.add_projparams(st_str);
 
-#if 0
-    p.print();
-#endif
+    //p.print();
+    c.update_unlimited_dim_sizes(&p,fileid);
+//#if 0
+    //p.print();
+//#endif
 
     // Check if the HDF-EOS5 grid has the valid parameters, projection codes.
     if (c.check_grids_unknown_parameters(&p)) {
