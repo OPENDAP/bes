@@ -49,10 +49,6 @@ using namespace std;
 
 namespace ngap {
 
-#if 0
-  constexpr unsigned int REFRESH_THRESHOLD = 3600; // An hour
-#endif
-
 /**
  * @brief Get the CMR search endpoint URL using information from the BES Keys.
  * This method only reads the BES keys once and caches the results, including
@@ -261,7 +257,7 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
 #endif
         collection_name = collection_name.substr(0, slash_pos);
     }
-    BESDEBUG(MODULE, prolog << "Found collection_name (aka collection_concept_id): " << collection_name << '\n');
+    BESDEBUG(MODULE, prolog << "Found collection_name (aka collection_concept_id): " << collection_name << endl);
 
     // Build the CMR query URL for the dataset
     string cmr_url = get_cmr_search_endpoint_url() + "?";
@@ -270,11 +266,11 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
         CURL *ceh = curl_easy_init();
         char *esc_url_content;
 
-        esc_url_content = curl_easy_escape(ceh, collection_name.c_str(), static_cast<int>(collection_name.size()));
+        esc_url_content = curl_easy_escape(ceh, collection_name.c_str(), collection_name.size());
         cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(esc_url_content).append("&");
         curl_free(esc_url_content);
 
-        esc_url_content = curl_easy_escape(ceh, granule_name.c_str(), static_cast<int>(granule_name.size()));
+        esc_url_content = curl_easy_escape(ceh, granule_name.c_str(), granule_name.size());
         cmr_url += string(CMR_GRANULE_UR).append("=").append(esc_url_content);
         curl_free(esc_url_content);
 
@@ -434,3 +430,4 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(const string &restifi
 }
 
 } // namespace ngap
+

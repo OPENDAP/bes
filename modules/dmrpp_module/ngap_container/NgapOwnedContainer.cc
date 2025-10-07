@@ -39,7 +39,6 @@
 #include "BESStopWatch.h"
 #include "BESUtil.h"
 #include "CurlUtils.h"
-#include "AWS_SDK.h"
 #include "BESContextManager.h"
 #include "HttpError.h"
 #include "BESLog.h"
@@ -68,7 +67,7 @@ namespace ngap {
 
 // This data source location currently (8/10/24) is a S3 bucket where the DMR++ files are stored
 // for the OPeNDAP-owned data used by the tests. jhrg 8/10/24
-std::string NgapOwnedContainer::d_data_source_location = "cloudydap";
+std::string NgapOwnedContainer::d_data_source_location = "https://cloudydap.s3.us-east-1.amazonaws.com";
 bool NgapOwnedContainer::d_use_opendap_bucket = true;
 bool NgapOwnedContainer::d_inject_data_url = true;
 
@@ -271,25 +270,6 @@ string NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(const string &rest_pa
     return dmrpp_url_str;
 }
 
-/**
- * @brief Parse the NGAP REST path and build the object key to the DMR++ in the OPeNDAP Bucket.
- * @param rest_path The NGAP REST path provided by the user
- * @return The object key to the DMR++
- */
-string NgapOwnedContainer::build_dmrpp_object_key_in_owned_bucket(const string &rest_path) {
-    // The PATH part of a URL to the NGAP/DMR++ is an 'NGAP REST path' that has the form:
-    // /collections/<ccid>/granules/<granule_id>. In our 'owned' S3 bucket, we use object
-    // names of the form: /<ccid>/<granule_id>.dmrpp.
-    BES_MODULE_TIMING(prolog + rest_path);
-
-    auto parts = BESUtil::split(rest_path, '/');
-    if (parts.size() != 4 || parts[0] != "collections" || parts[2] != "granules") {
-        throw BESSyntaxUserError("Invalid NGAP path: " + rest_path, __FILE__, __LINE__);
-    }
-
-    return {parts[1] + '/' + parts[3] + ".dmrpp"};
-}
-
 bool NgapOwnedContainer::get_item_from_dmrpp_cache(string &dmrpp_string) const {
 
     // Read the cache entry if it exists. jhrg 4/29/24
@@ -361,9 +341,9 @@ bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string
  */
 void NgapOwnedContainer::filter_response(const map <string, string, std::less<>> &content_filters, string &content) {
     for (const auto &filter: content_filters) {
-        const unsigned int replace_count = BESUtil::replace_all(content, filter.first, filter.second);
+        unsigned int replace_count = BESUtil::replace_all(content, filter.first, filter.second);
         BESDEBUG(MODULE, prolog << "Replaced " << replace_count << " instance(s) of template(" << filter.first
-                 << ") with " << filter.second << " in the DMR++" << endl);
+                 << ") with " << filter.second << " in cached RemoteResource" << endl);
     }
 }
 
@@ -419,18 +399,6 @@ bool NgapOwnedContainer::get_opendap_content_filters(map<string, string, std::le
 }
 
 /**
- * @brief Look in the OPeNDAP S3 bucket for the object key
- * @param aws_sdk Use this AWS_SDK object
- * @param bucket The bucket to check
- * @param object_key The object_key to search for
- * @return True if a HEAD request returns success, false otherwise
- */
-bool NgapOwnedContainer::dmrpp_probe_opendap_bucket(AWS_SDK &aws_sdk, const string &bucket, const string &object_key) const {
-    bool success = aws_sdk.s3_head(bucket, object_key);
-    return success;
-}
-
-/**
  * @brief Read the DMR++ from the OPeNDAP S3 bucket
  * @param dmrpp_string value-result parameter for the DMR++ doc as a string
  * @return True if the document was found, false otherwise
@@ -439,53 +407,44 @@ bool NgapOwnedContainer::dmrpp_probe_opendap_bucket(AWS_SDK &aws_sdk, const stri
 bool NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) const {
     BES_MODULE_TIMING(prolog + get_real_name());
     bool dmrpp_read = false;
-
-    bes::AWS_SDK aws_sdk;
-    // FIXME Replace this hack. jhrg 3/12/25
-    const string aws_key = getenv("CMAC_ID");
-    const string aws_secret_key = getenv("CMAC_ACCESS_KEY");
-    const string aws_region = getenv("CMAC_REGION");
-    // FIXME END
-    aws_sdk.initialize(aws_region, aws_key, aws_secret_key);
-    const string object_key = build_dmrpp_object_key_in_owned_bucket(get_real_name());
-
-    // Use an HTTP HEAD request to see if the object key exists in the OPeNDAP bucket.
-    // get_data_source_location() returns the bucket.
-    if (!dmrpp_probe_opendap_bucket(aws_sdk, d_data_source_location, object_key)) {
-        return false;
-    }
-
-    // Once here, we know the object_key exists and can be accessed.
-    dmrpp_string = aws_sdk.s3_get_as_string(d_data_source_location, object_key);
-
-    const auto http_status = aws_sdk.get_http_status_code();
-    if (http_status == 200) {
-        map<string, string, std::less<> > content_filters;
+    try {
+        string dmrpp_url_str = build_dmrpp_url_to_owned_bucket(get_real_name(), get_data_source_location());
+        INFO_LOG(prolog + "Look in the OPeNDAP-bucket for the DMRpp for: " + dmrpp_url_str);
+        curl::http_get(dmrpp_url_str, dmrpp_string);
+        map <string, string, std::less<>> content_filters;
         if (!get_opendap_content_filters(content_filters)) {
             throw BESInternalError("Could not build opendap content filters for DMR++", __FILE__, __LINE__);
         }
         filter_response(content_filters, dmrpp_string);
-        INFO_LOG(prolog + "Found the DMRpp in the OPeNDAP bucket for: " + object_key);
+        INFO_LOG(prolog + "Found the DMRpp in the OPeNDAP-bucket for: " + dmrpp_url_str);
         dmrpp_read = true;
     }
-    else {
-        switch (http_status) {
+    catch (http::HttpError &http_error) {
+        // Assumption - when S3 returns a 404, the things is not there. jhrg 8/9/24
+        // But, sometimes AWS/S3 returns 400 for a missing object. jhrg 9/10/24
+        //
+        // for 400 and 500 errors, try the DAAC bucket.
+        // for a 404, do not log an error, just return false.
+        // for other errors, log the error and return false
+        switch (http_error.http_status()) {
             case 400:
             case 401:
             case 403:
                 ERROR_LOG(prolog + "Looked in the OPeNDAP bucket for the DMRpp for: " + get_real_name()
-                    + " but got HTTP Status: " + std::to_string(aws_sdk.get_http_status_code()));
-                dmrpp_string.clear(); // ...because S3 puts an error message in the string. jhrg 8/9/24
+                                 + " but got HTTP Status: " + std::to_string(http_error.http_status()));
+                dmrpp_string.clear();   // ...because S3 puts an error message in the string. jhrg 8/9/24
                 dmrpp_read = false;
                 break;
+
             case 404:
-                INFO_LOG(prolog + "Looked in the OPeNDAP bucket for the DMRpp for: " + get_real_name()
-                    + " but got HTTP Status: " + std::to_string(aws_sdk.get_http_status_code()));
-                dmrpp_string.clear();
+                dmrpp_string.clear();   // ...because S3 puts an error message in the string. jhrg 8/9/24
                 dmrpp_read = false;
                 break;
+
             default:
-                throw http::HttpError(aws_sdk.get_aws_exception_message(), __FILE__, __LINE__);
+                http_error.set_message(http_error.get_message()
+                    + ". This error for a OPeNDAP-owned DMR++ could be from Hyrax or S3.");
+                throw;
         }
     }
 
@@ -547,21 +506,22 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
     if (NgapOwnedContainer::d_use_dmrpp_cache && get_item_from_dmrpp_cache(dmrpp_string)) {
         return true;
     }
+    else {
+        // Else, the DMR++ is neither in the memory cache nor the file cache.
+        // Read it from S3, etc., and filter it. Put it in the memory cache
+        bool dmrpp_read = false;
 
-    // Else, the DMR++ is neither in the memory cache nor the file cache.
-    // Read it from S3, etc., and filter it. Put it in the memory cache
-    bool dmrpp_read = false;
+        // If the server is set up to try the OPeNDAP bucket, look there first.
+        if (NgapOwnedContainer::d_use_opendap_bucket) {
+            // If we get the DMR++ from the OPeNDAP bucket, set dmrpp_read to true so
+            // we don't also try the DAAC bucket.
+            dmrpp_read = dmrpp_read_from_opendap_bucket(dmrpp_string);
+        }
 
-    // If the server is set up to try the OPeNDAP bucket, look there first.
-    if (NgapOwnedContainer::d_use_opendap_bucket) {
-        // If we get the DMR++ from the OPeNDAP bucket, set dmrpp_read to true so
-        // we don't also try the DAAC bucket.
-        dmrpp_read = dmrpp_read_from_opendap_bucket(dmrpp_string);
-    }
-
-    // Try the DAAC bucket if either the OPeNDAP bucket is not used or the OPeNDAP bucket failed
-    if (!dmrpp_read) {
-        dmrpp_read_from_daac_bucket(dmrpp_string);
+        // Try the DAAC bucket if either the OPeNDAP bucket is not used or the OPeNDAP bucket failed
+        if (!dmrpp_read) {
+            dmrpp_read_from_daac_bucket(dmrpp_string);
+        }
     }
 
     // if we get here, the DMR++ has been pulled over the network. Put it in both caches.

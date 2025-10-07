@@ -41,6 +41,7 @@
 #include "BESNotFoundError.h"
 #include "TheBESKeys.h"
 #include "url_impl.h"
+#include "RemoteResource.h"
 
 #include "NgapApi.h"
 #include "NgapNames.h"
@@ -99,7 +100,7 @@ public:
 #endif
 
 
-    static void show_vector(const vector<string> &v) {
+    static  void show_vector(const vector<string> &v) {
         cerr << "show_vector(): Found " << v.size() << " elements." << endl;
         // vector<string>::iterator it = v.begin();
         for(size_t i=0;  i < v.size(); i++) {
@@ -119,6 +120,7 @@ public:
         if (debug) cerr << prolog << "CMR returned DataAccessURL: " << data_access_url << endl;
         if (debug) cerr << prolog << "The expected DataAccessURL: " << expected_data_access_url << endl;
         CPPUNIT_ASSERT (expected_data_access_url == data_access_url);
+
     }
 
     /**
@@ -215,6 +217,63 @@ public:
         }
     }
 
+#if 0
+    void cmr_access_entry_title_test() {
+        DBG(cerr << prolog << "BEGIN" << endl);
+        string provider_name;
+        string collection_name;
+        string granule_name;
+        string data_access_url;
+
+        provider_name = "GHRC_DAAC";
+        collection_name ="ADVANCED MICROWAVE SOUNDING UNIT-A (AMSU-A) SWATH FROM NOAA-15 V1";
+        granule_name = "amsua15_2020.028_12915_1139_1324_WI.nc";
+
+        string resty_path = "providers/"+provider_name+"/collections/"+collection_name+"/granules/"+granule_name;
+        if (debug) cerr << prolog << "RestifiedPath: " << resty_path << endl;
+
+        try {
+            data_access_url = NgapApi::convert_ngap_resty_path_to_data_access_url(resty_path);
+            if (debug) cerr << prolog << "Found data_access_url: " << data_access_url << endl;
+        }
+        catch(BESError &e){
+            cerr << "Caught BESError: " << e.get_message() << " File: " << e.get_file() << " Line: " << e.get_line() << endl;
+            CPPUNIT_ASSERT(false);
+        }
+        string expected;
+        expected = "https://data.ghrc.earthdata.nasa.gov/ghrcw-protected/amsua15sp__1/amsu-a/noaa-15/data/nc/2020/0128/amsua15_2020.028_12915_1139_1324_WI.nc";
+        compare_results(granule_name, data_access_url, expected);
+        DBG(cerr << prolog << "END" << endl);
+    }
+
+    void cmr_access_collection_concept_id_test() {
+        DBG(cerr << prolog << "BEGIN" << endl);
+        string provider_name;
+        string collection_concept_id;
+        string granule_name;
+        string data_access_url;
+
+        provider_name = "GHRC_DAAC";
+        collection_concept_id ="C1996541017-GHRC_DAAC";
+        granule_name = "amsua15_2020.028_12915_1139_1324_WI.nc";
+
+        string resty_path;
+        resty_path = "providers/" + provider_name + "/concepts/" + collection_concept_id + "/granules/" + granule_name;
+        if (debug) cerr << prolog << "RestifiedPath: " << resty_path << endl;
+        try {
+            data_access_url = NgapApi::convert_ngap_resty_path_to_data_access_url(resty_path);
+            if (debug) cerr << prolog << "Found data_access_url: " << data_access_url << endl;
+        }
+        catch(BESError &e){
+            cerr << "Caught BESError: " << e.get_message() << " File: " << e.get_file() << " Line: " << e.get_line() << endl;
+            CPPUNIT_ASSERT(false);
+        }
+        string expected = "https://data.ghrc.earthdata.nasa.gov/ghrcw-protected/amsua15sp__1/amsu-a/noaa-15/data/nc/2020/0128/amsua15_2020.028_12915_1139_1324_WI.nc";
+        compare_results(granule_name, data_access_url, expected);
+        DBG(cerr << prolog << "END" << endl);
+    }
+#endif
+
     void signed_url_is_expired_test(){
         DBG(cerr << prolog << "BEGIN" << endl);
         string signed_url_str;
@@ -224,7 +283,7 @@ public:
 #endif
         bool is_expired;
 
-        const string signed_url_str = "https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
+        signed_url_str = "https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
               "A-userid=hyrax"
               "&X-Amz-Algorithm=AWS4-HMAC-SHA256"
               "&X-Amz-Credential=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
@@ -249,12 +308,12 @@ public:
         const time_t then = now - 82810; // 23 hours and 10 seconds ago.
 
         signed_url.set_ingest_time(then);
-
+        is_expired = signed_url.is_expired();
 #if 0
-        bool is_expired = NgapApi::signed_url_is_expired(signed_url);
-        CPPUNIT_ASSERT(is_expired == true);
+        //is_expired = NgapApi::signed_url_is_expired(signed_url);
+
 #endif
-        
+        CPPUNIT_ASSERT(is_expired == true);
         DBG(cerr << prolog << "END" << endl);
     }
 
@@ -467,6 +526,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION(NgapApiTest);
 
 } // namespace dmrpp
 
-int main(int argc, char *argv[]) {
+int main(int argc, char*argv[]) {
     return bes_run_tests<ngap::NgapApiTest>(argc, argv, "cerr,ngap,http") ? 0 : 1;
 }

@@ -43,13 +43,7 @@ class url;
 }
 
 namespace ngap {
-/**
- * Build CMR query URLs as strings and parse JSON responses from CMR.
- *
- * This class does not interact with CMR, it builds strings that can be used
- * with the bes_http convenience library to call the CMR web API and to extract
- * information from the JSON responses returned by CMR.
- */
+
 class NgapApi {
 private:
     static std::string get_cmr_search_endpoint_url();

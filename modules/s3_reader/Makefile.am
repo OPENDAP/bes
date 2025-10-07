@@ -19,7 +19,7 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-SUBDIRS = . tests
+SUBDIRS = . unit-tests tests
 
 lib_besdir=$(libdir)/bes
 
