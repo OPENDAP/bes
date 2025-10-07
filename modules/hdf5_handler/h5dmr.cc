@@ -1678,6 +1678,7 @@ void obtain_eos5_dims(hid_t fileid, eos5_dim_info_t &eos5_dim_info) {
     // Retrieve ProjParams from StructMetadata
     p.add_projparams(st_str);
 
+    c.update_unlimited_dim_sizes(&p,fileid);
 #if 0
     p.print();
 #endif
