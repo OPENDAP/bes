@@ -89,13 +89,10 @@ void HE5Parser::print() const
                 cout << "Swath Data Var Dim Name=" << d.name << endl;
                 cout <<"Swath Data Var Dim Size= "<< d.size<<endl;
             }
-// UNCOMMENT OUT the block below to retrieve the maximum dimension list. ALSO NEED TO ADD MAX_DIMENSION_LIST at  he5dds.lex.
-//#if 0
             for (const auto &d:v.max_dim_list) {
                 cout << "Swath Data Var Max Dim Name=" << d.name << endl;
                 cout <<"Swath Data Var Dim Size= "<< d.size<<endl;
             }
-//#endif
         }
     }
 

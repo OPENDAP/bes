@@ -42,7 +42,6 @@ DIMENSION_NAME  	DimensionName
 DATA_FIELD_NAME		DataFieldName
 GEO_FIELD_NAME		GeoFieldName
 DIMENSION_LIST		DimList
-/* UNCOMMENT OUT the line for maximum dimension list. ALSO NEED TO ADD MAX_DIMENSION_LIST around line 86. */
 MAX_DIMENSION_LIST      MaxdimList 
 COMPRESSION_TYPE        CompressionType
 PIXELREGISTRATION	PixelRegistration=
