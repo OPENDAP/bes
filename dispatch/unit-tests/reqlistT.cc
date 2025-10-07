@@ -136,8 +136,8 @@ CPPUNIT_TEST_SUITE( reqlistT );
 
         cout << "*****************************************" << endl;
         cout << "Iterating through handler list" << endl;
-        BESRequestHandlerList::handler_citer h = rhl->get_first_handler();
-        BESRequestHandlerList::handler_citer hl = rhl->get_last_handler();
+        BESRequestHandlerList::Handler_citer h = rhl->get_first_handler();
+        BESRequestHandlerList::Handler_citer hl = rhl->get_last_handler();
         int num_handlers = 0;
         for (; h != hl; h++) {
             rh = (*h).second;

@@ -1,22 +1,6 @@
 
 #include "config.h"
 
-#include <string>
-#include <vector>
-
-#include <curl/curl.h>
-
-#include "BESInternalError.h"
-#include "BESLog.h"
-
-#include "awsv4.h"
-#include "CurlUtils.h"
-#include "url_impl.h"
-
-using namespace std;
-
-namespace curl {
-
 // TODO Remove if not used. jhrg 8/3/24
 /**
  * @brief Perform an HTTP HEAD request.
@@ -93,9 +77,6 @@ bool http_head(const string &target_url, int tries, unsigned long wait_time_us) 
     }
 }
 
-}
-
-#if 0
 These are CurlUtilsTest.cc snippets:
 
 #if 0
@@ -143,6 +124,4 @@ void http_head_test() {
         CPPUNIT_ASSERT_MESSAGE("Size should be 288", str.size() == 288);
         DBG(cerr << prolog << "END\n");
     }
-#endif
-
 #endif

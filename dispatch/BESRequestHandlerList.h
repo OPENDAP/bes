@@ -87,8 +87,8 @@ public:
     virtual BESRequestHandler * remove_handler(const std::string &handler_name);
     virtual BESRequestHandler * find_handler(const std::string &handler_name);
 
-    virtual handler_citer get_first_handler();
-    virtual handler_citer get_last_handler();
+    virtual Handler_citer get_first_handler();
+    virtual Handler_citer get_last_handler();
 
     virtual std::string get_handler_names();
 

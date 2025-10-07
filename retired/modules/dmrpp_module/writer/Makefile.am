@@ -2,7 +2,7 @@
 # Automake file for fileout_gdal
 #
 # 11/1/12 jhrg
-AUTOMAKE_OPTIONS = foreign subdir-objects
+AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = $(DMRPP_CFLAGS) $(DAP_CFLAGS) $(H5_CPPFLAGS) -I$(top_srcdir) -I$(top_srcdir)/dap \
     -I$(top_srcdir)/dispatch -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src \
