@@ -52,6 +52,7 @@ class HE5Checker {
     bool check_grids_unknown_parameters(const HE5Parser* p) const;
     bool check_grids_support_projcode(const HE5Parser*p) const;
     void update_unlimited_dim_sizes(HE5Parser* p,hid_t file_id);
+    void update_unlimited_dim_sizes_internal(hid_t file_id, const std::string& eos5_name, std::vector<HE5Dim>&dim_list, const std::vector<HE5Var>&data_var_list, const std::vector<HE5Var>&geo_var_list);
     int obtain_correct_dim_size(hid_t file_id, const std::string &var_path, int var_dim_index);
     void set_grids_missing_pixreg_orig(HE5Parser* p) const;
 

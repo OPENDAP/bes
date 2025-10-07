@@ -50,6 +50,9 @@ HE5Checker::update_unlimited_dim_sizes(HE5Parser* p, hid_t fileid)
 //cerr<<"coming to update_unlimited_dim_sizes"<<endl;
     for (auto &g:p->swath_list) {
 
+        update_unlimited_dim_sizes_internal(fileid, g.name,g.dim_list,g.data_var_list, g.geo_var_list);
+
+#if 0
         unordered_set<string> wrong_size_dim_names;
         unordered_map<string, string> wrong_size_dim_var_names;
         unordered_map<string, int> wrong_size_dim_name_to_var_dim_index;
@@ -116,7 +119,159 @@ HE5Checker::update_unlimited_dim_sizes(HE5Parser* p, hid_t fileid)
                 }
             }
         }
+#endif
     }
+
+    vector<HE5Var> geo_var_list;
+    for (auto &g:p->grid_list) 
+        update_unlimited_dim_sizes_internal(fileid, g.name,g.dim_list,g.data_var_list, geo_var_list);
+    for (auto &g:p->za_list) 
+        update_unlimited_dim_sizes_internal(fileid, g.name,g.dim_list,g.data_var_list, geo_var_list);
+
+
+}
+
+void HE5Checker::update_unlimited_dim_sizes_internal(hid_t fileid, const string& eos5_name, vector<HE5Dim>&dim_list, const vector<HE5Var>&data_var_list, const vector<HE5Var>&geo_var_list) {
+
+        unordered_set<string> wrong_size_dim_names;
+        unordered_map<string, string> wrong_size_dim_var_names;
+        unordered_map<string, int> wrong_size_dim_name_to_var_dim_index;
+        unordered_map<string, int> corrected_dim_name_size;
+        
+        for (const auto &md:dim_list) {
+            if (md.name == "Unlimited") {
+                for (const auto &v:data_var_list) {
+//cerr<<"v name: "<<v.name<<endl;
+                    if (v.dim_list.size() == v.max_dim_list.size()) {
+                    for (unsigned i = 0; i < v.dim_list.size(); i++) {
+//cerr<<"dim name: "<<(v.dim_list[i]).name <<endl;
+                        if ((v.max_dim_list[i]).name == "Unlimited") {
+//cerr<<"max_dim name: "<<(v.max_dim_list[i]).name <<endl;
+                            if (wrong_size_dim_names.find((v.dim_list[i]).name) ==wrong_size_dim_names.end()) {
+                                wrong_size_dim_names.insert((v.dim_list[i]).name);
+                                wrong_size_dim_var_names[(v.dim_list[i]).name] = v.name;
+                                wrong_size_dim_name_to_var_dim_index[(v.dim_list[i]).name] = i;
+//cerr<<"after setting "<<endl;
+                            }
+                        }
+
+                    }
+                    }
+                }
+                break;
+            }
+        }
+//cerr<<"after filling in the corrected info."<<endl;
+        if (wrong_size_dim_names.empty() == false) {
+
+            for (const auto &wdv:wrong_size_dim_var_names) {
+                string var_name = wdv.second;
+                string var_path = "/HDFEOS/SWATHS/" + eos5_name + "/Data Fields/" + var_name;
+//cerr<<"var_path: "<<var_path <<endl;
+                int var_dim_index = -1;
+                if (wrong_size_dim_name_to_var_dim_index.find(wdv.first) != wrong_size_dim_name_to_var_dim_index.end())
+                    var_dim_index = wrong_size_dim_name_to_var_dim_index[wdv.first];
+                else  {
+                    string msg = "Cannot find the dimension index to search the dimension size for the variable " + var_path;
+                    BESInternalError(msg,__FILE__,__LINE__);
+                }
+                int correct_dim_size = obtain_correct_dim_size(fileid,var_path,var_dim_index);
+                if (corrected_dim_name_size.find(wdv.first)==corrected_dim_name_size.end())
+                    corrected_dim_name_size[wdv.first] = correct_dim_size;
+                else {
+                    string msg = "Cannot find the dimension name to correct the size for the variable " + var_path;
+                    BESInternalError(msg,__FILE__,__LINE__);
+                }
+//cerr<<"correct_dim_size: "<<correct_dim_size <<endl;
+//cerr<<"correct_dim_name: "<<wdv.first <<endl;
+            }
+
+            for (auto &d:dim_list) {
+//cerr<<"d.name: "<<d.name <<endl;
+                for (const auto& cdns: corrected_dim_name_size) {
+//cerr<<"cdns.first: "<<cdns.first <<endl;
+                    if (d.name == cdns.first) {
+//cerr<<"coming to the corrected dim name "<<endl;
+//cerr<<"corrected dim size is: "<<cdns.second;
+                        d.size = cdns.second;
+                        break;
+                    }
+                }
+            }
+        }
+ 
+        if(geo_var_list.empty() == false) {
+
+            unordered_set<string> wrong_geo_size_dim_names;
+            unordered_map<string, string> wrong_geo_size_dim_var_names;
+            unordered_map<string, int> wrong_geo_size_dim_name_to_var_dim_index;
+            unordered_map<string, int> corrected_geo_dim_name_size;
+
+        for (const auto &md:dim_list) {
+            if (md.name == "Unlimited") {
+                for (const auto &v:geo_var_list) {
+//cerr<<"v name: "<<v.name<<endl;
+                    if (v.dim_list.size() == v.max_dim_list.size()) {
+                    for (unsigned i = 0; i < v.dim_list.size(); i++) {
+//cerr<<"dim name: "<<(v.dim_list[i]).name <<endl;
+                        if ((v.max_dim_list[i]).name == "Unlimited") {
+//cerr<<"max_dim name: "<<(v.max_dim_list[i]).name <<endl;
+                            if (wrong_size_dim_names.find((v.dim_list[i]).name) ==wrong_size_dim_names.end() && wrong_geo_size_dim_names.find((v.dim_list[i]).name) ==wrong_geo_size_dim_names.end()) {
+                                wrong_geo_size_dim_names.insert((v.dim_list[i]).name);
+                                wrong_geo_size_dim_var_names[(v.dim_list[i]).name] = v.name;
+                                wrong_geo_size_dim_name_to_var_dim_index[(v.dim_list[i]).name] = i;
+//cerr<<"after setting "<<endl;
+                            }
+                        }
+
+                    }
+                    }
+                }
+                break;
+            }
+        }
+//cerr<<"after filling in the corrected info."<<endl;
+        if (wrong_geo_size_dim_names.empty() == false) {
+
+            for (const auto &wdv:wrong_geo_size_dim_var_names) {
+                string var_name = wdv.second;
+                string var_path = "/HDFEOS/SWATHS/" + eos5_name + "/Geolocation Fields/" + var_name;
+//cerr<<"var_path: "<<var_path <<endl;
+                int var_dim_index = -1;
+                if (wrong_geo_size_dim_name_to_var_dim_index.find(wdv.first) != wrong_geo_size_dim_name_to_var_dim_index.end())
+                    var_dim_index = wrong_geo_size_dim_name_to_var_dim_index[wdv.first];
+                else  {
+                    string msg = "Cannot find the dimension index to search the dimension size for the variable " + var_path;
+                    BESInternalError(msg,__FILE__,__LINE__);
+                }
+                int correct_dim_size = obtain_correct_dim_size(fileid,var_path,var_dim_index);
+                if (corrected_geo_dim_name_size.find(wdv.first)==corrected_geo_dim_name_size.end())
+                    corrected_geo_dim_name_size[wdv.first] = correct_dim_size;
+                else {
+                    string msg = "Cannot find the dimension name to correct the size for the variable " + var_path;
+                    BESInternalError(msg,__FILE__,__LINE__);
+                }
+//cerr<<"correct_dim_size: "<<correct_dim_size <<endl;
+//cerr<<"correct_dim_name: "<<wdv.first <<endl;
+            }
+
+            for (auto &d:dim_list) {
+//cerr<<"d.name: "<<d.name <<endl;
+                for (const auto& cdns: corrected_geo_dim_name_size) {
+//cerr<<"cdns.first: "<<cdns.first <<endl;
+                    if (d.name == cdns.first) {
+//cerr<<"coming to the corrected dim name "<<endl;
+//cerr<<"corrected dim size is: "<<cdns.second;
+                        d.size = cdns.second;
+                        break;
+                    }
+                }
+            }
+        }
+ 
+
+        }
+
 }
  
 int HE5Checker::obtain_correct_dim_size(hid_t file_id, const string &var_path, int var_dim_index) {
