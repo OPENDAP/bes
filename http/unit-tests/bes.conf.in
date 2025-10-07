@@ -13,13 +13,12 @@ Http.No.Retry.Regex+=^https:\/\/.*s3(\.|-).*\.amazonaws\.com\/.*$
 #-----------------------------------------------------------------------#
 
 # Allow access to src dir and test.opendap.org
-AllowedHosts = ^file:\/\/@abs_top_srcdir@\/http\/.*
-AllowedHosts += ^http:\/\/test\.opendap\.org\/.*
-AllowedHosts += ^https:\/\/harmony(\.uat)?\.earthdata\.nasa\.gov\/.*
-AllowedHosts += ^https:\/\/d1jecqxxv88lkr\.cloudfront\.net\/.*
+AllowedHosts = ^file:\/\/@abs_top_srcdir@\/http\/.*$
+AllowedHosts += ^http:\/\/test\.opendap\.org\/.*$
+AllowedHosts += ^https:\/\/harmony(\.uat)?\.earthdata\.nasa\.gov\/.*$
+AllowedHosts += ^https:\/\/d1jecqxxv88lkr\.cloudfront\.net\/.*$
 
 AllowedHosts += ^https://s3.us-east-1.amazonaws.com/cloudydap/samples/.*
-AllowedHosts += ^https://cloudydap.s3.us-east-1.amazonaws.com/.*
 
 CredentialsManager.config = ENV_CREDS
 

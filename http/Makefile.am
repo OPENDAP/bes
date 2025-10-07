@@ -21,9 +21,9 @@ noinst_LTLIBRARIES = libbes_http.la
 
 libbes_http_la_SOURCES = $(SRCS) $(HDRS)
 libbes_http_la_LDFLAGS =
-libbes_http_la_LIBADD = $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS)
+libbes_http_la_LIBADD = $(BES_DISPATCH_LIB) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS)
 
-pkginclude_HEADERS = $(HDRS)
+pkginclude_HEADERS = $(HDRS) 
 
 pkgdata_DATA =
 

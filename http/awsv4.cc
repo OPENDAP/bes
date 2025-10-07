@@ -34,7 +34,6 @@
 
 #include <cstring>
 
-#include <memory>
 #include <stdexcept>
 #include <algorithm>
 #include <map>
@@ -317,7 +316,7 @@ std::string compute_awsv4_signature(const std::string &canonical_uri, const std:
     // so here it is without.
     //
     // NOTE: Changing this will break the awsv4_test using tests. jhrg 1/3/20
-    std::vector<std::string> headers{"host:", "x-amz-date:"};
+    std::vector<std::string> headers{"host: ", "x-amz-date: "};
     headers[0].append(host);
     headers[1].append(ISO8601_date(request_date));
 
@@ -365,9 +364,9 @@ std::string compute_awsv4_signature(const std::string &canonical_uri, const std:
 /**
  * @brief Return the AWS V4 signature for a given GET request
  *
- * This version takes a http::url object for the path, query string and host.
- *
- * @param uri The URI to fetch. This is a http::url object.
+ * This version takes an http::url object for the path, query string and host.
+ * @todo Remove when we retire the shared_ptr<http::url> interface. jhrg 2/20/25
+ * @param uri_str The URI to fetch
  * @param request_date The current date & time
  * @param secret_key The Secret key for this resource (the thing referenced by the URI).
  * @param region The AWS region where the request is being made (us-west-2 by default)
@@ -385,13 +384,12 @@ std::string compute_awsv4_signature(
                                    region, service);
 }
 
-
 /**
  * @brief Return the AWS V4 signature for a given GET request
  *
- * This version takes a http::url object for the path, query string and host.
+ * This version takes an http::url object for the path, query string and host.
  *
- * @param uri The URI to fetch. This is a http::url object.
+ * @param uri_str The URI to fetch. This is an http::url object.
  * @param request_date The current date & time
  * @param secret_key The Secret key for this resource (the thing referenced by the URI).
  * @param region The AWS region where the request is being made (us-west-2 by default)

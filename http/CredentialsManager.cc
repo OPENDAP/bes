@@ -66,20 +66,23 @@ std::once_flag d_cmac_init_once;
 // Helper Functions
 //
 /**
- *  Get the value of the specified environment value. This function
+ *  Get get the specified environment value. This function
  *  returns an empty string if the environment variable is
  *  not found, AND if the environment value is set but empty.
  * @param key The environment value to retrieve
  * @return The value of the environment variable,
  * or the empty string is not found.
  */
-string get_env_value(const string &key) {
-    const char *env_var_value = getenv(key.c_str());
-    if (env_var_value) {
-        BESDEBUG(CREDS, prolog << "From system environment - " << key << ": " << env_var_value << endl);
-        return {env_var_value};
+std::string get_env_value(const string &key) {
+    string value;
+    const char *cstr = getenv(key.c_str());
+    if (cstr) {
+        value.assign(cstr);
+        BESDEBUG(CREDS, prolog << "From system environment - " << key << ": " << value << endl);
+    } else {
+        value.clear();
     }
-    return {""};
+    return value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -210,8 +213,9 @@ bool file_is_secured(const string &filename) {
         throw BESInternalError(err, __FILE__, __LINE__);
     }
 
-    const mode_t perm = st.st_mode;
-    const bool status = (perm & S_IRUSR) && !(
+    mode_t perm = st.st_mode;
+    bool status;
+    status = (perm & S_IRUSR) && !(
             // (perm & S_IWUSR) || // We don't need to enforce user no write
             (perm & S_IXUSR) ||
             (perm & S_IRGRP) ||
@@ -225,129 +229,36 @@ bool file_is_secured(const string &filename) {
     return status;
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-//
-// class CredentialsManager
-//
-
-/**
- * @brief Use the Meyers Singleton pattern to make a single instance of the CredentialManager.
- * @return Returns the pointer to the instance of the CredentialsManager.
- */
-CredentialsManager *CredentialsManager::theCM() {
-    static CredentialsManager the_manager;
-    return &the_manager;
-}
-
-/**
- * Add the passed set of AccessCredentials to the collection, filed under key.
- * @param key The key (URL) to associated with these credentials
- * @param ac The credentials to use for access.
- */
-void
-CredentialsManager::add(const std::string &key, AccessCredentials *ac) {
-    // This lock is a RAII implementation. It will block until the mutex is
-    // available and the lock will be released when the instance is destroyed.
-    std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
-
-    d_creds.insert(std::pair<std::string, AccessCredentials *>(key, ac));
-    BESDEBUG(HTTP_MODULE, prolog << "Added AccessCredentials to CredentialsManager.\n");
-    BESDEBUG(CREDS, prolog << "Credentials: \n" << ac->to_json() << "\n");
-}
-
-/**
- * Retrieve the AccessCredentials, if any, associated with the passed url (key).
- * @param url The URL for which AccessCredentials are desired
- * @return If there are AccessCredentials associated with the URL/key then a pointer to
- * them will be returned. Otherwise, NULL.
- */
-AccessCredentials *
-CredentialsManager::get(const shared_ptr <http::url> &url) const {
-    AccessCredentials *best_match = nullptr;
-    if (url->protocol() == HTTP_PROTOCOL || url->protocol() == HTTPS_PROTOCOL) {
-        for (auto &item: d_creds) {
-            string best_key;
-            const string &key = item.first;
-            if ((url->str().rfind(key, 0) == 0) && (key.size() > best_key.size())) {
-                // url starts with key
-                best_key = key;
-                best_match = item.second;
-            }
-        }
-    }
-
-    return best_match;
-}
-
-/**
- * Retrieve the AccessCredentials, if any, associated with the passed url (key).
- * @param url The URL for which AccessCredentials are desired
- * @return If there are AccessCredentials associated with the URL/key then a pointer to
- * them will be returned. Otherwise, NULL.
- */
-AccessCredentials *
-CredentialsManager::get(const std::string &url) const {
-    if (url.find(HTTP_PROTOCOL) != 0 && url.find(HTTPS_PROTOCOL) != 0)
-        return nullptr;
-
-    AccessCredentials *best_match = nullptr;
-    for (auto &item: d_creds) {
-        std::string best_key;
-        const std::string &key = item.first;
-        if ((url.rfind(key, 0) == 0) && (key.size() > best_key.size())) {
-            // url starts with key
-            best_key = key;
-            best_match = item.second;
-        }
-    }
-
-    return best_match;
-}
-
-/**
- * @brief Lookup the credentials for an AWS S3 bucket.
- *
- * @note Internally, we are reusing the subkey 'url' to hold the bucket name since
- * that subkey is used to locate credential sets - see load_credentials(). We could
- * change how the information is stored, but that is a refinement.
- *
- * @param url This is the AWS S3 bucket name (just that, no s3:// prefix)
- * @return A pointer to the AccessCredentials for that bucket
- */
-AccessCredentials *
-CredentialsManager::get_bucket(const std::string &url) const {
-    AccessCredentials *best_match = nullptr;
-    for (auto &item: d_creds) {
-        std::string best_key;
-        const std::string &key = item.first;
-        if ((url.rfind(key, 0) == 0) && (key.size() > best_key.size())) {
-            // url starts with key
-            best_key = key;
-            best_match = item.second;
-        }
-    }
-
-    return best_match;
-}
-
 /**
  * This method loads credentials from a special file identified in the bes.conf chain
  * by the key "CredentialsManager.config". If the key is missing from the bes.conf chain
  * the method will return and no credentials will be loaded.
  *
- * The credentials are stored as a map of maps where the 'main' key is the human-readable
- * name of the credentials and the sub-keys hold teh values of the different parts of the
- * credential.
- *
+ * The credentials are stored as a map of maps  where the key is the human readable name
+ * of the credentials.
  * The map of maps is accomplished by the following formatting:
  *
+ * @todo FIXME The 'bucket' key is not used. jhrg 2/19/25
  * cloudydap=url:https://s3.amazonaws.com/cloudydap/
  * cloudydap+=id:---------------------------
  * cloudydap+=key:**************************
  * cloudydap+=region:us-east-1
+ * cloudydap+=bucket:cloudydap
  *
- * @note This method is called in a constructor and never throws. It will
- * write messages to the error log using the ERROR_LOG macro. jhrg 3/7/25
+ * cloudyopendap=url:https://s3.amazonaws.com/cloudyopendap/
+ * cloudyopendap+=id:---------------------------
+ * cloudyopendap+=key:**************************
+ * cloudyopendap+=region:us-east-1
+ * cloudyopendap+=bucket:cloudyopendap
+ *
+ * cname_02=url:https://ssotherone.org/login
+ * cname_02+=id:---------------------------
+ * cname_02+=key:**************************
+ * cname_02+=region:us-east-1
+ * cname_02+=bucket:cloudyotherdap
+ *
+ * @throws BESInternalError if the file specified by the "CredentialsManager.config"
+ * key is missing or if the file is not secured (permissions 600).
  *
  * @note NEVER call this method directly. It is called using call_once() by the
  * singleton accessor.
@@ -357,20 +268,21 @@ void CredentialsManager::load_credentials() {
     bool found_key = true;
     TheBESKeys::TheKeys()->get_value(CATALOG_MANAGER_CREDENTIALS, config_file, found_key);
     if (!found_key) {
-        BESDEBUG(HTTP_MODULE, prolog << "The key " << CATALOG_MANAGER_CREDENTIALS
-                                     << " was not found; no AccessCredentials were loaded\n");
+        BESDEBUG(HTTP_MODULE, prolog << "The BES key " << CATALOG_MANAGER_CREDENTIALS
+                                     << " was not found in the BES configuration tree. No AccessCredentials were loaded"
+                                     << endl);
         return;
     }
 
     // Does the configuration indicate that credentials will be submitted via the runtime environment?
     if (config_file == string(CredentialsManager::USE_ENV_CREDS_KEY_VALUE)) {
         // Apparently so...
-        auto *access_credentials = load_credentials_from_env();
-        if (access_credentials) {
+        auto *accessCredentials = load_credentials_from_env();
+        if (accessCredentials) {
             // So if we have them, we add them to CredentialsManager object that called this method
             // and then return without processing the configuration.
-            string url = access_credentials->get(AccessCredentials::URL_KEY);
-            add(url, access_credentials);
+            string url = accessCredentials->get(AccessCredentials::URL_KEY);
+            add(url, accessCredentials);
         }
         // Environment injected credentials override all other configuration credentials.
         // Since the value of CATALOG_MANAGER_CREDENTIALS is ENV_CREDS_VALUE, there is no
@@ -397,71 +309,66 @@ void CredentialsManager::load_credentials() {
 
     BESDEBUG(HTTP_MODULE, prolog << "The config file '" << config_file << "' is secured." << endl);
 
-    // Read the credentials in this BES into a 'keystore.' Then extract that information and
-    // put it in the credential_sets map (string --> AccessCredentials*). jhrg 3/11/25
     unordered_map<string, vector<string> > keystore;
-    kvp::load_keys(config_file, keystore);
 
+    kvp::load_keys(config_file, keystore);
     map<string, AccessCredentials *> credential_sets;
+    AccessCredentials *accessCredentials = nullptr;
     for (const auto &key: keystore) {
-        AccessCredentials *access_credentials = nullptr;
-        const string creds_name = key.first;  // In the method doc comment above, this is 'cloudydap.' jhrg 3/7/25
+        string creds_name = key.first;
         const vector<string> &credentials_entries = key.second;
-        const auto mit = credential_sets.find(creds_name);
-        if (mit != credential_sets.end()) {  // In the method doc above, 'cloudydap'
+        map<string, AccessCredentials *>::iterator mit;
+        mit = credential_sets.find(creds_name);
+        if (mit != credential_sets.end()) {  // New?
             // Nope.
-            access_credentials = mit->second;
+            accessCredentials = mit->second;
         } else {
             // Make new one
-            access_credentials = new AccessCredentials(creds_name);
-            credential_sets.insert(pair<string, AccessCredentials *>(creds_name, access_credentials));
+            accessCredentials = new AccessCredentials(creds_name);
+            credential_sets.insert(pair<string, AccessCredentials *>(creds_name, accessCredentials));
         }
 
         for (const auto &entry: credentials_entries) {
-            // This loop iterates over 'url:...,' etc., in the comment above. jhrg 3/7/25
             size_t index = entry.find(':');
             if (index > 0) {
                 string key_name = entry.substr(0, index);
                 string value = entry.substr(index + 1);
                 BESDEBUG(HTTP_MODULE, prolog << creds_name << ":" << key_name << "=" << value << endl);
-                access_credentials->add(key_name, value);
+                accessCredentials->add(key_name, value);
             }
         }
     }
 
     BESDEBUG(HTTP_MODULE, prolog << "Loaded " << credential_sets.size() << " AccessCredentials" << endl);
-    // Every credential must have a sub-key named 'url.' Push the ones that don't onto 'bad_creds.'
-    //  This block of code does two things: it uses the _value_ of the subkey 'url' as the string used
-    //  to find the other credentials, and it marks credentials that do not have a 'url' subkey as bad
-    //  credentials. jhrg 3/7/25
     vector<AccessCredentials *> bad_creds;
 
-    for (const auto &pair: credential_sets) {
-        const auto access_credentials = pair.second;
-        string url = access_credentials->get(AccessCredentials::URL_KEY);
+    for (const auto &acit: credential_sets) {
+        accessCredentials = acit.second;
+        string url = accessCredentials->get(AccessCredentials::URL_KEY);
         if (!url.empty()) {
-            add(url, access_credentials);
+            add(url, accessCredentials);
         } else {
-            bad_creds.push_back(pair.second);
+            bad_creds.push_back(acit.second);
         }
     }
 
     if (!bad_creds.empty()) {
-        string err{"Encountered "};
-        err += to_string(bad_creds.size()) + " AccessCredentials definitions missing an associated URL. offenders: ";
+        stringstream err;
+        err << "Encountered " << bad_creds.size() << " AccessCredentials "
+            << " definitions missing an associated URL. offenders: ";
 
         for (auto &bc: bad_creds) {
-            err += bc->name() + "  ";
+            err << bc->name() << "  ";
             credential_sets.erase(bc->name());
             delete bc;
         }
-        ERROR_LOG(err);
-        BESDEBUG(HTTP_MODULE, err);
+        ERROR_LOG(err.str());
+        BESDEBUG(HTTP_MODULE, err.str());
         return;
     }
-
     BESDEBUG(HTTP_MODULE, prolog << "Successfully ingested " << size() << " AccessCredentials" << endl);
 }
+
 
 /**
  * @brief Attempts to load Access Credentials from the environment variables.

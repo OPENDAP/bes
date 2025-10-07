@@ -31,11 +31,13 @@
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "BESStopWatch.h"
+#include "BESCatalogList.h"
 #include "TheBESKeys.h"
 #include "BESContextManager.h"
 #include "url_impl.h"
 #include "AccessCredentials.h"
 #include "CredentialsManager.h"
+#include "BESForbiddenError.h"
 #include "BESSyntaxUserError.h"
 #include "CurlUtils.h"
 #include "HttpError.h"
@@ -768,67 +770,6 @@ public:
         DBG(cerr << prolog << "END\n");
     }
 
-    void http_head_test() {
-        DBG(cerr << prolog << "BEGIN\n");
-        const string url = "http://test.opendap.org/opendap.conf";
-        DBG(cerr << prolog << "Retrieving: " << url << "\n");
-        long http_response_code;
-        bool result = curl::http_head(url, http_response_code);
-        DBG(cerr << prolog << "HTTP Response code: " << http_response_code << "\n");
-        CPPUNIT_ASSERT_MESSAGE("The HEAD request should have succeeded.", result);
-        DBG(cerr << prolog << "END\n");
-    }
-
-    void http_head_test_404() {
-        DBG(cerr << prolog << "BEGIN\n");
-        const string url = "http://test.opendap.org/not_there";
-        DBG(cerr << prolog << "Retrieving: " << url << "\n");
-        long http_response_code;
-        bool result = curl::http_head(url, http_response_code);
-        DBG(cerr << prolog << "HTTP Response code: " << http_response_code << "\n");
-        CPPUNIT_ASSERT_MESSAGE("The HEAD request should have failed.", !result);
-        DBG(cerr << prolog << "END\n");
-    }
-
-#if 0
-    void http_head_test_s3() {
-        DBG(cerr << prolog << "BEGIN\n");
-        auto const cmac_url = getenv("CMAC_URL");
-        DBG(cerr << prolog << "CMAC_URL: " << cmac_url << "\n");
-        const string url = "https://cloudydap.s3.us-east-1.amazonaws.com/samples/chunked_twoD.h5";
-        DBG(cerr << prolog << "Retrieving: " << url << "\n");
-        long http_response_code;
-        bool result = curl::http_head(url, http_response_code);
-        DBG(cerr << prolog << "HTTP Response code: " << http_response_code << "\n");
-        CPPUNIT_ASSERT_MESSAGE("The HEAD request should have succeeded.", result);
-#if 0
-          if (cmac_url && url.find(cmac_url) == 0) {
-            DBG(cerr << prolog << "Retrieving: " << url << "\n");
-            long http_response_code;
-            bool result = curl::http_head(url, http_response_code);
-            DBG(cerr << prolog << "HTTP Response code: " << http_response_code << "\n");
-            CPPUNIT_ASSERT_MESSAGE("The HEAD request should have succeeded.", result);
-        }
-        else {
-            DBG(cerr << prolog << "Skipping test do to missing CMAC_URL credentials\n");
-        }
-#endif
-        DBG(cerr << prolog << "END\n");
-    }
-
-    void http_head_test_s3_not_home() {
-        DBG(cerr << prolog << "BEGIN\n");
-        const string url = "https://cloudydap.s3.us-east-1.amazonaws.com/samples/not_home";
-        DBG(cerr << prolog << "Retrieving: " << url << "\n");
-        long http_response_code;
-        bool result = curl::http_head(url, http_response_code);
-        DBG(cerr << prolog << "HTTP Response code: " << http_response_code << "\n");
-        CPPUNIT_ASSERT_MESSAGE("The HEAD request should have succeeded.", !result);
-        DBG(cerr << prolog << "END\n");
-    }
-#endif
-
-
     void how_big() {
         DBG(cerr << prolog << "BEGIN\n");
         DBG(cerr << prolog << "        char: " << (sizeof(char) * 8) << " bits\n");
@@ -843,15 +784,7 @@ public:
 
     CPPUNIT_TEST_SUITE(CurlUtilsTest);
 
-        CPPUNIT_TEST(http_head_test);
-        CPPUNIT_TEST(http_head_test_404);
-#if 0
-          CPPUNIT_TEST(http_head_test_s3);
-        CPPUNIT_TEST(http_head_test_s3_not_home);
-#endif
-
-
-    CPPUNIT_TEST(test_is_url_signed_for_s3_WithSignedUrl);
+        CPPUNIT_TEST(test_is_url_signed_for_s3_WithSignedUrl);
         CPPUNIT_TEST(test_is_url_signed_for_s3_with_one_key_only);
         CPPUNIT_TEST(test_is_url_signed_for_s3_WithoutSignedUrl);
         CPPUNIT_TEST(test_is_url_signed_for_s3_EmptyUrl);

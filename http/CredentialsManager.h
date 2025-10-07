@@ -45,49 +45,47 @@ public:
     static const char *ENV_ACCESS_KEY;
     static const char *ENV_REGION_KEY;
     static const char *ENV_URL_KEY;
-
     static const char *USE_ENV_CREDS_KEY_VALUE;
 
 private:
     std::recursive_mutex d_lock_mutex{};
 
-    std::map<std::string, AccessCredentials *> d_creds;
+    bool ngaps3CredentialsLoaded = false;
+    std::map<std::string, AccessCredentials *> creds;
 
-    CredentialsManager() {
-        load_credentials();
-    }
+    CredentialsManager() = default;   // only called here to build the singleton
 
     void load_credentials();
     AccessCredentials *load_credentials_from_env();
-
-    void clear() {
-        d_creds.clear();
-    }
 
     friend class CredentialsManagerTest;
     friend class CurlUtilsTest;
 
 public:
+    ~CredentialsManager() = default;
+
     CredentialsManager(const CredentialsManager&) = delete;
     CredentialsManager& operator=(const CredentialsManager&) = delete;
-    CredentialsManager(const CredentialsManager&&) = delete;
-    CredentialsManager& operator=(const CredentialsManager&&) = delete;
-    ~CredentialsManager() {
-        for (const auto &item: d_creds) {
-            delete item.second;
-        }
-    }
 
     static CredentialsManager *theCM();
 
     void add(const std::string &url, AccessCredentials *ac);
 
-    AccessCredentials *get(const std::shared_ptr<http::url> &url) const;
-    AccessCredentials *get(const std::string &url) const;
+    void clear() {
+        creds.clear();
+        ngaps3CredentialsLoaded = false;
+    }
 
-    AccessCredentials *get_bucket(const std::string &url) const;
+    AccessCredentials *get(const std::shared_ptr<http::url> &url);
+    AccessCredentials *get(const std::string &url);
 
-    size_t size() const { return d_creds.size(); }
+    size_t size() const {
+        return creds.size();
+    }
+
+    bool hasNgapS3Credentials() const {
+        return ngaps3CredentialsLoaded;
+    }
 };
 
 }   // namespace http

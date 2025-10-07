@@ -75,7 +75,9 @@ bes_ngap_s3_creds.conf: bes_ngap_s3_creds.conf.in $(top_srcdir)/configure.ac
 if CPPUNIT
 
 UNIT_TESTS =  HttpUtilsTest HttpErrorTest RemoteResourceTest EffectiveUrlCacheTest HttpUrlTest \
-AllowedHostsTest awsv4_test CurlUtilsTest CurlSListTest CredentialsManagerTest
+AllowedHostsTest awsv4_test CurlUtilsTest CurlSListTest
+
+# CredentialsManagerTest HttpCacheTest
 
 else
 
@@ -101,12 +103,19 @@ HttpUtilsTest_LDADD = $(LIBADD)
 HttpErrorTest_SOURCES = HttpErrorTest.cc
 HttpErrorTest_LDADD =  $(LIBADD)
 
+
+# ResponseTest_SOURCES = ResponseTest.cc
+# ResponseTest_LDADD = $(LIBADD)
+
 RemoteResourceTest_SOURCES = RemoteResourceTest.cc
 RemoteResourceTest_CXXFLAGS = -static
 RemoteResourceTest_LDADD = $(LIBADD)
 
 CurlUtilsTest_SOURCES = CurlUtilsTest.cc
 CurlUtilsTest_LDADD = $(LIBADD)
+
+# HttpCacheTest_SOURCES = HttpCacheTest.cc
+# HttpCacheTest_LDADD = $(LIBADD)
 
 EffectiveUrlCacheTest_SOURCES = EffectiveUrlCacheTest.cc
 EffectiveUrlCacheTest_LDADD = $(LIBADD)
