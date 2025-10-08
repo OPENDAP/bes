@@ -188,6 +188,7 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compact_example
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_int_scalar.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_scalar_dset_float_be.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/FValue_c_b.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/FValue_string_sca.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/netcdf_3_two_chunks_deflate.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/One_chunk_s_c_full_constraint.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/One_chunk_s_c_one_var.dmrpp.bescmd>test.nc
