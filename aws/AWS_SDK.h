@@ -34,46 +34,48 @@
 
 #include "IAWS_SDK.h"
 
-namespace bes {
-class AWS_SDK: public IAWS_SDK {
-    Aws::S3::S3Client d_get_s3_client;
-    bool d_is_s3_initialized = false;
-    static Aws::SDKOptions options;
+namespace bes
+{
+    class AWS_SDK : public IAWS_SDK
+    {
+        Aws::S3::S3Client d_get_s3_client;
+        bool d_is_s3_initialized = false;
+        static Aws::SDKOptions options;
 
-    void ok() const;  // throws BESInternalFatalError if the AWS_SDK instance is used before initialization.
-#if 0
+        void ok() const; // throws BESInternalFatalError if the AWS_SDK instance is used before initialization.
 
-    static Aws::S3::S3Client get_s3_client(const std::string &region);
+        static Aws::S3::S3Client get_s3_client(const std::string &region, const std::string &aws_key,
+                                               const std::string &aws_secret_key);
 
-#endif
-    static Aws::S3::S3Client get_s3_client(const std::string &region, const std::string &aws_key,
-        const std::string &aws_secret_key);
+        friend class AWS_SDK_Test;
 
-    friend class AWS_SDK_Test;
+    public:
+        AWS_SDK() = default;
+        ~AWS_SDK() override = default;
+        AWS_SDK(const AWS_SDK &) = delete;
+        AWS_SDK &operator=(const AWS_SDK &) = delete;
+        AWS_SDK(const AWS_SDK &&) = delete;
+        AWS_SDK &operator=(const AWS_SDK &&) = delete;
 
-public:
-    AWS_SDK() = default;
-    ~AWS_SDK() override = default;
-    AWS_SDK(const AWS_SDK&) = delete;
-    AWS_SDK& operator=(const AWS_SDK&) = delete;
-    AWS_SDK(const AWS_SDK&&) = delete;
-    AWS_SDK& operator=(const AWS_SDK&&) = delete;
+        static void aws_library_initialize()
+        {
+            Aws::InitAPI(options);
+        }
 
-    static void aws_library_initialize() {
-        Aws::InitAPI(options);
-    }
-    static void aws_library_shutdown() {
-        Aws::ShutdownAPI(options);
-    }
+        static void aws_library_shutdown()
+        {
+            Aws::ShutdownAPI(options);
+        }
 
-    void initialize(const std::string &region, const std::string &aws_key, const std::string &aws_secret_key) override {
-        d_get_s3_client = get_s3_client(region, aws_key, aws_secret_key);
-        d_is_s3_initialized = true;
-    }
+        void initialize(const std::string &region, const std::string &aws_key, const std::string &aws_secret_key) override
+        {
+            d_get_s3_client = get_s3_client(region, aws_key, aws_secret_key);
+            d_is_s3_initialized = true;
+        }
 
-    bool s3_head(const std::string &bucket, const std::string &key) override;
-    std::string s3_get_as_string(const std::string &bucket, const std::string &key) override;
-    bool s3_get_as_file(const std::string &bucket, const std::string &key, const std::string &filename) override;
-};
+        bool s3_head(const std::string &bucket, const std::string &key) override;
+        std::string s3_get_as_string(const std::string &bucket, const std::string &key) override;
+        bool s3_get_as_file(const std::string &bucket, const std::string &key, const std::string &filename) override;
+    };
 }
-#endif //AWS_SDK_H
+#endif // AWS_SDK_H
