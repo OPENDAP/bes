@@ -1808,7 +1808,7 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> 
 
             D4Group *temp_grp   = grp;
             D4Dimension *d4_dim = nullptr;
-            bool is_dim_nonc4_grp = handle_one_dim(d,temp_grp, d4_dim, dimpath, k);
+            bool is_dim_nonc4_grp = handle_one_dim(d,temp_grp, d4_dim, dimpath, k, dest->dimension_size_ll(d));
 
             // Not find this dimension in any of the ancestor groups, add it to this group.
             // The following block is fine, but to avoid the complaint from sonarcloud.
@@ -1841,7 +1841,7 @@ BaseType* HDF5Array::h5dims_transform_to_dap4(D4Group *grp,const vector<string> 
 }
 
 bool HDF5Array::handle_one_dim(Array::Dim_iter d, D4Group *temp_grp, D4Dimension * &d4_dim,
-                               const vector<string> &dimpath, int k) const
+                               const vector<string> &dimpath, int k, unsigned long long dim_size) const
 {
     bool is_dim_nonc4_grp = false;
     while (temp_grp) {
@@ -1869,6 +1869,15 @@ bool HDF5Array::handle_one_dim(Array::Dim_iter d, D4Group *temp_grp, D4Dimension
         // this follows the netCDF-4/DAP4 dimension model, break.
         if(d4_dim && (temp_grp->FQN() == d4_dim_path)) {
             BESDEBUG("h5", "<FInd dimension name " << (*d).name<<endl);
+
+            if (d4_dim->size() != dim_size) {
+                string msg = "Array dimension size doesn't match DAP4 dimension size.\n";
+                msg =msg + "The array Fully Qualified Name(FQN): "+this->FQN() + '.' + '\n';
+                msg =msg + "The DAP4 dimension Fully Qualified Name(FQN): " + d4_dim->fully_qualified_name() + '.' + '\n';
+                msg =msg + "The array dimension size: " + to_string(dim_size) + '.' + '\n'; 
+                msg =msg + "The DAP4 dimension size: " + to_string(d4_dim->size()) + '.' + '\n';
+                throw BESInternalError(msg,__FILE__,__LINE__);
+            }
             (*d).dim = d4_dim;
             is_dim_nonc4_grp = false;
             break;

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="swath_wrong_dim_rp.h5">
+    <Dimension name="time" size="8"/>
+    <Dimension name="scan" size="4"/>
+    <Dimension name="band" size="2"/>
+    <Float64 name="time">
+        <Dim name="/time"/>
+        <Attribute name="standard_name" type="String">
+            <Value>time</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>seconds since 2010-1-1 0:0:0</Value>
+        </Attribute>
+    </Float64>
+    <Float32 name="lon">
+        <Dim name="/time"/>
+        <Dim name="/scan"/>
+        <Attribute name="standard_name" type="String">
+            <Value>longitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <Map name="/time"/>
+    </Float32>
+    <Float32 name="pre_wrong">
+        <Dim name="/time"/>
+        <Map name="/time"/>
+    </Float32>
+    <Float32 name="lat">
+        <Dim name="/time"/>
+        <Dim name="/scan"/>
+        <Attribute name="standard_name" type="String">
+            <Value>latitude</Value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <Map name="/time"/>
+    </Float32>
+    <Float32 name="swath_data">
+        <Dim name="/time"/>
+        <Dim name="/scan"/>
+        <Dim name="/band"/>
+        <Map name="/time"/>
+    </Float32>
+    <Float32 name="pre">
+        <Dim name="/time"/>
+        <Map name="/time"/>
+    </Float32>
+</Dataset>

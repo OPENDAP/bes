@@ -188,6 +188,7 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compact_example
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_int_scalar.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_scalar_dset_float_be.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/FValue_c_b.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/FValue_string_sca.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/netcdf_3_two_chunks_deflate.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/One_chunk_s_c_full_constraint.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/One_chunk_s_c_one_var.dmrpp.bescmd>test.nc
@@ -252,6 +253,17 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_enum_grp.h5.b
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_enum_name_in_grp2.h5.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_enum2_mt_array.h5.bescmd>test.nc
 
+#Unlimited support
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_unlimited_0.h5.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_group_unlimited.h5.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_group_unlimited_pure.h5.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_unlimited_0.h5.dmrpp.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_group_unlimited.h5.dmrpp.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_group_unlimited_pure.h5.dmrpp.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_group_unlimited.h5.not_stored.dmrpp.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.reduce_dim.conf -i tests/bescmd/nc4_group_unlimited_nostored.h5.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.reduce_dim.conf -i tests/bescmd/nc4_group_unlimited_pure_nostored.h5.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/part_chunk_data_unlim_comp.h5.dmrpp.bescmd
 
 #HDF4 support
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vg_hl_test.hdf.dmrpp.bescmd>test.nc
@@ -284,6 +296,11 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vdata_packed_li
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_simple_comp.hdf.constraint.bescmd >test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/SDS_simple_comp.hdf.bescmd >test.nc
 
+valgrind besstandalone -c tests/bes.h4cf.conf -i tests/bescmd/SDS_simple_comp.hdf.dap2.bescmd>test.nc
+valgrind besstandalone -c tests/bes.h4cf.conf -i tests/bescmd/SDS_simple_comp.hdf.dap2dmr.bescmd>test.nc
+valgrind besstandalone -c tests/bes.h4cf.conf -i tests/bescmd/SDS_simple_comp.hdf.dap2.bescmd>test.nc
+
+
 valgrind besstandalone -c tests/bes.nc4.grp.reduce_dim.conf -i tests/bescmd/nc4_group_atomic_comp.h5.dmrpp.bescmd > test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.reduce_dim.conf -i tests/bescmd/t_grp_dim.bescmd > test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.reduce_dim.conf -i tests/bescmd/t_grp_same_dim_constraint.bescmd > test.nc
@@ -295,6 +312,10 @@ valgrind besstandalone -c tests/bes.nc4.grp.reduce_dim.conf -i tests/bescmd/t_in
 
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/One_chunk_shuf_deflate.h5.disable_dio.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.disable_dio.conf -i tests/bescmd/One_chunk_shuf_deflate.h5.dmrpp.bescmd>test.nc
+
+#multi-fillvalues
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/multi_fvalue.h5.dmrpp.bescmd
+valgrind besstandalone -c tests/bes.nc4.conf -i tests/bescmd/multi_fvalue_dap2_nc4.h5.escmd
 rm -rf test.nc
 rm -rf gr.nc4
 rm -rf gr_d4.nc4

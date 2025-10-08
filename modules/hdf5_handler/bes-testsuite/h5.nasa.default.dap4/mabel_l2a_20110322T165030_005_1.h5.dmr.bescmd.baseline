@@ -5343,19 +5343,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="618679"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -5363,11 +5366,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel001/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="618679"/>
                 <Attribute name="units" type="String">
@@ -5392,6 +5391,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel001/latitude"/>
+                <Map name="/photon/channel001/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="618679"/>
@@ -5417,23 +5417,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel001/latitude"/>
+                <Map name="/photon/channel001/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="618679"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -5441,8 +5439,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel001/latitude"/>
-            </Float64>
+                <Map name="/photon/channel001/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="618679"/>
                 <Attribute name="units" type="String">
@@ -5467,6 +5469,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel001/latitude"/>
+                <Map name="/photon/channel001/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="618679"/>
@@ -5492,6 +5495,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel001/latitude"/>
+                <Map name="/photon/channel001/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -5522,19 +5526,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="309120"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -5542,11 +5549,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel002/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="309120"/>
                 <Attribute name="units" type="String">
@@ -5571,6 +5574,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel002/latitude"/>
+                <Map name="/photon/channel002/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="309120"/>
@@ -5596,23 +5600,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel002/latitude"/>
+                <Map name="/photon/channel002/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="309120"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -5620,8 +5622,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel002/latitude"/>
-            </Float64>
+                <Map name="/photon/channel002/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="309120"/>
                 <Attribute name="units" type="String">
@@ -5646,6 +5652,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel002/latitude"/>
+                <Map name="/photon/channel002/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="309120"/>
@@ -5671,6 +5678,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel002/latitude"/>
+                <Map name="/photon/channel002/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -5701,19 +5709,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="436183"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -5721,11 +5732,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel003/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="436183"/>
                 <Attribute name="units" type="String">
@@ -5750,6 +5757,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel003/latitude"/>
+                <Map name="/photon/channel003/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="436183"/>
@@ -5775,23 +5783,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel003/latitude"/>
+                <Map name="/photon/channel003/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="436183"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -5799,8 +5805,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel003/latitude"/>
-            </Float64>
+                <Map name="/photon/channel003/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="436183"/>
                 <Attribute name="units" type="String">
@@ -5825,6 +5835,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel003/latitude"/>
+                <Map name="/photon/channel003/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="436183"/>
@@ -5850,6 +5861,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel003/latitude"/>
+                <Map name="/photon/channel003/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -5880,19 +5892,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="514530"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -5900,11 +5915,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel004/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="514530"/>
                 <Attribute name="units" type="String">
@@ -5929,6 +5940,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel004/latitude"/>
+                <Map name="/photon/channel004/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="514530"/>
@@ -5954,23 +5966,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel004/latitude"/>
+                <Map name="/photon/channel004/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="514530"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -5978,8 +5988,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel004/latitude"/>
-            </Float64>
+                <Map name="/photon/channel004/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="514530"/>
                 <Attribute name="units" type="String">
@@ -6004,6 +6018,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel004/latitude"/>
+                <Map name="/photon/channel004/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="514530"/>
@@ -6029,6 +6044,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel004/latitude"/>
+                <Map name="/photon/channel004/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -6059,19 +6075,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="607097"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -6079,11 +6098,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel005/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="607097"/>
                 <Attribute name="units" type="String">
@@ -6108,6 +6123,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel005/latitude"/>
+                <Map name="/photon/channel005/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="607097"/>
@@ -6133,23 +6149,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel005/latitude"/>
+                <Map name="/photon/channel005/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="607097"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -6157,8 +6171,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel005/latitude"/>
-            </Float64>
+                <Map name="/photon/channel005/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="607097"/>
                 <Attribute name="units" type="String">
@@ -6183,6 +6201,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel005/latitude"/>
+                <Map name="/photon/channel005/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="607097"/>
@@ -6208,6 +6227,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel005/latitude"/>
+                <Map name="/photon/channel005/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -6238,19 +6258,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="700876"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -6258,11 +6281,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel006/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="700876"/>
                 <Attribute name="units" type="String">
@@ -6287,6 +6306,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel006/latitude"/>
+                <Map name="/photon/channel006/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="700876"/>
@@ -6312,23 +6332,21 @@
                     <Value> per photon</Value>
                 </Attribute>
                 <Map name="/photon/channel006/latitude"/>
+                <Map name="/photon/channel006/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="700876"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -6336,8 +6354,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel006/latitude"/>
-            </Float64>
+                <Map name="/photon/channel006/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="700876"/>
                 <Attribute name="units" type="String">
@@ -6362,6 +6384,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel006/latitude"/>
+                <Map name="/photon/channel006/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="700876"/>
@@ -6387,6 +6410,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel006/latitude"/>
+                <Map name="/photon/channel006/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -6417,19 +6441,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="624647"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -6437,11 +6464,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel007/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="624647"/>
                 <Attribute name="units" type="String">
@@ -6466,6 +6489,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel007/latitude"/>
+                <Map name="/photon/channel007/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="624647"/>
@@ -6491,23 +6515,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel007/latitude"/>
+                <Map name="/photon/channel007/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="624647"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -6515,8 +6537,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel007/latitude"/>
-            </Float64>
+                <Map name="/photon/channel007/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="624647"/>
                 <Attribute name="units" type="String">
@@ -6541,6 +6567,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel007/latitude"/>
+                <Map name="/photon/channel007/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="624647"/>
@@ -6566,6 +6593,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel007/latitude"/>
+                <Map name="/photon/channel007/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -6596,19 +6624,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="663574"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -6616,11 +6647,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel008/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="663574"/>
                 <Attribute name="units" type="String">
@@ -6645,6 +6672,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel008/latitude"/>
+                <Map name="/photon/channel008/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="663574"/>
@@ -6670,23 +6698,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel008/latitude"/>
+                <Map name="/photon/channel008/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="663574"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -6694,8 +6720,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel008/latitude"/>
-            </Float64>
+                <Map name="/photon/channel008/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="663574"/>
                 <Attribute name="units" type="String">
@@ -6720,6 +6750,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel008/latitude"/>
+                <Map name="/photon/channel008/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="663574"/>
@@ -6745,6 +6776,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel008/latitude"/>
+                <Map name="/photon/channel008/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -6775,19 +6807,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="602075"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -6795,11 +6830,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel009/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="602075"/>
                 <Attribute name="units" type="String">
@@ -6824,6 +6855,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel009/latitude"/>
+                <Map name="/photon/channel009/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="602075"/>
@@ -6849,23 +6881,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel009/latitude"/>
+                <Map name="/photon/channel009/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="602075"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -6873,8 +6903,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel009/latitude"/>
-            </Float64>
+                <Map name="/photon/channel009/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="602075"/>
                 <Attribute name="units" type="String">
@@ -6899,6 +6933,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel009/latitude"/>
+                <Map name="/photon/channel009/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="602075"/>
@@ -6924,6 +6959,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel009/latitude"/>
+                <Map name="/photon/channel009/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -6954,19 +6990,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="328883"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -6974,11 +7013,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel010/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="328883"/>
                 <Attribute name="units" type="String">
@@ -7003,6 +7038,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel010/latitude"/>
+                <Map name="/photon/channel010/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="328883"/>
@@ -7028,23 +7064,21 @@
                     <Value>time</Value>
                 </Attribute>
                 <Map name="/photon/channel010/latitude"/>
+                <Map name="/photon/channel010/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="328883"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -7052,8 +7086,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel010/latitude"/>
-            </Float64>
+                <Map name="/photon/channel010/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="328883"/>
                 <Attribute name="units" type="String">
@@ -7078,6 +7116,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel010/latitude"/>
+                <Map name="/photon/channel010/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="328883"/>
@@ -7103,6 +7142,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel010/latitude"/>
+                <Map name="/photon/channel010/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -7133,19 +7173,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="660249"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -7153,11 +7196,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel011/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="660249"/>
                 <Attribute name="units" type="String">
@@ -7182,6 +7221,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel011/latitude"/>
+                <Map name="/photon/channel011/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="660249"/>
@@ -7207,23 +7247,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel011/latitude"/>
+                <Map name="/photon/channel011/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="660249"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -7231,8 +7269,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel011/latitude"/>
-            </Float64>
+                <Map name="/photon/channel011/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="660249"/>
                 <Attribute name="units" type="String">
@@ -7257,6 +7299,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel011/latitude"/>
+                <Map name="/photon/channel011/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="660249"/>
@@ -7282,6 +7325,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel011/latitude"/>
+                <Map name="/photon/channel011/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -7312,19 +7356,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="323035"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -7332,11 +7379,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel012/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="323035"/>
                 <Attribute name="units" type="String">
@@ -7361,6 +7404,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel012/latitude"/>
+                <Map name="/photon/channel012/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="323035"/>
@@ -7386,23 +7430,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel012/latitude"/>
+                <Map name="/photon/channel012/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="323035"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -7410,8 +7452,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel012/latitude"/>
-            </Float64>
+                <Map name="/photon/channel012/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="323035"/>
                 <Attribute name="units" type="String">
@@ -7436,6 +7482,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel012/latitude"/>
+                <Map name="/photon/channel012/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="323035"/>
@@ -7461,6 +7508,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel012/latitude"/>
+                <Map name="/photon/channel012/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -7491,19 +7539,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="620312"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -7511,11 +7562,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel013/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="620312"/>
                 <Attribute name="units" type="String">
@@ -7540,6 +7587,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel013/latitude"/>
+                <Map name="/photon/channel013/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="620312"/>
@@ -7565,23 +7613,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel013/latitude"/>
+                <Map name="/photon/channel013/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="620312"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -7589,8 +7635,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel013/latitude"/>
-            </Float64>
+                <Map name="/photon/channel013/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="620312"/>
                 <Attribute name="units" type="String">
@@ -7615,6 +7665,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel013/latitude"/>
+                <Map name="/photon/channel013/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="620312"/>
@@ -7640,6 +7691,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel013/latitude"/>
+                <Map name="/photon/channel013/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -7670,19 +7722,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="564108"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -7690,11 +7745,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel014/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="564108"/>
                 <Attribute name="units" type="String">
@@ -7719,6 +7770,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel014/latitude"/>
+                <Map name="/photon/channel014/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="564108"/>
@@ -7744,23 +7796,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel014/latitude"/>
+                <Map name="/photon/channel014/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="564108"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -7768,8 +7818,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel014/latitude"/>
-            </Float64>
+                <Map name="/photon/channel014/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="564108"/>
                 <Attribute name="units" type="String">
@@ -7794,6 +7848,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel014/latitude"/>
+                <Map name="/photon/channel014/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="564108"/>
@@ -7819,6 +7874,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel014/latitude"/>
+                <Map name="/photon/channel014/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -7849,19 +7905,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="690287"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -7869,11 +7928,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel015/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="690287"/>
                 <Attribute name="units" type="String">
@@ -7898,6 +7953,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel015/latitude"/>
+                <Map name="/photon/channel015/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="690287"/>
@@ -7923,23 +7979,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel015/latitude"/>
+                <Map name="/photon/channel015/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="690287"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -7947,8 +8001,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel015/latitude"/>
-            </Float64>
+                <Map name="/photon/channel015/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="690287"/>
                 <Attribute name="units" type="String">
@@ -7973,6 +8031,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel015/latitude"/>
+                <Map name="/photon/channel015/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="690287"/>
@@ -7998,6 +8057,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel015/latitude"/>
+                <Map name="/photon/channel015/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -8028,19 +8088,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="269975"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -8048,11 +8111,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel016/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="269975"/>
                 <Attribute name="units" type="String">
@@ -8077,6 +8136,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel016/latitude"/>
+                <Map name="/photon/channel016/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="269975"/>
@@ -8102,23 +8162,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel016/latitude"/>
+                <Map name="/photon/channel016/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="269975"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -8126,8 +8184,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel016/latitude"/>
-            </Float64>
+                <Map name="/photon/channel016/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="269975"/>
                 <Attribute name="units" type="String">
@@ -8152,6 +8214,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel016/latitude"/>
+                <Map name="/photon/channel016/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="269975"/>
@@ -8177,6 +8240,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel016/latitude"/>
+                <Map name="/photon/channel016/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -8207,19 +8271,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="1213072"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -8227,11 +8294,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel043/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="1213072"/>
                 <Attribute name="units" type="String">
@@ -8256,6 +8319,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel043/latitude"/>
+                <Map name="/photon/channel043/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="1213072"/>
@@ -8281,23 +8345,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel043/latitude"/>
+                <Map name="/photon/channel043/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="1213072"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -8305,8 +8367,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel043/latitude"/>
-            </Float64>
+                <Map name="/photon/channel043/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="1213072"/>
                 <Attribute name="units" type="String">
@@ -8331,6 +8397,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel043/latitude"/>
+                <Map name="/photon/channel043/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="1213072"/>
@@ -8356,6 +8423,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel043/latitude"/>
+                <Map name="/photon/channel043/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -8386,19 +8454,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="1915326"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -8406,11 +8477,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel044/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="1915326"/>
                 <Attribute name="units" type="String">
@@ -8435,6 +8502,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel044/latitude"/>
+                <Map name="/photon/channel044/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="1915326"/>
@@ -8460,23 +8528,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel044/latitude"/>
+                <Map name="/photon/channel044/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="1915326"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -8484,8 +8550,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel044/latitude"/>
-            </Float64>
+                <Map name="/photon/channel044/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="1915326"/>
                 <Attribute name="units" type="String">
@@ -8510,6 +8580,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel044/latitude"/>
+                <Map name="/photon/channel044/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="1915326"/>
@@ -8535,6 +8606,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel044/latitude"/>
+                <Map name="/photon/channel044/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -8565,19 +8637,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="1555014"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -8585,11 +8660,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel045/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="1555014"/>
                 <Attribute name="units" type="String">
@@ -8614,6 +8685,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel045/latitude"/>
+                <Map name="/photon/channel045/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="1555014"/>
@@ -8639,23 +8711,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel045/latitude"/>
+                <Map name="/photon/channel045/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="1555014"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -8663,8 +8733,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel045/latitude"/>
-            </Float64>
+                <Map name="/photon/channel045/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="1555014"/>
                 <Attribute name="units" type="String">
@@ -8689,6 +8763,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel045/latitude"/>
+                <Map name="/photon/channel045/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="1555014"/>
@@ -8714,6 +8789,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel045/latitude"/>
+                <Map name="/photon/channel045/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -8744,19 +8820,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="1455315"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -8764,11 +8843,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel046/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="1455315"/>
                 <Attribute name="units" type="String">
@@ -8793,6 +8868,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel046/latitude"/>
+                <Map name="/photon/channel046/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="1455315"/>
@@ -8818,23 +8894,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel046/latitude"/>
+                <Map name="/photon/channel046/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="1455315"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -8842,8 +8916,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel046/latitude"/>
-            </Float64>
+                <Map name="/photon/channel046/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="1455315"/>
                 <Attribute name="units" type="String">
@@ -8868,6 +8946,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel046/latitude"/>
+                <Map name="/photon/channel046/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="1455315"/>
@@ -8893,6 +8972,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel046/latitude"/>
+                <Map name="/photon/channel046/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -8923,19 +9003,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="1832405"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -8943,11 +9026,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel047/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="1832405"/>
                 <Attribute name="units" type="String">
@@ -8972,6 +9051,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel047/latitude"/>
+                <Map name="/photon/channel047/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="1832405"/>
@@ -8997,23 +9077,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel047/latitude"/>
+                <Map name="/photon/channel047/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="1832405"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -9021,8 +9099,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel047/latitude"/>
-            </Float64>
+                <Map name="/photon/channel047/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="1832405"/>
                 <Attribute name="units" type="String">
@@ -9047,6 +9129,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel047/latitude"/>
+                <Map name="/photon/channel047/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="1832405"/>
@@ -9072,6 +9155,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel047/latitude"/>
+                <Map name="/photon/channel047/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -9102,19 +9186,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="1614168"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -9122,11 +9209,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel048/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="1614168"/>
                 <Attribute name="units" type="String">
@@ -9151,6 +9234,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel048/latitude"/>
+                <Map name="/photon/channel048/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="1614168"/>
@@ -9176,23 +9260,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel048/latitude"/>
+                <Map name="/photon/channel048/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="1614168"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -9200,8 +9282,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel048/latitude"/>
-            </Float64>
+                <Map name="/photon/channel048/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="1614168"/>
                 <Attribute name="units" type="String">
@@ -9226,6 +9312,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel048/latitude"/>
+                <Map name="/photon/channel048/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="1614168"/>
@@ -9251,6 +9338,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel048/latitude"/>
+                <Map name="/photon/channel048/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -9281,19 +9369,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="1763478"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -9301,11 +9392,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel049/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="1763478"/>
                 <Attribute name="units" type="String">
@@ -9330,6 +9417,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel049/latitude"/>
+                <Map name="/photon/channel049/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="1763478"/>
@@ -9355,23 +9443,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel049/latitude"/>
+                <Map name="/photon/channel049/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="1763478"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -9379,8 +9465,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel049/latitude"/>
-            </Float64>
+                <Map name="/photon/channel049/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="1763478"/>
                 <Attribute name="units" type="String">
@@ -9405,6 +9495,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel049/latitude"/>
+                <Map name="/photon/channel049/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="1763478"/>
@@ -9430,6 +9521,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel049/latitude"/>
+                <Map name="/photon/channel049/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>
@@ -9460,19 +9552,22 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
             </Float64>
-            <Float32 name="elev">
+            <Float64 name="longitude">
                 <Dim size="1593309"/>
                 <Attribute name="units" type="String">
-                    <Value>meters</Value>
+                    <Value>degrees_east</Value>
+                </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>elev</Value>
+                    <Value>lon</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>elevation</Value>
+                    <Value>longitude</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Height above the WGS84 ellipsoid</Value>
+                    <Value>Longitude, WGS84, East=+</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -9480,11 +9575,7 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
-                </Attribute>
-                <Map name="/photon/channel050/latitude"/>
-            </Float32>
+            </Float64>
             <Byte name="flag">
                 <Dim size="1593309"/>
                 <Attribute name="units" type="String">
@@ -9509,6 +9600,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel050/latitude"/>
+                <Map name="/photon/channel050/longitude"/>
             </Byte>
             <Float64 name="delta_time">
                 <Dim size="1593309"/>
@@ -9534,23 +9626,21 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel050/latitude"/>
+                <Map name="/photon/channel050/longitude"/>
             </Float64>
-            <Float64 name="longitude">
+            <Float32 name="elev">
                 <Dim size="1593309"/>
                 <Attribute name="units" type="String">
-                    <Value>degrees_east</Value>
-                </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value> per photon</Value>
+                    <Value>meters</Value>
                 </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>lon</Value>
+                    <Value>elev</Value>
                 </Attribute>
                 <Attribute name="standard_name" type="String">
-                    <Value>longitude</Value>
+                    <Value>elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>Longitude, WGS84, East=+</Value>
+                    <Value>Height above the WGS84 ellipsoid</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Derived (Geolocation ATBD)</Value>
@@ -9558,8 +9648,12 @@
                 <Attribute name="coordinates" type="String">
                     <Value>time latitude longitude</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value> per photon</Value>
+                </Attribute>
                 <Map name="/photon/channel050/latitude"/>
-            </Float64>
+                <Map name="/photon/channel050/longitude"/>
+            </Float32>
             <UInt16 name="photon_id">
                 <Dim size="1593309"/>
                 <Attribute name="units" type="String">
@@ -9584,6 +9678,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel050/latitude"/>
+                <Map name="/photon/channel050/longitude"/>
             </UInt16>
             <Int32 name="shot_num">
                 <Dim size="1593309"/>
@@ -9609,6 +9704,7 @@
                     <Value>time latitude longitude</Value>
                 </Attribute>
                 <Map name="/photon/channel050/latitude"/>
+                <Map name="/photon/channel050/longitude"/>
             </Int32>
             <Attribute name="Description" type="String">
                 <Value>This group contains individual geolocated photons. Each photon has been located by geolocation routines which account for pointing angle and aircraft roll/pitch/yaw. Preliminary ranges input to the geolocation routines have been corrected for frequency-dependent wet and dry tropospheric delays.  The resulting elevations retain these corrections. There is one instance of this subgroup for each channel configured on the instrument.</Value>

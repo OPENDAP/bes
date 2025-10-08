@@ -27,9 +27,6 @@
         <Attribute name="_FillValue" type="Float64">
             <Value>NaN</Value>
         </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>28535cfd</Value>
-        </Attribute>
     </Float64>
     <Attribute name="DOI" type="String">
         <Value>10.5067/SMODE-RVADC</Value>

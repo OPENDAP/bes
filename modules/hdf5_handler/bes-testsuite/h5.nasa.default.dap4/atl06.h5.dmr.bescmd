@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="d_size8.h5" space="catalog">/data/ATL06_20250302230840_11732614_006_01.h5</setContainer>
+    <define name="d">
+	<container name="d_size8.h5" />
+    </define>
+    <get type="dmr" definition="d" />
+</request>
