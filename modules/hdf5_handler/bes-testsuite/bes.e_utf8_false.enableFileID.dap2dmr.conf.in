@@ -1,0 +1,9 @@
+
+# Use all of bes.cfdmr.conf but override the H5.EscapeUTF8Attr value with 'false.'
+# Because the keys in this file do not depend on compile-time values, we do not
+# need to build the conf file using the configure/Makefile.am combination.
+# jhrg 3/12/22
+
+BES.Include = bes.conf
+H5.EnablePassFileID=true
+H5.EscapeUTF8Attr = false
