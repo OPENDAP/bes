@@ -33,6 +33,7 @@
 #include "BESNotFoundError.h"
 #include "BESSyntaxUserError.h"
 #include "BESInternalError.h"
+#include "BESContextManager.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 #include "BESUtil.h"
@@ -48,6 +49,30 @@ using namespace std;
 #define prolog string("NgapApi::").append(__func__).append("() - ")
 
 namespace ngap {
+
+/**
+ * @brief Append the EDL client id for Hyrax to the URL sent to CMR
+ * @note This function assumes that the URL either ends in a '?' or
+ * has at least one key=value pair in the query string. If the context
+ * key is not set, this function is mildly expensive noop.
+ *
+ * @param cmr_url The CMR URL, assumed to already have query string parameters.
+ * This value-result parameter is edited in place.
+ * @return True if the context was found, false otherwise.
+ */
+bool NgapApi::append_hyrax_edl_client_id(string &cmr_url) {
+    bool found;
+    const string client_id = BESContextManager::TheManager()->get_context(CMR_CLIENT_ID_CONTEXT_KEY, found);
+    if (found) {
+        // If this is not the very first key-value pair and there isn't already a trailing '&', add one.
+        // There is an assumption that if this is the first key pair, a trailing '?' is present.
+        // jhrg 10/8/25
+        if (cmr_url.back() != '?' && cmr_url.back() != '&')
+            cmr_url.push_back('&');
+        cmr_url.append(CMR_CLIENT_ID_KEY).append("=").append(client_id);
+    }
+    return found;
+}
 
 /**
  * @brief Get the CMR search endpoint URL using information from the BES Keys.
@@ -169,6 +194,9 @@ string NgapApi::build_cmr_query_url_old_rpath_format(const string &restified_pat
         cmr_url += string(CMR_GRANULE_UR).append("=").append(esc_url_content);
         curl_free(esc_url_content);
 
+        // Assume the client id text is URL safe. jhrg 10/8/25
+        append_hyrax_edl_client_id(cmr_url);
+
         curl_easy_cleanup(ceh);
     }
 
@@ -238,10 +266,10 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
     size_t granules_index = granules_key_index + string(NGAP_GRANULES_KEY).size();
-    // The granule_name value is the path terminus so it's every thing after the key
+    // The granule_name value is the path terminus, so it's every thing after the key
     string granule_name = r_path.substr(granules_index);
 
-    // Now we need to work on the collections value to eliminate the optional parts.
+    // Now we need to work on the collection value to eliminate the optional parts.
     // This is the entire collections string including any optional components.
     string collection_name = r_path.substr(collections_index, granules_key_index - collections_index);
 
@@ -251,10 +279,6 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
     // the value at that spot.
     size_t slash_pos = collection_name.find('/');
     if (slash_pos != string::npos) {
-#if 0
-        const string optional_part = collection_name.substr(slash_pos);
-        BESDEBUG(MODULE, prolog << "Found optional collections name component: " << optional_part << endl);
-#endif
         collection_name = collection_name.substr(0, slash_pos);
     }
     BESDEBUG(MODULE, prolog << "Found collection_name (aka collection_concept_id): " << collection_name << endl);
@@ -273,6 +297,9 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
         esc_url_content = curl_easy_escape(ceh, granule_name.c_str(), granule_name.size());
         cmr_url += string(CMR_GRANULE_UR).append("=").append(esc_url_content);
         curl_free(esc_url_content);
+
+        // Assume the client id text is URL safe. jhrg 10/8/25
+        append_hyrax_edl_client_id(cmr_url);
 
         curl_easy_cleanup(ceh);
     }
@@ -374,7 +401,7 @@ string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const string &rest_p
 /**
  * @brief Converts an NGAP restified granule path into a CMR metadata query for the granule.
  *
- * The NGAP module's "restified" interface utilizes a google-esque set of
+ * The NGAP module's "restified" interface uses a google-esque set of
  * ordered key value pairs using the "/" character as field separator.
  *
  * The NGAP container the "restified_path" will follow the template:
@@ -382,7 +409,7 @@ string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const string &rest_p
  *   provider/daac_name/datasets/collection_name/granules/granule_name(s?)
  *
  * Where "provider", "datasets", and "granules" are NGAP keys and
- * "ddac_name", "collection_name", and "granule_name" the their respective values.
+ * "ddac_name", "collection_name", and "granule_name" their respective values.
  *
  * For example, "provider/GHRC_CLOUD/datasets/ACES_CONTINUOUS_DATA_V1/granules/aces1cont.nc"
  *
