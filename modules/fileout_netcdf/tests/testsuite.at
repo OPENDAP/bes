@@ -279,6 +279,7 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compact_example.h5.dmrpp.
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_int_scalar.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_scalar_dset_float_be.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/FValue_c_b.h5.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/FValue_string_sca.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/netcdf_3_two_chunks_deflate.dmrpp.bescmd)
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/d_size_uint8_comp.h5.dmrpp.bescmd], [bes.conf])
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/One_chunk_s_c_full_constraint.dmrpp.bescmd)
@@ -430,3 +431,6 @@ AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/t_grp_dim_constraint.bescmd], [be
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/t_int_dim.bescmd], [bes.nc4.grp.reduce_dim.conf])
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/t_int_dim.dmrpp.bescmd], [bes.nc4.grp.reduce_dim.conf])
 
+#multi-fillvalues
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/multi_fvalue.h5.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/multi_fvalue_dap2_nc4.h5.bescmd)

@@ -18,9 +18,6 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/L1bScSoundingReference/sounding_id_l1b</Value>
         </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>7b59d765</Value>
-        </Attribute>
     </Int64>
     <Attribute name="AerosolResults" type="Container"/>
     <Attribute name="AlbedoResults" type="Container"/>

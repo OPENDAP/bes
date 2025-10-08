@@ -36,10 +36,11 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 
-
 #include <iostream>
 #include <cstdlib>
 #include <unistd.h>
+
+#include "BESInternalError.h"
 
 #include "BESUncompressManager3.h"
 #include "BESUncompressCache.h"
@@ -58,6 +59,10 @@ using std::string;
 
 static bool debug = false;
 static bool bes_debug = false;
+
+static const string CACHE_DIR = BESUtil::assemblePath(TEST_SRC_DIR, "cache");
+static const string CACHE_FILE_NAME = BESUtil::assemblePath(CACHE_DIR, "template.txt");
+static const string CACHE_PREFIX("container_test");
 
 #undef DBG
 #define DBG(x) do { if (debug) (x); } while(false);
@@ -112,12 +117,16 @@ public:
 
     void setUp()
     {
+#if 0
         string bes_conf = (string) TEST_SRC_DIR + "/uncompressT_bes.keys";
         TheBESKeys::ConfigFile = bes_conf;
+#endif
         if (bes_debug) {
             BESDebug::SetUp("cerr,cache,uncompress,uncompress2");
             DBG(cerr << "setup() - BESDEBUG Enabled " << endl);
         }
+        TheBESKeys::TheKeys()->set_key("BES.Uncompress.Retry", "2");
+        TheBESKeys::TheKeys()->set_key("BES.Uncompress.NumTries", "10");
     }
 
     void tearDown()
@@ -127,6 +136,10 @@ public:
     void test_worker(string cache_prefix, string test_file_base, string test_file_suffix)
     {
         DBG(cerr << __func__ << "() - BEGIN" << endl);
+
+        TheBESKeys::TheKeys()->set_key("BES.UncompressCache.dir", CACHE_DIR);
+        TheBESKeys::TheKeys()->set_key("BES.UncompressCache.prefix", CACHE_PREFIX);
+        TheBESKeys::TheKeys()->set_key("BES.UncompressCache.size", "1");
 
         DBG(cerr << __func__ << "() - cache_prefix: " << cache_prefix << endl);
 
@@ -142,7 +155,8 @@ public:
         // we're not testing the caching mechanism, so just create it, but make
         // sure it gets created.
         try {
-            BESUncompressCache *cache = BESUncompressCache::get_instance(cache_dir, cache_dir, cache_prefix, 1);
+            BESUncompressCache *cache = BESUncompressCache::get_instance();
+
             // get the target name and make sure the target file doesn't exist
             string cache_file_name = cache->get_cache_file_name(src_file_base, false);
             if (cache->is_valid(cache_file_name, src_file)) cache->purge_file(cache_file_name);
@@ -194,31 +208,19 @@ public:
                 DBG(cerr << __func__ << "() -   result contents = " << sline << endl);
                 CPPUNIT_ASSERT( sline == should_be );
             }
-            catch (BESError &e) {
+            catch (const BESError &e) {
                 DBG(cerr << e.get_message() << endl);
-                CPPUNIT_ASSERT( !"Failed to uncompress the file" );
+                CPPUNIT_FAIL( "Failed to uncompress the file" );
             }
 
             CPPUNIT_ASSERT( cache->is_valid(cache_file_name, src_file) );
         }
-        catch (BESError &e) {
+        catch (const BESError &e) {
             DBG(cerr << __func__ << "() - Caught BESError. Message: " << e.get_message() << endl);
-            CPPUNIT_ASSERT( !"Unable to create the required cache object." );
+            CPPUNIT_FAIL( "Unable to create the required cache object." );
         }
 
         clean_dir(cache_dir, cache_prefix);
-        DBG(cerr << __func__ << "() - END" << endl);
-
-    }
-
-    void test_disabled_uncompress_cache()
-    {
-        DBG(cerr << __func__ << "() - BEGIN" << endl);
-        // Setting the cache_dir parameter to the empty string will disable the cache
-        // and cause the get_instance method to return NULL>
-        BESUncompressCache *cache = BESUncompressCache::get_instance("moo", "", "foo", 1);
-        DBG(cerr << __func__ << "() - cache: " << (void * )cache << endl);
-        CPPUNIT_ASSERT( !cache );
         DBG(cerr << __func__ << "() - END" << endl);
 
     }
@@ -259,8 +261,6 @@ public:
     }
 
     CPPUNIT_TEST_SUITE( uncompressT );
-
-    CPPUNIT_TEST( test_disabled_uncompress_cache );
     CPPUNIT_TEST( gz_test );
     CPPUNIT_TEST( libz2_test );
     CPPUNIT_TEST( Z_test );

@@ -98,4 +98,8 @@ $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF4/NASA1/LPDAAC/MCD19A1.
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF4/NASA1/LPDAAC/MCD43A4.A2012009.h25v05.061.2021202161101.hdf
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF4/NASA1/LPDAAC/MCD43A4.A2012009.h25v05.061.2021202161101.hdf.dmrpp
 
+$GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF4/NASA1/LPDAAC/MCD43D40.A2025257.061.2025267034627.hdf
+$GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF4/NASA1/LPDAAC/MCD43D40.A2025257.061.2025267034627.hdf.dmrpp
+$GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF4/NASA1/LPDAAC/MCD43D40.A2025257.061.2025267034627.hdf_mvs.h5
+
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF4/NASA1/LPDAAC/MCD43GF_bsa_Band1_365_2021_V061.hdf 
