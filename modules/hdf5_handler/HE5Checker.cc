@@ -37,9 +37,195 @@
 #include <math.h>
 #include <BESDebug.h>
 #include "HE5Checker.h"
+#include <unordered_map>
+#include <unordered_set>
+#include <string>
+#include <BESInternalError.h>
 
 using namespace std;
 
+// We found some HDF-EOS5 files that have unlimited dimensions don't provide the current dimension size.
+// So the current dimension size has to be retrieved through the variables.
+void
+HE5Checker::update_unlimited_dim_sizes(HE5Parser* p, hid_t fileid) 
+{
+    //Swath
+    for (auto &g:p->swath_list) 
+        update_unlimited_dim_sizes_internal(fileid, g.name,g.dim_list,g.data_var_list, g.geo_var_list);
+
+    vector<HE5Var> geo_var_list;
+    // Grid
+    for (auto &g:p->grid_list) 
+        update_unlimited_dim_sizes_internal(fileid, g.name,g.dim_list,g.data_var_list, geo_var_list);
+
+    // ZA
+    for (auto &g:p->za_list) 
+        update_unlimited_dim_sizes_internal(fileid, g.name,g.dim_list,g.data_var_list, geo_var_list);
+
+}
+
+void HE5Checker::update_unlimited_dim_sizes_internal(hid_t fileid, const string& eos5_name, vector<HE5Dim>&dim_list, const vector<HE5Var>&data_var_list, const vector<HE5Var>&geo_var_list) {
+
+    unordered_set<string> wrong_size_dim_names;
+    unordered_map<string, string> wrong_size_dim_var_names;
+    unordered_map<string, int> wrong_size_dim_name_to_var_dim_index;
+    unordered_map<string, int> corrected_dim_name_size;
+    
+    // Identify the Unlimited dimension in both EOS5 object dimension list and the variable dimension list.
+    for (const auto &md:dim_list) {
+        if (md.name == "Unlimited") {
+            for (const auto &v:data_var_list) {
+                if (v.dim_list.size() == v.max_dim_list.size()) {
+                    for (unsigned i = 0; i < v.dim_list.size(); i++) {
+                        if ((v.max_dim_list[i]).name == "Unlimited") {
+                            if (wrong_size_dim_names.find((v.dim_list[i]).name) ==wrong_size_dim_names.end()) {
+                                wrong_size_dim_names.insert((v.dim_list[i]).name);
+                                wrong_size_dim_var_names[(v.dim_list[i]).name] = v.name;
+                                wrong_size_dim_name_to_var_dim_index[(v.dim_list[i]).name] = i;
+                            }
+                        }
+                    }
+                }
+            }
+            break;
+        }
+    }
+
+    // Here we have to find the dimension size from the variable. This size is surely to be right.
+    if (wrong_size_dim_names.empty() == false) {
+
+        for (const auto &wdv:wrong_size_dim_var_names) {
+
+            string var_name = wdv.second;
+            string var_path = "/HDFEOS/SWATHS/" + eos5_name + "/Data Fields/" + var_name;
+            int var_dim_index = -1;
+            if (wrong_size_dim_name_to_var_dim_index.find(wdv.first) != wrong_size_dim_name_to_var_dim_index.end())
+                var_dim_index = wrong_size_dim_name_to_var_dim_index[wdv.first];
+            else  {
+                string msg = "Cannot find the dimension index to search the dimension size for the variable " + var_path;
+                BESInternalError(msg,__FILE__,__LINE__);
+            }
+            int correct_dim_size = obtain_correct_dim_size(fileid,var_path,var_dim_index);
+            if (corrected_dim_name_size.find(wdv.first)==corrected_dim_name_size.end())
+                corrected_dim_name_size[wdv.first] = correct_dim_size;
+            else {
+                string msg = "Cannot find the dimension name to correct the size for the variable " + var_path;
+                BESInternalError(msg,__FILE__,__LINE__);
+            }
+        }
+
+        for (auto &d:dim_list) {
+            for (const auto& cdns: corrected_dim_name_size) {
+                if (d.name == cdns.first) {
+                    d.size = cdns.second;
+                    break;
+                }
+            }
+        }
+    }
+
+    // For swath, we have to search the geolocation fields.
+    if(geo_var_list.empty() == false) {
+
+        unordered_set<string> wrong_geo_size_dim_names;
+        unordered_map<string, string> wrong_geo_size_dim_var_names;
+        unordered_map<string, int> wrong_geo_size_dim_name_to_var_dim_index;
+        unordered_map<string, int> corrected_geo_dim_name_size;
+    
+        for (const auto &md:dim_list) {
+            if (md.name == "Unlimited") {
+                for (const auto &v:geo_var_list) {
+                    if (v.dim_list.size() == v.max_dim_list.size()) {
+                        for (unsigned i = 0; i < v.dim_list.size(); i++) {
+                            if ((v.max_dim_list[i]).name == "Unlimited") {
+                                if (wrong_size_dim_names.find((v.dim_list[i]).name) ==wrong_size_dim_names.end() && wrong_geo_size_dim_names.find((v.dim_list[i]).name) ==wrong_geo_size_dim_names.end()) {
+                                    wrong_geo_size_dim_names.insert((v.dim_list[i]).name);
+                                    wrong_geo_size_dim_var_names[(v.dim_list[i]).name] = v.name;
+                                    wrong_geo_size_dim_name_to_var_dim_index[(v.dim_list[i]).name] = i;
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            }
+        }
+        if (wrong_geo_size_dim_names.empty() == false) {
+    
+            for (const auto &wdv:wrong_geo_size_dim_var_names) {
+                string var_name = wdv.second;
+                string var_path = "/HDFEOS/SWATHS/" + eos5_name + "/Geolocation Fields/" + var_name;
+                int var_dim_index = -1;
+                if (wrong_geo_size_dim_name_to_var_dim_index.find(wdv.first) != wrong_geo_size_dim_name_to_var_dim_index.end())
+                    var_dim_index = wrong_geo_size_dim_name_to_var_dim_index[wdv.first];
+                else  {
+                    string msg = "Cannot find the dimension index to search the dimension size for the variable " + var_path;
+                    BESInternalError(msg,__FILE__,__LINE__);
+                }
+                int correct_dim_size = obtain_correct_dim_size(fileid,var_path,var_dim_index);
+                if (corrected_geo_dim_name_size.find(wdv.first)==corrected_geo_dim_name_size.end())
+                    corrected_geo_dim_name_size[wdv.first] = correct_dim_size;
+                else {
+                    string msg = "Cannot find the dimension name to correct the size for the variable " + var_path;
+                    BESInternalError(msg,__FILE__,__LINE__);
+                }
+            }
+    
+            for (auto &d:dim_list) {
+                for (const auto& cdns: corrected_geo_dim_name_size) {
+                    if (d.name == cdns.first) {
+                        d.size = cdns.second;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+}
+ 
+int HE5Checker::obtain_correct_dim_size(hid_t file_id, const string &var_path, int var_dim_index) const{
+
+    hid_t dset_id = H5Dopen2(file_id,var_path.c_str(),H5P_DEFAULT);
+    if (dset_id <0) {
+        string msg = "Cannot open the HDF5 dataset " + var_path + ".";
+        BESInternalError(msg,__FILE__,__LINE__);
+    }
+
+    hid_t space_id = H5Dget_space(dset_id);
+    if (space_id <0) {
+        string msg = "Cannot get the space id of the HDF5 dataset " + var_path + ".";
+        H5Dclose(dset_id);
+        BESInternalError(msg,__FILE__,__LINE__);
+    }
+
+    int ndims = H5Sget_simple_extent_ndims(space_id);
+    if (ndims < 0) {
+        string msg = "cannot get the number of dimension for the HDF5 dataset " + var_path +".";
+        H5Dclose(dset_id);
+        H5Sclose(space_id);
+        throw BESInternalError(msg,__FILE__, __LINE__);
+    }
+
+    if (var_dim_index >= ndims || var_dim_index <0) {
+        string msg = "the requested dimension index is invalid for the HDF5 dataset " + var_path +".";
+        H5Dclose(dset_id);
+        H5Sclose(space_id);
+        throw BESInternalError(msg,__FILE__, __LINE__);
+    }
+    vector<hsize_t> dim_sizes(ndims);
+    if (H5Sget_simple_extent_dims(space_id, dim_sizes.data(),nullptr) <0) {
+        string msg = "cannot get the number of dimension for the HDF5 dataset " + var_path +".";
+        H5Dclose(dset_id);
+        H5Sclose(space_id);
+        throw BESInternalError(msg,__FILE__, __LINE__);
+    }
+
+    H5Sclose(space_id);
+    H5Dclose(dset_id);
+    return dim_sizes[var_dim_index];
+
+}
 
 bool
 HE5Checker::check_grids_missing_projcode(const HE5Parser* p) const

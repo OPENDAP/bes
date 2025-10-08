@@ -1,0 +1,154 @@
+netcdf test {
+
+// global attributes:
+		:NorthBoundingCoord = 40.f ;
+		:HORIZONTALTILENUMBER = "09" ;
+		:SouthBoundingCoord = 30.f ;
+		:EastBoundingCoord = -92.36642f ;
+		:GRingLongitude = -103.83585, -117.48666, -104.25672, -92.131859 ;
+		:GRingLatitude = 29.836053, 40., 40.074207, 29.90095 ;
+		:WestBoundingCoord = -117.4867f ;
+		:VERTICALTILENUMBER = "05" ;
+		:identifier_product_doi = "10.5067/VIIRS/VNP18A2.002" ;
+		:RangeEndingDate = "2022-02-03" ;
+		:DataResolution = "1km" ;
+		:creator_url = "https://ladsweb.modaps.eosdis.nasa.gov" ;
+		:SensorShortname = "VIIRS" ;
+		:EndTime = "removed date-time" ;
+		:TileID = "51009005" ;
+		:Orbit_time_stamp = "18:24UTC\n20:00UTC\n21:48UTC\n" ;
+		:SatelliteInstrument = "NPP_OPS" ;
+		:creator_name = "VIIRS Land SIPS Processing Group" ;
+		:publisher_name = "LAADS" ;
+		:LongName = "VIIRS/NPP Photosynthetically Active Radiation Daily L3 Global 1km SIN Grid" ;
+		:ProcessVersion = "002" ;
+		:naming_authority = "gov.nasa.gsfc.VIIRSland" ;
+		:InputPointer = "VNP02GMOD.A2022034.h09v05.002.2023009025649.hdf,VNP03GMOD.A2022034.h09v05.002.2023009025649.hdf,VNP43MA3.A2022034.h09v05.002.2023022003813.h5,GEOS.fpit.asm.inst3_2d_asm_Nx.GEOS5124.20220203_0000.V01.nc4,GEOS.fpit.asm.inst3_2d_asm_Nx.GEOS5124.20220203_0300.V01.nc4,GEOS.fpit.asm.inst3_2d_asm_Nx.GEOS5124.20220203_0600.V01.nc4,GEOS.fpit.asm.inst3_2d_asm_Nx.GEOS5124.20220203_0900.V01.nc4,GEOS.fpit.asm.inst3_2d_asm_Nx.GEOS5124.20220203_1200.V01.nc4,GEOS.fpit.asm.inst3_2d_asm_Nx.GEOS5124.20220203_1500.V01.nc4,GEOS.fpit.asm.inst3_2d_asm_Nx.GEOS5124.20220203_1800.V01.nc4,GEOS.fpit.asm.inst3_2d_asm_Nx.GEOS5124.20220203_2100.V01.nc4,DSRPARCLIM.A2012034.h09v05.002.2020160151608.hdf,DSRPARLAT.A2012001.h09v05.002.2020160150115.bin,DSRPARLON.A2012001.h09v05.002.2020160150558.bin,DSRPARDEM.A2012001.h09v05.002.2020160145621.bin" ;
+		:PGEVersion = "2.0.8-0" ;
+		:creator_email = "modis-ops@lists.nasa.gov" ;
+		:VersionID = "002" ;
+		:RangeEndingTime = "23:59:59.000" ;
+		:identifier_product_doi_authority = "https://doi.org" ;
+		:ProcessingCenter = "LandSIPS" ;
+		:Conventions = "CF-1.6" ;
+		:ProcessingEnvironment = "Linux minion20264 5.4.0-1064-fips #73-Ubuntu SMP Mon Oct 17 18:45:19 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux" ;
+		:PGE_Name = "PGE641" ;
+		:PGE_EndTime = "removed date-time" ;
+		:ShortName = "VNP18A2" ;
+		:StartTime = "removed date-time" ;
+		:DayNightFlag = "Day" ;
+		:RangeBeginningTime = "00:00:00.000" ;
+		:publisher_url = "https://ladsweb.modaps.eosdis.nasa.gov" ;
+		:PGENumber = "641" ;
+		:Orbit_amount = 3 ;
+		:RangeBeginningDate = "2022-02-03" ;
+		:PlatformShortName = "SUOMI-NPP" ;
+		:PGE_StartTime = "removed date-time" ;
+		:AlgorithmVersion = "NPP_PR18 1.0.0" ;
+		:publisher_email = "modis-ops@lists.nasa.gov" ;
+		:LocalGranuleID = "VNP18A2.A2022034.h09v05.002.2023022012753.h5" ;
+		:AlgorithmType = "SCI" ;
+		:ProductionTime = "removed date-time" ;
+		:build_dmrpp_metadata.created = "removed date-time" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.21.1" ;
+		:build_dmrpp_metadata.bes = "3.21.1" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -f /scr/kent/opendap/hyrax-dev/hyrax-new/null_dim_list/bes/modules/hdf5_handler/data/VNP18A2.A2022034.h09v05.002.2023022012753.h5 -r VNP18A2.A2022034.h09v05.002.2023022012753.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M" ;
+		:history = "removed date-timex VNP18A2.A2022034.h09v05.002.2023022012753.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"VNP18A2.A2022034.h09v05.002.2023022012753.h5.dmrpp\"}]}]" ;
+
+group: HDFEOS_INFORMATION {
+  dimensions:
+  	StructMetadata_0_len1 = 2682 ;
+  variables:
+  	char StructMetadata_0(StructMetadata_0_len1) ;
+  		StructMetadata_0:fullnamepath = "/HDFEOS INFORMATION/StructMetadata.0" ;
+
+  // group attributes:
+  		:HDFEOSVersion = "HDFEOS_5.1.16" ;
+  } // group HDFEOS_INFORMATION
+
+group: HDFEOS {
+
+  group: ADDITIONAL {
+
+    group: FILE_ATTRIBUTES {
+      } // group FILE_ATTRIBUTES
+    } // group ADDITIONAL
+
+  group: GRIDS {
+
+    group: VIIRSRAD {
+      dimensions:
+      	Time = 8 ;
+      	Orbit_Layers = 3 ;
+      	YDim = 1200 ;
+      	XDim = 1200 ;
+      variables:
+      	double YDim(YDim) ;
+      		YDim:standard_name = "projection_y_coordinate" ;
+      		YDim:long_name = "y coordinate of projection" ;
+      		YDim:units = "m" ;
+      		YDim:fullnamepath = "/HDFEOS/GRIDS/VIIRSRAD/YDim" ;
+      	double XDim(XDim) ;
+      		XDim:standard_name = "projection_x_coordinate" ;
+      		XDim:long_name = "x coordinate of projection" ;
+      		XDim:units = "m" ;
+      		XDim:fullnamepath = "/HDFEOS/GRIDS/VIIRSRAD/XDim" ;
+
+      group: Data_Fields {
+        dimensions:
+        	dimofone = 1 ;
+        variables:
+        	float PAR(Orbit_Layers, YDim, XDim) ;
+        		PAR:units = "W/m2" ;
+        		PAR:valid_range = 0.f, 700.f ;
+        		PAR:_FillValue = -1.f ;
+        		PAR:long_name = "Instantaneous PAR at VIIRS overpass" ;
+        		PAR:grid_mapping = "Projection" ;
+        		PAR:fullnamepath = "/HDFEOS/GRIDS/VIIRSRAD/Data Fields/PAR" ;
+        	float Diffuse(Orbit_Layers, YDim, XDim) ;
+        		Diffuse:units = "W/m2" ;
+        		Diffuse:valid_range = 0.f, 700.f ;
+        		Diffuse:_FillValue = -1.f ;
+        		Diffuse:long_name = "Instantaneous diffuse portion of PAR at VIIRS overpass" ;
+        		Diffuse:grid_mapping = "Projection" ;
+        		Diffuse:fullnamepath = "/HDFEOS/GRIDS/VIIRSRAD/Data Fields/Diffuse" ;
+        	float _3hour_PAR(Time, YDim, XDim) ;
+        		_3hour_PAR:units = "W/m2" ;
+        		_3hour_PAR:valid_range = 0.f, 700.f ;
+        		_3hour_PAR:_FillValue = -1.f ;
+        		_3hour_PAR:long_name = "3-hour mean PAR" ;
+        		_3hour_PAR:grid_mapping = "Projection" ;
+        		_3hour_PAR:fullnamepath = "/HDFEOS/GRIDS/VIIRSRAD/Data Fields/3hour_PAR" ;
+        	float Daily_Mean_PAR(YDim, XDim) ;
+        		Daily_Mean_PAR:units = "W/m2" ;
+        		Daily_Mean_PAR:valid_range = 0.f, 700.f ;
+        		Daily_Mean_PAR:_FillValue = -1.f ;
+        		Daily_Mean_PAR:long_name = "Daily mean PAR" ;
+        		Daily_Mean_PAR:grid_mapping = "Projection" ;
+        		Daily_Mean_PAR:fullnamepath = "/HDFEOS/GRIDS/VIIRSRAD/Data Fields/Daily_Mean_PAR" ;
+        	ubyte PAR_Quality(YDim, XDim) ;
+        		PAR_Quality:long_name = "PAR quality flag" ;
+        		PAR_Quality:valid_range = 0UB, 4UB ;
+        		PAR_Quality:grid_mapping = "Projection" ;
+        		PAR_Quality:fullnamepath = "/HDFEOS/GRIDS/VIIRSRAD/Data Fields/PAR_Quality" ;
+        	float Direct(Orbit_Layers, YDim, XDim) ;
+        		Direct:units = "W/m2" ;
+        		Direct:valid_range = 0.f, 700.f ;
+        		Direct:_FillValue = -1.f ;
+        		Direct:long_name = "Instantaneous direct portion of PAR at VIIRS overpass" ;
+        		Direct:grid_mapping = "Projection" ;
+        		Direct:fullnamepath = "/HDFEOS/GRIDS/VIIRSRAD/Data Fields/Direct" ;
+        	int Projection(dimofone) ;
+        		Projection:grid_mapping_name = "sinusoidal" ;
+        		Projection:longitude_of_central_meridian = 0. ;
+        		Projection:false_easting = 0. ;
+        		Projection:false_northing = 0. ;
+        		Projection:earth_radius = 6371007.181 ;
+        		Projection:fullnamepath = "/HDFEOS/GRIDS/VIIRSRAD/Data Fields/Projection" ;
+        } // group Data_Fields
+      } // group VIIRSRAD
+    } // group GRIDS
+  } // group HDFEOS
+}

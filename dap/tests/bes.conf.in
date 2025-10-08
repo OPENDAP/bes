@@ -33,9 +33,9 @@ BES.UncompressCache.dir=/tmp/hyrax_ux
 BES.UncompressCache.prefix=ux_
 BES.UncompressCache.size=500
 
-DAP.FunctionResponseCache.path=./response_cache
-DAP.FunctionResponseCache.prefix=/rc
-DAP.FunctionResponseCache.size=500
+# DAP.FunctionResponseCache.path=response_cache
+# DAP.FunctionResponseCache.prefix=/rc_
+# DAP.FunctionResponseCache.size=500
 
 #
 # Setting BES.MaxResponseSize.bytes and BES.MaxVariableSize.bytes

@@ -8,9 +8,6 @@
         <Attribute name="sp_h4_ll" type="String">
             <Value>lat -50.000000 0.250000</Value>
         </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>6e66f15b</Value>
-        </Attribute>
     </Float32>
     <Float32 name="nlon">
         <Dim size="9"/>
@@ -19,9 +16,6 @@
         </Attribute>
         <Attribute name="sp_h4_ll" type="String">
             <Value>lon -180.000000 0.250000</Value>
-        </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>759e7c53</Value>
         </Attribute>
     </Float32>
     <Attribute name="FileHeader" type="String">

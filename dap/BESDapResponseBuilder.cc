@@ -1454,16 +1454,15 @@ void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mim
     }
 }
 
-const auto DAP4_CHECKSUMS_KEY="dap4_checksums";
 
 bool use_dap4_checksums() {
     bool found_it = false;
     string state = "unset";
-    state = BESContextManager::TheManager()->get_context(DAP4_CHECKSUMS_KEY, found_it);
+    state = BESContextManager::TheManager()->get_context(DAP4_CHECKSUMS_CONTEXT_KEY, found_it);
     if (!found_it) {
         state="false";
     }
-    BESDEBUG(MODULE, prolog << DAP4_CHECKSUMS_KEY << ": " << state << "\n");
+    BESDEBUG(MODULE, prolog << DAP4_CHECKSUMS_CONTEXT_KEY << ": " << state << "\n");
     return found_it && (BESUtil::lowercase(state) == "true");
 }
 
@@ -1478,6 +1477,7 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
     bool ucs = use_dap4_checksums();
     BESDEBUG(MODULE, prolog << "use_dap4_checksums: " << (ucs?"true":"false") << "\n");
     dmr.use_checksums(ucs);
+    BESDEBUG(MODULE, prolog << "dmr.use_checksums(): " << (dmr.use_checksums()?"true":"false") << "\n");
 
     if (with_mime_headers) set_mime_binary(out, dap4_data, x_plain, last_modified_time(d_dataset), dmr.dap_version());
 
@@ -1502,7 +1502,7 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
     cos << xml.get_doc() << CRLF << flush;
 
     // Write the data, chunked with checksums
-    D4StreamMarshaller m(cos);
+    D4StreamMarshaller m(cos, true, dmr.use_checksums());
     dmr.root()->serialize(m, dmr, !d_dap4ce.empty());
 #ifdef CLEAR_LOCAL_DATA
     dmr.root()->clear_local_data();

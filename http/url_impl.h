@@ -112,6 +112,8 @@ public:
         return std::chrono::system_clock::to_time_t(d_ingest_time);
     }
 
+    virtual std::string get_url_no_query() const { return d_protocol + d_host + d_path; }
+
     virtual void set_ingest_time(const std::time_t &itime) {
         d_ingest_time = std::chrono::system_clock::from_time_t(itime);
     }

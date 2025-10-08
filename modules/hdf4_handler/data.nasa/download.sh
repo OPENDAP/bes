@@ -98,4 +98,8 @@ $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MCD43A4.A2012009.h25v05.061.2021202161101.hdf
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MCD43A4.A2012009.h25v05.061.2021202161101.hdf.dmrpp
 
-$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MCD43A4.A2012009.h25v05.061.2021202161101.hdf
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MCD43D40.A2025257.061.2025267034627.hdf
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MCD43D40.A2025257.061.2025267034627.hdf.dmrpp
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MCD43D40.A2025257.061.2025267034627.hdf_mvs.h5
+
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LPDAAC/MCD43GF_bsa_Band1_365_2021_V061.hdf
