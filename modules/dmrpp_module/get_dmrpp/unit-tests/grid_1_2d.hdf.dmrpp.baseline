@@ -37,7 +37,7 @@ END
     </Attribute>
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="created" type="String">
-            <Value>2025-09-05T14:32:14Z</Value>
+            <Value>2025-10-08T18:16:20Z</Value>
         </Attribute>
         <Attribute name="build_dmrpp" type="String">
             <Value>3.21.1</Value>
@@ -53,7 +53,7 @@ END
         </Attribute>
     </Attribute>
     <Group name="GeoGrid">
-        <Float64 name="Latitude">
+        <Float64 name="YDim_GeoGrid">
             <Dim name="/YDim_GeoGrid"/>
             <Attribute name="units" type="String">
                 <Value>degrees_north</Value>
@@ -63,7 +63,7 @@ END
             </Attribute>
             <dmrpp:missingdata>eJxjYAABHgcwxcACpX/YQ+gH9gAaBgLn</dmrpp:missingdata>
         </Float64>
-        <Float64 name="Longitude">
+        <Float64 name="XDim_GeoGrid">
             <Dim name="/XDim_GeoGrid"/>
             <Attribute name="units" type="String">
                 <Value>degrees_east</Value>
@@ -79,9 +79,6 @@ END
                 <Dim name="/XDim_GeoGrid"/>
                 <Attribute name="dmr_sds_ref" type="Int32">
                     <Value>5</Value>
-                </Attribute>
-                <Attribute name="coordinates" type="String">
-                    <Value>/GeoGrid/Longitude /GeoGrid/Latitude</Value>
                 </Attribute>
                 <dmrpp:chunks byteOrder="BE">
                     <dmrpp:chunk offset="294" nBytes="128" chunkPositionInArray="[0,0]"/>
