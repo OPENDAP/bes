@@ -116,7 +116,7 @@ class HDF5Array:public libdap::Array {
             int index);
 
     bool handle_one_dim(libdap::Array::Dim_iter d, libdap::D4Group *temp_grp, libdap::D4Dimension * &d4_dim,
-                        const vector<string> &dimpath, int k) const;
+                        const vector<string> &dimpath, int k, unsigned long long dim_size) const;
     void m_array_of_region_reference_point_selection(hid_t space_id, int ndim, const std::string &varname,
                                                              std::vector<std::string> &v_str,int64_t i) const;
     void m_array_of_region_reference_hyperslab_selection(hid_t space_id, int ndim, const std::string &varname,

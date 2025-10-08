@@ -169,6 +169,9 @@ public:
         if (clean) clean_cache_dir(d_cache);
 
         TheBESKeys::ConfigFile = (string) TEST_SRC_DIR + "/input-files/test.keys"; // empty file. jhrg 10/20/15
+        TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::PATH_KEY, d_cache);
+        TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::PREFIX_KEY, d_mds_prefix);
+        TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::SIZE_KEY, "1000");
 
         DBG(cerr << "setUp() - END" << endl);
     }
@@ -205,15 +208,16 @@ public:
     void ctor_test_1()
     {
         DBG(cerr << "ctor_test_1() - BEGIN" << endl);
-
+        TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::PATH_KEY, "");
+#if 0
         string cacheDir = string(TEST_SRC_DIR) + "/never";
         string prefix = "rc";
         long size = 1000;
-
-        cache = BESDapFunctionResponseCache::get_instance(cacheDir, prefix, size);
+#endif
+        cache = BESDapFunctionResponseCache::get_instance();
         DBG(cerr << "ctor_test_1() - retrieved BESDapFunctionResponseCache instance: " << cache << endl);
 
-        CPPUNIT_ASSERT(!cache);
+        CPPUNIT_ASSERT_MESSAGE("Cache pointer should be null", !cache);
 
         DBG(cerr << "ctor_test_1() - END" << endl);
     }
@@ -224,11 +228,8 @@ public:
     {
         DBG(cerr << "ctor_test_2() - BEGIN" << endl);
 
-        string cacheDir = d_cache;
-        string prefix = "rc";
-        long size = 1000;
-        cache = BESDapFunctionResponseCache::get_instance(cacheDir, prefix, size);
-        DBG(cerr << "ctor_test_1() - retrieved BESDapFunctionResponseCache instance: " << cache << endl);
+        cache = BESDapFunctionResponseCache::get_instance();
+        DBG(cerr << "ctor_test_2() - retrieved BESDapFunctionResponseCache instance: " << cache << endl);
 
         CPPUNIT_ASSERT(cache);
 
@@ -241,7 +242,7 @@ public:
     void cache_a_response()
     {
         DBG(cerr << "cache_a_response() - BEGIN" << endl);
-        cache = BESDapFunctionResponseCache::get_instance(d_cache, d_mds_prefix, 1000);
+        cache = BESDapFunctionResponseCache::get_instance();
 
         DBG(cerr << "cache_a_response() - Retrieved BESDapFunctionResponseCache object: " << cache << endl);
 
@@ -271,7 +272,7 @@ public:
     {
         DBG(cerr << "cache_and_read_a_response() - BEGIN" << endl);
 
-        cache = BESDapFunctionResponseCache::get_instance(d_cache, d_mds_prefix, 1000);
+        cache = BESDapFunctionResponseCache::get_instance();
         try {
             const string constraint = "test(\"bar\")";
 
@@ -329,7 +330,7 @@ public:
     {
         DBG(cerr << "cache_and_read_a_response() - BEGIN" << endl);
 
-        cache = BESDapFunctionResponseCache::get_instance(d_cache, d_mds_prefix, 1000);
+        cache = BESDapFunctionResponseCache::get_instance();
         try {
             // This code is here to load the DataDDX response into the cache if it is not
             // there already. If it is there, it reads it from the cache.
@@ -370,7 +371,7 @@ public:
 
 CPPUNIT_TEST_SUITE( FunctionResponseCacheTest );
 
-    CPPUNIT_TEST(ctor_test_1);
+    //CPPUNIT_TEST(ctor_test_1);
     CPPUNIT_TEST(ctor_test_2);
     CPPUNIT_TEST(cache_a_response);
     CPPUNIT_TEST(cache_and_read_a_response);

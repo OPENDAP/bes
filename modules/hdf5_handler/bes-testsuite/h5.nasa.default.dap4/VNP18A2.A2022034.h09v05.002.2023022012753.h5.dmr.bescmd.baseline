@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="VNP18A2.A2022034.h09v05.002.2023022012753.h5">
+    <Attribute name="NorthBoundingCoord" type="Float32">
+        <Value>40.</Value>
+    </Attribute>
+    <Attribute name="HORIZONTALTILENUMBER" type="String">
+        <Value>09</Value>
+    </Attribute>
+    <Attribute name="SouthBoundingCoord" type="Float32">
+        <Value>30.</Value>
+    </Attribute>
+    <Attribute name="EastBoundingCoord" type="Float32">
+        <Value>-92.36641693</Value>
+    </Attribute>
+    <Attribute name="GRingLongitude" type="Float64">
+        <Value>-103.83584999999999</Value>
+        <Value>-117.48666</Value>
+        <Value>-104.25672</Value>
+        <Value>-92.131859000000006</Value>
+    </Attribute>
+    <Attribute name="GRingLatitude" type="Float64">
+        <Value>29.836053</Value>
+        <Value>40.</Value>
+        <Value>40.074207000000001</Value>
+        <Value>29.900950000000002</Value>
+    </Attribute>
+    <Attribute name="WestBoundingCoord" type="Float32">
+        <Value>-117.4866562</Value>
+    </Attribute>
+    <Attribute name="VERTICALTILENUMBER" type="String">
+        <Value>05</Value>
+    </Attribute>
+    <Attribute name="identifier_product_doi" type="String">
+        <Value>10.5067/VIIRS/VNP18A2.002</Value>
+    </Attribute>
+    <Attribute name="RangeEndingDate" type="String">
+        <Value>2022-02-03</Value>
+    </Attribute>
+    <Attribute name="DataResolution" type="String">
+        <Value>1km</Value>
+    </Attribute>
+    <Attribute name="creator_url" type="String">
+        <Value>https://ladsweb.modaps.eosdis.nasa.gov</Value>
+    </Attribute>
+    <Attribute name="SensorShortname" type="String">
+        <Value>VIIRS</Value>
+    </Attribute>
+    <Attribute name="EndTime" type="String">
+        <Value>2022-02-03 23:59:59</Value>
+    </Attribute>
+    <Attribute name="TileID" type="String">
+        <Value>51009005</Value>
+    </Attribute>
+    <Attribute name="Orbit_time_stamp" type="String">
+        <Value>18:24UTC
+20:00UTC
+21:48UTC
+</Value>
+    </Attribute>
+    <Attribute name="SatelliteInstrument" type="String">
+        <Value>NPP_OPS</Value>
+    </Attribute>
+    <Attribute name="creator_name" type="String">
+        <Value>VIIRS Land SIPS Processing Group</Value>
+    </Attribute>
+    <Attribute name="publisher_name" type="String">
+        <Value>LAADS</Value>
+    </Attribute>
+    <Attribute name="LongName" type="String">
+        <Value>VIIRS/NPP Photosynthetically Active Radiation Daily L3 Global 1km SIN Grid</Value>
+    </Attribute>
+    <Attribute name="ProcessVersion" type="String">
+        <Value>002</Value>
+    </Attribute>
+    <Attribute name="naming_authority" type="String">
+        <Value>gov.nasa.gsfc.VIIRSland</Value>
+    </Attribute>
+    <Attribute name="InputPointer" type="String">
+        <Value>VNP02GMOD.A2022034.h09v05.002.2023009025649.hdf,VNP03GMOD.A2022034.h09v05.002.2023009025649.hdf,VNP43MA3.A2022034.h09v05.002.2023022003813.h5,GEOS.fpit.asm.inst3_2d_asm_Nx.GEOS5124.20220203_0000.V01.nc4,GEOS.fpit.asm.inst3_2d_asm_Nx.GEOS5124.20220203_0300.V01.nc4,GEOS.fpit.asm.inst3_2d_asm_Nx.GEOS5124.20220203_0600.V01.nc4,GEOS.fpit.asm.inst3_2d_asm_Nx.GEOS5124.20220203_0900.V01.nc4,GEOS.fpit.asm.inst3_2d_asm_Nx.GEOS5124.20220203_1200.V01.nc4,GEOS.fpit.asm.inst3_2d_asm_Nx.GEOS5124.20220203_1500.V01.nc4,GEOS.fpit.asm.inst3_2d_asm_Nx.GEOS5124.20220203_1800.V01.nc4,GEOS.fpit.asm.inst3_2d_asm_Nx.GEOS5124.20220203_2100.V01.nc4,DSRPARCLIM.A2012034.h09v05.002.2020160151608.hdf,DSRPARLAT.A2012001.h09v05.002.2020160150115.bin,DSRPARLON.A2012001.h09v05.002.2020160150558.bin,DSRPARDEM.A2012001.h09v05.002.2020160145621.bin</Value>
+    </Attribute>
+    <Attribute name="PGEVersion" type="String">
+        <Value>2.0.8-0</Value>
+    </Attribute>
+    <Attribute name="creator_email" type="String">
+        <Value>modis-ops@lists.nasa.gov</Value>
+    </Attribute>
+    <Attribute name="VersionID" type="String">
+        <Value>002</Value>
+    </Attribute>
+    <Attribute name="RangeEndingTime" type="String">
+        <Value>23:59:59.000</Value>
+    </Attribute>
+    <Attribute name="identifier_product_doi_authority" type="String">
+        <Value>https://doi.org</Value>
+    </Attribute>
+    <Attribute name="ProcessingCenter" type="String">
+        <Value>LandSIPS</Value>
+    </Attribute>
+    <Attribute name="Conventions" type="String">
+        <Value>CF-1.6</Value>
+    </Attribute>
+    <Attribute name="ProcessingEnvironment" type="String">
+        <Value>Linux minion20264 5.4.0-1064-fips #73-Ubuntu SMP Mon Oct 17 18:45:19 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux</Value>
+    </Attribute>
+    <Attribute name="PGE_Name" type="String">
+        <Value>PGE641</Value>
+    </Attribute>
+    <Attribute name="PGE_EndTime" type="String">
+        <Value>2022-02-03 23:59:59.000</Value>
+    </Attribute>
+    <Attribute name="ShortName" type="String">
+        <Value>VNP18A2</Value>
+    </Attribute>
+    <Attribute name="StartTime" type="String">
+        <Value>2022-02-03 00:00:00</Value>
+    </Attribute>
+    <Attribute name="DayNightFlag" type="String">
+        <Value>Day</Value>
+    </Attribute>
+    <Attribute name="RangeBeginningTime" type="String">
+        <Value>00:00:00.000</Value>
+    </Attribute>
+    <Attribute name="publisher_url" type="String">
+        <Value>https://ladsweb.modaps.eosdis.nasa.gov</Value>
+    </Attribute>
+    <Attribute name="PGENumber" type="String">
+        <Value>641</Value>
+    </Attribute>
+    <Attribute name="Orbit_amount" type="Int32">
+        <Value>3</Value>
+    </Attribute>
+    <Attribute name="RangeBeginningDate" type="String">
+        <Value>2022-02-03</Value>
+    </Attribute>
+    <Attribute name="PlatformShortName" type="String">
+        <Value>SUOMI-NPP</Value>
+    </Attribute>
+    <Attribute name="PGE_StartTime" type="String">
+        <Value>2022-02-03 00:00:00.000</Value>
+    </Attribute>
+    <Attribute name="AlgorithmVersion" type="String">
+        <Value>NPP_PR18 1.0.0</Value>
+    </Attribute>
+    <Attribute name="publisher_email" type="String">
+        <Value>modis-ops@lists.nasa.gov</Value>
+    </Attribute>
+    <Attribute name="LocalGranuleID" type="String">
+        <Value>VNP18A2.A2022034.h09v05.002.2023022012753.h5</Value>
+    </Attribute>
+    <Attribute name="AlgorithmType" type="String">
+        <Value>SCI</Value>
+    </Attribute>
+    <Attribute name="ProductionTime" type="String">
+        <Value>2023-01-22 01:27:53.000</Value>
+    </Attribute>
+    <Group name="HDFEOS_INFORMATION">
+        <String name="StructMetadata_0">
+            <Attribute name="fullnamepath" type="String">
+                <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+            </Attribute>
+        </String>
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.16</Value>
+        </Attribute>
+    </Group>
+    <Group name="HDFEOS">
+        <Group name="ADDITIONAL">
+            <Group name="FILE_ATTRIBUTES"/>
+        </Group>
+        <Group name="GRIDS">
+            <Group name="VIIRSRAD">
+                <Dimension name="Time" size="8"/>
+                <Dimension name="Orbit_Layers" size="3"/>
+                <Dimension name="YDim" size="1200"/>
+                <Dimension name="XDim" size="1200"/>
+                <Float64 name="YDim">
+                    <Dim name="/HDFEOS/GRIDS/VIIRSRAD/YDim"/>
+                    <Attribute name="standard_name" type="String">
+                        <Value>projection_y_coordinate</Value>
+                    </Attribute>
+                    <Attribute name="long_name" type="String">
+                        <Value>y coordinate of projection</Value>
+                    </Attribute>
+                    <Attribute name="units" type="String">
+                        <Value>m</Value>
+                    </Attribute>
+                    <Attribute name="fullnamepath" type="String">
+                        <Value>/HDFEOS/GRIDS/VIIRSRAD/YDim</Value>
+                    </Attribute>
+                </Float64>
+                <Float64 name="XDim">
+                    <Dim name="/HDFEOS/GRIDS/VIIRSRAD/XDim"/>
+                    <Attribute name="standard_name" type="String">
+                        <Value>projection_x_coordinate</Value>
+                    </Attribute>
+                    <Attribute name="long_name" type="String">
+                        <Value>x coordinate of projection</Value>
+                    </Attribute>
+                    <Attribute name="units" type="String">
+                        <Value>m</Value>
+                    </Attribute>
+                    <Attribute name="fullnamepath" type="String">
+                        <Value>/HDFEOS/GRIDS/VIIRSRAD/XDim</Value>
+                    </Attribute>
+                </Float64>
+                <Group name="Data_Fields">
+                    <Dimension name="dimofone" size="1"/>
+                    <Float32 name="PAR">
+                        <Dim name="/HDFEOS/GRIDS/VIIRSRAD/Orbit_Layers"/>
+                        <Dim name="/HDFEOS/GRIDS/VIIRSRAD/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/VIIRSRAD/XDim"/>
+                        <Attribute name="units" type="String">
+                            <Value>W/m2</Value>
+                        </Attribute>
+                        <Attribute name="valid_range" type="Float32">
+                            <Value>0.</Value>
+                            <Value>700.</Value>
+                        </Attribute>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Instantaneous PAR at VIIRS overpass</Value>
+                        </Attribute>
+                        <Attribute name="grid_mapping" type="String">
+                            <Value>Projection</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/VIIRSRAD/Data Fields/PAR</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Diffuse">
+                        <Dim name="/HDFEOS/GRIDS/VIIRSRAD/Orbit_Layers"/>
+                        <Dim name="/HDFEOS/GRIDS/VIIRSRAD/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/VIIRSRAD/XDim"/>
+                        <Attribute name="units" type="String">
+                            <Value>W/m2</Value>
+                        </Attribute>
+                        <Attribute name="valid_range" type="Float32">
+                            <Value>0.</Value>
+                            <Value>700.</Value>
+                        </Attribute>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Instantaneous diffuse portion of PAR at VIIRS overpass</Value>
+                        </Attribute>
+                        <Attribute name="grid_mapping" type="String">
+                            <Value>Projection</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/VIIRSRAD/Data Fields/Diffuse</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="_3hour_PAR">
+                        <Dim name="/HDFEOS/GRIDS/VIIRSRAD/Time"/>
+                        <Dim name="/HDFEOS/GRIDS/VIIRSRAD/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/VIIRSRAD/XDim"/>
+                        <Attribute name="units" type="String">
+                            <Value>W/m2</Value>
+                        </Attribute>
+                        <Attribute name="valid_range" type="Float32">
+                            <Value>0.</Value>
+                            <Value>700.</Value>
+                        </Attribute>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>3-hour mean PAR</Value>
+                        </Attribute>
+                        <Attribute name="grid_mapping" type="String">
+                            <Value>Projection</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/VIIRSRAD/Data Fields/3hour_PAR</Value>
+                        </Attribute>
+                    </Float32>
+                    <Float32 name="Daily_Mean_PAR">
+                        <Dim name="/HDFEOS/GRIDS/VIIRSRAD/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/VIIRSRAD/XDim"/>
+                        <Attribute name="units" type="String">
+                            <Value>W/m2</Value>
+                        </Attribute>
+                        <Attribute name="valid_range" type="Float32">
+                            <Value>0.</Value>
+                            <Value>700.</Value>
+                        </Attribute>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Daily mean PAR</Value>
+                        </Attribute>
+                        <Attribute name="grid_mapping" type="String">
+                            <Value>Projection</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/VIIRSRAD/Data Fields/Daily_Mean_PAR</Value>
+                        </Attribute>
+                    </Float32>
+                    <Byte name="PAR_Quality">
+                        <Dim name="/HDFEOS/GRIDS/VIIRSRAD/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/VIIRSRAD/XDim"/>
+                        <Attribute name="long_name" type="String">
+                            <Value>PAR quality flag</Value>
+                        </Attribute>
+                        <Attribute name="valid_range" type="Byte">
+                            <Value>0</Value>
+                            <Value>4</Value>
+                        </Attribute>
+                        <Attribute name="grid_mapping" type="String">
+                            <Value>Projection</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/VIIRSRAD/Data Fields/PAR_Quality</Value>
+                        </Attribute>
+                    </Byte>
+                    <Float32 name="Direct">
+                        <Dim name="/HDFEOS/GRIDS/VIIRSRAD/Orbit_Layers"/>
+                        <Dim name="/HDFEOS/GRIDS/VIIRSRAD/YDim"/>
+                        <Dim name="/HDFEOS/GRIDS/VIIRSRAD/XDim"/>
+                        <Attribute name="units" type="String">
+                            <Value>W/m2</Value>
+                        </Attribute>
+                        <Attribute name="valid_range" type="Float32">
+                            <Value>0.</Value>
+                            <Value>700.</Value>
+                        </Attribute>
+                        <Attribute name="_FillValue" type="Float32">
+                            <Value>-1.</Value>
+                        </Attribute>
+                        <Attribute name="long_name" type="String">
+                            <Value>Instantaneous direct portion of PAR at VIIRS overpass</Value>
+                        </Attribute>
+                        <Attribute name="grid_mapping" type="String">
+                            <Value>Projection</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/VIIRSRAD/Data Fields/Direct</Value>
+                        </Attribute>
+                    </Float32>
+                    <Int32 name="Projection">
+                        <Dim name="/HDFEOS/GRIDS/VIIRSRAD/Data_Fields/dimofone"/>
+                        <Attribute name="grid_mapping_name" type="String">
+                            <Value>sinusoidal</Value>
+                        </Attribute>
+                        <Attribute name="longitude_of_central_meridian" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="false_easting" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="false_northing" type="Float64">
+                            <Value>0.</Value>
+                        </Attribute>
+                        <Attribute name="earth_radius" type="Float64">
+                            <Value>6371007.1809999999</Value>
+                        </Attribute>
+                        <Attribute name="fullnamepath" type="String">
+                            <Value>/HDFEOS/GRIDS/VIIRSRAD/Data Fields/Projection</Value>
+                        </Attribute>
+                    </Int32>
+                </Group>
+            </Group>
+        </Group>
+    </Group>
+</Dataset>

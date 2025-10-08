@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="VNP18A2.A2022034.h09v05.002.2023022012753" space="catalog">/data/VNP18A2.A2022034.h09v05.002.2023022012753.h5</setContainer>
+    <define name="d">
+	<container name="VNP18A2.A2022034.h09v05.002.2023022012753" />
+    </define>
+    <get type="dmr" definition="d" />
+</request>

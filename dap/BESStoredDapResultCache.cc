@@ -89,6 +89,8 @@
 using namespace std;
 using namespace libdap;
 
+std::once_flag BESStoredDapResultCache::d_initialize;
+
 BESStoredDapResultCache *BESStoredDapResultCache::d_instance = 0;
 bool BESStoredDapResultCache::d_enabled = true;
 
@@ -180,6 +182,7 @@ string BESStoredDapResultCache::getBesDataRootDirFromConfig()
 
 }
 
+#if 0
 BESStoredDapResultCache::BESStoredDapResultCache()
 {
     BESDEBUG("cache", "BESStoredDapResultCache::BESStoredDapResultCache() -  BEGIN" << endl);
@@ -198,35 +201,7 @@ BESStoredDapResultCache::BESStoredDapResultCache()
 
     BESDEBUG("cache", "BESStoredDapResultCache::BESStoredDapResultCache() -  END" << endl);
 }
-
-/**
- *
- */
-BESStoredDapResultCache::BESStoredDapResultCache(const string &data_root_dir, const string &stored_results_subdir,
-    const string &result_file_prefix, unsigned long long max_cache_size)
-{
-
-    d_storedResultsSubdir = stored_results_subdir;
-    d_dataRootDir = data_root_dir;
-    d_resultFilePrefix = result_file_prefix;
-    d_maxCacheSize = max_cache_size;
-    initialize(BESUtil::assemblePath(d_dataRootDir, stored_results_subdir), d_resultFilePrefix, d_maxCacheSize);
-}
-
-BESStoredDapResultCache *
-BESStoredDapResultCache::get_instance(const string &data_root_dir, const string &stored_results_subdir,
-    const string &result_file_prefix, unsigned long long max_cache_size)
-{
-    if (d_enabled && dir_exists(data_root_dir)) {
-        static BESStoredDapResultCache instance;
-
-        d_enabled = d_instance->cache_enabled(); // Why was this included in the original version of this code? jhrg 6/9/25
-        if (!d_enabled)
-            return nullptr;
-
-        return &instance;
-    }
-}
+#endif
 
 /** Get the default instance of the BESStoredDapResultCache object. This will read "TheBESKeys" looking for the values
  * of SUBDIR_KEY, PREFIX_KEY, an SIZE_KEY to initialize the cache.
@@ -234,13 +209,24 @@ BESStoredDapResultCache::get_instance(const string &data_root_dir, const string 
 BESStoredDapResultCache *
 BESStoredDapResultCache::get_instance()
 {
-    if (d_enabled && d_instance == 0) {
-        static BESStoredDapResultCache instance;
-        d_enabled = d_instance->cache_enabled();
-        if(!d_enabled){
-            return nullptr;
+    static BESStoredDapResultCache cache;
+    std::call_once(d_initialize, [](){
+
+        string tmp_resultsDir = BESUtil::assemblePath(getSubDirFromConfig(), getBesDataRootDirFromConfig());
+
+        if(tmp_resultsDir.empty()){
+            cache.disable();
         }
-        return &instance;
+        else{
+            cache.enable();
+            cache.initialize(tmp_resultsDir, getResultPrefixFromConfig(), getCacheSizeFromConfig());
+        }
+    });
+    if (cache.cache_enabled()){
+        return &cache;
+    }
+    else{
+        return nullptr;
     }
 }
 

@@ -838,7 +838,7 @@ void DmrppArray::read_contiguous()
     BES_STOPWATCH_START(MODULE, prolog + "Timing array name: "+name());
 
     // Get the single chunk that makes up this CONTIGUOUS variable.
-    if (get_chunks_size() != 1)
+    if (get_chunk_count() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
 
     // This is the original chunk for this 'contiguous' variable.
@@ -1021,7 +1021,7 @@ void DmrppArray::read_one_chunk_dio() {
 
     BESDEBUG(dmrpp_3, prolog << "Using direct IO " << endl);
     // Get the single chunk that makes up this one-chunk compressed variable.
-    if (get_chunks_size() != 1)
+    if (get_chunk_count() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
 
     // This is the chunk for this variable.
@@ -1128,7 +1128,7 @@ void DmrppArray::insert_chunk_unconstrained_dio(shared_ptr<Chunk> chunk) {
  */
 void DmrppArray::read_chunks_unconstrained()
 {
-    if (get_chunks_size() < 2)
+    if (get_chunk_count() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
     // Find all the required chunks to read. I used a queue to preserve the chunk order, which
@@ -1201,7 +1201,7 @@ void DmrppArray::read_chunks_unconstrained()
 void DmrppArray::read_chunks_dio_unconstrained()
 {
 
-    if (get_chunks_size() < 2)
+    if (get_chunk_count() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
     // Find all the required chunks to read. I used a queue to preserve the chunk order, which
@@ -1970,7 +1970,7 @@ void DmrppArray::insert_chunk(
  */
 void DmrppArray::read_chunks()
 {
-    if (get_chunks_size() < 2)
+    if (get_chunk_count() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
     // Find all the required chunks to read. I used a queue to preserve the chunk order, which
@@ -2051,7 +2051,7 @@ void DmrppArray::read_buffer_chunks()
 {
 
     BESDEBUG(dmrpp_3, prolog << "coming to read_buffer_chunks()  "  << endl);
-    if (get_chunks_size() < 2)
+    if (get_chunk_count() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
     // Prepare buffer size.
@@ -2714,7 +2714,7 @@ bool DmrppArray::read()
             BESDEBUG(MODULE, prolog << msg << endl);
         }
         // Single chunk and 'contiguous' are the same for this code.
-        if (array_to_read->get_chunks_size() == 1) {
+        if (array_to_read->get_chunk_count() == 1) {
             BESDEBUG(MODULE, prolog << "Reading data from a single contiguous chunk." << endl);
             // KENT: here we need to add the handling of direct chunk IO for one chunk. 
             if (this->get_dio_flag())
@@ -3247,7 +3247,7 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/) {
     // jhrg 5/10/18
     // Update: print the <chunks> element even if the chinks_size value is zero since this
     // might be a variable with all fill values. jhrg 4/24/22
-    if (DmrppCommon::d_print_chunks && (get_chunks_size() > 0 || get_uses_fill_value()))
+    if (DmrppCommon::d_print_chunks && (get_chunk_count() > 0 || get_uses_fill_value()))
         print_chunks_element(xml, DmrppCommon::d_ns_prefix);
 
     // If this variable uses the COMPACT layout, encode the values for
@@ -3483,7 +3483,7 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
     // Here we can adjust the buffer size as needed, for now we just use the whole array size as the starting point.
     unsigned long long buffer_size = bytes_per_element * this->get_size(false);
     
-    if (get_chunks_size() < 2)
+    if (get_chunk_count() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
     // Follow the general superchunk way.

@@ -94,8 +94,8 @@ const string default_cache_dir = ""; // I'm making the default empty so that no 
 const string BESDapFunctionResponseCache::PATH_KEY = "DAP.FunctionResponseCache.path";
 const string BESDapFunctionResponseCache::PREFIX_KEY = "DAP.FunctionResponseCache.prefix";
 const string BESDapFunctionResponseCache::SIZE_KEY = "DAP.FunctionResponseCache.size";
+std::once_flag BESDapFunctionResponseCache::d_initialize;
 
-BESDapFunctionResponseCache *BESDapFunctionResponseCache::d_instance = 0;
 bool BESDapFunctionResponseCache::d_enabled = true;
 
 unsigned long BESDapFunctionResponseCache::get_cache_size_from_config()
@@ -143,6 +143,22 @@ string BESDapFunctionResponseCache::get_cache_dir_from_config()
     return cacheDir;
 }
 
+#if 0
+BESDapFunctionResponseCache::BESDapFunctionResponseCache() {
+    BESDEBUG("cache", "BESDapFunctonResponseCache::BESDapFunctonResponseCache() -  BEGIN" << endl);
+
+    string cache_dir = get_cache_dir_from_config();
+    string cache_prefix = get_cache_prefix_from_config();
+    long cache_size = get_cache_size_from_config();
+
+    BESDEBUG("cache", "BESDapFunctonResponseCache() - Stored cache configuration params: " << cache_dir << ", "
+    << cache_prefix << ", " << cache_size << endl);
+
+    initialize(cache_dir, cache_prefix, cache_size);
+
+    BESDEBUG("cache", "BESDapFunctonResponseCache::BESDapFunctonResponseCache() -  END" << endl);
+}
+
 /**
  * @name Get the singleton instance
  * Get an instance of the BESDapFunctionResponseCache object. This class is a singleton, so the
@@ -185,10 +201,32 @@ BESDapFunctionResponseCache::get_instance(const string &cache_dir, const string 
 
     return d_instance;
 }
+#endif
 
 BESDapFunctionResponseCache *
 BESDapFunctionResponseCache::get_instance()
 {
+    static BESDapFunctionResponseCache cache;
+    std::call_once(d_initialize, [](){
+
+        string tmp_cache_dir = get_cache_dir_from_config();
+
+        if (tmp_cache_dir.empty()){
+            cache.disable();
+        }
+        else{
+            cache.enable();
+            cache.initialize(tmp_cache_dir, get_cache_prefix_from_config(), get_cache_size_from_config());
+        }
+    });
+    if (cache.cache_enabled()){
+        return &cache;
+    }
+    else {
+        return nullptr;
+    }
+
+#if 0
     if (d_enabled && d_instance == 0) {
         string cache_dir = get_cache_dir_from_config();
         if (!cache_dir.empty() && dir_exists(cache_dir)) {
@@ -211,6 +249,7 @@ BESDapFunctionResponseCache::get_instance()
     BESDEBUG(DEBUG_KEY, "BESDapFunctionResponseCache::get_instance() - d_instance: " << (void *) d_instance << endl);
 
     return d_instance;
+#endif
 }
 ///@}
 
@@ -569,7 +608,6 @@ BESDapFunctionResponseCache::write_dataset_to_cache(DDS *dds, const string &reso
         catch (...) {
             // Bummer. There was a problem doing The Stuff. Now we gotta clean up.
             cache_file_ostream.close();
-            this->purge_file(cache_file_name);
             unlock_and_close(cache_file_name);
             throw;
         }

@@ -267,7 +267,7 @@ public:
 
     /// @brief Use this when the number of chunks is needed
     /// @return the number of Chunk objects for this variable
-    virtual size_t get_chunks_size() const { return d_chunks.size(); }
+    virtual size_t get_chunk_count() const { return d_chunks.size(); }
 
     /// @brief The chunk dimension sizes held in a const vector
     /// @return A reference to a const vector of chunk dimension sizes
