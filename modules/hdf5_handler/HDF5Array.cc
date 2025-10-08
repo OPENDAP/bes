@@ -1088,7 +1088,8 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) c
 
 void HDF5Array::m_intern_plain_array_data(char *convbuf,hid_t memtype)
 {
-    if (check_h5str(memtype)) {
+    // Note: variable length string has been handled. Here we only handle the fixed size string.
+    if (H5Tget_class(memtype) == H5T_STRING) {
 
         vector<string> v_str(d_num_elm);
         size_t elesize = H5Tget_size(memtype);

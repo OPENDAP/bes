@@ -926,21 +926,6 @@ bool handle_dimscale_dmr(hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
 
     return is_pure_dim;
 }
-///////////////////////////////////////////////////////////////////////////////
-/// \fn check_h5str(hid_t h5type)
-/// checks if type is HDF5 string type
-/// 
-/// \param h5type data type id
-/// \return true if type is string
-/// \return false otherwise
-///////////////////////////////////////////////////////////////////////////////
-bool check_h5str(hid_t h5type)
-{
-    if (H5Tget_class(h5type) == H5T_STRING)
-        return true;
-    else
-        return false;
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn print_attr(hid_t type, int loc, void *sm_buf)
