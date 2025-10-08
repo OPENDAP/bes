@@ -64,7 +64,7 @@ public:
     BESContextManager& operator=(const BESContextManager&) = delete;
 
     ~BESContextManager() override = default;
-    
+
     virtual void set_context(const std::string &name, const std::string &value);
     virtual void unset_context(const std::string &name);
     virtual std::string get_context(const std::string &name, bool &found);
@@ -73,7 +73,7 @@ public:
 
     virtual void list_context(BESInfo &info);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static BESContextManager * TheManager();
 };

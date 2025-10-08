@@ -132,11 +132,11 @@ public:
 
     /// @brief Iterator to the first catalog
     virtual catalog_citer first_catalog() const { return d_catalogs.begin(); }
-    
+
     /// @brief Iterator to the last catalog
     virtual catalog_citer end_catalog() const { return d_catalogs.end();  }
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // BESCatalogList_h_
