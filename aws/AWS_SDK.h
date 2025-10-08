@@ -66,15 +66,6 @@ public:
         Aws::ShutdownAPI(options);
     }
 
-#if 0
-
-    void initialize(const std::string &region) override {
-        d_get_s3_client = get_s3_client(region);
-        d_is_s3_initialized = true;
-    }
-
-#endif
-
     void initialize(const std::string &region, const std::string &aws_key, const std::string &aws_secret_key) override {
         d_get_s3_client = get_s3_client(region, aws_key, aws_secret_key);
         d_is_s3_initialized = true;
