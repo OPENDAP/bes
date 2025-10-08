@@ -1397,6 +1397,9 @@ bool HDF5RequestHandler::hdf5_build_dmr_from_file(BESDataHandlerInterface & dhi,
     if(true ==_usecf) {// CF option
 
         if(true == _usecfdmr) {
+            if(true == _pass_fileid)
+                return hdf5_build_dmr_with_IDs(dhi);
+
 
             cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
             if (cf_fileid < 0) {
@@ -1417,9 +1420,6 @@ bool HDF5RequestHandler::hdf5_build_dmr_from_file(BESDataHandlerInterface & dhi,
 
             return true;
         }
-
-        if(true == _pass_fileid)
-            return hdf5_build_dmr_with_IDs(dhi);
 
         cf_fileid = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
         if (cf_fileid < 0){
@@ -1670,11 +1670,16 @@ bool HDF5RequestHandler::hdf5_build_dmr_with_IDs(BESDataHandlerInterface & dhi)
     DMR *dmr = bes_dmr.get_dmr();
     D4BaseTypeFactory MyD4TypeFactory;
     dmr->set_factory(&MyD4TypeFactory);
+
+
     dmr->build_using_dds(dds);
 
     auto hdf5_dmr_unique = make_unique<HDF5DMR>(dmr);
     auto hdf5_dmr = hdf5_dmr_unique.release();
     hdf5_dmr->setHDF5Dataset(cf_fileid);
+    if(_escape_utf8_attr == false)
+        hdf5_dmr->set_utf8_xml_encoding();
+
     delete dmr;     // The call below will make 'dmr' unreachable; delete it now to avoid a leak.
     bes_dmr.set_dmr(hdf5_dmr); // BESDMRResponse will delete hdf5_dmr
 
