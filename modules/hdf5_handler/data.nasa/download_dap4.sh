@@ -96,6 +96,7 @@ $
 #ICESAT-2 ATL 
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/NSIDC/ATL03_20181014084920_02400109_003_01.h5
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/NSIDC/ATL08_20181014084920_02400109_003_01.h5
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/NSIDC/ATL06_20250302230840_11732614_006_01.h5
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/NASAHDF/ATL13_20190330212241_00250301_002_01.h5
 #daymet, large variable
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/ORNL/daymet_v4_daily_na_prcp_2010.nc.h5
@@ -121,6 +122,9 @@ $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/GESDISC
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/NSIDC/AMSR_E_L2_Land_V11_201110031920_D.he5.dmrpp
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/NSIDC/AMSR_E_L2_Land_V11_201110031920_D.he5
 
+#HDF-EOS5 null dimension name in the DIMENSION_LIST
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/LPDAAC/VNP18A2.A2022034.h09v05.002.2023022012753.h5
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/LPDAAC/VNP18A2.A2022034.h09v05.002.2023022012753.h5.dmrpp
 
 #HDF5/DMRPP/fileout netCDF  big array size
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF5/NASA1/others/d_dset_big.h5

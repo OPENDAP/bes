@@ -58,10 +58,6 @@ const char *CredentialsManager::ENV_REGION_KEY = "CMAC_REGION";
 const char *CredentialsManager::ENV_URL_KEY = "CMAC_URL";
 
 const char *CredentialsManager::USE_ENV_CREDS_KEY_VALUE = "ENV_CREDS";
-
-/// Our singleton instance
-CredentialsManager *CredentialsManager::theMngr = nullptr;
-
 /// Run once_flag for initializing the singleton instance.
 std::once_flag d_cmac_init_once;
 
@@ -99,31 +95,12 @@ std::string get_env_value(const string &key) {
  * @return Returns the singleton instance of the CredentialsManager
  */
 CredentialsManager *CredentialsManager::theCM() {
-    std::call_once(d_cmac_init_once, CredentialsManager::initialize_instance);
-    return theMngr;
-}
-
-void CredentialsManager::initialize_instance() {
-    theMngr = new CredentialsManager;
-    theMngr->load_credentials(); // Only call this here.
-#ifdef HAVE_ATEXIT
-    atexit(delete_instance);
-#endif
-}
-
-CredentialsManager::~CredentialsManager() {
-    for (auto &item: creds) {
-        delete item.second;
-    }
-    creds.clear();
-}
-
-/**
- * Private static function can only be called by friends and pThreads code.
- */
-void CredentialsManager::delete_instance() {
-    delete theMngr;
-    theMngr = nullptr;
+    //std::call_once(d_cmac_init_once, CredentialsManager::initialize_instance);
+    static CredentialsManager theMngr;
+    std::call_once(d_cmac_init_once,[&](){
+        theMngr.load_credentials(); // Only call this here.
+    });
+    return &theMngr;
 }
 
 /**

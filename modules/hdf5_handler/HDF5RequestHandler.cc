@@ -35,6 +35,7 @@
 #include <iostream>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -1486,6 +1487,25 @@ bool HDF5RequestHandler::hdf5_build_dmr_from_file(BESDataHandlerInterface & dhi,
         if (is_eos5 && !use_dimscale)
             obtain_eos5_dims(fileid,eos5_dim_info);
 
+        // However, we find some HDF-EOS5 products that use dimension scales but miss some dimensions. This will cause
+        // the handler not able to retrieve the dimension names based on the dimension scales. To make the service continue,
+        // we have to find a way to obtain those dimension names and avoid the failure of dmr generation.
+
+        unordered_set<string> eos5_missing_dim_names;
+        if (is_eos5 && use_dimscale) {
+
+            bool has_var_null_dim_name = check_var_null_dim_name(fileid);
+            // If we find the null dimension scale case, we need to obtain all the EOS5 information via parser.
+            if (has_var_null_dim_name) {
+                obtain_eos5_dims(fileid,eos5_dim_info);
+                obtain_eos5_missing_dims(fileid,eos5_dim_info,eos5_missing_dim_names);
+            }
+#if 0
+            // We may need to use the code to handle the non-eos5-null-dim case. TODO later.
+            eos5_use_dimscale_null_dims = check_eos5_dimscale_null_dims(fileid);
+#endif
+        }
+
         dmr->set_name(name_path(filename));
         dmr->set_filename(name_path(filename));
 
@@ -1505,7 +1525,7 @@ bool HDF5RequestHandler::hdf5_build_dmr_from_file(BESDataHandlerInterface & dhi,
         vector<string> handled_coord_names;
 
         breadth_first(fileid, fileid,(const char*)"/",root_grp,filename.c_str(),use_dimscale,is_eos5,hdf5_hls,
-                      eos5_dim_info,handled_coord_names);
+                      eos5_dim_info,handled_coord_names, eos5_missing_dim_names);
 
         if (is_eos5 == false)
             add_dap4_coverage_default(root_grp,handled_coord_names);

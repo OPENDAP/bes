@@ -35,12 +35,12 @@
 using std::endl;
 using std::string;
 
-BESUncompressCache *BESUncompressCache::d_instance = 0;
 bool BESUncompressCache::d_enabled = true;
 
 const string BESUncompressCache::DIR_KEY = "BES.UncompressCache.dir";
 const string BESUncompressCache::PREFIX_KEY = "BES.UncompressCache.prefix";
 const string BESUncompressCache::SIZE_KEY = "BES.UncompressCache.size";
+std::once_flag BESUncompressCache::d_initialize;
 
 #define MODULE "cache"
 #define prolog std::string("BESUncompressCache::").append(__func__).append("() - ")
@@ -142,6 +142,7 @@ string BESUncompressCache::get_cache_file_name(const string &src, bool mangle)
     return cache_file_name;
 }
 
+#if 0
 BESUncompressCache::BESUncompressCache()
 {
     BESDEBUG( MODULE, prolog << "BEGIN" << endl);
@@ -158,69 +159,34 @@ BESUncompressCache::BESUncompressCache()
     BESDEBUG( MODULE, prolog << "END" << endl);
 
 }
-BESUncompressCache::BESUncompressCache(const string &data_root_dir, const string &cache_dir, const string &prefix,
-    unsigned long long size)
-{
-    BESDEBUG( MODULE, prolog << "BEGIN" << endl);
-    d_enabled = true;
-
-    d_dataRootDir = data_root_dir;
-    d_dimCacheDir = cache_dir;
-    d_dimCacheFilePrefix = prefix;
-    d_maxCacheSize = size;
-
-    initialize(d_dimCacheDir, d_dimCacheFilePrefix, d_maxCacheSize);
-
-    BESDEBUG( MODULE, prolog << "END" << endl);
-}
-
-BESUncompressCache *
-BESUncompressCache::get_instance(const string &data_root_dir, const string &cache_dir, const string &result_file_prefix,
-    unsigned long long max_cache_size)
-{
-    if (d_enabled && d_instance == 0) {
-        if (dir_exists(cache_dir)) {
-            d_instance = new BESUncompressCache(data_root_dir, cache_dir, result_file_prefix, max_cache_size);
-            d_enabled = d_instance->cache_enabled();
-            if(!d_enabled){
-                delete d_instance;
-                d_instance = NULL;
-                BESDEBUG( MODULE, prolog <<  "Cache is DISABLED"<< endl);
-           }
-            else {
-    #ifdef HAVE_ATEXIT
-                atexit(delete_instance);
-    #endif
-                BESDEBUG( MODULE, prolog << "Cache is ENABLED"<< endl);
-           }
-        }
-    }
-    return d_instance;
-}
+#endif
 
 /** Get the default instance of the GatewayCache object. This will read "TheBESKeys" looking for the values
  * of SUBDIR_KEY, PREFIX_KEY, an SIZE_KEY to initialize the cache.
+ * @note if fct is called without cache dir being set, the code will throw an internal error
  */
 BESUncompressCache *
 BESUncompressCache::get_instance()
 {
-    if (d_enabled && d_instance == 0) {
-        d_instance = new BESUncompressCache();
-        d_enabled = d_instance->cache_enabled();
-        if(!d_enabled){
-            delete d_instance;
-            d_instance = NULL;
-            BESDEBUG( MODULE, prolog << "Cache is DISABLED"<< endl);
-        }
-        else {
-#ifdef HAVE_ATEXIT
-            atexit(delete_instance);
-#endif
-            BESDEBUG( MODULE, prolog << "Cache is ENABLED"<< endl);
-        }
-    }
+    static BESUncompressCache cache;
+    std::call_once(d_initialize, [](){
+        d_enabled = true;
+        string tmp_dimCacheDir = getCacheDirFromConfig();
 
-    return d_instance;
+        if (tmp_dimCacheDir.empty()){
+            cache.disable();
+        }
+        else{
+            cache.enable();
+            cache.initialize(tmp_dimCacheDir, getCachePrefixFromConfig(), getCacheSizeFromConfig());
+        }
+    });
+    if (cache.cache_enabled()){
+        return &cache;
+    }
+    else{
+        return nullptr;
+    }
 }
 
 BESUncompressCache::~BESUncompressCache() {}

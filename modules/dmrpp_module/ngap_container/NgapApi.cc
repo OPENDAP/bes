@@ -34,6 +34,7 @@
 #include "BESSyntaxUserError.h"
 #include "BESInternalError.h"
 #include "BESDebug.h"
+#include "BESStopWatch.h"
 #include "BESUtil.h"
 #include "TheBESKeys.h"
 #include "CurlUtils.h"
@@ -402,6 +403,7 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(const string &restifi
 
     string cmr_json_string;
     try {
+        BES_PROFILE_TIMING(string("Request granule record from CMR - ") + cmr_query_url);
         curl::http_get(cmr_query_url, cmr_json_string);
     }
     catch (http::HttpError &http_error) {

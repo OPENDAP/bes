@@ -225,6 +225,9 @@ void FONcAttributes::add_attributes_worker(int ncid, int varid, const string &va
         }
     }
 
+    if (attrs.get_attr_num(attr_name) >1 && new_attr_name == "_FillValue")
+        new_attr_name = "Multi_FillValues";
+
 //Note: Leave the following #if 0 #endif block for the time being. Don't change to NBEBUG.
 #if 0
     // This was the old way of doing it and it polluted the attribute names
@@ -502,6 +505,10 @@ void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const strin
             new_attr_name = d4_attr_name;
         }
     }
+
+    if (attr->num_values() >1 && new_attr_name == "_FillValue")
+        new_attr_name = "Multi_FillValues";
+
 
 
 //Note: Leave the following #if 0 #endif block for the time being. Don't change to NBEBUG.
@@ -1210,6 +1217,7 @@ FONcAttributes::write_dap4_attrs_for_nc4_types(int ncid,
 
             stax = nc_put_att_int(ncid, varid, var_attr_name.c_str(), NC_INT, num_vals,
                                   vals.data());
+
             if (stax != NC_NOERR) {
                 string err = (string) "File out netcdf-4 enhanced for DAP4, "
                              + "failed to write int attribute " + var_attr_name;

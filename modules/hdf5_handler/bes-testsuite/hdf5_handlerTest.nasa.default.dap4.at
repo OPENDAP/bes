@@ -219,3 +219,9 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([dset_big_stride.bescmd])
 AT_BESCMD_RESPONSE_TEST([test_ba_grp_dim_whole.h5.dmr.bescmd])
 #AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([dset_big.dap.bescmd])
 AT_BESCMD_RESPONSE_TEST([daymet_v4_daily_na_prcp_2010.nc.h5.dmr.bescmd])
+
+#VCD/VNP tests
+AT_BESCMD_RESPONSE_TEST([VNP18A2.A2022034.h09v05.002.2023022012753.h5.dmr.bescmd])
+
+#atl06 DAP4 map element tests
+AT_BESCMD_RESPONSE_TEST([atl06.h5.dmr.bescmd])
