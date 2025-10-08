@@ -69,7 +69,7 @@ bool NgapApi::append_hyrax_edl_client_id(string &cmr_url) {
         // jhrg 10/8/25
         if (cmr_url.back() != '?' && cmr_url.back() != '&')
             cmr_url.push_back('&');
-        cmr_url.append(CMR_CLIENT_ID).append("=").append(client_id);
+        cmr_url.append(CMR_CLIENT_ID_KEY).append("=").append(client_id);
     }
     return found;
 }

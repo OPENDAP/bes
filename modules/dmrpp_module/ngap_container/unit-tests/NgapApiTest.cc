@@ -478,7 +478,7 @@ public:
         const std::string test_client_id = "hyrax-test-client";
         BESContextManager::TheManager()->set_context(CMR_CLIENT_ID_CONTEXT_KEY, test_client_id);
 
-        // URL ends with '?': should become "?<CMR_CLIENT_ID>=<value>" (no extra '&')
+        // URL ends with '?': should become "?<CMR_CLIENT_ID_KEY>=<value>" (no extra '&')
         std::string url = "https://cmr.earthdata.nasa.gov/search/granules?";
 
         // Act
@@ -486,7 +486,7 @@ public:
 
         // Assert
         const std::string expected = std::string("https://cmr.earthdata.nasa.gov/search/granules?")
-                                     + CMR_CLIENT_ID + "=" + test_client_id;
+                                     + CMR_CLIENT_ID_KEY + "=" + test_client_id;
 
         CPPUNIT_ASSERT_MESSAGE("Expected a 'true' return value but got: " + to_string(result), result);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Expected: " + expected + ", but got: " + url, expected, url);
@@ -501,7 +501,7 @@ public:
         const std::string test_client_id = "hyrax-test-client";
         BESContextManager::TheManager()->set_context(CMR_CLIENT_ID_CONTEXT_KEY, test_client_id);
 
-        // URL ends with '&': should directly append "<CMR_CLIENT_ID>=<value>"
+        // URL ends with '&': should directly append "<CMR_CLIENT_ID_KEY>=<value>"
         std::string url = "https://cmr.earthdata.nasa.gov/search/granules?foo=bar&";
 
         // Act
@@ -509,7 +509,7 @@ public:
 
         // Assert
         const std::string expected = std::string("https://cmr.earthdata.nasa.gov/search/granules?foo=bar&")
-                                     + CMR_CLIENT_ID + "=" + test_client_id;
+                                     + CMR_CLIENT_ID_KEY + "=" + test_client_id;
 
         CPPUNIT_ASSERT_MESSAGE("Expected a 'true' return value but got: " + to_string(result), result);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Expected: " + expected + ", but got: " + url, expected, url);
@@ -532,7 +532,7 @@ public:
 
         // Assert
         const std::string expected = std::string("https://cmr.earthdata.nasa.gov/search/granules?foo=bar&")
-                                     + CMR_CLIENT_ID + "=" + test_client_id;
+                                     + CMR_CLIENT_ID_KEY + "=" + test_client_id;
 
         CPPUNIT_ASSERT_MESSAGE("Expected a 'true' return value but got: " + to_string(result), result);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Expected: " + expected + ", but got: " + url, expected, url);

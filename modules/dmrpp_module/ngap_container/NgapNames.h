@@ -70,7 +70,7 @@ constexpr static auto USE_OPENDAP_BUCKET = "NGAP.UseOPeNDAPBucket";
 
 // jhrg 10/8/25
 constexpr static auto CMR_CLIENT_ID_CONTEXT_KEY = "edl_client_application_id";
-constexpr static auto CMR_CLIENT_ID = "client_id";
+constexpr static auto CMR_CLIENT_ID_KEY = "client_id";
 
 constexpr static auto MODULE = "dmrpp";
 
