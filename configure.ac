@@ -561,10 +561,8 @@ AC_LANG_POP([C++])
 AS_IF([$found_aws_h && $found_s3client_h],
     [AWS_SDK_LIBS="-L$ac_bes_dependencies_prefix/lib -laws-cpp-sdk-s3 -laws-cpp-sdk-core"
      AC_SUBST(AWS_SDK_LIBS)
-     AC_MSG_NOTICE([AWS C++ SDK Found.])
-     AM_CONDITIONAL([USE_AWS_SDK], [true])],
-    [AC_MSG_ERROR([AWS C++ SDK not Found.])
-     AM_CONDITIONAL([USE_AWS_SDK], [false])])
+     AC_MSG_NOTICE([AWS C++ SDK Found.])],
+    [AC_MSG_ERROR([AWS C++ SDK not Found.])])
 
 dnl Freeform hacks
 
@@ -986,7 +984,6 @@ AM_COND_IF([BUILD_NCML], [OPTIONAL_FEATURES="ncml $OPTIONAL_FEATURES"])
 AM_COND_IF([USING_GRIDFIELDS], [OPTIONAL_FEATURES="gridfields $OPTIONAL_FEATURES"])
 AM_COND_IF([BUILD_STARE], [OPTIONAL_FEATURES="stare $OPTIONAL_FEATURES"])
 AM_COND_IF([BUILD_S3], [OPTIONAL_FEATURES="s3_reader $OPTIONAL_FEATURES"])
-AM_COND_IF([USE_AWS_SDK], [OPTIONAL_FEATURES="AWS_C++_SDK $OPTIONAL_FEATURES"])
 
 AM_COND_IF([BES_DEVELOPER], [OPTIONAL_FEATURES="developer $OPTIONAL_FEATURES"])
 
