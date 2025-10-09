@@ -552,19 +552,22 @@ AS_IF([test $curl_is_ok = no],
 dnl Look for the AWS libraries (aws-cpp-sdk-s3 aws-cpp-sdk-core) and headers
 dnl jhrg 3/11/25
 
-dnl AC_CHECK_HEADER (header-file, [action-if-found], [action-if-not-found], [includes = ‘default-includes’])
+dnl Look for the AWS SDK from the hyrax-dependencies. jhrg 10/9/25
+
 AC_LANG_PUSH([C++])
+saved_CXXFLAGS=$CXXFLAGS
+CXXFLAGS="$CXXFLAGS -I$ac_bes_dependencies_prefix/include"
 AC_CHECK_HEADERS([aws/core/Aws.h], [found_aws_h=true], [found_aws_h=false])
 AC_CHECK_HEADERS([aws/s3/S3Client.h], [found_s3client_h=true], [found_s3client_h=false])
+CXXFLAGS=$saved_CXXFLAGS
 AC_LANG_POP([C++])
 
-dnl FIXME replace fail case with notice instead of error if we can support fallback to no aws sdk
 AS_IF([$found_aws_h && $found_s3client_h],
     [AWS_SDK_LIBS="-L$ac_bes_dependencies_prefix/lib -laws-cpp-sdk-s3 -laws-cpp-sdk-core"
      AC_SUBST(AWS_SDK_LIBS)
      AC_MSG_NOTICE([AWS C++ SDK Found.])
      AM_CONDITIONAL([USE_AWS_SDK], [true])],
-    [AC_MSG_ERROR([AWS C++ SDK not Found.])
+    [AC_MSG_NOTICE([AWS C++ SDK not Found.])
      AM_CONDITIONAL([USE_AWS_SDK], [false])])
 
 dnl Freeform hacks
