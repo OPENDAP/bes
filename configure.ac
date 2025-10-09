@@ -558,7 +558,6 @@ AC_CHECK_HEADERS([aws/core/Aws.h], [found_aws_h=true], [found_aws_h=false])
 AC_CHECK_HEADERS([aws/s3/S3Client.h], [found_s3client_h=true], [found_s3client_h=false])
 AC_LANG_POP([C++])
 
-dnl FIXME replace fail case with notice instead of error if we can support fallback to no aws sdk
 AS_IF([$found_aws_h && $found_s3client_h],
     [AWS_SDK_LIBS="-L$ac_bes_dependencies_prefix/lib -laws-cpp-sdk-s3 -laws-cpp-sdk-core"
      AC_SUBST(AWS_SDK_LIBS)
@@ -987,7 +986,7 @@ AM_COND_IF([BUILD_NCML], [OPTIONAL_FEATURES="ncml $OPTIONAL_FEATURES"])
 AM_COND_IF([USING_GRIDFIELDS], [OPTIONAL_FEATURES="gridfields $OPTIONAL_FEATURES"])
 AM_COND_IF([BUILD_STARE], [OPTIONAL_FEATURES="stare $OPTIONAL_FEATURES"])
 AM_COND_IF([BUILD_S3], [OPTIONAL_FEATURES="s3_reader $OPTIONAL_FEATURES"])
-AM_COND_IF([USE_AWS_SDK], [OPTIONAL_FEATURES="AWS C++ SDK $OPTIONAL_FEATURES"])
+AM_COND_IF([USE_AWS_SDK], [OPTIONAL_FEATURES="AWS_C++_SDK $OPTIONAL_FEATURES"])
 
 AM_COND_IF([BES_DEVELOPER], [OPTIONAL_FEATURES="developer $OPTIONAL_FEATURES"])
 
