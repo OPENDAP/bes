@@ -89,10 +89,10 @@ Aws::S3::S3Client AWS_SDK::get_s3_client(const string &region, const string &aws
     return {credentialsProvider, nullptr, clientConfig};
 }
 
-void AWS_SDK::ok() const {
-    if (!d_is_s3_initialized) {
+void AWS_SDK::throw_if_aws_uninitialized() const {
+    if (!d_is_aws_sdk_initialized) {
         // throw BESInternalFatalError("AWS_SDK object not initialized.", __FILE__, __LINE__);
-        throw std::runtime_error("AWS_SDK::ok() called before initialization");
+        throw std::runtime_error("AWS_SDK::throw_if_aws_uninitialized() called before initialization");
     }
 }
 
@@ -103,7 +103,7 @@ void AWS_SDK::ok() const {
  * @return True if the object exists and can be accessed, false otherwise
  */
 bool AWS_SDK::s3_head(const string &bucket, const string &key) {
-    ok();
+    throw_if_aws_uninitialized();
 
     Aws::S3::Model::HeadObjectRequest head_request;
     head_request.SetBucket(bucket);
@@ -129,7 +129,7 @@ bool AWS_SDK::s3_head(const string &bucket, const string &key) {
  * @return Received data as a string or the empty string
  */
 string AWS_SDK::s3_get_as_string(const string &bucket, const string &key) {
-    ok();
+    throw_if_aws_uninitialized();
 
     Aws::S3::Model::GetObjectRequest object_request;
     object_request.SetBucket(bucket);
@@ -159,7 +159,7 @@ string AWS_SDK::s3_get_as_string(const string &bucket, const string &key) {
  * @return True if successful, false otherwise
  */
 bool AWS_SDK::s3_get_as_file(const string &bucket, const string &key, const string &filename) {
-    ok();
+    throw_if_aws_uninitialized();
 
     Aws::S3::Model::GetObjectRequest object_request;
     object_request.SetBucket(bucket);

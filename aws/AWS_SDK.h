@@ -39,10 +39,10 @@ namespace bes
     class AWS_SDK : public IAWS_SDK
     {
         Aws::S3::S3Client d_get_s3_client;
-        bool d_is_s3_initialized = false;
+        bool d_is_aws_sdk_initialized = false;
         static Aws::SDKOptions options;
 
-        void ok() const; // throws BESInternalFatalError if the AWS_SDK instance is used before initialization.
+        void throw_if_aws_uninitialized() const; // throws BESInternalFatalError if the AWS_SDK instance is used before initialization.
 
         static Aws::S3::S3Client get_s3_client(const std::string &region, const std::string &aws_key,
                                                const std::string &aws_secret_key);
@@ -59,7 +59,7 @@ namespace bes
 
         static void aws_library_initialize()
         {
-            Aws::InitAPI(options);
+            Aws::InitAPI(options); // Must only be called once, as per AWS SDK requirements
         }
 
         static void aws_library_shutdown()
@@ -70,7 +70,7 @@ namespace bes
         void initialize(const std::string &region, const std::string &aws_key, const std::string &aws_secret_key) override
         {
             d_get_s3_client = get_s3_client(region, aws_key, aws_secret_key);
-            d_is_s3_initialized = true;
+            d_is_aws_sdk_initialized = true;
         }
 
         bool s3_head(const std::string &bucket, const std::string &key) override;
