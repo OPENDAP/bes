@@ -35,6 +35,7 @@
 
 #include "AWS_SDK.h"
 #include "test_config.h"
+#include "BESInternalFatalError.h"
 
 #include "modules/common/run_tests_cppunit.h"
 
@@ -83,27 +84,34 @@ public:
         ~file_wrapper() { remove(d_filename.c_str()); }
     };
 
-    static void test_s3_head_yes() {
+    static void test_throw_if_s3_client_uninitialized() {
+        AWS_SDK aws_sdk;
+        CPPUNIT_ASSERT_THROW_MESSAGE("s3 client must be initialized",
+                                        aws_sdk.s3_head_exists("foo", "bar"), BESInternalFatalError);
+
+    }
+
+    static void test_s3_head_exists_yes() {
         AWS_SDK aws_sdk;
         string id;
         string secret;
         get_s3_creds(id, secret);
-        aws_sdk.initialize("us-east-1", id, secret);
+        aws_sdk.initialize_s3_client("us-east-1", id, secret);
         const string object = "/samples/chunked_twoD.h5";
         const string bucket = "cloudydap";
-        const bool status = aws_sdk.s3_head(bucket, object);
+        const bool status = aws_sdk.s3_head_exists(bucket, object);
         CPPUNIT_ASSERT_MESSAGE("The object " + object + " should be in " + bucket, status == true);
     }
 
-    static void test_s3_head_no() {
+    static void test_s3_head_exists_no() {
         AWS_SDK aws_sdk;
         string id;
         string secret;
         get_s3_creds(id, secret);
-        aws_sdk.initialize("us-east-1", id, secret);
+        aws_sdk.initialize_s3_client("us-east-1", id, secret);
         const string object = "/samples/not_here";
         const string bucket = "cloudydap";
-        const bool status = aws_sdk.s3_head(bucket, object);
+        const bool status = aws_sdk.s3_head_exists(bucket, object);
         CPPUNIT_ASSERT_MESSAGE("The object " + object + " should not be in " + bucket, status == false);
         DBG(cerr << "AWS exception message: " << aws_sdk.get_aws_exception_message() << '\n');
         DBG(cerr << "HTTP Status code: " << aws_sdk.get_http_status_code() << '\n');
@@ -111,12 +119,12 @@ public:
                                aws_sdk.get_http_status_code() == 404);
     }
 
-    static void test_s3_head_bad_creds() {
+    static void test_s3_head_exists_bad_creds() {
         AWS_SDK aws_sdk;
-        aws_sdk.initialize("us-east-1", "foo", "bar");
+        aws_sdk.initialize_s3_client("us-east-1", "foo", "bar");
         const string object = "/samples/chunked_twoD.h5";
         const string bucket = "cloudydap";
-        const bool status = aws_sdk.s3_head(bucket, object);
+        const bool status = aws_sdk.s3_head_exists(bucket, object);
         CPPUNIT_ASSERT_MESSAGE("The request for object " + object + " fail.", status == false);
         DBG(cerr << "AWS exception message: " << aws_sdk.get_aws_exception_message() << '\n');
         DBG(cerr << "HTTP Status code: " << aws_sdk.get_http_status_code() << '\n');
@@ -129,7 +137,7 @@ public:
         string id;
         string secret;
         get_s3_creds(id, secret);
-        aws_sdk.initialize("us-east-1", id, secret);
+        aws_sdk.initialize_s3_client("us-east-1", id, secret);
         const string object =
                 "/C2036877806-POCLOUD/20180101000000-OSISAF-L3C_GHRSST-SSTsubskin-GOES16-ssteqc_goes16_20180101_000000-v02.0-fv01.0.dmrpp";
         const string bucket = "cloudydap";
@@ -142,7 +150,7 @@ public:
         string id;
         string secret;
         get_s3_creds(id, secret);
-        aws_sdk.initialize("us-east-1", id, secret);
+        aws_sdk.initialize_s3_client("us-east-1", id, secret);
         const string object = "/C2036877806-POCLOUD/foobar.baz";
         const string bucket = "cloudydap";
         const string dmrpp = aws_sdk.s3_get_as_string(bucket, object);
@@ -155,7 +163,7 @@ public:
 
     static void test_s3_get_as_string_bad_creds() {
         AWS_SDK aws_sdk;
-        aws_sdk.initialize("us-east-1", "foo", "bar");
+        aws_sdk.initialize_s3_client("us-east-1", "foo", "bar");
         const string object = "/C2036877806-POCLOUD/20180101000000-OSISAF-L3C_GHRSST-SSTsubskin-GOES16-ssteqc_goes16_20180101_000000-v02.0-fv01.0.dmrpp";
         const string bucket = "cloudydap";
         const string dmrpp = aws_sdk.s3_get_as_string(bucket, object);
@@ -171,7 +179,7 @@ public:
         string id;
         string secret;
         get_s3_creds(id, secret);
-        aws_sdk.initialize("us-east-1", id, secret);
+        aws_sdk.initialize_s3_client("us-east-1", id, secret);
         const string object =
                 "/C2036877806-POCLOUD/20180101000000-OSISAF-L3C_GHRSST-SSTsubskin-GOES16-ssteqc_goes16_20180101_000000-v02.0-fv01.0.dmrpp";
         const string bucket = "cloudydap";
@@ -187,14 +195,16 @@ public:
 
     CPPUNIT_TEST_SUITE(AWS_SDK_Test);
 
+        CPPUNIT_TEST(test_throw_if_s3_client_uninitialized);
+
         CPPUNIT_TEST(test_s3_get_as_string);
         CPPUNIT_TEST(test_s3_get_as_string_not_there);
         CPPUNIT_TEST(test_s3_get_as_string_bad_creds);
         CPPUNIT_TEST(test_s3_get_as_file);
 
-        CPPUNIT_TEST(test_s3_head_yes);
-        CPPUNIT_TEST(test_s3_head_no);
-        CPPUNIT_TEST(test_s3_head_bad_creds);
+        CPPUNIT_TEST(test_s3_head_exists_yes);
+        CPPUNIT_TEST(test_s3_head_exists_no);
+        CPPUNIT_TEST(test_s3_head_exists_bad_creds);
 
     CPPUNIT_TEST_SUITE_END();
 };

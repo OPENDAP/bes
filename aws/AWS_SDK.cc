@@ -41,7 +41,7 @@
 
 #include "AWS_SDK.h"
 
-//#include "BESInternalFatalError.h"
+#include "BESInternalFatalError.h"
 
 using namespace std;
 
@@ -49,26 +49,6 @@ namespace bes {
 
 Aws::SDKOptions AWS_SDK::options;
 
-#if 0
-
-/**
- * @brief Get an S3 Client.
- * @param region AWS region string, e.g., 'us-east-1'
- * @return The AWS S3 Client object.
- */
-Aws::S3::S3Client AWS_SDK::get_s3_client(const string &region) {
-    Aws::S3::S3ClientConfiguration clientConfig;
-    clientConfig.region = region; // Set your region
-
-    // Create a shared pointer to a SimpleAWSCredentialsProvider using your key and secret.
-    auto credentialsProvider = Aws::Auth::AWSCredentials(getenv("CMAC_ID"), getenv("CMAC_ACCESS_KEY"));
-
-    // Construct the S3 client with the credentials provider and client configuration.
-    // std::shared_ptr<S3EndpointProviderBase> is nullptr in the following call.
-    return {credentialsProvider, nullptr, clientConfig};
-}
-
-#endif
 
 /**
  * @brief Get an S3 Client.
@@ -89,10 +69,9 @@ Aws::S3::S3Client AWS_SDK::get_s3_client(const string &region, const string &aws
     return {credentialsProvider, nullptr, clientConfig};
 }
 
-void AWS_SDK::throw_if_aws_uninitialized() const {
-    if (!d_is_aws_sdk_initialized) {
-        // throw BESInternalFatalError("AWS_SDK object not initialized.", __FILE__, __LINE__);
-        throw std::runtime_error("AWS_SDK::throw_if_aws_uninitialized() called before initialization");
+void AWS_SDK::throw_if_s3_client_uninitialized() const {
+    if (!d_is_s3_client_initialized) {
+        throw BESInternalFatalError("AWS s3 client called before initialization.", __FILE__, __LINE__);
     }
 }
 
@@ -102,14 +81,14 @@ void AWS_SDK::throw_if_aws_uninitialized() const {
  * @param key Object key in the bucket
  * @return True if the object exists and can be accessed, false otherwise
  */
-bool AWS_SDK::s3_head(const string &bucket, const string &key) {
-    throw_if_aws_uninitialized();
+bool AWS_SDK::s3_head_exists(const string &bucket, const string &key) {
+    throw_if_s3_client_uninitialized();
 
     Aws::S3::Model::HeadObjectRequest head_request;
     head_request.SetBucket(bucket);
     head_request.SetKey(key);
 
-    const auto head_outcome = d_get_s3_client.HeadObject(head_request);
+    const auto head_outcome = d_s3_client.HeadObject(head_request);
     if (head_outcome.IsSuccess()) {
         return true;
     }
@@ -129,13 +108,13 @@ bool AWS_SDK::s3_head(const string &bucket, const string &key) {
  * @return Received data as a string or the empty string
  */
 string AWS_SDK::s3_get_as_string(const string &bucket, const string &key) {
-    throw_if_aws_uninitialized();
+    throw_if_s3_client_uninitialized();
 
     Aws::S3::Model::GetObjectRequest object_request;
     object_request.SetBucket(bucket);
     object_request.SetKey(key);
 
-    auto get_object_outcome = d_get_s3_client.GetObject(object_request);
+    auto get_object_outcome = d_s3_client.GetObject(object_request);
     if (get_object_outcome.IsSuccess()) {
         const auto &retrieved_file = get_object_outcome.GetResultWithOwnership().GetBody();
         stringstream file_contents;
@@ -159,13 +138,13 @@ string AWS_SDK::s3_get_as_string(const string &bucket, const string &key) {
  * @return True if successful, false otherwise
  */
 bool AWS_SDK::s3_get_as_file(const string &bucket, const string &key, const string &filename) {
-    throw_if_aws_uninitialized();
+    throw_if_s3_client_uninitialized();
 
     Aws::S3::Model::GetObjectRequest object_request;
     object_request.SetBucket(bucket);
     object_request.SetKey(key);
 
-    auto get_object_outcome = d_get_s3_client.GetObject(object_request);
+    auto get_object_outcome = d_s3_client.GetObject(object_request);
     if (get_object_outcome.IsSuccess()) {
         const auto &retrieved_file = get_object_outcome.GetResultWithOwnership().GetBody();
         std::ofstream output_file(filename, std::ios::binary);
