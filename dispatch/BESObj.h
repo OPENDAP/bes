@@ -56,7 +56,7 @@ public:
     /** @brief Default constructor
      *
      */
-    virtual	~BESObj() = default;
+    virtual ~BESObj() = default;
 
     /** @brief dump the contents of this object to the specified ostream
      *

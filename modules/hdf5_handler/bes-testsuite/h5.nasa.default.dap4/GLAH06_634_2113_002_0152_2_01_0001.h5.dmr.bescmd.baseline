@@ -886,36 +886,36 @@
             </Attribute>
         </Group>
         <Group name="Geophysical">
-            <Float64 name="d_ldElv">
+            <Float64 name="d_DEMhiresArElv">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
+                <Dim name="/Data_40HZ/DS_DEMhiresArElv"/>
                 <Attribute name="units" type="String">
                     <Value>meters</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value>40</Value>
+                </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>Load Tide Elevation</Value>
+                    <Value>DEMhiresArElv</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>The load tide elevation applied to each shot.</Value>
+                    <Value>d_DEMhiresArElv is a 9 element array of high resolution DEM values.  The array index corresponds to the position of the DEM value relative to the spot. (5) is the footprint center.</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Rel 34 GLAS Binary Data</Value>
                 </Attribute>
                 <Attribute name="coordinates" type="String">
-                    <Value>DS_UTCTime_40</Value>
+                    <Value>DS_UTCTime_40, d_DEMhiresArElv</Value>
                 </Attribute>
                 <Attribute name="valid_min" type="Float64">
-                    <Value>-10.</Value>
+                    <Value>-500.</Value>
                 </Attribute>
                 <Attribute name="valid_max" type="Float64">
-                    <Value>10.</Value>
+                    <Value>1300.</Value>
                 </Attribute>
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value>40</Value>
-                </Attribute>
-                <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
             <Float64 name="d_ocElv">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
@@ -1180,38 +1180,36 @@
                 </Attribute>
                 <Map name="/Data_40HZ/DS_UTCTime_40"/>
             </Float64>
-            <Float64 name="d_DEMhiresArElv">
+            <Float64 name="d_ldElv">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>
-                <Dim name="/Data_40HZ/DS_DEMhiresArElv"/>
                 <Attribute name="units" type="String">
                     <Value>meters</Value>
                 </Attribute>
-                <Attribute name="hertz" type="String">
-                    <Value>40</Value>
-                </Attribute>
                 <Attribute name="long_name" type="String">
-                    <Value>DEMhiresArElv</Value>
+                    <Value>Load Tide Elevation</Value>
                 </Attribute>
                 <Attribute name="description" type="String">
-                    <Value>d_DEMhiresArElv is a 9 element array of high resolution DEM values.  The array index corresponds to the position of the DEM value relative to the spot. (5) is the footprint center.</Value>
+                    <Value>The load tide elevation applied to each shot.</Value>
                 </Attribute>
                 <Attribute name="source" type="String">
                     <Value>Rel 34 GLAS Binary Data</Value>
                 </Attribute>
                 <Attribute name="coordinates" type="String">
-                    <Value>DS_UTCTime_40, d_DEMhiresArElv</Value>
+                    <Value>DS_UTCTime_40</Value>
                 </Attribute>
                 <Attribute name="valid_min" type="Float64">
-                    <Value>-500.</Value>
+                    <Value>-10.</Value>
                 </Attribute>
                 <Attribute name="valid_max" type="Float64">
-                    <Value>1300.</Value>
+                    <Value>10.</Value>
                 </Attribute>
                 <Attribute name="_FillValue" type="Float64">
                     <Value>1.7976931348623157e+308</Value>
                 </Attribute>
+                <Attribute name="hertz" type="String">
+                    <Value>40</Value>
+                </Attribute>
                 <Map name="/Data_40HZ/DS_UTCTime_40"/>
-                <Map name="/Data_40HZ/DS_DEMhiresArElv"/>
             </Float64>
             <Int8 name="i_DEM_hires_src_1">
                 <Dim name="/Data_40HZ/DS_UTCTime_40"/>

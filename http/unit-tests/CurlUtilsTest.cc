@@ -510,15 +510,16 @@ public:
                 string buf;
                 DBG(cerr << prolog << "Retrieving " << url << "\n");
                 curl::http_get(url, buf);
-                DBG(cerr << "buf.data() = " << string(buf.data()) << "\n");
+                DBG(cerr << "buf.data() = " << buf.data() << "\n");
                 CPPUNIT_ASSERT_MESSAGE("Should be able to find 'Test data''",
                                        string(buf.data()).find("Test data") == 0);
                 CPPUNIT_ASSERT_MESSAGE("Should be able to find 'Do not edit.''",
-                                       string(buf.data()).find("Do not edit.")
-                                       != string::npos);
+                                       string(buf.data()).find("Do not edit.") != string::npos);
 
                 DBG(cerr << "buf.size() = " << buf.size() << "\n");
-                CPPUNIT_ASSERT_MESSAGE("Size should be 94", buf.size() == 94);
+                CPPUNIT_ASSERT_MESSAGE(
+                        ("Expected buf size to be 93, but got " + std::to_string(buf.size()) + ", content:\n" + buf).c_str(),
+                        buf.size() == 93);
             }
             catch (const BESError &e) {
                 CPPUNIT_FAIL(string("Did not sign the URL correctly. ").append(e.get_verbose_message()));

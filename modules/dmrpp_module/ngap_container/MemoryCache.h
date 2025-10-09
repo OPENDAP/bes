@@ -52,7 +52,7 @@ namespace ngap {
  * 'purge items' as set with the initialize() method.
  *
  * Instead of initializing the cache (setting the max and purge item counts)
- * using a constructor, am initialize() method is used. The constructors never
+ * using a constructor, an initialize() method is used. The constructors never
  * throw exceptions. If initialize() fails, it returns false. The get() and put()
  * methods may throw exceptions.
  *
@@ -62,8 +62,8 @@ namespace ngap {
  */
 template <typename VALUE>
 class MemoryCache {
-    unsigned int d_max_items = 100;       //< Max number of items to cache (not bytes, but items)
-    unsigned int d_purge_items = 20;     //< When purging, remove this many items
+    unsigned int d_max_items = 100;       //< Max number of items to cache (not bytes, but items).
+    unsigned int d_purge_items = 20;     //< When purging, remove this number of items.
 
     std::deque<std::string> d_fifo_keys; //< FIFO queue of keys; used by purge()
     std::unordered_map<std::string, VALUE> d_cache;

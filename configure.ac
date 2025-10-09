@@ -636,7 +636,7 @@ AS_IF([test -n "$with_gdal_prefix" -a $with_gdal_prefix = no],
     [test -n "$with_gdal_prefix"],
     dnl then
     [AC_MSG_NOTICE([You set the gdal-prefix directory to $with_gdal_prefix,])
-    AC_MSG_ERROR([but gdal-config is not there. Not building GDAL-dependent modules.])],
+    AC_MSG_WARN([but gdal-config is not there. Not building GDAL-dependent modules.])],
     
     dnl else
     [AC_MSG_NOTICE([Looking for GDAL.])

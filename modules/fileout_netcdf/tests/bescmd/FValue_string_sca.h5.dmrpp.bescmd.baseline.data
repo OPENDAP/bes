@@ -1,0 +1,18 @@
+netcdf test {
+dimensions:
+	fill_str_sca_len = 2 ;
+variables:
+	char fill_str_sca(fill_str_sca_len) ;
+
+// global attributes:
+		:build_dmrpp_metadata.created = "removed date-time" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.21.1" ;
+		:build_dmrpp_metadata.bes = "3.21.1" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -f /private/tmp/FValue_string_sca.h5 -r FValue_string_sca.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M" ;
+		:history = "removed date-timex FValue_string_sca.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"FValue_string_sca.h5.dmrpp\"}]}]" ;
+data:
+
+ fill_str_sca = " " ;
+}
