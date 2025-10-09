@@ -64,9 +64,9 @@ m4_define([_AT_BESCMD_DAP4DATA_TEST],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap4 -D -M - > $2|| true], [], [stdout], [stderr])
+AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap4 -C -D -M - > $2|| true], [], [stdout], [stderr])
 
-AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap4 -D -M - || true], [], [stdout], [stderr])
+AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap4 -C -D -M - || true], [], [stdout], [stderr])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 
