@@ -30,6 +30,7 @@
 
 #include <string>
 #include <sstream>
+#include <cstdint>
 
 #include <sys/stat.h>
 
@@ -83,6 +84,12 @@ public:
         explicit file_wrapper(const std::string &filename) : d_filename(filename) {}
         ~file_wrapper() { remove(d_filename.c_str()); }
     };
+
+    static bool is_url_signed_for_s3(const std::string &url) {
+        return url.find("X-Amz-Algorithm=") != string::npos &&
+            url.find("X-Amz-Credential=") != string::npos &&
+            url.find("X-Amz-Signature=") != string::npos;
+    }
 
     static void test_throw_if_s3_client_uninitialized() {
         AWS_SDK aws_sdk;
@@ -193,6 +200,52 @@ public:
                                file_size == 55585);
     }
 
+    static void test_s3_generate_presigned_object_url() {
+        AWS_SDK aws_sdk;
+        string id;
+        string secret;
+        get_s3_creds(id, secret);
+        aws_sdk.initialize_s3_client("us-east-1", id, secret);
+        const string object = "/samples/chunked_twoD.h5";
+        const string bucket = "cloudydap";
+        const uint64_t expiration_seconds = 60;
+        const Aws::String url = aws_sdk.s3_generate_presigned_object_url(bucket, object, expiration_seconds);
+        CPPUNIT_ASSERT_MESSAGE("The url should be signed for s3: " + url, is_url_signed_for_s3(url));
+
+
+        // const Aws::String unsigned_url = aws_sdk.s3_generate_presigned_object_url(bucket, object, expiration_seconds);
+        // CPPUNIT_ASSERT_MESSAGE("The url should not be signed for s3: " + url, !is_url_signed_for_s3(unsigned_url));
+
+        // // The unsigned url should not be able to fetch an object
+        // CPPUNIT_ASSERT_MESSAGE("Two aws urls signed at the same second should be identical. url1 = " + url + " url2 = " + url2, url == url2);
+
+        // // The signed url should be able to fetch an object
+        // CPPUNIT_ASSERT_MESSAGE("Two aws urls signed at the same second should be identical. url1 = " + url + " url2 = " + url2, url == url2);
+    }
+
+    static void test_s3_generate_presigned_object_url_not_there() {
+        AWS_SDK aws_sdk;
+        string id;
+        string secret;
+        get_s3_creds(id, secret);
+        aws_sdk.initialize_s3_client("us-east-1", id, secret);
+        const string object = "/foo";
+        const string bucket = "cloudydap";
+        const uint64_t expiration_seconds = 60;
+        const Aws::String url = aws_sdk.s3_generate_presigned_object_url(bucket, object, expiration_seconds);
+        CPPUNIT_ASSERT_MESSAGE("The url should be signed for s3 even though the object doesn't exist: " + url, is_url_signed_for_s3(url));
+    }
+
+    static void test_s3_generate_presigned_object_url_bad_creds() {
+        AWS_SDK aws_sdk;
+        aws_sdk.initialize_s3_client("us-east-1", "foo", "bar");
+        const string object = "/samples/chunked_twoD.h5";
+        const string bucket = "cloudydap";
+        const uint64_t expiration_seconds = 60;
+        const Aws::String url = aws_sdk.s3_generate_presigned_object_url(bucket, object, expiration_seconds);
+        CPPUNIT_ASSERT_MESSAGE("The url should be signed for s3 even though the credentials are bad: " + url, is_url_signed_for_s3(url));
+    }
+
     CPPUNIT_TEST_SUITE(AWS_SDK_Test);
 
         CPPUNIT_TEST(test_throw_if_s3_client_uninitialized);
@@ -205,6 +258,10 @@ public:
         CPPUNIT_TEST(test_s3_head_exists_yes);
         CPPUNIT_TEST(test_s3_head_exists_no);
         CPPUNIT_TEST(test_s3_head_exists_bad_creds);
+
+        CPPUNIT_TEST(test_s3_generate_presigned_object_url);
+        CPPUNIT_TEST(test_s3_generate_presigned_object_url_not_there);
+        CPPUNIT_TEST(test_s3_generate_presigned_object_url_bad_creds);
 
     CPPUNIT_TEST_SUITE_END();
 };
