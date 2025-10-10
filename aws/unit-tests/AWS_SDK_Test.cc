@@ -314,6 +314,25 @@ public:
         const uint64_t expiration_seconds = 60;
         const Aws::String url = aws_sdk.s3_generate_presigned_object_url(bucket, object, expiration_seconds);
         CPPUNIT_ASSERT_MESSAGE("The url should be signed for s3 even though the credentials are bad: " + url, is_url_signed_for_s3(url));
+
+        CPPUNIT_ASSERT_MESSAGE("No object returned for signed url when credentials are bad " + url, !url_request_returns_object(url));
+    }
+
+    static void test_s3_generate_presigned_object_url_expiration() {
+        AWS_SDK aws_sdk;
+        string id;
+        string secret;
+        get_s3_creds(id, secret);
+        aws_sdk.initialize_s3_client("us-east-1", id, secret);
+        const string object = "/samples/chunked_twoD.h5";
+        const string bucket = "cloudydap";
+        const uint64_t expiration_seconds = 3;
+        const Aws::String url = aws_sdk.s3_generate_presigned_object_url(bucket, object, expiration_seconds);
+        CPPUNIT_ASSERT_MESSAGE("Presigned url should return an object " + url, url_request_returns_object(url));
+
+        sleep(expiration_seconds); // Bad form to add extra time to unit tests, but we need to know that we _can_ expire a signed url, and we need enough time for the response to have been returned for the first fetch
+
+        CPPUNIT_ASSERT_MESSAGE("Presigned url should not return an object if it has expired" + url, !url_request_returns_object(url));
     }
 
     CPPUNIT_TEST_SUITE(AWS_SDK_Test);
@@ -332,6 +351,7 @@ public:
         CPPUNIT_TEST(test_s3_generate_presigned_object_url);
         CPPUNIT_TEST(test_s3_generate_presigned_object_url_not_there);
         CPPUNIT_TEST(test_s3_generate_presigned_object_url_bad_creds);
+        CPPUNIT_TEST(test_s3_generate_presigned_object_url_expiration);
 
     CPPUNIT_TEST_SUITE_END();
 };
