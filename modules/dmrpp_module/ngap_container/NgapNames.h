@@ -47,6 +47,7 @@ constexpr static auto NGAP_GRANULES_KEY = "/granules/";
 constexpr static auto DEFAULT_CMR_ENDPOINT_URL = "https://cmr.earthdata.nasa.gov";
 constexpr static auto DEFAULT_CMR_SEARCH_ENDPOINT_PATH = "/search/granules.umm_json_v1_4";
 constexpr static auto CMR_URL_TYPE_GET_DATA = "GET DATA";
+constexpr static auto CMR_URL_TYPE_GET_S3CREDENTIALS = "VIEW RELATED INFORMATION";
 
 constexpr static auto USE_CMR_CACHE = "NGAP.UseCMRCache";
 constexpr static auto CMR_CACHE_THRESHOLD = "NGAP.CMRCacheSize.Items";
