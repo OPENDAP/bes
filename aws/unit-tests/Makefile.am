@@ -4,22 +4,27 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/aws -I$(top_srcdir)/dispatch
 
-AWS_SDK_C_LIBS = -laws-c-common -laws-c-auth -laws-c-cal -laws-c-compression -laws-c-event-stream \
-                 -laws-c-http -laws-c-io -laws-c-mqtt -laws-c-s3 -laws-c-sdkutils
+AWS_SDK_C_LIBS = -laws-c-common -laws-c-cal -laws-c-compression -laws-c-event-stream \
+                 -laws-c-http -laws-c-io -laws-c-mqtt -laws-c-s3 -laws-c-auth -laws-c-sdkutils
+AWS_SDK_CPP_LIBS = -laws-crt-cpp -laws-cpp-sdk-s3 -laws-cpp-sdk-core -laws-checksums
 
-LIBADD = ../.libs/libbes_aws.a $(AWS_SDK_LIBS) -laws-crt-cpp $(AWS_SDK_C_LIBS) $(BES_DISPATCH_LIB)
+# This should be 'AM_LDADD' but for some reason the check_PROGRAMS variable doesn't work
+# like bin_PROGRAMS.
+LDADD = $(top_srcdir)/aws/.libs/libbes_aws.a -lbes_dispatch $(AWS_SDK_C_LIBS) $(AWS_SDK_CPP_LIBS)
+
+AM_LDFLAGS = -L$(prefix)/deps/lib -L$(top_builddir)/dispatch
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS) -Wno-deprecated-declarations
-LIBADD += $(CPPUNIT_LIBS)
+LDADD += $(CPPUNIT_LIBS)
 endif
 
 # These are not used by automake but are often useful for certain types of
 # debugging. Set CXXFLAGS to this in the nightly build using export ...
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 
-AM_CXXFLAGS=
-AM_LDFLAGS =
+AM_CXXFLAGS =
+# See above. jhrg 10/10/25 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
 DISTCLEANFILES = test_config.h
@@ -81,5 +86,6 @@ clean-local:
 	test ! -d $(builddir)/cache || rm -rf $(builddir)/cache
 
 AWS_SDK_Test_SOURCES = AWS_SDK_Test.cc
-AWS_SDK_Test_LDADD = $(LIBADD)
+AWS_SDK_Test_LDADD = $(LDADD)
+
 # Didn't work. jhrg 3/21/25 AWS_SDK_Test_LDFLAGS = -no-install

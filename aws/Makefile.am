@@ -11,6 +11,9 @@ if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
 endif
 
+AWS_SDK_C_LIBS = -laws-c-common -laws-c-auth -laws-c-cal -laws-c-compression -laws-c-event-stream \
+                 -laws-c-http -laws-c-io -laws-c-mqtt -laws-c-s3 -laws-c-sdkutils
+
 AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
@@ -20,8 +23,8 @@ SUBDIRS = . unit-tests
 noinst_LTLIBRARIES = libbes_aws.la
 
 libbes_aws_la_SOURCES = $(SRCS) $(HDRS)
-libbes_aws_la_LDFLAGS =
-libbes_aws_la_LIBADD =
+libbes_aws_la_LDFLAGS = -L$(prefix)/deps/lib
+libbes_aws_la_LIBADD = -laws-cpp-sdk-s3 -laws-cpp-sdk-core
 
 pkginclude_HEADERS = $(HDRS)
 
