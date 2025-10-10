@@ -38,11 +38,11 @@ namespace bes
 {
     class AWS_SDK : public IAWS_SDK
     {
-        Aws::S3::S3Client d_get_s3_client;
-        bool d_is_s3_initialized = false;
+        Aws::S3::S3Client d_s3_client;
+        bool d_is_s3_client_initialized = false;
         static Aws::SDKOptions options;
 
-        void ok() const; // throws BESInternalFatalError if the AWS_SDK instance is used before initialization.
+        void throw_if_s3_client_uninitialized() const; // throws BESInternalFatalError
 
         static Aws::S3::S3Client get_s3_client(const std::string &region, const std::string &aws_key,
                                                const std::string &aws_secret_key);
@@ -59,7 +59,7 @@ namespace bes
 
         static void aws_library_initialize()
         {
-            Aws::InitAPI(options);
+            Aws::InitAPI(options); // Must only be called once, as per AWS SDK
         }
 
         static void aws_library_shutdown()
@@ -67,15 +67,19 @@ namespace bes
             Aws::ShutdownAPI(options);
         }
 
-        void initialize(const std::string &region, const std::string &aws_key, const std::string &aws_secret_key) override
+        void initialize_s3_client(const std::string &region, const std::string &aws_key, const std::string &aws_secret_key) override
         {
-            d_get_s3_client = get_s3_client(region, aws_key, aws_secret_key);
-            d_is_s3_initialized = true;
+            d_s3_client = get_s3_client(region, aws_key, aws_secret_key);
+            d_is_s3_client_initialized = true;
         }
 
-        bool s3_head(const std::string &bucket, const std::string &key) override;
+        bool s3_head_exists(const std::string &bucket, const std::string &key) override;
         std::string s3_get_as_string(const std::string &bucket, const std::string &key) override;
         bool s3_get_as_file(const std::string &bucket, const std::string &key, const std::string &filename) override;
+
+        Aws::String s3_generate_presigned_object_url(const Aws::String &bucket_name,
+                                                     const Aws::String &key,
+                                                     uint64_t expiration_seconds) override;
     };
 }
 #endif // AWS_SDK_H

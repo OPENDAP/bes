@@ -30,11 +30,14 @@
 
 #include <string>
 #include <sstream>
+#include <cstdint>
+#include <curl/curl.h>
 
 #include <sys/stat.h>
 
 #include "AWS_SDK.h"
 #include "test_config.h"
+#include "BESInternalFatalError.h"
 
 #include "modules/common/run_tests_cppunit.h"
 
@@ -83,27 +86,110 @@ public:
         ~file_wrapper() { remove(d_filename.c_str()); }
     };
 
-    static void test_s3_head_yes() {
+    static bool is_url_signed_for_s3(const std::string &url) {
+        return url.find("X-Amz-Algorithm=") != string::npos &&
+            url.find("X-Amz-Credential=") != string::npos &&
+            url.find("X-Amz-Signature=") != string::npos;
+    }
+
+    static std::string strip_signature_from_url(const std::string &signed_url) {
+        string url(signed_url);
+        size_t pos = url.find('?');
+        if (pos != std::string::npos) {
+            url.erase(pos);
+        }
+        return url;
+    }
+
+    /**
+     * Helper function for testing pre-signed url behavior
+     * Lightly modified from AWS SDK documentation https://docs.aws.amazon.com/sdk-for-cpp/v1/developer-guide/cpp_s3_code_examples.html
+     */
+    static size_t myCurlWriteBack(char *buffer, size_t size, size_t nitems, void *userdata) {
+        Aws::StringStream *str = (Aws::StringStream *) userdata;
+
+        if (nitems > 0) {
+            str->write(buffer, size * nitems);
+        }
+        return size * nitems;
+    }
+
+    /**
+     * Helper function for testing url object fetching via curl requests
+     * Lightly modified from AWS SDK documentation https://docs.aws.amazon.com/sdk-for-cpp/v1/developer-guide/cpp_s3_code_examples.html
+     */
+    static bool url_request_returns_object(const Aws::String &url) {
+        CURL *curl = curl_easy_init();
+        CURLcode result;
+
+        std::stringstream outWriteString;
+
+        result = curl_easy_setopt(curl, CURLOPT_WRITEDATA, &outWriteString);
+
+        if (result != CURLE_OK) {
+            std::cerr << "Failed to set CURLOPT_WRITEDATA " << std::endl;
+            return false;
+        }
+
+        result = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, myCurlWriteBack);
+
+        if (result != CURLE_OK) {
+            std::cerr << "Failed to set CURLOPT_WRITEFUNCTION" << std::endl;
+            return false;
+        }
+
+        result = curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+
+        if (result != CURLE_OK) {
+            std::cerr << "Failed to set CURLOPT_URL" << std::endl;
+            return false;
+        }
+
+        result = curl_easy_perform(curl);
+
+        if (result != CURLE_OK) {
+            std::cerr << "Failed to perform CURL request" << std::endl;
+            return false;
+        }
+
+        auto resultString = outWriteString.str();
+
+        if (resultString.find("<?xml") == 0) {
+            std::cerr << "Failed to get object, response:\n" << resultString << std::endl;
+            return false;
+        }
+
+        return true;
+    }
+
+    static void test_throw_if_s3_client_uninitialized() {
+        AWS_SDK aws_sdk;
+        CPPUNIT_ASSERT_THROW_MESSAGE("s3 client must be initialized",
+                                        aws_sdk.s3_head_exists("foo", "bar"), BESInternalFatalError);
+
+    }
+
+    static void test_s3_head_exists_yes() {
         AWS_SDK aws_sdk;
         string id;
         string secret;
         get_s3_creds(id, secret);
-        aws_sdk.initialize("us-east-1", id, secret);
+        aws_sdk.initialize_s3_client("us-east-1", id, secret);
         const string object = "/samples/chunked_twoD.h5";
         const string bucket = "cloudydap";
-        const bool status = aws_sdk.s3_head(bucket, object);
+        const bool status = aws_sdk.s3_head_exists(bucket, object);
         CPPUNIT_ASSERT_MESSAGE("The object " + object + " should be in " + bucket, status == true);
     }
 
-    static void test_s3_head_no() {
+    static void test_s3_head_exists_no() {
         AWS_SDK aws_sdk;
         string id;
         string secret;
         get_s3_creds(id, secret);
-        aws_sdk.initialize("us-east-1", id, secret);
+        aws_sdk.initialize_s3_client("us-east-1", id, secret);
         const string object = "/samples/not_here";
         const string bucket = "cloudydap";
-        const bool status = aws_sdk.s3_head(bucket, object);
+        const bool status = aws_sdk.s3_head_exists(bucket, object);
         CPPUNIT_ASSERT_MESSAGE("The object " + object + " should not be in " + bucket, status == false);
         DBG(cerr << "AWS exception message: " << aws_sdk.get_aws_exception_message() << '\n');
         DBG(cerr << "HTTP Status code: " << aws_sdk.get_http_status_code() << '\n');
@@ -111,12 +197,12 @@ public:
                                aws_sdk.get_http_status_code() == 404);
     }
 
-    static void test_s3_head_bad_creds() {
+    static void test_s3_head_exists_bad_creds() {
         AWS_SDK aws_sdk;
-        aws_sdk.initialize("us-east-1", "foo", "bar");
+        aws_sdk.initialize_s3_client("us-east-1", "foo", "bar");
         const string object = "/samples/chunked_twoD.h5";
         const string bucket = "cloudydap";
-        const bool status = aws_sdk.s3_head(bucket, object);
+        const bool status = aws_sdk.s3_head_exists(bucket, object);
         CPPUNIT_ASSERT_MESSAGE("The request for object " + object + " fail.", status == false);
         DBG(cerr << "AWS exception message: " << aws_sdk.get_aws_exception_message() << '\n');
         DBG(cerr << "HTTP Status code: " << aws_sdk.get_http_status_code() << '\n');
@@ -129,7 +215,7 @@ public:
         string id;
         string secret;
         get_s3_creds(id, secret);
-        aws_sdk.initialize("us-east-1", id, secret);
+        aws_sdk.initialize_s3_client("us-east-1", id, secret);
         const string object =
                 "/C2036877806-POCLOUD/20180101000000-OSISAF-L3C_GHRSST-SSTsubskin-GOES16-ssteqc_goes16_20180101_000000-v02.0-fv01.0.dmrpp";
         const string bucket = "cloudydap";
@@ -142,7 +228,7 @@ public:
         string id;
         string secret;
         get_s3_creds(id, secret);
-        aws_sdk.initialize("us-east-1", id, secret);
+        aws_sdk.initialize_s3_client("us-east-1", id, secret);
         const string object = "/C2036877806-POCLOUD/foobar.baz";
         const string bucket = "cloudydap";
         const string dmrpp = aws_sdk.s3_get_as_string(bucket, object);
@@ -155,7 +241,7 @@ public:
 
     static void test_s3_get_as_string_bad_creds() {
         AWS_SDK aws_sdk;
-        aws_sdk.initialize("us-east-1", "foo", "bar");
+        aws_sdk.initialize_s3_client("us-east-1", "foo", "bar");
         const string object = "/C2036877806-POCLOUD/20180101000000-OSISAF-L3C_GHRSST-SSTsubskin-GOES16-ssteqc_goes16_20180101_000000-v02.0-fv01.0.dmrpp";
         const string bucket = "cloudydap";
         const string dmrpp = aws_sdk.s3_get_as_string(bucket, object);
@@ -171,7 +257,7 @@ public:
         string id;
         string secret;
         get_s3_creds(id, secret);
-        aws_sdk.initialize("us-east-1", id, secret);
+        aws_sdk.initialize_s3_client("us-east-1", id, secret);
         const string object =
                 "/C2036877806-POCLOUD/20180101000000-OSISAF-L3C_GHRSST-SSTsubskin-GOES16-ssteqc_goes16_20180101_000000-v02.0-fv01.0.dmrpp";
         const string bucket = "cloudydap";
@@ -185,16 +271,87 @@ public:
                                file_size == 55585);
     }
 
+    static void test_s3_generate_presigned_object_url() {
+        AWS_SDK aws_sdk;
+        string id;
+        string secret;
+        get_s3_creds(id, secret);
+        aws_sdk.initialize_s3_client("us-east-1", id, secret);
+        const string object = "/samples/chunked_twoD.h5";
+        const string bucket = "cloudydap";
+        const uint64_t expiration_seconds = 60;
+        const Aws::String url = aws_sdk.s3_generate_presigned_object_url(bucket, object, expiration_seconds);
+        CPPUNIT_ASSERT_MESSAGE("The url should be signed for s3: " + url, is_url_signed_for_s3(url));
+
+        CPPUNIT_ASSERT_MESSAGE("Presigned url should return an object " + url, url_request_returns_object(url));
+
+        std::string unsigned_url = strip_signature_from_url(url);
+        CPPUNIT_ASSERT_MESSAGE("The url should not be signed for s3: " + unsigned_url, !is_url_signed_for_s3(unsigned_url));
+
+        CPPUNIT_ASSERT_MESSAGE("Unsigned url should not return an object " + unsigned_url, !url_request_returns_object(unsigned_url));
+    }
+
+    static void test_s3_generate_presigned_object_url_not_there() {
+        AWS_SDK aws_sdk;
+        string id;
+        string secret;
+        get_s3_creds(id, secret);
+        aws_sdk.initialize_s3_client("us-east-1", id, secret);
+        const string object = "/foo";
+        const string bucket = "cloudydap";
+        const uint64_t expiration_seconds = 60;
+        const Aws::String url = aws_sdk.s3_generate_presigned_object_url(bucket, object, expiration_seconds);
+        CPPUNIT_ASSERT_MESSAGE("The url should be signed for s3 even though the object doesn't exist: " + url, is_url_signed_for_s3(url));
+
+        CPPUNIT_ASSERT_MESSAGE("No object returned for signed url when object does not exist " + url, !url_request_returns_object(url));
+    }
+
+    static void test_s3_generate_presigned_object_url_bad_creds() {
+        AWS_SDK aws_sdk;
+        aws_sdk.initialize_s3_client("us-east-1", "foo", "bar");
+        const string object = "/samples/chunked_twoD.h5";
+        const string bucket = "cloudydap";
+        const uint64_t expiration_seconds = 60;
+        const Aws::String url = aws_sdk.s3_generate_presigned_object_url(bucket, object, expiration_seconds);
+        CPPUNIT_ASSERT_MESSAGE("The url should be signed for s3 even though the credentials are bad: " + url, is_url_signed_for_s3(url));
+
+        CPPUNIT_ASSERT_MESSAGE("No object returned for signed url when credentials are bad " + url, !url_request_returns_object(url));
+    }
+
+    static void test_s3_generate_presigned_object_url_expiration() {
+        AWS_SDK aws_sdk;
+        string id;
+        string secret;
+        get_s3_creds(id, secret);
+        aws_sdk.initialize_s3_client("us-east-1", id, secret);
+        const string object = "/samples/chunked_twoD.h5";
+        const string bucket = "cloudydap";
+        const uint64_t expiration_seconds = 3;
+        const Aws::String url = aws_sdk.s3_generate_presigned_object_url(bucket, object, expiration_seconds);
+        CPPUNIT_ASSERT_MESSAGE("Presigned url should return an object " + url, url_request_returns_object(url));
+
+        sleep(expiration_seconds); // Bad form to add extra time to unit tests, but we need to know that we _can_ expire a signed url, and we need enough time for the response to have been returned for the first fetch
+
+        CPPUNIT_ASSERT_MESSAGE("Presigned url should not return an object if it has expired" + url, !url_request_returns_object(url));
+    }
+
     CPPUNIT_TEST_SUITE(AWS_SDK_Test);
+
+        CPPUNIT_TEST(test_throw_if_s3_client_uninitialized);
 
         CPPUNIT_TEST(test_s3_get_as_string);
         CPPUNIT_TEST(test_s3_get_as_string_not_there);
         CPPUNIT_TEST(test_s3_get_as_string_bad_creds);
         CPPUNIT_TEST(test_s3_get_as_file);
 
-        CPPUNIT_TEST(test_s3_head_yes);
-        CPPUNIT_TEST(test_s3_head_no);
-        CPPUNIT_TEST(test_s3_head_bad_creds);
+        CPPUNIT_TEST(test_s3_head_exists_yes);
+        CPPUNIT_TEST(test_s3_head_exists_no);
+        CPPUNIT_TEST(test_s3_head_exists_bad_creds);
+
+        CPPUNIT_TEST(test_s3_generate_presigned_object_url);
+        CPPUNIT_TEST(test_s3_generate_presigned_object_url_not_there);
+        CPPUNIT_TEST(test_s3_generate_presigned_object_url_bad_creds);
+        CPPUNIT_TEST(test_s3_generate_presigned_object_url_expiration);
 
     CPPUNIT_TEST_SUITE_END();
 };

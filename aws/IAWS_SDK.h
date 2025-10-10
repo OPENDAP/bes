@@ -54,16 +54,15 @@ public:
     std::string get_aws_exception_message() const { return d_aws_exception_message; }
     int get_http_status_code() const { return d_http_status_code; }
 
-#if 0
+    virtual void initialize_s3_client(const std::string &region, const std::string &aws_key, const std::string &aws_secret_key) = 0;
 
-    virtual void initialize(const std::string &region) = 0;
-
-#endif
-    virtual void initialize(const std::string &region, const std::string &aws_key, const std::string &aws_secret_key) = 0;
-
-    virtual bool s3_head(const std::string &bucket, const std::string &key) = 0;
+    virtual bool s3_head_exists(const std::string &bucket, const std::string &key) = 0;
     virtual std::string s3_get_as_string(const std::string &bucket, const std::string &key) = 0;
     virtual bool s3_get_as_file(const std::string &bucket, const std::string &key, const std::string &filename) = 0;
+
+    virtual Aws::String s3_generate_presigned_object_url(const Aws::String &bucket_name,
+                                                         const Aws::String &key,
+                                                         uint64_t expiration_seconds) = 0;
 };
 }
 
