@@ -338,6 +338,37 @@ string get_data_access_url(rapidjson::Value &obj) {
     return {""};
 }
 
+string get_s3credentials_url(rapidjson::Value &obj) {
+
+    auto mitr = obj.FindMember("URL");
+    if (mitr == obj.MemberEnd()) {
+        throw BESInternalError("The umm/RelatedUrls element does not contain the URL object", __FILE__, __LINE__);
+    }
+
+    const rapidjson::Value &r_url = mitr->value;
+
+    mitr = obj.FindMember("Type");
+    if (mitr == obj.MemberEnd()) {
+        throw BESInternalError("The umm/RelatedUrls element does not contain the Type object", __FILE__, __LINE__);
+    }
+
+    const rapidjson::Value &r_type = mitr->value;
+
+    if (r_type.GetString() == string(CMR_URL_TYPE_GET_S3CREDENTIALS)) {
+        string candidate_url = r_url.GetString();
+        string suffix = "s3credentials";
+        auto expected_suffix_offset = candidate_url.size() - suffix.size();
+
+        // The URL has to start with HTTP/S and must end in s3credentials
+        if ((candidate_url.find("https://") == 0 || candidate_url.find("http://") == 0)
+            && candidate_url.rfind(suffix) == expected_suffix_offset) {
+            return candidate_url;
+        }
+    }
+
+    return {""};
+}
+
 /**
  * @brief  Locates the "GET DATA" URL for a granule in the granules.umm_json_v1_4 document.
  *
@@ -395,6 +426,67 @@ string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const string &rest_p
 
     // If no valid related-URL is found, it's an error.
     throw BESInternalError(string("Failed to locate a data access URL for the path: ") + rest_path,
+                           __FILE__, __LINE__);
+}
+
+
+/**
+ * @brief  Locates the "s3credentials" URL for a granule in the granules.umm_json_v1_4 document.
+ *
+ * A single granule query is built by convert_restified_path_to_cmr_query_url() from the
+ * NGAP API restified path. This method will parse the CMR response to the query and extract the
+ * granule's "s3credentials" URL and return it.
+ *
+ * @note This method uses a heuristic to get the s3 credentials endpoint URL for the granule from the CMR UMM-G
+ * JSON. The process it follows is, look in the RelatedUrls array for an entry with a
+ *  1. A TYPE of Type 'VIEW RELATED INFORMATION' with a URL that uses the https:// protocol where that URL
+ *  ends in 's3credentials'.
+ *
+ * @param rest_path The REST path used to form the CMR query (only used for error messages)
+ * @param cmr_granule_response The CMR response (granules.umm_json_v1_4) to evaluate
+ * @return  The "s3credentials" URL for the granule.
+ */
+string NgapApi::find_get_s3credentials_url_in_granules_umm_json_v1_4(const string &rest_path,
+                                                                     rapidjson::Document &cmr_granule_response) {
+    const rapidjson::Value &val = cmr_granule_response["hits"];
+    int hits = val.GetInt();
+    if (hits < 1) {
+        throw BESNotFoundError(string("The specified path '") + rest_path
+                               + "' does not identify a granule in CMR.", __FILE__, __LINE__);
+    }
+
+    rapidjson::Value &items = cmr_granule_response["items"];
+    if (!items.IsArray()) {
+        throw BESInternalError(string("ERROR! The CMR response did not contain the s3credentials URL information: ")
+                               + rest_path, __FILE__, __LINE__);
+    }
+
+    // JSON is now vetted so that we know it has an array of one or more 'items'. jhrg 6/2/25
+    rapidjson::Value &items_obj = items[0];
+    auto mitr = items_obj.FindMember("umm");
+
+    rapidjson::Value &umm = mitr->value;
+    mitr = umm.FindMember("RelatedUrls");
+    if (mitr == umm.MemberEnd()) {
+        throw BESInternalError("Error! The umm/RelatedUrls object was not located!", __FILE__, __LINE__);
+    }
+
+    rapidjson::Value &related_urls = mitr->value;
+    if (!related_urls.IsArray()) {
+        throw BESNotFoundError("Error! The RelatedUrls object in the CMR response is not an array!", __FILE__,
+                               __LINE__);
+    }
+
+    // The first element of 'items' is now vetted so that we know it's an array of 'RelatedUrls'. jhrg 6/2/25
+    for (rapidjson::SizeType i = 0; i < related_urls.Size(); i++) {
+        string s3credentials_url = get_s3credentials_url(related_urls[i]);
+        if (!s3credentials_url.empty()) {
+            return s3credentials_url;
+        }
+    }
+
+    // If no valid related-URL is found, it's an error.
+    throw BESInternalError(string("Failed to locate a s3credentials URL for the path: ") + rest_path,
                            __FILE__, __LINE__);
 }
 
