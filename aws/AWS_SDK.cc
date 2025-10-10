@@ -166,7 +166,7 @@ bool AWS_SDK::s3_get_as_file(const string &bucket, const string &key, const stri
  * @param key Name of an object key.
  * @param expirationSeconds Expiration in seconds for pre-signed URL.
  * @param clientConfig Aws client configuration.
- * @return Aws::String A pre-signed URL. Will look something like `https://<bucket>.s3.us-east-1.amazonaws.com/<key>?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA24JBYMSHU2JSXRP7%2F20251010%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251010T152738Z&X-Amz-Expires=60&X-Amz-SignedHeaders=host&X-Amz-Signature=b51a4da53581e5deb48601f0889d25175723121434d0c5ad40f1c043bf2b5a2b`
+ * @return Aws::String A pre-signed URL. Will look something like `https://<bucket>.s3.us-east-1.amazonaws.com/<key>?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<hash>%2F20251010%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251010T152738Z&X-Amz-Expires=60&X-Amz-SignedHeaders=host&X-Amz-Signature=<hash>`
  */
 Aws::String AWS_SDK::s3_generate_presigned_object_url(const Aws::String &bucket_name,
                                                       const Aws::String &key,
