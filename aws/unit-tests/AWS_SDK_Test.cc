@@ -31,6 +31,7 @@
 #include <string>
 #include <sstream>
 #include <cstdint>
+#include <curl/curl.h>
 
 #include <sys/stat.h>
 
@@ -89,6 +90,76 @@ public:
         return url.find("X-Amz-Algorithm=") != string::npos &&
             url.find("X-Amz-Credential=") != string::npos &&
             url.find("X-Amz-Signature=") != string::npos;
+    }
+
+    static std::string strip_signature_from_url(const std::string &signed_url) {
+        string url(signed_url);
+        size_t pos = url.find('?');
+        if (pos != std::string::npos) {
+            url.erase(pos);
+        }
+        return url;
+    }
+
+    /**
+     * Helper function for testing pre-signed url behavior
+     * Lightly modified from AWS SDK documentation https://docs.aws.amazon.com/sdk-for-cpp/v1/developer-guide/cpp_s3_code_examples.html
+     */
+    static size_t myCurlWriteBack(char *buffer, size_t size, size_t nitems, void *userdata) {
+        Aws::StringStream *str = (Aws::StringStream *) userdata;
+
+        if (nitems > 0) {
+            str->write(buffer, size * nitems);
+        }
+        return size * nitems;
+    }
+
+    /**
+     * Helper function for testing url object fetching via curl requests
+     * Lightly modified from AWS SDK documentation https://docs.aws.amazon.com/sdk-for-cpp/v1/developer-guide/cpp_s3_code_examples.html
+     */
+    static bool url_request_returns_object(const Aws::String &url) {
+        CURL *curl = curl_easy_init();
+        CURLcode result;
+
+        std::stringstream outWriteString;
+
+        result = curl_easy_setopt(curl, CURLOPT_WRITEDATA, &outWriteString);
+
+        if (result != CURLE_OK) {
+            std::cerr << "Failed to set CURLOPT_WRITEDATA " << std::endl;
+            return false;
+        }
+
+        result = curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, myCurlWriteBack);
+
+        if (result != CURLE_OK) {
+            std::cerr << "Failed to set CURLOPT_WRITEFUNCTION" << std::endl;
+            return false;
+        }
+
+        result = curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
+
+        if (result != CURLE_OK) {
+            std::cerr << "Failed to set CURLOPT_URL" << std::endl;
+            return false;
+        }
+
+        result = curl_easy_perform(curl);
+
+        if (result != CURLE_OK) {
+            std::cerr << "Failed to perform CURL request" << std::endl;
+            return false;
+        }
+
+        auto resultString = outWriteString.str();
+
+        if (resultString.find("<?xml") == 0) {
+            std::cerr << "Failed to get object, response:\n" << resultString << std::endl;
+            return false;
+        }
+
+        return true;
     }
 
     static void test_throw_if_s3_client_uninitialized() {
@@ -212,15 +283,12 @@ public:
         const Aws::String url = aws_sdk.s3_generate_presigned_object_url(bucket, object, expiration_seconds);
         CPPUNIT_ASSERT_MESSAGE("The url should be signed for s3: " + url, is_url_signed_for_s3(url));
 
+        CPPUNIT_ASSERT_MESSAGE("Presigned url should return an object " + url, url_request_returns_object(url));
 
-        // const Aws::String unsigned_url = aws_sdk.s3_generate_presigned_object_url(bucket, object, expiration_seconds);
-        // CPPUNIT_ASSERT_MESSAGE("The url should not be signed for s3: " + url, !is_url_signed_for_s3(unsigned_url));
+        std::string unsigned_url = strip_signature_from_url(url);
+        CPPUNIT_ASSERT_MESSAGE("The url should not be signed for s3: " + unsigned_url, !is_url_signed_for_s3(unsigned_url));
 
-        // // The unsigned url should not be able to fetch an object
-        // CPPUNIT_ASSERT_MESSAGE("Two aws urls signed at the same second should be identical. url1 = " + url + " url2 = " + url2, url == url2);
-
-        // // The signed url should be able to fetch an object
-        // CPPUNIT_ASSERT_MESSAGE("Two aws urls signed at the same second should be identical. url1 = " + url + " url2 = " + url2, url == url2);
+        CPPUNIT_ASSERT_MESSAGE("Unsigned url should not return an object " + unsigned_url, !url_request_returns_object(unsigned_url));
     }
 
     static void test_s3_generate_presigned_object_url_not_there() {
@@ -234,6 +302,8 @@ public:
         const uint64_t expiration_seconds = 60;
         const Aws::String url = aws_sdk.s3_generate_presigned_object_url(bucket, object, expiration_seconds);
         CPPUNIT_ASSERT_MESSAGE("The url should be signed for s3 even though the object doesn't exist: " + url, is_url_signed_for_s3(url));
+
+        CPPUNIT_ASSERT_MESSAGE("No object returned for signed url when object does not exist " + url, !url_request_returns_object(url));
     }
 
     static void test_s3_generate_presigned_object_url_bad_creds() {
