@@ -306,7 +306,7 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
     return cmr_url;
 }
 
-string get_data_access_url(rapidjson::Value &obj) {
+string get_value_if_data_access_url(rapidjson::Value &obj) {
     auto mitr = obj.FindMember("URL");
     if (mitr == obj.MemberEnd()) {
         throw BESInternalError("The umm/RelatedUrls element does not contain the URL object", __FILE__, __LINE__);
@@ -338,7 +338,7 @@ string get_data_access_url(rapidjson::Value &obj) {
     return {""};
 }
 
-string get_s3credentials_url(rapidjson::Value &obj) {
+string get_value_if_s3credentials_url(rapidjson::Value &obj) {
 
     auto mitr = obj.FindMember("URL");
     if (mitr == obj.MemberEnd()) {
@@ -369,24 +369,10 @@ string get_s3credentials_url(rapidjson::Value &obj) {
     return {""};
 }
 
-/**
- * @brief  Locates the "GET DATA" URL for a granule in the granules.umm_json_v1_4 document.
- *
- * A single granule query is built by convert_restified_path_to_cmr_query_url() from the
- * NGAP API restified path. This method will parse the CMR response to the query and extract the
- * granule's "GET DATA" URL and return it.
- *
- * @note This method uses a heuristic to get an HTTPS URL to the granule from the CMR UMM-G
- * JSON. The process it follows is, look in the RelatedUrls array for an entry with a
- *  1. A TYPE of Type 'GET DATA' with a URL that uses the https:// protocol where that URL does
- *  not end in 'xml'. The latter characteristic was added for records added by LPDAAC. jhrg 5/22/24
- *
- * @param rest_path The REST path used to form the CMR query (only used for error messages)
- * @param cmr_granule_response The CMR response (granules.umm_json_v1_4) to evaluate
- * @return  The "GET DATA" URL for the granule.
- */
-string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const string &rest_path,
-                                                            rapidjson::Document &cmr_granule_response) {
+string find_value_in_granules_umm_json_v1_4(const string &rest_path,
+                                            rapidjson::Document &cmr_granule_response,
+                                            function<string (rapidjson::Value&)> fn_get_value_if_fields_match,
+                                            string &value_description) {
     const rapidjson::Value &val = cmr_granule_response["hits"];
     int hits = val.GetInt();
     if (hits < 1) {
@@ -396,7 +382,7 @@ string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const string &rest_p
 
     rapidjson::Value &items = cmr_granule_response["items"];
     if (!items.IsArray()) {
-        throw BESInternalError(string("ERROR! The CMR response did not contain the data URL information: ")
+        throw BESInternalError(string("ERROR! The CMR response did not contain the ") + value_description + string(" information: ")
                                + rest_path, __FILE__, __LINE__);
     }
 
@@ -418,17 +404,38 @@ string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const string &rest_p
 
     // The first element of 'items' is now vetted so that we know it's an array of 'RelatedUrls'. jhrg 6/2/25
     for (rapidjson::SizeType i = 0; i < related_urls.Size(); i++) {
-        string data_access_url = get_data_access_url(related_urls[i]);
-        if (!data_access_url.empty()) {
-            return data_access_url;
+        string value = fn_get_value_if_fields_match(related_urls[i]);
+        if (!value.empty()) {
+            return value;
         }
     }
 
     // If no valid related-URL is found, it's an error.
-    throw BESInternalError(string("Failed to locate a data access URL for the path: ") + rest_path,
+    throw BESInternalError(string("Failed to locate a ") + value_description + string(" for the path: ") + rest_path,
                            __FILE__, __LINE__);
 }
 
+/**
+ * @brief  Locates the "GET DATA" URL for a granule in the granules.umm_json_v1_4 document.
+ *
+ * A single granule query is built by convert_restified_path_to_cmr_query_url() from the
+ * NGAP API restified path. This method will parse the CMR response to the query and extract the
+ * granule's "GET DATA" URL and return it.
+ *
+ * @note This method uses a heuristic to get an HTTPS URL to the granule from the CMR UMM-G
+ * JSON. The process it follows is, look in the RelatedUrls array for an entry with a
+ *  1. A TYPE of Type 'GET DATA' with a URL that uses the https:// protocol where that URL does
+ *  not end in 'xml'. The latter characteristic was added for records added by LPDAAC. jhrg 5/22/24
+ *
+ * @param rest_path The REST path used to form the CMR query (only used for error messages)
+ * @param cmr_granule_response The CMR response (granules.umm_json_v1_4) to evaluate
+ * @return  The "GET DATA" URL for the granule.
+ */
+string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const string &rest_path,
+                                                            rapidjson::Document &cmr_granule_response) {
+    string str = "\"GET DATA\" URL";
+    return find_value_in_granules_umm_json_v1_4(rest_path, cmr_granule_response, get_value_if_data_access_url, str);
+}
 
 /**
  * @brief  Locates the "s3credentials" URL for a granule in the granules.umm_json_v1_4 document.
@@ -448,47 +455,10 @@ string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const string &rest_p
  */
 string NgapApi::find_get_s3credentials_url_in_granules_umm_json_v1_4(const string &rest_path,
                                                                      rapidjson::Document &cmr_granule_response) {
-    const rapidjson::Value &val = cmr_granule_response["hits"];
-    int hits = val.GetInt();
-    if (hits < 1) {
-        throw BESNotFoundError(string("The specified path '") + rest_path
-                               + "' does not identify a granule in CMR.", __FILE__, __LINE__);
-    }
-
-    rapidjson::Value &items = cmr_granule_response["items"];
-    if (!items.IsArray()) {
-        throw BESInternalError(string("ERROR! The CMR response did not contain the s3credentials URL information: ")
-                               + rest_path, __FILE__, __LINE__);
-    }
-
-    // JSON is now vetted so that we know it has an array of one or more 'items'. jhrg 6/2/25
-    rapidjson::Value &items_obj = items[0];
-    auto mitr = items_obj.FindMember("umm");
-
-    rapidjson::Value &umm = mitr->value;
-    mitr = umm.FindMember("RelatedUrls");
-    if (mitr == umm.MemberEnd()) {
-        throw BESInternalError("Error! The umm/RelatedUrls object was not located!", __FILE__, __LINE__);
-    }
-
-    rapidjson::Value &related_urls = mitr->value;
-    if (!related_urls.IsArray()) {
-        throw BESNotFoundError("Error! The RelatedUrls object in the CMR response is not an array!", __FILE__,
-                               __LINE__);
-    }
-
-    // The first element of 'items' is now vetted so that we know it's an array of 'RelatedUrls'. jhrg 6/2/25
-    for (rapidjson::SizeType i = 0; i < related_urls.Size(); i++) {
-        string s3credentials_url = get_s3credentials_url(related_urls[i]);
-        if (!s3credentials_url.empty()) {
-            return s3credentials_url;
-        }
-    }
-
-    // If no valid related-URL is found, it's an error.
-    throw BESInternalError(string("Failed to locate a s3credentials URL for the path: ") + rest_path,
-                           __FILE__, __LINE__);
+    string str = "s3credentials URL";
+    return find_value_in_granules_umm_json_v1_4(rest_path, cmr_granule_response, get_value_if_s3credentials_url, str);
 }
+
 
 /**
  * @brief Converts an NGAP restified granule path into a CMR metadata query for the granule.

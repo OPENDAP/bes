@@ -456,7 +456,6 @@ public:
         DBG(cerr << prolog << "END" << endl);
     }
 
-<<<<<<< HEAD
     /**
  * Tests for NgapApi::append_hyrax_edl_client_id()
  *
@@ -567,7 +566,7 @@ public:
 
         DBG(cerr << prolog << "END" << endl);
     }
-=======
+
     static void test_find_get_s3credentials_url_in_granules_umm_json_v1_4_lpdaac() {
         // not a test baseline, but a canned response from LPDAAC
         const string cmr_canned_response_lpdaac = bes::read_test_baseline(string(TEST_SRC_DIR) + "/cmr_json_responses/ECOv002_L1B_GEO_22172_008_20220604T024955_0700_01.json");
@@ -582,7 +581,19 @@ public:
         CPPUNIT_ASSERT_MESSAGE("s3credentials_url should be '" + expected + " but was '" + s3credentials_url, s3credentials_url == expected);
     }
 
->>>>>>> ef402a7ee (Add basic s3credentials parsing by copying data url parsing)
+    static void test_find_get_s3credentials_url_in_granules_umm_json_v1_4_podaac() {
+        const string cmr_canned_response_podaac = bes::read_test_baseline(string(TEST_SRC_DIR) + "/cmr_json_responses/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.json");
+        rapidjson::Document cmr_response;
+        cmr_response.Parse(cmr_canned_response_podaac.c_str());
+
+        string s3credentials_url = NgapApi::find_get_s3credentials_url_in_granules_umm_json_v1_4("placeholder_for_restified_url", cmr_response);
+
+        DBG(cerr << prolog << "s3credentials_url: " << s3credentials_url << endl);
+        CPPUNIT_ASSERT_MESSAGE("s3credentials_url should not be empty", !s3credentials_url.empty());
+        string expected = "https://archive.podaac.earthdata.nasa.gov/s3credentials";
+        CPPUNIT_ASSERT_MESSAGE("data_url should be '" + expected + " but was '" + s3credentials_url, s3credentials_url == expected);
+    }
+
 
     CPPUNIT_TEST_SUITE(NgapApiTest);
 
@@ -610,6 +621,7 @@ public:
     CPPUNIT_TEST (append_hyrax_edl_client_id_noop_when_context_not_set);
 
         CPPUNIT_TEST(test_find_get_s3credentials_url_in_granules_umm_json_v1_4_lpdaac);
+        CPPUNIT_TEST(test_find_get_s3credentials_url_in_granules_umm_json_v1_4_podaac);
 
     CPPUNIT_TEST_SUITE_END();
 };
