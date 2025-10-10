@@ -76,6 +76,10 @@ namespace bes
         bool s3_head_exists(const std::string &bucket, const std::string &key) override;
         std::string s3_get_as_string(const std::string &bucket, const std::string &key) override;
         bool s3_get_as_file(const std::string &bucket, const std::string &key, const std::string &filename) override;
+
+        Aws::String s3_generate_presigned_object_url(const Aws::String &bucket_name,
+                                                     const Aws::String &key,
+                                                     uint64_t expiration_seconds) override;
     };
 }
 #endif // AWS_SDK_H
