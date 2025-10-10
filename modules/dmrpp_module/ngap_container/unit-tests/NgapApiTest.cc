@@ -500,6 +500,19 @@ public:
         DBG(cerr << prolog << "END" << endl);
     }
 
+    // Test the 'no s3credentials' case
+    static void test_find_get_s3credentials_url_in_granules_umm_json_v1_4_no_hits() {
+        DBG(cerr << prolog << "BEGIN" << endl);
+        const string json = bes::read_test_baseline(string(TEST_SRC_DIR) + "/cmr_json_responses/no_hits.json");
+        rapidjson::Document cmr_response;
+        cmr_response.Parse(json.c_str());
+
+        CPPUNIT_ASSERT_THROW_MESSAGE("Hits < 1, should have thrown BESNotFoundError",
+            NgapApi::find_get_s3credentials_url_in_granules_umm_json_v1_4("placeholder", cmr_response),
+            BESNotFoundError);
+        DBG(cerr << prolog << "END" << endl);
+    }
+
     static void test_find_get_s3credentials_url_in_granules_umm_json_v1_4_lpdaac() {
         // not a test baseline, but a canned response from LPDAAC
         const string cmr_canned_response_lpdaac = bes::read_test_baseline(string(TEST_SRC_DIR) + "/cmr_json_responses/ECOv002_L1B_GEO_22172_008_20220604T024955_0700_01.json");
@@ -546,6 +559,7 @@ public:
         CPPUNIT_TEST(test_find_get_data_url_in_granules_umm_json_v1_4_podaac);
         CPPUNIT_TEST(test_dmrpp_is_removed_from_data_url);
 
+        CPPUNIT_TEST(test_find_get_s3credentials_url_in_granules_umm_json_v1_4_no_hits);
         CPPUNIT_TEST(test_find_get_s3credentials_url_in_granules_umm_json_v1_4_lpdaac);
         CPPUNIT_TEST(test_find_get_s3credentials_url_in_granules_umm_json_v1_4_podaac);
 
