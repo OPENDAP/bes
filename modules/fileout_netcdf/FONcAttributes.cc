@@ -426,7 +426,7 @@ void FONcAttributes::add_attributes_worker(int ncid, int varid, const string &va
                 for (attri = 1; attri < num_vals; attri++) {
                     val += "\n" + attrs.get_attr(attr, attri);
                 }
-                if (attr_name != _FillValue) {
+                if (attr_name != "_FillValue") {
                     stax = nc_put_att_text(ncid, varid, new_name.c_str(), val.size(), val.c_str());
                 }
                 else {
@@ -739,7 +739,7 @@ void FONcAttributes::add_dap4_attributes_worker(int ncid, int varid, const strin
                     val += "\n" + *vi;
                 }
 
-                if (d4_attr_name != _FillValue) {
+                if (d4_attr_name != "_FillValue") {
                     stax = nc_put_att_text(ncid, varid, new_name.c_str(), val.size(), val.c_str());
                 }
                 else {
@@ -1026,7 +1026,7 @@ FONcAttributes::write_attrs_for_nc4_types(int ncid, int varid, const string &var
                 val += "\n" + attrs.get_attr(attr, attri);
             }
             string attr_name = attrs.get_name(attr);
-            if (attr_name != _FillValue) {
+            if (attr_name != "_FillValue") {
                 stax = nc_put_att_text(ncid, varid, var_attr_name.c_str(), val.size(), val.c_str());
             }
             else {
@@ -1361,7 +1361,7 @@ FONcAttributes::write_dap4_attrs_for_nc4_types(int ncid,
                     val += "\n" + *vi;
                 }
 
-                if (var_attr_name != _FillValue) {
+                if (var_attr_name != "_FillValue") {
                     stax = nc_put_att_text(ncid, varid, var_attr_name.c_str(), val.size(), val.c_str());
                 }
                 else {
@@ -1583,7 +1583,7 @@ switch (attrType) {
             val += "\n" + attrs.get_attr(attr, attri);
         }
         string attr_name = attrs.get_name(attr);
-        if (attr_name != _FillValue) {
+        if (attr_name != "_FillValue") {
             stax = nc_put_att_text(ncid, varid, var_attr_name.c_str(), val.size(), val.c_str());
         } else {
             BESDEBUG("fonc",
