@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="t_scalar_dset_float_be.h5" dmrpp:href="data/t_scalar_dset_float_be.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="t_scalar_dset_float_be.h5" dmrpp:href="data/t_scalar_dset_float_be.h5" dmrpp:version="3.21.1">
     <Float32 name="t_float32">
         <dmrpp:chunks fillValue="0" byteOrder="BE">
             <dmrpp:chunk offset="2048" nBytes="4"/>

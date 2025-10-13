@@ -5,7 +5,8 @@
     dapVersion="4.0" 
     dmrVersion="1.0"
     name="t_int_scalar.h5"
-    dmrpp:href="data/t_int_scalar.h5">
+    dmrpp:href="data/t_int_scalar.h5"
+    dmrpp:version="3.21.1">
   <Int32 name="scalar">
     <Attribute name="value" type="Int32">
       <Value>45</Value>

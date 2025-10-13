@@ -73,7 +73,7 @@ m4_define([_AT_BESCMD_TEST],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK lines to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 > $2|| true], [], [stdout], [stderr])
+AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 > $2|| true], [], [stdout], [stderr])
 
 # This looks like a copy of the older logic we used and it will pass a test
 # if the baseline is empty and the test wrote nothing to stderr. It's better
@@ -881,6 +881,8 @@ AT_BESCMD_CFDMR_DAP4DATA_RESPONSE_TEST([t_scalar_dset.h5.dap.bescmd])
 
 # netCDF-4 pure unlimited dimension
 AT_BESCMD_CFDMR_RESPONSE_TEST([nc4_group_atomic_puredim_unlimit.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_atomic_puredim_unlimit.h5.dds.bescmd])
+AT_BESCMD_RESPONSE_TEST([nc4_group_atomic_puredim_unlimit.h5.das.bescmd])
 
 # The following tests use the new macro added at the top if the file. jhrg 3/12/22, ky 12/31/24
 # tests for the H5.EscapeUTF8Attr bes key - using the default value of true first
@@ -895,6 +897,7 @@ AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_fal
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.default/utf8_attr.h5.das.bescmd], [bes.e_utf8_false.default.conf])
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.default/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.default.conf])
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.dap2dmr.conf])
+AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.dmr.bescmd], [bes.e_utf8_false.enableFileID.dap2dmr.conf])
 
 # ENUM test
 AT_BESCMD_RESPONSE_TEST_DEFAULT([t_enum_name_scalar.h5.dmr.bescmd])
@@ -922,4 +925,5 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([vlen_dim.h5.dap_ce.bescmd])
 
 # AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.ddx.bescmd], [bes.e_utf8_false.conf], [xfail])
 # AT_BESCMD_BESCONF_RESPONSE_TEST([h5.default/utf8_attr.h5.ddx.bescmd], [bes.e_utf8_false.default.conf], [xfail])
+AT_BESCMD_BESCONF_RESPONSE_TEST([h5.default/swath_wrong_dim_rp.h5.dmr.bescmd], [bes.default.conf], [xfail])
 

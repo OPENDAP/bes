@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="unicode-simple.h5">
+    <String name="fl_string_dataset">
+        <Dim size="1"/>
+        <Attribute name="utf8_attr" type="String">
+            <Value>ö¡…·ğ˜•‰óš€€÷¥®³õ™«¶ğ¼Ÿªğ˜¤–ò©Ÿ¥ï’¡óŠ‚£ö˜¹›ğ¶¢•òµ›•ôšœ„ğ˜¾‘ô“ª</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>fl_string_dataset</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/fl_string_dataset</Value>
+        </Attribute>
+    </String>
+</Dataset>

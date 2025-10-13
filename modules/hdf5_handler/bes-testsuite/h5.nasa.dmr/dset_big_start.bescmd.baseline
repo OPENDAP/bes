@@ -8,9 +8,6 @@
         <Attribute name="fullnamepath" type="String">
             <Value>/dset</Value>
         </Attribute>
-        <Attribute name="DAP4_Checksum_CRC32" type="String">
-            <Value>f7d5b53e</Value>
-        </Attribute>
     </Byte>
 </Dataset>
 

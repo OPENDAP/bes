@@ -13,16 +13,16 @@ CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 TEST_COV_FLAGS = -ftest-coverage -fprofile-arcs
 
 noinst_DATA = bes.conf bes.default.conf bes.ignore.conf bes.cfdmr.conf \
-bes.e_utf8_false.conf bes.e_utf8_false.default.conf bes.e_utf8_false.dap2dmr.conf
+bes.e_utf8_false.conf bes.e_utf8_false.default.conf bes.e_utf8_false.dap2dmr.conf bes.e_utf8_false.enableFileID.dap2dmr.conf
 
 CLEANFILES = bes.conf bes.default.conf bes.ignore.conf bes.cfdmr.conf \
-bes.e_utf8_false.conf bes.e_utf8_false.default.conf bes.e_utf8_false.dap2dmr.conf
+bes.e_utf8_false.conf bes.e_utf8_false.default.conf bes.e_utf8_false.dap2dmr.conf bes.e_utf8_false.enableFileID.dap2dmr.conf
 
 EXTRA_DIST = $(TESTSUITE).at $(TESTSUITE) atlocal.in		\
 $(srcdir)/package.m4 h5.cf h5.cf.ignore h5.default h5.cf.dmr h5.nasa bes.conf.in \
 bes.default.conf.in bes.ignore.conf.in bes.cfdmr.conf.in bes.conf.modules.in \
 bes.default.conf.modules.in bes.ignore.conf.modules.in bes.cfdmr.conf.modules.in \
-bes.e_utf8_false.conf.in bes.e_utf8_false.default.conf.in bes.e_utf8_false.dap2dmr.conf.in
+bes.e_utf8_false.conf.in bes.e_utf8_false.default.conf.in bes.e_utf8_false.dap2dmr.conf.in bes.e_utf8_false.enableFileID.dap2dmr.conf.in
 
 # hdf5_handlerTest.nasa.at 
 # Do not prefix the DISTCLEANFILES with $(srcdir) because that
@@ -41,6 +41,7 @@ BES_CFDMR_CONF_IN = bes.cfdmr.conf.modules.in
 BES_UTF8_FALSE_CONF_IN = bes.e_utf8_false.conf.in
 BES_UTF8_FALSE_DEFAULT_CONF_IN = bes.e_utf8_false.default.conf.in
 BES_UTF8_FALSE_DAP2DMR_CONF_IN = bes.e_utf8_false.dap2dmr.conf.in
+BES_UTF8_FALSE_FILEID_DAP2DMR_CONF_IN = bes.e_utf8_false.enableFileID.dap2dmr.conf.in
 else
 BES_CONF_IN = bes.conf.in
 BES_DEFAULT_CONF_IN = bes.default.conf.in
@@ -49,6 +50,7 @@ BES_CFDMR_CONF_IN = bes.cfdmr.conf.in
 BES_UTF8_FALSE_CONF_IN = bes.e_utf8_false.conf.in
 BES_UTF8_FALSE_DEFAULT_CONF_IN = bes.e_utf8_false.default.conf.in
 BES_UTF8_FALSE_DAP2DMR_CONF_IN = bes.e_utf8_false.dap2dmr.conf.in
+BES_UTF8_FALSE_FILEID_DAP2DMR_CONF_IN = bes.e_utf8_false.enableFileID.dap2dmr.conf.in
 endif
 
 # Build the bes.conf used for testing so that the value substituted for
@@ -87,6 +89,7 @@ bes.cfdmr.conf: $(BES_CFDMR_CONF_IN) $(top_srcdir)/configure.ac
 bes.e_utf8_false.conf: $(top_srcdir)/configure.ac  $(BES_UTF8_FALSE_CONF_IN)
 bes.e_utf8_false.default.conf: $(top_srcdir)/configure.ac  $(BES_UTF8_FALSE_DEFAULT_CONF_IN)
 bes.e_utf8_false.dap2dmr.conf: $(top_srcdir)/configure.ac  $(BES_UTF8_FALSE_DAP2DMR_CONF_IN)
+bes.e_utf8_false.enableFileID.dap2dmr.conf: $(top_srcdir)/configure.ac  $(BES_UTF8_FALSE_FILEID_DAP2DMR_CONF_IN)
 
 ############## Autotest follows #####################
 

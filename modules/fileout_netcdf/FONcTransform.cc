@@ -418,20 +418,6 @@ void FONcTransform::transform_dap2() {
     }
 
     try {
-        // Here we will be defining the variables of the netcdf and
-        // adding attributes. To do this we must be in define mode.
-        nc_redef(_ncid);
-        // TODO: If I do the following the code, the code will fail for many tests. 
-        // According to https://docs.unidata.ucar.edu/netcdf-c/current/group__datasets.html,
-        // nc_redef is not necessary for netCDF-4. However, it still doesn't make sense to throw an error.
-        // Need to check later. KY 2025-07-14
-#if 0
-        int stax1 = nc_redef(_ncid);
-        if (stax1 != NC_NOERR) {
-            FONcUtils::handle_error(stax, "File out netcdf, unable to put netCDF dataset to the define mode: " + _localfile, __FILE__,
-                                    __LINE__);
-        }
-#endif
 
         // For each converted FONc object, call define on it to define
         // that object to the netcdf file. This also adds the attributes
