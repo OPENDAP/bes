@@ -87,6 +87,7 @@ FONc.ReduceDim=true
 
 H5.EnableCF=false
 H5.DefaultHandleDimension=true
+H5.DefaultDAP4AddUnlimitedDimension=false
 
 NC.PromoteByteToShort=true
 
