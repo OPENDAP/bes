@@ -567,7 +567,6 @@ public:
         DBG(cerr << prolog << "END" << endl);
     }
 
-
     // Test the 'no s3credentials' case
     static void test_find_get_s3credentials_url_in_granules_umm_json_v1_4_no_hits() {
         DBG(cerr << prolog << "BEGIN" << endl);
@@ -580,7 +579,6 @@ public:
             BESNotFoundError);
         DBG(cerr << prolog << "END" << endl);
     }
-
 
     static void test_find_get_s3credentials_url_in_granules_umm_json_v1_4_lpdaac() {
         // not a test baseline, but a canned response from LPDAAC
@@ -609,7 +607,6 @@ public:
         CPPUNIT_ASSERT_MESSAGE("data_url should be '" + expected + " but was '" + s3credentials_url, s3credentials_url == expected);
     }
 
-
     CPPUNIT_TEST_SUITE(NgapApiTest);
 
     CPPUNIT_TEST (resty_path_to_cmr_query_test_01);
@@ -635,9 +632,9 @@ public:
     CPPUNIT_TEST (append_hyrax_edl_client_id_inserts_amp_when_needed);
     CPPUNIT_TEST (append_hyrax_edl_client_id_noop_when_context_not_set);
 
-        CPPUNIT_TEST(test_find_get_s3credentials_url_in_granules_umm_json_v1_4_no_hits);
-        CPPUNIT_TEST(test_find_get_s3credentials_url_in_granules_umm_json_v1_4_lpdaac);
-        CPPUNIT_TEST(test_find_get_s3credentials_url_in_granules_umm_json_v1_4_podaac);
+    CPPUNIT_TEST(test_find_get_s3credentials_url_in_granules_umm_json_v1_4_no_hits);
+    CPPUNIT_TEST(test_find_get_s3credentials_url_in_granules_umm_json_v1_4_lpdaac);
+    CPPUNIT_TEST(test_find_get_s3credentials_url_in_granules_umm_json_v1_4_podaac);
 
     CPPUNIT_TEST_SUITE_END();
 };
