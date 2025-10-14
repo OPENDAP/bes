@@ -51,9 +51,10 @@ TESTSUITE_CHECK_DMRPP = $(srcdir)/testsuite_check_dmrpp
 
 TESTSUITE_MERGE_DMRPP = $(srcdir)/testsuite_merge_dmrpp
 
+
 check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_RA_DMRPP) $(TESTSUITE_DMRPP_BUILDER_H4) \
     $(TESTSUITE_CHECK_DMRPP) $(TESTSUITE_MERGE_DMRPP) $(TESTSUITE_S3) $(TESTSUITE_DMRPP_BUILDER) \
-    bes.conf bes_serial.conf bes-return-as-dmrpp.conf
+        bes.conf bes_serial.conf bes-return-as-dmrpp.conf
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes_serial.conf
 	$(SHELL) '$(TESTSUITE_DMRPP_BUILDER_H4)' $(TESTSUITEFLAGS)
@@ -63,7 +64,8 @@ check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_RA_DMRPP) $(TESTSUITE_DMR
 	@if [ -n "$${CMAC_ID}" ] \
 		&& [ -n "$${CMAC_ACCESS_KEY}" ] \
 		&& [ -n "$${CMAC_REGION}" ]  \
-		&& [ -n "$${CMAC_URL}" ] ; then \
+		&& [ -n "$${CMAC_URL}" ] \
+		&& [ -n "$${CMAC_ON}" -a "$${CMAC_ON}" = yes ] ; then \
 		echo "--------- S3 Auth Tests ---------"; \
 		echo "        CMAC_ID: <Has Been Set>"; \
 		echo "CMAC_ACCESS_KEY: <Has Been Set>"; \
@@ -76,7 +78,7 @@ check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_RA_DMRPP) $(TESTSUITE_DMR
 	fi
 	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
 	@echo "\n# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
-	@if [ -f ~/.netrc ]; then \
+	@if [ -f ~/.netrc -a "$${CMAC_ON}" = xyes ]; then \
 		echo "--------- Found netrc, assuming EDL credentials are there ---------"; \
 		$(SHELL) '$(TESTSUITE_RA_DMRPP)' $(TESTSUITEFLAGS); \
 	else \
