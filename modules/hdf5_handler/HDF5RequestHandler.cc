@@ -155,7 +155,7 @@ bool HDF5RequestHandler::_fillvalue_check             = true;
 bool HDF5RequestHandler::_check_ignore_obj            = false;
 bool HDF5RequestHandler::_flatten_coor_attr           = true;
 bool HDF5RequestHandler::_default_handle_dimension    = true; //Ignored when _usecf=true.
-bool HDF5RequestHandler::_add_unlimited_dimension_dap4   = false; //Ignored when _usecf=true.
+bool HDF5RequestHandler::_add_unlimited_dimension_dap4   = true; //Ignored when _usecf=true.
 bool HDF5RequestHandler::_eos5_rm_convention_attr_path = true;
 bool HDF5RequestHandler::_dmr_long_int                = true;
 bool HDF5RequestHandler::_no_zero_size_fullnameattr   = false;
