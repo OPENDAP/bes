@@ -47,7 +47,37 @@ class TestSample(unittest.TestCase):
             baseline_lines_after_19 = f1.readlines()[19:]
         self.assertEqual(dmrpp_lines_after_19 ,baseline_lines_after_19)
 
+    def test_gen_dmrpp_side_car_h4_nsc(self):
+        
+        print("Testing grid_1_2d.hdf :no side car file")
+        subprocess.run(["./gen_dmrpp_side_car", "-i", "grid_1_2d.hdf","-H","-D"])
+        if not os.environ.get('PRESERVE_TEST_ASSETS'):
+            self.addCleanup(os.remove, "grid_1_2d.hdf.dmrpp")
+        
+        # Since we also add the dmrpp metadata generation informatio for the HDF4 files,
+        # we need to ignore those information when doing comparision.
+        with open('grid_1_2d.hdf.dmrpp') as f:
+            dmrpp_lines_after_54 = f.readlines()[54:]
+        with open('grid_1_2d.hdf.dmrpp.baseline') as f1:
+            baseline_lines_after_54 = f1.readlines()[54:]
+        self.assertEqual(dmrpp_lines_after_54 ,baseline_lines_after_54)
 
+    def test_gen_dmrpp_side_car_h5_cf(self):
+        
+        print("Testing grid_1_2d.h5 :CF option")
+        subprocess.run(["./gen_dmrpp_side_car", "-i", "grid_1_2d.h5","-c"])
+        if not os.environ.get('PRESERVE_TEST_ASSETS'):
+            self.addCleanup(os.remove, "grid_1_2d.h5.dmrpp")
+        
+        
+        # Since we also add the dmrpp metadata generation informatio for the HDF4 files,
+        # we need to ignore those information when doing comparision.
+        with open('grid_1_2d.h5.dmrpp') as f:
+            dmrpp_minus_18_lines = f.readlines()[:-18]
+        with open('grid_1_2d.h5.dmrpp.baseline') as f1:
+            baseline_minus_18_lines = f1.readlines()[:-18]
+        self.assertEqual(dmrpp_minus_18_lines ,baseline_minus_18_lines)
+ 
 if __name__ == '__main__':
     unittest.main()
 

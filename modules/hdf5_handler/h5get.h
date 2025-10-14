@@ -46,8 +46,6 @@ union attr_data_ptr_t {
         double *tdp;
 };
 
-bool check_h5str(hid_t);
-
 void close_fileid(hid_t fid);
 
 hid_t get_attr_info(hid_t dset, int index, bool, DSattr_t * attr_inst, bool*);

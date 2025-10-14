@@ -38,10 +38,11 @@
 #include "BESDebug.h"
 #include "BESUtil.h"
 #include "BESCatalogList.h"
-#include "BESNotFoundError.h"
+#include "BESContextManager.h"
 #include "TheBESKeys.h"
 #include "url_impl.h"
 #include "RemoteResource.h"
+#include "BESNotFoundError.h"
 
 #include "NgapApi.h"
 #include "NgapNames.h"
@@ -57,11 +58,8 @@ using namespace rapidjson;
 #define prolog std::string("NgapApiTest::").append(__func__).append("() - ")
 
 namespace ngap {
-
-class NgapApiTest: public CppUnit::TestFixture {
-private:
-    static void show_file(const string &filename)
-    {
+class NgapApiTest : public CppUnit::TestFixture {
+    static void show_file(const string &filename) {
         ifstream t(filename);
 
         if (t.is_open()) {
@@ -82,45 +80,28 @@ public:
     // Called at the end of the test
     ~NgapApiTest() override = default;
 
-    // Called before each test
-#if 0
-      void setUp() override
-    {
-        DBG(cerr << endl);
-        DBG2(cerr << "setUp() - BEGIN" << endl);
-        const string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
-        DBG2(cerr << "setUp() - Using BES configuration: " << bes_conf << endl);
-
-        TheBESKeys::ConfigFile = bes_conf;
-
-        if (debug2) show_file(bes_conf);
-
-        DBG2(cerr << "setUp() - END" << endl);
-    }
-#endif
-
-
-    static  void show_vector(const vector<string> &v) {
+    static void show_vector(const vector<string> &v) {
         cerr << "show_vector(): Found " << v.size() << " elements." << endl;
         // vector<string>::iterator it = v.begin();
-        for(size_t i=0;  i < v.size(); i++) {
-            cerr << "show_vector:    v["<< i << "]: " << v[i] << endl;
+        for (size_t i = 0; i < v.size(); i++) {
+            cerr << "show_vector:    v[" << i << "]: " << v[i] << endl;
         }
     }
 
-    static void compare_results(const string &granule_name, const string &data_access_url, const string &expected_data_access_url){
+    static void compare_results(const string &granule_name, const string &data_access_url,
+                                const string &expected_data_access_url) {
         if (debug) cerr << prolog << "TEST: Is the URL longer than the granule name? " << endl;
-        CPPUNIT_ASSERT (data_access_url.size() > granule_name.size() );
+        CPPUNIT_ASSERT(data_access_url.size() > granule_name.size());
 
         if (debug) cerr << prolog << "TEST: Does the URL end with the granule name? " << endl;
-        const bool endsWithGranuleName = data_access_url.substr(data_access_url.size()-granule_name.size(), granule_name.size()) == granule_name;
-        CPPUNIT_ASSERT( endsWithGranuleName == true );
+        const bool endsWithGranuleName = data_access_url.substr(data_access_url.size() - granule_name.size(),
+                                                                granule_name.size()) == granule_name;
+        CPPUNIT_ASSERT(endsWithGranuleName == true);
 
         if (debug) cerr << prolog << "TEST: Does the returned URL match the expected URL? " << endl;
         if (debug) cerr << prolog << "CMR returned DataAccessURL: " << data_access_url << endl;
         if (debug) cerr << prolog << "The expected DataAccessURL: " << expected_data_access_url << endl;
-        CPPUNIT_ASSERT (expected_data_access_url == data_access_url);
-
+        CPPUNIT_ASSERT(expected_data_access_url == data_access_url);
     }
 
     /**
@@ -131,23 +112,24 @@ public:
         DBG(cerr << prolog << "BEGIN" << endl);
 
         const string resty_path("providers/POCLOUD"
-                          "/collections/Sentinel-6A MF/Jason-CS L2 Advanced Microwave Radiometer (AMR-C) NRT Geophysical Parameters"
-                          "/granules/S6A_MW_2__AMR_____NR_001_227_20201130T133814_20201130T153340_F00");
+            "/collections/Sentinel-6A MF/Jason-CS L2 Advanced Microwave Radiometer (AMR-C) NRT Geophysical Parameters"
+            "/granules/S6A_MW_2__AMR_____NR_001_227_20201130T133814_20201130T153340_F00");
         DBG(cerr << prolog << "resty_path: " << resty_path << endl);
 
         const string expected_cmr_url(
-                "https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4"
-                "?" CMR_PROVIDER "=POCLOUD"
-                "&" CMR_ENTRY_TITLE "=Sentinel-6A%20MF%2FJason-CS%20L2%20Advanced%20Microwave%20Radiometer%20%28AMR-C%29%20NRT%20Geophysical%20Parameters"
-                "&" CMR_GRANULE_UR "=S6A_MW_2__AMR_____NR_001_227_20201130T133814_20201130T153340_F00"
+            "https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4"
+            "?" CMR_PROVIDER "=POCLOUD"
+            "&" CMR_ENTRY_TITLE
+            "=Sentinel-6A%20MF%2FJason-CS%20L2%20Advanced%20Microwave%20Radiometer%20%28AMR-C%29%20NRT%20Geophysical%20Parameters"
+            "&" CMR_GRANULE_UR "=S6A_MW_2__AMR_____NR_001_227_20201130T133814_20201130T153340_F00"
         );
         try {
             const string cmr_query_url = NgapApi::build_cmr_query_url(resty_path);
             DBG(cerr << prolog << "expected_cmr_url: " << expected_cmr_url << endl);
             DBG(cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl);
-            CPPUNIT_ASSERT( cmr_query_url == expected_cmr_url );
+            CPPUNIT_ASSERT(cmr_query_url == expected_cmr_url);
         }
-        catch(const BESError &e){
+        catch (const BESError &e) {
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << e.get_verbose_message() << endl;
             CPPUNIT_FAIL(msg.str());
@@ -164,22 +146,23 @@ public:
     void resty_path_to_cmr_query_test_02() {
         DBG(cerr << prolog << "BEGIN" << endl);
 
-        string resty_path("/collections/C1443727145-LAADS/MOD08_D3.v6.1/granules/MOD08_D3.A2020308.061.2020309092644.hdf.nc");
+        string resty_path(
+            "/collections/C1443727145-LAADS/MOD08_D3.v6.1/granules/MOD08_D3.A2020308.061.2020309092644.hdf.nc");
         DBG(cerr << prolog << "resty_path: " << resty_path << endl);
 
         string expected_cmr_url(
-                "https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?"
-                CMR_COLLECTION_CONCEPT_ID "=C1443727145-LAADS&"
-                CMR_GRANULE_UR "=MOD08_D3.A2020308.061.2020309092644.hdf.nc"
+            "https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?"
+            CMR_COLLECTION_CONCEPT_ID "=C1443727145-LAADS&"
+            CMR_GRANULE_UR "=MOD08_D3.A2020308.061.2020309092644.hdf.nc"
         );
         try {
             string cmr_query_url;
             cmr_query_url = NgapApi::build_cmr_query_url(resty_path);
             DBG(cerr << prolog << "expected_cmr_url: " << expected_cmr_url << endl);
             DBG(cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl);
-            CPPUNIT_ASSERT( cmr_query_url == expected_cmr_url );
+            CPPUNIT_ASSERT(cmr_query_url == expected_cmr_url);
         }
-        catch(const BESError &e){
+        catch (const BESError &e) {
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << e.get_verbose_message() << endl;
             CPPUNIT_FAIL(msg.str());
@@ -187,7 +170,7 @@ public:
     }
 
     /**
-     * This test exercises the new (12/2020) 2 component restified path model with the optional shortname and version
+     * This test exercises the new (12/2020) two-component restified path model with the optional shortname and version
      * /collections/<collection_concept_id>[/short_name.version]/granules/<granule_ur>
      * Example:
      * https://opendap.earthdata.nasa.gov/collections/C1443727145-LAADS/MOD08_D3.v6.1/granules/MOD08_D3.A2020308.061.2020309092644.hdf.nc
@@ -195,124 +178,84 @@ public:
     void resty_path_to_cmr_query_test_03() {
         DBG(cerr << prolog << "BEGIN" << endl);
 
-        string resty_path("/collections/C1443727145-LAADS/MOD08_D3.v6.1/granules/MOD08_D3.A2020308.061.2020309092644.hdf.nc");
+        string resty_path(
+            "/collections/C1443727145-LAADS/MOD08_D3.v6.1/granules/MOD08_D3.A2020308.061.2020309092644.hdf.nc");
         DBG(cerr << prolog << "resty_path: " << resty_path << endl);
 
         string expected_cmr_url(
-                "https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?"
-                CMR_COLLECTION_CONCEPT_ID "=C1443727145-LAADS&"
-                CMR_GRANULE_UR "=MOD08_D3.A2020308.061.2020309092644.hdf.nc"
+            "https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?"
+            CMR_COLLECTION_CONCEPT_ID "=C1443727145-LAADS&"
+            CMR_GRANULE_UR "=MOD08_D3.A2020308.061.2020309092644.hdf.nc"
         );
         try {
             string cmr_query_url;
             cmr_query_url = NgapApi::build_cmr_query_url(resty_path);
             DBG(cerr << prolog << "expected_cmr_url: " << expected_cmr_url << endl);
             DBG(cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl);
-            CPPUNIT_ASSERT( cmr_query_url == expected_cmr_url );
+            CPPUNIT_ASSERT(cmr_query_url == expected_cmr_url);
         }
-        catch(const BESError &e){
+        catch (const BESError &e) {
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << e.get_verbose_message() << endl;
             CPPUNIT_FAIL(msg.str());
         }
     }
 
-#if 0
-    void cmr_access_entry_title_test() {
+    void resty_path_to_cmr_query_test_04() {
         DBG(cerr << prolog << "BEGIN" << endl);
-        string provider_name;
-        string collection_name;
-        string granule_name;
-        string data_access_url;
 
-        provider_name = "GHRC_DAAC";
-        collection_name ="ADVANCED MICROWAVE SOUNDING UNIT-A (AMSU-A) SWATH FROM NOAA-15 V1";
-        granule_name = "amsua15_2020.028_12915_1139_1324_WI.nc";
+        // Set the context for the client id. jhrg 10/8/25
+        const std::string test_client_id = "hyrax-test-client";
+        BESContextManager::TheManager()->set_context(CMR_CLIENT_ID_CONTEXT_KEY, test_client_id);
 
-        string resty_path = "providers/"+provider_name+"/collections/"+collection_name+"/granules/"+granule_name;
-        if (debug) cerr << prolog << "RestifiedPath: " << resty_path << endl;
+        string resty_path(
+            "/collections/C1443727145-LAADS/MOD08_D3.v6.1/granules/MOD08_D3.A2020308.061.2020309092644.hdf.nc");
+        DBG(cerr << prolog << "resty_path: " << resty_path << endl);
 
+        string expected_cmr_url(
+            "https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?"
+            CMR_COLLECTION_CONCEPT_ID "=C1443727145-LAADS&"
+            CMR_GRANULE_UR "=MOD08_D3.A2020308.061.2020309092644.hdf.nc"
+            "&client_id=hyrax-test-client"
+        );
         try {
-            data_access_url = NgapApi::convert_ngap_resty_path_to_data_access_url(resty_path);
-            if (debug) cerr << prolog << "Found data_access_url: " << data_access_url << endl;
+            string cmr_query_url = NgapApi::build_cmr_query_url(resty_path);
+            CPPUNIT_ASSERT_EQUAL(cmr_query_url, expected_cmr_url);
         }
-        catch(BESError &e){
-            cerr << "Caught BESError: " << e.get_message() << " File: " << e.get_file() << " Line: " << e.get_line() << endl;
-            CPPUNIT_ASSERT(false);
+        catch (const BESError &e) {
+            CPPUNIT_FAIL(prolog + "Caught BESError! Message: " + e.get_verbose_message());
         }
-        string expected;
-        expected = "https://data.ghrc.earthdata.nasa.gov/ghrcw-protected/amsua15sp__1/amsu-a/noaa-15/data/nc/2020/0128/amsua15_2020.028_12915_1139_1324_WI.nc";
-        compare_results(granule_name, data_access_url, expected);
-        DBG(cerr << prolog << "END" << endl);
     }
 
-    void cmr_access_collection_concept_id_test() {
-        DBG(cerr << prolog << "BEGIN" << endl);
-        string provider_name;
-        string collection_concept_id;
-        string granule_name;
-        string data_access_url;
-
-        provider_name = "GHRC_DAAC";
-        collection_concept_id ="C1996541017-GHRC_DAAC";
-        granule_name = "amsua15_2020.028_12915_1139_1324_WI.nc";
-
-        string resty_path;
-        resty_path = "providers/" + provider_name + "/concepts/" + collection_concept_id + "/granules/" + granule_name;
-        if (debug) cerr << prolog << "RestifiedPath: " << resty_path << endl;
-        try {
-            data_access_url = NgapApi::convert_ngap_resty_path_to_data_access_url(resty_path);
-            if (debug) cerr << prolog << "Found data_access_url: " << data_access_url << endl;
-        }
-        catch(BESError &e){
-            cerr << "Caught BESError: " << e.get_message() << " File: " << e.get_file() << " Line: " << e.get_line() << endl;
-            CPPUNIT_ASSERT(false);
-        }
-        string expected = "https://data.ghrc.earthdata.nasa.gov/ghrcw-protected/amsua15sp__1/amsu-a/noaa-15/data/nc/2020/0128/amsua15_2020.028_12915_1139_1324_WI.nc";
-        compare_results(granule_name, data_access_url, expected);
-        DBG(cerr << prolog << "END" << endl);
-    }
-#endif
-
-    void signed_url_is_expired_test(){
+    void signed_url_is_expired_test() {
         DBG(cerr << prolog << "BEGIN" << endl);
         string signed_url_str;
-#if 0
-         std::map<std::string,std::string> url_info;
 
-#endif
-        bool is_expired;
-
-        signed_url_str = "https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
-              "A-userid=hyrax"
-              "&X-Amz-Algorithm=AWS4-HMAC-SHA256"
-              "&X-Amz-Credential=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
-              "&X-Amz-Date=20200621T161744Z"
-              "&X-Amz-Expires=86400"
-              "&X-Amz-Security-Token=FwoGZXIvYXdzENL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDKmu"
-              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
-              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
-              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
-              "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
-              "&X-Amz-SignedHeaders=host"
-              "&X-Amz-Signature=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
+        signed_url_str =
+                "https://ghrcw-protected.s3.us-west-2.amazonaws.com/rss_demo/rssmif16d__7/f16_ssmis_20200512v7.nc?"
+                "A-userid=hyrax"
+                "&X-Amz-Algorithm=AWS4-HMAC-SHA256"
+                "&X-Amz-Credential=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+                "&X-Amz-Date=20200621T161744Z"
+                "&X-Amz-Expires=86400"
+                "&X-Amz-Security-Token=FwoGZXIvYXdzENL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaDKmu"
+                "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+                "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+                "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+                "SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffingSomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing"
+                "&X-Amz-SignedHeaders=host"
+                "&X-Amz-Signature=SomeBigMessyAwfulEncodedEscapeBunchOfCryptoPhaffing";
 
         http::url signed_url(signed_url_str);
 
         time_t now;
         time(&now);
-#if 0
-         stringstream ingest_time;
 
-#endif
         const time_t then = now - 82810; // 23 hours and 10 seconds ago.
 
         signed_url.set_ingest_time(then);
-        is_expired = signed_url.is_expired();
-#if 0
-        //is_expired = NgapApi::signed_url_is_expired(signed_url);
+        const bool is_expired = signed_url.is_expired();
 
-#endif
         CPPUNIT_ASSERT(is_expired == true);
         DBG(cerr << prolog << "END" << endl);
     }
@@ -325,8 +268,8 @@ public:
         cmr_response.Parse(json.c_str());
 
         CPPUNIT_ASSERT_THROW_MESSAGE("Hits < 1, should have thrown BESNotFoundError",
-            NgapApi::find_get_data_url_in_granules_umm_json_v1_4("placeholder", cmr_response),
-            BESNotFoundError);
+                                     NgapApi::find_get_data_url_in_granules_umm_json_v1_4("placeholder", cmr_response),
+                                     BESNotFoundError);
         DBG(cerr << prolog << "END" << endl);
     }
 
@@ -334,13 +277,14 @@ public:
     // Test the 'items' not an array case
     static void test_find_get_data_url_in_granules_umm_json_v1_4_items_not_an_array() {
         DBG(cerr << prolog << "BEGIN" << endl);
-        const string json = bes::read_test_baseline(string(TEST_SRC_DIR) + "/cmr_json_responses/items_not_an_array.json");
+        const string json = bes::read_test_baseline(
+            string(TEST_SRC_DIR) + "/cmr_json_responses/items_not_an_array.json");
         rapidjson::Document cmr_response;
         cmr_response.Parse(json.c_str());
 
         CPPUNIT_ASSERT_THROW_MESSAGE("items not an array, should have thrown BESInternalError",
-            NgapApi::find_get_data_url_in_granules_umm_json_v1_4("placeholder", cmr_response),
-            BESInternalError);
+                                     NgapApi::find_get_data_url_in_granules_umm_json_v1_4("placeholder", cmr_response),
+                                     BESInternalError);
         DBG(cerr << prolog << "end" << endl);
     }
 
@@ -353,60 +297,66 @@ public:
 
         string url;
         CPPUNIT_ASSERT_THROW_MESSAGE("no related urls, should have thrown BESInternalError" + url,
-            url = NgapApi::find_get_data_url_in_granules_umm_json_v1_4("placeholder", cmr_response),
-            BESInternalError);
+                                     url = NgapApi::find_get_data_url_in_granules_umm_json_v1_4("placeholder",
+                                         cmr_response),
+                                     BESInternalError);
         DBG(cerr << prolog << "end" << endl);
     }
 
     // RelatedUrls not an array
     static void test_find_get_data_url_in_granules_umm_json_v1_4_related_urls_not_an_array() {
         DBG(cerr << prolog << "BEGIN" << endl);
-        const string json = bes::read_test_baseline(string(TEST_SRC_DIR) + "/cmr_json_responses/related_urls_not_an_array.json");
+        const string json = bes::read_test_baseline(
+            string(TEST_SRC_DIR) + "/cmr_json_responses/related_urls_not_an_array.json");
         rapidjson::Document cmr_response;
         cmr_response.Parse(json.c_str());
 
         string url;
         CPPUNIT_ASSERT_THROW_MESSAGE("related urls not an array, should have thrown BESNotFoundError" + url,
-            url = NgapApi::find_get_data_url_in_granules_umm_json_v1_4("placeholder", cmr_response),
-            BESNotFoundError);
+                                     url = NgapApi::find_get_data_url_in_granules_umm_json_v1_4("placeholder",
+                                         cmr_response),
+                                     BESNotFoundError);
         DBG(cerr << prolog << "end" << endl);
     }
 
     // no valid related url
     static void test_find_get_data_url_in_granules_umm_json_v1_4_no_valid_related_url() {
         DBG(cerr << prolog << "BEGIN" << endl);
-        const string json = bes::read_test_baseline(string(TEST_SRC_DIR) + "/cmr_json_responses/no_valid_related_url.json");
+        const string json = bes::read_test_baseline(
+            string(TEST_SRC_DIR) + "/cmr_json_responses/no_valid_related_url.json");
         rapidjson::Document cmr_response;
         cmr_response.Parse(json.c_str());
 
         CPPUNIT_ASSERT_THROW_MESSAGE("no valid related url, should have thrown BESInternalError",
-            NgapApi::find_get_data_url_in_granules_umm_json_v1_4("placeholder", cmr_response),
-            BESInternalError);
+                                     NgapApi::find_get_data_url_in_granules_umm_json_v1_4("placeholder", cmr_response),
+                                     BESInternalError);
         DBG(cerr << prolog << "end" << endl);
     }
 
     // No URL member
     static void test_find_get_data_url_in_granules_umm_json_v1_4_related_url_wo_URL() {
         DBG(cerr << prolog << "BEGIN" << endl);
-        const string json = bes::read_test_baseline(string(TEST_SRC_DIR) + "/cmr_json_responses/related_url_wo_URL.json");
+        const string json = bes::read_test_baseline(
+            string(TEST_SRC_DIR) + "/cmr_json_responses/related_url_wo_URL.json");
         rapidjson::Document cmr_response;
         cmr_response.Parse(json.c_str());
 
         CPPUNIT_ASSERT_THROW_MESSAGE("related url without URL member, should have thrown BESInternalError",
-            NgapApi::find_get_data_url_in_granules_umm_json_v1_4("placeholder", cmr_response),
-            BESInternalError);
+                                     NgapApi::find_get_data_url_in_granules_umm_json_v1_4("placeholder", cmr_response),
+                                     BESInternalError);
         DBG(cerr << prolog << "end" << endl);
     }
 
     static void test_find_get_data_url_in_granules_umm_json_v1_4_related_url_wo_Type() {
         DBG(cerr << prolog << "BEGIN" << endl);
-        const string json = bes::read_test_baseline(string(TEST_SRC_DIR) + "/cmr_json_responses/related_url_wo_Type.json");
+        const string json = bes::read_test_baseline(
+            string(TEST_SRC_DIR) + "/cmr_json_responses/related_url_wo_Type.json");
         rapidjson::Document cmr_response;
         cmr_response.Parse(json.c_str());
 
         CPPUNIT_ASSERT_THROW_MESSAGE("related url without Type member, should have thrown BESInternalError",
-            NgapApi::find_get_data_url_in_granules_umm_json_v1_4("placeholder", cmr_response),
-            BESInternalError);
+                                     NgapApi::find_get_data_url_in_granules_umm_json_v1_4("placeholder", cmr_response),
+                                     BESInternalError);
         DBG(cerr << prolog << "end" << endl);
     }
 
@@ -426,29 +376,36 @@ public:
 
     static void test_find_get_data_url_in_granules_umm_json_v1_4_lpdaac() {
         // not a test baseline, but a canned response from LPDAAC
-        const string cmr_canned_response_lpdaac = bes::read_test_baseline(string(TEST_SRC_DIR) + "/cmr_json_responses/ECOv002_L1B_GEO_22172_008_20220604T024955_0700_01.json");
+        const string cmr_canned_response_lpdaac = bes::read_test_baseline(
+            string(TEST_SRC_DIR) + "/cmr_json_responses/ECOv002_L1B_GEO_22172_008_20220604T024955_0700_01.json");
         rapidjson::Document cmr_response;
         cmr_response.Parse(cmr_canned_response_lpdaac.c_str());
 
-        string data_url = NgapApi::find_get_data_url_in_granules_umm_json_v1_4("placeholder_for_restified_url", cmr_response);
+        string data_url = NgapApi::find_get_data_url_in_granules_umm_json_v1_4(
+            "placeholder_for_restified_url", cmr_response);
 
         DBG(cerr << prolog << "data_url: " << data_url << endl);
         CPPUNIT_ASSERT_MESSAGE("data_url should not be empty", !data_url.empty());
-        string expected = "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/ECO_L1B_GEO.002/ECOv002_L1B_GEO_22172_008_20220604T024955_0700_01/ECOv002_L1B_GEO_22172_008_20220604T024955_0700_01.h5";
+        string expected =
+                "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/ECO_L1B_GEO.002/ECOv002_L1B_GEO_22172_008_20220604T024955_0700_01/ECOv002_L1B_GEO_22172_008_20220604T024955_0700_01.h5";
         CPPUNIT_ASSERT_MESSAGE("data_url should be '" + expected + " but was '" + data_url, data_url == expected);
     }
 
     // C2251464384-POCLOUD, cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.json. jhrg 5/22/24
     static void test_find_get_data_url_in_granules_umm_json_v1_4_podaac() {
-        const string cmr_canned_response_podaac = bes::read_test_baseline(string(TEST_SRC_DIR) + "/cmr_json_responses/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.json");
+        const string cmr_canned_response_podaac = bes::read_test_baseline(
+            string(TEST_SRC_DIR) +
+            "/cmr_json_responses/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.json");
         rapidjson::Document cmr_response;
         cmr_response.Parse(cmr_canned_response_podaac.c_str());
 
-        string data_url = NgapApi::find_get_data_url_in_granules_umm_json_v1_4("placeholder_for_restified_url", cmr_response);
+        string data_url = NgapApi::find_get_data_url_in_granules_umm_json_v1_4(
+            "placeholder_for_restified_url", cmr_response);
 
         DBG(cerr << prolog << "data_url: " << data_url << endl);
         CPPUNIT_ASSERT_MESSAGE("data_url should not be empty", !data_url.empty());
-        string expected = "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-protected/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.nc";
+        string expected =
+                "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-protected/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.nc";
         CPPUNIT_ASSERT_MESSAGE("data_url should be '" + expected + " but was '" + data_url, data_url == expected);
     }
 
@@ -456,8 +413,7 @@ public:
      * Test urls to make sure an existing ".dmrpp" is removed if found
      * kln 6/6/25
      */
-    void test_dmrpp_is_removed_from_data_url()
-    {
+    void test_dmrpp_is_removed_from_data_url() {
         DBG(cerr << prolog << "BEGIN" << endl);
 
         string suffix = ".dmrpp";
@@ -468,7 +424,7 @@ public:
 
         // Apply the same logic as in the function under test
         if (url_with_suffix.size() >= suffix.size() &&
-        url_with_suffix.compare(url_with_suffix.size() - suffix.size(), suffix.size(), suffix) == 0) {
+            url_with_suffix.compare(url_with_suffix.size() - suffix.size(), suffix.size(), suffix) == 0) {
             url_with_suffix.erase(url_with_suffix.size() - suffix.size(), suffix.size());
         }
         CPPUNIT_ASSERT_EQUAL_MESSAGE("The .dmrpp suffix should be removed.",
@@ -479,7 +435,7 @@ public:
         string original_url = url_without_suffix;
 
         if (url_without_suffix.size() >= suffix.size() &&
-        url_without_suffix.compare(url_without_suffix.size() - suffix.size(), suffix.size(), suffix) == 0) {
+            url_without_suffix.compare(url_without_suffix.size() - suffix.size(), suffix.size(), suffix) == 0) {
             url_without_suffix.erase(url_without_suffix.size() - suffix.size(), suffix.size());
         }
         CPPUNIT_ASSERT_EQUAL_MESSAGE("URL without .dmrpp should not be changed.",
@@ -491,7 +447,7 @@ public:
         string expected_middle_no_removal_url = url_with_middle_dmrpp;
 
         if (url_with_middle_dmrpp.size() >= suffix.size() &&
-        url_with_middle_dmrpp.compare(url_with_middle_dmrpp.size() - suffix.size(), suffix.size(), suffix) == 0) {
+            url_with_middle_dmrpp.compare(url_with_middle_dmrpp.size() - suffix.size(), suffix.size(), suffix) == 0) {
             url_with_middle_dmrpp.erase(url_with_middle_dmrpp.size() - suffix.size(), suffix.size());
         }
         CPPUNIT_ASSERT_EQUAL_MESSAGE("URL with .dmrpp not at the end should not have it removed.",
@@ -500,32 +456,148 @@ public:
         DBG(cerr << prolog << "END" << endl);
     }
 
+    /**
+ * Tests for NgapApi::append_hyrax_edl_client_id()
+ *
+ * These tests cover:
+ *  - When the URL ends with '?', no extra '&' is added.
+ *  - When the URL ends with '&', no extra '&' is added.
+ *  - When the URL has existing params and no trailing '&'/'?', an '&' is inserted.
+ *  - (Optional / conditional) If the EDL client id context is not set, method is a no-op.
+ *
+ * Note: We intentionally set the context for the first three tests and do not restore it,
+ * because the rest of this suite does not depend on that context. If you prefer to restore
+ * any previous value, you can capture it and add a teardown step that calls your context
+ * manager’s "remove/unset" API (if available in your environment).
+ */
+
+    void append_hyrax_edl_client_id_appends_after_qmark_without_extra_amp() {
+        DBG(cerr << prolog << "BEGIN" << endl);
+
+        // Arrange: ensure the client-id context is set
+        const std::string test_client_id = "hyrax-test-client";
+        BESContextManager::TheManager()->set_context(CMR_CLIENT_ID_CONTEXT_KEY, test_client_id);
+
+        // URL ends with '?': should become "?<CMR_CLIENT_ID_KEY>=<value>" (no extra '&')
+        std::string url = "https://cmr.earthdata.nasa.gov/search/granules?";
+
+        // Act
+        bool result = NgapApi::append_hyrax_edl_client_id(url);
+
+        // Assert
+        const std::string expected = std::string("https://cmr.earthdata.nasa.gov/search/granules?")
+                                     + CMR_CLIENT_ID_KEY + "=" + test_client_id;
+
+        CPPUNIT_ASSERT_MESSAGE("Expected a 'true' return value but got: " + to_string(result), result);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Expected: " + expected + ", but got: " + url, expected, url);
+
+        DBG(cerr << prolog << "END" << endl);
+    }
+
+    void append_hyrax_edl_client_id_appends_when_trailing_amp_present() {
+        DBG(cerr << prolog << "BEGIN" << endl);
+
+        // Arrange
+        const std::string test_client_id = "hyrax-test-client";
+        BESContextManager::TheManager()->set_context(CMR_CLIENT_ID_CONTEXT_KEY, test_client_id);
+
+        // URL ends with '&': should directly append "<CMR_CLIENT_ID_KEY>=<value>"
+        std::string url = "https://cmr.earthdata.nasa.gov/search/granules?foo=bar&";
+
+        // Act
+        bool result = NgapApi::append_hyrax_edl_client_id(url);
+
+        // Assert
+        const std::string expected = std::string("https://cmr.earthdata.nasa.gov/search/granules?foo=bar&")
+                                     + CMR_CLIENT_ID_KEY + "=" + test_client_id;
+
+        CPPUNIT_ASSERT_MESSAGE("Expected a 'true' return value but got: " + to_string(result), result);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Expected: " + expected + ", but got: " + url, expected, url);
+
+        DBG(cerr << prolog << "END" << endl);
+    }
+
+    void append_hyrax_edl_client_id_inserts_amp_when_needed() {
+        DBG(cerr << prolog << "BEGIN" << endl);
+
+        // Arrange
+        const std::string test_client_id = "hyrax-test-client";
+        BESContextManager::TheManager()->set_context(CMR_CLIENT_ID_CONTEXT_KEY, test_client_id);
+
+        // URL has existing params and no trailing '&'/'?': method must insert '&'
+        std::string url = "https://cmr.earthdata.nasa.gov/search/granules?foo=bar";
+
+        // Act
+        bool result = NgapApi::append_hyrax_edl_client_id(url);
+
+        // Assert
+        const std::string expected = std::string("https://cmr.earthdata.nasa.gov/search/granules?foo=bar&")
+                                     + CMR_CLIENT_ID_KEY + "=" + test_client_id;
+
+        CPPUNIT_ASSERT_MESSAGE("Expected a 'true' return value but got: " + to_string(result), result);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Expected: " + expected + ", but got: " + url, expected, url);
+
+        DBG(cerr << prolog << "END" << endl);
+    }
+
+    /**
+     * Optional “no-op” test for the case when the context is not set.
+     * If the context is set in your environment (e.g., by a harness), we just return so
+     * the test won’t flap. If your BESContextManager supports removing a key, you can
+     * explicitly remove it before running this test.
+     */
+    void append_hyrax_edl_client_id_noop_when_context_not_set() {
+        DBG(cerr << prolog << "BEGIN (noop-if-context-present)" << endl);
+
+        bool found = false;
+        (void) BESContextManager::TheManager()->get_context(CMR_CLIENT_ID_CONTEXT_KEY, found);
+        if (found) {
+            DBG(cerr << prolog << "Context is set; skipping assertions for no-op case." << endl);
+            return; // effectively a no-op "skip" to avoid flaky behavior
+        }
+
+        std::string original = "https://cmr.earthdata.nasa.gov/search/granules?foo=bar";
+        std::string url = original;
+
+        bool result = NgapApi::append_hyrax_edl_client_id(url);
+
+        CPPUNIT_ASSERT_MESSAGE("Expected a 'false' return value but got: " + to_string(result), !result);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Expected: " + original + ", but got: " + url, original, url);
+
+        DBG(cerr << prolog << "END" << endl);
+    }
+
     CPPUNIT_TEST_SUITE(NgapApiTest);
 
-        CPPUNIT_TEST(resty_path_to_cmr_query_test_01);
-        CPPUNIT_TEST(resty_path_to_cmr_query_test_02);
-        CPPUNIT_TEST(resty_path_to_cmr_query_test_03);
-        CPPUNIT_TEST(signed_url_is_expired_test);
+    CPPUNIT_TEST (resty_path_to_cmr_query_test_01);
+    CPPUNIT_TEST (resty_path_to_cmr_query_test_02);
+    CPPUNIT_TEST (resty_path_to_cmr_query_test_03);
+    CPPUNIT_TEST (resty_path_to_cmr_query_test_04);
+    CPPUNIT_TEST (signed_url_is_expired_test);
 
-        CPPUNIT_TEST(test_find_get_data_url_in_granules_umm_json_v1_4_no_hits);
-        CPPUNIT_TEST(test_find_get_data_url_in_granules_umm_json_v1_4_items_not_an_array);
-        CPPUNIT_TEST(test_find_get_data_url_in_granules_umm_json_v1_4_no_related_urls);
-        CPPUNIT_TEST(test_find_get_data_url_in_granules_umm_json_v1_4_related_urls_not_an_array);
-        CPPUNIT_TEST(test_find_get_data_url_in_granules_umm_json_v1_4_no_valid_related_url);
-        CPPUNIT_TEST(test_find_get_data_url_in_granules_umm_json_v1_4_related_url_wo_URL);
-        CPPUNIT_TEST(test_find_get_data_url_in_granules_umm_json_v1_4_minimal_json);
+    CPPUNIT_TEST (test_find_get_data_url_in_granules_umm_json_v1_4_no_hits);
+    CPPUNIT_TEST (test_find_get_data_url_in_granules_umm_json_v1_4_items_not_an_array);
+    CPPUNIT_TEST (test_find_get_data_url_in_granules_umm_json_v1_4_no_related_urls);
+    CPPUNIT_TEST (test_find_get_data_url_in_granules_umm_json_v1_4_related_urls_not_an_array);
+    CPPUNIT_TEST (test_find_get_data_url_in_granules_umm_json_v1_4_no_valid_related_url);
+    CPPUNIT_TEST (test_find_get_data_url_in_granules_umm_json_v1_4_related_url_wo_URL);
+    CPPUNIT_TEST (test_find_get_data_url_in_granules_umm_json_v1_4_minimal_json);
 
-        CPPUNIT_TEST(test_find_get_data_url_in_granules_umm_json_v1_4_lpdaac);
-        CPPUNIT_TEST(test_find_get_data_url_in_granules_umm_json_v1_4_podaac);
-        CPPUNIT_TEST(test_dmrpp_is_removed_from_data_url);
+    CPPUNIT_TEST (test_find_get_data_url_in_granules_umm_json_v1_4_lpdaac);
+    CPPUNIT_TEST (test_find_get_data_url_in_granules_umm_json_v1_4_podaac);
+    CPPUNIT_TEST (test_dmrpp_is_removed_from_data_url);
+
+    CPPUNIT_TEST (append_hyrax_edl_client_id_appends_after_qmark_without_extra_amp);
+    CPPUNIT_TEST (append_hyrax_edl_client_id_appends_when_trailing_amp_present);
+    CPPUNIT_TEST (append_hyrax_edl_client_id_inserts_amp_when_needed);
+    CPPUNIT_TEST (append_hyrax_edl_client_id_noop_when_context_not_set);
 
     CPPUNIT_TEST_SUITE_END();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(NgapApiTest);
-
 } // namespace dmrpp
 
-int main(int argc, char*argv[]) {
+int main(int argc, char *argv[]) {
     return bes_run_tests<ngap::NgapApiTest>(argc, argv, "cerr,ngap,http") ? 0 : 1;
 }

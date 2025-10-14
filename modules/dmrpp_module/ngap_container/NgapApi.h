@@ -43,9 +43,14 @@ class url;
 }
 
 namespace ngap {
-
+/**
+ * @class NgapApi
+ * @brief This class provides an API interface for handling NGAP (NASA General Application Platform) procedures.
+ * @note This would be better implemented as a set of functions in a namespace. jhrg 10/8/25
+ */
 class NgapApi {
-private:
+    static bool append_hyrax_edl_client_id(std::string &cmr_url);
+
     static std::string get_cmr_search_endpoint_url();
     static std::string find_get_data_url_in_granules_umm_json_v1_4(const std::string &rest_path,
                                                                    rapidjson::Document &cmr_granule_response);
@@ -61,10 +66,6 @@ public:
     NgapApi &operator=(const NgapApi &other) = delete;
 
     static std::string convert_ngap_resty_path_to_data_access_url(const std::string &restified_path);
-
-#if 0
-      static bool signed_url_is_expired(const http::url &signed_url) ;
-#endif
 };
 
 } // namespace ngap
