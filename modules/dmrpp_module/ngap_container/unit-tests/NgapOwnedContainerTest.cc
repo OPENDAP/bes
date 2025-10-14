@@ -333,7 +333,6 @@ public:
 
         string dmrpp; // = container.access();
         CPPUNIT_ASSERT_NO_THROW_MESSAGE("This should not throw an exception", dmrpp = container.access());
-        //string dmrpp = container.access();
         DBG2(cerr << "DMR++: " << dmrpp << '\n');
         CPPUNIT_ASSERT_MESSAGE("The response should not be empty", !dmrpp.empty());
         string dmrpp_str = R"(dmrpp:href="https://s3.amazonaws.com/cloudydap/ngap_owned/d_int.h5")";
