@@ -338,6 +338,38 @@ string get_value_if_data_access_url(rapidjson::Value &obj) {
     return {""};
 }
 
+
+string get_value_if_data_access_s3_url(rapidjson::Value &obj) {
+    auto mitr = obj.FindMember("URL");
+    if (mitr == obj.MemberEnd()) {
+        throw BESInternalError("The umm/RelatedUrls element does not contain the URL object", __FILE__, __LINE__);
+    }
+
+    const rapidjson::Value &r_url = mitr->value;
+
+    mitr = obj.FindMember("Type");
+    if (mitr == obj.MemberEnd()) {
+        throw BESInternalError("The umm/RelatedUrls element does not contain the Type object", __FILE__, __LINE__);
+    }
+
+    const rapidjson::Value &r_type = mitr->value;
+
+    bool noSubtype = obj.FindMember("Subtype") == obj.MemberEnd();
+
+    if ((r_type.GetString() == string(CMR_URL_TYPE_GET_DATA)) && noSubtype) {
+        string candidate_url = r_url.GetString();
+
+        // The URL has to start with s3:// and cannot end in .xml or .dmrpp
+        if (candidate_url.find("s3://") == 0
+            && candidate_url.rfind(".xml") == string::npos
+            && candidate_url.rfind(".dmrpp") == string::npos) {
+            return candidate_url;
+        }
+    }
+
+    return {""};
+}
+
 string get_value_if_s3credentials_url(rapidjson::Value &obj) {
 
     auto mitr = obj.FindMember("URL");
@@ -459,6 +491,26 @@ string NgapApi::find_get_s3credentials_url_in_granules_umm_json_v1_4(const strin
     return find_value_in_granules_umm_json_v1_4(rest_path, cmr_granule_response, get_value_if_s3credentials_url, str);
 }
 
+/**
+ * @brief  Locates the "GET DATA" S3 URL for a granule in the granules.umm_json_v1_4 document.
+ *
+ * A single granule query is built by convert_restified_path_to_cmr_query_url() from the
+ * NGAP API restified path. This method will parse the CMR response to the query and extract the
+ * granule's "GET DATA" S3 URL and return it.
+ *
+ * @note This method uses a heuristic to get an S3 URL to the granule from the CMR UMM-G
+ * JSON. The process it follows is, look in the RelatedUrls array for an entry with a
+ * a TYPE of Type 'GET DATA' with a URL that uses the s3:// protocol.
+ *
+ * @param rest_path The REST path used to form the CMR query (only used for error messages)
+ * @param cmr_granule_response The CMR response (granules.umm_json_v1_4) to evaluate
+ * @return  The "GET DATA" S3 URL for the granule.
+ */
+string NgapApi::find_get_data_s3_url_in_granules_umm_json_v1_4(const string &rest_path,
+                                                                     rapidjson::Document &cmr_granule_response) {
+    string str = "\"GET DATA\" s3 URL";
+    return find_value_in_granules_umm_json_v1_4(rest_path, cmr_granule_response, get_value_if_data_access_s3_url, str);
+}
 
 /**
  * @brief Converts an NGAP restified granule path into a CMR metadata query for the granule.
