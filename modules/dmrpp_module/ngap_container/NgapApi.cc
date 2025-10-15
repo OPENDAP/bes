@@ -508,9 +508,7 @@ std::tuple<string, string, string> NgapApi::get_urls_from_granules_umm_json_v1_4
  */
 string NgapApi::convert_ngap_resty_path_to_data_access_url(const string &restified_path) {
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
-    string data_access_url;
-    string data_s3_url;
-    string s3credentials_url;
+    string data_access_url, data_s3_url, s3credentials_url;
 
     string cmr_query_url = build_cmr_query_url(restified_path);
 
