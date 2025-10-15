@@ -52,11 +52,11 @@ class NgapApi {
     static bool append_hyrax_edl_client_id(std::string &cmr_url);
 
     static std::string get_cmr_search_endpoint_url();
-    static std::string find_get_data_url_in_granules_umm_json_v1_4(const std::string &rest_path,
+    static std::string get_data_url_from_granules_umm_json_v1_4(const std::string &rest_path,
                                                                    rapidjson::Document &cmr_granule_response);
-    static std::string find_get_s3credentials_url_in_granules_umm_json_v1_4(const std::string &rest_path,
+    static std::string get_s3credentials_url_from_granules_umm_json_v1_4(const std::string &rest_path,
                                                                    rapidjson::Document &cmr_granule_response);
-    static std::string find_get_data_s3_url_in_granules_umm_json_v1_4(const std::string &rest_path,
+    static std::string get_data_access_s3_url_from_granules_umm_json_v1_4(const std::string &rest_path,
                                                                    rapidjson::Document &cmr_granule_response);
     static std::string build_cmr_query_url(const std::string &restified_path);
     static std::string build_cmr_query_url_old_rpath_format(const std::string &restified_path);

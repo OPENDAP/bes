@@ -306,7 +306,7 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
     return cmr_url;
 }
 
-string get_value_if_data_access_url(rapidjson::Value &obj) {
+string get_data_access_url(rapidjson::Value &obj) {
     auto mitr = obj.FindMember("URL");
     if (mitr == obj.MemberEnd()) {
         throw BESInternalError("The umm/RelatedUrls element does not contain the URL object", __FILE__, __LINE__);
@@ -339,7 +339,7 @@ string get_value_if_data_access_url(rapidjson::Value &obj) {
 }
 
 
-string get_value_if_data_access_s3_url(rapidjson::Value &obj) {
+string get_data_s3_url(rapidjson::Value &obj) {
     auto mitr = obj.FindMember("URL");
     if (mitr == obj.MemberEnd()) {
         throw BESInternalError("The umm/RelatedUrls element does not contain the URL object", __FILE__, __LINE__);
@@ -370,7 +370,7 @@ string get_value_if_data_access_s3_url(rapidjson::Value &obj) {
     return {""};
 }
 
-string get_value_if_s3credentials_url(rapidjson::Value &obj) {
+string get_s3credentials_url(rapidjson::Value &obj) {
 
     auto mitr = obj.FindMember("URL");
     if (mitr == obj.MemberEnd()) {
@@ -401,7 +401,7 @@ string get_value_if_s3credentials_url(rapidjson::Value &obj) {
     return {""};
 }
 
-string find_value_in_granules_umm_json_v1_4(const string &rest_path,
+string get_value_from_granules_umm_json_v1_4(const string &rest_path,
                                             rapidjson::Document &cmr_granule_response,
                                             function<string (rapidjson::Value&)> fn_get_value_if_fields_match,
                                             string &value_description) {
@@ -463,10 +463,10 @@ string find_value_in_granules_umm_json_v1_4(const string &rest_path,
  * @param cmr_granule_response The CMR response (granules.umm_json_v1_4) to evaluate
  * @return  The "GET DATA" URL for the granule.
  */
-string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const string &rest_path,
+string NgapApi::get_data_url_from_granules_umm_json_v1_4(const string &rest_path,
                                                             rapidjson::Document &cmr_granule_response) {
     string str = "\"GET DATA\" URL";
-    return find_value_in_granules_umm_json_v1_4(rest_path, cmr_granule_response, get_value_if_data_access_url, str);
+    return get_value_from_granules_umm_json_v1_4(rest_path, cmr_granule_response, get_data_access_url, str);
 }
 
 /**
@@ -485,10 +485,10 @@ string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const string &rest_p
  * @param cmr_granule_response The CMR response (granules.umm_json_v1_4) to evaluate
  * @return  The "s3credentials" URL for the granule.
  */
-string NgapApi::find_get_s3credentials_url_in_granules_umm_json_v1_4(const string &rest_path,
-                                                                     rapidjson::Document &cmr_granule_response) {
+string NgapApi::get_s3credentials_url_from_granules_umm_json_v1_4(const string &rest_path,
+                                                                  rapidjson::Document &cmr_granule_response) {
     string str = "s3credentials URL";
-    return find_value_in_granules_umm_json_v1_4(rest_path, cmr_granule_response, get_value_if_s3credentials_url, str);
+    return get_value_from_granules_umm_json_v1_4(rest_path, cmr_granule_response, get_s3credentials_url, str);
 }
 
 /**
@@ -506,10 +506,10 @@ string NgapApi::find_get_s3credentials_url_in_granules_umm_json_v1_4(const strin
  * @param cmr_granule_response The CMR response (granules.umm_json_v1_4) to evaluate
  * @return  The "GET DATA" S3 URL for the granule.
  */
-string NgapApi::find_get_data_s3_url_in_granules_umm_json_v1_4(const string &rest_path,
+string NgapApi::get_data_url_from_granules_umm_json_v1_4(const string &rest_path,
                                                                      rapidjson::Document &cmr_granule_response) {
     string str = "\"GET DATA\" s3 URL";
-    return find_value_in_granules_umm_json_v1_4(rest_path, cmr_granule_response, get_value_if_data_access_s3_url, str);
+    return get_value_from_granules_umm_json_v1_4(rest_path, cmr_granule_response, get_data_s3_url, str);
 }
 
 /**
