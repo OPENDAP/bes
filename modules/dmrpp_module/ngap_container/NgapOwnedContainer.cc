@@ -231,7 +231,8 @@ string NgapOwnedContainer::build_data_url_to_daac_bucket(const string &rest_path
     }
 
     // Not cached or not using the cache; ask CMR. Throws on lookup failure, HTTP failure. jhrg 1/24/25
-    data_url = NgapApi::convert_ngap_resty_path_to_data_access_url(rest_path);
+    string data_access_url, data_s3_url, s3credentials_url;
+    tie(data_url, data_s3_url, s3credentials_url) = NgapApi::convert_ngap_resty_path_to_data_access_urls(rest_path);
 
     // If using the CMR cache, cache the response.
     if (NgapOwnedContainer::d_use_cmr_cache) {

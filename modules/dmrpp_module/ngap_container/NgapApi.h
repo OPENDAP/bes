@@ -44,6 +44,7 @@ class url;
 }
 
 namespace ngap {
+
 /**
  * @class NgapApi
  * @brief This class provides an API interface for handling NGAP (NASA General Application Platform) procedures.
@@ -67,7 +68,7 @@ public:
     NgapApi(const NgapApi &other) = delete;
     NgapApi &operator=(const NgapApi &other) = delete;
 
-    static std::string convert_ngap_resty_path_to_data_access_url(const std::string &restified_path);
+    static DataAccessUrls convert_ngap_resty_path_to_data_access_urls(const std::string &restified_path);
 };
 
 } // namespace ngap
