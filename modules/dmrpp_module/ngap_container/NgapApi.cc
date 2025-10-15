@@ -423,7 +423,7 @@ string get_s3credentials_url(rapidjson::Value &obj) {
  * @param cmr_granule_response The CMR response (granules.umm_json_v1_4) to evaluate
  * @return  A tuple of data urls for the granule: the "GET DATA" URL, "GET DATA" s3 URL, and "USE SERVICE API" s3 CREDENTIALS URL.
  */
-std::tuple<string, string, string> NgapApi::get_urls_from_granules_umm_json_v1_4(const std::string &rest_path,
+NgapApi::DataAccessUrls NgapApi::get_urls_from_granules_umm_json_v1_4(const std::string &rest_path,
                                                                                  rapidjson::Document &cmr_granule_response) {
     const rapidjson::Value &val = cmr_granule_response["hits"];
     int hits = val.GetInt();
@@ -508,7 +508,6 @@ std::tuple<string, string, string> NgapApi::get_urls_from_granules_umm_json_v1_4
  */
 string NgapApi::convert_ngap_resty_path_to_data_access_url(const string &restified_path) {
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
-    string data_access_url, data_s3_url, s3credentials_url;
 
     string cmr_query_url = build_cmr_query_url(restified_path);
 
@@ -528,6 +527,8 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(const string &restifi
 
     rapidjson::Document cmr_response;
     cmr_response.Parse(cmr_json_string.c_str());
+
+    string data_access_url, data_s3_url, s3credentials_url;
     tie(data_access_url, data_s3_url, s3credentials_url) = get_urls_from_granules_umm_json_v1_4(restified_path, cmr_response);
 
     if (data_s3_url.empty() || s3credentials_url.empty()) {

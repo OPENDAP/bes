@@ -54,8 +54,8 @@ class NgapApi {
 
     static std::string get_cmr_search_endpoint_url();
 
-    static std::tuple<std::string, std::string, std::string> get_urls_from_granules_umm_json_v1_4(const std::string &rest_path,
-                                                                                                  rapidjson::Document &cmr_granule_response);
+    typedef std::tuple<std::string, std::string, std::string> DataAccessUrls;
+    static DataAccessUrls get_urls_from_granules_umm_json_v1_4(const std::string &rest_path, rapidjson::Document &cmr_granule_response);
     static std::string build_cmr_query_url(const std::string &restified_path);
     static std::string build_cmr_query_url_old_rpath_format(const std::string &restified_path);
 
