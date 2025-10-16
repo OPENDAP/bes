@@ -29,7 +29,7 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-SUBDIRS = dispatch xmlcommand ppt server http cmdln standalone docs bin templates hello_world
+SUBDIRS = dispatch xmlcommand ppt server http cmdln standalone docs bin templates hello_world aws
 
 if LIBDAP
 SUBDIRS += dap dapreader
@@ -44,7 +44,7 @@ endif
 bin_SCRIPTS = bes-config bes-config-pkgconfig bes-tmpfiles-conf
 
 # Yes, even though its `init_d_SCRIPTS`, we use `init_ddir`,
-# with-out a second underscore.
+# without a second underscore.
 init_ddir = $(sysconfdir)/rc.d/init.d
 init_d_SCRIPTS = besd
 
@@ -65,7 +65,7 @@ bes-tmpfiles-conf besd.logrotate README.md rapidjson nlohmann pugixml
 HTML_DOCS=html
 DOXYGEN_CONF=doxy.conf
 
-framework_dirs = dispatch xmlcommand ppt server http dap dapreader
+framework_dirs = dispatch xmlcommand ppt server http aws dap dapreader
 .PHONY: framework
 framework:
 	for d in $(framework_dirs); do $(MAKE) -C $$d $(MFLAGS); done

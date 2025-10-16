@@ -73,6 +73,9 @@ cxx_debug_flags=
 
 dnl Removed "-g -O2" jhrg 2/8/22
 dnl Changed -O2 to -Og for --enable-developer jhrg 6/16/23
+dnl Changed -Og to -O0 for --enable-developer to improve ease of debugging.
+dnl This can introduce some problems where the optimizers introduces or uncovers
+dnl bugs not present with the 'vanilla' code. jhrg 2/26/25
 
 AC_ARG_ENABLE([developer],
     [AS_HELP_STRING([--enable-developer],
@@ -83,7 +86,7 @@ dnl it's actually used - not all the source files include config.h. jhrg 1/30/23
 
 AM_CONDITIONAL([BES_DEVELOPER], [test "x$enable_developer" = "xyes"])
 AM_COND_IF([BES_DEVELOPER],
-    [cxx_debug_flags="-g3 -Og -Wall"
+    [cxx_debug_flags="-g3 -O0 -Wall"
      AC_DEFINE([DEVELOPER], [1], [Define this for Developer-only code sections.])
      AC_MSG_NOTICE([Developer Mode is enabled.]) ],
     [AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])
@@ -545,7 +548,42 @@ AS_IF([test $curl_is_ok = no],
     [AC_MSG_ERROR([libcurl: insufficient version or not found])])
     
 ])  dnl End AM_COND_IF BES_DEVELOPER for DMR++/libcurl
-    
+
+dnl Look for the AWS libraries (aws-cpp-sdk-s3 aws-cpp-sdk-core) and headers
+dnl jhrg 3/11/25
+
+dnl Look for the AWS SDK from the hyrax-dependencies. jhrg 10/9/25
+
+AC_LANG_PUSH([C++])
+saved_CXXFLAGS=$CXXFLAGS
+CXXFLAGS="-I$ac_bes_dependencies_prefix/include"
+AC_CHECK_HEADERS([aws/core/Aws.h], [found_aws_h=true], [found_aws_h=false])
+AC_CHECK_HEADERS([aws/s3/S3Client.h], [found_s3client_h=true], [found_s3client_h=false])
+CXXFLAGS=$saved_CXXFLAGS
+AC_LANG_POP([C++])
+
+AS_IF([$found_aws_h && $found_s3client_h],
+    [AWS_PREFIX=$ac_bes_dependencies_prefix
+     AC_SUBST(AWS_PREFIX)
+
+     AWS_LBS="-laws-crt-cpp -laws-cpp-sdk-s3 -laws-cpp-sdk-core \
+              -laws-c-http -laws-c-io -laws-c-auth -laws-c-cal -laws-c-compression \
+              -laws-c-event-stream -laws-c-mqtt -laws-c-s3 -laws-c-sdkutils -laws-c-common \
+              -lxml2 -lz -lbz2 -lcurl"
+     AC_SUBST(AWS_LIBS)
+
+     AC_MSG_NOTICE([AWS C++ SDK Found.])
+     AM_CONDITIONAL([USE_AWS_SDK], [true])],
+    [AC_MSG_NOTICE([AWS C++ SDK not Found.])
+     AM_CONDITIONAL([USE_AWS_SDK], [false])])
+
+AC_MSG_CHECKING([the OS type for the AWS SDK linkage])
+AS_CASE([$host],
+    [*darwin*], [AM_CONDITIONAL([DARWIN], [true])
+                 AC_MSG_NOTICE([OSX found.])],
+    [AM_CONDITIONAL([DARWIN], [false])
+     AC_MSG_NOTICE([OSX not found.])])
+
 dnl Freeform hacks
 
 FF_CPPFLAGS=
@@ -956,6 +994,7 @@ OPTIONAL_FEATURES=
 
 AM_COND_IF([OPENJPEG_FOUND], [OPTIONAL_FEATURES="openjpeg"])
 AM_COND_IF([BUILD_GDAL], [OPTIONAL_FEATURES="gdal $OPTIONAL_FEATURES"])
+AM_COND_IF([USE_AWS_SDK], [OPTIONAL_FEATURES="AWS C++ SDK $OPTIONAL_FEATURES"])
 dnl NETCDF4_TESTS are not considered an 'optional feature' since netcdf is netCDF4
 AM_COND_IF([BUILD_NETCDF], [OPTIONAL_FEATURES="netcdf $OPTIONAL_FEATURES"])
 AM_COND_IF([BUILD_FITS], [OPTIONAL_FEATURES="fits $OPTIONAL_FEATURES"])
@@ -1007,6 +1046,9 @@ AC_CONFIG_FILES([Makefile
 		 hello_world/Makefile
 		 hello_world/tests/Makefile
 		 hello_world/tests/atlocal
+
+		 aws/Makefile
+		 aws/unit-tests/Makefile
 
 		 http/Makefile
 		 http/unit-tests/Makefile
@@ -1097,7 +1139,6 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/s3_reader/Makefile
     modules/s3_reader/tests/Makefile
     modules/s3_reader/tests/atlocal
-    modules/s3_reader/unit-tests/Makefile
 
     modules/httpd_catalog_module/Makefile
     modules/httpd_catalog_module/unit-tests/Makefile
