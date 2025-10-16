@@ -76,7 +76,8 @@ int NgapOwnedContainer::d_cmr_cache_size_items = 100;    // Entries, not size in
 int NgapOwnedContainer::d_cmr_cache_purge_items = 20;
 
 bool NgapOwnedContainer::d_use_cmr_cache = false;
-MemoryCache<std::string> NgapOwnedContainer::d_cmr_mem_cache;
+MemoryCache<std::string> NgapOwnedContainer::d_cmr_mem_cache_https_url;
+MemoryCache<NgapOwnedContainer::S3DataAccessUrls> NgapOwnedContainer::d_cmr_mem_cache_s3_urls;
 
 // DMR++ caching
 int NgapOwnedContainer::d_dmrpp_mem_cache_size_items = 100;
@@ -119,8 +120,11 @@ NgapOwnedContainer::NgapOwnedContainer(const string &sym_name, const string &rea
                 = TheBESKeys::read_int_key(CMR_CACHE_THRESHOLD, NgapOwnedContainer::d_cmr_cache_size_items);
         NgapOwnedContainer::d_cmr_cache_purge_items
                 = TheBESKeys::read_int_key(CMR_CACHE_SPACE, NgapOwnedContainer::d_cmr_cache_purge_items);
-        if (!d_cmr_mem_cache.initialize(d_cmr_cache_size_items, d_cmr_cache_purge_items)) {
-            ERROR_LOG("NgapOwnedContainer::NgapOwnedContainer() - failed to initialize CMR cache");
+        if (!d_cmr_mem_cache_https_url.initialize(d_cmr_cache_size_items, d_cmr_cache_purge_items)) {
+            ERROR_LOG("NgapOwnedContainer::NgapOwnedContainer() - failed to initialize CMR cache for data url");
+        }
+        if (!d_cmr_mem_cache_s3_urls.initialize(d_cmr_cache_size_items, d_cmr_cache_purge_items)) {
+            ERROR_LOG("NgapOwnedContainer::NgapOwnedContainer() - failed to initialize CMR cache for data s3 urls");
         }
     }
 
@@ -220,9 +224,9 @@ string NgapOwnedContainer::build_data_url_to_daac_bucket(const string &rest_path
 
     // If using the cache, look there. Note that the UID is part of the key to the cached data.
     string url_key = rest_path + ':' + uid;
-    string data_url;
+    string data_url, data_s3_url, s3credentials_url;
     if (NgapOwnedContainer::d_use_cmr_cache) {
-        if (NgapOwnedContainer::d_cmr_mem_cache.get(url_key, data_url)) {
+        if (NgapOwnedContainer::d_cmr_mem_cache_https_url.get(url_key, data_url)) {
             CACHE_LOG(prolog + "CMR Cache hit, translated URL: " + data_url + '\n');
             return data_url;
         } else {
@@ -231,13 +235,18 @@ string NgapOwnedContainer::build_data_url_to_daac_bucket(const string &rest_path
     }
 
     // Not cached or not using the cache; ask CMR. Throws on lookup failure, HTTP failure. jhrg 1/24/25
-    string data_access_url, data_s3_url, s3credentials_url;
     tie(data_url, data_s3_url, s3credentials_url) = NgapApi::convert_ngap_resty_path_to_data_access_urls(rest_path);
 
     // If using the CMR cache, cache the response.
     if (NgapOwnedContainer::d_use_cmr_cache) {
-        NgapOwnedContainer::d_cmr_mem_cache.put(url_key, data_url);
+        NgapOwnedContainer::d_cmr_mem_cache_https_url.put(url_key, data_url);
         CACHE_LOG(prolog + "CMR Cache put, translated URL: " + data_url + '\n');
+
+        if (!data_s3_url.empty() && !s3credentials_url.empty()) {
+            S3DataAccessUrls s3urls(data_s3_url, s3credentials_url);
+            NgapOwnedContainer::d_cmr_mem_cache_s3_urls.put(url_key, s3urls);
+            CACHE_LOG(prolog + "CMR S3 Cache put, translated s3 URL: " + data_s3_url + ", s3credentials URL: " + s3credentials_url + '\n');
+        }
     }
 
     return data_url;

@@ -71,7 +71,10 @@ class NgapOwnedContainer: public BESContainer {
     static int d_cmr_cache_purge_items;     // remove this many during purge
 
     static bool d_use_cmr_cache;
-    static MemoryCache<std::string> d_cmr_mem_cache;
+    static MemoryCache<std::string> d_cmr_mem_cache_https_url;
+
+    typedef std::tuple<std::string, std::string> S3DataAccessUrls;
+    static MemoryCache<S3DataAccessUrls> d_cmr_mem_cache_s3_urls;
 
     static int d_dmrpp_mem_cache_size_items;    // max number of entries
     static int d_dmrpp_mem_cache_purge_items;   // remove this many during purge
