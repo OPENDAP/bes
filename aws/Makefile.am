@@ -11,9 +11,6 @@ if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
 endif
 
-AWS_SDK_C_LIBS = -laws-c-common -laws-c-auth -laws-c-cal -laws-c-compression -laws-c-event-stream \
-                 -laws-c-http -laws-c-io -laws-c-mqtt -laws-c-s3 -laws-c-sdkutils
-
 AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
@@ -22,9 +19,18 @@ SUBDIRS = . unit-tests
 
 noinst_LTLIBRARIES = libbes_aws.la
 
+# AWS_SDK_C_LIBS = -laws-c-common -laws-c-cal -laws-c-compression -laws-c-event-stream
+#                 -laws-c-http -laws-c-io -laws-c-mqtt -laws-c-s3 -laws-c-auth -laws-c-sdkutils
+# AWS_SDK_CPP_LIBS = -laws-crt-cpp -laws-cpp-sdk-s3 -laws-cpp-sdk-core -laws-checksums
+
 libbes_aws_la_SOURCES = $(SRCS) $(HDRS)
-libbes_aws_la_LDFLAGS = -L$(prefix)/deps/lib
-libbes_aws_la_LIBADD = -laws-cpp-sdk-s3 -laws-cpp-sdk-core
+libbes_aws_la_LDFLAGS =
+# -L/Users/jimg/src/opendap/hyrax/build/deps/lib
+libbes_aws_la_LIBADD =
+#-L/Users/jimg/src/opendap/hyrax/build/deps/lib $(AWS_SDK_CPP_LIBS) $(AWS_SDK_C_LIBS)
+
+# TODO how to deal with the convenience lib - can the AWS libs be linked to it? Prob not,
+# but worth checking. jhrg 10/15/25
 
 pkginclude_HEADERS = $(HDRS)
 

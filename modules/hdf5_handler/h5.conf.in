@@ -588,7 +588,7 @@ H5.DefaultHandleDimension=true
 # When this key is turned on, if the original file contains unlimited dimensions,
 # HDF5 handler will save the unlimited dimension info as a DAP4 attribute.
 # This key only takes effect for DAP4 responses.
-# The default value is set to false
-# Uncomment the following line to set this true. 
-#H5.DefaultDAP4AddUnlimitedDimension=true
+# The default value is set to true
+# Uncomment the following line to set this false. 
+#H5.DefaultDAP4AddUnlimitedDimension=false
 

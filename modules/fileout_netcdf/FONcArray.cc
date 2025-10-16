@@ -1272,10 +1272,14 @@ void FONcArray::allocate_dio_nc4_def_filters(int ncid, int d_varid, bool has_fle
 void FONcArray::write_direct_io_data(int ncid, int d_varid) {
 
     char dummy_buffer[1];
+    vector<size_t> var_count(d_ndims);
+    vector<size_t> var_start(d_ndims);
+    for (int dim = 0; dim < d_ndims; dim++)
+        var_count[dim] = d_dim_sizes[dim];
 
     BESDEBUG("fonc", "FONcArray() - direct IO write " << endl);
     // The following call doesn't write any data but set up the necessary operations for sending data directly.
-    int stax = nc_put_var(ncid, d_varid, dummy_buffer);
+    int stax = nc_put_vara(ncid, d_varid, var_start.data(),var_count.data(),dummy_buffer);
     if (stax != NC_NOERR) {
         string err = "fileout.netcdf - the direct IO version of nc_put_var error for variable " + d_varname;
         FONcUtils::handle_error(stax , err, __FILE__, __LINE__);

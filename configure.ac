@@ -556,19 +556,33 @@ dnl Look for the AWS SDK from the hyrax-dependencies. jhrg 10/9/25
 
 AC_LANG_PUSH([C++])
 saved_CXXFLAGS=$CXXFLAGS
-CXXFLAGS="$CXXFLAGS -I$ac_bes_dependencies_prefix/include"
+CXXFLAGS="-I$ac_bes_dependencies_prefix/include"
 AC_CHECK_HEADERS([aws/core/Aws.h], [found_aws_h=true], [found_aws_h=false])
 AC_CHECK_HEADERS([aws/s3/S3Client.h], [found_s3client_h=true], [found_s3client_h=false])
 CXXFLAGS=$saved_CXXFLAGS
 AC_LANG_POP([C++])
 
 AS_IF([$found_aws_h && $found_s3client_h],
-    [AWS_SDK_LIBS="-L$ac_bes_dependencies_prefix/lib -laws-cpp-sdk-s3 -laws-cpp-sdk-core"
-     AC_SUBST(AWS_SDK_LIBS)
+    [AWS_PREFIX=$ac_bes_dependencies_prefix
+     AC_SUBST(AWS_PREFIX)
+
+     AWS_LBS="-laws-crt-cpp -laws-cpp-sdk-s3 -laws-cpp-sdk-core \
+              -laws-c-http -laws-c-io -laws-c-auth -laws-c-cal -laws-c-compression \
+              -laws-c-event-stream -laws-c-mqtt -laws-c-s3 -laws-c-sdkutils -laws-c-common \
+              -lxml2 -lz -lbz2 -lcurl"
+     AC_SUBST(AWS_LIBS)
+
      AC_MSG_NOTICE([AWS C++ SDK Found.])
      AM_CONDITIONAL([USE_AWS_SDK], [true])],
     [AC_MSG_NOTICE([AWS C++ SDK not Found.])
      AM_CONDITIONAL([USE_AWS_SDK], [false])])
+
+AC_MSG_CHECKING([the OS type for the AWS SDK linkage])
+AS_CASE([$host],
+    [*darwin*], [AM_CONDITIONAL([DARWIN], [true])
+                 AC_MSG_NOTICE([OSX found.])],
+    [AM_CONDITIONAL([DARWIN], [false])
+     AC_MSG_NOTICE([OSX not found.])])
 
 dnl Freeform hacks
 
@@ -980,6 +994,7 @@ OPTIONAL_FEATURES=
 
 AM_COND_IF([OPENJPEG_FOUND], [OPTIONAL_FEATURES="openjpeg"])
 AM_COND_IF([BUILD_GDAL], [OPTIONAL_FEATURES="gdal $OPTIONAL_FEATURES"])
+AM_COND_IF([USE_AWS_SDK], [OPTIONAL_FEATURES="AWS C++ SDK $OPTIONAL_FEATURES"])
 dnl NETCDF4_TESTS are not considered an 'optional feature' since netcdf is netCDF4
 AM_COND_IF([BUILD_NETCDF], [OPTIONAL_FEATURES="netcdf $OPTIONAL_FEATURES"])
 AM_COND_IF([BUILD_FITS], [OPTIONAL_FEATURES="fits $OPTIONAL_FEATURES"])

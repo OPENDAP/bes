@@ -30,7 +30,7 @@ Some of the programs are here but are not used:
 
 attrT is redundant (fnoc1 and other tests have attributes) and has
 broken output for an unknown reason - something in the BESDapResponseBuilder
-code that write teh DAS.
+code that writes the DAS.
 
 seqT seems pointless since this handler just ignores sequences
 

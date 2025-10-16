@@ -4,15 +4,45 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/aws -I$(top_srcdir)/dispatch
 
-AWS_SDK_C_LIBS = -laws-c-common -laws-c-cal -laws-c-compression -laws-c-event-stream \
-                 -laws-c-http -laws-c-io -laws-c-mqtt -laws-c-s3 -laws-c-auth -laws-c-sdkutils
-AWS_SDK_CPP_LIBS = -laws-crt-cpp -laws-cpp-sdk-s3 -laws-cpp-sdk-core -laws-checksums
+aws_libdir = $(AWS_PREFIX)/lib
+
+AWS_LIBS = -laws-crt-cpp -laws-cpp-sdk-s3 -laws-cpp-sdk-core \
+          -laws-c-http -laws-c-io -laws-c-auth -laws-c-cal -laws-c-compression \
+          -laws-c-event-stream -laws-c-mqtt -laws-c-s3 -laws-c-sdkutils -laws-c-common \
+          -lxml2 -lz -lbz2 -lcurl
+
+# Help the link step find libs at build time too (not just run time)
+AM_LDFLAGS = -L$(aws_libdir)
 
 # This should be 'AM_LDADD' but for some reason the check_PROGRAMS variable doesn't work
 # like bin_PROGRAMS.
-LDADD = $(top_srcdir)/aws/.libs/libbes_aws.a -lbes_dispatch $(AWS_SDK_C_LIBS) $(AWS_SDK_CPP_LIBS)
+LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/aws/libbes_aws.la $(AWS_LIBS)
 
-AM_LDFLAGS = -L$(prefix)/deps/lib -L$(top_builddir)/dispatch
+
+if DARWIN
+AWS_SDK_Test_LDFLAGS = \
+  $(AM_LDFLAGS) \
+  -Wl,-rpath,$(aws_libdir) \
+  -Wl,-rpath,@loader_path \
+  -Wl,-rpath,@loader_path/../lib
+else
+AWS_SDK_Test_LDFLAGS = \
+  $(AM_LDFLAGS) \
+  -Wl,-rpath,'$(aws_libdir)' \
+  -Wl,-rpath,'$$ORIGIN' \
+  -Wl,-rpath,'$$ORIGIN/../lib'
+endif
+
+
+# This will help make 'make check' predictable with varying build environments.
+# jhrg 10/15/25
+if DARWIN
+TESTS_ENVIRONMENT = DYLD_LIBRARY_PATH=$(aws_libdir):$$DYLD_LIBRARY_PATH
+else
+TESTS_ENVIRONMENT = LD_LIBRARY_PATH=$(aws_libdir):$$LD_LIBRARY_PATH
+endif
+
+#-L/Users/jimg/src/opendap/hyrax/build/deps/lib -L$(top_builddir)/dispatch
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS) -Wno-deprecated-declarations
@@ -87,5 +117,3 @@ clean-local:
 
 AWS_SDK_Test_SOURCES = AWS_SDK_Test.cc
 AWS_SDK_Test_LDADD = $(LDADD)
-
-# Didn't work. jhrg 3/21/25 AWS_SDK_Test_LDFLAGS = -no-install
