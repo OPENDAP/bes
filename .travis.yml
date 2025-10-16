@@ -13,7 +13,7 @@
 # virt: lxd             # use an lxd container
 # arch: amd64           # optional, this is default, routes to a full VM
 # os: linux             # optional, this is default
-dist: jammy             # or bionic | xenial | trusty | precise | focal with xenial as default
+dist: focal             # or bionic | xenial | trusty | precise | focal with xenial as default
 
 # Added vm size upgrade. This costs extra $s
 vm:
@@ -39,14 +39,15 @@ addons:
   sonarcloud: true
   apt:
     packages:
-    - uuid-dev
-    - libxml2-dev
-    - libcurl4-openssl-dev
-    - libcppunit-dev
-    - libicu-dev
-    - gcovr
-    - grep
-    - libfl-dev   # needed for focal, but not xenial. jhrg 1/18/24
+      - openjdk-17-jdk
+      - uuid-dev
+      - libxml2-dev
+      - libcurl4-openssl-dev
+      - libcppunit-dev
+      - libicu-dev
+      - gcovr
+      - grep
+      - libfl-dev   # needed for focal, but not xenial. jhrg 1/18/24
 
 git:
   depth: false

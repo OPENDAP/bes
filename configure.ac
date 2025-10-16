@@ -28,12 +28,12 @@ AS_IF([test -n "$with_build"],
       AC_MSG_NOTICE([PACKAGE_VERSION: $PACKAGE_VERSION])],
      [AC_MSG_ERROR([Invalid build number given (must be an integer): $build_number])])])
 
-AS_IF([echo $PACKAGE_VERSION | grep '^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)-\([[0-9]]*\)$'],
+AS_IF([echo $PACKAGE_VERSION | grep '^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)-\([[0-9]]*\)$' > /dev/null 2>&1 ],
       [PACKAGE_MAJOR_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)-\([[0-9]]*\)$@\1@'`
        PACKAGE_MINOR_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)-\([[0-9]]*\)$@\2@'`
        PACKAGE_PATCH_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)-\([[0-9]]*\)$@\3@'`
        PACKAGE_BUILD_NUMBER=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)-\([[0-9]]*\)$@\4@'`],
-      [AS_IF([echo $PACKAGE_VERSION | grep '^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$'],
+      [AS_IF([echo $PACKAGE_VERSION | grep '^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$' > /dev/null 2>&1 ],
        [PACKAGE_MAJOR_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\1@'`
         PACKAGE_MINOR_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\2@'`
         PACKAGE_PATCH_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\3@'`
