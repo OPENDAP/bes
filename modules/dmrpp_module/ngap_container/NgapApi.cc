@@ -306,7 +306,7 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
     return cmr_url;
 }
 
-string get_data_access_url(rapidjson::Value &obj) {
+string get_data_http_url(rapidjson::Value &obj) {
     auto mitr = obj.FindMember("URL");
     if (mitr == obj.MemberEnd()) {
         throw BESInternalError("The umm/RelatedUrls element does not contain the URL object", __FILE__, __LINE__);
@@ -338,24 +338,93 @@ string get_data_access_url(rapidjson::Value &obj) {
     return {""};
 }
 
+
+string get_data_s3_url(rapidjson::Value &obj) {
+    auto mitr = obj.FindMember("URL");
+    if (mitr == obj.MemberEnd()) {
+        throw BESInternalError("The umm/RelatedUrls element does not contain the URL object", __FILE__, __LINE__);
+    }
+
+    const rapidjson::Value &r_url = mitr->value;
+
+    mitr = obj.FindMember("Type");
+    if (mitr == obj.MemberEnd()) {
+        throw BESInternalError("The umm/RelatedUrls element does not contain the Type object", __FILE__, __LINE__);
+    }
+
+    const rapidjson::Value &r_type = mitr->value;
+
+    bool noSubtype = obj.FindMember("Subtype") == obj.MemberEnd();
+
+    if ((r_type.GetString() == string(CMR_URL_TYPE_GET_DATA)) && noSubtype) {
+        string candidate_url = r_url.GetString();
+
+        // The URL has to start with s3:// and cannot end in .xml or .dmrpp
+        if (candidate_url.find("s3://") == 0
+            && candidate_url.rfind(".xml") == string::npos
+            && candidate_url.rfind(".dmrpp") == string::npos) {
+            return candidate_url;
+        }
+    }
+
+    return {""};
+}
+
+string get_s3credentials_url(rapidjson::Value &obj) {
+
+    auto mitr = obj.FindMember("URL");
+    if (mitr == obj.MemberEnd()) {
+        throw BESInternalError("The umm/RelatedUrls element does not contain the URL object", __FILE__, __LINE__);
+    }
+
+    const rapidjson::Value &r_url = mitr->value;
+
+    mitr = obj.FindMember("Type");
+    if (mitr == obj.MemberEnd()) {
+        throw BESInternalError("The umm/RelatedUrls element does not contain the Type object", __FILE__, __LINE__);
+    }
+
+    const rapidjson::Value &r_type = mitr->value;
+
+    if (r_type.GetString() == string(CMR_URL_TYPE_GET_S3CREDENTIALS)) {
+        string candidate_url = r_url.GetString();
+        string suffix = "s3credentials";
+        auto expected_suffix_offset = candidate_url.size() - suffix.size();
+
+        // The URL has to start with HTTP/S and must end in s3credentials
+        if ((candidate_url.find("https://") == 0 || candidate_url.find("http://") == 0)
+            && candidate_url.rfind(suffix) == expected_suffix_offset) {
+            return candidate_url;
+        }
+    }
+
+    return {""};
+}
+
 /**
- * @brief  Locates the "GET DATA" URL for a granule in the granules.umm_json_v1_4 document.
+ * @brief  Locates the "GET DATA" URL, "GET DATA" s3 URL, and "USE SERVICE API" s3 credentials endpoint
+ * URL for a granule in the granules.umm_json_v1_4 document.
  *
  * A single granule query is built by convert_restified_path_to_cmr_query_url() from the
  * NGAP API restified path. This method will parse the CMR response to the query and extract the
- * granule's "GET DATA" URL and return it.
+ * granule's data and s3 credentials urls and return them.
  *
- * @note This method uses a heuristic to get an HTTPS URL to the granule from the CMR UMM-G
- * JSON. The process it follows is, look in the RelatedUrls array for an entry with a
- *  1. A TYPE of Type 'GET DATA' with a URL that uses the https:// protocol where that URL does
- *  not end in 'xml'. The latter characteristic was added for records added by LPDAAC. jhrg 5/22/24
+ * @note This method uses heuristics to get each url for the granule from the CMR UMM-G JSON.
+ *  For each url, the process it follows is look in the RelatedUrls array for an entry with the following contstraints:
+ *  - For the `GET DATA` URL, a TYPE of Type 'GET DATA' with a URL that uses the https:// protocol 
+ *    where that URL does not end in 'xml'. 
+ *    The latter characteristic was added for records added by LPDAAC. jhrg 5/22/24
+ *  - For the `GET DATA` S3 URL, a TYPE of Type 'GET DATA' with a URL that uses the s3:// protocol 
+ *    where that URL does not end in 'xml'. 
+ *  - For the `GET DATA` S3 URL, a TYPE of Type 'VIEW RELATED INFORMATION' with a URL that uses the https:// protocol 
+ *    where that URL ends in 's3credentials'. 
  *
  * @param rest_path The REST path used to form the CMR query (only used for error messages)
  * @param cmr_granule_response The CMR response (granules.umm_json_v1_4) to evaluate
- * @return  The "GET DATA" URL for the granule.
+ * @return  A tuple of data urls for the granule: the "GET DATA" URL, "GET DATA" s3 URL, and "USE SERVICE API" s3 CREDENTIALS URL.
  */
-string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const string &rest_path,
-                                                            rapidjson::Document &cmr_granule_response) {
+NgapApi::DataAccessUrls NgapApi::get_urls_from_granules_umm_json_v1_4(const std::string &rest_path,
+                                                                                 rapidjson::Document &cmr_granule_response) {
     const rapidjson::Value &val = cmr_granule_response["hits"];
     int hits = val.GetInt();
     if (hits < 1) {
@@ -385,16 +454,33 @@ string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const string &rest_p
                                __LINE__);
     }
 
-    // The first element of 'items' is now vetted so that we know it's an array of 'RelatedUrls'. jhrg 6/2/25
+    // The first element of 'items' is now vetted so that we know it's an array of 'RelatedUrls'.
+    string data_http_url;
+    string data_s3_url;
+    string s3credentials_url;
     for (rapidjson::SizeType i = 0; i < related_urls.Size(); i++) {
-        string data_access_url = get_data_access_url(related_urls[i]);
-        if (!data_access_url.empty()) {
-            return data_access_url;
+        if (data_http_url.empty()) {
+            data_http_url = get_data_http_url(related_urls[i]);
+        }
+        if (data_s3_url.empty()) {
+            data_s3_url = get_data_s3_url(related_urls[i]);
+        }
+        if (s3credentials_url.empty()) {
+            s3credentials_url = get_s3credentials_url(related_urls[i]);
+        }
+        if (!data_http_url.empty() && !data_s3_url.empty() && !s3credentials_url.empty()) {
+            break;
         }
     }
 
+    // If we have enough information to get data later, our work here is done
+    // For now, all we care about is a non-empty data_http_url. In the future this will likely change.
+    if (!data_http_url.empty()) {
+        return std::make_tuple(data_http_url, data_s3_url, s3credentials_url);
+    }
+
     // If no valid related-URL is found, it's an error.
-    throw BESInternalError(string("Failed to locate a data access URL for the path: ") + rest_path,
+    throw BESInternalError(string("Failed to locate a data URL for the path: ") + rest_path,
                            __FILE__, __LINE__);
 }
 
@@ -422,7 +508,6 @@ string NgapApi::find_get_data_url_in_granules_umm_json_v1_4(const string &rest_p
  */
 string NgapApi::convert_ngap_resty_path_to_data_access_url(const string &restified_path) {
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
-    string data_access_url;
 
     string cmr_query_url = build_cmr_query_url(restified_path);
 
@@ -442,7 +527,15 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(const string &restifi
 
     rapidjson::Document cmr_response;
     cmr_response.Parse(cmr_json_string.c_str());
-    data_access_url = find_get_data_url_in_granules_umm_json_v1_4(restified_path, cmr_response);
+
+    string data_access_url, data_s3_url, s3credentials_url;
+    tie(data_access_url, data_s3_url, s3credentials_url) = get_urls_from_granules_umm_json_v1_4(restified_path, cmr_response);
+
+    if (data_s3_url.empty() || s3credentials_url.empty()) {
+        // Eventually we'll be removing the non-s3 access; we need to know about any unsupported cases before that happens.
+        // Add a log warning that can be searched.
+        BES_PROFILE_TIMING(string("PRE-DEPRECATION WARNING - Data s3 url or s3credentials not found - ") + cmr_query_url);
+    }
 
     // Check for existing .dmrpp and remove it if found at the end of the url. - kln 6/6/25
     string suffix = ".dmrpp";
@@ -450,8 +543,13 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(const string &restifi
     data_access_url.compare(data_access_url.size() - suffix.size(), suffix.size(), suffix) == 0) {
         data_access_url.erase(data_access_url.size() - suffix.size());
     }
+    // ...ditto for the s3 url
+    if (data_s3_url.size() >= suffix.size() &&
+    data_s3_url.compare(data_s3_url.size() - suffix.size(), suffix.size(), suffix) == 0) {
+        data_s3_url.erase(data_access_url.size() - suffix.size());
+    }
 
-    BESDEBUG(MODULE, prolog << "END (data_access_url: " << data_access_url << ")" << endl);
+    BESDEBUG(MODULE, prolog << "END (data_access_url: " << data_access_url << ", data_s3_url: " << data_s3_url << ", s3credentials_url: " << s3credentials_url << ")" << endl);
 
     return data_access_url;
 }
