@@ -4,45 +4,30 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/aws -I$(top_srcdir)/dispatch
 
-aws_libdir = $(AWS_PREFIX)/lib
-
-AWS_LIBS = -laws-crt-cpp -laws-cpp-sdk-s3 -laws-cpp-sdk-core \
-          -laws-c-http -laws-c-io -laws-c-auth -laws-c-cal -laws-c-compression \
-          -laws-c-event-stream -laws-c-mqtt -laws-c-s3 -laws-c-sdkutils -laws-c-common \
-          -lxml2 -lz -lbz2 -lcurl
-
 # Help the link step find libs at build time too (not just run time)
 AM_LDFLAGS = -L$(aws_libdir)
 
 # This should be 'AM_LDADD' but for some reason the check_PROGRAMS variable doesn't work
 # like bin_PROGRAMS.
-LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/aws/libbes_aws.la $(AWS_LIBS)
+# NB: aws_libs is set in configure.ac. jhrg 10/16/25
 
+LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/aws/libbes_aws.la $(aws_libs)
+
+# aws_libdir is set in configure.ac. jhrg 10/16/25
 
 if DARWIN
-AWS_SDK_Test_LDFLAGS = \
-  $(AM_LDFLAGS) \
-  -Wl,-rpath,$(aws_libdir) \
-  -Wl,-rpath,@loader_path \
-  -Wl,-rpath,@loader_path/../lib
+AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,@loader_path
 else
-AWS_SDK_Test_LDFLAGS = \
-  $(AM_LDFLAGS) \
-  -Wl,-rpath,'$(aws_libdir)' \
-  -Wl,-rpath,'$$ORIGIN' \
-  -Wl,-rpath,'$$ORIGIN/../lib'
+AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,'$$ORIGIN'
 endif
-
 
 # This will help make 'make check' predictable with varying build environments.
 # jhrg 10/15/25
-if DARWIN
-TESTS_ENVIRONMENT = DYLD_LIBRARY_PATH=$(aws_libdir):$$DYLD_LIBRARY_PATH
-else
-TESTS_ENVIRONMENT = LD_LIBRARY_PATH=$(aws_libdir):$$LD_LIBRARY_PATH
-endif
-
-#-L/Users/jimg/src/opendap/hyrax/build/deps/lib -L$(top_builddir)/dispatch
+#if DARWIN
+#TESTS_ENVIRONMENT = DYLD_LIBRARY_PATH=$(aws_libdir):$$DYLD_LIBRARY_PATH
+#else
+#TESTS_ENVIRONMENT = LD_LIBRARY_PATH=$(aws_libdir):$$LD_LIBRARY_PATH
+#endif
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS) -Wno-deprecated-declarations
