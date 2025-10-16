@@ -10,14 +10,11 @@
 #
 # Try using Ubuntu Focal
 
-# virt: lxd             # use an lxd container
-# arch: amd64           # optional, this is default, routes to a full VM
-# os: linux             # optional, this is default
-dist: noble             # or bionic | xenial | trusty | precise | focal with xenial as default
+dist: focal       # focal is the default, jammy and noble are supported now. jhrg 10/16/25
 
 # Added vm size upgrade. This costs extra $s
 vm:
-  size: x-large
+  size: 2x-large
 
 language: cpp
 compiler: gcc
