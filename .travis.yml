@@ -13,7 +13,7 @@
 # virt: lxd             # use an lxd container
 # arch: amd64           # optional, this is default, routes to a full VM
 # os: linux             # optional, this is default
-dist: focal             # or bionic | xenial | trusty | precise | focal with xenial as default
+dist: noble             # or bionic | xenial | trusty | precise | focal with xenial as default
 
 # Added vm size upgrade. This costs extra $s
 vm:
@@ -21,6 +21,7 @@ vm:
 
 language: cpp
 compiler: gcc
+jdk: openjdk17
 
 branches:
   only:
@@ -39,7 +40,6 @@ addons:
   sonarcloud: true
   apt:
     packages:
-      - openjdk-17-jdk
       - uuid-dev
       - libxml2-dev
       - libcurl4-openssl-dev
