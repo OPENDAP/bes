@@ -13,7 +13,7 @@
 # virt: lxd             # use an lxd container
 # arch: amd64           # optional, this is default, routes to a full VM
 # os: linux             # optional, this is default
-dist: focal             # or bionic | xenial | trusty | precise | focal with xenial as default
+dist: jammy             # or bionic | xenial | trusty | precise | focal with xenial as default
 
 # Added vm size upgrade. This costs extra $s
 vm:
@@ -83,16 +83,17 @@ env:
     - CMAC_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
     - CMAC_URL="https://s3.amazonaws.com/cloudydap/"
     - CMAC_REGION="us-east-1"
-    - CMAC_BUCKET="cloudydap"
+    - CMAC_ON="yes"
 
 before_install:
   - gem install bundler
   - pip install --user awscli
   # fix for Java 17 install for Sonar from Travis CI support. jhrg 1/23/24
-  - curl -s "https://get.sdkman.io" | bash
-  - source "$HOME/.sdkman/bin/sdkman-init.sh"
-  - sdk install java 17.0.2-open
-  - sdk use java 17.0.2-open
+  # Not needed for Ubuntu jammy. jhrg 10/16/25
+  # curl #s "https://get.sdkman.io" | bash
+  # source "$HOME/.sdkman/bin/sdkman#init.sh"
+  # sdk install java 17.0.2#open
+  # sdk use java 17.0.2#open
   - java -version
 
 # hyrax-dependencies-build.tar.gz includes/makes the build directory
