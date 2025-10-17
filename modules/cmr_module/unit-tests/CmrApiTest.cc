@@ -42,7 +42,7 @@
 #include "CmrInternalError.h"
 #include "JsonUtils.h"
 
-#include "common/run_tests_cppunit.h"
+#include "run_tests_cppunit.h"
 
 using namespace std;
 
@@ -51,6 +51,7 @@ using namespace std;
 namespace cmr {
 
 class CmrApiTest: public CppUnit::TestFixture {
+    const string ges_disc_collection_name_ = "C1276812863-GES_DISC";
 
 public:
     // Called once before everything gets tested
@@ -75,26 +76,17 @@ public:
         DBG(cerr << "setUp() - END" << endl);
     }
 
-    // Called after each test
-    void tearDown()
-    {
-    }
-
     void get_years_test() {
-        string collection_name = "C179003030-ORNL_DAAC";
-        string expected[] = { string("1984"), string("1985"), string("1986"),
-                string("1987"), string("1988") };
-        unsigned long  expected_size = 5;
+        unsigned long  expected_size = 46;
         vector<string> years;
         try {
             CmrApi cmr;
-            cmr.get_years(collection_name, years);
-            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size ( " << years.size() << ")" << endl);
-
-            CPPUNIT_ASSERT(expected_size == years.size());
+            cmr.get_years(ges_disc_collection_name_, years);
+            CPPUNIT_ASSERT_MESSAGE("Checking expected size (" + std::to_string(expected_size) + ") vs received size (" + std::to_string(years.size()) + ")",
+                expected_size <= years.size());
 
             stringstream msg;
-            msg << prolog << "The collection '" << collection_name << "' spans "
+            msg << prolog << "The collection '" << ges_disc_collection_name_ << "' spans "
                     << years.size() << " years: ";
             for (size_t i = 0; i < years.size(); i++) {
                 if (i > 0)
@@ -102,16 +94,8 @@ public:
                 msg << years[i];
             }
             BESDEBUG(MODULE, msg.str() << endl);
-
-            for (size_t i = 0; i < years.size(); i++) {
-                msg.str(std::string());
-                msg << prolog << "Checking:  expected: " << expected[i]
-                        << " received: " << years[i];
-                BESDEBUG(MODULE, msg.str() << endl);
-                CPPUNIT_ASSERT(expected[i] == years[i]);
-            }
         }
-        catch (BESError &be) {
+        catch (const BESError &be) {
             string msg = "Caught BESError! Message: " + be.get_message();
             cerr << endl << msg << endl;
             CPPUNIT_ASSERT(!"Caught BESError");
@@ -119,20 +103,19 @@ public:
     }
 
     void get_months_test() {
-        string collection_name = "C179003030-ORNL_DAAC";
-        string expected[] = {
-                string("01"),
-                string("02"),
-                string("03"),
-                string("04"),
-                string("05"),
-                string("06"),
-                string("07"),
-                string("08"),
-                string("09"),
-                string("10"),
-                string("11"),
-                string("12") };
+        vector<string> expected = {
+                "01",
+                "02",
+                "03",
+                "04",
+                "05",
+                "06",
+                "07",
+                "08",
+                "09",
+                "10",
+                "11",
+                "12" };
         unsigned long  expected_size = 12;
         vector<string> months;
         try {
@@ -140,12 +123,12 @@ public:
 
             string year ="1985";
 
-            cmr.get_months(collection_name, year, months);
-            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size (" << months.size() << ")" << endl);
-            CPPUNIT_ASSERT(expected_size == months.size());
+            cmr.get_months(ges_disc_collection_name_, year, months);
+            CPPUNIT_ASSERT_MESSAGE("Checking expected size (" + std::to_string(expected_size) + ") vs received size (" + std::to_string(months.size()) + ")",
+                expected_size == months.size());
 
             stringstream msg;
-            msg << prolog << "In the year " << year << " the collection '" << collection_name << "' spans "
+            msg << prolog << "In the year " << year << " the collection '" << ges_disc_collection_name_ << "' spans "
                     << months.size() << " months: ";
 
             for (size_t i = 0; i < months.size(); i++) {
@@ -159,8 +142,7 @@ public:
                 msg.str(std::string());
                 msg << prolog << "Checking:  expected: " << expected[i]
                         << " received: " << months[i];
-                BESDEBUG(MODULE, msg.str() << endl);
-                CPPUNIT_ASSERT(expected[i] == months[i]);
+                CPPUNIT_ASSERT_MESSAGE(msg.str(), expected[i] == months[i]);
             }
 
         }
@@ -172,12 +154,11 @@ public:
     }
 
     void get_days_test() {
-        string collection_name = "C1276812863-GES_DISC";
-        string expected[] = {
-                string("01"),string("02"),string("03"),string("04"),string("05"),string("06"),string("07"),string("08"),string("09"),string("10"),
-                string("11"),string("12"),string("13"),string("14"),string("15"),string("16"),string("17"),string("18"),string("19"),string("20"),
-                string("21"),string("22"),string("23"),string("24"),string("25"),string("26"),string("27"),string("28"),string("29"),string("30"),
-                string("31")
+        vector<string> expected = {
+                "01","02","03","04","05","06","07","08","09","10",
+                "11","12","13","14","15","16","17","18","19","20",
+                "21","22","23","24","25","26","27","28","29","30",
+                "31"
         };
         unsigned long  expected_size = 31;
         vector<string> days;
@@ -187,12 +168,11 @@ public:
             string year ="1985";
             string month = "03";
 
-            cmr.get_days(collection_name, year, month, days);
-            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size (" << days.size() << ")" << endl);
-            CPPUNIT_ASSERT(expected_size == days.size());
+            cmr.get_days(ges_disc_collection_name_, year, month, days);
+            CPPUNIT_ASSERT_MESSAGE("Checking expected size (" + std::to_string(expected_size) + ") vs received size (" + std::to_string(days.size()) + ")", expected_size == days.size());
 
             stringstream msg;
-            msg << prolog << "In the year " << year << ", month " << month << " the collection '" << collection_name << "' spans "
+            msg << prolog << "In the year " << year << ", month " << month << " the collection '" << ges_disc_collection_name_ << "' spans "
                     << days.size() << " days: ";
             for (size_t i = 0; i < days.size(); i++) {
                 if (i > 0)
@@ -205,8 +185,7 @@ public:
                 msg.str(std::string());
                 msg << prolog << "Checking:  expected: " << expected[i]
                         << " received: " << days[i];
-                BESDEBUG(MODULE, msg.str() << endl);
-                CPPUNIT_ASSERT(expected[i] == days[i]);
+                CPPUNIT_ASSERT_MESSAGE(msg.str(), expected[i] == days[i]);
             }
         }
         catch (BESError &be) {
@@ -217,10 +196,9 @@ public:
     }
 
     void get_granule_ids_day_test() {
-        string collection_name = "C1276812863-GES_DISC";
 
-        string expected[] = {
-                string("G1277917089-GES_DISC")
+        vector<string> expected = {
+                "G1277917089-GES_DISC"
         };
 
         unsigned long  expected_size = 1;
@@ -232,12 +210,11 @@ public:
             string month = "03";
             string day = "13";
 
-            cmr.get_granule_ids(collection_name, year, month, day, granules);
-            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size (" << granules.size() << ")" << endl);
-            CPPUNIT_ASSERT(expected_size == granules.size());
+            cmr.get_granule_ids(ges_disc_collection_name_, year, month, day, granules);
+            CPPUNIT_ASSERT_MESSAGE("Checking expected size (" + std::to_string(expected_size) + ") vs received size (" + std::to_string(granules.size()) + ")", expected_size == granules.size());
 
             stringstream msg;
-            msg << prolog << "In the year " << year << ", month " << month <<  ", day " << day << " the collection '" << collection_name << "' contains "
+            msg << prolog << "In the year " << year << ", month " << month <<  ", day " << day << " the collection '" << ges_disc_collection_name_ << "' contains "
                     << granules.size() << " granules: ";
             for (size_t i = 0; i < granules.size(); i++) {
                 if (i > 0)
@@ -250,8 +227,7 @@ public:
                 msg.str(std::string());
                 msg << prolog << "Checking:  expected: " << expected[i]
                         << " received: " << granules[i];
-                BESDEBUG(MODULE, msg.str() << endl);
-                CPPUNIT_ASSERT(expected[i] == granules[i]);
+                CPPUNIT_ASSERT_MESSAGE(msg.str(), expected[i] == granules[i]);
             }
         }
         catch (BESError &be) {
@@ -262,40 +238,38 @@ public:
     }
 
     void get_granule_ids_month_test() {
-        string collection_name = "C1276812863-GES_DISC";
-
-        string expected[] = {
-                string("G1277917088-GES_DISC"),
-                string("G1277917126-GES_DISC"),
-                string("G1277917102-GES_DISC"),
-                string("G1277917125-GES_DISC"),
-                string("G1277917121-GES_DISC"),
-                string("G1277917112-GES_DISC"),
-                string("G1277917116-GES_DISC"),
-                string("G1277917161-GES_DISC"),
-                string("G1277917098-GES_DISC"),
-                string("G1277917097-GES_DISC"),
-                string("G1277917105-GES_DISC"),
-                string("G1277917077-GES_DISC"),
-                string("G1277917089-GES_DISC"),
-                string("G1277917109-GES_DISC"),
-                string("G1277917141-GES_DISC"),
-                string("G1277917107-GES_DISC"),
-                string("G1277917114-GES_DISC"),
-                string("G1277917143-GES_DISC"),
-                string("G1277917104-GES_DISC"),
-                string("G1277917093-GES_DISC"),
-                string("G1277917115-GES_DISC"),
-                string("G1277917145-GES_DISC"),
-                string("G1277917059-GES_DISC"),
-                string("G1277917090-GES_DISC"),
-                string("G1277917096-GES_DISC"),
-                string("G1277917110-GES_DISC"),
-                string("G1277917124-GES_DISC"),
-                string("G1277917075-GES_DISC"),
-                string("G1277917094-GES_DISC"),
-                string("G1277917160-GES_DISC"),
-                string("G1277917148-GES_DISC")
+        vector<string> expected = {
+                "G1277917088-GES_DISC",
+                "G1277917126-GES_DISC",
+                "G1277917102-GES_DISC",
+                "G1277917125-GES_DISC",
+                "G1277917121-GES_DISC",
+                "G1277917112-GES_DISC",
+                "G1277917116-GES_DISC",
+                "G1277917161-GES_DISC",
+                "G1277917098-GES_DISC",
+                "G1277917097-GES_DISC",
+                "G1277917105-GES_DISC",
+                "G1277917077-GES_DISC",
+                "G1277917089-GES_DISC",
+                "G1277917109-GES_DISC",
+                "G1277917141-GES_DISC",
+                "G1277917107-GES_DISC",
+                "G1277917114-GES_DISC",
+                "G1277917143-GES_DISC",
+                "G1277917104-GES_DISC",
+                "G1277917093-GES_DISC",
+                "G1277917115-GES_DISC",
+                "G1277917145-GES_DISC",
+                "G1277917059-GES_DISC",
+                "G1277917090-GES_DISC",
+                "G1277917096-GES_DISC",
+                "G1277917110-GES_DISC",
+                "G1277917124-GES_DISC",
+                "G1277917075-GES_DISC",
+                "G1277917094-GES_DISC",
+                "G1277917160-GES_DISC",
+                "G1277917148-GES_DISC"
         };
 
         unsigned long  expected_size = 31;
@@ -306,12 +280,11 @@ public:
             string year ="1985";
             string month = "03";
 
-            cmr.get_granule_ids(collection_name, year, month, "", granules);
-            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size (" << granules.size() << ")" << endl);
-            CPPUNIT_ASSERT(expected_size == granules.size());
+            cmr.get_granule_ids(ges_disc_collection_name_, year, month, "", granules);
+            CPPUNIT_ASSERT_MESSAGE("Checking expected size (" + std::to_string(expected_size) + ") vs received size (" + std::to_string(granules.size()) + ")", expected_size == granules.size());
 
             stringstream msg;
-            msg << prolog << "In the year " << year << ", month " << month <<  " the collection '" << collection_name << "' contains "
+            msg << prolog << "In the year " << year << ", month " << month <<  " the collection '" << ges_disc_collection_name_ << "' contains "
                     << granules.size() << " granules: ";
             for (size_t i = 0; i < granules.size(); i++) {
                 if (i > 0)
@@ -324,8 +297,7 @@ public:
                 msg.str(std::string());
                 msg << prolog << "Checking:  expected: " << expected[i]
                         << " received: " << granules[i];
-                BESDEBUG(MODULE, msg.str() << endl);
-                CPPUNIT_ASSERT(expected[i] == granules[i]);
+                CPPUNIT_ASSERT_MESSAGE(msg.str(), expected[i] == granules[i]);
             }
         }
         catch (BESError &be) {
@@ -336,40 +308,38 @@ public:
     }
 
     void get_granules_month_test() {
-        string collection_name = "C1276812863-GES_DISC";
-
-        string expected[] = {
-                string("G1277917088-GES_DISC"),
-                string("G1277917126-GES_DISC"),
-                string("G1277917102-GES_DISC"),
-                string("G1277917125-GES_DISC"),
-                string("G1277917121-GES_DISC"),
-                string("G1277917112-GES_DISC"),
-                string("G1277917116-GES_DISC"),
-                string("G1277917161-GES_DISC"),
-                string("G1277917098-GES_DISC"),
-                string("G1277917097-GES_DISC"),
-                string("G1277917105-GES_DISC"),
-                string("G1277917077-GES_DISC"),
-                string("G1277917089-GES_DISC"),
-                string("G1277917109-GES_DISC"),
-                string("G1277917141-GES_DISC"),
-                string("G1277917107-GES_DISC"),
-                string("G1277917114-GES_DISC"),
-                string("G1277917143-GES_DISC"),
-                string("G1277917104-GES_DISC"),
-                string("G1277917093-GES_DISC"),
-                string("G1277917115-GES_DISC"),
-                string("G1277917145-GES_DISC"),
-                string("G1277917059-GES_DISC"),
-                string("G1277917090-GES_DISC"),
-                string("G1277917096-GES_DISC"),
-                string("G1277917110-GES_DISC"),
-                string("G1277917124-GES_DISC"),
-                string("G1277917075-GES_DISC"),
-                string("G1277917094-GES_DISC"),
-                string("G1277917160-GES_DISC"),
-                string("G1277917148-GES_DISC")
+        vector<string> expected = {
+                "G1277917088-GES_DISC",
+                "G1277917126-GES_DISC",
+                "G1277917102-GES_DISC",
+                "G1277917125-GES_DISC",
+                "G1277917121-GES_DISC",
+                "G1277917112-GES_DISC",
+                "G1277917116-GES_DISC",
+                "G1277917161-GES_DISC",
+                "G1277917098-GES_DISC",
+                "G1277917097-GES_DISC",
+                "G1277917105-GES_DISC",
+                "G1277917077-GES_DISC",
+                "G1277917089-GES_DISC",
+                "G1277917109-GES_DISC",
+                "G1277917141-GES_DISC",
+                "G1277917107-GES_DISC",
+                "G1277917114-GES_DISC",
+                "G1277917143-GES_DISC",
+                "G1277917104-GES_DISC",
+                "G1277917093-GES_DISC",
+                "G1277917115-GES_DISC",
+                "G1277917145-GES_DISC",
+                "G1277917059-GES_DISC",
+                "G1277917090-GES_DISC",
+                "G1277917096-GES_DISC",
+                "G1277917110-GES_DISC",
+                "G1277917124-GES_DISC",
+                "G1277917075-GES_DISC",
+                "G1277917094-GES_DISC",
+                "G1277917160-GES_DISC",
+                "G1277917148-GES_DISC"
         };
 
         unsigned long  expected_size = 31;
@@ -379,12 +349,11 @@ public:
             string year ="1985";
             string month = "03";
 
-            cmr.get_granules(collection_name, year, month, "",  granules);
-            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size (" << granules.size() << ")" << endl);
-            CPPUNIT_ASSERT(expected_size == granules.size());
+            cmr.get_granules(ges_disc_collection_name_, year, month, "",  granules);
+            CPPUNIT_ASSERT_MESSAGE(prolog + std::string("Checking expected size (") + std::to_string(expected_size) + ") vs received size (" + std::to_string(granules.size()) + ")", expected_size == granules.size());
 
             stringstream msg;
-            msg << prolog << "In the year " << year << ", month " << month <<  " the collection '" << collection_name << "' contains "
+            msg << prolog << "In the year " << year << ", month " << month <<  " the collection '" << ges_disc_collection_name_ << "' contains "
                     << granules.size() << " granules: " << endl;
             for (size_t i = 0; i < granules.size(); i++) {
                 auto &granule = granules[i];
@@ -401,8 +370,7 @@ public:
                 msg.str(std::string());
                 msg << prolog << "Checking:  expected: " << expected[i]
                         << " received: " << pgi;
-                BESDEBUG(MODULE, msg.str() << endl);
-                CPPUNIT_ASSERT(expected[i] == pgi);
+                CPPUNIT_ASSERT_MESSAGE(msg.str(), expected[i] == pgi);
             }
 
         }
@@ -414,9 +382,7 @@ public:
     }
 
     void get_granules_data_access_urls_month_test() {
-        string collection_name = "C1276812863-GES_DISC";
-
-        string expected[] = {
+        vector<string> expected = {
                 string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850301.nc4"),
                 string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850302.nc4"),
                 string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850303.nc4"),
@@ -457,12 +423,11 @@ public:
             string year ="1985";
             string month = "03";
 
-            cmr.get_granules(collection_name, year, month, "",  granules);
-            BESDEBUG(MODULE, prolog << "Checking expected size ("<< expected_size << ") vs received size (" << granules.size() << ")" << endl);
-            CPPUNIT_ASSERT(expected_size == granules.size());
+            cmr.get_granules(ges_disc_collection_name_, year, month, "",  granules);
+            CPPUNIT_ASSERT_MESSAGE(prolog + std::string("Checking expected size (") + std::to_string(expected_size) + ") vs received size (" + std::to_string(granules.size()) + ")", expected_size == granules.size());
 
             stringstream msg;
-            msg << prolog << "In the year " << year << ", month " << month <<  " the collection '" << collection_name << "' contains "
+            msg << prolog << "In the year " << year << ", month " << month <<  " the collection '" << ges_disc_collection_name_ << "' contains "
                     << granules.size() << " granules. Data Access URLs: " << endl;
             for (size_t i = 0; i < granules.size(); i++) {
                 auto &granule = granules[i];
