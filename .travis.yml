@@ -188,12 +188,14 @@ jobs:
 
     - stage: scan
       name: "scan bes"
+      language: java
+      jdk: openjdk17
       script:
       - export BES_BUILD=sonar-bes-framework
       - autoreconf --force --install --verbose
       - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer --enable-coverage
       - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
-      - jdk_switcher use openjdk17
+      #- jdk_switcher use openjdk17
       - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
       - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "QUALITY GATE PASS"
 
@@ -208,7 +210,7 @@ jobs:
         - sonar-scanner -Dproject.settings=sonar-bes-modules-1.properties -Dsonar.login=$SONAR_MODULES_LOGIN
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
 
-    - stage: never# scan
+    - stage: never # scan
       name: "scan bes-hdf-handlers"
       script:
         - export BES_BUILD=sonar-bes-hdf-handlers
