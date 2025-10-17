@@ -20,7 +20,8 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
-#include "test_config.h"
+
+#include "../../../modules/cmr_module/unit-tests/test_config.h"
 
 #include <memory>
 #include <cstdio>

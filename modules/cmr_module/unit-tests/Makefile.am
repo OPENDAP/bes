@@ -81,9 +81,10 @@ $(abs_builddir)/static-cache:
 #
 
 if CPPUNIT
-UNIT_TESTS = GranuleTest
-# CmrCatalogTest GranuleTest # FIXME disabled 5/16/24 because target collection was deleted.
-# This fails often: CmrApiTest jhrg 6/29/23
+UNIT_TESTS = GranuleTest CmrApiTest
+# This fails often because CMR has had performance issues: CmrApiTest jhrg 6/29/23
+# I have updated the test, and it passes for now, but it's fragile and will need
+# attention in the future as CMR contents changes. jhrg 10/17/25
 else
 UNIT_TESTS =
 
@@ -103,11 +104,8 @@ OBJS = ../JsonUtils.o ../CmrApi.o \
        ../Provider.o ../Collection.o ../Granule.o ../GranuleUMM.o \
        ../CmrCatalog.o
 
-# CmrApiTest_SOURCES = CmrApiTest.cc
-# CmrApiTest_LDADD = $(OBJS) $(LIBADD)
-
-# CmrCatalogTest_SOURCES = CmrCatalogTest.cc
-# CmrCatalogTest_LDADD = $(OBJS) $(LIBADD)
+CmrApiTest_SOURCES = CmrApiTest.cc
+CmrApiTest_LDADD = $(OBJS) $(LIBADD)
 
 GranuleTest_SOURCES = GranuleTest.cc
 GranuleTest_LDADD = $(OBJS) $(LIBADD)
