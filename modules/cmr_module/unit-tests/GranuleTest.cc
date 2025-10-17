@@ -36,7 +36,6 @@
 #include <libdap/util.h>
 
 #include <BESError.h>
-#include <BESNotFoundError.h>
 #include <BESDebug.h>
 #include <BESUtil.h>
 #include <TheBESKeys.h>
@@ -46,94 +45,60 @@
 #include "CmrNames.h"
 #include "CmrApi.h"
 #include "CmrCatalog.h"
-#include "CmrInternalError.h"
+
+#include "run_tests_cppunit.h"
 
 using namespace std;
-
-static bool debug = false;
-static bool bes_debug = false;
-
-#undef DBG
-#define DBG(x) do { if (debug) x; } while(false)
 
 namespace cmr {
 
 class GranuleTest: public CppUnit::TestFixture {
-private:
-    const string ges_disc_collection_name_ = "C179003030-ORNL_DAAC";
-
-    // char curl_error_buf[CURL_ERROR_SIZE];
-
-    void show_file(string filename)
-    {
-        ifstream t(filename.c_str());
-
-        if (t.is_open()) {
-            string file_content((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
-            t.close();
-            cout << endl << "##################################################################" << endl;
-            cout << "file: " << filename << endl;
-            cout << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
-            cout << file_content << endl;
-            cout << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
-        }
-    }
+    const string ges_disc_collection_name_ = "C1276812863-GES_DISC";
 
 public:
     // Called once before everything gets tested
-    GranuleTest()
-    {
-    }
+    GranuleTest() = default;
 
     // Called at the end of the test
-    ~GranuleTest()
-    {
-    }
+    ~GranuleTest() override = default;
 
     // Called before each test
-    void setUp()
+    void setUp() override
     {
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR,"bes.conf");
         TheBESKeys::ConfigFile = bes_conf;
         BESCatalogList::TheCatalogList()->add_catalog(new cmr::CmrCatalog(CMR_CATALOG_NAME));
 
-        if (bes_debug) BESDebug::SetUp("cerr,cmr");
-
-        if (bes_debug) show_file(bes_conf);
+        if (debug2) show_file(bes_conf);
     }
 
     // Called after each test
-    void tearDown()
-    {
+    void tearDown() override {
     }
 
-
     void get_years_test() {
-        string prolog = string(__func__) + "() - ";
-        string expected[] = { string("1984"), string("1985"), string("1986"), string("1987"), string("1988") };
-        unsigned long  expected_size = 5;
-        stringstream msg;
+        // Just look at the first five nodes. jhrg 10/17/25
 
         try {
-            cmr::CmrCatalog catalog;
-            bes::CatalogNode *node = catalog.get_node("ORNL_DAAC/C179003030-ORNL_DAAC");
-            unsigned lcount = node->get_leaf_count();
-            BESDEBUG(MODULE, prolog << "Checking expected leaves (0) vs received (" << lcount << ")" << endl);
-            CPPUNIT_ASSERT( lcount==0 );
+            const cmr::CmrCatalog catalog;
+            bes::CatalogNode *node = catalog.get_node("/GES_DISC/" + ges_disc_collection_name_);
+            const unsigned lcount = node->get_leaf_count();
+            CPPUNIT_ASSERT_MESSAGE("Checking expected leaves (0) vs received (" + to_string(lcount) + ")",
+                lcount == 0);
 
-            unsigned ncount = node->get_node_count();
-            BESDEBUG(MODULE, prolog << "Checking expected nodes ("<< expected_size << ") vs received (" << ncount << ")" << endl);
-            CPPUNIT_ASSERT( ncount==expected_size );
+            const unsigned expected_size = 46;
+            const unsigned ncount = node->get_node_count();
+            CPPUNIT_ASSERT_MESSAGE("Checking expected nodes (" + to_string(expected_size) + ") vs received (" + to_string(ncount) + ")",
+                ncount >= expected_size);
 
-            bes::CatalogNode::item_iter itr;
-            size_t i=0;
-            for (itr=node->nodes_begin(); itr!=node->nodes_end(); itr++, i++){
+            // Here we know there are at least 46 values in node. jhrg 10/17/25
+            const vector<string> expected = { "1980", "1981", "1982", "1983","1984" };
+            bes::CatalogNode::item_iter itr = node->nodes_begin();
+            for (const auto & i : expected) {
                 string node_name = (*itr)->get_name();
-                msg.str(std::string());
-                msg << prolog << "Checking:  expected: " << expected[i]
-                        << " received: " << node_name;
-                BESDEBUG(MODULE, msg.str() << endl);
-                CPPUNIT_ASSERT(expected[i] == node_name);
+                CPPUNIT_ASSERT_MESSAGE("Checking:  expected: " + i + " received: " + node_name,
+                    i == node_name);
+                ++itr;
             }
         }
         catch (BESError &be) {
@@ -144,10 +109,6 @@ public:
     }
 
     void get_months_test() {
-        string prolog = string(__func__) + "() - ";
-        stringstream msg;
-
-        string collection_name = "C179003030-ORNL_DAAC";
         string expected[] = {
                 string("01"),
                 string("02"),
@@ -161,45 +122,36 @@ public:
                 string("10"),
                 string("11"),
                 string("12") };
-        unsigned long  expected_size = 12;
         vector<string> months;
         try {
+            const unsigned expected_size = 12;
             cmr::CmrCatalog catalog;
-            bes::CatalogNode *node = catalog.get_node("/ORNL_DAAC/" +collection_name +"/1985");
-            unsigned lcount = node->get_leaf_count();
-            BESDEBUG(MODULE, prolog << "Checking expected leaves (0) vs received (" << lcount << ")" << endl);
-            CPPUNIT_ASSERT( lcount==0 );
+            bes::CatalogNode *node = catalog.get_node("/GES_DISC/" + ges_disc_collection_name_ + "/1985");
+            const unsigned lcount = node->get_leaf_count();
+            CPPUNIT_ASSERT_MESSAGE("Checking expected leaves (0) vs received (" + to_string(lcount) + ")",
+                lcount == 0);
 
-            unsigned ncount = node->get_node_count();
-            BESDEBUG(MODULE, prolog << "Checking expected nodes ("<< expected_size << ") vs received (" << ncount << ")" << endl);
-            CPPUNIT_ASSERT( ncount==expected_size );
+            const unsigned ncount = node->get_node_count();
+            CPPUNIT_ASSERT_MESSAGE("Checking expected nodes (" + to_string(expected_size) + ") vs received (" + to_string(ncount) + ")",
+                ncount == expected_size);
 
             bes::CatalogNode::item_iter itr;
             size_t i=0;
             for (itr=node->nodes_begin(); itr!=node->nodes_end(); itr++, i++){
                 string node_name = (*itr)->get_name();
-                msg.str(std::string());
-                msg << prolog << "Checking:  expected: " << expected[i]
-                        << " received: " << node_name;
-                BESDEBUG(MODULE, msg.str() << endl);
-                CPPUNIT_ASSERT(expected[i] == node_name);
+                CPPUNIT_ASSERT_MESSAGE("Checking:  expected: " + expected[i] + " received: " + node_name,
+                    expected[i] == node_name);
             }
 
         }
-        catch (BESError &be) {
-            string msg = "Caught BESError! Message: " + be.get_message();
-            cerr << endl << msg << endl;
-            CPPUNIT_ASSERT(!"Caught BESError");
+        catch (const BESError &be) {
+            CPPUNIT_FAIL("Caught BESError! Message: " + be.get_message());
         }
 
     }
 
     void get_days_test() {
         string prolog = string(__func__) + "() - ";
-        stringstream msg;
-
-        //string collection_name = "C179003030-ORNL_DAAC";
-        //string collection_name = "C1276812863-GES_DISC";
         string node_path="GES_DISC/" + ges_disc_collection_name_ + "/1985/03";
         string expected[] = {
                 string("01"),string("02"),string("03"),string("04"),string("05"),string("06"),string("07"),string("08"),string("09"),string("10"),
@@ -208,35 +160,29 @@ public:
                 string("31")
         };
         unsigned long  expected_size = 31;
-        vector<string> days;
         try {
             cmr::CmrCatalog catalog;
             bes::CatalogNode *node = catalog.get_node(node_path);
-            unsigned lcount = node->get_leaf_count();
-            BESDEBUG(MODULE, prolog << "Checking expected leaves (0) vs received (" << lcount << ")" << endl);
-            CPPUNIT_ASSERT( lcount==0 );
+            const unsigned lcount = node->get_leaf_count();
+            CPPUNIT_ASSERT_MESSAGE("Checking expected leaves (0) vs received (" + to_string(lcount) + ")",
+                lcount == 0);
 
-            unsigned ncount = node->get_node_count();
-            BESDEBUG(MODULE, prolog << "Checking expected nodes ("<< expected_size << ") vs received (" << ncount << ")" << endl);
-            CPPUNIT_ASSERT( ncount==expected_size );
+            const unsigned ncount = node->get_node_count();
+            CPPUNIT_ASSERT_MESSAGE("Checking expected nodes (" + to_string(expected_size) + ") vs received (" + to_string(ncount) + ")",
+                ncount == expected_size);
 
             bes::CatalogNode::item_iter itr;
             size_t i=0;
             for (itr=node->nodes_begin(); itr!=node->nodes_end(); itr++, i++){
                 string node_name = (*itr)->get_name();
-                msg.str(std::string());
-                msg << prolog << "Checking:  expected: " << expected[i]
-                        << " received: " << node_name;
-                BESDEBUG(MODULE, msg.str() << endl);
-                CPPUNIT_ASSERT(expected[i] == node_name);
+                CPPUNIT_ASSERT_MESSAGE("Checking:  expected: " + expected[i] + " received: " + node_name,
+                    expected[i] == node_name);
             }
 
 
         }
-        catch (BESError &be) {
-            string msg = "Caught BESError! Message: " + be.get_message();
-            cerr << endl << msg << endl;
-            CPPUNIT_ASSERT(!"Caught BESError");
+        catch (const BESError &be) {
+            CPPUNIT_FAIL("Caught BESError! Message: " + be.get_message());
         }
 
     }
@@ -244,7 +190,6 @@ public:
 
     void get_granules_test() {
         string prolog = string(__func__) + "() - ";
-        stringstream msg;
 
         //string collection_name = "C179003030-ORNL_DAAC";
         //string collection_name = "C1276812863-GES_DISC";
@@ -258,29 +203,24 @@ public:
             cmr::CmrCatalog catalog;
             bes::CatalogNode *node = catalog.get_node(node_path);
 
-            unsigned lcount = node->get_leaf_count();
-            BESDEBUG(MODULE, prolog << "Checking expected leaves (" << expected_size << ") vs received (" << lcount << ")" << endl);
-            CPPUNIT_ASSERT( lcount==expected_size );
+            const unsigned lcount = node->get_leaf_count();
+            CPPUNIT_ASSERT_MESSAGE("Checking expected leaves (" + to_string(expected_size) + ") vs received (" + to_string(lcount) + ")",
+                lcount == expected_size);
 
-            unsigned ncount = node->get_node_count();
-            BESDEBUG(MODULE, prolog << "Checking expected nodes (0) vs received (" << ncount << ")" << endl);
-            CPPUNIT_ASSERT( ncount==0 );
+            const unsigned ncount = node->get_node_count();
+            CPPUNIT_ASSERT_MESSAGE("Checking expected nodes (0) vs received (" + to_string(ncount) + ")",
+                ncount == 0);
 
             bes::CatalogNode::item_iter itr;
             size_t i=0;
             for (itr=node->leaves_begin(); itr!=node->leaves_end(); itr++, i++){
                 string leaf_name = (*itr)->get_name();
-                msg.str(std::string());
-                msg << prolog << "Checking:  expected: " << expected[i]
-                        << " received: " << leaf_name;
-                BESDEBUG(MODULE, msg.str() << endl);
-                CPPUNIT_ASSERT(expected[i] == leaf_name);
+                CPPUNIT_ASSERT_MESSAGE("Checking:  expected: " + expected[i] + " received: " + leaf_name,
+                    expected[i] == leaf_name);
             }
         }
-        catch (BESError &be) {
-            string msg = "Caught BESError! Message: " + be.get_message();
-            cerr << endl << msg << endl;
-            CPPUNIT_ASSERT(!"Caught BESError");
+        catch (const BESError &be) {
+            CPPUNIT_FAIL("Caught BESError! Message: " + be.get_message());
         }
     }
 
@@ -299,42 +239,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION(GranuleTest);
 
 } // namespace dmrpp
 
-int main(int argc, char*argv[])
-{
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
-    int option_char;
-    while ((option_char = getopt(argc, argv, "db")) != -1)
-        switch (option_char) {
-        case 'd':
-            debug = true;  // debug is a static global
-            break;
-        case 'b':
-            bes_debug = true;  // debug is a static global
-            break;
-        default:
-            break;
-        }
-
-    argc -= optind;
-    argv += optind;
-
-    bool wasSuccessful = true;
-    string test = "";
-    if (0 == argc) {
-        // run them all
-        wasSuccessful = runner.run("");
-    }
-    else {
-        int i = 0;
-        while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
-            test = cmr::GranuleTest::suite()->getName().append("::").append(argv[i]);
-            wasSuccessful = wasSuccessful && runner.run(test);
-            ++i;
-        }
-    }
-
-    return wasSuccessful ? 0 : 1;
+int main(int argc, char*argv[]) {
+    return bes_run_tests<cmr::GranuleTest>(argc, argv, "cerr,cmr") ? 0 : 1;
 }

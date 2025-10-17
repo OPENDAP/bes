@@ -2,7 +2,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/modules -I$(top_srcdir)/modules/cmr_module \
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/modules/common -I$(top_srcdir)/modules/cmr_module \
 -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/http $(DAP_CFLAGS)
 
 # Added -lz for ubuntu
@@ -81,7 +81,8 @@ $(abs_builddir)/static-cache:
 #
 
 if CPPUNIT
-UNIT_TESTS = "GranuleTest # CmrCatalogTest GranuleTest # FIXME disabled 5/16/24 because target collection was deleted.
+UNIT_TESTS = GranuleTest
+# CmrCatalogTest GranuleTest # FIXME disabled 5/16/24 because target collection was deleted.
 # This fails often: CmrApiTest jhrg 6/29/23
 else
 UNIT_TESTS =
@@ -108,5 +109,5 @@ OBJS = ../JsonUtils.o ../CmrApi.o \
 # CmrCatalogTest_SOURCES = CmrCatalogTest.cc
 # CmrCatalogTest_LDADD = $(OBJS) $(LIBADD)
 
-# GranuleTest_SOURCES = GranuleTest.cc
-# GranuleTest_LDADD = $(OBJS) $(LIBADD)
+GranuleTest_SOURCES = GranuleTest.cc
+GranuleTest_LDADD = $(OBJS) $(LIBADD)
