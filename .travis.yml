@@ -14,7 +14,7 @@ dist: focal       # focal is the default, jammy and noble are supported now. jhr
 
 # Added vm size upgrade. This costs extra $s
 vm:
-  size: 2x-large
+  size: 2x-large  # Sync with the thread count in the sonar-*.properties files. jhrg 10/17/25
 
 language: cpp
 compiler: gcc
@@ -107,7 +107,6 @@ before_script:
   - echo "Travis default env:"
   - printenv
 
-
 # We have varied our approach to scanning over time. As of 7/23/21, we do not
 # use Travis to run our sonarcloud scans. These are very time-consuming and
 # can be done on the SonarScan.com website in a way that links those results
@@ -122,7 +121,7 @@ before_script:
 # but I won't know until I hear back from Travis-CI support. jhrg 7/23/21
 #
 # Change: We filter branches (see line 25 above) so this script is only run for
-# the master branch or for a *-test-deploy branch. So, the conditionals for the
+# the master/main branch or for a *-test-deploy branch. So, the conditions for the
 # stages can be simplified. jhrg 3/2/22
 
 stages:
@@ -202,7 +201,6 @@ jobs:
         - autoreconf --force --install --verbose
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
         - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
-        - jdk_switcher use openjdk17
         - sonar-scanner -Dproject.settings=sonar-bes-modules-1.properties -Dsonar.login=$SONAR_MODULES_LOGIN
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
 
@@ -213,7 +211,6 @@ jobs:
         - autoreconf --force --install --verbose
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
         - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
-        - jdk_switcher use openjdk17
         - sonar-scanner -Dproject.settings=sonar-bes-hdf-handlers.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
         # We call the hdf4/5 handlers scan opendap-bes-submodules for historical reasons. jhrg 1/13/22
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-submodules | grep "QUALITY GATE PASS"
