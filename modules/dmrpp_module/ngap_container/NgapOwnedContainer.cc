@@ -47,7 +47,6 @@
 #include "BESDebug.h"
 
 #include "NgapOwnedContainer.h"
-#include "NgapApi.h"
 #include "NgapNames.h"
 
 #define prolog std::string("NgapOwnedContainer::").append(__func__).append("() - ")
@@ -76,8 +75,7 @@ int NgapOwnedContainer::d_cmr_cache_size_items = 100;    // Entries, not size in
 int NgapOwnedContainer::d_cmr_cache_purge_items = 20;
 
 bool NgapOwnedContainer::d_use_cmr_cache = false;
-MemoryCache<std::string> NgapOwnedContainer::d_cmr_mem_cache_https_url;
-MemoryCache<NgapOwnedContainer::S3DataAccessUrls> NgapOwnedContainer::d_cmr_mem_cache_s3_urls;
+MemoryCache<NgapApi::DataAccessUrls> NgapOwnedContainer::d_cmr_mem_cache_urls;
 
 // DMR++ caching
 int NgapOwnedContainer::d_dmrpp_mem_cache_size_items = 100;
@@ -120,11 +118,8 @@ NgapOwnedContainer::NgapOwnedContainer(const string &sym_name, const string &rea
                 = TheBESKeys::read_int_key(CMR_CACHE_THRESHOLD, NgapOwnedContainer::d_cmr_cache_size_items);
         NgapOwnedContainer::d_cmr_cache_purge_items
                 = TheBESKeys::read_int_key(CMR_CACHE_SPACE, NgapOwnedContainer::d_cmr_cache_purge_items);
-        if (!d_cmr_mem_cache_https_url.initialize(d_cmr_cache_size_items, d_cmr_cache_purge_items)) {
-            ERROR_LOG("NgapOwnedContainer::NgapOwnedContainer() - failed to initialize CMR cache for data url");
-        }
-        if (!d_cmr_mem_cache_s3_urls.initialize(d_cmr_cache_size_items, d_cmr_cache_purge_items)) {
-            ERROR_LOG("NgapOwnedContainer::NgapOwnedContainer() - failed to initialize CMR cache for data s3 urls");
+        if (!d_cmr_mem_cache_urls.initialize(d_cmr_cache_size_items, d_cmr_cache_purge_items)) {
+            ERROR_LOG("NgapOwnedContainer::NgapOwnedContainer() - failed to initialize CMR cache for data urls");
         }
     }
 
@@ -215,41 +210,42 @@ bool NgapOwnedContainer::file_to_string(int fd, string &content) {
  * @note: The cache is global to the NgapOwnedContainer class. This is a per-process
  * cache and it is not thread-safe.
  */
-string NgapOwnedContainer::build_data_url_to_daac_bucket(const string &rest_path) {
+NgapApi::DataAccessUrls NgapOwnedContainer::build_data_urls_to_daac_bucket(const string &rest_path) {
     BES_MODULE_TIMING(prolog + rest_path);
 
     bool found;
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
     BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
 
+    NgapApi::DataAccessUrls data_access_urls;
+
     // If using the cache, look there. Note that the UID is part of the key to the cached data.
     string url_key = rest_path + ':' + uid;
-    string data_url, data_s3_url, s3credentials_url;
     if (NgapOwnedContainer::d_use_cmr_cache) {
-        if (NgapOwnedContainer::d_cmr_mem_cache_https_url.get(url_key, data_url)) {
-            CACHE_LOG(prolog + "CMR Cache hit, translated URL: " + data_url + '\n');
-            return data_url;
+        if (NgapOwnedContainer::d_cmr_mem_cache_urls.get(url_key, data_access_urls)) {
+            CACHE_LOG(prolog +
+                "CMR Cache hit, translated https URL: " + get<0>(data_access_urls) +
+                ", translated s3 URL: " + get<1>(data_access_urls) +
+                ", s3credentials URL: " + get<2>(data_access_urls) + '\n');
+            return data_access_urls;
         } else {
             CACHE_LOG(prolog + "CMR Cache miss, REST path: " + url_key + '\n');
         }
     }
 
     // Not cached or not using the cache; ask CMR. Throws on lookup failure, HTTP failure. jhrg 1/24/25
-    tie(data_url, data_s3_url, s3credentials_url) = NgapApi::convert_ngap_resty_path_to_data_access_urls(rest_path);
+    data_access_urls = NgapApi::convert_ngap_resty_path_to_data_access_urls(rest_path);
 
     // If using the CMR cache, cache the response.
     if (NgapOwnedContainer::d_use_cmr_cache) {
-        NgapOwnedContainer::d_cmr_mem_cache_https_url.put(url_key, data_url);
-        CACHE_LOG(prolog + "CMR Cache put, translated URL: " + data_url + '\n');
-
-        if (!data_s3_url.empty() && !s3credentials_url.empty()) {
-            S3DataAccessUrls s3urls(data_s3_url, s3credentials_url);
-            NgapOwnedContainer::d_cmr_mem_cache_s3_urls.put(url_key, s3urls);
-            CACHE_LOG(prolog + "CMR S3 Cache put, translated s3 URL: " + data_s3_url + ", s3credentials URL: " + s3credentials_url + '\n');
-        }
+        NgapOwnedContainer::d_cmr_mem_cache_urls.put(url_key, data_access_urls);
+        CACHE_LOG(prolog + 
+            "CMR Cache put, translated https URL: " + get<0>(data_access_urls) +
+            ", translated s3 URL: " + get<1>(data_access_urls) +
+            ", s3credentials URL: " + get<2>(data_access_urls) + '\n');
     }
 
-    return data_url;
+    return data_access_urls;
 }
 
 /**
@@ -363,20 +359,31 @@ void NgapOwnedContainer::filter_response(const map <string, string, std::less<>>
  * @param content_filters Value-result parameter
  * @return True if the filters were built, false otherwise
  */
-bool NgapOwnedContainer::get_daac_content_filters(const string &data_url, map<string, string, std::less<>> &content_filters) {
-    if (NgapOwnedContainer::d_inject_data_url) {
-        // data_url was get_real_name(). jhrg 8/9/24
-        const string missing_data_url_str = data_url + "_mvs.h5";
-        const string href = R"(href=")";
-        const string trusted_url_hack = R"(" dmrpp:trust="true")";
-        const string data_access_url_key = href + DATA_ACCESS_URL_KEY + "\"";
-        const string data_access_url_with_trusted_attr_str = href + data_url + trusted_url_hack;
-        const string missing_data_access_url_key = href + MISSING_DATA_ACCESS_URL_KEY + "\"";
-        const string missing_data_url_with_trusted_attr_str = href + missing_data_url_str + trusted_url_hack;
+bool NgapOwnedContainer::get_daac_content_filters(const NgapApi::DataAccessUrls &data_urls, map<string, string, std::less<>> &content_filters) {
+    string data_url, data_s3_url, s3credentials_url;
+    tie(data_url, data_s3_url, s3credentials_url) = data_urls;
+    // data_url was get_real_name(). jhrg 8/9/24
 
+    if (NgapOwnedContainer::d_inject_data_url) {
+        const string href = R"(href=")";
+        const string trusted_url_hack = R"(dmrpp:trust="true")";
+        const string data_access_url_key = href + DATA_ACCESS_URL_KEY + "\"";
+        const string missing_data_access_url_key = href + MISSING_DATA_ACCESS_URL_KEY + "\"";
+
+        // Desired output string:
+        // dmrpp:href=\"<data_url>\" dmrpp:s3=\"<data_s3_url>\" dmrpp:s3credentials=\"<s3credentials_url>\" dmrpp:trust=\"true\"
+        std::ostringstream oss_data_urls;
+        oss_data_urls << "href=\"" << data_url << "\" dmrpp:s3=\"" << data_s3_url << "\" dmrpp:s3credentials=\"" << s3credentials_url << "\" " << trusted_url_hack;
+        std::string data_access_urls = oss_data_urls.str();
+
+        // Same as above, but with a special suffix on each data url
+        std::ostringstream oss_missing_data_urls;
+        oss_missing_data_urls << "href=\"" << data_url << "_mvs.h5\" dmrpp:s3=\"" << data_s3_url << "_mvs.h5\" dmrpp:s3credentials=\"" << s3credentials_url << "\" " << trusted_url_hack;
+        std::string missing_data_access_urls = oss_missing_data_urls.str();
+        
         content_filters.clear();
-        content_filters.insert(pair<string, string>(data_access_url_key, data_access_url_with_trusted_attr_str));
-        content_filters.insert(pair<string, string>(missing_data_access_url_key, missing_data_url_with_trusted_attr_str));
+        content_filters.insert(pair<string, string>(data_access_url_key, data_access_urls));
+        content_filters.insert(pair<string, string>(missing_data_access_url_key, missing_data_access_urls));
         return true;
     }
 
@@ -469,10 +476,13 @@ bool NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) co
 void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const {
     BES_MODULE_TIMING(prolog + get_real_name());
     // This code may ask CMR and will throw exceptions that mention CMR on error. jhrg 1/24/25
-    string data_url = build_data_url_to_daac_bucket(get_real_name());
-    string dmrpp_url_str = data_url;
-    if (data_url.find(".dmrpp") == std::string::npos)   // Only add the .dmrpp extension if it is not present kln 5/20/25
-        dmrpp_url_str = data_url + ".dmrpp"; // This is the URL to the DMR++ in the DAAC-owned bucket. jhrg 8/9/24
+    auto data_access_urls = build_data_urls_to_daac_bucket(get_real_name());
+    
+    // For now, construct dmrpp_url from the https data url
+    // In future, we may switch to use the s3 data url
+    string dmrpp_url_str = get<0>(data_access_urls);
+    if (dmrpp_url_str.find(".dmrpp") == std::string::npos)   // Only add the .dmrpp extension if it is not present kln 5/20/25
+        dmrpp_url_str.append(".dmrpp"); // This is the URL to the DMR++ in the DAAC-owned bucket. jhrg 8/9/24
     INFO_LOG(prolog + "Look in the DAAC-bucket for the DMRpp for: " + dmrpp_url_str);
 
     try {
@@ -480,9 +490,9 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
             BES_PROFILE_TIMING(string("Request DMRpp from DAAC bucket - ") + dmrpp_url_str);
             curl::http_get(dmrpp_url_str, dmrpp_string);
         }
-        // filter the DMRPP from the DAAC's bucket to replace the template href with the data_url
+        // filter the DMRPP from the DAAC's bucket to replace the template href with the data_access_urls
         map <string, string, std::less<>> content_filters;
-        if (!get_daac_content_filters(data_url, content_filters)) {
+        if (!get_daac_content_filters(data_access_urls, content_filters)) {
             throw BESInternalError("Could not build content filters for DMR++", __FILE__, __LINE__);
         }
         filter_response(content_filters, dmrpp_string);
