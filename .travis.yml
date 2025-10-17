@@ -86,11 +86,10 @@ before_install:
   - gem install bundler
   - pip install --user awscli
   # fix for Java 17 install for Sonar from Travis CI support. jhrg 1/23/24
-  # Not needed for Ubuntu jammy. jhrg 10/16/25
-  # curl -s "https://get.sdkman.io" | bash
-  # source "$HOME/.sdkman/bin/sdkman#init.sh"
-  # sdk install java 17.0.2-open
-  # sdk use java 17.0.2-open
+  - curl -s "https://get.sdkman.io" | bash
+  - source "$HOME/.sdkman/bin/sdkman#init.sh"
+  - sdk install java 17.0.2-open
+  - sdk use java 17.0.2-open
   - java -version
 
 # hyrax-dependencies-build.tar.gz includes/makes the build directory
@@ -188,14 +187,11 @@ jobs:
 
     - stage: scan
       name: "scan bes"
-      language: java
-      jdk: openjdk17
       script:
       - export BES_BUILD=sonar-bes-framework
       - autoreconf --force --install --verbose
       - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer --enable-coverage
       - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
-      #- jdk_switcher use openjdk17
       - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
       - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "QUALITY GATE PASS"
 
