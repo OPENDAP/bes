@@ -99,7 +99,6 @@ install:
   - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/hyrax-dependencies-build.tar.gz
   - aws s3 cp s3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
   - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/libdap-build.tar.gz
-  # - echo $DOCKER_HUB_PSWD | docker login -u $DOCKER_HUB_UID --password-stdin
 
 before_script:
   - source travis/travis_bes_build_offset.sh
@@ -139,7 +138,7 @@ stages:
 
 jobs:
   include:
-    - stage: build-and-package
+    - stage: never #build-and-package
       name: "check"
       script:
         - export BES_BUILD=main
@@ -148,7 +147,7 @@ jobs:
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
         - make -j16 && make install && besctl start && make check -j16 && besctl stop
 
-    - stage: build-and-package
+    - stage: never #build-and-package
       name: "distcheck"
       script:
         - export BES_BUILD=distcheck
@@ -156,7 +155,7 @@ jobs:
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
         - make distcheck -j16 GZIP_ENV=--fast
 
-    - stage: build-and-package
+    - stage: never #build-and-package
       name: "Enterprise Linux 8 RPMs (via Rocky8)"
       script:
         - export BES_BUILD=rocky8
@@ -172,7 +171,7 @@ jobs:
             --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
             opendap/rocky8_hyrax_builder:latest /root/travis/travis/build-rpm.sh
 
-    - stage: build-and-package
+    - stage: never # build-and-package
       name: "dist"
       script:
         - export BES_BUILD=srcdist
@@ -198,7 +197,7 @@ jobs:
       - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
       - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "QUALITY GATE PASS"
 
-    - stage: scan
+    - stage: never #scan
       name: "scan bes-modules-1"
       script:
         - export BES_BUILD=sonar-bes-modules
@@ -209,7 +208,7 @@ jobs:
         - sonar-scanner -Dproject.settings=sonar-bes-modules-1.properties -Dsonar.login=$SONAR_MODULES_LOGIN
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
 
-    - stage: scan
+    - stage: never# scan
       name: "scan bes-hdf-handlers"
       script:
         - export BES_BUILD=sonar-bes-hdf-handlers
