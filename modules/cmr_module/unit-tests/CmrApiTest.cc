@@ -82,8 +82,8 @@ public:
 
     void get_years_test() {
         string collection_name = "C179003030-ORNL_DAAC";
-        string expected[] = { string("1984"), string("1985"), string("1986"),
-                string("1987"), string("1988") };
+        vector<string> expected = { "1984", "1985", "1986",
+                "1987", "1988" };
         unsigned long  expected_size = 5;
         vector<string> years;
         try {
@@ -120,19 +120,19 @@ public:
 
     void get_months_test() {
         string collection_name = "C179003030-ORNL_DAAC";
-        string expected[] = {
-                string("01"),
-                string("02"),
-                string("03"),
-                string("04"),
-                string("05"),
-                string("06"),
-                string("07"),
-                string("08"),
-                string("09"),
-                string("10"),
-                string("11"),
-                string("12") };
+        vector<string> expected = {
+                "01",
+                "02",
+                "03",
+                "04",
+                "05",
+                "06",
+                "07",
+                "08",
+                "09",
+                "10",
+                "11",
+                "12" };
         unsigned long  expected_size = 12;
         vector<string> months;
         try {
@@ -173,11 +173,11 @@ public:
 
     void get_days_test() {
         string collection_name = "C1276812863-GES_DISC";
-        string expected[] = {
-                string("01"),string("02"),string("03"),string("04"),string("05"),string("06"),string("07"),string("08"),string("09"),string("10"),
-                string("11"),string("12"),string("13"),string("14"),string("15"),string("16"),string("17"),string("18"),string("19"),string("20"),
-                string("21"),string("22"),string("23"),string("24"),string("25"),string("26"),string("27"),string("28"),string("29"),string("30"),
-                string("31")
+        vector<string> expected = {
+                "01","02","03","04","05","06","07","08","09","10",
+                "11","12","13","14","15","16","17","18","19","20",
+                "21","22","23","24","25","26","27","28","29","30",
+                "31"
         };
         unsigned long  expected_size = 31;
         vector<string> days;
@@ -219,8 +219,8 @@ public:
     void get_granule_ids_day_test() {
         string collection_name = "C1276812863-GES_DISC";
 
-        string expected[] = {
-                string("G1277917089-GES_DISC")
+        vector<string> expected = {
+                "G1277917089-GES_DISC"
         };
 
         unsigned long  expected_size = 1;
@@ -264,38 +264,38 @@ public:
     void get_granule_ids_month_test() {
         string collection_name = "C1276812863-GES_DISC";
 
-        string expected[] = {
-                string("G1277917088-GES_DISC"),
-                string("G1277917126-GES_DISC"),
-                string("G1277917102-GES_DISC"),
-                string("G1277917125-GES_DISC"),
-                string("G1277917121-GES_DISC"),
-                string("G1277917112-GES_DISC"),
-                string("G1277917116-GES_DISC"),
-                string("G1277917161-GES_DISC"),
-                string("G1277917098-GES_DISC"),
-                string("G1277917097-GES_DISC"),
-                string("G1277917105-GES_DISC"),
-                string("G1277917077-GES_DISC"),
-                string("G1277917089-GES_DISC"),
-                string("G1277917109-GES_DISC"),
-                string("G1277917141-GES_DISC"),
-                string("G1277917107-GES_DISC"),
-                string("G1277917114-GES_DISC"),
-                string("G1277917143-GES_DISC"),
-                string("G1277917104-GES_DISC"),
-                string("G1277917093-GES_DISC"),
-                string("G1277917115-GES_DISC"),
-                string("G1277917145-GES_DISC"),
-                string("G1277917059-GES_DISC"),
-                string("G1277917090-GES_DISC"),
-                string("G1277917096-GES_DISC"),
-                string("G1277917110-GES_DISC"),
-                string("G1277917124-GES_DISC"),
-                string("G1277917075-GES_DISC"),
-                string("G1277917094-GES_DISC"),
-                string("G1277917160-GES_DISC"),
-                string("G1277917148-GES_DISC")
+        vector<string> expected = {
+                "G1277917088-GES_DISC",
+                "G1277917126-GES_DISC",
+                "G1277917102-GES_DISC",
+                "G1277917125-GES_DISC",
+                "G1277917121-GES_DISC",
+                "G1277917112-GES_DISC",
+                "G1277917116-GES_DISC",
+                "G1277917161-GES_DISC",
+                "G1277917098-GES_DISC",
+                "G1277917097-GES_DISC",
+                "G1277917105-GES_DISC",
+                "G1277917077-GES_DISC",
+                "G1277917089-GES_DISC",
+                "G1277917109-GES_DISC",
+                "G1277917141-GES_DISC",
+                "G1277917107-GES_DISC",
+                "G1277917114-GES_DISC",
+                "G1277917143-GES_DISC",
+                "G1277917104-GES_DISC",
+                "G1277917093-GES_DISC",
+                "G1277917115-GES_DISC",
+                "G1277917145-GES_DISC",
+                "G1277917059-GES_DISC",
+                "G1277917090-GES_DISC",
+                "G1277917096-GES_DISC",
+                "G1277917110-GES_DISC",
+                "G1277917124-GES_DISC",
+                "G1277917075-GES_DISC",
+                "G1277917094-GES_DISC",
+                "G1277917160-GES_DISC",
+                "G1277917148-GES_DISC"
         };
 
         unsigned long  expected_size = 31;
@@ -338,38 +338,38 @@ public:
     void get_granules_month_test() {
         string collection_name = "C1276812863-GES_DISC";
 
-        string expected[] = {
-                string("G1277917088-GES_DISC"),
-                string("G1277917126-GES_DISC"),
-                string("G1277917102-GES_DISC"),
-                string("G1277917125-GES_DISC"),
-                string("G1277917121-GES_DISC"),
-                string("G1277917112-GES_DISC"),
-                string("G1277917116-GES_DISC"),
-                string("G1277917161-GES_DISC"),
-                string("G1277917098-GES_DISC"),
-                string("G1277917097-GES_DISC"),
-                string("G1277917105-GES_DISC"),
-                string("G1277917077-GES_DISC"),
-                string("G1277917089-GES_DISC"),
-                string("G1277917109-GES_DISC"),
-                string("G1277917141-GES_DISC"),
-                string("G1277917107-GES_DISC"),
-                string("G1277917114-GES_DISC"),
-                string("G1277917143-GES_DISC"),
-                string("G1277917104-GES_DISC"),
-                string("G1277917093-GES_DISC"),
-                string("G1277917115-GES_DISC"),
-                string("G1277917145-GES_DISC"),
-                string("G1277917059-GES_DISC"),
-                string("G1277917090-GES_DISC"),
-                string("G1277917096-GES_DISC"),
-                string("G1277917110-GES_DISC"),
-                string("G1277917124-GES_DISC"),
-                string("G1277917075-GES_DISC"),
-                string("G1277917094-GES_DISC"),
-                string("G1277917160-GES_DISC"),
-                string("G1277917148-GES_DISC")
+        vector<string> expected = {
+                "G1277917088-GES_DISC",
+                "G1277917126-GES_DISC",
+                "G1277917102-GES_DISC",
+                "G1277917125-GES_DISC",
+                "G1277917121-GES_DISC",
+                "G1277917112-GES_DISC",
+                "G1277917116-GES_DISC",
+                "G1277917161-GES_DISC",
+                "G1277917098-GES_DISC",
+                "G1277917097-GES_DISC",
+                "G1277917105-GES_DISC",
+                "G1277917077-GES_DISC",
+                "G1277917089-GES_DISC",
+                "G1277917109-GES_DISC",
+                "G1277917141-GES_DISC",
+                "G1277917107-GES_DISC",
+                "G1277917114-GES_DISC",
+                "G1277917143-GES_DISC",
+                "G1277917104-GES_DISC",
+                "G1277917093-GES_DISC",
+                "G1277917115-GES_DISC",
+                "G1277917145-GES_DISC",
+                "G1277917059-GES_DISC",
+                "G1277917090-GES_DISC",
+                "G1277917096-GES_DISC",
+                "G1277917110-GES_DISC",
+                "G1277917124-GES_DISC",
+                "G1277917075-GES_DISC",
+                "G1277917094-GES_DISC",
+                "G1277917160-GES_DISC",
+                "G1277917148-GES_DISC"
         };
 
         unsigned long  expected_size = 31;
@@ -416,7 +416,7 @@ public:
     void get_granules_data_access_urls_month_test() {
         string collection_name = "C1276812863-GES_DISC";
 
-        string expected[] = {
+        vector<string> expected = {
                 string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850301.nc4"),
                 string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850302.nc4"),
                 string("https://goldsmr4.gesdisc.eosdis.nasa.gov/data/MERRA2/M2T1NXSLV.5.12.4/1985/03/MERRA2_100.tavg1_2d_slv_Nx.19850303.nc4"),
