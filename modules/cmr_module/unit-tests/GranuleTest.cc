@@ -20,6 +20,7 @@
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
+
 #include "test_config.h"
 
 #include <memory>
@@ -42,12 +43,10 @@
 #include <BESCatalogList.h>
 #include <CatalogNode.h>
 
-// #include "RemoteResource.h"
 #include "CmrNames.h"
 #include "CmrApi.h"
 #include "CmrCatalog.h"
 #include "CmrInternalError.h"
-
 
 using namespace std;
 
@@ -61,6 +60,7 @@ namespace cmr {
 
 class GranuleTest: public CppUnit::TestFixture {
 private:
+    const string ges_disc_collection_name_ = "C179003030-ORNL_DAAC";
 
     // char curl_error_buf[CURL_ERROR_SIZE];
 
@@ -199,8 +199,8 @@ public:
         stringstream msg;
 
         //string collection_name = "C179003030-ORNL_DAAC";
-        string collection_name = "C1276812863-GES_DISC";
-        string node_path="GES_DISC/" + collection_name + "/1985/03";
+        //string collection_name = "C1276812863-GES_DISC";
+        string node_path="GES_DISC/" + ges_disc_collection_name_ + "/1985/03";
         string expected[] = {
                 string("01"),string("02"),string("03"),string("04"),string("05"),string("06"),string("07"),string("08"),string("09"),string("10"),
                 string("11"),string("12"),string("13"),string("14"),string("15"),string("16"),string("17"),string("18"),string("19"),string("20"),
@@ -247,8 +247,8 @@ public:
         stringstream msg;
 
         //string collection_name = "C179003030-ORNL_DAAC";
-        string collection_name = "C1276812863-GES_DISC";
-        string node_path="GES_DISC/" + collection_name + "/1985/03/13";
+        //string collection_name = "C1276812863-GES_DISC";
+        string node_path="GES_DISC/" + ges_disc_collection_name_ + "/1985/03/13";
         string expected[] = {
                 string("M2T1NXSLV.5.12.4:MERRA2_100.tavg1_2d_slv_Nx.19850313.nc4")
         };
