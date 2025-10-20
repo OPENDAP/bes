@@ -4,7 +4,7 @@ AUTOMAKE_OPTIONS = foreign subdir-objects
 ACLOCAL_AMFLAGS = -I conf
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand \
-    -I$(top_srcdir)/http -I$(top_srcdir)/modules/dmrpp_module/ngap_container -I$(top_srcdir)/pugixml/src $(DAP_CFLAGS)
+    -I$(top_srcdir)/http -I$(top_srcdir)/modules/dmrpp_module/ngap_container -I$(top_srcdir)/pugixml/src -I$(top_srcdir)/rapidjson $(DAP_CFLAGS)
 AM_CXXFLAGS = -Wno-vla-extension -Wno-inconsistent-missing-override
 
 # FIXME Remove this hack. Set these with configure. jhrg 11/25/19
