@@ -44,7 +44,6 @@ class url;
 }
 
 namespace ngap {
-
 /**
  * @class NgapApi
  * @brief This class provides an API interface for handling NGAP (NASA General Application Platform) procedures.
