@@ -326,11 +326,11 @@ public:
         aws_sdk.initialize_s3_client("us-east-1", id, secret);
         const string object = "/samples/chunked_twoD.h5";
         const string bucket = "cloudydap";
-        const uint64_t expiration_seconds = 3;
+        const uint64_t expiration_seconds = 2;
         const Aws::String url = aws_sdk.s3_generate_presigned_object_url(bucket, object, expiration_seconds);
         CPPUNIT_ASSERT_MESSAGE("Presigned url should return an object " + url, url_request_returns_object(url));
 
-        sleep(expiration_seconds); // Bad form to add extra time to unit tests, but we need to know that we _can_ expire a signed url, and we need enough time for the response to have been returned for the first fetch
+        sleep(expiration_seconds * 2); // Bad form to add extra time to unit tests, but we need to know that we _can_ expire a signed url, and we need enough time for the response to have been returned for the first fetch
 
         CPPUNIT_ASSERT_MESSAGE("Presigned url should not return an object if it has expired" + url, !url_request_returns_object(url));
     }
