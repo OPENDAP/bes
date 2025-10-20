@@ -72,7 +72,6 @@ W10NModule::initialize( const string &modname )
 }
 
 void
-//W10NModule::terminate( const string & /*modname*/ )
 W10NModule::terminate( const string & modname )
 {
     BESDEBUG(W10N_DEBUG_KEY, "Removing w10n Modules:" << endl ) ;
