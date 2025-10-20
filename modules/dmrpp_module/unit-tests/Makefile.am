@@ -82,6 +82,8 @@ if CPPUNIT
 UNIT_TESTS = DmrppArrayTest SuperChunkTest ChunkTest DmrppCommonTest CurlHandlePoolTest \
 DMZTest build_dmrpp_util_test DmrppChunkOdometerTest vlsa_util_test
 
+# DmrppRequestHandlerTest
+
 else
 
 UNIT_TESTS =
@@ -98,6 +100,9 @@ endif
 
 clean-local:
 	-rm -rf mds mds_ledger.txt
+
+# DmrppRequestHandlerTest_SOURCES = DmrppRequestHandlerTest.cc
+# DmrppRequestHandlerTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
 
 CurlHandlePoolTest_SOURCES = CurlHandlePoolTest.cc
 CurlHandlePoolTest_LDADD = ../.libs/libdmrpp_module.a $(LIBADD)
