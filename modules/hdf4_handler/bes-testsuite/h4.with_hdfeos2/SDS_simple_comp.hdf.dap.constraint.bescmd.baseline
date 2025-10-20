@@ -7,7 +7,7 @@
             <Value>2</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
+            <Value>b015e9b4</Value>
         </Attribute>
     </Int32>
 </Dataset>

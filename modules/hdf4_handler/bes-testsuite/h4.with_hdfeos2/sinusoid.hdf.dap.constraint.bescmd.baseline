@@ -45,7 +45,7 @@ END
                 <Value>grid1 lat</Value>
             </Attribute>
             <Attribute name="DAP4_Checksum_CRC32" type="String">
-                removed checksum
+                <Value>e62abb27</Value>
             </Attribute>
         </Float64>
         <Float64 name="Longitude">
@@ -58,7 +58,7 @@ END
                 <Value>grid1 lon</Value>
             </Attribute>
             <Attribute name="DAP4_Checksum_CRC32" type="String">
-                removed checksum
+                <Value>76a661ad</Value>
             </Attribute>
         </Float64>
     </Group>

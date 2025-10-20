@@ -54,7 +54,7 @@ END
                 <Value>grid1 eos_cf_projection</Value>
             </Attribute>
             <Attribute name="DAP4_Checksum_CRC32" type="String">
-                removed checksum
+                <Value>82079eb1</Value>
             </Attribute>
         </Byte>
         <Float64 name="XDim_grid1">
@@ -75,7 +75,7 @@ END
                 <Value>grid1 XDim</Value>
             </Attribute>
             <Attribute name="DAP4_Checksum_CRC32" type="String">
-                removed checksum
+                <Value>67569b27</Value>
             </Attribute>
         </Float64>
         <Float64 name="YDim_grid1">
@@ -96,7 +96,7 @@ END
                 <Value>grid1 YDim</Value>
             </Attribute>
             <Attribute name="DAP4_Checksum_CRC32" type="String">
-                removed checksum
+                <Value>f05ee39f</Value>
             </Attribute>
         </Float64>
         <Float64 name="Latitude">
@@ -109,7 +109,7 @@ END
                 <Value>grid1 lat</Value>
             </Attribute>
             <Attribute name="DAP4_Checksum_CRC32" type="String">
-                removed checksum
+                <Value>4530a2ca</Value>
             </Attribute>
         </Float64>
         <Float64 name="Longitude">
@@ -122,7 +122,7 @@ END
                 <Value>grid1 lon</Value>
             </Attribute>
             <Attribute name="DAP4_Checksum_CRC32" type="String">
-                removed checksum
+                <Value>13f586e5</Value>
             </Attribute>
         </Float64>
         <Group name="Data_Fields">
@@ -139,7 +139,7 @@ END
                     <Value>/grid1/eos_cf_projection</Value>
                 </Attribute>
                 <Attribute name="DAP4_Checksum_CRC32" type="String">
-                    removed checksum
+                    <Value>73f24ead</Value>
                 </Attribute>
             </Float32>
         </Group>

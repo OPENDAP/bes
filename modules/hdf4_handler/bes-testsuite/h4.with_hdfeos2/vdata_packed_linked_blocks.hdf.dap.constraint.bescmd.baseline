@@ -8,7 +8,7 @@
             <Value>2</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
+            <Value>41086004</Value>
         </Attribute>
     </Structure>
     <Float32 name="Solid_Particle2_Height">
@@ -17,7 +17,7 @@
             <Value>3</Value>
         </Attribute>
         <Attribute name="DAP4_Checksum_CRC32" type="String">
-            removed checksum
+            <Value>c6fd2b17</Value>
         </Attribute>
     </Float32>
 </Dataset>

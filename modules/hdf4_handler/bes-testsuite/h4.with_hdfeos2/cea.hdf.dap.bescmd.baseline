@@ -46,7 +46,7 @@ END
                 <Value>grid1 lat</Value>
             </Attribute>
             <Attribute name="DAP4_Checksum_CRC32" type="String">
-                removed checksum
+                <Value>2c42482a</Value>
             </Attribute>
         </Float64>
         <Float64 name="Longitude">
@@ -58,7 +58,7 @@ END
                 <Value>grid1 lon</Value>
             </Attribute>
             <Attribute name="DAP4_Checksum_CRC32" type="String">
-                removed checksum
+                <Value>6f216ebc</Value>
             </Attribute>
         </Float64>
         <Group name="Data_Fields">
@@ -72,7 +72,7 @@ END
                     <Value>/grid1/Longitude /grid1/Latitude</Value>
                 </Attribute>
                 <Attribute name="DAP4_Checksum_CRC32" type="String">
-                    removed checksum
+                    <Value>16ce958d</Value>
                 </Attribute>
             </Float32>
         </Group>
