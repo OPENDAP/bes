@@ -478,8 +478,8 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
     // This code may ask CMR and will throw exceptions that mention CMR on error. jhrg 1/24/25
     auto data_access_urls = build_data_urls_to_daac_bucket(get_real_name());
     
-    // For now, construct dmrpp_url from the https data url
-    // In future, we may switch to use the s3 data url
+    // For now, construct `dmrpp_url_str` from the https data url
+    // In future, we'll likely switch to using the s3 data url
     string dmrpp_url_str = get<0>(data_access_urls);
     if (dmrpp_url_str.find(".dmrpp") == std::string::npos)   // Only add the .dmrpp extension if it is not present kln 5/20/25
         dmrpp_url_str.append(".dmrpp"); // This is the URL to the DMR++ in the DAAC-owned bucket. jhrg 8/9/24

@@ -344,6 +344,56 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The container type should be 'dmrpp'", container.get_container_type() == "dmrpp");
     }
 
+    void test_filter_response_injects_s3_data_urls() {
+        TEST_NAME;
+
+        NgapOwnedContainer container;
+        // The REST path will become data/ATL08_20200716202251.h5
+        string real_name = "collections/data/granules/ATL08_20200716202251.h5";
+        container.set_real_name(real_name);
+        // Set the location of the data as a file:// URL for this test.
+        container.set_data_source_location(TEST_DATA_LOCATION);
+
+        string dmrpp_string;
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be found", container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the string", !dmrpp_string.empty());
+
+        // Create filters
+        NgapApi::DataAccessUrls data_urls("foo", "bar", "bat");
+        map <string, string, std::less<>> content_filters;
+        CPPUNIT_ASSERT_MESSAGE("The content filters should be created from the urls", NgapOwnedContainer::get_daac_content_filters(data_urls, content_filters));
+        CPPUNIT_ASSERT_MESSAGE("Two content filters should have been created", content_filters.size() == 2);
+
+        // Test that filters are applied correctly
+        NgapOwnedContainer::filter_response(content_filters, dmrpp_string);
+        string expected_str = "dmrpp:href=\"foo\" dmrpp:s3=\"bar\" dmrpp:s3credentials=\"bat\" dmrpp:trust=\"true\"";
+        CPPUNIT_ASSERT_MESSAGE("All data urls should be in the DMR++ string; did not find `" + expected_str + "` in:\n" + dmrpp_string, dmrpp_string.find(expected_str) != string::npos);
+    }
+
+    void test_filter_response_injects_s3_data_urls_even_if_empty() {
+        TEST_NAME;
+
+        NgapOwnedContainer container;
+        // The REST path will become data/ATL08_20200716202251.h5
+        string real_name = "collections/data/granules/ATL08_20200716202251.h5";
+        container.set_real_name(real_name);
+        // Set the location of the data as a file:// URL for this test.
+        container.set_data_source_location(TEST_DATA_LOCATION);
+
+        string dmrpp_string;
+        container.get_dmrpp_from_cache_or_remote_source(dmrpp_string);
+
+        // Create filters
+        NgapApi::DataAccessUrls data_urls("foo", "", "");
+        map <string, string, std::less<>> content_filters;
+        CPPUNIT_ASSERT_MESSAGE("The content filters should be created from the urls", NgapOwnedContainer::get_daac_content_filters(data_urls, content_filters));
+
+        // Test that filters are applied correctly
+        NgapOwnedContainer::filter_response(content_filters, dmrpp_string);
+        string expected_str = "dmrpp:href=\"foo\" dmrpp:s3=\"\" dmrpp:s3credentials=\"\" dmrpp:trust=\"true\"";
+        CPPUNIT_ASSERT_MESSAGE("All data urls should be in the DMR++ string; did not find `" + expected_str + "` in:\n" + dmrpp_string, dmrpp_string.find(expected_str) != string::npos);
+    }
+
     CPPUNIT_TEST_SUITE( NgapOwnedContainerTest );
 
     CPPUNIT_TEST(test_file_to_string);
@@ -368,6 +418,9 @@ public:
 
     CPPUNIT_TEST(test_access);
     CPPUNIT_TEST(test_access_s3);
+
+    CPPUNIT_TEST(test_filter_response_injects_s3_data_urls);
+    CPPUNIT_TEST(test_filter_response_injects_s3_data_urls_even_if_empty);
 
     CPPUNIT_TEST_SUITE_END();
 };
