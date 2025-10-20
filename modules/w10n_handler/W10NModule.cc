@@ -72,12 +72,18 @@ W10NModule::initialize( const string &modname )
 }
 
 void
-W10NModule::terminate( const string & /*modname*/ )
+//W10NModule::terminate( const string & /*modname*/ )
+W10NModule::terminate( const string & modname )
 {
     BESDEBUG(W10N_DEBUG_KEY, "Removing w10n Modules:" << endl ) ;
 
+    BESResponseHandlerList::TheList()->remove_handler( W10N_SHOW_PATH_INFO_REQUEST_HANDLER_KEY) ;
+
     BESReturnManager::TheManager()->del_transmitter(RETURNAS_W10N);
-   //  BESResponseHandlerList::TheList()->remove_handler( SHOW_PATH_INFO_RESPONSE ) ;
+    auto rh = BESRequestHandlerList::TheList()->remove_handler( modname ) ;
+    if (rh)
+        delete rh;
+
 
     BESDEBUG(W10N_DEBUG_KEY, "Done Removing w10n Modules." << endl ) ;
 }
