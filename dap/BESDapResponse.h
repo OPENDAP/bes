@@ -85,7 +85,7 @@ public:
     virtual void set_container(const std::string &cn) = 0;
     virtual void clear_container() = 0;
 
-	virtual void dump(std::ostream &strm) const;
+	void dump(std::ostream &strm) const override;
 };
 
 #endif // I_BESDapResponse

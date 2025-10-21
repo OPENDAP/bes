@@ -169,7 +169,7 @@ public:
 
     void encode_item(BESInfo *info) const;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 } // namespace bes

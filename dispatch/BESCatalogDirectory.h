@@ -68,7 +68,7 @@ public:
     virtual void get_site_map(const std::string &prefix, const std::string &node_suffix, const std::string &leaf_suffix, std::ostream &out,
         const std::string &path = "/") const;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // I_BESCatalogDirectory_h

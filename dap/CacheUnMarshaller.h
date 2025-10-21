@@ -78,7 +78,7 @@ public:
     virtual void get_vector(char **val, unsigned int &num, libdap::Vector &);
     virtual void get_vector(char **val, unsigned int &num, int width, libdap::Vector &);
 
-    virtual void dump(ostream &strm) const;
+    void dump(ostream &strm) const override;
 };
 
 //} // namespace bes

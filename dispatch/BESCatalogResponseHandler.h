@@ -53,7 +53,7 @@ public:
     virtual void execute(BESDataHandlerInterface &dhi);
     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static BESResponseHandler *CatalogResponseBuilder(const std::string &name);
 };

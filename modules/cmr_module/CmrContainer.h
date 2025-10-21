@@ -76,7 +76,7 @@ public:
 
     virtual bool release();
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static std::unique_ptr<Granule> getTemporalFacetGranule(const std::string &granule_path);
 };

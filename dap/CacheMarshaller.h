@@ -77,7 +77,7 @@ public:
     virtual void put_vector_part(char *val, unsigned int num, int width, libdap::Type);
     virtual void put_vector_end();
 
-    virtual void dump(ostream &strm) const;
+    void dump(ostream &strm) const override;
 };
 
 // } // namespace bes

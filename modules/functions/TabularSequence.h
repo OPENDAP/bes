@@ -104,7 +104,7 @@ public:
     virtual bool serialize(libdap::ConstraintEvaluator &eval, libdap::DDS &dds, libdap::Marshaller &m, bool ce_eval = true);
     virtual void intern_data(libdap::ConstraintEvaluator &eval, libdap::DDS &dds);
 
-    virtual void dump(ostream &strm) const;
+    void dump(ostream &strm) const override;
 };
 
 } // namespace functions

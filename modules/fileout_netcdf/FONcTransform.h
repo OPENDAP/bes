@@ -102,7 +102,7 @@ public:
     virtual void transform_dap2();
     virtual void transform_dap4();
 
-    virtual void dump(ostream &strm) const;
+    void dump(ostream &strm) const override;
 
 
 private:

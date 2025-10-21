@@ -67,7 +67,7 @@ public:
     virtual bool rem_info_builder(const std::string &info_type);
     virtual BESInfo * build_info();
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static BESInfoList * TheList();
 };

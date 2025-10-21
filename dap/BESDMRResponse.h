@@ -58,7 +58,7 @@ public:
 	virtual void set_container(const std::string &cn);
 	virtual void clear_container();
 
-	virtual void dump(std::ostream &strm) const;
+	void dump(std::ostream &strm) const override;
 
 	DMR *get_dmr() { return _dmr; }
 	void set_dmr(DMR *dmr) { _dmr = dmr; }

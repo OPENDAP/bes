@@ -82,7 +82,7 @@ public:
 
     virtual string toString();
     virtual string toString() const;
-    virtual void dump(ostream &strm) const;
+    void dump(ostream &strm) const override;
 
     // Don't need to override this, it does what we want.
     // virtual void set_name(const string &n);

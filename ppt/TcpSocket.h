@@ -85,7 +85,7 @@ public:
 
 	virtual bool allowConnection();
 
-	virtual void dump(std::ostream &strm) const;
+	void dump(std::ostream &strm) const override;
 };
 
 #endif // TcpSocket_h

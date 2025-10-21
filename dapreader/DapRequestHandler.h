@@ -60,7 +60,7 @@ public:
 #if 0
     void add_attributes(BESDataHandlerInterface &dhi);
 #endif
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // DapRequestHandler.h

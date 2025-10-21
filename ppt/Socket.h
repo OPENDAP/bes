@@ -94,7 +94,7 @@ public:
 
 	virtual bool allowConnection() = 0;
 
-	virtual void dump(std::ostream &strm) const;
+	void dump(std::ostream &strm) const override;
 };
 
 #endif // Socket_h

@@ -51,7 +51,7 @@ public:
 	virtual void listen(Socket *s);
 	virtual Socket * accept();
 
-	virtual void dump(std::ostream &strm) const;
+	void dump(std::ostream &strm) const override;
 };
 
 #endif // SocketListener_h

@@ -62,7 +62,7 @@ public:
     virtual string name();
     virtual nc_type type();
 
-    virtual void dump(ostream &strm) const;
+    void dump(ostream &strm) const override;
 };
 
 #endif // FONcStr_h_

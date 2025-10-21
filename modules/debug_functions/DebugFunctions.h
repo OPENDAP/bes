@@ -46,7 +46,7 @@ public:
     virtual void initialize(const string &modname);
     virtual void terminate(const string &modname);
 
-    virtual void dump(ostream &strm) const;
+    void dump(ostream &strm) const override;
 };
 
 

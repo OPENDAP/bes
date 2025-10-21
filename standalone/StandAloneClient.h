@@ -95,7 +95,7 @@ public:
 
     void interact();
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // StandAloneClient_h

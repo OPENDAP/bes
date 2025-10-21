@@ -100,7 +100,7 @@ public:
 
     virtual void		show_services( BESInfo &info ) ;
 
-    virtual void		dump( std::ostream &strm ) const ;
+    void		dump( std::ostream &strm ) const override ;
 
     static BESServiceRegistry *	TheRegistry() ;
 };
