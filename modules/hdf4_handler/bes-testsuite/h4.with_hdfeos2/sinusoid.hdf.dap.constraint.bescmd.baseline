@@ -45,7 +45,7 @@ END
                 <Value>grid1 lat</Value>
             </Attribute>
             <Attribute name="DAP4_Checksum_CRC32" type="String">
-                <Value>e62abb27</Value>
+                removed checksum
             </Attribute>
         </Float64>
         <Float64 name="Longitude">
@@ -58,13 +58,13 @@ END
                 <Value>grid1 lon</Value>
             </Attribute>
             <Attribute name="DAP4_Checksum_CRC32" type="String">
-                <Value>76a661ad</Value>
+                removed checksum
             </Attribute>
         </Float64>
     </Group>
 </Dataset>
 
 The data:
-Float64 Latitude[2][3] = {{5.62075370162363, 5.62075370162363, 5.62075370162363},{1.12415074032473, 1.12415074032473, 1.12415074032473}};
-Float64 Longitude[2][2] = {{-179.603503480279, -175.0851763487},{-178.774376167274, -174.276907584449}};
+Float64 /grid1/Latitude[2][3] = {{5.62075370162363, 5.62075370162363, 5.62075370162363},{1.12415074032473, 1.12415074032473, 1.12415074032473}};
+Float64 /grid1/Longitude[2][2] = {{-179.603503480279, -175.0851763487},{-178.774376167274, -174.276907584449}};
 

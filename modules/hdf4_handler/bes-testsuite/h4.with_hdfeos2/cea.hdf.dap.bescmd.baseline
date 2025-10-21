@@ -46,7 +46,7 @@ END
                 <Value>grid1 lat</Value>
             </Attribute>
             <Attribute name="DAP4_Checksum_CRC32" type="String">
-                <Value>2c42482a</Value>
+                removed checksum
             </Attribute>
         </Float64>
         <Float64 name="Longitude">
@@ -58,7 +58,7 @@ END
                 <Value>grid1 lon</Value>
             </Attribute>
             <Attribute name="DAP4_Checksum_CRC32" type="String">
-                <Value>6f216ebc</Value>
+                removed checksum
             </Attribute>
         </Float64>
         <Group name="Data_Fields">
@@ -72,7 +72,7 @@ END
                     <Value>/grid1/Longitude /grid1/Latitude</Value>
                 </Attribute>
                 <Attribute name="DAP4_Checksum_CRC32" type="String">
-                    <Value>16ce958d</Value>
+                    removed checksum
                 </Attribute>
             </Float32>
         </Group>
@@ -81,7 +81,7 @@ END
 </Dataset>
 
 The data:
-Float64 Latitude[YDim_grid1 = 8] = {30.0845210595659, 20.9807944682567, 12.4057297402778, 4.10652290585727, -4.10652290585727, -12.4057297402778, -20.9807944682567, -30.0845210595659};
-Float64 Longitude[XDim_grid1 = 8] = {92.4613966861331, 168.900997632952, -114.659401420229, -38.2198004734096, 38.2198004734096, 114.659401420229, -168.900997632952, -92.4613966861331};
-Float32 temperature[YDim_grid1 = 8][XDim_grid1 = 8] = {{10, 10, 10, 10, 10, 10, 10, 10},{11, 11, 11, 11, 11, 11, 11, 11},{12, 12, 12, 12, 12, 12, 12, 12},{13, 13, 13, 13, 13, 13, 13, 13},{14, 14, 14, 14, 14, 14, 14, 14},{15, 15, 15, 15, 15, 15, 15, 15},{16, 16, 16, 16, 16, 16, 16, 16},{17, 17, 17, 17, 17, 17, 17, 17}};
+Float64 /grid1/Latitude[YDim_grid1 = 8] = {30.0845210595659, 20.9807944682567, 12.4057297402778, 4.10652290585727, -4.10652290585727, -12.4057297402778, -20.9807944682567, -30.0845210595659};
+Float64 /grid1/Longitude[XDim_grid1 = 8] = {92.4613966861331, 168.900997632952, -114.659401420229, -38.2198004734096, 38.2198004734096, 114.659401420229, -168.900997632952, -92.4613966861331};
+Float32 /grid1/Data_Fields/temperature[YDim_grid1 = 8][XDim_grid1 = 8] = {{10, 10, 10, 10, 10, 10, 10, 10},{11, 11, 11, 11, 11, 11, 11, 11},{12, 12, 12, 12, 12, 12, 12, 12},{13, 13, 13, 13, 13, 13, 13, 13},{14, 14, 14, 14, 14, 14, 14, 14},{15, 15, 15, 15, 15, 15, 15, 15},{16, 16, 16, 16, 16, 16, 16, 16},{17, 17, 17, 17, 17, 17, 17, 17}};
 
