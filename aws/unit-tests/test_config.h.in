@@ -1,0 +1,8 @@
+#ifndef E_test_config_h
+#define E_test_config_h
+
+#define TEST_SRC_DIR "@abs_srcdir@"
+#define TEST_BUILD_DIR "@abs_builddir@"
+#define TEST_DATA_DIR "@abs_top_srcdir@/http/data"
+
+#endif

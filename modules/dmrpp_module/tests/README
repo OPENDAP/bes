@@ -6,8 +6,14 @@ Set the following environment variables to these values:
 CMAC_ID
 CMAC_ACCESS_KEY
 CMAC_REGION
-CMAC_BUCKET
 CMAC_URL
+
+CMAC_ON = yes; use the other values, ... = no or CMAC_ON unset and they will be
+ignored. This enables tests to be switched off without affecting the other env
+variables.
+
+Note that CMAC_ON also controls the return-as DMR++ tests. Set this to "no"
+or leave it unset to skip those tests, too. Useful since those tests need more work.
 
  * cloudydap=url:https://s3.amazonaws.com/cloudydap/
  * cloudydap+=id:---------------------------

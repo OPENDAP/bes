@@ -28,12 +28,12 @@ AS_IF([test -n "$with_build"],
       AC_MSG_NOTICE([PACKAGE_VERSION: $PACKAGE_VERSION])],
      [AC_MSG_ERROR([Invalid build number given (must be an integer): $build_number])])])
 
-AS_IF([echo $PACKAGE_VERSION | grep '^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)-\([[0-9]]*\)$'],
+AS_IF([echo $PACKAGE_VERSION | grep '^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)-\([[0-9]]*\)$' > /dev/null 2>&1 ],
       [PACKAGE_MAJOR_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)-\([[0-9]]*\)$@\1@'`
        PACKAGE_MINOR_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)-\([[0-9]]*\)$@\2@'`
        PACKAGE_PATCH_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)-\([[0-9]]*\)$@\3@'`
        PACKAGE_BUILD_NUMBER=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)-\([[0-9]]*\)$@\4@'`],
-      [AS_IF([echo $PACKAGE_VERSION | grep '^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$'],
+      [AS_IF([echo $PACKAGE_VERSION | grep '^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$' > /dev/null 2>&1 ],
        [PACKAGE_MAJOR_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\1@'`
         PACKAGE_MINOR_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\2@'`
         PACKAGE_PATCH_VERSION=`echo $PACKAGE_VERSION | sed 's@^\([[0-9]]\)*\.\([[0-9]]*\)\.\([[0-9]]*\)$@\3@'`
@@ -73,6 +73,9 @@ cxx_debug_flags=
 
 dnl Removed "-g -O2" jhrg 2/8/22
 dnl Changed -O2 to -Og for --enable-developer jhrg 6/16/23
+dnl Changed -Og to -O0 for --enable-developer to improve ease of debugging.
+dnl This can introduce some problems where the optimizers introduces or uncovers
+dnl bugs not present with the 'vanilla' code. jhrg 2/26/25
 
 AC_ARG_ENABLE([developer],
     [AS_HELP_STRING([--enable-developer],
@@ -83,7 +86,7 @@ dnl it's actually used - not all the source files include config.h. jhrg 1/30/23
 
 AM_CONDITIONAL([BES_DEVELOPER], [test "x$enable_developer" = "xyes"])
 AM_COND_IF([BES_DEVELOPER],
-    [cxx_debug_flags="-g3 -Og -Wall"
+    [cxx_debug_flags="-g3 -O0 -Wall"
      AC_DEFINE([DEVELOPER], [1], [Define this for Developer-only code sections.])
      AC_MSG_NOTICE([Developer Mode is enabled.]) ],
     [AC_DEFINE([NDEBUG], [1], [Define this to suppress assert() statements.])
@@ -545,7 +548,71 @@ AS_IF([test $curl_is_ok = no],
     [AC_MSG_ERROR([libcurl: insufficient version or not found])])
     
 ])  dnl End AM_COND_IF BES_DEVELOPER for DMR++/libcurl
-    
+
+dnl Moved this out of the AWS-specific checks. jhrg 10/16/25
+
+AC_MSG_CHECKING([the OS type for shared object dependencies linkage])
+AS_CASE([$host],
+    [*darwin*], [AM_CONDITIONAL([DARWIN], [true])
+                 AC_MSG_NOTICE([OSX found.])],
+    [AM_CONDITIONAL([DARWIN], [false])
+     AC_MSG_NOTICE([OSX not found.])])
+
+dnl Should we look for the AWS C++ SDK? By default, 'yes' but --without-aws will
+dnl disable the check. jhrg 10/16/25
+
+AC_ARG_WITH([aws],
+    AS_HELP_STRING([--without-aws],
+    [Disable support for the AWS C++ SDK. Do not look for, or use, the AWS SDK. (Used by default)]))
+
+AM_CONDITIONAL([LOOK_FOR_AWS], [test "x$with_aws" != "xno"])
+AM_COND_IF([LOOK_FOR_AWS],
+    [AC_MSG_NOTICE([Looking for the AWS C++ SDK])],
+    [AC_MSG_NOTICE([Not looking for the AWS C++ SDK])
+     AM_CONDITIONAL([USE_AWS_SDK], [false])])
+
+dnl Define these no matter what we do. This prevents errors in teh Makefile.am files when the
+dnl libraries are not found/used. jhrg 10/16/25
+
+aws_prefix=
+aws_libs=
+aws_libdir=
+
+AM_COND_IF([LOOK_FOR_AWS],
+    [
+    dnl Look for the AWS libraries (aws-cpp-sdk-s3 aws-cpp-sdk-core) and headers
+    dnl jhrg 3/11/25
+
+    dnl Look for the AWS SDK from the hyrax-dependencies. jhrg 10/9/25
+
+    AC_LANG_PUSH([C++])
+    saved_CPPFLAGS=$CPPFLAGS
+    CPPFLAGS="$CPPFLAGS -I$ac_bes_dependencies_prefix/include"
+    AC_CHECK_HEADERS([aws/core/Aws.h], [found_aws_h=true], [found_aws_h=false])
+    AC_CHECK_HEADERS([aws/s3/S3Client.h], [found_s3client_h=true], [found_s3client_h=false])
+    CPPFLAGS=$saved_CPPFLAGS
+    AC_LANG_POP([C++])
+
+    AS_IF([$found_aws_h && $found_s3client_h],
+        [aws_prefix=$ac_bes_dependencies_prefix
+
+         aws_libs="-laws-crt-cpp -laws-cpp-sdk-s3 -laws-cpp-sdk-core \
+                  -laws-c-http -laws-c-io -laws-c-auth -laws-c-cal -laws-c-compression \
+                  -laws-c-event-stream -laws-c-mqtt -laws-c-s3 -laws-c-sdkutils -laws-c-common \
+                  -lxml2 -lz -lbz2 -lcurl"
+
+         aws_libdir=$aws_prefix/lib
+
+         AC_MSG_NOTICE([AWS C++ SDK Found.])
+         AM_CONDITIONAL([USE_AWS_SDK], [true])],
+        [AC_MSG_NOTICE([AWS C++ SDK not Found.])
+         AM_CONDITIONAL([USE_AWS_SDK], [false])])
+    ])
+
+AC_SUBST(aws_prefix)
+AC_SUBST(aws_libs)
+AC_SUBST(aws_libdir)
+
 dnl Freeform hacks
 
 FF_CPPFLAGS=
@@ -956,6 +1023,7 @@ OPTIONAL_FEATURES=
 
 AM_COND_IF([OPENJPEG_FOUND], [OPTIONAL_FEATURES="openjpeg"])
 AM_COND_IF([BUILD_GDAL], [OPTIONAL_FEATURES="gdal $OPTIONAL_FEATURES"])
+AM_COND_IF([USE_AWS_SDK], [OPTIONAL_FEATURES="AWS_C++_SDK $OPTIONAL_FEATURES"])
 dnl NETCDF4_TESTS are not considered an 'optional feature' since netcdf is netCDF4
 AM_COND_IF([BUILD_NETCDF], [OPTIONAL_FEATURES="netcdf $OPTIONAL_FEATURES"])
 AM_COND_IF([BUILD_FITS], [OPTIONAL_FEATURES="fits $OPTIONAL_FEATURES"])
@@ -1007,6 +1075,9 @@ AC_CONFIG_FILES([Makefile
 		 hello_world/Makefile
 		 hello_world/tests/Makefile
 		 hello_world/tests/atlocal
+
+		 aws/Makefile
+		 aws/unit-tests/Makefile
 
 		 http/Makefile
 		 http/unit-tests/Makefile
@@ -1097,7 +1168,6 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/s3_reader/Makefile
     modules/s3_reader/tests/Makefile
     modules/s3_reader/tests/atlocal
-    modules/s3_reader/unit-tests/Makefile
 
     modules/httpd_catalog_module/Makefile
     modules/httpd_catalog_module/unit-tests/Makefile

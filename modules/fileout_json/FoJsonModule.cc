@@ -99,6 +99,10 @@ void FoJsonModule::terminate(const string &modname)
 
     BESReturnManager::TheManager()->del_transmitter(RETURNAS_JSON);
 
+    BESDEBUG( "fojson", "    removing " << RETURNAS_IJSON << " transmitter" << endl );
+
+    BESReturnManager::TheManager()->del_transmitter(RETURNAS_IJSON);
+
     BESDEBUG( "fojson", "    removing " << modname << " request handler " << endl );
 
     BESRequestHandler *rh = BESRequestHandlerList::TheList()->remove_handler(modname);
