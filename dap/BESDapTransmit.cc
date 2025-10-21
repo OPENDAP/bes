@@ -129,11 +129,11 @@ private:
 class SendDAS: public Sender
 {
 private:
-    virtual string get_request_type() const
+    string get_request_type() const override
     {
         return "DAS";
     }
-    virtual void send_internal(BESResponseObject * obj, BESDataHandlerInterface & dhi)
+    void send_internal(BESResponseObject * obj, BESDataHandlerInterface & dhi) override
     {
         BESDASResponse *bdas = dynamic_cast<BESDASResponse *>(obj);
         if (!bdas) {
@@ -155,11 +155,11 @@ private:
 class SendDDS: public Sender
 {
 private:
-    virtual string get_request_type() const
+    string get_request_type() const override
     {
         return "DDS";
     }
-    virtual void send_internal(BESResponseObject * obj, BESDataHandlerInterface & dhi)
+    void send_internal(BESResponseObject * obj, BESDataHandlerInterface & dhi) override
     {
         BESDDSResponse *bdds = dynamic_cast<BESDDSResponse *>(obj);
         if (!bdds) {
@@ -184,11 +184,11 @@ private:
 class SendDataDDS: public Sender
 {
 private:
-    virtual string get_request_type() const
+    string get_request_type() const override
     {
         return "DataDDS";
     }
-    virtual void send_internal(BESResponseObject * obj, BESDataHandlerInterface & dhi)
+    void send_internal(BESResponseObject * obj, BESDataHandlerInterface & dhi) override
     {
         BESDataDDSResponse *bdds = dynamic_cast<BESDataDDSResponse *>(obj);
         if (!bdds) {
@@ -218,11 +218,11 @@ private:
 class SendDDX: public Sender
 {
 private:
-    virtual string get_request_type() const
+    string get_request_type() const override
     {
         return "DDX";
     }
-    virtual void send_internal(BESResponseObject * obj, BESDataHandlerInterface & dhi)
+    void send_internal(BESResponseObject * obj, BESDataHandlerInterface & dhi) override
     {
         BESDDSResponse *bdds = dynamic_cast<BESDDSResponse *>(obj);
         if (!bdds) {
@@ -246,12 +246,12 @@ private:
 class SendDMR: public Sender
 {
 private:
-    virtual string get_request_type() const
+    string get_request_type() const override
     {
         return "DMR";
     }
 
-    virtual void send_internal(BESResponseObject * obj, BESDataHandlerInterface & dhi)
+    void send_internal(BESResponseObject * obj, BESDataHandlerInterface & dhi) override
     {
         BESDEBUG(MODULE, prolog << "SendDMR::send_internal() - BEGIN" << endl);
 
@@ -281,11 +281,11 @@ private:
 class SendDap4Data: public Sender
 {
 private:
-    virtual string get_request_type() const
+    string get_request_type() const override
     {
         return "DAP4Data";
     }
-    virtual void send_internal(BESResponseObject * obj, BESDataHandlerInterface & dhi)
+    void send_internal(BESResponseObject * obj, BESDataHandlerInterface & dhi) override
     {
         BESDEBUG(MODULE, prolog << "SendDap4Data::send_internal() - BEGIN" << endl);
         // In DAP2 we made a special object for data - a child of DDS. That turned to make

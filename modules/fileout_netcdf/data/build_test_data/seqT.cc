@@ -35,7 +35,7 @@ public:
             Sequence(rhs)
     {
     }
-    virtual ~MySequence()
+    ~MySequence() override
     {
     }
 
@@ -48,11 +48,11 @@ public:
 
         return *this;
     }
-    virtual BaseType *ptr_duplicate()
+    BaseType *ptr_duplicate() override
     {
         return new MySequence(*this);
     }
-    virtual bool read()
+    bool read() override
     {
         set_read_p(true);
         return true;
