@@ -604,7 +604,7 @@ public:
 
     static void parse_chunk_position_in_array_string(const std::string &pia, std::vector<unsigned long long> &pia_vect);
 
-    void dump(std::ostream & strm) const override;
+    void dump(std::ostream & strm) const;
 
     virtual std::string to_string() const;
 };

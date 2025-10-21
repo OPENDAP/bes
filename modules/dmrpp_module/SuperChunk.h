@@ -107,7 +107,7 @@ public:
     virtual bool add_chunk_non_contiguous(std::shared_ptr<Chunk> candidate_chunk, unsigned long long &end_pos);
 
     std::string to_string(bool verbose) const;
-    void dump(std::ostream & strm) const override;
+    void dump(std::ostream & strm) const;
 };
 
 /**
