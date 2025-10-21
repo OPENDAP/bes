@@ -73,7 +73,7 @@ check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_RA_DMRPP) $(TESTSUITE_DMR
 		echo "       CMAC_URL: ${CMAC_URL}"; \
 		$(SHELL) '$(TESTSUITE_S3)' $(TESTSUITEFLAGS); \
 	else \
-		echo "No access credentials available, skipping S3 authentication tests"; \
+		echo "No access credentials available, skipping S3 authentication tests ('$(TESTSUITE_S3)')"; \
 		true;\
 	fi
 	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
@@ -82,7 +82,7 @@ check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_RA_DMRPP) $(TESTSUITE_DMR
 		echo "--------- Found netrc, assuming EDL credentials are there ---------"; \
 		$(SHELL) '$(TESTSUITE_RA_DMRPP)' $(TESTSUITEFLAGS); \
 	else \
-		echo "No netrc available, skipping EDL-based tests"; \
+		echo "No netrc available, skipping EDL-based tests ('$(TESTSUITE_RA_DMRPP)')"; \
 		true;\
 	fi
 	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
