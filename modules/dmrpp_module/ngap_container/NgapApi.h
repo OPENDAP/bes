@@ -37,8 +37,6 @@
 #include <map>
 #include <tuple>
 
-#include "rapidjson/document.h"
-
 namespace http {
 class url;
 }
@@ -59,7 +57,7 @@ private:
 
     static std::string get_cmr_search_endpoint_url();
 
-    static NgapApi::DataAccessUrls get_urls_from_granules_umm_json_v1_4(const std::string &rest_path, rapidjson::Document &cmr_granule_response);
+    static NgapApi::DataAccessUrls get_urls_from_granules_umm_json_v1_4(const std::string &rest_path, const std::string &cmr_granule_json_string);
     static std::string build_cmr_query_url(const std::string &restified_path);
     static std::string build_cmr_query_url_old_rpath_format(const std::string &restified_path);
 
