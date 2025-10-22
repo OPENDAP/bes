@@ -376,14 +376,16 @@ bool NgapOwnedContainer::get_daac_content_filters(const NgapApi::DataAccessUrls 
         Desired output string:
         dmrpp:href=\"<data_url>\" dmrpp:s3=\"<data_s3_url>\" dmrpp:s3credentials=\"<s3credentials_url>\" dmrpp:trust=\"true\"
         */
-        std::ostringstream oss_data_urls;
-        oss_data_urls << "href=\"" << data_url << "\" dmrpp:s3=\"" << data_s3_url << "\" dmrpp:s3credentials=\"" << s3credentials_url << "\" " << trusted_url_hack;
-        std::string data_access_urls = oss_data_urls.str();
+        string data_access_urls("href=\"" + data_url +
+                                "\" dmrpp:s3=\"" + data_s3_url +
+                                "\" dmrpp:s3credentials=\"" + s3credentials_url +
+                                "\" " + trusted_url_hack);
 
         // Same as above, but with a special suffix on each data url
-        std::ostringstream oss_missing_data_urls;
-        oss_missing_data_urls << "href=\"" << data_url << "_mvs.h5\" dmrpp:s3=\"" << data_s3_url << "_mvs.h5\" dmrpp:s3credentials=\"" << s3credentials_url << "\" " << trusted_url_hack;
-        std::string missing_data_access_urls = oss_missing_data_urls.str();
+        string missing_data_access_urls("href=\"" + data_url +
+                                        "_mvs.h5\" dmrpp:s3=\"" + data_s3_url +
+                                        "_mvs.h5\" dmrpp:s3credentials=\"" + s3credentials_url +
+                                        "\" " + trusted_url_hack);
         
         content_filters.clear();
         content_filters.insert(pair<string, string>(data_access_url_key, data_access_urls));
