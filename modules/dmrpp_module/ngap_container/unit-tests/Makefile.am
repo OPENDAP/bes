@@ -105,9 +105,6 @@ MemoryCacheTest_LDADD = $(LIBADD)
 NgapApiTest_SOURCES = NgapApiTest.cc
 NgapApiTest_LDADD =  $(LIBADD)
 
-NgapRequestHandlerTest_SOURCES = NgapRequestHandlerTest.cc
-NgapRequestHandlerTest_LDADD = $(LIBADD)
-
 NgapOwnedContainerTest_SOURCES = NgapOwnedContainerTest.cc
 NgapOwnedContainerTest_LDADD = $(LIBADD)
 
