@@ -10,7 +10,7 @@ AUTOMAKE_OPTIONS = foreign subdir-objects
 
 AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
     -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src -I$(top_srcdir)/modules/common \
-    -I$(top_srcdir)/modules/dmrpp_module -I$(top_srcdir)/rapidjson $(DAP_CFLAGS)
+    -I$(top_srcdir)/modules/dmrpp_module $(DAP_CFLAGS)
 
 # Added -lz for ubuntu
 LIBADD = $(BES_DISPATCH_LIB) $(top_builddir)/dap/.libs/libdap_module.a $(BES_HTTP_LIB) \

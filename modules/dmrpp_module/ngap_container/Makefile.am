@@ -7,7 +7,7 @@ AUTOMAKE_OPTIONS = foreign
 ACLOCAL_AMFLAGS = -I conf
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand \
--I$(top_srcdir)/http -I$(top_srcdir)/rapidjson $(DAP_CFLAGS)
+-I$(top_srcdir)/http $(DAP_CFLAGS)
 
 LIBADD =
 

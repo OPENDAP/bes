@@ -4,7 +4,7 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/modules/common \
     -I$(top_srcdir)/modules/dmrpp_module/ngap_container -I$(top_srcdir)/dispatch \
-    -I$(top_srcdir)/dap -I$(top_srcdir)/http -I$(top_srcdir)/rapidjson $(DAP_CFLAGS)
+    -I$(top_srcdir)/dap -I$(top_srcdir)/http $(DAP_CFLAGS)
 
 LIBADD = -L$(top_builddir)/modules/common -lmodules_common -L$(builddir)/../ -lngap \
     $(BES_DISPATCH_LIB) $(top_builddir)/dap/.libs/libdap_module.a $(BES_HTTP_LIB) \
