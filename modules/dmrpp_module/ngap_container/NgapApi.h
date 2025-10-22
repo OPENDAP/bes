@@ -37,8 +37,6 @@
 #include <map>
 #include <tuple>
 
-#include "rapidjson/document.h"
-
 namespace http {
 class url;
 }
@@ -50,12 +48,16 @@ namespace ngap {
  * @note This would be better implemented as a set of functions in a namespace. jhrg 10/8/25
  */
 class NgapApi {
+
+public:
+    typedef std::tuple<std::string, std::string, std::string> DataAccessUrls;
+
+private:
     static bool append_hyrax_edl_client_id(std::string &cmr_url);
 
     static std::string get_cmr_search_endpoint_url();
 
-    typedef std::tuple<std::string, std::string, std::string> DataAccessUrls;
-    static DataAccessUrls get_urls_from_granules_umm_json_v1_4(const std::string &rest_path, rapidjson::Document &cmr_granule_response);
+    static NgapApi::DataAccessUrls get_urls_from_granules_umm_json_v1_4(const std::string &rest_path, const std::string &cmr_granule_json_string);
     static std::string build_cmr_query_url(const std::string &restified_path);
     static std::string build_cmr_query_url_old_rpath_format(const std::string &restified_path);
 
@@ -67,7 +69,7 @@ public:
     NgapApi(const NgapApi &other) = delete;
     NgapApi &operator=(const NgapApi &other) = delete;
 
-    static std::string convert_ngap_resty_path_to_data_access_url(const std::string &restified_path);
+    static NgapApi::DataAccessUrls convert_ngap_resty_path_to_data_access_urls(const std::string &restified_path);
 };
 
 } // namespace ngap

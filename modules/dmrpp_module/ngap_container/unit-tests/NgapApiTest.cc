@@ -264,11 +264,9 @@ public:
     static void test_get_urls_from_granules_umm_json_v1_4_no_hits() {
         DBG(cerr << prolog << "BEGIN" << endl);
         const string json = bes::read_test_baseline(string(TEST_SRC_DIR) + "/cmr_json_responses/no_hits.json");
-        rapidjson::Document cmr_response;
-        cmr_response.Parse(json.c_str());
 
         CPPUNIT_ASSERT_THROW_MESSAGE("Hits < 1, should have thrown BESNotFoundError",
-                                     NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", cmr_response),
+                                     NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", json.c_str()),
                                      BESNotFoundError);
         DBG(cerr << prolog << "END" << endl);
     }
@@ -279,11 +277,9 @@ public:
         DBG(cerr << prolog << "BEGIN" << endl);
         const string json = bes::read_test_baseline(
             string(TEST_SRC_DIR) + "/cmr_json_responses/items_not_an_array.json");
-        rapidjson::Document cmr_response;
-        cmr_response.Parse(json.c_str());
 
         CPPUNIT_ASSERT_THROW_MESSAGE("items not an array, should have thrown BESInternalError",
-                                     NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", cmr_response),
+                                     NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", json.c_str()),
                                      BESInternalError);
         DBG(cerr << prolog << "end" << endl);
     }
@@ -292,13 +288,10 @@ public:
     static void test_get_urls_from_granules_umm_json_v1_4_no_related_urls() {
         DBG(cerr << prolog << "BEGIN" << endl);
         const string json = bes::read_test_baseline(string(TEST_SRC_DIR) + "/cmr_json_responses/no_related_urls.json");
-        rapidjson::Document cmr_response;
-        cmr_response.Parse(json.c_str());
-
         string url;
         CPPUNIT_ASSERT_THROW_MESSAGE("no related urls, should have thrown BESInternalError" + url,
                                      NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder",
-                                         cmr_response),
+                                         json.c_str()),
                                      BESInternalError);
         DBG(cerr << prolog << "end" << endl);
     }
@@ -308,13 +301,11 @@ public:
         DBG(cerr << prolog << "BEGIN" << endl);
         const string json = bes::read_test_baseline(
             string(TEST_SRC_DIR) + "/cmr_json_responses/related_urls_not_an_array.json");
-        rapidjson::Document cmr_response;
-        cmr_response.Parse(json.c_str());
 
         string url;
         CPPUNIT_ASSERT_THROW_MESSAGE("related urls not an array, should have thrown BESNotFoundError" + url,
                                      NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder",
-                                         cmr_response),
+                                         json.c_str()),
                                      BESNotFoundError);
         DBG(cerr << prolog << "end" << endl);
     }
@@ -324,11 +315,9 @@ public:
         DBG(cerr << prolog << "BEGIN" << endl);
         const string json = bes::read_test_baseline(
             string(TEST_SRC_DIR) + "/cmr_json_responses/no_valid_related_url.json");
-        rapidjson::Document cmr_response;
-        cmr_response.Parse(json.c_str());
 
         CPPUNIT_ASSERT_THROW_MESSAGE("no valid related url, should have thrown BESInternalError",
-                                     NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", cmr_response),
+                                     NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", json.c_str()),
                                      BESInternalError);
         DBG(cerr << prolog << "end" << endl);
     }
@@ -338,11 +327,9 @@ public:
         DBG(cerr << prolog << "BEGIN" << endl);
         const string json = bes::read_test_baseline(
             string(TEST_SRC_DIR) + "/cmr_json_responses/related_url_wo_URL.json");
-        rapidjson::Document cmr_response;
-        cmr_response.Parse(json.c_str());
 
         CPPUNIT_ASSERT_THROW_MESSAGE("related url without URL member, should have thrown BESInternalError",
-                                     NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", cmr_response),
+                                     NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", json.c_str()),
                                      BESInternalError);
         DBG(cerr << prolog << "end" << endl);
     }
@@ -351,11 +338,9 @@ public:
         DBG(cerr << prolog << "BEGIN" << endl);
         const string json = bes::read_test_baseline(
             string(TEST_SRC_DIR) + "/cmr_json_responses/related_url_wo_Type.json");
-        rapidjson::Document cmr_response;
-        cmr_response.Parse(json.c_str());
 
         CPPUNIT_ASSERT_THROW_MESSAGE("related url without Type member, should have thrown BESInternalError",
-                                     NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", cmr_response),
+                                     NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", json.c_str()),
                                      BESInternalError);
         DBG(cerr << prolog << "end" << endl);
     }
@@ -363,11 +348,9 @@ public:
     static void test_get_urls_from_granules_umm_json_v1_4_minimal_json() {
         // not a test baseline, but a canned response from LPDAAC
         const string minimal_json = bes::read_test_baseline(string(TEST_SRC_DIR) + "/cmr_json_responses/minimal.json");
-        rapidjson::Document cmr_response;
-        cmr_response.Parse(minimal_json.c_str());
 
         string data_url, data_s3_url, s3credentials_url;
-        tie(data_url, data_s3_url, s3credentials_url) = NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", cmr_response);
+        tie(data_url, data_s3_url, s3credentials_url) = NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", minimal_json.c_str());
 
         DBG(cerr << prolog << "data_url: " << data_url << endl);
         CPPUNIT_ASSERT_MESSAGE("data_url should not be empty", !data_url.empty());
@@ -379,12 +362,10 @@ public:
         // not a test baseline, but a canned response from LPDAAC
         const string cmr_canned_response_lpdaac = bes::read_test_baseline(
             string(TEST_SRC_DIR) + "/cmr_json_responses/ECOv002_L1B_GEO_22172_008_20220604T024955_0700_01.json");
-        rapidjson::Document cmr_response;
-        cmr_response.Parse(cmr_canned_response_lpdaac.c_str());
 
         string data_url, data_s3_url, s3credentials_url;
         tie(data_url, data_s3_url, s3credentials_url) = NgapApi::get_urls_from_granules_umm_json_v1_4(
-            "placeholder_for_restified_url", cmr_response);
+            "placeholder_for_restified_url", cmr_canned_response_lpdaac.c_str());
 
         DBG(cerr << prolog << "data_url: " << data_url << endl);
         CPPUNIT_ASSERT_MESSAGE("data_url should not be empty", !data_url.empty());
@@ -408,12 +389,10 @@ public:
         const string cmr_canned_response_podaac = bes::read_test_baseline(
             string(TEST_SRC_DIR) +
             "/cmr_json_responses/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.json");
-        rapidjson::Document cmr_response;
-        cmr_response.Parse(cmr_canned_response_podaac.c_str());
 
         string data_url, data_s3_url, s3credentials_url;
         tie(data_url, data_s3_url, s3credentials_url) = NgapApi::get_urls_from_granules_umm_json_v1_4(
-            "placeholder_for_restified_url", cmr_response);
+            "placeholder_for_restified_url", cmr_canned_response_podaac.c_str());
 
         DBG(cerr << prolog << "data_url: " << data_url << endl);
         CPPUNIT_ASSERT_MESSAGE("data_url should not be empty", !data_url.empty());
