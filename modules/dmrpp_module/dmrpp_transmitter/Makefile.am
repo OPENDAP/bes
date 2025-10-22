@@ -5,7 +5,7 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 
 AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch -I$(top_srcdir)/http \
-    -I$(top_srcdir)/modules/dmrpp_module/ngap_container
+    -I$(top_srcdir)/modules/dmrpp_module/ngap_container -I$(top_srcdir)/rapidjson
 
 AM_CXXFLAGS =
 AM_LDFLAGS = $(DMRPP_LDFLAGS)
