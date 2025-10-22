@@ -360,7 +360,9 @@ void NgapOwnedContainer::filter_response(const map <string, string, std::less<>>
  * @return True if the filters were built, false otherwise
  */
 bool NgapOwnedContainer::get_daac_content_filters(const NgapApi::DataAccessUrls &data_urls, map<string, string, std::less<>> &content_filters) {
-    string data_url, data_s3_url, s3credentials_url;
+    string data_url;
+    string data_s3_url;
+    string s3credentials_url;
     tie(data_url, data_s3_url, s3credentials_url) = data_urls;
     // data_url was get_real_name(). jhrg 8/9/24
 
@@ -370,8 +372,10 @@ bool NgapOwnedContainer::get_daac_content_filters(const NgapApi::DataAccessUrls 
         const string data_access_url_key = href + DATA_ACCESS_URL_KEY + "\"";
         const string missing_data_access_url_key = href + MISSING_DATA_ACCESS_URL_KEY + "\"";
 
-        // Desired output string:
-        // dmrpp:href=\"<data_url>\" dmrpp:s3=\"<data_s3_url>\" dmrpp:s3credentials=\"<s3credentials_url>\" dmrpp:trust=\"true\"
+        /*
+        Desired output string:
+        dmrpp:href=\"<data_url>\" dmrpp:s3=\"<data_s3_url>\" dmrpp:s3credentials=\"<s3credentials_url>\" dmrpp:trust=\"true\"
+        */
         std::ostringstream oss_data_urls;
         oss_data_urls << "href=\"" << data_url << "\" dmrpp:s3=\"" << data_s3_url << "\" dmrpp:s3credentials=\"" << s3credentials_url << "\" " << trusted_url_hack;
         std::string data_access_urls = oss_data_urls.str();
