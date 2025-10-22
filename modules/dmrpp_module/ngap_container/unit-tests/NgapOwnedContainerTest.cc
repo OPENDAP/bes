@@ -317,10 +317,16 @@ public:
     void test_access_s3() {
         TEST_NAME;
 
-        string cmac_url = getenv("CMAC_URL");
+        auto cmac_url_c_str = getenv("CMAC_URL");
+        if (cmac_url_c_str == nullptr) {
+            DBG(cerr << "Skipping test_access_s3 because CMAC_URL is not set.\n");
+            return;
+        }
+
+        string cmac_url(cmac_url_c_str);
         if (getenv("CMAC_ID") == nullptr
             || cmac_url.find(DMRPP_TEST_BUCKET_OPENDAP_AWS) == string::npos) {
-            DBG(cerr << "Skipping test_access_s3 because AWS_ACCESS_KEY_ID is not set.\n");
+            DBG(cerr << "Skipping test_access_s3 because CMAC_ID (AWS_ACCESS_KEY_ID) is not set.\n");
             return;
         }
 
