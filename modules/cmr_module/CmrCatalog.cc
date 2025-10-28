@@ -121,7 +121,6 @@ bes::CatalogNode * CmrCatalog::get_providers_node() const
     return node;
 }
 
-
 bes::CatalogNode *CmrCatalog::get_collections_node(const string &path, const string &provider_id) const
 {
     CmrApi cmrApi;
@@ -306,11 +305,11 @@ CmrCatalog::get_temporal_facet_nodes(const string &path, const vector<string> &p
 bes::CatalogNode *
 CmrCatalog::get_node(const string &ppath) const
 {
-    string path = BESUtil::normalize_path(ppath,true, false);
+    const string path = BESUtil::normalize_path(ppath,true, false);
     vector<string> path_elements = BESUtil::split(path);
     BESDEBUG(MODULE, prolog << "path: '" << path << "'   path_elements.size(): " << path_elements.size() << endl);
 
-    string epoch_time = BESUtil::get_time(0,false);
+    BESUtil::get_time(0,false);
 
     // Not sure why this is being "cleaned" but it must have been a thing - ndp 11/9/22
     for (auto & path_element : path_elements) {
@@ -319,7 +318,6 @@ CmrCatalog::get_node(const string &ppath) const
     }
 
     string provider_id;
-    string collection_id;
 
     switch(path_elements.size()){
         case 0: {
@@ -331,237 +329,20 @@ CmrCatalog::get_node(const string &ppath) const
             provider_id = path_elements[0];
             return get_collections_node(path, provider_id);
         }
-        //case 2: {
-        //    collection_id = path_elements[1];
-        //    return get_facets_node(path,collection_id );
-        //}
         default:
             break;
     }
 
-    // If we are here we know the path_elements vector is not empty and that it has MORE than
+    // If we are here, we know the path_elements vector is not empty and that it has MORE than
     // three members. So we set provider_id and the collection_id to the first two values.
     provider_id = path_elements[0];
     path_elements.erase(path_elements.begin());
 
-    collection_id = path_elements[0];
+    string collection_id = path_elements[0];
     path_elements.erase(path_elements.begin());
-
-    //string facet = path_elements[0];
-    //path_elements.erase(path_elements.begin());
-
-
-    // Now we QC the facet name,
-    //if( facet != CMR_TEMPORAL_NAVIGATION_FACET_KEY){
-    //    throw BESNotFoundError("The CMR catalog only supports temporal faceting.",__FILE__,__LINE__);
-    //}
 
     return get_temporal_facet_nodes(path, path_elements,collection_id);
 }
-
-#if 0
-/**
- * path_elements.size==0  path: / (collections node)
- * path_elements.size==1  path: /collection_name/ (facets node)
- * path_elements.size==2  path: /collection_name/temporal/ (years node)
- * path_elements.size==3  path: /collection_name/years/ (months node)
- * path_elements.size==4  path: /collection_name/years/months/ (days node)
- * path_elements.size==5  path: /collection_name/years/months/days/ (granules node)
- * path_elements.size==6  path: /collection_name/years/months/days/granule (Dataset Request Form)
- *
- * @param ppath
- * @return
- */
-bes::CatalogNode *
-CmrCatalog::get_node_OLD(const string &ppath) const
-{
-    string path = BESUtil::normalize_path(ppath,true, false);
-    vector<string> path_elements = BESUtil::split(path);
-    BESDEBUG(MODULE, prolog << "path: '" << path << "'   path_elements.size(): " << path_elements.size() << endl);
-
-    string epoch_time = BESUtil::get_time(0,false);
-
-    CmrApi cmrApi;
-    bes::CatalogNode *node;
-
-    if(path_elements.empty()){
-        node = new CatalogNode("/");
-        node->set_lmt(epoch_time);
-        node->set_catalog_name(CMR_CATALOG_NAME);
-        for(const auto & d_collection : d_collections){
-            auto *collection = new CatalogItem();
-            collection->set_name(d_collection);
-            collection->set_type(CatalogItem::node);
-            node->add_node(collection);
-        }
-    }
-    else {
-        for(auto & path_element : path_elements){
-            if(path_element=="-")
-                path_element = "";
-        }
-
-        string collection = path_elements[0];
-        BESDEBUG(MODULE, prolog << "Checking for collection: " << collection << " d_collections.size(): " << d_collections.size() << endl);
-        bool valid_collection = false;
-        for(size_t i=0; i<d_collections.size() && !valid_collection ; i++){
-            if(collection == d_collections[i])
-                valid_collection = true;
-        }
-        if(!valid_collection){
-            throw BESNotFoundError("The CMR catalog does not contain a collection named '"+collection+"'",__FILE__,__LINE__);
-        }
-        BESDEBUG(MODULE, prolog << "Collection " << collection << " is valid." << endl);
-        if(path_elements.size() >1){
-            string facet = path_elements[1];
-            bool valid_facet = false;
-            for(size_t i=0; i<d_facets.size() && !valid_facet ; i++){
-                if(facet == d_facets[i])
-                    valid_facet = true;
-            }
-            if(!valid_facet){
-                throw BESNotFoundError("The CMR collection '"+collection+"' does not contain a facet named '"+facet+"'",__FILE__,__LINE__);
-            }
-
-            if(facet=="temporal"){
-                BESDEBUG(MODULE, prolog << "Found Temporal Facet"<< endl);
-                node = new CatalogNode(path);
-                node->set_lmt(epoch_time);
-                node->set_catalog_name(CMR_CATALOG_NAME);
-
-
-                switch( path_elements.size()){
-
-                case 2: // The path ends at temporal facet, so we need the year nodes.
-                {
-                    vector<string> years;
-
-                    BESDEBUG(MODULE, prolog << "Getting year nodes for collection: " << collection<< endl);
-                    cmrApi.get_years(collection, years);
-                    for(auto & year : years){
-                        auto *catalogItem = new CatalogItem();
-                        catalogItem->set_type(CatalogItem::node);
-                        catalogItem->set_name(year);
-                        catalogItem->set_is_data(false);
-                        catalogItem->set_lmt(epoch_time);
-                        catalogItem->set_size(0);
-                        node->add_node(catalogItem);
-                    }
-                }
-                break;
-
-                case 3:  // The path ends at years facet, so we need the month nodes.
-                {
-                    string year = path_elements[2];
-                    //string month;
-                    string day;
-                    vector<string> months;
-
-                    BESDEBUG(MODULE, prolog << "Getting month nodes for collection: " << collection << " year: " << year << endl);
-                    cmrApi.get_months(collection, year, months);
-                    for(auto & month : months){
-                        auto *catalogItem = new CatalogItem();
-                        catalogItem->set_type(CatalogItem::node);
-                        catalogItem->set_name(month);
-                        catalogItem->set_is_data(false);
-                        catalogItem->set_lmt(epoch_time);
-                        catalogItem->set_size(0);
-                        node->add_node(catalogItem);
-                    }
-                }
-                break;
-
-                case 4:  // The path ends at months facet, so we need the day nodes.
-                {
-                    string year = path_elements[2];
-                    string month = path_elements[3];
-                    //string day("");
-                    vector<string> days;
-
-                    BESDEBUG(MODULE, prolog << "Getting day nodes for collection: " << collection << " year: " << year << " month: " << month << endl);
-                    cmrApi.get_days(collection, year, month, days);
-                    for(auto & day : days){
-                        auto *catalogItem = new CatalogItem();
-                        catalogItem->set_type(CatalogItem::node);
-                        catalogItem->set_name(day);
-                        catalogItem->set_is_data(false);
-                        catalogItem->set_lmt(epoch_time);
-                        catalogItem->set_size(0);
-                        node->add_node(catalogItem);
-                    }
-                }
-                break;
-
-                case 5:  // The path ends at the days facet, so we need the granule nodes.
-                {
-                    string year = path_elements[2];
-                    string month = path_elements[3];
-                    string day = path_elements[4];
-                    BESDEBUG(MODULE, prolog << "Getting granule leaves for collection: " << collection << " year: " << year << " month: " << month <<  " day: " << day << endl);
-                    vector<Granule *> granules;
-                    cmrApi.get_granules(collection, year, month, day, granules);
-                    for(auto & granule : granules){
-                        node->add_leaf(granule->getCatalogItem(get_catalog_utils()));
-                    }
-                }
-                break;
-
-                case 6: // Looks like they are trying to get a particular granule...
-                {
-                    string year = path_elements[2];
-                    string month = path_elements[3];
-                    string day = path_elements[4];
-                    string granule_id = path_elements[5];
-                    BESDEBUG(MODULE, prolog << "Request resolved to leaf granule/dataset name,  collection: " << collection << " year: " << year
-                        << " month: " << month <<  " day: " << day << " granule: " << granule_id << endl);
-                    Granule *granule = cmrApi.get_granule(collection,year,month,day,granule_id);
-                    if(granule){
-                        auto *granuleItem = new CatalogItem();
-                        granuleItem->set_type(CatalogItem::leaf);
-                        granuleItem->set_name(granule->getName());
-                        granuleItem->set_is_data(true);
-                        granuleItem->set_lmt(granule->getLastModifiedStr());
-                        granuleItem->set_size(granule->getSize());
-                        node->set_leaf(granuleItem);
-                    }
-                    else {
-                        throw BESNotFoundError("No such resource: "+path,__FILE__,__LINE__);
-                    }
-                }
-                break;
-
-                default:
-                {
-                    throw BESSyntaxUserError("CmrCatalog: The path '"+path+"' does not describe a valid temporal facet search.",__FILE__,__LINE__);
-                }
-                break;
-                }
-
-            }
-            else {
-                throw BESNotFoundError("The CMR catalog only supports temporal faceting.",__FILE__,__LINE__);
-            }
-        }
-        else {
-            BESDEBUG(MODULE, prolog << "Building facet list for collection: " << collection << endl);
-            node = new CatalogNode(path);
-            node->set_lmt(epoch_time);
-            node->set_catalog_name(CMR_CATALOG_NAME);
-            for(const auto & d_facet : d_facets){
-                auto *catalogItem = new CatalogItem();
-                catalogItem->set_name(d_facet);
-                catalogItem->set_type(CatalogItem::node);
-                catalogItem->set_lmt(epoch_time);
-                BESDEBUG(MODULE, prolog << "Adding facet: " << d_facet << endl);
-                node->add_node(catalogItem);
-            }
-        }
-    }
-    return node;
-}
-#endif
-
-
 
 /** @brief dumps information about this object
  *

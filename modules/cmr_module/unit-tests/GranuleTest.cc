@@ -93,7 +93,7 @@ public:
 
             // Here we know there are at least 46 values in node. jhrg 10/17/25
             const vector<string> expected = { "1980", "1981", "1982", "1983","1984" };
-            bes::CatalogNode::item_iter itr = node->nodes_begin();
+            auto itr = node->nodes_begin();
             for (const auto & i : expected) {
                 string node_name = (*itr)->get_name();
                 CPPUNIT_ASSERT_MESSAGE("Checking:  expected: " + i + " received: " + node_name,
