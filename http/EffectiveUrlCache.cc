@@ -160,6 +160,34 @@ shared_ptr <EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr <url> 
     return effective_url;
 }
 
+// TODO: docstring
+void EffectiveUrlCache::cache_signed_url_components(const std::string &key, const std::string &s3_url, const std::string &s3credentials_url) {
+    // TODO: if urls are empty, do....something?? skip it or something
+    d_href_to_s3credentials_cache[key] = s3_url;
+    d_href_to_s3_cache[key] = s3credentials_url;
+}
+
+/**
+ * TODO
+ *
+ * @param source_url
+ * @returns The effective (signed) URL
+*/
+shared_ptr<EffectiveUrl> EffectiveUrlCache::get_signed_url(shared_ptr<url> source_url) {
+    BESDEBUG(MODULE, prolog << "GET SIGNED URL NOT YET IMPLEMENTED, falling back to get_effective_url." << endl);
+
+    auto  s3_url =  d_href_to_s3credentials_cache[source_url->str()];
+    auto s3credentials_url = d_href_to_s3_cache[source_url->str()];
+    //TODO-implement! Copy get_effective_url boilerplate, then...
+    /*
+    1. Get s3credentials endpoint for source_url
+    2. Get values from s3credentials enpoint (pre-cached, but for now can get direct)
+    3. Get s3 url for source_url
+    4. use aws sdk to sign the url 
+    */
+    return get_effective_url(source_url);
+}
+
 /**
  * @return Is the cache enabled (set in the bes.conf file)?
  */

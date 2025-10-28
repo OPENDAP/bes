@@ -35,6 +35,7 @@
 
 #include <sstream>
 #include <string>
+#include <cassert>
 
 #include "BESStopWatch.h"
 #include "BESUtil.h"
@@ -45,6 +46,7 @@
 #include "TheBESKeys.h"
 #include "BESSyntaxUserError.h"
 #include "BESDebug.h"
+#include "EffectiveUrlCache.h"
 
 #include "NgapOwnedContainer.h"
 #include "NgapNames.h"
@@ -61,6 +63,7 @@
 
 using namespace std;
 using namespace bes;
+using http::EffectiveUrlCache;
 
 namespace ngap {
 
@@ -559,6 +562,15 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
     return true;
 }
 
+// TODO-docstring
+NgapApi::DataAccessUrls NgapOwnedContainer::extract_s3_data_urls_from_dmrpp(const string &dmrpp_string) {
+
+    //TODO: pull from DMZ::build_thin_dmr code
+    // TODO: handle the case where nothing is found in dmrpp
+
+    return tie("foo_href", "foo_s3", "foo_s3credentials");
+}
+
 /**
  * @brief Get the DMR++ from a remote source or a local cache
  *
@@ -577,6 +589,12 @@ string NgapOwnedContainer::access() {
     // get_dmrpp...() returns false for various caching errors, but throws if it cannot
     // get the remote DMR++. jhrg 4/29/24
     get_dmrpp_from_cache_or_remote_source(dmrpp_string);
+
+    // To sign urls locally, we need access to the credential info that has been previously
+    // injected into the dmrpp. Extract that now, in preparation for upcoming url signing.
+    auto urls = extract_s3_data_urls_from_dmrpp(dmrpp_string);
+    assert(get<1>(urls) == get_real_name()); // TODO: better way to do this??
+    EffectiveUrlCache::TheCache()->cache_signed_url_components(get_real_name(), get<1>(urls), get<2>(urls));
 
     set_attributes("as-string");    // This means access() returns a string. jhrg 10/19/23
     // Originally, this was either hard-coded (as it is now) or was set using the 'extension'

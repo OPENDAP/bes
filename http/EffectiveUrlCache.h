@@ -58,6 +58,10 @@ private:
 
     std::map<std::string, std::shared_ptr<http::EffectiveUrl>> d_effective_urls;
 
+    // TODO- Will be moved to new class before merge
+    std::map<std::string, std::string> d_href_to_s3credentials_cache;
+    std::map<std::string, std::string> d_href_to_s3_cache;
+
     // URLs that match are not cached.
     std::unique_ptr<BESRegex> d_skip_regex = nullptr;
 
@@ -94,6 +98,15 @@ public:
     ~EffectiveUrlCache() override = default;
 
     std::shared_ptr<EffectiveUrl> get_effective_url(std::shared_ptr<url> source_url);
+    
+    /*
+    * TODO: temporarily lives here; move into own class before merge!
+    */
+    std::shared_ptr<EffectiveUrl> get_signed_url(std::shared_ptr<url> source_url);
+    void cache_signed_url_components(const std::string &key, const std::string &s3_url, const std::string &s3credentials_url);
+    /*
+    * End temp contents!
+    */
 
     void dump(std::ostream &strm) const override;
 

@@ -1348,7 +1348,8 @@ string Chunk::to_string() const {
  * This method returns the data URL for this chunk. If the data URL is not
  * set, it returns nullptr.
  *
- * @note The call to get_effective_url() will call EffectiveUrlCache::get_effective_url()
+ * @note The call to get_signed_url() will first attempt to create a locally-signed url; if
+ * that fails, it will fall through to calling EffectiveUrlCache::get_effective_url()
  * which will call CurlUtils.cc get_redirect_url() which will call gru_mk_attempt() and
  * will look for an HTTP 302 response and return the redirect URL in that response.
  *
@@ -1359,7 +1360,13 @@ std::shared_ptr<http::url> Chunk::get_data_url() const {
     // The d_data_url may be nullptr(fillvalue case). 
     if (d_data_url == nullptr) 
         return d_data_url;
-    std::shared_ptr<http::EffectiveUrl> effective_url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url);
+
+    std::shared_ptr<http::EffectiveUrl> effective_url = EffectiveUrlCache::TheCache()->get_signed_url(d_data_url);
+
+    if (effective_url == nullptr) {
+        BESDEBUG(MODULE, prolog << "No signed url generated; constructing effective_url via redirects." << endl);
+        effective_url = EffectiveUrlCache::TheCache()->get_signed_url(d_data_url);
+    }
     BESDEBUG(MODULE, prolog << "Using data_url: " << effective_url->str() << endl);
 
 #if ENABLE_TRACKING_QUERY_PARAMETER
