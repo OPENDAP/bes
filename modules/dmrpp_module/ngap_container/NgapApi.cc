@@ -424,7 +424,11 @@ string get_s3credentials_url(rapidjson::Value &obj) {
  * @return  A tuple of data urls for the granule: the "GET DATA" URL, "GET DATA" s3 URL, and "USE SERVICE API" s3 CREDENTIALS URL.
  */
 NgapApi::DataAccessUrls NgapApi::get_urls_from_granules_umm_json_v1_4(const std::string &rest_path,
-                                                                                 rapidjson::Document &cmr_granule_response) {
+                                                                      const std::string &cmr_granule_json_string) {
+
+    rapidjson::Document cmr_granule_response;
+    cmr_granule_response.Parse(cmr_granule_json_string.c_str());
+
     const rapidjson::Value &val = cmr_granule_response["hits"];
     int hits = val.GetInt();
     if (hits < 1) {
@@ -506,7 +510,7 @@ NgapApi::DataAccessUrls NgapApi::get_urls_from_granules_umm_json_v1_4(const std:
  *
  * @param restified_path The name to decompose.
  */
-string NgapApi::convert_ngap_resty_path_to_data_access_url(const string &restified_path) {
+NgapApi::DataAccessUrls NgapApi::convert_ngap_resty_path_to_data_access_urls(const string &restified_path) {
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
 
     string cmr_query_url = build_cmr_query_url(restified_path);
@@ -525,11 +529,8 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(const string &restifi
         throw;
     }
 
-    rapidjson::Document cmr_response;
-    cmr_response.Parse(cmr_json_string.c_str());
-
     string data_access_url, data_s3_url, s3credentials_url;
-    tie(data_access_url, data_s3_url, s3credentials_url) = get_urls_from_granules_umm_json_v1_4(restified_path, cmr_response);
+    tie(data_access_url, data_s3_url, s3credentials_url) = get_urls_from_granules_umm_json_v1_4(restified_path, cmr_json_string);
 
     if (data_s3_url.empty() || s3credentials_url.empty()) {
         // Eventually we'll be removing the non-s3 access; we need to know about any unsupported cases before that happens.
@@ -551,7 +552,7 @@ string NgapApi::convert_ngap_resty_path_to_data_access_url(const string &restifi
 
     BESDEBUG(MODULE, prolog << "END (data_access_url: " << data_access_url << ", data_s3_url: " << data_s3_url << ", s3credentials_url: " << s3credentials_url << ")" << endl);
 
-    return data_access_url;
+    return std::make_tuple(data_access_url, data_s3_url, s3credentials_url);
 }
 
 } // namespace ngap
