@@ -58,15 +58,6 @@ private:
 
     std::map<std::string, std::shared_ptr<http::EffectiveUrl>> d_effective_urls;
 
-    // TODO: The following will be moved to new class before merge
-public:
-    typedef std::tuple<std::string, std::string, std::string, std::string> S3AccessKeyTuple;
-private:
-    std::map<std::string, std::string> d_href_to_s3credentials_cache;
-    std::map<std::string, std::string> d_href_to_s3_cache;
-    std::shared_ptr<S3AccessKeyTuple> get_cache_s3credentials(std::string const &s3credentials_url);
-    static std::shared_ptr<S3AccessKeyTuple> get_s3_credentials_from_tea_endpoint_json(std::string const &s3credentials_json_string);
-
     // URLs that match are not cached.
     std::unique_ptr<BESRegex> d_skip_regex = nullptr;
 
@@ -103,15 +94,6 @@ public:
     ~EffectiveUrlCache() override = default;
 
     std::shared_ptr<EffectiveUrl> get_effective_url(std::shared_ptr<url> source_url);
-    
-    /*
-    * TODO: temporarily lives here; move into own class before merge!
-    */ 
-    std::shared_ptr<EffectiveUrl> get_signed_url(std::shared_ptr<url> source_url);
-    void cache_signed_url_components(const std::string &key, const std::string &s3_url, const std::string &s3credentials_url);
-    /*
-    * End temp contents!
-    */
 
     void dump(std::ostream &strm) const override;
 

@@ -46,6 +46,7 @@
 #include "BESSyntaxUserError.h"
 #include "BESDebug.h"
 #include "EffectiveUrlCache.h"
+#include "SignedUrlCache.h"
 
 #include "NgapOwnedContainer.h"
 #include "NgapNames.h"
@@ -67,6 +68,7 @@
 using namespace std;
 using namespace bes;
 using http::EffectiveUrlCache;
+using http::SignedUrlCache;
 using namespace pugi;
 
 namespace ngap {
@@ -631,7 +633,7 @@ string NgapOwnedContainer::access() {
     // To sign urls locally, we need access to the credential info that has been previously
     // injected into the dmrpp. Extract that now, in preparation for upcoming url signing.
     auto urls = extract_s3_data_urls_from_dmrpp(dmrpp_string);
-    EffectiveUrlCache::TheCache()->cache_signed_url_components(get<0>(urls), get<1>(urls), get<2>(urls));
+    SignedUrlCache::TheCache()->cache_signed_url_components(get<0>(urls), get<1>(urls), get<2>(urls));
 
     set_attributes("as-string");    // This means access() returns a string. jhrg 10/19/23
     // Originally, this was either hard-coded (as it is now) or was set using the 'extension'
