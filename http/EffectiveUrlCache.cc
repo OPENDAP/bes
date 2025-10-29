@@ -41,6 +41,8 @@
 #include "EffectiveUrl.h"
 #include "EffectiveUrlCache.h"
 
+#include "rapidjson/document.h"
+
 using namespace std;
 
 constexpr auto MODULE = "euc";
@@ -163,9 +165,82 @@ shared_ptr <EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr <url> 
 // TODO: docstring
 void EffectiveUrlCache::cache_signed_url_components(const std::string &key, const std::string &s3_url, const std::string &s3credentials_url) {
     // TODO: if urls are empty, do....something?? skip it or something
+    INFO_LOG(prolog + "Caching signed url components for key: " + key);
     d_href_to_s3_cache[key] = s3_url;
     d_href_to_s3credentials_cache[key] = s3credentials_url;
 }
+
+shared_ptr<EffectiveUrlCache::S3AccessKeyTuple> EffectiveUrlCache::get_cache_s3credentials(std::string const &s3credentials_url) {
+    //TODO-future: make cache for these credentials, check if they've already been retrieved
+    
+    // 1. Get the credentials from TEA
+    std::string s3credentials_json_string;
+    try {
+        BES_PROFILE_TIMING(string("Request s3 credentials from TEA - ") + s3credentials_url);
+        curl::http_get(s3credentials_url, s3credentials_json_string);
+    }
+    catch (http::HttpError &http_error) {
+        string err_msg = prolog + "Encountered an error while "
+                         "attempting to retrieve s3 credentials from TEA. " + http_error.get_message();
+        INFO_LOG(err_msg);
+        return nullptr;
+    }
+    if (s3credentials_json_string.empty()) {
+        string err_msg = prolog + "Unable to retrieve s3 credentials from TEA endpoint " + s3credentials_url;
+        INFO_LOG(err_msg);
+        return nullptr;
+    }
+
+    // 2. Parse the response to pull out the credentials
+    auto credentials = get_s3_credentials_from_tea_endpoint_json(s3credentials_json_string);
+
+    //TODO-future: add these credentials to the cache
+
+    return credentials;
+}
+
+
+// Lightly adapted from get_urls_from_granules_umm_json_v1_4
+std::shared_ptr<EffectiveUrlCache::S3AccessKeyTuple> EffectiveUrlCache::get_s3_credentials_from_tea_endpoint_json(std::string const &s3credentials_json_string) {
+    rapidjson::Document s3credentials_response;
+    s3credentials_response.Parse(s3credentials_json_string.c_str());
+
+    string access_key_id;
+    string secret_access_key;
+    string session_token;
+    string expiration;
+
+    auto itr = s3credentials_response.FindMember("accessKeyId");
+    if (itr != s3credentials_response.MemberEnd()) {
+        access_key_id = itr->value.GetString();
+    }
+
+    itr = s3credentials_response.FindMember("secretAccessKey");
+    if (itr != s3credentials_response.MemberEnd()) {
+        secret_access_key = itr->value.GetString();
+    }
+
+    itr = s3credentials_response.FindMember("sessionToken");
+    if (itr != s3credentials_response.MemberEnd()) {
+        session_token = itr->value.GetString();
+    }
+
+    itr = s3credentials_response.FindMember("expiration");
+    if (itr != s3credentials_response.MemberEnd()) {
+        expiration = itr->value.GetString();
+    }
+
+    if (access_key_id.empty() || secret_access_key.empty() || session_token.empty() || expiration.empty()) {
+        return nullptr;
+    }
+
+    return make_shared<EffectiveUrlCache::S3AccessKeyTuple>(access_key_id, 
+                                                            secret_access_key,
+                                                            session_token,
+                                                            expiration);
+}
+
+
 
 /**
  * TODO
@@ -173,22 +248,29 @@ void EffectiveUrlCache::cache_signed_url_components(const std::string &key, cons
  * @param source_url
  * @returns The effective (signed) URL
 */
-shared_ptr<EffectiveUrl> EffectiveUrlCache::get_signed_url(shared_ptr<url> source_url) {
-    BESDEBUG(MODULE, prolog << "GET SIGNED URL NOT YET IMPLEMENTED, falling back to get_effective_url." << endl);
+std::shared_ptr<EffectiveUrl> EffectiveUrlCache::get_signed_url(std::shared_ptr<url> source_url) {
+    INFO_LOG(prolog + "GET SIGNED URL NOT YET IMPLEMENTED, falling back to get_effective_url; returns nullptr");
 
     //TODO-implement! Copy get_effective_url boilerplate, then...
 
+    // 1. Get relevant urls
     auto s3_url = d_href_to_s3_cache[source_url->str()];
     auto s3credentials_url = d_href_to_s3credentials_cache[source_url->str()];
     if (s3_url.empty() || s3credentials_url.empty()) {
-        // TODO: warn here?
+        INFO_LOG(prolog + "No url available for TEA s3credentials endpoint.");
         return get_effective_url(source_url);
     }
 
-    // TODO-1. Get values from s3credentials endpoint (and cache them eventually, but for now can get direct)
+    // 2. Get values from s3credentials endpoint
+    auto s3_access_key_tuple = get_cache_s3credentials(s3credentials_url);
+    if (s3_access_key_tuple == nullptr) {
+        return get_effective_url(source_url);
+    }
+    
+
     // TODO-2: use aws sdk to sign the url
 
-    return get_effective_url(source_url);
+    return nullptr;
 }
 
 /**

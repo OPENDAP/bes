@@ -1364,7 +1364,7 @@ std::shared_ptr<http::url> Chunk::get_data_url() const {
     std::shared_ptr<http::EffectiveUrl> effective_url = EffectiveUrlCache::TheCache()->get_signed_url(d_data_url);
 
     if (effective_url == nullptr) {
-        BESDEBUG(MODULE, prolog << "No signed url generated; constructing effective_url via redirects." << endl);
+        INFO_LOG(prolog + "Failed to locally sign url; constructing effective_url via redirects.");
         effective_url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url);
     }
     BESDEBUG(MODULE, prolog << "Using data_url: " << effective_url->str() << endl);
