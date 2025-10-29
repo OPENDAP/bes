@@ -41,6 +41,7 @@ SRCS = CurlUtils.cc \
     HttpUtils.cc \
     ProxyConfig.cc \
     EffectiveUrlCache.cc \
+    SignedUrlCache.cc \
     url_impl.cc \
     EffectiveUrl.cc \
     AllowedHosts.cc \
@@ -55,6 +56,7 @@ HDRS = CurlUtils.h \
     ProxyConfig.h \
     HttpNames.h \
     EffectiveUrlCache.h \
+    SignedUrlCache.h \
     url_impl.h \
     EffectiveUrl.h \
     AllowedHosts.h \

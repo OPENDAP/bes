@@ -528,7 +528,10 @@ add_executable(
     http/EffectiveUrl.h
     http/EffectiveUrlCache.cc
     http/EffectiveUrlCache.h
+    http/SignedUrlCache.cc
+    http/SignedUrlCache.h
     http/unit-tests/EffectiveUrlCacheTest.cc
+    http/unit-tests/SignedUrlCacheTest.cc
     http/unit-tests/HttpUrlTest.cc
     http/unit-tests/RemoteResourceTest.cc
     http/unit-tests/AllowedHostsTest.cc
