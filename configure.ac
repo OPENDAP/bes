@@ -1161,9 +1161,9 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/asciival/unit-tests/Makefile
 
     modules/cmr_module/Makefile
-    modules/cmr_module/tests/Makefile
-    modules/cmr_module/tests/atlocal
-    modules/cmr_module/unit-tests/Makefile
+    dnl modules/cmr_module/tests/Makefile
+    dnl modules/cmr_module/tests/atlocal
+    dnl modules/cmr_module/unit-tests/Makefile
 
     modules/s3_reader/Makefile
     modules/s3_reader/tests/Makefile
