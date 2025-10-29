@@ -20,8 +20,8 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-SUBDIRS = . tests
-# unit-tests; turned off on 10/28/25 because of CMR issues. jhrg
+SUBDIRS = .
+# unit-tests tests; turned off on 10/28/25 because of CMR issues. jhrg
 
 # These tests will fail if the DmrApiTest also fails: tests jhrg 6/29/23
 
