@@ -118,16 +118,25 @@ public:
                  << (SignedUrlCache::TheCache()->is_enabled() ? "true" : "false") << endl);
         CPPUNIT_ASSERT(!SignedUrlCache::TheCache()->is_enabled());
 
-        shared_ptr<http::url> src_url_00(new http::url("http://started_here.com"));
-        auto effective_url_00 = shared_ptr<http::EffectiveUrl>(new http::EffectiveUrl("https://ended_here.com"));
+        auto input_url = make_shared<http::url>("http://started_here.com");
+        auto output_url = make_shared<http::EffectiveUrl>("http://started_here.com?signed-now");
 
         SignedUrlCache::TheCache()->d_signed_urls.insert(
-                pair<string, shared_ptr<http::EffectiveUrl>>(src_url_00->str(), effective_url_00));
+                pair<string, shared_ptr<http::EffectiveUrl>>(input_url->str(), output_url));
         CPPUNIT_ASSERT(SignedUrlCache::TheCache()->d_signed_urls.size() == 1);
 
-        // This one does not add the URL or even check it because it _should_ be matching the skip regex.
-        auto result_url = SignedUrlCache::TheCache()->get_signed_url(src_url_00);
-        CPPUNIT_ASSERT(result_url->str() == src_url_00->str());
+        // When the cache is disabled, we return a nullptr---always. 
+        // (In comparison, the EffectiveUrlCache creates an EffectiveUrl around the raw input url)
+        auto result_when_disabled = SignedUrlCache::TheCache()->get_signed_url(input_url);
+        CPPUNIT_ASSERT(result_when_disabled == nullptr);
+
+        // When the cache is enabled, we return the cached value
+        // The cache is disabled in bes.conf, so we need to turn it on.
+        SignedUrlCache::TheCache()->d_enabled = true;
+        CPPUNIT_ASSERT(SignedUrlCache::TheCache()->is_enabled());
+
+        auto result_when_enabled = SignedUrlCache::TheCache()->get_signed_url(input_url);
+        CPPUNIT_ASSERT(result_when_enabled->str() == output_url->str());
     }
 
     void skip_regex_test_01() {
@@ -374,14 +383,32 @@ public:
 
 CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
 
-        // TODO: fix up tests, enable/replace!! add more!!
-        // CPPUNIT_TEST(is_cache_disabled_test);
-        // CPPUNIT_TEST(cache_test_00);
-        // CPPUNIT_TEST(cache_test_01);
-        // CPPUNIT_TEST(skip_regex_test_01);
-        // CPPUNIT_TEST(euc_ghrc_tea_url_test);
-        // CPPUNIT_TEST(euc_harmony_url_test);
-        // CPPUNIT_TEST(trusted_url_test_01);
+    // Test behavior analogous to that of the EffectiveUrlCache:
+    CPPUNIT_TEST(is_cache_disabled_test);
+    // CPPUNIT_TEST(cache_test_00);
+    // CPPUNIT_TEST(cache_test_01);
+    // CPPUNIT_TEST(skip_regex_test_01);
+    // CPPUNIT_TEST(euc_ghrc_tea_url_test);
+    // CPPUNIT_TEST(euc_harmony_url_test);
+    // CPPUNIT_TEST(trusted_url_test_01);
+    // - set_skip_regex
+    // - dump
+
+    // Test behavior specific novel to url signing:
+
+    // - get_s3credentials_from_endpoint
+    // - extract_s3_credentials_from_response_json
+    // - retrieve_cached_s3credentials 
+    // - are_s3credentials_expired
+
+    // - sign_url
+    // - get_cached_signed_url
+    
+    // - cache_signed_url_components 
+    // - retrieve_cached_signed_url_components
+    // - get_signed_url
+
+
 
     CPPUNIT_TEST_SUITE_END();
 };
