@@ -139,7 +139,7 @@ public:
         CPPUNIT_ASSERT(result_when_enabled->str() == output_url->str());
     }
 
-    void skip_regex_test_01() {
+    void set_skip_regex_test() {
         DBG(cerr << prolog << "BEGIN" << endl);
         try {
             // The cache is disabled in bes.conf, so we need to turn it on.
@@ -147,10 +147,19 @@ public:
 
             // This one does not add the URL or even check it because it _should_ be matching the skip regex
             // in the bes.conf
-            shared_ptr<http::url> src_url(new http::url("https://foobar.com/opendap/data/nc/fnoc1.nc?dap4.ce=u;v"));
+            auto src_url = make_shared<http::url>("https://foobar.com/opendap/data/nc/fnoc1.nc?dap4.ce=u;v");
             auto result_url = SignedUrlCache::TheCache()->get_signed_url(src_url);
             CPPUNIT_ASSERT(SignedUrlCache::TheCache()->d_signed_urls.empty());
-            CPPUNIT_ASSERT(result_url->str() == src_url->str());
+            CPPUNIT_ASSERT(result_url == nullptr);
+
+            // Similarly, skipped even when that url has been previously 
+            // added to the cache somehow
+            auto output_url = make_shared<http::EffectiveUrl>("http://started_here.com?signed-now");
+            SignedUrlCache::TheCache()->d_signed_urls.insert(
+                pair<string, shared_ptr<http::EffectiveUrl>>(src_url->str(), output_url));
+            CPPUNIT_ASSERT(SignedUrlCache::TheCache()->d_signed_urls.size() == 1);
+            auto result_url2 = SignedUrlCache::TheCache()->get_signed_url(src_url);
+            CPPUNIT_ASSERT(result_url2 == nullptr);
         }
         catch (const BESError &be) {
             stringstream msg;
@@ -385,26 +394,26 @@ CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
 
     // Test behavior analogous to that of the EffectiveUrlCache:
     CPPUNIT_TEST(is_cache_disabled_test);
+    CPPUNIT_TEST(set_skip_regex_test);
     // CPPUNIT_TEST(cache_test_00);
     // CPPUNIT_TEST(cache_test_01);
-    // CPPUNIT_TEST(skip_regex_test_01);
+
     // CPPUNIT_TEST(euc_ghrc_tea_url_test);
     // CPPUNIT_TEST(euc_harmony_url_test);
     // CPPUNIT_TEST(trusted_url_test_01);
-    // - set_skip_regex
     // - dump
 
     // Test behavior specific novel to url signing:
 
     // - get_s3credentials_from_endpoint
     // - extract_s3_credentials_from_response_json
-    // - retrieve_cached_s3credentials 
+    // - retrieve_cached_s3credentials
     // - are_s3credentials_expired
 
     // - sign_url
     // - get_cached_signed_url
-    
-    // - cache_signed_url_components 
+
+    // - cache_signed_url_components
     // - retrieve_cached_signed_url_components
     // - get_signed_url
 
