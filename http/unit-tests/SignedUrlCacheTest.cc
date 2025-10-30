@@ -168,6 +168,22 @@ public:
         }
     }
 
+    void dump_test() {
+        // Add values to each type of subcache
+        SignedUrlCache::TheCache()->d_signed_urls.insert(
+                pair<string, shared_ptr<http::EffectiveUrl>>("www.foo.com", make_shared<http::EffectiveUrl>("http://www.bar.com")));
+
+        // Check to make sure dump includes them
+        auto strm = std::ostringstream();
+        SignedUrlCache::TheCache()->dump(strm);
+        // Remove start of string to skip address that varies
+        auto result = strm.str().substr(49);
+        std::string expected_str = string("d_skip_regex: ") +
+            "\n    signed url list:" +
+            "\n        www.foo.com --> http://www.bar.com";
+        CPPUNIT_ASSERT_MESSAGE("The dump should be `" + expected_str + "`; was `" + result + "`", expected_str == result);
+    }
+
     void cache_test_00() {
         DBG(cerr << prolog << "BEGIN" << endl);
         //string source_url;
@@ -395,13 +411,12 @@ CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
     // Test behavior analogous to that of the EffectiveUrlCache:
     CPPUNIT_TEST(is_cache_disabled_test);
     CPPUNIT_TEST(set_skip_regex_test);
+    CPPUNIT_TEST(dump_test);
     // CPPUNIT_TEST(cache_test_00);
     // CPPUNIT_TEST(cache_test_01);
-
     // CPPUNIT_TEST(euc_ghrc_tea_url_test);
     // CPPUNIT_TEST(euc_harmony_url_test);
     // CPPUNIT_TEST(trusted_url_test_01);
-    // - dump
 
     // Test behavior specific novel to url signing:
 
