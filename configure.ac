@@ -1141,7 +1141,12 @@ AC_CONFIG_TESTDIR(dispatch/tests, [dispatch/tests])
 AC_CONFIG_TESTDIR(xmlcommand/tests, [standalone])
 
 dnl Output files if building the modules too
-		 
+
+dnl Removed these for HYRAX-1921. jhrg 10/29/25
+dnl modules/cmr_module/tests/Makefile
+dnl modules/cmr_module/tests/atlocal
+dnl modules/cmr_module/unit-tests/Makefile
+
 AM_COND_IF([DAP_BUILTIN_MODULES],
     [
     AC_CONFIG_FILES([modules/Makefile
@@ -1161,9 +1166,6 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/asciival/unit-tests/Makefile
 
     modules/cmr_module/Makefile
-    dnl modules/cmr_module/tests/Makefile
-    dnl modules/cmr_module/tests/atlocal
-    dnl modules/cmr_module/unit-tests/Makefile
 
     modules/s3_reader/Makefile
     modules/s3_reader/tests/Makefile
@@ -1296,7 +1298,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
         
     AC_CONFIG_TESTDIR(modules/httpd_catalog_module/tests, [standalone])
 
-    AC_CONFIG_TESTDIR(modules/cmr_module/tests, [standalone])
+    dnl AC_CONFIG_TESTDIR(modules/cmr_module/tests, [standalone]) HYRAX-1921 jhrg 10/29/25
     AC_CONFIG_TESTDIR(modules/s3_reader/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_json/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_covjson/tests, [standalone])
