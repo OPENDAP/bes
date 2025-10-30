@@ -32,6 +32,7 @@
 #include <sstream>
 #include <string>
 
+// #include "AWS_SDK.h" // TODO-include aws appropriately
 #include "TheBESKeys.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
@@ -340,7 +341,21 @@ std::shared_ptr<SignedUrlCache::S3AccessKeyTuple> SignedUrlCache::extract_s3_cre
  * @note Not yet implemented!
  */
 std::shared_ptr<EffectiveUrl> SignedUrlCache::sign_url(std::string const &s3_url, std::shared_ptr<S3AccessKeyTuple> const s3_access_key_tuple) {
-    // TODO-future: fill in implementation!
+
+    // AWS_SDK aws_sdk;
+    // string id = get<0>(*s3_access_key_tuple);
+    // string secret = get<1>(*s3_access_key_tuple);
+    // aws_sdk.initialize_s3_client("us-east-1", id, secret); // TODO: uhhhhh where was the region from?????? can we get it from s3_url, I hope????
+
+    // std::string bucket = s3_url.substr(5, s3_url.find("/")); // Split off "s3://" which we know is here or the path wouldn't have been cached in the first place
+    // std::string object = s3_url.substr(s3_url.find(bucket) + 1); // Add 1 to cover the "/" after the bucket
+    // const uint64_t expiration_seconds = 60; // TODO: get from doing math on s3_access_key_tuple ! 
+
+    // const Aws::String url = aws_sdk.s3_generate_presigned_object_url(bucket, object, expiration_seconds);
+
+    // // TODO: how might that fail? is it ever null or bad or...does it throw? if so, return nullptr first....
+
+    // return make_shared<EffectiveUrl>(url->str()); // TODO: get string out of AWS url??? or decide to return it.....
     return nullptr;
 }
 
