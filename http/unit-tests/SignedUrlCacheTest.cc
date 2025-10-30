@@ -184,6 +184,40 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The dump should be `" + expected_str + "`; was `" + result + "`", expected_str == result);
     }
 
+    void is_timestamp_after_now_test() {
+        std::string str_old("1980-07-16 18:40:58+00:00");
+        CPPUNIT_ASSERT_MESSAGE("Ancient timestamp is before now", !SignedUrlCache::is_timestamp_after_now(str_old));
+
+        std::string str_future("3035-07-16 02:20:33+00:00");
+        CPPUNIT_ASSERT_MESSAGE("Future timestamp is after now", SignedUrlCache::is_timestamp_after_now(str_future));
+
+        std::string str_invalid("invalid timestamp woo hooray huzzah");
+        CPPUNIT_ASSERT_MESSAGE("Invalid timestamp is not after now", !SignedUrlCache::is_timestamp_after_now(str_invalid));
+    }
+
+    void retrieve_cached_s3credentials_test() {
+        std::string key("i_am_a_key");
+        auto result_not_in_cache = SignedUrlCache::TheCache()->retrieve_cached_s3credentials(key);
+        CPPUNIT_ASSERT_MESSAGE("Cache miss should return null", result_not_in_cache == nullptr);
+
+        auto value = make_shared<SignedUrlCache::S3AccessKeyTuple>("a man", "a plan", "a canal", "3035-07-16 02:20:33+00:00");
+        SignedUrlCache::TheCache()->d_s3credentials_cache.insert(pair<string, shared_ptr<SignedUrlCache::S3AccessKeyTuple>>(key, value));
+        auto result_in_cache = SignedUrlCache::TheCache()->retrieve_cached_s3credentials(key);
+        CPPUNIT_ASSERT_MESSAGE("Cache hit should successfully retrieve result", result_in_cache == value);
+    }
+
+    void retrieve_cached_s3credentials_test_expired_credentials() {
+        std::string key("i_am_a_key");
+        std::string expired_time("1980-07-16 18:40:58+00:00");
+        auto value = make_shared<SignedUrlCache::S3AccessKeyTuple>("foo", "bar", "bat", expired_time);
+        SignedUrlCache::TheCache()->d_s3credentials_cache.insert(pair<string, shared_ptr<SignedUrlCache::S3AccessKeyTuple>>(key, value));
+
+        auto result = SignedUrlCache::TheCache()->retrieve_cached_s3credentials(key);
+        CPPUNIT_ASSERT_MESSAGE("Cached expired result should not be retrieved", result == nullptr);
+        CPPUNIT_ASSERT_MESSAGE("Expired result should have been removed from cache", SignedUrlCache::TheCache()->d_s3credentials_cache.empty());
+    }
+
+/*
     void cache_test_00() {
         DBG(cerr << prolog << "BEGIN" << endl);
         //string source_url;
@@ -402,6 +436,7 @@ public:
         }
         DBG(cerr << prolog << "END" << endl);
     }
+*/
 
 /* TESTS END */
 /*##################################################################################################*/
@@ -418,12 +453,12 @@ CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
     // CPPUNIT_TEST(euc_harmony_url_test);
     // CPPUNIT_TEST(trusted_url_test_01);
 
-    // Test behavior specific novel to url signing:
-
+    // Test behavior specific to url signing:
     // - get_s3credentials_from_endpoint
     // - extract_s3_credentials_from_response_json
-    // - retrieve_cached_s3credentials
-    // - are_s3credentials_expired
+    CPPUNIT_TEST(is_timestamp_after_now_test);
+    CPPUNIT_TEST(retrieve_cached_s3credentials_test);
+    CPPUNIT_TEST(retrieve_cached_s3credentials_test_expired_credentials);
 
     // - sign_url
     // - get_cached_signed_url
@@ -431,8 +466,6 @@ CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
     // - cache_signed_url_components
     // - retrieve_cached_signed_url_components
     // - get_signed_url
-
-
 
     CPPUNIT_TEST_SUITE_END();
 };

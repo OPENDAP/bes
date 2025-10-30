@@ -67,10 +67,32 @@ shared_ptr <EffectiveUrl> SignedUrlCache::get_cached_signed_url(string const &ur
     return signed_url;
 }
 
-// TODO-docstring
-bool SignedUrlCache::are_s3credentials_expired(std::shared_ptr<SignedUrlCache::S3AccessKeyTuple> const credentials) {
-    // TODO: implement!
-    return false;
+// TODO-docstring; note if timestamp isn't valid, we return that we are expired
+// We intentionally copy here because we need to delete a character 
+// Could alternatively convert to datetime when we originally cache it....
+bool SignedUrlCache::is_timestamp_after_now(std::string &timestamp_str) {
+
+    auto now =  std::chrono::system_clock::now();
+    auto now_secs = std::chrono::time_point_cast<std::chrono::seconds>(now);
+
+    if (timestamp_str.size() == 25) {
+        // Hack to handle fact that s3credentials from aws include an
+        // extra colon in their timezone field
+        // This changes "1980-07-16 18:40:58+00:00" to "1980-07-16 18:40:58+0000"
+        timestamp_str.erase(22, 1);
+    }
+    std::tm timestamp_time = {};
+    auto time_parse_result = strptime(timestamp_str.c_str(), "%F %T%z", &timestamp_time);
+    if (time_parse_result == nullptr) {
+        // TODO: do we want to warn or anything here?? We wouldn't expect to be
+        // here unless we truly thought we had a valid timestamp str...
+        return false;
+    }
+    auto timestamp_time_point = std::chrono::system_clock::from_time_t(std::mktime(&timestamp_time));
+    auto timestamp_secs = std::chrono::time_point_cast<std::chrono::seconds>(timestamp_time_point);
+
+    // TODO: do we want to add a buffer of a second or two here?
+    return timestamp_secs > now_secs;
 }
 
 /**
@@ -82,8 +104,10 @@ shared_ptr<SignedUrlCache::S3AccessKeyTuple> SignedUrlCache::retrieve_cached_s3c
     shared_ptr<S3AccessKeyTuple> s3_access_key_tuple(nullptr);
     auto it = d_s3credentials_cache.find(url_key);
     if (it != d_s3credentials_cache.end()) {
-        // Is it expired? If so, erase it
-        if (are_s3credentials_expired(it->second)) {
+        // Is it expired? If so, erase it!
+        auto timestamp_str = get<3>(*(it->second));
+        if (!is_timestamp_after_now(timestamp_str)) {
+            // Expired!
             d_s3credentials_cache.erase(it);
         } else {
             s3_access_key_tuple = it->second;
