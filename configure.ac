@@ -601,7 +601,25 @@ AM_COND_IF([LOOK_FOR_AWS],
                   -laws-c-event-stream -laws-c-mqtt -laws-c-s3 -laws-c-sdkutils -laws-c-common \
                   -lxml2 -lz -lbz2 -lcurl"
 
-         aws_libdir=$aws_prefix/lib
+         dnl AC_CANONICAL_HOST is needed to access the 'host_os' variable
+         AC_CANONICAL_HOST
+
+         AS_IF (
+                dnl OSX test
+             [test "${host_os} = darwin"],
+             [aws_libdir=$aws_prefix/lib],
+                dnl else
+             [
+             ARCH := $(shell uname -m)
+                AS_IF(
+                        dnl 64-bit system
+                    [test "$ARCH" = x86_64],
+                    [aws_libdir=$aws_prefix/lib64],
+                        dnl 32-bit system
+                    [test "$ARCH" = i686],
+                    [aws_libdir=$aws_prefix/lib]
+                )
+         ])
 
          AC_MSG_NOTICE([AWS C++ SDK Found.])
          AM_CONDITIONAL([USE_AWS_SDK], [true])],
