@@ -240,7 +240,7 @@ void SignedUrlCache::cache_signed_url_components(const std::string &key_href_url
 std::pair<std::string, std::string> SignedUrlCache::retrieve_cached_signed_url_components(const std::string &key_href_url) const {
     auto it_s3_url = d_href_to_s3_cache.find(key_href_url);
     auto it_s3credentials_url = d_href_to_s3credentials_cache.find(key_href_url);
-    if (it_s3_url != d_href_to_s3_cache.end() || it_s3credentials_url != d_href_to_s3credentials_cache.end() ) {
+    if (it_s3_url == d_href_to_s3_cache.end() || it_s3credentials_url == d_href_to_s3credentials_cache.end() ) {
         INFO_LOG(prolog + "No url available for TEA s3credentials endpoint.");
         return std::pair<std::string, std::string>("", "");
     }

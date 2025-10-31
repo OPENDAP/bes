@@ -275,7 +275,6 @@ public:
     }
 
     void cache_signed_url_components_test() {
-
         SignedUrlCache *theCache = SignedUrlCache::TheCache();
 
         theCache->cache_signed_url_components("", "foo", "bar");
@@ -290,6 +289,21 @@ public:
         theCache->cache_signed_url_components("foo", "bar", "bat");
         CPPUNIT_ASSERT_MESSAGE("s3_url should be cached", theCache->d_href_to_s3_cache["foo"] == "bar");
         CPPUNIT_ASSERT_MESSAGE("s3credentials_url should be cached", theCache->d_href_to_s3credentials_cache["foo"] == "bat");
+    }
+
+    void retrieve_cached_signed_url_components_test() {
+        SignedUrlCache *theCache = SignedUrlCache::TheCache();
+
+        theCache->cache_signed_url_components("two fish", "red fish", "blue fish");
+        auto retrieved = theCache->retrieve_cached_signed_url_components("two fish");
+        auto expected = std::pair<std::string, std::string>("red fish", "blue fish");
+        CPPUNIT_ASSERT_MESSAGE("Cached components should be retrieved", expected == retrieved);
+
+        std::string key("little_bo_peep");
+        theCache->d_href_to_s3_cache.insert(pair<string, string>(key, "goat"));
+        auto retrieved2 = theCache->retrieve_cached_signed_url_components(key);
+        auto empty_pair = std::pair<std::string, std::string>("", "");
+        CPPUNIT_ASSERT_MESSAGE("If both urls were not cached, no response is returned", retrieved2 == empty_pair);
     }
 
 /*
@@ -530,8 +544,8 @@ CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
     CPPUNIT_TEST(retrieve_cached_s3credentials_expired_credentials_test);
     CPPUNIT_TEST(extract_s3_credentials_from_response_json_test);
     CPPUNIT_TEST(cache_signed_url_components_test);
+    CPPUNIT_TEST(retrieve_cached_signed_url_components_test);
     // - get_s3credentials_from_endpoint
-    // - retrieve_cached_signed_url_components
 
     // ...and, specifically, the signing itself: 
     // TODO-future: will add/update these tests once signing behavior is implemented!
