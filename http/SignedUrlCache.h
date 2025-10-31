@@ -74,9 +74,8 @@ private:
 
     int d_enabled = -1;
 
-    // TODO: for all helper functions here, think carefully about static/const/etc
-    // TODO: think a little more about splitting functionality to invert control to the caller
-    std::shared_ptr<EffectiveUrl> sign_url(std::string const &s3_url, std::shared_ptr<S3AccessKeyTuple> const s3_access_key_tuple);
+    std::shared_ptr<EffectiveUrl> sign_url(std::string const &s3_url,
+                                           std::shared_ptr<S3AccessKeyTuple> const s3_access_key_tuple);
     std::shared_ptr<EffectiveUrl> get_cached_signed_url(std::string const &url_key);
 
     void set_skip_regex();

@@ -305,6 +305,23 @@ public:
         CPPUNIT_ASSERT_MESSAGE("If both urls were not cached, no response is returned", retrieved2 == empty_pair);
     }
 
+    void get_s3credentials_from_endpoint_test() {
+        SignedUrlCache *theCache = SignedUrlCache::TheCache();
+        
+        CPPUNIT_ASSERT_MESSAGE("Credentials cache is empty", theCache->d_s3credentials_cache.empty());
+
+        auto result_bad = theCache->get_s3credentials_from_endpoint("http://badurl");
+        CPPUNIT_ASSERT_MESSAGE("After attempting fetch from invalid url, credentials cache is still empty", theCache->d_s3credentials_cache.empty());
+        CPPUNIT_ASSERT_MESSAGE("Fetch from invalid url returns nullptr", result_bad == nullptr);
+
+        // TODO: think about whether it's worth mocking out a test url with fake credentials...
+        // auto result_good = theCache->get_s3credentials_from_endpoint("http://badurl");
+        // CPPUNIT_ASSERT_MESSAGE("Fetch from valid url returns credentials", result_good != nullptr);
+
+        // auto result_good_from_cache = theCache->retrieve_cached_signed_url_components(key);
+        // CPPUNIT_ASSERT_MESSAGE("After attempting fetch from valid url, credentials cache contains the result", result_good == result_good_from_cache);
+    }
+
 /*
     void cache_test_00() {
         DBG(cerr << prolog << "BEGIN" << endl);
@@ -544,7 +561,7 @@ CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
     CPPUNIT_TEST(extract_s3_credentials_from_response_json_test);
     CPPUNIT_TEST(cache_signed_url_components_test);
     CPPUNIT_TEST(retrieve_cached_signed_url_components_test);
-    // - get_s3credentials_from_endpoint
+    CPPUNIT_TEST(get_s3credentials_from_endpoint_test);
 
     // ...and, specifically, the signing itself: 
     // TODO-future: will add/update these tests once signing behavior is implemented!
