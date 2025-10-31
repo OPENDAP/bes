@@ -386,14 +386,45 @@ void SignedUrlCache::dump(ostream &strm) const {
         strm << BESIndent::LMarg << "signed url list:" << endl;
         BESIndent::Indent();
         for (auto const &i: d_signed_urls) {
-            strm << BESIndent::LMarg << i.first << " --> " << i.second->str();
+            strm << BESIndent::LMarg << i.first << " --> " << i.second->str() << "\n";
         }
         BESIndent::UnIndent();
     } else {
         strm << BESIndent::LMarg << "signed url list: EMPTY" << endl;
     }
 
-    //TODO: add other three caches here:
+    if (!d_href_to_s3credentials_cache.empty()) {
+        strm << BESIndent::LMarg << "href-to-s3credentials list:" << endl;
+        BESIndent::Indent();
+        for (auto const &i: d_href_to_s3credentials_cache) {
+            strm << BESIndent::LMarg << i.first << " --> " << i.second << "\n";
+        }
+        BESIndent::UnIndent();
+    } else {
+        strm << BESIndent::LMarg << "href-to-s3credentials list: EMPTY" << endl;
+    }
+
+    if (!d_href_to_s3_cache.empty()) {
+        strm << BESIndent::LMarg << "href-to-s3url list:" << endl;
+        BESIndent::Indent();
+        for (auto const &i: d_href_to_s3_cache) {
+            strm << BESIndent::LMarg << i.first << " --> " << i.second << "\n";
+        }
+        BESIndent::UnIndent();
+    } else {
+        strm << BESIndent::LMarg << "href-to-s3url list: EMPTY" << endl;
+    }
+
+    if (!d_s3credentials_cache.empty()) {
+        strm << BESIndent::LMarg << "s3 credentials list:" << endl;
+        BESIndent::Indent();
+        for (auto const &i: d_s3credentials_cache) {
+            strm << BESIndent::LMarg << i.first << " --> Expires: " << get<3>(*(i.second)) << "\n";
+        }
+        BESIndent::UnIndent();
+    } else {
+        strm << BESIndent::LMarg << "s3 credentials list: EMPTY" << endl;
+    }
 
     BESIndent::UnIndent();
 }

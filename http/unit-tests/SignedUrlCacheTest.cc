@@ -193,19 +193,38 @@ public:
     }
 
     void dump_test() {
+        SignedUrlCache *theCache = SignedUrlCache::TheCache();
+
         // Add values to each type of subcache
-        SignedUrlCache::TheCache()->d_signed_urls.insert(
-                pair<string, shared_ptr<http::EffectiveUrl>>("www.foo.com", make_shared<http::EffectiveUrl>("http://www.bar.com")));
+        theCache->d_signed_urls.insert(
+                pair<string, shared_ptr<http::EffectiveUrl>>("www.once.com", make_shared<http::EffectiveUrl>("http://www.upon.com")));
+        theCache->d_signed_urls.insert(
+                pair<string, shared_ptr<http::EffectiveUrl>>("www.a.com", make_shared<http::EffectiveUrl>("http://www.time.com")));
+
+        auto value = make_shared<SignedUrlCache::S3AccessKeyTuple>("a man", "a plan", "a canal", "3035-07-16 02:20:33+00:00");
+        theCache->d_s3credentials_cache.insert(pair<string, shared_ptr<SignedUrlCache::S3AccessKeyTuple>>("palindrome", value));
+
+        theCache->d_href_to_s3credentials_cache.insert(pair<string, string>("foo", "whee"));
+        theCache->d_href_to_s3_cache.insert(pair<string, string>("yee", "haw"));
+
 
         // Check to make sure dump includes them
         auto strm = std::ostringstream();
-        SignedUrlCache::TheCache()->dump(strm);
+        theCache->dump(strm);
         // Remove start of string to skip address that varies
         auto result = strm.str().substr(49);
         std::string expected_str = string("d_skip_regex: ") +
             "\n    signed url list:" +
-            "\n        www.foo.com --> http://www.bar.com";
-        CPPUNIT_ASSERT_MESSAGE("The dump should be `" + expected_str + "`; was `" + result + "`", expected_str == result);
+            // "\n        www.foo.com --> http://www.bar.com";
+            "\n        www.a.com --> http://www.time.com" +
+            "\n        www.once.com --> http://www.upon.com" +
+            "\n    href-to-s3credentials list:" +
+            "\n        foo --> whee" +
+            "\n    href-to-s3url list:" +
+            "\n        yee --> haw" +
+            "\n    s3 credentials list:" +
+            "\n        palindrome --> Expires: 3035-07-16 02:20:33+00:00\n";
+        CPPUNIT_ASSERT_MESSAGE("The dump should be:\n" + expected_str + "\n\nINSTEAD was\n" + result, expected_str == result);
     }
 
     void is_timestamp_after_now_test() {
