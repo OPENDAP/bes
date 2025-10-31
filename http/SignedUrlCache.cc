@@ -228,8 +228,8 @@ shared_ptr <EffectiveUrl> SignedUrlCache::get_signed_url(shared_ptr <url> source
 
 // TODO: docstring
 void SignedUrlCache::cache_signed_url_components(const std::string &key_href_url, const std::string &s3_url, const std::string &s3credentials_url) {
-    if (s3_url.empty() || s3credentials_url.empty() ) {
-        // Don't cache either if one is empty.
+    if (key_href_url.empty() || s3_url.empty() || s3credentials_url.empty() ) {
+        // Don't cache either if any is empty.
         return;
     }
     d_href_to_s3_cache[key_href_url] = s3_url;

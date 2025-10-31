@@ -274,6 +274,24 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Field with non-string response should return nullptr", SignedUrlCache::extract_s3_credentials_from_response_json(invalid_response_contents) == nullptr);
     }
 
+    void cache_signed_url_components_test() {
+
+        SignedUrlCache *theCache = SignedUrlCache::TheCache();
+
+        theCache->cache_signed_url_components("", "foo", "bar");
+        CPPUNIT_ASSERT_MESSAGE("Empty key_href_url results in no caching", theCache->d_href_to_s3_cache.empty() && theCache->d_href_to_s3credentials_cache.empty());
+
+        theCache->cache_signed_url_components("foo", "", "bar");
+        CPPUNIT_ASSERT_MESSAGE("Empty s3_url results in no caching", theCache->d_href_to_s3_cache.empty() && theCache->d_href_to_s3credentials_cache.empty());
+
+        theCache->cache_signed_url_components("foo", "bar", "");
+        CPPUNIT_ASSERT_MESSAGE("Empty s3credentials_url results in no caching", theCache->d_href_to_s3_cache.empty() && theCache->d_href_to_s3credentials_cache.empty());
+
+        theCache->cache_signed_url_components("foo", "bar", "bat");
+        CPPUNIT_ASSERT_MESSAGE("s3_url should be cached", theCache->d_href_to_s3_cache["foo"] == "bar");
+        CPPUNIT_ASSERT_MESSAGE("s3credentials_url should be cached", theCache->d_href_to_s3credentials_cache["foo"] == "bat");
+    }
+
 /*
     void cache_test_00() {
         DBG(cerr << prolog << "BEGIN" << endl);
@@ -511,8 +529,8 @@ CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
     CPPUNIT_TEST(retrieve_cached_s3credentials_test);
     CPPUNIT_TEST(retrieve_cached_s3credentials_expired_credentials_test);
     CPPUNIT_TEST(extract_s3_credentials_from_response_json_test);
+    CPPUNIT_TEST(cache_signed_url_components_test);
     // - get_s3credentials_from_endpoint
-    // - cache_signed_url_components
     // - retrieve_cached_signed_url_components
 
     // ...and, specifically, the signing itself: 
