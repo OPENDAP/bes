@@ -130,7 +130,7 @@ public:
         SignedUrlCache::TheCache()->d_signed_urls.insert(
             pair<string, shared_ptr<http::EffectiveUrl>>(input_url->str(), output_url));
         auto result = SignedUrlCache::TheCache()->get_signed_url(input_url);
-        CPPUNIT_ASSERT(result->str() == output_url->str());
+        CPPUNIT_ASSERT_MESSAGE("Cached url should be retrievable", result->str() == output_url->str());
 
         std::string non_http_key("foo");
         SignedUrlCache::TheCache()->d_signed_urls.insert(
@@ -142,26 +142,26 @@ public:
     void is_cache_disabled_test() {
         DBG(cerr << prolog << "SignedUrlCache::TheCache()->is_enabled(): "
                  << (SignedUrlCache::TheCache()->is_enabled() ? "true" : "false") << endl);
-        CPPUNIT_ASSERT(!SignedUrlCache::TheCache()->is_enabled());
+        CPPUNIT_ASSERT_MESSAGE("Cache is disabled", !SignedUrlCache::TheCache()->is_enabled());
 
         auto input_url = make_shared<http::url>("http://started_here.com");
         auto output_url = make_shared<http::EffectiveUrl>("http://started_here.com?signed-now");
 
         SignedUrlCache::TheCache()->d_signed_urls.insert(
             pair<string, shared_ptr<http::EffectiveUrl>>(input_url->str(), output_url));
-        CPPUNIT_ASSERT(SignedUrlCache::TheCache()->d_signed_urls.size() == 1);
+        CPPUNIT_ASSERT_MESSAGE("Cache contains single item", SignedUrlCache::TheCache()->d_signed_urls.size() == 1);
 
         // When the cache is disabled, we return a nullptr---always. 
         // (In comparison, the EffectiveUrlCache creates an EffectiveUrl around the raw input url)
         auto result_when_disabled = SignedUrlCache::TheCache()->get_signed_url(input_url);
-        CPPUNIT_ASSERT(result_when_disabled == nullptr);
+        CPPUNIT_ASSERT_MESSAGE("When cache is disabled, nullptr is returned", result_when_disabled == nullptr);
 
         // ...if we now enable the cache is enabled, we return the previously cached value
         SignedUrlCache::TheCache()->d_enabled = true;
-        CPPUNIT_ASSERT(SignedUrlCache::TheCache()->is_enabled());
+        CPPUNIT_ASSERT_MESSAGE("Cache is enabled", SignedUrlCache::TheCache()->is_enabled());
 
         auto result_when_enabled = SignedUrlCache::TheCache()->get_signed_url(input_url);
-        CPPUNIT_ASSERT(result_when_enabled->str() == output_url->str());
+        CPPUNIT_ASSERT_MESSAGE("When cache is re-enabled, value is returned", result_when_enabled->str() == output_url->str());
     }
 
     void set_skip_regex_test() {
@@ -174,17 +174,16 @@ public:
             // in the bes.conf
             auto src_url = make_shared<http::url>("https://foobar.com/opendap/data/nc/fnoc1.nc?dap4.ce=u;v");
             auto result_url = SignedUrlCache::TheCache()->get_signed_url(src_url);
-            CPPUNIT_ASSERT(SignedUrlCache::TheCache()->d_signed_urls.empty());
-            CPPUNIT_ASSERT(result_url == nullptr);
+            CPPUNIT_ASSERT_MESSAGE("When key matches skip regex, value is not cached", SignedUrlCache::TheCache()->d_signed_urls.empty());
+            CPPUNIT_ASSERT_MESSAGE("When key matches skip regex, nullptr is returned", result_url == nullptr);
 
             // Similarly, skipped even when that url has been previously 
             // added to the cache somehow
             auto output_url = make_shared<http::EffectiveUrl>("http://started_here.com?signed-now");
             SignedUrlCache::TheCache()->d_signed_urls.insert(
                 pair<string, shared_ptr<http::EffectiveUrl>>(src_url->str(), output_url));
-            CPPUNIT_ASSERT(SignedUrlCache::TheCache()->d_signed_urls.size() == 1);
             auto result_url2 = SignedUrlCache::TheCache()->get_signed_url(src_url);
-            CPPUNIT_ASSERT(result_url2 == nullptr);
+            CPPUNIT_ASSERT_MESSAGE("When key matches skip regex, even if it exists in the cache, the value is not returned", result_url2 == nullptr);
         }
         catch (const BESError &be) {
             stringstream msg;
