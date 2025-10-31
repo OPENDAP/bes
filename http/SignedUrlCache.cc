@@ -68,10 +68,6 @@ shared_ptr <EffectiveUrl> SignedUrlCache::get_cached_signed_url(string const &ur
     return signed_url;
 }
 
-// TODO-docstring; note if timestamp isn't valid, we return that we are expired
-// We intentionally copy here because we need to delete a character 
-// Could alternatively convert to datetime when we originally cache it....
-
 /**
  * @brief Return true if the input occurred before the current time, false otherwise
  * @param timestamp_str Timestamp must be formatted as returned by AWS endpoint, YYYY-MM-DD HH:mm:dd+timezone, where timezone is formatted `HH:MM`, e.g. `1980-07-16 18:40:58+00:00`
@@ -172,7 +168,6 @@ shared_ptr <EffectiveUrl> SignedUrlCache::get_signed_url(shared_ptr <url> source
 
     shared_ptr<EffectiveUrl> signed_url = get_cached_signed_url(source_url->str());
     bool retrieve_and_cache = !signed_url || signed_url->is_expired();
-    // TODO-H: make sure that `signed_url->is_expired();` handles correctly for the signed urls
 
     // It not found or expired, (re)load.
     if (retrieve_and_cache) {
@@ -232,7 +227,10 @@ shared_ptr <EffectiveUrl> SignedUrlCache::get_signed_url(shared_ptr <url> source
     return signed_url;
 }
 
-// TODO: docstring
+/**
+ * @brief Store each `s3_url` and `s3credentials_url` for key `key_href_url`
+ * @note Does not cache anything if any of the three inputs are empty
+ */
 void SignedUrlCache::cache_signed_url_components(const std::string &key_href_url, const std::string &s3_url, const std::string &s3credentials_url) {
     if (key_href_url.empty() || s3_url.empty() || s3credentials_url.empty() ) {
         // Don't cache either if any is empty.
@@ -242,7 +240,10 @@ void SignedUrlCache::cache_signed_url_components(const std::string &key_href_url
     d_href_to_s3credentials_cache[key_href_url] = s3credentials_url;
 }
 
-// TODO: docstring
+/**
+ * @brief Return pair of (s3_url, s3credentials_url) cached for key_href_url
+ * @note If key_href_url not in cache, returns pair of empty strings
+ */
 std::pair<std::string, std::string> SignedUrlCache::retrieve_cached_signed_url_components(const std::string &key_href_url) const {
     auto it_s3_url = d_href_to_s3_cache.find(key_href_url);
     auto it_s3credentials_url = d_href_to_s3credentials_cache.find(key_href_url);
@@ -253,7 +254,10 @@ std::pair<std::string, std::string> SignedUrlCache::retrieve_cached_signed_url_c
     return std::pair<std::string, std::string>(it_s3_url->second, it_s3credentials_url->second);
 }
 
-// TODO: docstring
+/**
+ * @brief Return credentials tuple for given endpoint url `s3credentials_url`, stores credentials for endpoint in `d_s3credentials_cache`
+ * @note If credential retrieval fails at any point, returns nullptr and does not cache results
+ */
 shared_ptr<SignedUrlCache::S3AccessKeyTuple> SignedUrlCache::get_s3credentials_from_endpoint(std::string const &s3credentials_url) {
     // 1. Get the credentials from TEA
     std::string s3credentials_json_string;
@@ -283,7 +287,12 @@ shared_ptr<SignedUrlCache::S3AccessKeyTuple> SignedUrlCache::get_s3credentials_f
 }
 
 
-// Lightly adapted from get_urls_from_granules_umm_json_v1_4
+/**
+ * @brief Extract credentials tuple from json response returned from an s3credentials endpoint
+ * @note Returns nullptr if input is not valid json or does not contain one of the four requisite 
+ *  strings: `accessKeyId`, `secretAccessKey`, `sessionToken`, or `expiration`
+ * @note Lightly adapted from get_urls_from_granules_umm_json_v1_4
+ */
 std::shared_ptr<SignedUrlCache::S3AccessKeyTuple> SignedUrlCache::extract_s3_credentials_from_response_json(std::string const &s3credentials_json_string) {
     rapidjson::Document s3credentials_response;
     s3credentials_response.Parse(s3credentials_json_string.c_str());
@@ -326,21 +335,18 @@ std::shared_ptr<SignedUrlCache::S3AccessKeyTuple> SignedUrlCache::extract_s3_cre
                                                          expiration);
 }
 
-
 /**
- * TODO
- *
- * @param source_url
- * @returns The effective (signed) URL, which may be a nullptr if signing credentials are not found
-*/
+ * @brief Sign `s3_url` with aws credentials in `s3_access_key_tuple`, or nullptr if any part of signing process fails
+ * @note Not yet implemented!
+ */
 std::shared_ptr<EffectiveUrl> SignedUrlCache::sign_url(std::string const &s3_url, std::shared_ptr<S3AccessKeyTuple> const s3_access_key_tuple) {
-    // TODO-fill in details! :)
+    // TODO-future: fill in implementation!
     return nullptr;
 }
 
 /**
- * @return Is the cache enabled (set in the bes.conf file)?
- * Follows the same settings as the EffectiveUrlsCache
+ * @brief Return if the cache is enabled, which is set in the bes.conf file
+ * @note Follows the same settings (and relies on the same bes.conf key) as the EffectiveUrlsCache
  */
 bool SignedUrlCache::is_enabled() {
     // The first time here, the value of d_enabled is -1. Once we check for it in TheBESKeys
@@ -353,7 +359,10 @@ bool SignedUrlCache::is_enabled() {
     return d_enabled;
 }
 
-//  * Follows the same settings as the EffectiveUrlsCache
+/**
+ * @return Set the regex used to skip cache keys, which is set in the bes.conf file
+ * @note Follows the same settings (and relies on the same bes.conf key) as the EffectiveUrlsCache
+ */
 void SignedUrlCache::set_skip_regex() {
     if (!d_skip_regex) {
         string pattern = TheBESKeys::TheKeys()->read_string_key(HTTP_CACHE_EFFECTIVE_URLS_SKIP_REGEX_KEY, "");
