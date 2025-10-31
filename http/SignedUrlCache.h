@@ -68,7 +68,7 @@ private:
 
     std::map<std::string, std::shared_ptr<S3AccessKeyTuple>> d_s3credentials_cache;
     std::shared_ptr<S3AccessKeyTuple> retrieve_cached_s3credentials(std::string const &url_key);
-    static bool is_timestamp_after_now(std::string &timestamp);
+    static bool is_timestamp_after_now(std::string const &timestamp);
 
     // URLs that match are not cached.
     std::unique_ptr<BESRegex> d_skip_regex = nullptr;
