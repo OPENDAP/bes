@@ -99,8 +99,12 @@ public:
 
         if (bes_debug) BESDebug::SetUp("cerr,bes,euc,http,curl");
 
-        // Clear the cache for the next test.
+        // Reset to same starting point every time 
+        // (It's a singleton so resetting it is important for test determinism)
         SignedUrlCache *theCache = SignedUrlCache::TheCache();
+        theCache->d_enabled = -1;
+
+        // ...and clear the caches
         theCache->d_signed_urls.clear();
         theCache->d_href_to_s3credentials_cache.clear();
         theCache->d_href_to_s3_cache.clear();
@@ -116,6 +120,25 @@ public:
 /*##################################################################################################*/
 /* TESTS BEGIN */
 
+    void get_cached_signed_url_test() {
+        // The cache is disabled in bes.conf, so we need to turn it on.
+        SignedUrlCache::TheCache()->d_enabled = true;
+
+        auto input_url = make_shared<http::url>("http://started_here.com");
+        auto output_url = make_shared<http::EffectiveUrl>("http://started_here.com?signed-now");
+
+        SignedUrlCache::TheCache()->d_signed_urls.insert(
+            pair<string, shared_ptr<http::EffectiveUrl>>(input_url->str(), output_url));
+        auto result = SignedUrlCache::TheCache()->get_signed_url(input_url);
+        CPPUNIT_ASSERT(result->str() == output_url->str());
+
+        std::string non_http_key("foo");
+        SignedUrlCache::TheCache()->d_signed_urls.insert(
+            pair<string, shared_ptr<http::EffectiveUrl>>(non_http_key, output_url));
+        auto result2 = SignedUrlCache::TheCache()->get_signed_url(make_shared<http::url>(non_http_key));
+        CPPUNIT_ASSERT_MESSAGE("Non-url key returns nullptr", result2 == nullptr);
+    }
+
     void is_cache_disabled_test() {
         DBG(cerr << prolog << "SignedUrlCache::TheCache()->is_enabled(): "
                  << (SignedUrlCache::TheCache()->is_enabled() ? "true" : "false") << endl);
@@ -125,7 +148,7 @@ public:
         auto output_url = make_shared<http::EffectiveUrl>("http://started_here.com?signed-now");
 
         SignedUrlCache::TheCache()->d_signed_urls.insert(
-                pair<string, shared_ptr<http::EffectiveUrl>>(input_url->str(), output_url));
+            pair<string, shared_ptr<http::EffectiveUrl>>(input_url->str(), output_url));
         CPPUNIT_ASSERT(SignedUrlCache::TheCache()->d_signed_urls.size() == 1);
 
         // When the cache is disabled, we return a nullptr---always. 
@@ -133,8 +156,7 @@ public:
         auto result_when_disabled = SignedUrlCache::TheCache()->get_signed_url(input_url);
         CPPUNIT_ASSERT(result_when_disabled == nullptr);
 
-        // When the cache is enabled, we return the cached value
-        // The cache is disabled in bes.conf, so we need to turn it on.
+        // ...if we now enable the cache is enabled, we return the previously cached value
         SignedUrlCache::TheCache()->d_enabled = true;
         CPPUNIT_ASSERT(SignedUrlCache::TheCache()->is_enabled());
 
@@ -479,28 +501,29 @@ public:
 CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
 
     // Test behavior analogous to that of the EffectiveUrlCache:
+    CPPUNIT_TEST(get_cached_signed_url_test);
     CPPUNIT_TEST(is_cache_disabled_test);
     CPPUNIT_TEST(set_skip_regex_test);
     CPPUNIT_TEST(dump_test);
-    // CPPUNIT_TEST(cache_test_00);
-    // CPPUNIT_TEST(cache_test_01);
-    // CPPUNIT_TEST(euc_ghrc_tea_url_test);
-    // CPPUNIT_TEST(euc_harmony_url_test);
-    // CPPUNIT_TEST(trusted_url_test_01);
 
-    // Test behavior specific to url signing:
+    // Test behavior specific to SignedUrlCache:
     CPPUNIT_TEST(is_timestamp_after_now_test);
     CPPUNIT_TEST(retrieve_cached_s3credentials_test);
     CPPUNIT_TEST(retrieve_cached_s3credentials_expired_credentials_test);
     CPPUNIT_TEST(extract_s3_credentials_from_response_json_test);
     // - get_s3credentials_from_endpoint
-
-    // - sign_url
-    // - get_cached_signed_url
-
     // - cache_signed_url_components
     // - retrieve_cached_signed_url_components
+
+    // ...and, specifically, the signing itself: 
+    // TODO-future: will add/update these tests once signing behavior is implemented!
+    // - sign_url
     // - get_signed_url
+    // CPPUNIT_TEST(cache_test_00);
+    // CPPUNIT_TEST(cache_test_01);
+    // CPPUNIT_TEST(euc_ghrc_tea_url_test);
+    // CPPUNIT_TEST(euc_harmony_url_test);
+    // CPPUNIT_TEST(trusted_url_test_01);
 
     CPPUNIT_TEST_SUITE_END();
 };
