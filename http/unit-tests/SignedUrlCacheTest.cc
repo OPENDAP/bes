@@ -102,6 +102,9 @@ public:
         // Clear the cache for the next test.
         SignedUrlCache *theCache = SignedUrlCache::TheCache();
         theCache->d_signed_urls.clear();
+        theCache->d_href_to_s3credentials_cache.clear();
+        theCache->d_href_to_s3_cache.clear();
+        theCache->d_s3credentials_cache.clear();
 
         if (!token.empty()) {
             DBG(cerr << "Setting BESContext " << EDL_AUTH_TOKEN_KEY << " to: '" << token << "'" << endl);
@@ -206,10 +209,10 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Cache hit should successfully retrieve result", result_in_cache == value);
     }
 
-    void retrieve_cached_s3credentials_test_expired_credentials() {
+    void retrieve_cached_s3credentials_expired_credentials_test() {
         std::string key("i_am_a_key");
-        std::string expired_time("1980-07-16 18:40:58+00:00");
-        auto value = make_shared<SignedUrlCache::S3AccessKeyTuple>("foo", "bar", "bat", expired_time);
+        std::string expiration_time("1980-07-16 18:40:58+00:00");
+        auto value = make_shared<SignedUrlCache::S3AccessKeyTuple>("https://www.foo", "https://www.bar", "https://www.bat", expiration_time);
         SignedUrlCache::TheCache()->d_s3credentials_cache.insert(pair<string, shared_ptr<SignedUrlCache::S3AccessKeyTuple>>(key, value));
 
         auto result = SignedUrlCache::TheCache()->retrieve_cached_s3credentials(key);
@@ -458,7 +461,7 @@ CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
     // - extract_s3_credentials_from_response_json
     CPPUNIT_TEST(is_timestamp_after_now_test);
     CPPUNIT_TEST(retrieve_cached_s3credentials_test);
-    CPPUNIT_TEST(retrieve_cached_s3credentials_test_expired_credentials);
+    CPPUNIT_TEST(retrieve_cached_s3credentials_expired_credentials_test);
 
     // - sign_url
     // - get_cached_signed_url
