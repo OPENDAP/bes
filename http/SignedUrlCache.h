@@ -2,8 +2,8 @@
 
 // This file is part of the BES http package, part of the Hyrax data server.
 
-// Copyright (c) 2020 OPeNDAP, Inc.
-// Author: Nathan Potter <ndp@opendap.org>
+// Copyright (c) 2025 OPeNDAP, Inc.
+// Authors: Nathan Potter <ndp@opendap.org>, Hannah Robertson <hrobertson@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -23,6 +23,7 @@
 
 // Authors:
 //      ndp       Nathan Potter <ndp@opendap.org>
+//      Hannah Robertson <hrobertson@opendap.org>
 
 #ifndef _bes_http_SignedUrlCache_h_
 #define _bes_http_SignedUrlCache_h_ 1

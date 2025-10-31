@@ -2,8 +2,8 @@
 
 // This file is part of the BES component of the Hyrax Data Server.
 
-// Copyright (c) 2018 OPeNDAP, Inc.
-// Author: Nathan Potter <ndp@opendap.org>
+// Copyright (c) 2025 OPeNDAP, Inc.
+// Authors: Nathan Potter <ndp@opendap.org>, Hannah Robertson <hrobertson@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -314,12 +314,10 @@ public:
         CPPUNIT_ASSERT_MESSAGE("After attempting fetch from invalid url, credentials cache is still empty", theCache->d_s3credentials_cache.empty());
         CPPUNIT_ASSERT_MESSAGE("Fetch from invalid url returns nullptr", result_bad == nullptr);
 
-        // TODO: think about whether it's worth mocking out a test url with fake credentials...
-        // auto result_good = theCache->get_s3credentials_from_endpoint("http://badurl");
-        // CPPUNIT_ASSERT_MESSAGE("Fetch from valid url returns credentials", result_good != nullptr);
-
-        // auto result_good_from_cache = theCache->retrieve_cached_signed_url_components(key);
-        // CPPUNIT_ASSERT_MESSAGE("After attempting fetch from valid url, credentials cache contains the result", result_good == result_good_from_cache);
+        // Note: we do not test a successful endpoint here, as that would require either
+        // relying on TEA or setting up a test url with fake credentials,
+        // both of which are brittle in their own ways.
+        // The inputs/outputs for good and bad retrieval are covered by other tests
     }
 
 /* TESTS END */
@@ -343,7 +341,7 @@ CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
     CPPUNIT_TEST(get_s3credentials_from_endpoint_test);
 
     // ...and, specifically, the signing itself: 
-    // TODO-future: will add/update these tests once signing behavior is implemented!
+    // TODO-future: will add/update these tests once signing behavior is implemented
     // - sign_url
     // - get_signed_url
 
