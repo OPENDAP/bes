@@ -282,38 +282,42 @@ std::shared_ptr<SignedUrlCache::S3AccessKeyTuple> SignedUrlCache::extract_s3_cre
     rapidjson::Document s3credentials_response;
     s3credentials_response.Parse(s3credentials_json_string.c_str());
 
+    if (s3credentials_response.HasParseError()) {
+        return nullptr;
+    }
+
     string access_key_id;
     string secret_access_key;
     string session_token;
     string expiration;
 
     auto itr = s3credentials_response.FindMember("accessKeyId");
-    if (itr != s3credentials_response.MemberEnd()) {
+    if (itr != s3credentials_response.MemberEnd() && itr->value.IsString()) {
         access_key_id = itr->value.GetString();
     }
 
     itr = s3credentials_response.FindMember("secretAccessKey");
-    if (itr != s3credentials_response.MemberEnd()) {
+    if (itr != s3credentials_response.MemberEnd() && itr->value.IsString()) {
         secret_access_key = itr->value.GetString();
     }
 
     itr = s3credentials_response.FindMember("sessionToken");
-    if (itr != s3credentials_response.MemberEnd()) {
+    if (itr != s3credentials_response.MemberEnd() && itr->value.IsString()) {
         session_token = itr->value.GetString();
     }
 
     itr = s3credentials_response.FindMember("expiration");
-    if (itr != s3credentials_response.MemberEnd()) {
+    if (itr != s3credentials_response.MemberEnd() && itr->value.IsString()) {
         expiration = itr->value.GetString();
     }
 
     if (access_key_id.empty() || secret_access_key.empty() || session_token.empty() || expiration.empty()) {
         return nullptr;
     }
-    return make_shared<SignedUrlCache::S3AccessKeyTuple>(access_key_id, 
-                                                            secret_access_key,
-                                                            session_token,
-                                                            expiration);
+    return make_shared<SignedUrlCache::S3AccessKeyTuple>(access_key_id,
+                                                         secret_access_key,
+                                                         session_token,
+                                                         expiration);
 }
 
 

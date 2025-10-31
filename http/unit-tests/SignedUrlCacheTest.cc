@@ -220,6 +220,38 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Expired result should have been removed from cache", SignedUrlCache::TheCache()->d_s3credentials_cache.empty());
     }
 
+    void extract_s3_credentials_from_response_json_test() {
+
+        std::string access_key("i_am_an_access_key_id");
+        std::string valid_response(
+            string("{\n\"accessKeyId\": \"") + access_key + "\",\n" +
+            "\"secretAccessKey\": \"i_am_a_secret_access_key\",\n" +
+            "\"sessionToken\": \"i_am_a_fake_token\",\n" +
+            "\"expiration\": \"3025-09-30 18:40:58+00:00\"\n" +
+            "} ");
+        auto result = SignedUrlCache::extract_s3_credentials_from_response_json(valid_response);
+        CPPUNIT_ASSERT_MESSAGE("Valid json should not return nullptr", result != nullptr);
+        CPPUNIT_ASSERT_MESSAGE("Access key should be returned as first value", access_key == get<0>(*result));
+
+        CPPUNIT_ASSERT_MESSAGE("Empty string should return nullptr", SignedUrlCache::extract_s3_credentials_from_response_json("") == nullptr);
+        CPPUNIT_ASSERT_MESSAGE("Invalid json should return nullptr", SignedUrlCache::extract_s3_credentials_from_response_json("{foo}") == nullptr);
+
+        std::string invalid_response(
+            string("{\n\"accessKeyId\": \"") + access_key + "\",\n" +
+            "\"secretAccessKey\": \"i_am_a_secret_access_key\",\n" +
+            "\"sessionToken\": \"i_am_a_fake_token\",\n" +
+            "} ");
+        CPPUNIT_ASSERT_MESSAGE("Response missing field should return nullptr", SignedUrlCache::extract_s3_credentials_from_response_json(invalid_response) == nullptr);
+
+        std::string invalid_response_contents(
+            string("{\n\"accessKeyId\": \"") + access_key + "\",\n" +
+            "\"secretAccessKey\": [3, 4, 5],\n" + // Oh no! An array instead of a string!! Horrors!
+            "\"sessionToken\": \"i_am_a_fake_token\",\n" +
+            "\"expiration\": \"3025-09-30 18:40:58+00:00\"\n" +
+            "} ");
+        CPPUNIT_ASSERT_MESSAGE("Field with non-string response should return nullptr", SignedUrlCache::extract_s3_credentials_from_response_json(invalid_response_contents) == nullptr);
+    }
+
 /*
     void cache_test_00() {
         DBG(cerr << prolog << "BEGIN" << endl);
@@ -457,11 +489,11 @@ CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
     // CPPUNIT_TEST(trusted_url_test_01);
 
     // Test behavior specific to url signing:
-    // - get_s3credentials_from_endpoint
-    // - extract_s3_credentials_from_response_json
     CPPUNIT_TEST(is_timestamp_after_now_test);
     CPPUNIT_TEST(retrieve_cached_s3credentials_test);
     CPPUNIT_TEST(retrieve_cached_s3credentials_expired_credentials_test);
+    CPPUNIT_TEST(extract_s3_credentials_from_response_json_test);
+    // - get_s3credentials_from_endpoint
 
     // - sign_url
     // - get_cached_signed_url
