@@ -3,6 +3,7 @@
 /CurlUtilsTest
 /CurlSListTest
 /EffectiveUrlCacheTest
+/SignedUrlCacheTest
 /HttpUrlTest
 /HttpErrorTest
 /AllowedHostsTest
