@@ -77,6 +77,17 @@ bool verbose = false;   // Optionally set by build_dmrpp's main().
 #define prolog std::string("build_dmrpp_h4::").append(__func__).append("() - ")
 
 constexpr auto INVOCATION_CONTEXT = "invocation";
+inline string basename(const string & path) {
+
+    // If the filename has a # in it, it's probably been decompressed
+    // to <cachedir>/the#path#of#the#file#<filename> and all we want is
+    // <filename>.  rph 06/14/01.
+
+    if (path.find("#") != string::npos)
+        return path.substr(path.find_last_of("#") + 1);
+    else
+        return path.substr(path.find_last_of("/") + 1);
+}
 
 int SDfree_mapping_info(SD_mapping_info_t  *map_info)
 {
@@ -954,7 +965,22 @@ bool add_missing_cf_grid(const string &filename,BaseType *btp, const D4Attribute
     return true;
 
 }
+void calculate_airs_co2_latlon(vector<float64> &out_ll,int32 dim_size, bool is_lat) {
 
+    // The latitude and longitude values are based on the Latitude and Longitude fields in the original AIRS data.
+    if (is_lat) {
+
+        out_ll[0] = 89.5;
+        for (int i = 0; i<(dim_size-1);i++)
+            out_ll[i+1] = 88 - 2*i;
+
+    }
+    else {
+        for (int i = 0; i<dim_size;i++)
+            out_ll[i] = -180.0 + 2.5*i;
+    }
+
+}
 // Add the missing eos latitude/longitude data. This function won't be called if users choose not to insert the data
 // inside the dmrpp file.
 bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attribute *eos_ll_attr, string &err_msg) {
@@ -1034,6 +1060,7 @@ bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attrib
 
     //Retrieve grid pixel origin 
     int32 origin = 0; 
+  
     r = GDorigininfo (gridid, &origin);
     if (r != 0) {
         GDdetach(gridid);
@@ -1071,34 +1098,20 @@ bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attrib
         }
     }
 
-    // The following code aims to handle large MCD Grid(GCTP_GEO projection) such as 21600*43200 lat and lon.
-    // These MODIS MCD files don't follow HDF-EOS standard way to represent lat/lon (DDDMMMSSS);
-    // they simply represent lat/lon as the normal representation -180.0 or -90.0.
-    // For example, if the real longitude value is 180.0, HDF-EOS needs the value to be represented as 180000000 rather than 180.
-    // So we need to make the representation follow the HDF-EOS2 way. 
-    if (((int)(lowright[0]/1000)==0) &&((int)(upleft[0]/1000)==0)
-               && ((int)(upleft[1]/1000)==0) && ((int)(lowright[1]/1000)==0)) {
-        if (projcode == GCTP_GEO){ 
-            for (i =0; i<2;i++) {
-                lowright[i] = lowright[i]*1000000;
-                upleft[i] = upleft[i] *1000000;
-            }
+    if (projcode != GCTP_GEO) {
+        r = GDij2ll (projcode, zone, params, sphere, xdim, ydim, upleft, lowright,
+                     xdim * ydim, rows.data(), cols.data(), lon.data(), lat.data(), pixreg, origin);
+    
+        if (r != 0) {
+            GDdetach(gridid);
+            GDclose(gridfd);
+            err_msg = "cannot calculate grid latitude and longitude for grid name: " + grid_name;
+            return false;
         }
+   
+        VERBOSE(cerr<<"The first value of longtitude: "<<lon[0]<<endl);
+        VERBOSE(cerr<<"The first value of latitude: "<<lat[0]<<endl);
     }
-
-    r = GDij2ll (projcode, zone, params, sphere, xdim, ydim, upleft, lowright,
-                 xdim * ydim, rows.data(), cols.data(), lon.data(), lat.data(), pixreg, origin);
-
-    if (r != 0) {
-        GDdetach(gridid);
-        GDclose(gridfd);
-        err_msg = "cannot calculate grid latitude and longitude for grid name: " + grid_name;
-        return false;
-    }
-
-    VERBOSE(cerr<<"The first value of longtitude: "<<lon[0]<<endl);
-    VERBOSE(cerr<<"The first value of latitude: "<<lat[0]<<endl);
-
 
     auto da = dynamic_cast<DmrppArray *>(btp);
     if (!da) {
@@ -1115,11 +1128,51 @@ bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attrib
         if (projcode == GCTP_CEA || projcode == GCTP_GEO) {
             vector<float64>out_lat;
             out_lat.resize(ydim);
-            j=0;
-            for (i =0; i<xdim*ydim;i = i+xdim){
-                out_lat[j] = lat[i];
-                j++;
+            if (projcode == GCTP_CEA) {
+                j=0;
+                for (i =0; i<xdim*ydim;i = i+xdim){
+                    out_lat[j] = lat[i];
+                    j++;
+                }
             }
+            else {//GCTP_GEO, we have to calculate by ourselves.
+
+                // We have to handle the AIRS CO2 product differently.
+                // The current AIRS CO2 product doesn't follow the HDF-EOS standard way to represent lat/lon (DDDMMMSSS). 
+                // So in addition to checking the file name, we add another check to make sure the product stays the same.
+                if ((basename(filename).size() >12) &&
+                    (basename(filename).compare(0,4,"AIRS") == 0)&& 
+                    (basename(filename).find(".L3.")!=string::npos) && 
+                    (basename(filename).find(".CO2")!=string::npos) && 
+                    ((int)(lowright[1]/1000)==0 &&(int)(upleft[1]/1000)==0))  
+                    calculate_airs_co2_latlon(out_lat,ydim,true);
+                else {
+                    // Some MODIS MCD files don't follow the HDF-EOS standard way to represent lat/lon (DDDMMMSSS);
+                    // they simply represent lat/lon as the normal representation -180.0 or -90.0.
+                    // For example, if the real longitude value is 180.0, HDF-EOS needs the value to be represented as 180000000 rather than 180.
+                    // Since we will calculate the lat/lon by our seleves,  we  make the HDF-EOS2 representation follow the normal lat/lon range.
+                    if (((int)(lowright[1]/1000)!=0) &&((int)(upleft[1]/1000)!=0)) {
+                        lowright[1] = lowright[1]/1000000;
+                        upleft[1] = upleft[1]/1000000;
+                    }
+                
+                    // Prepare start, end and step
+                    double start =(origin == HDFE_GD_UL || origin == HDFE_GD_UR)?upleft[1]:lowright[1];
+                    double end =(origin == HDFE_GD_UL || origin == HDFE_GD_UR)?lowright[1]:upleft[1];
+                    double step = (end -start)/ydim;
+                    if (pixreg == HDFE_CENTER){ 
+                        for (i = 0; i < ydim; i++)
+                            out_lat[i] = (i + 0.5) * step + start;
+                    } 
+                    else {//Corner
+                        for (i = 0; i < ydim; i++)
+                            out_lat[i] = i * step + start;
+                    }
+                }
+                
+                VERBOSE(cerr<<"The first value of latitude: "<<out_lat[0]<<endl);
+            }
+ 
             da->set_value(out_lat.data(),ydim);
             
         }
@@ -1130,8 +1183,47 @@ bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attrib
         if (projcode == GCTP_CEA || projcode == GCTP_GEO) {
             vector<float64>out_lon;
             out_lon.resize(xdim);
-            for (i =0; i<xdim;i++)
-                out_lon[i] = lon[i];
+            if (projcode == GCTP_CEA) {
+                for (i =0; i<xdim;i++)
+                    out_lon[i] = lon[i];
+            }
+            else { //GCTP_GEO, we have to calculate by ourselves.
+
+                // We have to handle the AIRS CO2 product differently.
+                // The current AIRS CO2 product doesn't follow the HDF-EOS standard way to represent lat/lon (DDDMMMSSS). 
+                // So in addition to checking the file name, we add another check to make sure the product stays the same.
+                if ((basename(filename).size() >12) &&
+                    (basename(filename).compare(0,4,"AIRS") == 0)&& 
+                    (basename(filename).find(".L3.")!=string::npos) && 
+                    (basename(filename).find(".CO2")!=string::npos) && 
+                    ((int)(lowright[0]/1000)==0 &&(int)(upleft[0]/1000)==0))  
+                    calculate_airs_co2_latlon(out_lon,xdim,false);
+                else {
+                    // Some MODIS MCD files don't follow the HDF-EOS standard way to represent lat/lon (DDDMMMSSS);
+                    // they simply represent lat/lon as the normal representation -180.0 or -90.0.
+                    // For example, if the real longitude value is 180.0, HDF-EOS needs the value to be represented as 180000000 rather than 180.
+                    // Since we will calculate the lat/lon by our seleves,  we  make the HDF-EOS2 representation follow the normal lat/lon range.
+                    if (((int)(lowright[0]/1000)!=0) &&((int)(upleft[0]/1000)!=0)) {
+                        lowright[0] = lowright[0]/1000000;
+                        upleft[0] = upleft[0]/1000000;
+                    }
+                
+                    // Prepare start, end and step
+                    double start =(origin == HDFE_GD_UL || origin == HDFE_GD_LL)?upleft[0]:lowright[0];
+                    double end =(origin == HDFE_GD_UL || origin == HDFE_GD_LL)?lowright[0]:upleft[0];
+                    double step = (end -start)/xdim;
+                    if (pixreg == HDFE_CENTER){ 
+                        for (i = 0; i < xdim; i++)
+                            out_lon[i] = (i + 0.5) * step + start;
+                    } 
+                    else {//Corner
+                        for (i = 0; i < xdim; i++)
+                            out_lon[i] = i * step + start;
+                    }
+                }
+                VERBOSE(cerr<<"The first value of longtitude: "<<out_lon[0]<<endl);
+            }
+ 
             da->set_value(out_lon.data(),xdim);
 
         }
