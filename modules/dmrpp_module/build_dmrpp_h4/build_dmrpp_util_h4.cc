@@ -1151,11 +1151,11 @@ bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attrib
                     // they simply represent lat/lon as the normal representation -180.0 or -90.0.
                     // For example, if the real longitude value is 180.0, HDF-EOS needs the value to be represented as 180000000 rather than 180.
                     // Since we will calculate the lat/lon by our seleves,  we  make the HDF-EOS2 representation follow the normal lat/lon range.
-                    if (((int)(lowright[1]/1000)!=0) &&((int)(upleft[1]/1000)!=0)) {
+                    if ((int)(lowright[1]/1000)!=0)
                         lowright[1] = lowright[1]/1000000;
+                    if ((int)(upleft[1]/1000)!=0)
                         upleft[1] = upleft[1]/1000000;
-                    }
-                
+
                     // Prepare start, end and step
                     double start =(origin == HDFE_GD_UL || origin == HDFE_GD_UR)?upleft[1]:lowright[1];
                     double end =(origin == HDFE_GD_UL || origin == HDFE_GD_UR)?lowright[1]:upleft[1];
@@ -1203,14 +1203,14 @@ bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attrib
                     // they simply represent lat/lon as the normal representation -180.0 or -90.0.
                     // For example, if the real longitude value is 180.0, HDF-EOS needs the value to be represented as 180000000 rather than 180.
                     // Since we will calculate the lat/lon by our seleves,  we  make the HDF-EOS2 representation follow the normal lat/lon range.
-                    if (((int)(lowright[0]/1000)!=0) &&((int)(upleft[0]/1000)!=0)) {
+                    if ((int)(lowright[0]/1000)!=0)
                         lowright[0] = lowright[0]/1000000;
+                    if ((int)(upleft[0]/1000)!=0)
                         upleft[0] = upleft[0]/1000000;
-                    }
                 
                     // Prepare start, end and step
-                    double start =(origin == HDFE_GD_UL || origin == HDFE_GD_LL)?upleft[0]:lowright[0];
-                    double end =(origin == HDFE_GD_UL || origin == HDFE_GD_LL)?lowright[0]:upleft[0];
+                    double start =(origin == HDFE_GD_UL || origin == HDFE_GD_UR)?upleft[0]:lowright[0];
+                    double end =(origin == HDFE_GD_UL || origin == HDFE_GD_UR)?lowright[0]:upleft[0];
                     double step = (end -start)/xdim;
                     if (pixreg == HDFE_CENTER){ 
                         for (i = 0; i < xdim; i++)
