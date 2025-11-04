@@ -300,6 +300,11 @@ valgrind besstandalone -c tests/bes.h4cf.conf -i tests/bescmd/SDS_simple_comp.hd
 valgrind besstandalone -c tests/bes.h4cf.conf -i tests/bescmd/SDS_simple_comp.hdf.dap2dmr.bescmd>test.nc
 valgrind besstandalone -c tests/bes.h4cf.conf -i tests/bescmd/SDS_simple_comp.hdf.dap2.bescmd>test.nc
 
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/grid_2_2d_ps_ll.hdf.dmrpp.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/grid_2_2d_ps_nmd.hdf.dmrpp.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/grid_1_2d.hdf.dmrpp.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/grid_1_2d.hdf.bescmd >test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/grid_2_2d_ps.hdf.bescmd >test.nc
 
 valgrind besstandalone -c tests/bes.nc4.grp.reduce_dim.conf -i tests/bescmd/nc4_group_atomic_comp.h5.dmrpp.bescmd > test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.reduce_dim.conf -i tests/bescmd/t_grp_dim.bescmd > test.nc
