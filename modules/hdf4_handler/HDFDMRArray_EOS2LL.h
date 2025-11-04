@@ -51,7 +51,7 @@ class HDFDMRArray_EOS2LL:public libdap::Array
 
         // Subsetting the latitude and longitude.
         template <class T> void LatLon2DSubset (T* outlatlon, int xdim, T* latlon, const int * offset, const int * count, const int * step) const; 
-        void calculate_airs_co2_latlon(vector<float64> &out_ll,int32 xydim);
+        void calculate_airs_co2_latlon(vector<float64> &out_ll,int32 xydim) const;
 
 };
 

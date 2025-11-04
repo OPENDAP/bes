@@ -245,7 +245,6 @@ bool reserved_vgroups(const vector<char> &vgroup_class);
 #if 0
 void vgroup_convert_sds_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group* d4g,const string& filename);
 #endif
-//void convert_sds(int32 file_id, int32 sdfd,int32 vgroup_id, int32 obj_ref,  D4Group* d4g,D4Group *root_grp, const string &filename, bool is_eos2_grid, bool is_eos2_grid_cf_mapping,bool follow_coard);
 void convert_sds(int32 file_id, int32 sdfd,int32 vgroup_id, int32 obj_ref,  D4Group* d4g,D4Group *root_grp, const string &filename, bool is_eos2_grid, bool is_eos2_grid_cf_mapping,short special_eos2_handling);
 void obtain_all_sds_refs(int32 file_id, int32 sdfd, unordered_set<int32>& sds_ref);
 void exclude_all_sds_refs_in_vgroups(int32 file_id, int32 sdfd, unordered_set<int32>&sds_ref);
@@ -3580,8 +3579,7 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
         // performance by handling the data with just the HDF4 interfaces.
         // At least the file name should have string AIRS.L3. or AIRS.L2..
         else if((basename(filename).size() >8) && (basename(filename).compare(0,4,"AIRS") == 0) 
-                //&& (((basename(filename).find(".L3.")!=string::npos) && (basename(filename).find(".CO2")==string::npos)) || (basename(filename).find(".L2.")!=string::npos)))
-                && (((basename(filename).find(".L3.")!=string::npos) ) || (basename(filename).find(".L2.")!=string::npos)))
+                && (basename(filename).find(".L3.")!=string::npos || basename(filename).find(".L2.")!=string::npos))
                 { 
 
             bool has_dimscale = false;
@@ -3632,7 +3630,7 @@ int check_special_eosfile(const string & filename, string& grid_name,int32 sdfd)
             // If having dimension scales, this is an AIRS level 2 or 3 version 6. Treat it differently. Otherwise, this is an old AIRS level 3 product.
             if (true == has_dimscale)
                 ret_val = 3;
-            else if ((basename(filename).find(".CO2")!=string::npos)) 
+            else if (basename(filename).find(".CO2")!=string::npos) 
                 ret_val = 5;
             else
                 ret_val = 1;
@@ -5148,7 +5146,6 @@ void read_dmr_vlone_groups(D4Group *root_grp, int32 file_id, int32 sdfd, const s
     short check_eos2_grids_ret_value = 0;
 #ifdef USE_HDFEOS2_LIB
     check_eos2_grids_ret_value = check_eos2_grids(filename,sdfd,eos2_grid_lls, eos2_grids_info);
-//cerr<<"check_eos2_grids_ret_value: "<<check_eos2_grids_ret_value <<endl;
     if (check_eos2_grids_ret_value == -1) {
         close_vgroup_fileids(file_id,sdfd,-1);
         throw BESInternalError("Error in the check_eos2_grid(). ",__FILE__, __LINE__);
@@ -5318,7 +5315,6 @@ void vgroup_convert_sds_objects(int32 vgroup_id, int32 file_id, int32 sdfd, D4Gr
 #endif
 
 
-//void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4g,D4Group *root_grp, const string &vgroupname, const string& filename, bool is_eos2_grid, bool is_eos2_grid_cf_mapping, bool follow_coard) {
 void convert_vgroup_objects(int32 vgroup_id,int32 file_id,int32 sdfd,D4Group *d4g,D4Group *root_grp, const string &vgroupname, const string& filename, bool is_eos2_grid, bool is_eos2_grid_cf_mapping, short  special_eos2_handling) {
     BESDEBUG("h4"," Start convert_vgroup_objects"<<endl);
 
@@ -5679,7 +5675,6 @@ void map_vdata_to_dap4_attrs(HDFDMRArray_VD *ar, int32 vdata_id, int32 obj_ref) 
 }
 
 
-//void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Group *d4g, D4Group *root_grp,const string &filename, bool is_eos2_grid, bool is_eos2_grid_cf_mapping, bool follow_coard) {
 void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Group *d4g, D4Group *root_grp,const string &filename, bool is_eos2_grid, bool is_eos2_grid_cf_mapping, short special_eos2_handling) {
 
     int32 sds_index = 0; 
@@ -5732,8 +5727,6 @@ void convert_sds(int32 file_id, int32 sdfd, int32 vgroup_id, int32 obj_ref, D4Gr
     }
 
     string sds_name_str(sds_name.begin(),sds_name.end()-1);
-//cerr<<"sds_name_str: "<<sds_name_str <<endl;
-//cerr<<"special_eos2_handling: "<< special_eos2_handling <<endl;
 
     // AIRS CO2 product: we don't want to keep the original lat/lon in the DMR.
     if (special_eos2_handling == 2 && (sds_name_str=="Latitude" || sds_name_str=="Longitude")) 

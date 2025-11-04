@@ -185,14 +185,14 @@ HDFDMRArray_EOS2LL::read ()
                     // Prepare start, end and step
                     double start =(origin == HDFE_GD_UL || origin == HDFE_GD_UR)?upleft[1]:lowright[1];
                     double end =(origin == HDFE_GD_UL || origin == HDFE_GD_UR)?lowright[1]:upleft[1];
-                    double step = (end -start)/ydim;
+                    double lat_step = (end -start)/ydim;
                     if (pixreg == HDFE_CENTER){ 
                         for (i = 0; i < ydim; i++)
-                            out_lat[i] = (i + 0.5) * step + start;
+                            out_lat[i] = (i + 0.5) * lat_step + start;
                     } 
                     else {//Corner
                         for (i = 0; i < ydim; i++)
-                            out_lat[i] = i * step + start;
+                            out_lat[i] = i * lat_step + start;
                     }
                 }
             }
@@ -245,14 +245,14 @@ HDFDMRArray_EOS2LL::read ()
                     // Prepare start, end and step
                     double start =(origin == HDFE_GD_UL || origin == HDFE_GD_UR)?upleft[0]:lowright[0];
                     double end =(origin == HDFE_GD_UL || origin == HDFE_GD_UR)?lowright[0]:upleft[0];
-                    double step = (end -start)/xdim;
+                    double lon_step = (end -start)/xdim;
                     if (pixreg == HDFE_CENTER){ 
                         for (i = 0; i < xdim; i++)
-                            out_lon[i] = (i + 0.5) * step + start;
+                            out_lon[i] = (i + 0.5) * lon_step + start;
                     } 
                     else {//Corner
                         for (i = 0; i < xdim; i++)
-                            out_lon[i] = i * step + start;
+                            out_lon[i] = i * lon_step + start;
                     }
                 }
  
@@ -281,7 +281,7 @@ HDFDMRArray_EOS2LL::read ()
 }
 
 void 
-HDFDMRArray_EOS2LL::calculate_airs_co2_latlon(vector<float64> &out_ll,int32 dim_size) {
+HDFDMRArray_EOS2LL::calculate_airs_co2_latlon(vector<float64> &out_ll,int32 dim_size) const{
 
     // The latitude and longitude values are based on the Latitude and Longitude fields in the original AIRS data.
     if (is_lat) {
