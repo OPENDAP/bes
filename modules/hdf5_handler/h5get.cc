@@ -1642,7 +1642,7 @@ string obtain_enum_def_name(hid_t pid, hid_t datatype) {
 
         // Obtain the object type, such as group or dataset.
         H5O_info_t oinfo;
-        if (H5Oget_info_by_idx(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,i,&oinfo,H5P_DEFAULT)<0) {
+        if (H5OGET_INFO_BY_IDX(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,i,&oinfo,H5P_DEFAULT)<0) {
             string msg = "H5Oget_info_by_idx fails to obtain enum type name.";
             throw BESInternalError(msg,__FILE__,__LINE__);
         }
