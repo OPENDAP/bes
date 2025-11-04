@@ -607,10 +607,9 @@ AM_COND_IF([LOOK_FOR_AWS],
          AS_IF(
             dnl OSX test
             [echo ${host} | grep -q 'darwin.*'],
-            [aws_libdir=$aws_prefix/lib; AC_MSG_NOTICE([OSX xxx])],
+            [aws_libdir=$aws_prefix/lib],
             dnl else
             [
-                AC_MSG_NOTICE([Non-OSX xxx])
                 ARCH=""
                 AS_CASE([$host_cpu],
                     [x86_64|aarch64*|mips64*|ppc64*|sparc64*],
@@ -618,14 +617,13 @@ AM_COND_IF([LOOK_FOR_AWS],
                     [i?86|arm*|mips*|ppc*|sparc],
                     [ARCH="32"])
 
-                AC_MSG_NOTICE([Arch: $ARCH xxx])
                 AS_IF(
                     dnl 64-bit system
                     [test "$ARCH" = "64"],
-                    [aws_libdir=$aws_prefix/lib64; AC_MSG_NOTICE([64x path set xxx])],
+                    [aws_libdir=$aws_prefix/lib64],
                     dnl 32-bit system
                     [test "$ARCH" = "32"],
-                    [aws_libdir=$aws_prefix/lib; AC_MSG_NOTICE([32x path set xxx])]
+                    [aws_libdir=$aws_prefix/lib]
                 )
          ])
 
