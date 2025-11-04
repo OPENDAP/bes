@@ -1157,16 +1157,20 @@ bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attrib
                         upleft[1] = upleft[1]/1000000;
 
                     // Prepare start, end and step
-                    double start =(origin == HDFE_GD_UL || origin == HDFE_GD_UR)?upleft[1]:lowright[1];
-                    double end =(origin == HDFE_GD_UL || origin == HDFE_GD_UR)?lowright[1]:upleft[1];
+                    double start = upleft[1];
+                    double end = lowright[1];
                     double step = (end -start)/ydim;
                     if (pixreg == HDFE_CENTER){ 
                         for (i = 0; i < ydim; i++)
                             out_lat[i] = (i + 0.5) * step + start;
                     } 
                     else {//Corner
-                        for (i = 0; i < ydim; i++)
-                            out_lat[i] = i * step + start;
+                        for (i = 0; i < ydim; i++) {
+                            if (origin == HDFE_GD_LR || origin == HDFE_GD_LL)
+                                out_lat[i] = (i+1) * step + start;
+                            else 
+                                out_lat[i] = i * step + start;
+                        }
                     }
                 }
                 
@@ -1209,16 +1213,20 @@ bool add_missing_eos_latlon(const string &filename,BaseType *btp, const D4Attrib
                         upleft[0] = upleft[0]/1000000;
                 
                     // Prepare start, end and step
-                    double start =(origin == HDFE_GD_UL || origin == HDFE_GD_UR)?upleft[0]:lowright[0];
-                    double end =(origin == HDFE_GD_UL || origin == HDFE_GD_UR)?lowright[0]:upleft[0];
+                    double start = upleft[0];
+                    double end = lowright[0];
                     double step = (end -start)/xdim;
                     if (pixreg == HDFE_CENTER){ 
                         for (i = 0; i < xdim; i++)
                             out_lon[i] = (i + 0.5) * step + start;
                     } 
                     else {//Corner
-                        for (i = 0; i < xdim; i++)
-                            out_lon[i] = i * step + start;
+                        for (i = 0; i < xdim; i++) {
+                            if (origin == HDFE_GD_UR || origin == HDFE_GD_LR)
+                                out_lon[i] = (i+1) * step + start;
+                            else 
+                                out_lon[i] = i * step + start;
+                        }
                     }
                 }
                 VERBOSE(cerr<<"The first value of longtitude: "<<out_lon[0]<<endl);
