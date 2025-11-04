@@ -606,7 +606,7 @@ AM_COND_IF([LOOK_FOR_AWS],
 
          AS_IF(
             dnl OSX test
-            [test "${host_os}" = "darwin*"],
+            [echo ${host} | grep -q 'darwin.*'],
             [aws_libdir=$aws_prefix/lib; AC_MSG_NOTICE([OSX xxx])],
             dnl else
             [
