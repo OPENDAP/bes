@@ -336,6 +336,16 @@ std::shared_ptr<SignedUrlCache::S3AccessKeyTuple> SignedUrlCache::extract_s3_cre
                                                          expiration);
 }
 
+SignedUrlCache *SignedUrlCache::TheCache() {
+    // Create a local static object the first time the function is called
+    static SignedUrlCache instance;
+
+    // Initialize the aws library (must only be once in application!)
+    bes::AWS_SDK::aws_library_initialize();
+
+    return &instance;
+}
+
 /**
  * @brief Sign `s3_url` with aws credentials in `s3_access_key_tuple`, or nullptr if any part of signing process fails
  * @note Not yet implemented!
@@ -346,6 +356,7 @@ std::shared_ptr<EffectiveUrl> SignedUrlCache::sign_url(std::string const &s3_url
     string id = get<0>(*s3_access_key_tuple);
     string secret = get<1>(*s3_access_key_tuple);
 
+    // bes::AWS_SDK::aws_library_shutdown();
     return nullptr;
 
     // TODO: uhhhhh where was the region from?????? can we get it from s3_url, I hope????

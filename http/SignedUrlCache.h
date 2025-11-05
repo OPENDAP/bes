@@ -96,11 +96,7 @@ public:
      *
      * @return A pointer to the SignedUrlCache singleton
      */
-    static SignedUrlCache *TheCache() {
-        // Create a local static object the first time the function is called
-        static SignedUrlCache instance;
-        return &instance;
-    }
+    static SignedUrlCache *TheCache();
 
     SignedUrlCache(const SignedUrlCache &src) = delete;
     SignedUrlCache &operator=(const SignedUrlCache &rhs) = delete;
