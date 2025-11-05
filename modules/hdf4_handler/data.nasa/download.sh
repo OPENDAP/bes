@@ -59,6 +59,13 @@ $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/LAADS/M
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/GESDISC/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/GESDISC/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf.dmrpp
 
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/GESDISC/AIRS.2010.01.01.L3.CO2Std_IR031.v5.9.14.0.X13086102514.hdf
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/GESDISC/AIRS.2010.01.01.L3.CO2Std_IR031.v5.9.14.0.X13086102514.hdf.dmrpp
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/GESDISC/AIRS.2010.01.01.L3.CO2Std_IR031.v5.9.14.0.X13086102514_nmd.hdf.dmrpp
+$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/GESDISC/AIRS.2010.01.01.L3.CO2Std_IR031.v5.9.14.0.X13086102514.hdf_mvs.h5
+
+
+
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/GESDISC/3B42.20180802.03.7.HDF
 $GET https://gamma.hdfgroup.org/ftp/pub/outgoing/opendap/data/HDF4/NASA1/GESDISC/3B42.20180802.03.7.HDF.dmrpp
 

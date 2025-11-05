@@ -30,3 +30,6 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/MYD09.A201
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/MOD13Q1.A2023353.h17v06.061.2024005131728_constraint.hdf.dmrpp.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.h4cf.conf -i tests/nasa-bescmd/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf_dap2constraint_nc3.bescmd>nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.h4cf.conf -i tests/nasa-bescmd/MCD43GF_bsa_Band1_365_2021_V061.hdf_dap4constraint.bescmd>nasa_dap4_default_test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/AIRS.2010.01.01.L3.CO2Std_IR031.v5.9.14.0.X13086102514.hdf.bescmd>nasa_dap4_default_test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/AIRS.2010.01.01.L3.CO2Std_IR031.v5.9.14.0.X13086102514.hdf.dmrpp.bescmd>nasa_dap4_default_test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/AIRS.2010.01.01.L3.CO2Std_IR031.v5.9.14.0.X13086102514_nmd.hdf.dmrpp.bescmd>nasa_dap4_default_test.nc

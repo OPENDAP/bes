@@ -33,6 +33,7 @@
 #include "BESContainer.h"
 #include "MemoryCache.h"
 #include "FileCache.h"
+#include "NgapApi.h"
 
 namespace http {
 class RemoteResource;
@@ -71,7 +72,7 @@ class NgapOwnedContainer: public BESContainer {
     static int d_cmr_cache_purge_items;     // remove this many during purge
 
     static bool d_use_cmr_cache;
-    static MemoryCache<std::string> d_cmr_mem_cache;
+    static MemoryCache<NgapApi::DataAccessUrls> d_cmr_mem_cache_urls;
 
     static int d_dmrpp_mem_cache_size_items;    // max number of entries
     static int d_dmrpp_mem_cache_purge_items;   // remove this many during purge
@@ -91,12 +92,12 @@ class NgapOwnedContainer: public BESContainer {
     // easy to test in the unit tests. jhrg 4/29/24
     static bool file_to_string(int fd, std::string &content);
 
-    static bool get_daac_content_filters(const std::string &data_url, std::map<std::string, std::string, std::less<>> &content_filters);
+    static bool get_daac_content_filters(const NgapApi::DataAccessUrls &data_urls, std::map<std::string, std::string, std::less<>> &content_filters);
     static bool get_opendap_content_filters(std::map<std::string, std::string, std::less<>> &content_filters);
     static void filter_response(const std::map<std::string, std::string, std::less<>> &content_filters, std::string &content);
 
     static std::string build_dmrpp_url_to_owned_bucket(const std::string &rest_path, const std::string &data_source);
-    static std::string build_data_url_to_daac_bucket(const std::string &rest_path);
+    static NgapApi::DataAccessUrls build_data_urls_to_daac_bucket(const std::string &rest_path);
 
     bool dmrpp_read_from_opendap_bucket(std::string &dmrpp_string) const;
     void dmrpp_read_from_daac_bucket(std::string &dmrpp_string) const;

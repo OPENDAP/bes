@@ -77,6 +77,8 @@ if CPPUNIT
 UNIT_TESTS =  HttpUtilsTest HttpErrorTest RemoteResourceTest EffectiveUrlCacheTest HttpUrlTest \
 AllowedHostsTest awsv4_test CurlUtilsTest CurlSListTest
 
+# CredentialsManagerTest was removed because it was testing our S3 signing code and
+# that code is broken and being replaced by the AWS C++ SDK. jhrg 10/17/25
 # CredentialsManagerTest HttpCacheTest
 
 else
@@ -126,8 +128,8 @@ HttpUrlTest_LDADD = $(LIBADD)
 AllowedHostsTest_SOURCES = AllowedHostsTest.cc
 AllowedHostsTest_LDADD = $(LIBADD)
 
-CredentialsManagerTest_SOURCES = CredentialsManagerTest.cc
-CredentialsManagerTest_LDADD = ../.libs/libbes_http.a $(LIBADD)
+# CredentialsManagerTest_SOURCES = CredentialsManagerTest.cc
+# CredentialsManagerTest_LDADD = ../.libs/libbes_http.a $(LIBADD)
 
 awsv4_test_SOURCES = awsv4_test.cc
 awsv4_test_LDADD = ../.libs/libbes_http.a $(LIBADD)

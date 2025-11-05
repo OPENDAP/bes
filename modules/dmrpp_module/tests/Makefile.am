@@ -73,16 +73,20 @@ check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_RA_DMRPP) $(TESTSUITE_DMR
 		echo "       CMAC_URL: ${CMAC_URL}"; \
 		$(SHELL) '$(TESTSUITE_S3)' $(TESTSUITEFLAGS); \
 	else \
-		echo "No access credentials available, skipping S3 authentication tests"; \
+		echo "No access credentials available, skipping S3 authentication tests."; \
+		echo "If running locally, do"; \
+		echo "$(SHELL) '$(TESTSUITE_S3)' $(TESTSUITEFLAGS)"; \
 		true;\
 	fi
 	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
 	@echo "\n# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
 	@if [ -f ~/.netrc -a "$${CMAC_ON}" = xyes ]; then \
 		echo "--------- Found netrc, assuming EDL credentials are there ---------"; \
-		$(SHELL) '$(TESTSUITE_RA_DMRPP)' $(TESTSUITEFLAGS); \
+		echo "$(SHELL) '$(TESTSUITE_RA_DMRPP)' $(TESTSUITEFLAGS)"; \
 	else \
-		echo "No netrc available, skipping EDL-based tests"; \
+		echo "No netrc available, skipping EDL-based tests."; \
+		echo "If running locally, do"; \
+		echo "$(SHELL) '$(TESTSUITE_RA_DMRPP)' $(TESTSUITEFLAGS)"; \
 		true;\
 	fi
 	@echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - "
