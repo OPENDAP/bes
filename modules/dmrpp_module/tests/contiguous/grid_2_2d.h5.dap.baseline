@@ -48,9 +48,9 @@
 </Dataset>
 
 The data:
-Float32 temperature[4][8] = {{10, 10, 10, 10, 10, 10, 10, 10},{11, 11, 11, 11, 11, 11, 11, 11},{12, 12, 12, 12, 12, 12, 12, 12},{13, 13, 13, 13, 13, 13, 13, 13}};
-Float32 temperature[4][8] = {{10, 10, 10, 10, 10, 10, 10, 10},{11, 11, 11, 11, 11, 11, 11, 11},{12, 12, 12, 12, 12, 12, 12, 12},{13, 13, 13, 13, 13, 13, 13, 13}};
-String StructMetadata.0 = "GROUP=SwathStructure
+Float32 /HDFEOS/GRIDS/GeoGrid1/Data Fields/temperature[4][8] = {{10, 10, 10, 10, 10, 10, 10, 10},{11, 11, 11, 11, 11, 11, 11, 11},{12, 12, 12, 12, 12, 12, 12, 12},{13, 13, 13, 13, 13, 13, 13, 13}};
+Float32 /HDFEOS/GRIDS/GeoGrid2/Data Fields/temperature[4][8] = {{10, 10, 10, 10, 10, 10, 10, 10},{11, 11, 11, 11, 11, 11, 11, 11},{12, 12, 12, 12, 12, 12, 12, 12},{13, 13, 13, 13, 13, 13, 13, 13}};
+String /HDFEOS INFORMATION/StructMetadata.0 = "GROUP=SwathStructure
 END_GROUP=SwathStructure
 GROUP=GridStructure
 	GROUP=GRID_1
