@@ -27,6 +27,6 @@
 </Dataset>
 
 The data:
-Enum g1_enum[4] = {0, 1, 0, 1};
-Enum g2_enum[3] = {0, 1, 0};
+Enum /g1/g1_enum[4] = {0, 1, 0, 1};
+Enum /g1/g2/g2_enum[3] = {0, 1, 0};
 
