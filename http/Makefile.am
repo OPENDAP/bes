@@ -5,27 +5,14 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = $(OPENSSL_INC) -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/rapidjson $(DAP_CFLAGS) -I$(top_srcdir)/aws
+AM_CPPFLAGS = $(OPENSSL_INC) -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/rapidjson $(DAP_CFLAGS)
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
 endif
 
-
-LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/aws/libbes_aws.la $(aws_libs)
-
-# aws_libdir is set in configure.ac.
-
-# Help the link step find libs at build time too (not just run time)
-AM_LDFLAGS = -L$(aws_libdir)
-
-if DARWIN
-AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,@loader_path
-else
-AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,'$$ORIGIN'
-endif
-
 AM_CXXFLAGS=
+AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
 SUBDIRS = . unit-tests tests
@@ -54,7 +41,6 @@ SRCS = CurlUtils.cc \
     HttpUtils.cc \
     ProxyConfig.cc \
     EffectiveUrlCache.cc \
-    SignedUrlCache.cc \
     url_impl.cc \
     EffectiveUrl.cc \
     AllowedHosts.cc \
@@ -69,7 +55,6 @@ HDRS = CurlUtils.h \
     ProxyConfig.h \
     HttpNames.h \
     EffectiveUrlCache.h \
-    SignedUrlCache.h \
     url_impl.h \
     EffectiveUrl.h \
     AllowedHosts.h \

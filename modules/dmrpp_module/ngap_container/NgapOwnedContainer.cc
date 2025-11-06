@@ -68,7 +68,7 @@
 using namespace std;
 using namespace bes;
 using http::EffectiveUrlCache;
-using http::SignedUrlCache;
+using aws::SignedUrlCache;
 using namespace pugi;
 
 namespace ngap {

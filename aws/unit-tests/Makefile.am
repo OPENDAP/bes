@@ -100,5 +100,6 @@ clean-local:
 	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
 	test ! -d $(builddir)/cache || rm -rf $(builddir)/cache
 
-AWS_SDK_Test_SOURCES = AWS_SDK_Test.cc
+AWS_SDK_Test_SOURCES = AWS_SDK_Test.cc \
+					   SignedUrlCacheTest.cc
 AWS_SDK_Test_LDADD = $(LDADD)

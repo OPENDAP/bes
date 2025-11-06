@@ -74,7 +74,7 @@ bes_ngap_s3_creds.conf: bes_ngap_s3_creds.conf.in $(top_srcdir)/configure.ac
 
 if CPPUNIT
 
-UNIT_TESTS =  HttpUtilsTest HttpErrorTest RemoteResourceTest EffectiveUrlCacheTest HttpUrlTest SignedUrlCacheTest \
+UNIT_TESTS =  HttpUtilsTest HttpErrorTest RemoteResourceTest EffectiveUrlCacheTest HttpUrlTest \
 AllowedHostsTest awsv4_test CurlUtilsTest CurlSListTest
 
 # CredentialsManagerTest was removed because it was testing our S3 signing code and
@@ -121,9 +121,6 @@ CurlUtilsTest_LDADD = $(LIBADD)
 
 EffectiveUrlCacheTest_SOURCES = EffectiveUrlCacheTest.cc
 EffectiveUrlCacheTest_LDADD = $(LIBADD)
-
-SignedUrlCacheTest_SOURCES = SignedUrlCacheTest.cc
-SignedUrlCacheTest_LDADD = $(LIBADD)
 
 HttpUrlTest_SOURCES = HttpUrlTest.cc
 HttpUrlTest_LDADD = $(LIBADD)
