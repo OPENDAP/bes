@@ -262,13 +262,17 @@ add_executable(
     dap/ShowPathInfoResponseHandler.h
     dap/TempFile.cc
     dap/TempFile.h
-		dap/DapUtils.cc
-		dap/DapUtils.h
+    dap/DapUtils.cc
+    dap/DapUtils.h
 
     dapreader/DapModule.cc
     dapreader/DapModule.h
     dapreader/DapRequestHandler.cc
     dapreader/DapRequestHandler.h
+
+    aws/SignedUrlCache.cc
+    aws/SignedUrlCache.h
+    aws/unit-tests/SignedUrlCacheTest.cc
 
     dispatch/PicoSHA2/example/hasher.cpp
     dispatch/PicoSHA2/example/interactive_hasher.cpp
@@ -414,7 +418,7 @@ add_executable(
     dispatch/BESModuleApp.h
     dispatch/BESNames.h
     dispatch/BESNotFoundError.h
-		dispatch/BESObj.h
+    dispatch/BESObj.h
     dispatch/BESPlugin.h
     dispatch/BESPluginFactory.h
     dispatch/BESProcIdResponseHandler.cc
@@ -528,10 +532,7 @@ add_executable(
     http/EffectiveUrl.h
     http/EffectiveUrlCache.cc
     http/EffectiveUrlCache.h
-    http/SignedUrlCache.cc
-    http/SignedUrlCache.h
     http/unit-tests/EffectiveUrlCacheTest.cc
-    http/unit-tests/SignedUrlCacheTest.cc
     http/unit-tests/HttpUrlTest.cc
     http/unit-tests/RemoteResourceTest.cc
     http/unit-tests/AllowedHostsTest.cc

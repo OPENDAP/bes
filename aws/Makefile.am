@@ -47,5 +47,9 @@ cccc:
 	-mkdir $(C4_DIR)
 	cccc --outdir=$(C4_DIR) $(SRCS) $(HDRS)
 
-SRCS = AWS_SDK.cc
-HDRS = AWS_SDK.h IAWS_SDK.h
+SRCS = AWS_SDK.cc \
+       SignedUrlCache.cc
+
+
+HDRS = AWS_SDK.h IAWS_SDK.h \
+       SignedUrlCache.h
