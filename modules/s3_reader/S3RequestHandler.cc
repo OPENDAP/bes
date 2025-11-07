@@ -44,7 +44,6 @@
 using namespace std;
 using namespace libdap;
 using namespace s3;
-using namespace http;
 
 bool S3RequestHandler::d_inject_data_url;
 

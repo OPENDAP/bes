@@ -513,9 +513,7 @@ add_executable(
     http/url_impl.h
     http/CurlUtils.cc
     http/CurlUtils.h
-    http/HttpCache.cc
-    http/HttpCache.h
-    http/HttpNames.h
+     http/HttpNames.h
     http/HttpUtils.cc
     http/HttpUtils.h
     http/ProxyConfig.cc
