@@ -1001,9 +1001,9 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp, bool disable_
                 __LINE__);
 
     // We add the following code because travis's compiler treats hsize_t as unsigned long rather unsigned long long. KY 2025-11-10
-    vector<unsigned long long> dmrpp_chunk_dims(dataset_rank,0);
-    for (int i = 0; i<dataset_rank; i++)
-        dmrpp_chunk_dims[i] = (unsigned long long)(chunk_dims[i]);
+    vector<unsigned long long> dmrpp_chunk_dims;
+    for (const auto &c_dim:chunk_dims)
+        dmrpp_chunk_dims.emplace_back((unsigned long long)c_dim);
 
     dc->set_chunk_dimension_sizes(dmrpp_chunk_dims);
     if (num_chunks == 0)
@@ -1023,8 +1023,12 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp, bool disable_
             throw BESInternalError("Cannot get HDF5 dataset storage info.", __FILE__, __LINE__);
         }
 
+        vector<unsigned long long> dmrpp_chunk_coords;
+        for (const auto & c_coord:chunk_coords) 
+            dmrpp_chunk_coords.emplace_back((unsigned long long)c_coord);
+            
         VERBOSE(cerr << prolog << "chk_idk: " << i << ", addr: " << addr << ", size: " << size << endl);
-        dc->add_chunk(byte_order, size, addr, filter_mask, chunk_coords);
+        dc->add_chunk(byte_order, size, addr, filter_mask, dmrpp_chunk_coords);
     }
 }
 
