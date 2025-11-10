@@ -97,20 +97,54 @@ bool verbose = false;   // Optionally set by build_dmrpp's main().
 // H5Z_FILTER_SCALEOFFSET   6   scale+offset compression
 // H5Z_FILTER_RESERVED      256 filter ids below this value are reserved for library use
 
-/**
- * Converts the H5Z_filter_t to a readable string.
- * @param filter_type an H5Z_filter_t representing the filter_type
- * @return
+typedef struct chunk_iter_info_t {
+    const hsize_t* coords;
+    unsigned filter_mask;
+    haddr_t  addr;
+    hsize_t  size;
+} chunk_iter_info_t;
+        
+typedef struct chunk_iter_udata_t {
+    chunk_iter_info_t *chunk_info;
+    int                chunk_rank;
+    vector<haddr_t> chunk_offsets;
+    vector<hsize_t> chunk_lengths;
+    vector<unsigned int> filter_masks;
+    vector<vector<hsize_t>> chunk_coords;
+} chunk_iter_udata_t;
+
+int
+chunk_cb(const hsize_t *offset, unsigned filter_mask, haddr_t addr, hsize_t size, void *op_data)
+{
+    chunk_iter_udata_t *cidata = (chunk_iter_udata_t *)op_data;
+    int                 chunk_rank    = cidata->chunk_rank;
+//#if 0
+    printf("chunk_rank=%d\n",chunk_rank);
+    for (int i = 0; i <chunk_rank;i++)
+        printf("chunk_coord[%d]=%d\n",i,offset[i]);
+    // only print the allocated chunk size only
+    //printf("%" PRIuHSIZE "\n", size);
+    printf("chunk size=%d\n", (int)size);
+    printf("chunk addr=%d\n", (int)addr);
+//#endif
+    return 0;
+}
+
+
+ /**
+  * Converts the H5Z_filter_t to a readable string.
+  * @param filter_type an H5Z_filter_t representing the filter_type
+  * @return
  */
-string h5_filter_name(H5Z_filter_t filter_type) {
-    string name;
-    switch(filter_type) {
-        case H5Z_FILTER_NONE:
-            name = "H5Z_FILTER_NONE";
-            break;
-        case H5Z_FILTER_DEFLATE:
-            name = "H5Z_FILTER_DEFLATE";
-            break;
+ string h5_filter_name(H5Z_filter_t filter_type) {
+     string name;
+     switch(filter_type) {
+         case H5Z_FILTER_NONE:
+             name = "H5Z_FILTER_NONE";
+             break;
+         case H5Z_FILTER_DEFLATE:
+             name = "H5Z_FILTER_DEFLATE";
+             break;
         case H5Z_FILTER_SHUFFLE:
             name = "H5Z_FILTER_SHUFFLE";
             break;
@@ -1004,6 +1038,10 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp, bool disable_
     if (num_chunks == 0)
         dc->set_byte_order(byte_order);
  
+    chunk_iter_udata_t chunk_udata;
+    chunk_udata.chunk_rank = chunk_rank;
+    H5Dchunk_iter(dataset, H5P_DEFAULT, &chunk_cb, &chunk_udata);
+    
     for (unsigned int i = 0; i < num_chunks; ++i) {
         vector<hsize_t> chunk_coords(dataset_rank, 0);
         haddr_t addr = 0;
