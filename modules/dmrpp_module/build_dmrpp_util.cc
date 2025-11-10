@@ -1000,7 +1000,12 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp, bool disable_
                 "Found a chunk with rank different than the dataset's (aka variables') rank", __FILE__,
                 __LINE__);
 
-    dc->set_chunk_dimension_sizes(chunk_dims);
+    // We add the following code because travis's compiler treats hsize_t as unsigned long rather unsigned long long. KY 2025-11-10
+    vector<unsigned long long> dmrpp_chunk_dims(dataset_rank,0);
+    for (int i = 0; i<dataset_rank; i++)
+        dmrpp_chunk_dims[i] = (unsigned long long)(chunk_dims[i]);
+
+    dc->set_chunk_dimension_sizes(dmrpp_chunk_dims);
     if (num_chunks == 0)
         dc->set_byte_order(byte_order);
  
