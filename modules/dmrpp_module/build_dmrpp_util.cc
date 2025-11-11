@@ -116,17 +116,8 @@ typedef struct chunk_iter_udata_t {
 int
 chunk_cb(const hsize_t *chunk_coord, unsigned filter_mask, haddr_t chunk_addr, hsize_t chunk_size, void *op_data)
 {
-    chunk_iter_udata_t *cidata = (chunk_iter_udata_t *)op_data;
-    int                 chunk_rank    = cidata->chunk_rank;
-#if 0
-    printf("chunk_rank=%d\n",chunk_rank);
-    for (int i = 0; i <chunk_rank;i++)
-        printf("chunk_coord[%d]=%d\n",i,chunk_coord[i]);
-    // only print the allocated chunk size only
-    //printf("%" PRIuHSIZE "\n", size);
-    printf("chunk size=%d\n", (int)chunk_size);
-    printf("chunk addr=%d\n", (int)chunk_addr);
-#endif
+    auto cidata = (chunk_iter_udata_t *)op_data;
+    int  chunk_rank    = cidata->chunk_rank;
 
     (cidata->chunk_addrs).push_back(chunk_addr);
     (cidata->chunk_sizes).push_back(chunk_size);
@@ -137,7 +128,6 @@ chunk_cb(const hsize_t *chunk_coord, unsigned filter_mask, haddr_t chunk_addr, h
         temp_chunk_coord.push_back(chunk_coord[i]);
     
     (cidata->chunk_coords).emplace_back(temp_chunk_coord);
-    
     
     return 0;
 }
@@ -1061,18 +1051,7 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp, bool disable_
         VERBOSE(cerr << "ERROR" << endl);
         throw BESInternalError("H5Dchunk_iter fails.", __FILE__, __LINE__);
     }
-#if 0    
-    for (unsigned int i = 0; i < num_chunks; i++) {
-        cerr<<"BP, chunk addr= "<<(chunk_udata.chunk_addrs)[i] <<endl;
-        cerr<<"BP, chunk size= "<<(chunk_udata.chunk_sizes)[i] <<endl;
-        cerr<<"BP, chunk filter_mask= "<<(chunk_udata.filter_masks)[i] <<endl;
-        for (unsigned int j = 0; j<chunk_rank; j++) {
-        cerr<<"BP, chunk "<<i<<":  chunk_coords["<<j<<"]= "<<((chunk_udata.chunk_coords)[i])[j] <<endl;
-        } 
-    }
-#endif
 
-//#if 0
     for (unsigned int i = 0; i < num_chunks; ++i) {
 
         vector<unsigned long long> dmrpp_chunk_coords;
@@ -1082,31 +1061,7 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp, bool disable_
         VERBOSE(cerr << prolog << "chk_idk: " << i << ", addr: " << (chunk_udata.chunk_addrs)[i] << ", size: " << (chunk_udata.chunk_sizes)[i] << endl);
         dc->add_chunk(byte_order, (chunk_udata.chunk_sizes)[i], (chunk_udata.chunk_addrs)[i], (chunk_udata.filter_masks)[i], dmrpp_chunk_coords);
     }
-//#endif
 
-#if 0
-    for (unsigned int i = 0; i < num_chunks; ++i) {
-        vector<hsize_t> chunk_coords(dataset_rank, 0);
-        haddr_t addr = 0;
-        hsize_t size = 0;
-
-        unsigned filter_mask = 0;
-
-        status = H5Dget_chunk_info(dataset, fspace_id, i, chunk_coords.data(),
-                                   &filter_mask, &addr, &size);
-        if (status < 0) {
-            VERBOSE(cerr << "ERROR" << endl);
-            throw BESInternalError("Cannot get HDF5 dataset storage info.", __FILE__, __LINE__);
-        }
-
-        vector<unsigned long long> dmrpp_chunk_coords;
-        for (const auto & c_coord:chunk_coords) 
-            dmrpp_chunk_coords.emplace_back((unsigned long long)c_coord);
-            
-        VERBOSE(cerr << prolog << "chk_idk: " << i << ", addr: " << addr << ", size: " << size << endl);
-        dc->add_chunk(byte_order, size, addr, filter_mask, dmrpp_chunk_coords);
-    }
-#endif
 }
 
 H5D_layout_t get_h5_storage_layout(hid_t dataset){
