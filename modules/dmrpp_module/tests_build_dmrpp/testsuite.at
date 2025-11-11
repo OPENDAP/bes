@@ -26,12 +26,12 @@ AT_GET_DMRPP_3_20_TESTS([-I, Inventory Test], [grid_1_2d.h5], [inventory_test.ba
 #AT_GET_DMRPP_3_20([t_float.h5], [t_float.h5.baseline], [-F], [a.out])
 
 # GDAL3-6 jhrg 4/19/23
-#AT_GET_DMRPP_3_20_MAKE_MISSING([-M, make missing data file], [grid_1_2d.h5], [missing_dmrpp.baseline], [missing_data.baseline], [-s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf], [a.out])
+AT_GET_DMRPP_3_20_MAKE_MISSING([-M, make missing data file], [grid_1_2d.h5], [missing_dmrpp.baseline], [missing_data.baseline], [-s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf], [a.out])
 # GDAL3-6 jhrg 4/19/23
-#AT_GET_DMRPP_3_20_MAKE_MISSING([-M -p, make missing data file with missing data url], [grid_1_2d.h5], [missing_data_url_dmrpp.baseline], [missing_data.baseline], [-M -p http://some.where.over.the.rainbow.oz -s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf], [a.out])
+AT_GET_DMRPP_3_20_MAKE_MISSING([-M -p, make missing data file with missing data url], [grid_1_2d.h5], [missing_data_url_dmrpp.baseline], [missing_data.baseline], [-M -p http://some.where.over.the.rainbow.oz -s ${abs_srcdir}/get_dmrpp_baselines/use_cf.conf], [a.out])
 
-#AT_GET_DMRPP_3_20_MAKE_MISSING_GROUP([-m, make missing data file that has groups], [grid_2_2d_size.h5], [missing_group_dmrpp.baseline], [missing_group_data.baseline], [a.out])
-#AT_GET_DMRPP_3_20_MAKE_MISSING_GROUP([-m, make missing data file that has groups -more complex], [grid_2_2d_sin.h5], [missing_group_dmrpp_comp.baseline], [missing_group_data_comp.baseline], [a.out])
+AT_GET_DMRPP_3_20_MAKE_MISSING_GROUP([-m, make missing data file that has groups], [grid_2_2d_size.h5], [missing_group_dmrpp.baseline], [missing_group_data.baseline], [a.out])
+AT_GET_DMRPP_3_20_MAKE_MISSING_GROUP([-m, make missing data file that has groups -more complex], [grid_2_2d_sin.h5], [missing_group_dmrpp_comp.baseline], [missing_group_data_comp.baseline], [a.out])
 # -r Provide missing variables sidecar file, requires use_cf_conf "site.conf" file
 #AT_GET_DMRPP_3_20([grid_1_2d.h5], [grid_1_2d.h5.reduce_href.baseline], [-M -r ${abs_builddir}/grid_1_2d.h5.missing], [${abs_builddir}/a.out])
 
