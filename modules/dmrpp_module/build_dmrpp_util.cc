@@ -1072,6 +1072,7 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp, bool disable_
     }
 #endif
 
+//#if 0
     for (unsigned int i = 0; i < num_chunks; ++i) {
 
         vector<unsigned long long> dmrpp_chunk_coords;
@@ -1081,6 +1082,7 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp, bool disable_
         VERBOSE(cerr << prolog << "chk_idk: " << i << ", addr: " << (chunk_udata.chunk_addrs)[i] << ", size: " << (chunk_udata.chunk_sizes)[i] << endl);
         dc->add_chunk(byte_order, (chunk_udata.chunk_sizes)[i], (chunk_udata.chunk_addrs)[i], (chunk_udata.filter_masks)[i], dmrpp_chunk_coords);
     }
+//#endif
 
 #if 0
     for (unsigned int i = 0; i < num_chunks; ++i) {
