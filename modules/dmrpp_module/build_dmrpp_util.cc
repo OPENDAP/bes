@@ -107,26 +107,38 @@ typedef struct chunk_iter_info_t {
 typedef struct chunk_iter_udata_t {
     chunk_iter_info_t *chunk_info;
     int                chunk_rank;
-    vector<haddr_t> chunk_offsets;
-    vector<hsize_t> chunk_lengths;
+    vector<haddr_t> chunk_addrs;
+    vector<hsize_t> chunk_sizes;
     vector<unsigned int> filter_masks;
     vector<vector<hsize_t>> chunk_coords;
 } chunk_iter_udata_t;
 
 int
-chunk_cb(const hsize_t *offset, unsigned filter_mask, haddr_t addr, hsize_t size, void *op_data)
+chunk_cb(const hsize_t *chunk_coord, unsigned filter_mask, haddr_t chunk_addr, hsize_t chunk_size, void *op_data)
 {
     chunk_iter_udata_t *cidata = (chunk_iter_udata_t *)op_data;
     int                 chunk_rank    = cidata->chunk_rank;
 //#if 0
     printf("chunk_rank=%d\n",chunk_rank);
     for (int i = 0; i <chunk_rank;i++)
-        printf("chunk_coord[%d]=%d\n",i,offset[i]);
+        printf("chunk_coord[%d]=%d\n",i,chunk_coord[i]);
     // only print the allocated chunk size only
     //printf("%" PRIuHSIZE "\n", size);
-    printf("chunk size=%d\n", (int)size);
-    printf("chunk addr=%d\n", (int)addr);
+    printf("chunk size=%d\n", (int)chunk_size);
+    printf("chunk addr=%d\n", (int)chunk_addr);
 //#endif
+
+    (cidata->chunk_addrs).push_back(chunk_addr);
+    (cidata->chunk_sizes).push_back(chunk_size);
+    (cidata->filter_masks).push_back(filter_mask);
+    
+    vector<hsize_t> temp_chunk_coord;
+    for (int i = 0; i <chunk_rank; i++) 
+        temp_chunk_coord.push_back(chunk_coord[i]);
+    
+    (cidata->chunk_coords).emplace_back(temp_chunk_coord);
+    
+    
     return 0;
 }
 
@@ -1040,8 +1052,19 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp, bool disable_
  
     chunk_iter_udata_t chunk_udata;
     chunk_udata.chunk_rank = chunk_rank;
-    H5Dchunk_iter(dataset, H5P_DEFAULT, &chunk_cb, &chunk_udata);
+    if (H5Dchunk_iter(dataset, H5P_DEFAULT, &chunk_cb, &chunk_udata)<0) {
+        VERBOSE(cerr << "ERROR" << endl);
+        throw BESInternalError("H5Dchunk_iter fails.", __FILE__, __LINE__);
+    }
     
+    for (unsigned int i = 0; i < num_chunks; i++) {
+        cerr<<"BP, chunk addr= "<<(chunk_udata.chunk_addrs)[i] <<endl;
+        cerr<<"BP, chunk size= "<<(chunk_udata.chunk_sizes)[i] <<endl;
+        cerr<<"BP, chunk filter_mask= "<<(chunk_udata.filter_masks)[i] <<endl;
+        for (unsigned int j = 0; j<chunk_rank; j++) {
+        cerr<<"BP, chunk "<<i<<":  chunk_coords["<<j<<"]= "<<((chunk_udata.chunk_coords)[i])[j] <<endl;
+        } 
+    }
     for (unsigned int i = 0; i < num_chunks; ++i) {
         vector<hsize_t> chunk_coords(dataset_rank, 0);
         haddr_t addr = 0;
