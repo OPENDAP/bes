@@ -113,6 +113,7 @@ typedef struct chunk_iter_udata_t {
     vector<vector<hsize_t>> chunk_coords;
 } chunk_iter_udata_t;
 
+// This is a callback function used by H5Dchunk_iter to retrieve the chunk information. 
 int
 chunk_cb(const hsize_t *chunk_coord, unsigned filter_mask, haddr_t chunk_addr, hsize_t chunk_size, void *op_data)
 {
