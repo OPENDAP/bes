@@ -97,20 +97,57 @@ bool verbose = false;   // Optionally set by build_dmrpp's main().
 // H5Z_FILTER_SCALEOFFSET   6   scale+offset compression
 // H5Z_FILTER_RESERVED      256 filter ids below this value are reserved for library use
 
-/**
- * Converts the H5Z_filter_t to a readable string.
- * @param filter_type an H5Z_filter_t representing the filter_type
- * @return
+typedef struct chunk_iter_info_t {
+    const hsize_t* coords;
+    unsigned filter_mask;
+    haddr_t  addr;
+    hsize_t  size;
+} chunk_iter_info_t;
+        
+typedef struct chunk_iter_udata_t {
+    chunk_iter_info_t *chunk_info;
+    int                chunk_rank;
+    vector<haddr_t> chunk_addrs;
+    vector<hsize_t> chunk_sizes;
+    vector<unsigned int> filter_masks;
+    vector<vector<hsize_t>> chunk_coords;
+} chunk_iter_udata_t;
+
+// This is a callback function used by H5Dchunk_iter to retrieve the chunk information. 
+int
+chunk_cb(const hsize_t *chunk_coord, unsigned filter_mask, haddr_t chunk_addr, hsize_t chunk_size, void *op_data)
+{
+    auto cidata = (chunk_iter_udata_t *)op_data;
+    int  chunk_rank    = cidata->chunk_rank;
+
+    (cidata->chunk_addrs).push_back(chunk_addr);
+    (cidata->chunk_sizes).push_back(chunk_size);
+    (cidata->filter_masks).push_back(filter_mask);
+    
+    vector<hsize_t> temp_chunk_coord;
+    for (int i = 0; i <chunk_rank; i++) 
+        temp_chunk_coord.push_back(chunk_coord[i]);
+    
+    (cidata->chunk_coords).emplace_back(temp_chunk_coord);
+    
+    return 0;
+}
+
+
+ /**
+  * Converts the H5Z_filter_t to a readable string.
+  * @param filter_type an H5Z_filter_t representing the filter_type
+  * @return
  */
-string h5_filter_name(H5Z_filter_t filter_type) {
-    string name;
-    switch(filter_type) {
-        case H5Z_FILTER_NONE:
-            name = "H5Z_FILTER_NONE";
-            break;
-        case H5Z_FILTER_DEFLATE:
-            name = "H5Z_FILTER_DEFLATE";
-            break;
+ string h5_filter_name(H5Z_filter_t filter_type) {
+     string name;
+     switch(filter_type) {
+         case H5Z_FILTER_NONE:
+             name = "H5Z_FILTER_NONE";
+             break;
+         case H5Z_FILTER_DEFLATE:
+             name = "H5Z_FILTER_DEFLATE";
+             break;
         case H5Z_FILTER_SHUFFLE:
             name = "H5Z_FILTER_SHUFFLE";
             break;
@@ -1000,27 +1037,32 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp, bool disable_
                 "Found a chunk with rank different than the dataset's (aka variables') rank", __FILE__,
                 __LINE__);
 
-    dc->set_chunk_dimension_sizes(chunk_dims);
+    // We add the following code because travis's compiler treats hsize_t as unsigned long rather unsigned long long. KY 2025-11-10
+    vector<unsigned long long> dmrpp_chunk_dims;
+    for (const auto &c_dim:chunk_dims)
+        dmrpp_chunk_dims.emplace_back((unsigned long long)c_dim);
+
+    dc->set_chunk_dimension_sizes(dmrpp_chunk_dims);
     if (num_chunks == 0)
         dc->set_byte_order(byte_order);
  
-    for (unsigned int i = 0; i < num_chunks; ++i) {
-        vector<hsize_t> chunk_coords(dataset_rank, 0);
-        haddr_t addr = 0;
-        hsize_t size = 0;
-
-        unsigned filter_mask = 0;
-
-        status = H5Dget_chunk_info(dataset, fspace_id, i, chunk_coords.data(),
-                                   &filter_mask, &addr, &size);
-        if (status < 0) {
-            VERBOSE(cerr << "ERROR" << endl);
-            throw BESInternalError("Cannot get HDF5 dataset storage info.", __FILE__, __LINE__);
-        }
-
-        VERBOSE(cerr << prolog << "chk_idk: " << i << ", addr: " << addr << ", size: " << size << endl);
-        dc->add_chunk(byte_order, size, addr, filter_mask, chunk_coords);
+    chunk_iter_udata_t chunk_udata;
+    chunk_udata.chunk_rank = chunk_rank;
+    if (H5Dchunk_iter(dataset, H5P_DEFAULT, &chunk_cb, &chunk_udata)<0) {
+        VERBOSE(cerr << "ERROR" << endl);
+        throw BESInternalError("H5Dchunk_iter fails.", __FILE__, __LINE__);
     }
+
+    for (unsigned int i = 0; i < num_chunks; ++i) {
+
+        vector<unsigned long long> dmrpp_chunk_coords;
+        for (const auto & c_coord:(chunk_udata.chunk_coords)[i]) 
+            dmrpp_chunk_coords.emplace_back((unsigned long long)c_coord);
+            
+        VERBOSE(cerr << prolog << "chk_idk: " << i << ", addr: " << (chunk_udata.chunk_addrs)[i] << ", size: " << (chunk_udata.chunk_sizes)[i] << endl);
+        dc->add_chunk(byte_order, (chunk_udata.chunk_sizes)[i], (chunk_udata.chunk_addrs)[i], (chunk_udata.filter_masks)[i], dmrpp_chunk_coords);
+    }
+
 }
 
 H5D_layout_t get_h5_storage_layout(hid_t dataset){

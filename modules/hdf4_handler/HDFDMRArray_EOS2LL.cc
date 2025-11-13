@@ -14,6 +14,7 @@
 #include "HdfEosDef.h"
 #include <iostream>
 #include <sstream>
+#include <dodsutil.h>
 #include <libdap/debug.h>
 #include <BESInternalError.h>
 #include <BESDebug.h>
@@ -135,30 +136,17 @@ HDFDMRArray_EOS2LL::read ()
         }
     }
 
-    // The following code aims to handle large MCD Grid(GCTP_GEO projection) such as 21600*43200 lat and lon.
-    // These MODIS MCD files don't follow HDF-EOS standard way to represent lat/lon (DDDMMMSSS);
-    // they simply represent lat/lon as the normal representation -180.0 or -90.0.
-    // For example, if the real longitude value is 180.0, HDF-EOS needs the value to be represented as 180000000 rather than 180.
-    // So we need to make the representation follow the HDF-EOS2 way.
-    if (((int)(lowright[0]/1000)==0) &&((int)(upleft[0]/1000)==0)
-               && ((int)(upleft[1]/1000)==0) && ((int)(lowright[1]/1000)==0)) {
-        if (projcode == GCTP_GEO){
-            for (i =0; i<2;i++) {
-                lowright[i] = lowright[i]*1000000;
-                upleft[i] = upleft[i] *1000000;
-            }
+
+    if (projcode != GCTP_GEO) {
+        r = GDij2ll (projcode, zone, params, sphere, xdim, ydim, upleft, lowright,
+                     xdim * ydim, rows.data(), cols.data(), lon.data(), lat.data(), pixreg, origin);
+    
+        if (r != 0) {
+            GDdetach(gridid);
+            GDclose(gridfd);
+            msg = "cannot calculate grid latitude and longitude for grid name: " + gridname;
+            throw BESInternalError(msg,__FILE__,__LINE__);
         }
-    }
-
-
-    r = GDij2ll (projcode, zone, params, sphere, xdim, ydim, upleft, lowright,
-                 xdim * ydim, rows.data(), cols.data(), lon.data(), lat.data(), pixreg, origin);
-
-    if (r != 0) {
-        GDdetach(gridid);
-        GDclose(gridfd);
-        msg = "cannot calculate grid latitude and longitude for grid name: " + gridname;
-        throw BESInternalError(msg,__FILE__,__LINE__);
     }
     
     if (is_lat) { 
@@ -166,12 +154,52 @@ HDFDMRArray_EOS2LL::read ()
         if (projcode == GCTP_CEA || projcode == GCTP_GEO) {
             vector<float64>out_lat;
             out_lat.resize(ydim);
-            j=0;
-            for (i =0; i<xdim*ydim;i = i+xdim){
-                out_lat[j] = lat[i];
-                j++;
+            if (projcode == GCTP_CEA) {
+                j=0;
+                for (i =0; i<xdim*ydim;i = i+xdim){
+                    out_lat[j] = lat[i];
+                    j++;
+                }
             }
+            else {//GCTP_GEO, we have to calculate by ourselves.
 
+                // We have to handle the AIRS CO2 product differently.
+                // The current AIRS CO2 product doesn't follow the HDF-EOS standard way to represent lat/lon (DDDMMMSSS). 
+                // So in addition to checking the file name, we add another check to make sure the product stays the same.
+                if ((basename(filename).size() >12) &&
+                    (basename(filename).compare(0,4,"AIRS") == 0)&& 
+                    (basename(filename).find(".L3.")!=string::npos) && 
+                    (basename(filename).find(".CO2")!=string::npos) && 
+                    ((int)(lowright[1]/1000)==0 &&(int)(upleft[1]/1000)==0))  
+                    calculate_airs_co2_latlon(out_lat,ydim);
+                else {
+                    // Some MODIS MCD files don't follow the HDF-EOS standard way to represent lat/lon (DDDMMMSSS);
+                    // they simply represent lat/lon as the normal representation -180.0 or -90.0.
+                    // For example, if the real longitude value is 180.0, HDF-EOS needs the value to be represented as 180000000 rather than 180.
+                    // Since we will calculate the lat/lon by our seleves,  we  make the HDF-EOS2 representation follow the normal lat/lon range.
+                    if ((int)(lowright[1]/1000)!=0) 
+                        lowright[1] = lowright[1]/1000000;
+                    if ((int)(upleft[1]/1000)!=0)
+                        upleft[1] = upleft[1]/1000000;
+                
+                    // Prepare start, end and step
+                    double start = upleft[1];
+                    double end = lowright[1];
+                    double lat_step = (end -start)/ydim;
+                    if (pixreg == HDFE_CENTER){ 
+                        for (i = 0; i < ydim; i++)
+                            out_lat[i] = (i + 0.5) * lat_step + start;
+                    } 
+                    else {//Corner
+                        for (i = 0; i < ydim; i++) {
+                            if(origin == HDFE_GD_LR || origin == HDFE_GD_LL)
+                                out_lat[i] = (i+1) * lat_step + start;
+                            else 
+                                out_lat[i] = i * lat_step + start;
+                        }
+                    }
+                }
+            }
             // Need to consider the subset case.
             vector<float64>out_lat_subset;
             out_lat_subset.resize(nelms);
@@ -189,18 +217,62 @@ HDFDMRArray_EOS2LL::read ()
     }
     else {
         if (projcode == GCTP_CEA || projcode == GCTP_GEO) {
+
             vector<float64>out_lon;
             out_lon.resize(xdim);
-            for (i =0; i<xdim;i++)
-                out_lon[i] = lon[i];
 
+            if (projcode == GCTP_CEA) {
+                for (i =0; i<xdim;i++)
+                    out_lon[i] = lon[i];
+            }
+            else { //GCTP_GEO, we have to calculate by ourselves.
+
+                // We have to handle the AIRS CO2 product differently.
+                // The current AIRS CO2 product doesn't follow the HDF-EOS standard way to represent lat/lon (DDDMMMSSS). 
+                // So in addition to checking the file name, we add another check to make sure the product stays the same.
+                if ((basename(filename).size() >12) &&
+                    (basename(filename).compare(0,4,"AIRS") == 0)&& 
+                    (basename(filename).find(".L3.")!=string::npos) && 
+                    (basename(filename).find(".CO2")!=string::npos) && 
+                    ((int)(lowright[0]/1000)==0 &&(int)(upleft[0]/1000)==0))  
+                    calculate_airs_co2_latlon(out_lon,xdim);
+                else {
+                    // Some MODIS MCD files don't follow the HDF-EOS standard way to represent lat/lon (DDDMMMSSS);
+                    // they simply represent lat/lon as the normal representation -180.0 or -90.0.
+                    // For example, if the real longitude value is 180.0, HDF-EOS needs the value to be represented as 180000000 rather than 180.
+                    // Since we will calculate the lat/lon by our seleves,  we  make the HDF-EOS2 representation follow the normal lat/lon range.
+                    if ((int)(lowright[0]/1000)!=0) 
+                        lowright[0] = lowright[0]/1000000;
+                    if ((int)(upleft[0]/1000)!=0)
+                        upleft[0] = upleft[0]/1000000;
+                    
+                    // Prepare start, end and step
+                    double start =upleft[0];
+                    double end =lowright[0];
+                    double lon_step = (end -start)/xdim;
+                    if (pixreg == HDFE_CENTER){ 
+                        for (i = 0; i < xdim; i++)
+                            out_lon[i] = (i + 0.5) * lon_step + start;
+                    } 
+                    else {//Corner
+                        for (i = 0; i < xdim; i++) {
+                            if (origin == HDFE_GD_UR || origin == HDFE_GD_LR) 
+                                out_lon[i] = (i+1) * lon_step + start;
+                            else 
+                                out_lon[i] = i * lon_step + start;
+                        }
+                    }
+                }
+ 
+            }
+  
             // Need to consider the subset case.
             vector<float64>out_lon_subset;
             out_lon_subset.resize(nelms);
             for (i=0;i<count[0];i++)
                 out_lon_subset[i] = out_lon[offset[0]+i*step[0]];
             set_value(out_lon_subset.data(),nelms);
- 
+   
         }
         else { 
             vector<float64>out_lon_subset;
@@ -208,15 +280,33 @@ HDFDMRArray_EOS2LL::read ()
             LatLon2DSubset(out_lon_subset.data(),xdim,lon.data(),offset.data(),count.data(),step.data());
             set_value(out_lon_subset.data(),nelms);
         }
-
+  
     }
     set_read_p(true);
     GDdetach(gridid);
     GDclose(gridfd);
     return true;
 }
-// Standard way to pass the coordinates of the subsetted region from the client to the handlers
-// Returns the number of elements 
+
+void 
+HDFDMRArray_EOS2LL::calculate_airs_co2_latlon(vector<float64> &out_ll,int32 dim_size) const{
+
+    // The latitude and longitude values are based on the Latitude and Longitude fields in the original AIRS data.
+    if (is_lat) {
+
+        out_ll[0] = 89.5;
+        for (int i = 0; i<(dim_size-1);i++)
+            out_ll[i+1] = 88 - 2*i;
+
+    }
+    else {
+        for (int i = 0; i<dim_size;i++)
+            out_ll[i] = -180.0 + 2.5*i;
+    }
+
+}
+  // Standard way to pass the coordinates of the subsetted region from the client to the handlers
+  // Returns the number of elements 
 int
 HDFDMRArray_EOS2LL::format_constraint (int *offset, int *step, int *count)
 {

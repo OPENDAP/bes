@@ -25,6 +25,6 @@
 </Dataset>
 
 The data:
-Enum g1_enum = 0;
-Enum g2_enum = 1;
+Enum /g1/g1_enum = 0;
+Enum /g1/g2/g2_enum = 1;
 
