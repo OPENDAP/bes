@@ -53,15 +53,15 @@ constexpr auto MODULE_DUMPER = "euc:dump";
 
 #define prolog std::string("SignedUrlCache::").append(__func__).append("() - ")
 
-namespace http {
+namespace bes {
 
 /**
  * @brief Get the cached signed URL.
  * @param url_key Key to a cached signed URL.
  * @note This method is not, itself, thread safe.
  */
-shared_ptr <EffectiveUrl> SignedUrlCache::get_cached_signed_url(string const &url_key) {
-    shared_ptr<EffectiveUrl> signed_url(nullptr);
+shared_ptr <http::EffectiveUrl> SignedUrlCache::get_cached_signed_url(string const &url_key) {
+    shared_ptr<http::EffectiveUrl> signed_url(nullptr);
     auto it = d_signed_urls.find(url_key);
     if (it != d_signed_urls.end()) {
         signed_url = (*it).second;
@@ -128,7 +128,7 @@ shared_ptr<SignedUrlCache::S3AccessKeyTuple> SignedUrlCache::retrieve_cached_s3c
  * @param source_url
  * @returns The signed effective URL, nullptr if none able to be created 
 */
-shared_ptr <EffectiveUrl> SignedUrlCache::get_signed_url(shared_ptr <url> source_url) {
+shared_ptr <http::EffectiveUrl> SignedUrlCache::get_signed_url(shared_ptr <http::url> source_url) {
 
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url->str() << endl);
     BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
@@ -167,7 +167,7 @@ shared_ptr <EffectiveUrl> SignedUrlCache::get_signed_url(shared_ptr <url> source
         BESDEBUG(MODULE, prolog << "The cache_effective_urls_skip_regex() was NOT SET " << endl);
     }
 
-    shared_ptr<EffectiveUrl> signed_url = get_cached_signed_url(source_url->str());
+    shared_ptr<http::EffectiveUrl> signed_url = get_cached_signed_url(source_url->str());
     bool retrieve_and_cache = !signed_url || signed_url->is_expired();
 
     // It not found or expired, (re)load.
@@ -215,11 +215,11 @@ shared_ptr <EffectiveUrl> SignedUrlCache::get_signed_url(shared_ptr <url> source
         // the instance we placed in the cache - it can be modified and the one in the cache
         // is unchanged. Trusted state was established from source_url when signed_url was
         // created in sign_url()
-        signed_url = make_shared<EffectiveUrl>(signed_url);
+        signed_url = make_shared<http::EffectiveUrl>(signed_url);
     } else {
         // Here we have a !expired instance of a shared_ptr<EffectiveUrl> retrieved from the cache.
         // Now we need to make a copy to return, inheriting trust from the requesting URL.
-        signed_url = make_shared<EffectiveUrl>(signed_url, source_url->is_trusted());
+        signed_url = make_shared<http::EffectiveUrl>(signed_url, source_url->is_trusted());
     }
 
     BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
@@ -350,7 +350,7 @@ SignedUrlCache *SignedUrlCache::TheCache() {
  * @brief Sign `s3_url` with aws credentials in `s3_access_key_tuple`, or nullptr if any part of signing process fails
  * @note Not yet implemented!
  */
-std::shared_ptr<EffectiveUrl> SignedUrlCache::sign_url(std::string const &s3_url, std::shared_ptr<S3AccessKeyTuple> const s3_access_key_tuple) {
+std::shared_ptr<http::EffectiveUrl> SignedUrlCache::sign_url(std::string const &s3_url, std::shared_ptr<S3AccessKeyTuple> const s3_access_key_tuple) {
 
     bes::AWS_SDK aws_sdk;
     string id = get<0>(*s3_access_key_tuple);
@@ -375,7 +375,7 @@ std::shared_ptr<EffectiveUrl> SignedUrlCache::sign_url(std::string const &s3_url
     // // TODO: how might this fail? is it ever null or bad or...does it throw? if so, return nullptr first....
     // const Aws::String url_str = aws_sdk.s3_generate_presigned_object_url(bucket, object, expiration_seconds);
 
-    // return make_shared<EffectiveUrl>(url_str);
+    // return make_shared<http::EffectiveUrl>(url_str);
 }
 
 /**
@@ -463,4 +463,4 @@ void SignedUrlCache::dump(ostream &strm) const {
     BESIndent::UnIndent();
 }
 
-} // namespace http
+} // namespace bes

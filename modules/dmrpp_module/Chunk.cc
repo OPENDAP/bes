@@ -52,7 +52,7 @@
 
 using namespace std;
 using http::EffectiveUrlCache;
-using aws::SignedUrlCache;
+using bes::SignedUrlCache;
 
 #define prolog std::string("Chunk::").append(__func__).append("() - ")
 
