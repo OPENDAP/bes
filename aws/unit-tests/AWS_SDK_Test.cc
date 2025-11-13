@@ -357,7 +357,7 @@ public:
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(AWS_SDK_Test);
-} // namespace http
+} // namespace bes
 
 int main(int argc, char *argv[]) {
     return bes_run_tests<bes::AWS_SDK_Test>(argc, argv, "cerr,bes,http") ? 0 : 1;

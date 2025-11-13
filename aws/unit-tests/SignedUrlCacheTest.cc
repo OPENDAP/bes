@@ -25,10 +25,7 @@
 
 #include <memory>
 #include <iostream>
-
-#include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/extensions/HelperMacros.h>
+#include <sstream>
 
 #include <unistd.h>
 
@@ -46,40 +43,17 @@
 
 #include "test_config.h"
 
+#include "modules/common/run_tests_cppunit.h"
+
 using namespace std;
 
-static bool debug = false;
-static bool Debug = false;
-static bool bes_debug = false;
-static bool ngap_tests = false;
 static std::string token;
 
-#undef DBG
-#define DBG(x) do { if (debug) x; } while(false)
 #define prolog std::string("SignedUrlCacheTest::").append(__func__).append("() - ")
 
-namespace http {
+namespace bes {
 
 class SignedUrlCacheTest : public CppUnit::TestFixture {
-private:
-    string d_data_dir = TEST_DATA_DIR;
-
-    void show_file(string filename) {
-        ifstream t(filename.c_str());
-
-        if (t.is_open()) {
-            string file_content((istreambuf_iterator<char>(t)), istreambuf_iterator<char>());
-            t.close();
-            cerr << endl << "#############################################################################" << endl;
-            cerr << "file: " << filename << endl;
-            cerr << ". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . " << endl;
-            cerr << file_content << endl;
-            cerr << "#############################################################################" << endl;
-        } else {
-            cerr << "FAILED TO OPEN FILE: " << filename << endl;
-        }
-    }
-
 public:
     // Called once before everything gets tested
     SignedUrlCacheTest() = default;
@@ -91,13 +65,9 @@ public:
     void setUp() override {
         DBG(cerr << endl);
         DBG(cerr << prolog << "BEGIN" << endl);
-        DBG(cerr << prolog << "data_dir: " << d_data_dir << endl);
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
         DBG(cerr << prolog << "Using BES configuration: " << bes_conf << endl);
-        if (Debug) show_file(bes_conf);
         TheBESKeys::ConfigFile = bes_conf;
-
-        if (bes_debug) BESDebug::SetUp("cerr,bes,euc,http,curl");
 
         // Reset to same starting point every time 
         // (It's a singleton so resetting it is important for test determinism)
@@ -369,56 +339,8 @@ CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
 
 CPPUNIT_TEST_SUITE_REGISTRATION(SignedUrlCacheTest);
 
-} // namespace httpd_catalog
+} // namespace bes
 
 int main(int argc, char *argv[]) {
-    CppUnit::TextTestRunner runner;
-    runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
-
-    int option_char;
-    while ((option_char = getopt(argc, argv, "dbDPt:N")) != -1)
-        switch (option_char) {
-            case 'd':
-                debug = true;  // debug is a static global
-                cerr << "debug enabled" << endl;
-                break;
-            case 'D':
-                Debug = true;  // Debug is a static global
-                cerr << "Debug enabled" << endl;
-                break;
-            case 'b':
-                bes_debug = true;  // debug is a static global
-                cerr << "bes_debug enabled" << endl;
-                break;
-            case 'N':
-                ngap_tests = true; // ngap_tests is a static global
-                cerr << "NGAP Tests Enabled." << token << endl;
-                break;
-            case 't':
-                token = optarg; // token is a static global
-                cerr << "Authorization header value: " << token << endl;
-                break;
-            default:
-                break;
-        }
-
-    argc -= optind;
-    argv += optind;
-
-    bool wasSuccessful = true;
-    string test;
-    if (0 == argc) {
-        // run them all
-        wasSuccessful = runner.run("");
-    } else {
-        int i = 0;
-        while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
-            test = http::SignedUrlCacheTest::suite()->getName().append("::").append(argv[i]);
-            wasSuccessful = wasSuccessful && runner.run(test);
-            ++i;
-        }
-    }
-
-    return wasSuccessful ? 0 : 1;
+    return bes_run_tests<bes::SignedUrlCacheTest>(argc, argv, "cerr,bes,http") ? 0 : 1;
 }

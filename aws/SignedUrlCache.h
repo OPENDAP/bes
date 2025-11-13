@@ -1,6 +1,6 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 
-// This file is part of the BES http package, part of the Hyrax data server.
+// This file is part of the BES aws package, part of the Hyrax data server.
 
 // Copyright (c) 2025 OPeNDAP, Inc.
 // Authors: Nathan Potter <ndp@opendap.org>, Hannah Robertson <hrobertson@opendap.org>
@@ -25,8 +25,8 @@
 //      ndp       Nathan Potter <ndp@opendap.org>
 //      Hannah Robertson <hrobertson@opendap.org>
 
-#ifndef _bes_http_SignedUrlCache_h_
-#define _bes_http_SignedUrlCache_h_ 1
+#ifndef _bes_aws_SignedUrlCache_h_
+#define _bes_aws_SignedUrlCache_h_ 1
 
 #include <memory>
 #include <map>
@@ -38,9 +38,11 @@
 #include "BESRegex.h"   // for std::unique_ptr<BESRegex>
 
 namespace http {
+    class EffectiveUrl;
+    class url;
+}
 
-class EffectiveUrl;
-class url;
+namespace bes {
 
 /**
  * This is a singleton class. It is used to associate a URL with its "pre-signed" AWS s3 URL. This means that
@@ -75,9 +77,9 @@ private:
 
     int d_enabled = -1;
 
-    std::shared_ptr<EffectiveUrl> sign_url(std::string const &s3_url,
+    std::shared_ptr<http::EffectiveUrl> sign_url(std::string const &s3_url,
                                            std::shared_ptr<S3AccessKeyTuple> const s3_access_key_tuple);
-    std::shared_ptr<EffectiveUrl> get_cached_signed_url(std::string const &url_key);
+    std::shared_ptr<http::EffectiveUrl> get_cached_signed_url(std::string const &url_key);
 
     void set_skip_regex();
 
@@ -105,7 +107,7 @@ public:
 
     void cache_signed_url_components(const std::string &key_href_url, const std::string &s3_url, const std::string &s3credentials_url);
     std::pair<std::string, std::string> retrieve_cached_signed_url_components(const std::string &key_href_url) const;
-    std::shared_ptr<EffectiveUrl> get_signed_url(std::shared_ptr<url> source_url);
+    std::shared_ptr<http::EffectiveUrl> get_signed_url(std::shared_ptr<http::url> source_url);
 
     void dump(std::ostream &strm) const override;
 
@@ -116,7 +118,7 @@ public:
     }
 };
 
-} // namespace http
+} // namespace bes
 
-#endif // _bes_http_SignedUrlCache_h_
+#endif // _bes_aws_SignedUrlCache_h_
 
