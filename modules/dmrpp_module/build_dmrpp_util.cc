@@ -1008,9 +1008,15 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp, bool disable_
     string byte_order = byte_order_str(dataset);
 
     hsize_t num_chunks = 0;
-    herr_t status = H5Dget_num_chunks(dataset, fspace_id, &num_chunks);
-    if (status < 0) {
-        throw BESInternalError("Could not get the number of chunks for variable "+ btp->name(), __FILE__, __LINE__);
+
+    // We need to use H5Dget_storage_size to check if this dataset holds any chunk. KY 2025-11-13
+    hsize_t dset_storage_size = H5Dget_storage_size(dataset);
+    
+    if (dset_storage_size !=0) {
+        herr_t status = H5Dget_num_chunks(dataset, fspace_id, &num_chunks);
+        if (status < 0) {
+            throw BESInternalError("Could not get the number of chunks for variable "+ btp->name(), __FILE__, __LINE__);
+        }
     }
 
     VERBOSE(cerr << prolog << "Storage: chunked." << endl);
@@ -1043,11 +1049,16 @@ void process_chunked_layout_dariable(hid_t dataset, BaseType *btp, bool disable_
         dmrpp_chunk_dims.emplace_back((unsigned long long)c_dim);
 
     dc->set_chunk_dimension_sizes(dmrpp_chunk_dims);
-    if (num_chunks == 0)
+
+    // If the storage size is 0, no chunk information needs to be retrieved,simply return. KY 2025-11-13 
+    if (dset_storage_size == 0) {
         dc->set_byte_order(byte_order);
+        return;
+    }
  
     chunk_iter_udata_t chunk_udata;
     chunk_udata.chunk_rank = chunk_rank;
+   
     if (H5Dchunk_iter(dataset, H5P_DEFAULT, &chunk_cb, &chunk_udata)<0) {
         VERBOSE(cerr << "ERROR" << endl);
         throw BESInternalError("H5Dchunk_iter fails.", __FILE__, __LINE__);
