@@ -95,6 +95,8 @@ public:
 
     // Called after each test
     void tearDown() override {
+        // No NASA EDC tests. jhrg 11/13/25
+#if 0
         // These are set in add_edl_auth_headers_test() and not 'unsetting' them
         // causes other odd behavior in subsequent tests (Forbidden exceptions
         // become SyntaxUser ones). Adding the unset operations here ensures they
@@ -102,7 +104,7 @@ public:
         BESContextManager::TheManager()->unset_context(EDL_UID_KEY);
         BESContextManager::TheManager()->unset_context(EDL_AUTH_TOKEN_KEY);
         BESContextManager::TheManager()->unset_context(EDL_ECHO_TOKEN_KEY);
-
+#endif
         // We have to remove the cookie file between test invocations.
         // Not doing so can cause the previous test's login success
         // to propagate to the next test. Which is a problem when testing

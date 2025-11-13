@@ -52,7 +52,9 @@ static bool debug = false;
 static bool Debug = false;
 static bool bes_debug = false;
 static bool ngap_tests = false;
+#if 0
 static std::string token;
+#endif
 
 #undef DBG
 #define DBG(x) do { if (debug) x; } while(false)
@@ -102,11 +104,12 @@ public:
         // Clear the cache for the next test.
         EffectiveUrlCache *theCache = EffectiveUrlCache::TheCache();
         theCache->d_effective_urls.clear();
-
+#if 0
         if (!token.empty()) {
             DBG(cerr << "Setting BESContext " << EDL_AUTH_TOKEN_KEY << " to: '" << token << "'" << endl);
             BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, token);
         }
+#endif
         DBG(cerr << prolog << "END" << endl);
     }
 
@@ -408,6 +411,8 @@ int main(int argc, char *argv[]) {
                 bes_debug = true;  // debug is a static global
                 cerr << "bes_debug enabled" << endl;
                 break;
+#if 0
+            // 'token' is never used. jhrg 11/13/25
             case 'N':
                 ngap_tests = true; // ngap_tests is a static global
                 cerr << "NGAP Tests Enabled." << token << endl;
@@ -416,6 +421,7 @@ int main(int argc, char *argv[]) {
                 token = optarg; // token is a static global
                 cerr << "Authorization header value: " << token << endl;
                 break;
+#endif
             default:
                 break;
         }

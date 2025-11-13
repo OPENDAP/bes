@@ -305,10 +305,13 @@ public:
         curl_slist *hdrs = nullptr;
         curl_slist *sl_iter;
         string tokens[] = {"big_bucky_ball", "itsa_authy_token_time", "echo_my_smo:kin_token"};
+
+        // No NASA EDC Tests. jhrg 11/13/25
+#if 0
         BESContextManager::TheManager()->set_context(EDL_UID_KEY, tokens[0]);
         BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, tokens[1]);
         BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, tokens[2]);
-
+#endif
         try {
             hdrs = curl::add_edl_auth_headers(hdrs);
             sl_iter = hdrs;
@@ -328,7 +331,7 @@ public:
 
             stringstream msg;
             msg << "Caught BESError! Message: " << be.get_message() << " file: " << be.get_file() << " line: "
-                << be.get_line() << "\n";
+                    << be.get_line() << "\n";
             CPPUNIT_FAIL(msg.str());
         }
         catch (const std::exception &se) {
@@ -606,6 +609,8 @@ public:
         DBG(cerr << prolog << "END\n");
     }
 
+    // Remove NASA EDC tests
+#if 0
     /**
      * Tests TEA, with good auth credentials
      */
@@ -771,7 +776,7 @@ public:
         }
         DBG(cerr << prolog << "END\n");
     }
-
+#endif
     void how_big() {
         DBG(cerr << prolog << "BEGIN\n");
         DBG(cerr << prolog << "        char: " << (sizeof(char) * 8) << " bits\n");
@@ -800,10 +805,11 @@ public:
         CPPUNIT_TEST(get_redirect_url_test_expected_redirect);
         CPPUNIT_TEST(get_redirect_url_unexpected_ok);
         CPPUNIT_TEST(get_redirect_url_test_tea_no_creds);
+#if 0
         CPPUNIT_TEST(get_redirect_url_test_tea_good_auth);
         CPPUNIT_TEST(get_redirect_url_test_tea_bad_auth);
         CPPUNIT_TEST(time_redirect_url_and_effective_url);
-
+#endif
 
         CPPUNIT_TEST(is_retryable_test);
         CPPUNIT_TEST(retrieve_effective_url_test);
