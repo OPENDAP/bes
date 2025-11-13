@@ -79,7 +79,7 @@ AllowedHostsTest awsv4_test CurlUtilsTest CurlSListTest
 
 # CredentialsManagerTest was removed because it was testing our S3 signing code and
 # that code is broken and being replaced by the AWS C++ SDK. jhrg 10/17/25
-# CredentialsManagerTest HttpCacheTest
+# CredentialsManagerTest
 
 else
 
@@ -115,9 +115,6 @@ RemoteResourceTest_LDADD = $(LIBADD)
 
 CurlUtilsTest_SOURCES = CurlUtilsTest.cc
 CurlUtilsTest_LDADD = $(LIBADD)
-
-# HttpCacheTest_SOURCES = HttpCacheTest.cc
-# HttpCacheTest_LDADD = $(LIBADD)
 
 EffectiveUrlCacheTest_SOURCES = EffectiveUrlCacheTest.cc
 EffectiveUrlCacheTest_LDADD = $(LIBADD)

@@ -48,10 +48,6 @@ constexpr auto DC_CONFIG_KEY = "config";
 
 #define DYNAMIC_CONFIG_ENABLED 0
 
-namespace http {
-class HttpCacheTest;
-}
-
 /** @brief mapping of key/value pairs defining different behaviors of an
  * application.
  *
@@ -91,7 +87,6 @@ class HttpCacheTest;
 class TheBESKeys: public BESObj {
 
     friend class keysT;
-    friend class http::HttpCacheTest;
 
     std::string d_keys_file_name;
 
