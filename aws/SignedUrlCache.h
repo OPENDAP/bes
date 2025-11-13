@@ -77,8 +77,11 @@ private:
 
     int d_enabled = -1;
 
+    static std::pair<std::string, std::string> split_s3_url(std::string const &s3_url);
+    static uint64_t get_expiration_seconds(const std::string &credentials_expiration_datetime);
     std::shared_ptr<http::EffectiveUrl> sign_url(std::string const &s3_url,
-                                           std::shared_ptr<S3AccessKeyTuple> const s3_access_key_tuple);
+                                                 std::shared_ptr<S3AccessKeyTuple> const s3_access_key_tuple,
+                                                 std::string aws_region="us-west-2");
     std::shared_ptr<http::EffectiveUrl> get_cached_signed_url(std::string const &url_key);
 
     void set_skip_regex();

@@ -309,6 +309,22 @@ public:
         // The inputs/outputs for good and bad retrieval are covered by other tests
     }
 
+    void split_s3_url_test() {
+        auto out1 = SignedUrlCache::split_s3_url("s3://foo/bar");
+        auto expected1 = std::pair<std::string,std::string>("foo", "bar");
+        CPPUNIT_ASSERT_MESSAGE("Valid input is split into `" + get<0>(expected1) + "," + get<1>(expected1) + "`, got `" +                                 get<0>(out1) + "," + get<1>(out1) + "`", expected1 == out1);
+
+        auto expected_empty = std::pair<std::string,std::string>("", "");
+        auto out2 = SignedUrlCache::split_s3_url("foo/bar");
+        CPPUNIT_ASSERT_MESSAGE("Missing s3:// prefix should return empty strings; returned `" + get<0>(out2) + "," + get<1>(out2) + "`", expected_empty == out2);
+        auto out3 = SignedUrlCache::split_s3_url("x");
+        CPPUNIT_ASSERT_MESSAGE("Missing s3:// prefix should return empty strings; returned `" + get<0>(out3) + "," + get<1>(out3) + "`", expected_empty == out2);
+
+        auto out4 = SignedUrlCache::split_s3_url("s3://foo/bar/wheeyay.txt");
+        auto expected4 = std::pair<std::string,std::string>("foo", "bar/wheeyay.txt");
+        CPPUNIT_ASSERT_MESSAGE("Valid input is split into `" + get<0>(expected4) + "," + get<1>(expected4) + "`, got `" +                                 get<0>(out4) + "," + get<1>(out4) + "`", expected4 == out4);
+    }
+
 /* TESTS END */
 /*##################################################################################################*/
 
@@ -333,6 +349,10 @@ CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
     // TODO-future: will add/update these tests once signing behavior is implemented
     // - sign_url
     // - get_signed_url
+
+    // Last but not least, test those helper functions
+    CPPUNIT_TEST(split_s3_url_test);
+    // CPPUNIT_TEST(get_expiration_seconds);
 
     CPPUNIT_TEST_SUITE_END();
 };

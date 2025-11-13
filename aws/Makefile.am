@@ -51,7 +51,5 @@ cccc:
 
 SRCS = AWS_SDK.cc \
        SignedUrlCache.cc
-
-
 HDRS = AWS_SDK.h IAWS_SDK.h \
        SignedUrlCache.h
