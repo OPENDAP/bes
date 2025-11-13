@@ -85,7 +85,7 @@ public:
 
     virtual void transform(std::ostream &ostrm, bool sendData);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // FoInstanceJsonTransfrom_h_

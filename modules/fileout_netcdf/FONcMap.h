@@ -70,7 +70,7 @@ public:
     virtual void define(int ncid);
     virtual void write(int ncid);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // FONcMap_h_

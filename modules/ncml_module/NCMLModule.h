@@ -44,7 +44,7 @@ public:
     virtual void initialize(const std::string &modname);
     virtual void terminate(const std::string &modname);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
 private:
     // Helpers for initialize(), added the handlers under the given modname

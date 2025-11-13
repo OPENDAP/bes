@@ -53,7 +53,7 @@ public:
 
     virtual void add_container(const std::string &s_name, const std::string &r_name, const std::string &type);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 } // namespace gateway

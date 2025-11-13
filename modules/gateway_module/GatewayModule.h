@@ -47,7 +47,7 @@ public:
     virtual void initialize(const std::string &modname);
     virtual void terminate(const std::string &modname);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 } //namespace gateway

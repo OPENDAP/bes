@@ -53,7 +53,7 @@ public:
     NCMLRequestHandler(const std::string &name);
     virtual ~NCMLRequestHandler(void);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static bool ncml_build_das(BESDataHandlerInterface &dhi);
     static bool ncml_build_dds(BESDataHandlerInterface &dhi);
