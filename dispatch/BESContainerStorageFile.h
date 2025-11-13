@@ -91,7 +91,7 @@ public:
 
     virtual void show_containers(BESInfo &info);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // I_BESContainerStorageFile_h_

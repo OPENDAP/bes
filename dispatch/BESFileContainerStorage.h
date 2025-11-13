@@ -84,7 +84,7 @@ public:
     virtual void add_container(const std::string &sym_name, const std::string &real_name, const std::string &type);
     virtual bool isData(const std::string &inQuestion, std::list<std::string> &provides);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // BESContainerStorageCatalog_h_

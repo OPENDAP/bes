@@ -86,7 +86,7 @@ public:
 
     void dump_tokens();
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // BESTokenizer_h_

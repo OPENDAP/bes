@@ -46,9 +46,10 @@ typedef BESInfo * (*p_info_builder)(const std::string &info_type);
 class BESInfoList: public BESObj {
 private:
     mutable std::recursive_mutex d_cache_lock_mutex;
-
+#if 0
     static void initialize_instance();
     static void delete_instance();
+#endif
 
     std::map<std::string, p_info_builder> _info_list;
 
@@ -67,7 +68,7 @@ public:
     virtual bool rem_info_builder(const std::string &info_type);
     virtual BESInfo * build_info();
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static BESInfoList * TheList();
 };

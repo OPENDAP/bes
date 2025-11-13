@@ -98,7 +98,7 @@ public:
 
     virtual void show_definitions(BESInfo &info);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static BESDefinitionStorageList *TheList();
 };

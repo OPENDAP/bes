@@ -85,7 +85,7 @@ public:
 
     virtual std::string get_handler_names();
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static BESResponseHandlerList * TheList();
 };
