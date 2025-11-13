@@ -77,11 +77,6 @@ BESFileContainer::BESFileContainer(const BESFileContainer &copy_from) :
     BESContainer(copy_from), _cached(copy_from._cached), _target(copy_from._target)
 {}
 
-void BESFileContainer::_duplicate(BESContainer &copy_to)
-{
-    BESContainer::_duplicate(copy_to);
-}
-
 /** @brief duplicate this instances of BESFileContainer
  *
  * @return a copy of this instance
@@ -90,7 +85,7 @@ BESContainer *
 BESFileContainer::ptr_duplicate()
 {
     BESContainer *container = new BESFileContainer;
-    BESContainer::_duplicate(*container);
+    BESContainer::m_duplicate(*container);
     return container;
 }
 

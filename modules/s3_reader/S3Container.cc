@@ -51,7 +51,7 @@ using namespace std;
 
 namespace s3 {
 
-void S3Container::_duplicate(S3Container &copy_to)
+void S3Container::m_duplicate(S3Container &copy_to)
 {
     if (d_dmrpp_rresource) {
         throw BESInternalError("The Container has already been accessed, cannot create a copy of this container.",
@@ -59,7 +59,7 @@ void S3Container::_duplicate(S3Container &copy_to)
     }
 
     copy_to.d_dmrpp_rresource = d_dmrpp_rresource;
-    BESContainer::_duplicate(copy_to);
+    BESContainer::m_duplicate(copy_to);
 }
 
 void S3Container::initialize()
@@ -70,17 +70,17 @@ void S3Container::initialize()
 
     if (get_container_type().empty())
         set_container_type(S3_NAME);
-
+#if 0
     bool found;
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
     BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
-
-    // Because we know the name is really a URL, then we know the "relative_name" is meaningless
-    // So we set it to be the same as "name"
+#endif
+    // Because we know the name is really a URL, then we know the "relative_name" is meaningless,
+    // so we set it to be the same as "name."
     set_relative_name(get_real_name());
 }
 
-/** @brief Creates an instances of S3Container with symbolic name and real
+/** @brief Creates an instance of S3Container with a symbolic name and a real
  * name, which is the remote request.
  *
  * The real_name is the remote request URL.
@@ -99,23 +99,10 @@ S3Container::S3Container(const string &sym_name, const string &real_name, const 
 BESContainer *
 S3Container::ptr_duplicate()
 {
-    auto container = new S3Container;
-    _duplicate(*container);
+    const auto container = new S3Container;
+    m_duplicate(*container);
     return container;
 }
-
-#if 0
-
-S3Container::~S3Container()
-{
-#if 0
-    if (d_dmrpp_rresource) {
-        release();
-    }
-#endif
-}
-
-#endif
 
 /**
  * @brief Filter the cached resource. Each key in content_filters is replaced with its associated map value.
@@ -132,10 +119,10 @@ void S3Container::filter_response(const map<string, string, std::less<>> &conten
 
     string resource_content = BESUtil::file_to_string(d_dmrpp_rresource->get_filename());
 
-    for (const auto &apair: content_filters) {
-        unsigned int replace_count = BESUtil::replace_all(resource_content, apair.first, apair.second);
+    for (const auto &a_pair: content_filters) {
+        const unsigned int replace_count = BESUtil::replace_all(resource_content, a_pair.first, a_pair.second);
         BESDEBUG(MODULE, prolog << "Replaced " << replace_count << " instance(s) of template(" <<
-                                apair.first << ") with " << apair.second << " in cached RemoteResource" << endl);
+                                a_pair.first << ") with " << a_pair.second << " in cached RemoteResource" << endl);
     }
 
     // This call will invalidate the file descriptor of the RemoteResource. jhrg 3/9/23
@@ -152,13 +139,13 @@ string S3Container::access()
     if (!d_dmrpp_rresource) {
         BESDEBUG(MODULE, prolog << "Building new RemoteResource (dmr++)." << endl);
 
-        // Since this is S3 we know that the real_name is a URL.
+        // Since this is S3, we know that the real_name is a URL.
         const string data_access_url_str = get_real_name();
 
         // And we know that the dmr++ file should be "right next to it" (side-car)
         const string dmrpp_url_str = data_access_url_str + ".dmrpp";
 
-        // And if there's a missing data file (side-car) it should be "right there" too.
+        // And if there's a missing data file (sidecar) it should be "right there" too.
         const string missing_data_url_str = data_access_url_str+ ".missing";
 
         BESDEBUG(MODULE, prolog << " data_access_url: " << data_access_url_str << endl);

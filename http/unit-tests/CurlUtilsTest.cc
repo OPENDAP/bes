@@ -37,7 +37,9 @@
 #include "url_impl.h"
 #include "AccessCredentials.h"
 #include "CredentialsManager.h"
+#if 0
 #include "BESForbiddenError.h"
+#endif
 #include "BESSyntaxUserError.h"
 #include "CurlUtils.h"
 #include "HttpError.h"
@@ -67,16 +69,16 @@ public:
 
     // Called before each test
     void setUp() override {
-        DBG(cerr << "\n");
-        DBG(cerr << prolog << "#-----------------------------------------------------------------\n");
-        DBG(cerr << prolog << "BEGIN\n");
+        DBG2(cerr << "\n");
+        DBG2(cerr << prolog << "#-----------------------------------------------------------------\n");
+        DBG2(cerr << prolog << "BEGIN\n");
 
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
-        DBG(cerr << prolog << "Using BES configuration: " << bes_conf << "\n");
+        DBG2(cerr << prolog << "Using BES configuration: " << bes_conf << "\n");
         DBG2(show_file(bes_conf));
         TheBESKeys::ConfigFile = bes_conf;
 
-        DBG(cerr << prolog << "END\n");
+        DBG2(cerr << prolog << "END\n");
     }
 
     // Called after each test

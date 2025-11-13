@@ -564,6 +564,8 @@ string get_range_arg_string(const unsigned long long &offset, const unsigned lon
 /**
  * @brief Sign the URL if it matches S3 credentials held by the CredentialsManager
  *
+ * @todo This is broken.  The function sign_s3_url() calls broken code. This shouldbe removed. jhrg 11/12/25
+ *
  * @param url The URL as a string.
  * @param request_headers An existing list of curl request headers. If this is empty,
  * the append operation used by this function will result in a blank entry in the
@@ -1120,6 +1122,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
     BESDEBUG(MODULE, prolog << "END\n");
 }
 
+#if 1
 /**
  *
  * Use libcurl to dereference a URL. Read the information referenced by
@@ -1157,8 +1160,10 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
     }
 
     try {
+#if 0
         // Add the EDL authorization headers if the Information is in the BES Context Manager
         req_headers = add_edl_auth_headers(req_headers);
+#endif
         // Add AWS credentials if they're available.
         req_headers = sign_url_for_s3_if_possible(target_url->str(), req_headers);
 
@@ -1199,6 +1204,7 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
 
     BESDEBUG(MODULE, prolog << "END" << endl);
 }
+#endif
 
 /**
  * Returns a cURL error message string based on the contents of the error_buf or, if the error_buf is empty, the
@@ -1236,25 +1242,34 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
  * appended if the string is not empty.
  *
  * @param target_url The URL to dereference.
+ * @param request_headers A libcurl curl_slist of request headers
  * @param buf The string into which to put the response. New data will be
  * appended to this string.
  * @exception Throws when libcurl encounters a problem.
  */
-void http_get(const string &target_url, string &buf) {
+void http_get(const string &target_url, curl_slist *request_headers, string &buf) {
     BESDEBUG(MODULE, prolog << "BEGIN\n");
 
     vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
     CURL *ceh = nullptr;     ///< The libcurl handle object.
-    CURLcode res;
+#if 0
     curl_slist *request_headers = nullptr;
+#endif
 
     try {
+#if 0
+        // Moved into helper function
         // Add the authorization headers
         request_headers = add_edl_auth_headers(request_headers);
-
+#endif
+        // TODO This should be removed. It's broken all the way down and has been (or is being)
+        //  replaced by cpde from the AWS library. jhrg 11/12/25
+#if 1
         request_headers = sign_url_for_s3_if_possible(target_url, request_headers);
-
-#ifdef DEVELOPER
+#endif
+        // TODO this is broken. This was a hack to get past some auth barriers to test the
+        //  DMR++ ownership code. No longer needed. Remove this block. jhrg 11/12/25
+#if 0 // def DEVELOPER
         AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
         if (credentials) {
             INFO_LOG(prolog + "Looking for EDL Token for URL: " + target_url );
@@ -1274,7 +1289,7 @@ void http_get(const string &target_url, string &buf) {
         set_error_buffer(ceh, error_buffer.data());
 
         // Pass all data to the 'write_data' function --------------------------------------------------------------
-        res = curl_easy_setopt(ceh, CURLOPT_WRITEFUNCTION, string_write_data);
+        CURLcode res = curl_easy_setopt(ceh, CURLOPT_WRITEFUNCTION, string_write_data);
         eval_curl_easy_setopt_result(res, prolog, "CURLOPT_WRITEFUNCTION", error_buffer.data(), __FILE__, __LINE__);
 
         // Pass this to write_data as the fourth argument ----------------------------------------------------------
@@ -1286,22 +1301,24 @@ void http_get(const string &target_url, string &buf) {
 
         super_easy_perform(ceh);
 
+#if 0
         // Free the header list
         BESDEBUG(MODULE, prolog << "Cleanup request headers. Calling curl_slist_free_all()." << endl);
         curl_slist_free_all(request_headers);
-
+#endif
         if (ceh) {
             curl_easy_cleanup(ceh);
             BESDEBUG(MODULE, prolog << "Called curl_easy_cleanup()." << endl);
         }
     }
     catch (...) {
-        curl_slist_free_all(request_headers);
+        // FIXME Remove curl_slist_free_all(request_headers);
         if (ceh) {
             curl_easy_cleanup(ceh);
         }
         throw;
     }
+
     BESDEBUG(MODULE, prolog << "END\n");
 }
 
@@ -1427,6 +1444,9 @@ curl_slist *append_http_header(curl_slist *slist, const string &header_name, con
     return temp;
 }
 
+// TODO Move to NgapApi. jhrg 11/12/25
+
+#if 0
 /**
  * @brief Adds the user id and/or the associated EDL auth token
  * to request_headers.
@@ -1463,9 +1483,9 @@ curl_slist *add_edl_auth_headers(curl_slist *request_headers) {
     bool found;
     string s;
 
-    s = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
+    s = BESContextManager::TheManager()->get_context(CMR_CLIENT_ID_CONTEXT_KEY, found);
     if (found && !s.empty()) {
-        request_headers = append_http_header(request_headers, "User-Id", s);
+        request_headers = append_http_header(request_headers, CMR_CLIENT_ID_KEY, s);
     }
 
     s = BESContextManager::TheManager()->get_context(EDL_AUTH_TOKEN_KEY, found);
@@ -1473,6 +1493,7 @@ curl_slist *add_edl_auth_headers(curl_slist *request_headers) {
         request_headers = append_http_header(request_headers, "Authorization", s);
     }
 
+    // TODO run this to ground - should we be looking for ECHO tokens? jhrg 11/12/25
     s = BESContextManager::TheManager()->get_context(EDL_ECHO_TOKEN_KEY, found);
     if (found && !s.empty()) {
         request_headers = append_http_header(request_headers, "Echo-Token", s);
@@ -1480,6 +1501,7 @@ curl_slist *add_edl_auth_headers(curl_slist *request_headers) {
 
     return request_headers;
 }
+#endif
 
 /**
  * @brief Sign a URL for S3
@@ -1494,12 +1516,15 @@ curl_slist *add_edl_auth_headers(curl_slist *request_headers) {
  * so if the list of request headers was empty, the list will start with an
  * element where the 'data' component is NULL.
  *
+ * @todo I think this is broken - the compute_awsv4_signature() code is wrong
+ * and is being replaced by code from the AWS library. jhrg 11/12/25
+ *
  * @param target_url The URL that should be signed
  * @param ac AccessCredentials instance that will not be modified (not const
  * because some of the methods used modify internal state).
  * @param req_headers The header list that will hold the Authorization, etc.,
  * headers.
- * @param The modified list of request headers
+ * @return The modified list of request headers
  */
 curl_slist *
 sign_s3_url(const string &target_url, AccessCredentials *ac, curl_slist *req_headers) {
@@ -1631,7 +1656,7 @@ void write_response_details(const long http_code,
 }
 
 /**
- * #brief Error handling for the gru_mk_attempt()
+ * @brief Response processing for the gru_mk_attempt()
  * @param http_code The http code of the response
  * @param response_headers <--
  * @param response_body <--
@@ -1639,9 +1664,10 @@ void write_response_details(const long http_code,
  * @param origin_url_str The origin url
  * @param attempt The attempt number of the current attempt
  * @param max_attempts The maximum number af attempts allowed
- * @return
+ * @return True if the request was successful, false if the request should be retried.
+ * @exception HttpError if the request failed.
  */
-bool process_get_redirect_http_code(const long http_code,
+static bool process_get_redirect_http_code(const long http_code,
                                     const vector <string> &response_headers,
                                     const string &response_body,
                                     const string &redirect_url_str,
@@ -1704,6 +1730,13 @@ bool process_get_redirect_http_code(const long http_code,
 
 /**
  * @brief  Make a single attempt to acquire a redirect response from origin_url
+ *
+ * Get Redirect URL make attempt (gru_mk_attempt) is part of the retry logic for
+ * making requests to AWS S3 objects.
+ *
+ * @note This code may be replaced by the AWS C++ SDK, which _should_ handle the
+ * retry logic for us. jhrg 11/13/25
+ *
  * @param origin_url The URL to access
  * @param attempt The attempt number of this effort.
  * @param max_attempts The maximum number of attempts allowed.
@@ -1728,10 +1761,13 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
     long http_code;
     string redirect_url_str;
 
+#if 0
+    // FIXME Must still include this. NO MERGE. jhrg 11/13/25
     // Add the EDL authorization headers if the Information is in the BES Context Manager
     req_headers = add_edl_auth_headers(req_headers);
     req_headers = sign_url_for_s3_if_possible(origin_url, req_headers);
-
+#endif
+#if 0
     // FIXME Hackery for DMR++ Ownership POC code - see dmrpp_module CurlHandlePool.cc
     //  for more info. jhrg 5/24/24
     AccessCredentials *credentials = CredentialsManager::theCM()->get(origin_url);
@@ -1743,7 +1779,7 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
             req_headers = curl::append_http_header(req_headers, "Authorization", edl_token);
         }
     }
-
+#endif
     try {
 
         // OK! Make the cURL handle
@@ -1753,15 +1789,11 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
                 response_headers,
                 response_body);
 
-#ifndef NDEBUG
         {
             BES_STOPWATCH_START(MODULE,prolog + "Retrieved HTTP response from origin_url: " + origin_url->str());
-#endif
-
             curl_code = curl_easy_perform(ceh);
-#ifndef NDEBUG
         }
-#endif
+
         curl_success = eval_curl_easy_perform_code(
                 origin_url->str(), // In this situation we use the origin url because we did NOT follow a redirect
                 curl_code,
@@ -1835,7 +1867,6 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
  * an http code of 2xx, 4xx, or 5xx is considered an error.
  *
  * @param origin_url The origin url for the request
- * @param redirect_url Returned value parameter for the redirect url.
  * @return The redirect URL string.
  */
 std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http::url> &origin_url) {
@@ -1843,9 +1874,8 @@ std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http:
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     // Before we do anything, make sure that the URL is OK to pursue.
     if (!http::AllowedHosts::theHosts()->is_allowed(origin_url)) {
-        string err = (string) "The specified URL " + origin_url->str()
-                     + " does not match any of the accessible services in"
-                     + " the allowed hosts list.";
+        string err = "The specified URL " + origin_url->str()
+                     + " does not match any of the accessible services in the allowed hosts list.";
         BESDEBUG(MODULE, prolog << err << endl);
         throw BESSyntaxUserError(err, __FILE__, __LINE__);
     }
@@ -1860,16 +1890,16 @@ std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http:
         attempt++;
         success = gru_mk_attempt(origin_url, attempt, retry_limit, redirect_url);
     }
-    // This is a failsafe test - the gru_mk_attempt)_ should detect the errors and throw an exception
+    // This is a failsafe test - the gru_mk_attempt() should detect the errors and throw an exception
     // if the attempt count exceeds the retry_limit, but if for some reason there's flaw in that
     // logic I add this check as well... ndp-12/01/23
     if (attempt >= retry_limit) {
-        stringstream msg;
-        msg << prolog << "ERROR: I tried " << attempt << " times to determine the redirect URL for the origin_url:\n";
-        msg << "    " << origin_url->str() << "\n";
-        msg << "Oddly, I was unable to detect an error, but nonetheless I have made the maximum ";
-        msg << "number of attempts and I must now give up...\n";
-        throw BESInternalError(msg.str(), __FILE__, __LINE__);
+        // I removed the newlines in this message since I think the thing that displays te error
+        // should handle formatting. jhrg 11/13/25
+        string msg = prolog + "ERROR: I tried " + to_string(attempt) + " times to determine the redirect URL for the origin_url: "
+        + origin_url->str() + ". Oddly, I was unable to detect an error, "
+        "but nonetheless I have made the maximum number of attempts and I must now give up...";
+        throw BESInternalError(msg, __FILE__, __LINE__);
     }
 
     BESDEBUG(MODULE, prolog << "END redirect_url: " << redirect_url->str() << "\n");

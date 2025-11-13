@@ -88,7 +88,7 @@ GatewayContainer::GatewayContainer(const string &sym_name,
  */
 GatewayContainer::GatewayContainer(const GatewayContainer &copy_from) :
         BESContainer(copy_from), d_remoteResource(copy_from.d_remoteResource) {
-    // we can not make a copy of this container once the request has
+    // we cannot make a copy of this container once the request has
     // been made
     if (d_remoteResource) {
         string err = (string) "The Container has already been accessed, "
@@ -97,20 +97,19 @@ GatewayContainer::GatewayContainer(const GatewayContainer &copy_from) :
     }
 }
 
-void GatewayContainer::_duplicate(GatewayContainer &copy_to) {
+void GatewayContainer::m_duplicate(GatewayContainer &copy_to) {
     if (copy_to.d_remoteResource) {
-        string err = (string) "The Container has already been accessed, "
-                + "can not duplicate this resource.";
+        string err = "The Container has already been accessed, can not duplicate this resource.";
         throw BESInternalError(err, __FILE__, __LINE__);
     }
     copy_to.d_remoteResource = d_remoteResource;
-    BESContainer::_duplicate(copy_to);
+    BESContainer::m_duplicate(copy_to);
 }
 
 BESContainer *
 GatewayContainer::ptr_duplicate() {
-    GatewayContainer *container = new GatewayContainer;
-    _duplicate(*container);
+    auto *container = new GatewayContainer;
+    m_duplicate(*container);
     return container;
 }
 

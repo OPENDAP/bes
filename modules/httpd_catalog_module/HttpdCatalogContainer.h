@@ -48,15 +48,12 @@ namespace httpd_catalog {
 class HttpdCatalogContainer: public BESContainer {
 private:
     /// Remote resource for this container, nullptr means it has not yet been accessed
-    http::RemoteResource *d_remoteResource;
+    http::RemoteResource *d_remoteResource = nullptr;
 
-    HttpdCatalogContainer() :
-        BESContainer(), d_remoteResource(0)
-    {
-    }
+    HttpdCatalogContainer() = default;
 
 protected:
-    void _duplicate(HttpdCatalogContainer &copy_to);
+    void m_duplicate(HttpdCatalogContainer &copy_to);
 
 public:
     HttpdCatalogContainer(const std::string &sym_name, const std::string &real_name, const std::string &type);

@@ -69,9 +69,14 @@ constexpr static auto USE_OPENDAP_BUCKET = "NGAP.UseOPeNDAPBucket";
 #define CMR_COLLECTION_CONCEPT_ID "collection_concept_id"
 #define CMR_GRANULE_UR "granule_ur"
 
+// Moved from HttpNames.h jhrg 11/12/25
+constexpr static auto  EDL_AUTH_TOKEN_KEY = "edl_auth_token";
+constexpr static auto  EDL_ECHO_TOKEN_KEY = "edl_echo_token";
+constexpr static auto  EDL_UID_KEY = "uid";
+
 // jhrg 10/8/25
 constexpr static auto CMR_CLIENT_ID_CONTEXT_KEY = "edl_client_application_id";
-constexpr static auto CMR_CLIENT_ID_KEY = "client_id";
+constexpr static auto CMR_CLIENT_ID_KEY = "Client-Id";
 
 constexpr static auto MODULE = "dmrpp";
 

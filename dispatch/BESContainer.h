@@ -79,7 +79,7 @@ class BESContainer: public BESObj {
 protected:
     // This is an odd bit of code. The argument is copied, which is the reverse
     // of a copy constructor, where the argument is the source for the copy operation.
-    virtual void _duplicate(BESContainer &copy_to);
+    void m_duplicate(BESContainer &copy_to);
 
 public:
     BESContainer() = default;

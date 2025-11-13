@@ -36,8 +36,8 @@ namespace s3 {
  * list of remote requests
  *
  * Each of the containers stored in the GatewayContainerStorage represents
- * a remote request. When accessed the container will make the remote
- * request in order to create the target response.
+ * a remote request. When accessed, the container will make the remote
+ * request to create the target response.
  *
  * @see BESContainerStorageVolatile
  * @see GatewayContainer

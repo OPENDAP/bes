@@ -71,9 +71,11 @@
 #define HTTP_EFFECTIVE_URL_DEFAULT_EXPIRES_INTERVAL 300
 #define HTTP_URL_REFRESH_THRESHOLD 60
 
+#if 0
 #define EDL_AUTH_TOKEN_KEY "edl_auth_token"
 #define EDL_ECHO_TOKEN_KEY "edl_echo_token"
 #define EDL_UID_KEY "uid"
+#endif
 
 #define REMOTE_RESOURCE_TMP_DIR_KEY "Http.RemoteResource.TmpDir"    // default is /tmp/bes_rr_tmp
 #define REMOTE_RESOURCE_DELETE_TMP_FILE "Http.RemoteResource.TmpFile.Delete"    // default is true

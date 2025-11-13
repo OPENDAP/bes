@@ -283,7 +283,8 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
     }
     BESDEBUG(MODULE, prolog << "Found collection_name (aka collection_concept_id): " << collection_name << endl);
 
-    // Build the CMR query URL for the dataset
+    // Build the CMR query URL for the dataset. Use libcurl to scape the characters
+    // in the query string. jhrg 11/12/25
     string cmr_url = get_cmr_search_endpoint_url() + "?";
     {
         // This easy-handle is only created so we can use the curl_easy_escape() on the token values
@@ -399,6 +400,91 @@ string get_s3credentials_url(rapidjson::Value &obj) {
     }
 
     return {""};
+}
+
+/**
+ * @brief Adds the user id and/or the associated EDL auth token
+ * to request_headers.
+ *
+ * @note used here and in the tests. jhrg 3/8/23
+ *
+ * Currently looks for 3 specific auth header values in the
+ * BESContextManager set by the OLFS.
+ *
+ *  - uid: The user id of the logged in user.
+ *
+ * - edl_auth_token: The EDL authentication token recovered
+ *  from EDL using the user's one time code. This may have
+ *  come from the user logging in via the OLFS and EDL or it
+ *  may have been transmitted from upstream as the header:
+ *      Authorization: Bearer <edl_auth_token>
+ *  from an upstream process.
+ *
+ * The Authorization header is made of the sting:
+ *
+ *    Authorization: Bearer edl_access_token
+ *
+ * - edl_echo_token: This soon to be legacy token is formed from
+ *  the edl_auth_token and the server's EDL client_application_id.
+ *     Echo-Token: edl_access_token:Client-Id
+ *
+ * If an aspirational auth header value is missing then that header
+ * will not be added to the request_headers list.
+ *
+ * @param request_headers
+ * @return
+ */
+curl_slist *add_edl_auth_headers(curl_slist *request_headers) {
+    bool found;
+    string s;
+
+    s = BESContextManager::TheManager()->get_context(CMR_CLIENT_ID_CONTEXT_KEY, found);
+    if (found && !s.empty()) {
+        request_headers = curl::append_http_header(request_headers, CMR_CLIENT_ID_KEY, s);
+    }
+
+    s = BESContextManager::TheManager()->get_context(EDL_AUTH_TOKEN_KEY, found);
+    if (found && !s.empty()) {
+        request_headers = curl::append_http_header(request_headers, "Authorization", s);
+    }
+
+    // TODO run this to ground - should we be looking for ECHO tokens? jhrg 11/12/25
+    s = BESContextManager::TheManager()->get_context(EDL_ECHO_TOKEN_KEY, found);
+    if (found && !s.empty()) {
+        request_headers = curl::append_http_header(request_headers, "Echo-Token", s);
+    }
+
+    return request_headers;
+}
+
+/// @brief HTTP GET tailored for NASA's Earthdata Cloud environment
+void NgapApi::http_get_nasa_edc(const string &target_url, string &buf) {
+    curl_slist *request_headers = nullptr;
+    try {
+        request_headers = add_edl_auth_headers(request_headers);
+
+        bool found = false;
+        std::string s = BESContextManager::TheManager()->get_context(CMR_CLIENT_ID_CONTEXT_KEY, found);
+        if (found && !s.empty()) {
+            request_headers = curl::append_http_header(request_headers, CMR_CLIENT_ID_KEY, s);
+        }
+
+        s = BESContextManager::TheManager()->get_context(CMR_CLIENT_ID_CONTEXT_KEY, found);
+        if (found && !s.empty()) {
+            request_headers = curl::append_http_header(request_headers, CMR_CLIENT_ID_KEY, s);
+        }
+
+        s = BESContextManager::TheManager()->get_context(EDL_AUTH_TOKEN_KEY, found);
+        if (found && !s.empty()) {
+            request_headers = curl::append_http_header(request_headers, "Authorization", s);
+        }
+
+        curl::http_get(target_url, request_headers, buf);
+    }
+    catch (...) {
+        curl_slist_free_all(request_headers);
+        throw;
+    }
 }
 
 /**
@@ -520,7 +606,7 @@ NgapApi::DataAccessUrls NgapApi::convert_ngap_resty_path_to_data_access_urls(con
     string cmr_json_string;
     try {
         BES_PROFILE_TIMING(string("Request granule record from CMR - ") + cmr_query_url);
-        curl::http_get(cmr_query_url, cmr_json_string);
+        http_get_nasa_edc(cmr_query_url, cmr_json_string);
     }
     catch (http::HttpError &http_error) {
         string err_msg = prolog + "Hyrax encountered a Service Chaining Error while "

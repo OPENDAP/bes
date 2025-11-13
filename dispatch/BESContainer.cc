@@ -39,7 +39,7 @@ using std::ostream;
  *
  * @param copy_to The container to copy this instance into
  */
-void BESContainer::_duplicate(BESContainer &copy_to)
+void BESContainer::m_duplicate(BESContainer &copy_to)
 {
     copy_to.d_symbolic_name = d_symbolic_name;
     copy_to.d_real_name = d_real_name;

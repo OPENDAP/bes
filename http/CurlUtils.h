@@ -47,20 +47,7 @@ class url;
 
 namespace curl {
 
-///@name Get data from a URL
-///@{
-void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, int fd,
-                                 std::vector<std::string> *http_response_headers);
-
-void http_get(const std::string &target_url, std::vector<char> &buf);
-
-bool http_head(const std::string &target_url, int tries = 3, unsigned long wait_time_us = 1'000'000);
-void http_get(const std::string &target_url, std::string &buf);
-
-void super_easy_perform(CURL *ceh);
-///@}
-
-std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http::url> &url);
+std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http::url> &origin_url);
 
 std::string filter_aws_url(const std::string &eff_url);
 
@@ -100,6 +87,52 @@ curl_slist *sign_s3_url(const std::shared_ptr<http::url> &target_url, http::Acce
 
 bool is_url_signed_for_s3(const std::string &url);
 bool is_url_signed_for_s3(const std::shared_ptr<http::url> &target_url);
+
+///@name Get data from a URL
+///@{
+#if 1
+void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, int fd,
+                                 std::vector<std::string> *http_response_headers);
+#endif
+#if 0
+// No longer defined. jhrg 11/12/25
+void http_get(const std::string &target_url, std::vector<char> &buf);
+#endif
+
+bool http_head(const std::string &target_url, int tries = 3, unsigned long wait_time_us = 1'000'000);
+
+/// @brief General HTTP GET call using libcurl that accepts a list of request headers.
+/// @note This is intended to be a 'private' helper function.
+void http_get(const std::string &target_url, curl_slist *request_headers, std::string &buf);
+
+/// @brief General HTTP GET call using libcurl
+inline void http_get(const std::string &target_url, std::string &buf) {
+    http_get(target_url, nullptr, buf);
+}
+
+#if 0
+/// @brief HTTP GET tailored for NASA's Earthdata Cloud environment
+inline void http_get_nasa_edc(const std::string &target_url, std::string &buf) {
+    curl_slist *request_headers = nullptr;
+    try {
+        request_headers = add_edl_auth_headers(request_headers);
+        bool found = false;
+        std::string s = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
+        if (found && !s.empty()) {
+            request_headers = append_http_header(request_headers, "Client-Id", s);
+        }
+
+        http_get(target_url, request_headers, buf);
+    }
+    catch (...) {
+        curl_slist_free_all(request_headers);
+        throw;
+    }
+}
+#endif
+
+void super_easy_perform(CURL *ceh);
+///@}
 
 } // namespace curl
 

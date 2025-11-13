@@ -50,15 +50,12 @@ namespace gateway {
  */
 class GatewayContainer: public BESContainer {
 private:
-    http::RemoteResource *d_remoteResource;
+    http::RemoteResource *d_remoteResource = nullptr;
 
-    GatewayContainer() :
-        BESContainer(), d_remoteResource(0)
-    {
-    }
+    GatewayContainer() = default;
 
 protected:
-    void _duplicate(GatewayContainer &copy_to);
+    void m_duplicate(GatewayContainer &copy_to);
 
 public:
     GatewayContainer(const std::string &sym_name, const std::string &real_name, const std::string &type);

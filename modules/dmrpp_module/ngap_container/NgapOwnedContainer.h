@@ -108,7 +108,7 @@ class NgapOwnedContainer: public BESContainer {
     friend class NgapOwnedContainerTest;
 
 protected:
-    void _duplicate(BESContainer &dest) override;
+    void m_duplicate(NgapOwnedContainer &dest);
 
 public:
     NgapOwnedContainer() = default;
@@ -123,7 +123,7 @@ public:
 
     BESContainer *ptr_duplicate() override {
         auto container = std::make_unique<NgapOwnedContainer>();
-        _duplicate(*container);
+        m_duplicate(*container);
         return container.release();
     }
 

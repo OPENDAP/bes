@@ -38,7 +38,7 @@ namespace s3 {
 /** @brief Container representing a remote request
  *
  * The real name of a S3Container is the actual remote request. When the
- * access method is called the remote request is made, the response
+ * access method is called, the remote request is made, the response
  * saved to file if successful, and the target response returned as the real
  * container that a data handler would then open.
  *
@@ -50,7 +50,7 @@ class S3Container: public BESContainer {
     std::shared_ptr<http::RemoteResource> d_dmrpp_rresource = nullptr;
 
     void initialize();
-    void _duplicate(S3Container &copy_to);
+    void m_duplicate(S3Container &copy_to);
 
 public:
     S3Container() = default;
@@ -59,7 +59,7 @@ public:
     S3Container(const S3Container &copy_from) = delete;
     S3Container& operator=(const S3Container& other) = delete;
 
-    ~S3Container() = default;
+    ~S3Container() override = default;
 
     // These three methods are abstract in the BESContainer parent class. jhrg 10/18/22
     BESContainer *ptr_duplicate() override;

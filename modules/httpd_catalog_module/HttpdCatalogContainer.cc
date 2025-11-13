@@ -90,20 +90,20 @@ HttpdCatalogContainer::HttpdCatalogContainer(const HttpdCatalogContainer &copy_f
     }
 }
 
-void HttpdCatalogContainer::_duplicate(HttpdCatalogContainer &copy_to)
+void HttpdCatalogContainer::m_duplicate(HttpdCatalogContainer &copy_to)
 {
     if (copy_to.d_remoteResource) {
         throw BESInternalError("The Container has already been accessed, cannot duplicate this resource.", __FILE__, __LINE__);
     }
     copy_to.d_remoteResource = d_remoteResource;
-    BESContainer::_duplicate(copy_to);
+    BESContainer::m_duplicate(copy_to);
 }
 
 BESContainer *
 HttpdCatalogContainer::ptr_duplicate()
 {
-    HttpdCatalogContainer *container = new HttpdCatalogContainer;
-    _duplicate(*container);
+    auto *container = new HttpdCatalogContainer;
+    m_duplicate(*container);
     return container;
 }
 

@@ -61,6 +61,8 @@ private:
     static std::string build_cmr_query_url(const std::string &restified_path);
     static std::string build_cmr_query_url_old_rpath_format(const std::string &restified_path);
 
+    static void http_get_nasa_edc(const std::string &target_url, std::string &buf);
+
     friend class NgapApiTest;
 
 public:

@@ -38,7 +38,7 @@
 
 #include "BESContainer.h"
 
-/** @brief Holds real data, container type and constraint for symbolic name
+/** @brief Holds real data, container type, and constraint for symbolic name
  * read from persistence.
  *
  * A symbolic name is a name that represents a certain set of data, usually
@@ -55,41 +55,38 @@
  */
 class BESFileContainer: public BESContainer {
 private:
-    bool _cached;
+    bool _cached = false;
     std::string _target;
 
-    BESFileContainer() : BESContainer(), _cached(false), _target("")
-    {
-    }
+    BESFileContainer() = default;
 
 protected:
-    void _duplicate(BESContainer &copy_to) override;
+    void m_duplicate(BESFileContainer &copy_to) {
+        BESContainer::m_duplicate(copy_to);
+    }
 
 public:
-	static const std::string UNCOMPRESS_CACHE_DIR_KEY;
-	static const std::string UNCOMPRESS_CACHE_PREFIX_KEY;
-	static const std::string UNCOMPRESS_CACHE_SIZE_KEY;
+    static const std::string UNCOMPRESS_CACHE_DIR_KEY;
+    static const std::string UNCOMPRESS_CACHE_PREFIX_KEY;
+    static const std::string UNCOMPRESS_CACHE_SIZE_KEY;
 
-	BESFileContainer(const std::string &sym_name, const std::string &real_name, const std::string &type);
+    BESFileContainer(const std::string &sym_name, const std::string &real_name, const std::string &type);
 
     BESFileContainer(const BESFileContainer &copy_from);
 
-    // TODO Make this destructor call the release() method? jhrg 7/25/18
-    virtual ~BESFileContainer()
-    {
-    }
+    ~BESFileContainer() override = default;
 
-    virtual BESContainer * ptr_duplicate();
+    BESContainer *ptr_duplicate() override;
 
-    virtual std::string access();
+    std::string access() override;
 
-    virtual bool release();
+    bool release() override;
 
     /** @brief Displays debug information about this object
      *
      * @param strm output stream to use to dump the contents of this object
      */
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // BESFileContainer_h_

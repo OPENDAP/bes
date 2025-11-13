@@ -476,7 +476,7 @@ public:
     void append_hyrax_edl_client_id_appends_after_qmark_without_extra_amp() {
         DBG(cerr << prolog << "BEGIN" << endl);
 
-        // Arrange: ensure the client-id context is set
+        // Arrange: ensure the client_id context is set
         const std::string test_client_id = "hyrax-test-client";
         BESContextManager::TheManager()->set_context(CMR_CLIENT_ID_CONTEXT_KEY, test_client_id);
 
