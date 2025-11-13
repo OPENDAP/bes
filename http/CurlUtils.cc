@@ -1633,13 +1633,13 @@ static CURL *init_no_follow_redirects_handle(const string &target_url, const cur
 
 
 /**
- *
+ * @brief Helper used by process_get_redirect_http_code()
  * @param http_code
  * @param response_headers
  * @param response_body
  * @param msg
  */
-void write_response_details(const long http_code,
+static void write_response_details(const long http_code,
                             const vector <string> &response_headers,
                             const string &response_body,
                             stringstream &msg) {
@@ -1746,6 +1746,7 @@ static bool process_get_redirect_http_code(const long http_code,
 static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
                     const unsigned int attempt,
                     const unsigned int max_attempts,
+                    curl_slist *req_headers,
                     shared_ptr <EffectiveUrl> &redirect_url) {
 
     BESDEBUG(MODULE, prolog << " BEGIN This is attempt #" << attempt << " for " << origin_url->str() << "\n");
@@ -1753,7 +1754,7 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
     bool curl_success = false;
     CURL *ceh = nullptr;
     vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
-    curl_slist *req_headers = nullptr;
+    //curl_slist *req_headers = nullptr;
 
     vector<string> response_headers;
     string response_body;
@@ -1869,7 +1870,8 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
  * @param origin_url The origin url for the request
  * @return The redirect URL string.
  */
-std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http::url> &origin_url) {
+std::shared_ptr<http::EffectiveUrl>
+get_redirect_url(const std::shared_ptr<http::url> &origin_url, curl_slist *req_headers) {
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     // Before we do anything, make sure that the URL is OK to pursue.
@@ -1888,7 +1890,7 @@ std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http:
 
     while (!success && (attempt < retry_limit)) {
         attempt++;
-        success = gru_mk_attempt(origin_url, attempt, retry_limit, redirect_url);
+        success = gru_mk_attempt(origin_url, attempt, retry_limit, req_headers, redirect_url);
     }
     // This is a failsafe test - the gru_mk_attempt() should detect the errors and throw an exception
     // if the attempt count exceeds the retry_limit, but if for some reason there's flaw in that

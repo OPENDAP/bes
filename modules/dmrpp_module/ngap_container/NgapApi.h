@@ -39,6 +39,7 @@
 
 namespace http {
 class url;
+class EffectiveUrl;
 }
 
 namespace ngap {
@@ -57,11 +58,13 @@ private:
 
     static std::string get_cmr_search_endpoint_url();
 
-    static NgapApi::DataAccessUrls get_urls_from_granules_umm_json_v1_4(const std::string &rest_path, const std::string &cmr_granule_json_string);
+    static DataAccessUrls get_urls_from_granules_umm_json_v1_4(const std::string &rest_path,
+        const std::string &cmr_granule_json_string);
     static std::string build_cmr_query_url(const std::string &restified_path);
     static std::string build_cmr_query_url_old_rpath_format(const std::string &restified_path);
 
     static void http_get_nasa_edc(const std::string &target_url, std::string &buf);
+    static std::shared_ptr<http::EffectiveUrl> get_redirect_url_nasa_edc(const std::shared_ptr<http::url> &origin_url);
 
     friend class NgapApiTest;
 

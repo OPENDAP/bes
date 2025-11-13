@@ -463,23 +463,25 @@ void NgapApi::http_get_nasa_edc(const string &target_url, string &buf) {
     try {
         request_headers = add_edl_auth_headers(request_headers);
 
-        bool found = false;
-        std::string s = BESContextManager::TheManager()->get_context(CMR_CLIENT_ID_CONTEXT_KEY, found);
-        if (found && !s.empty()) {
-            request_headers = curl::append_http_header(request_headers, CMR_CLIENT_ID_KEY, s);
-        }
-
-        s = BESContextManager::TheManager()->get_context(CMR_CLIENT_ID_CONTEXT_KEY, found);
-        if (found && !s.empty()) {
-            request_headers = curl::append_http_header(request_headers, CMR_CLIENT_ID_KEY, s);
-        }
-
-        s = BESContextManager::TheManager()->get_context(EDL_AUTH_TOKEN_KEY, found);
-        if (found && !s.empty()) {
-            request_headers = curl::append_http_header(request_headers, "Authorization", s);
-        }
-
         curl::http_get(target_url, request_headers, buf);
+    }
+    catch (...) {
+        curl_slist_free_all(request_headers);
+        throw;
+    }
+}
+
+/**
+ * @brief A version of curl::get_redirect_url =() that includes EDL headers.
+ * @param origin_url The EffectiveUrl object
+ * @return
+ */
+std::shared_ptr<http::EffectiveUrl> get_redirect_url_nasa_edc(const std::shared_ptr<http::url> &origin_url) {
+    curl_slist *request_headers = nullptr;
+    try {
+        request_headers = add_edl_auth_headers(request_headers);
+
+        return curl::get_redirect_url(origin_url, request_headers);
     }
     catch (...) {
         curl_slist_free_all(request_headers);

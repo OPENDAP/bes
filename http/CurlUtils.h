@@ -47,7 +47,8 @@ class url;
 
 namespace curl {
 
-std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http::url> &origin_url);
+std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http::url> &origin_url,
+    curl_slist *req_headers = nullptr);
 
 std::string filter_aws_url(const std::string &eff_url);
 
