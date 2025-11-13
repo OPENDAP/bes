@@ -343,39 +343,67 @@ SignedUrlCache *SignedUrlCache::TheCache() {
     // Initialize the aws library (must only be once in application!)
     bes::AWS_SDK::aws_library_initialize();
 
+    // TODO: do i need a corresponding 
+    // bes::AWS_SDK::aws_library_shutdown();
+    // in the destructor??
+
     return &instance;
+}
+
+
+/**
+ * @brief Split `s3_url` into bucket, object strings
+ */
+std::pair<std::string, std::string> SignedUrlCache::split_s3_url(std::string const &s3_url) {
+
+    // Safety first (even though if we were missing the s3:// prefix, s3_url wouldn't have been extracted from the cmr result in the first place....)
+    if (s3_url.size() < 6 || s3_url.find("s3://") != 0) {
+        return std::pair<std::string, std::string>("", "");
+    }
+
+    // Get the bucket name by removing prefix "s3://" (which must exist or the path 
+    // wouldn't have been extracted from cmr) and including everything up to the first slash
+    std::string bucket = s3_url.substr(5, s3_url.find("/"));
+
+    // The object name is everything after the bucket name, not including the first "/"
+    std::string object = s3_url.substr(s3_url.find(bucket) + 1 + bucket.size());
+
+    return std::pair<std::string, std::string>(bucket, object);
+}
+
+uint64_t SignedUrlCache::get_expiration_seconds(const string &credentials_expiration_datetime) {
+    uint64_t expiration_seconds(60);     //TODO-actually do math here!!
+    return expiration_seconds;
 }
 
 /**
  * @brief Sign `s3_url` with aws credentials in `s3_access_key_tuple`, or nullptr if any part of signing process fails
- * @note Not yet implemented!
  */
-std::shared_ptr<http::EffectiveUrl> SignedUrlCache::sign_url(std::string const &s3_url, std::shared_ptr<S3AccessKeyTuple> const s3_access_key_tuple) {
-
+std::shared_ptr<http::EffectiveUrl> SignedUrlCache::sign_url(std::string const &s3_url, 
+                                                             std::shared_ptr<S3AccessKeyTuple> const s3_access_key_tuple,
+                                                             std::string aws_region) {
     bes::AWS_SDK aws_sdk;
     string id = get<0>(*s3_access_key_tuple);
     string secret = get<1>(*s3_access_key_tuple);
+    aws_sdk.initialize_s3_client(aws_region, id, secret);
 
-    // bes::AWS_SDK::aws_library_shutdown();
-    return nullptr;
+    string bucket;
+    string object;
+    tie(bucket, object) = split_s3_url(s3_url);
+    if (bucket.empty() || object.empty()) {
+        return nullptr;
+    }
 
-    // TODO: uhhhhh where was the region from?????? can we get it from s3_url, I hope????
-    // aws_sdk.initialize_s3_client("us-west-2", id, secret);
+    auto expiration_seconds = get_expiration_seconds(get<3>(*s3_access_key_tuple));
 
-    // // Get the bucket name by removing prefix "s3://" (which must exist or the path 
-    // // wouldn't have been extracted from cmr) and including everything up to the first slash
-    // std::string bucket = s3_url.substr(5, s3_url.find("/"));
+    // Can this call fail? If the aws library isn't initialized, it could through a
+    // BESInternalFatalError, but the library is initialized in the constructor of SignedUrlCache,
+    // so if we're here it MUST be initialized.
+    // As far as I can tell, the internal signing function
+    // doesn't have a chance to throw....
+    const Aws::String url_str = aws_sdk.s3_generate_presigned_object_url(bucket, object, expiration_seconds);
 
-    // // The object name is everything after the bucket name, not including the first "/"
-    // std::string object = s3_url.substr(s3_url.find(bucket) + 1);
-
-    // // TODO: get from doing math on s3_access_key_tuple ! 
-    // const uint64_t expiration_seconds = 60;
-
-    // // TODO: how might this fail? is it ever null or bad or...does it throw? if so, return nullptr first....
-    // const Aws::String url_str = aws_sdk.s3_generate_presigned_object_url(bucket, object, expiration_seconds);
-
-    // return make_shared<http::EffectiveUrl>(url_str);
+    return make_shared<http::EffectiveUrl>(url_str);
 }
 
 /**
