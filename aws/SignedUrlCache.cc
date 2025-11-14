@@ -72,11 +72,10 @@ shared_ptr <http::EffectiveUrl> SignedUrlCache::get_cached_signed_url(string con
 /**
  * @brief Return true if the input occurred before the current time, false otherwise
  * @param timestamp_str Timestamp must be formatted as returned by AWS endpoint, YYYY-MM-DD HH:mm:dd+timezone, where timezone is formatted `HH:MM`, e.g. `1980-07-16 18:40:58+00:00`
- * @note Returns false if `timestamp_str` is not a valid timestamp string.
- * @note Input string may be mutated.
+ * @note Return false if `timestamp_str` is not a valid timestamp string.
  */
 bool SignedUrlCache::is_timestamp_after_now(std::string const &timestamp_str) {
-    auto now =  std::chrono::system_clock::now();
+    auto now = std::chrono::system_clock::now();
     auto now_secs = std::chrono::time_point_cast<std::chrono::seconds>(now);
 
     auto effective_timestamp_str = timestamp_str;
@@ -371,9 +370,34 @@ std::pair<std::string, std::string> SignedUrlCache::split_s3_url(std::string con
     return std::pair<std::string, std::string>(bucket, object);
 }
 
-uint64_t SignedUrlCache::get_expiration_seconds(const string &credentials_expiration_datetime) {
-    uint64_t expiration_seconds(60);     //TODO-actually do math here!!
-    return expiration_seconds;
+
+/**
+ * @brief Return difference between expiration time and now, if expiration is in future; 0 otherwise
+ * @param credentials_expiration_datetime Timestamp must be formatted as returned by AWS endpoint, YYYY-MM-DD HH:mm:dd+timezone, where timezone is formatted `HH:MM`, e.g. `1980-07-16 18:40:58+00:00`
+ * @note Return 0 if `timestamp_str` is not a valid timestamp string.
+ * @note Shares code with `is_timestamp_after_now`, could maybe converge
+ * @param current_time Exposed as parameter to aid in testing; defaults to now()
+ */
+uint64_t SignedUrlCache::num_seconds_until_expiration(const string &credentials_expiration_datetime, const chrono::system_clock::time_point current_time) {
+    auto now_secs = std::chrono::time_point_cast<std::chrono::seconds>(current_time);
+
+    auto effective_timestamp_str = credentials_expiration_datetime;
+    if (credentials_expiration_datetime.size() == 25) {
+        // Hack to handle fact that s3credentials from aws include an
+        // extra colon in their timezone field
+        // This changes "1980-07-16 18:40:58+00:00" to "1980-07-16 18:40:58+0000"
+        effective_timestamp_str = string(credentials_expiration_datetime).erase(22, 1);
+    }
+
+    std::tm timestamp_time = {};
+    auto time_parse_result = strptime(effective_timestamp_str.c_str(), "%F %T%z", &timestamp_time);
+    if (time_parse_result == nullptr) {
+        INFO_LOG(prolog + string("PRE-DEPRECATION WARNING - Retrieved s3 credentials timestamp was not able to be parsed - " + credentials_expiration_datetime));
+        return 0;
+    }
+    auto timestamp_time_point = std::chrono::system_clock::from_time_t(std::mktime(&timestamp_time));
+    auto timestamp_secs = std::chrono::time_point_cast<std::chrono::seconds>(timestamp_time_point);
+    return timestamp_secs > now_secs ? (timestamp_secs - now_secs).count() : 0;
 }
 
 /**
@@ -394,7 +418,11 @@ std::shared_ptr<http::EffectiveUrl> SignedUrlCache::sign_url(std::string const &
         return nullptr;
     }
 
-    auto expiration_seconds = get_expiration_seconds(get<3>(*s3_access_key_tuple));
+    auto expiration_seconds = num_seconds_until_expiration(get<3>(*s3_access_key_tuple));
+    if (expiration_seconds == 0) {
+        // No point in creating a url that is already expired!! 
+        return nullptr;
+    }
 
     // Can this call fail? If the aws library isn't initialized, it could through a
     // BESInternalFatalError, but the library is initialized in the constructor of SignedUrlCache,
