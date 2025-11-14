@@ -325,6 +325,45 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Valid input is split into `" + get<0>(expected4) + "," + get<1>(expected4) + "`, got `" +                                 get<0>(out4) + "," + get<1>(out4) + "`", expected4 == out4);
     }
 
+    std::chrono::system_clock::time_point parse_as_time_point(const std::string& datetime_string) {
+        std::tm timestamp_time = {};
+        auto time_parse_result = strptime(datetime_string.c_str(), "%F %T%z", &timestamp_time);
+
+        // auto foo = std::mktime(&timestamp_time);
+        // auto bar = std::chrono::system_clock::from_time_t(foo);
+        // return bar;
+
+        return std::chrono::system_clock::from_time_t(std::mktime(&timestamp_time));
+    }
+
+    void num_seconds_until_expiration_test() {
+        std::string current_time_str = "2025-04-01 09:30:00+0400";
+        std::string current_time_aws_str = "2025-04-01 09:30:00+04:00";
+        std::chrono::system_clock::time_point current_time = parse_as_time_point(current_time_str);
+
+        auto out = SignedUrlCache::num_seconds_until_expiration(current_time_aws_str, current_time);
+        CPPUNIT_ASSERT_MESSAGE("Expiration time `now` should return 0s` for `" + current_time_aws_str + "`: `" + to_string(out) + "`", out == 0);
+
+        auto time_plus_five_seconds_aws_str = "2025-04-01 09:30:05+04:00";
+        auto out1 = SignedUrlCache::num_seconds_until_expiration(time_plus_five_seconds_aws_str, current_time);
+        CPPUNIT_ASSERT_MESSAGE("Expiration date should be 5s from now `" + to_string(out1) + "`", out1 == 5);
+
+        auto time_minus_five_seconds_aws_str = "2025-04-01 09:29:55+04:00";
+        auto out2 = SignedUrlCache::num_seconds_until_expiration(time_minus_five_seconds_aws_str, current_time);
+        CPPUNIT_ASSERT_MESSAGE("Expiration date in the past should return 0s `" + to_string(out2) + "`", out2 == 0);
+
+        std::string expiration_time_past("1980-07-16 18:40:58+04:00");
+        auto out3 = SignedUrlCache::num_seconds_until_expiration(expiration_time_past);
+        CPPUNIT_ASSERT_MESSAGE("Expiration time in past should return 0s `" + to_string(out3) + "`", out3 == 0);
+
+        std::string expiration_time_future("3026-07-16 18:40:58+04:00");
+        auto out4 = SignedUrlCache::num_seconds_until_expiration(expiration_time_future);
+        CPPUNIT_ASSERT_MESSAGE("Expiration time in future should be > 0s `" + to_string(out4) + "`", out4 > 0);
+
+        auto out5 = SignedUrlCache::num_seconds_until_expiration("lil_date");
+        CPPUNIT_ASSERT_MESSAGE("Invalid date string should return 0s `" + to_string(out5) + "`", out5 == 0);
+    }
+
 /* TESTS END */
 /*##################################################################################################*/
 
@@ -352,7 +391,7 @@ CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
 
     // Last but not least, test those helper functions
     CPPUNIT_TEST(split_s3_url_test);
-    // CPPUNIT_TEST(get_expiration_seconds);
+    CPPUNIT_TEST(num_seconds_until_expiration_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
