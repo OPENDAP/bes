@@ -4,7 +4,8 @@ AUTOMAKE_OPTIONS = foreign subdir-objects
 ACLOCAL_AMFLAGS = -I conf
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand \
-    -I$(top_srcdir)/http -I$(top_srcdir)/modules/dmrpp_module/ngap_container -I$(top_srcdir)/pugixml/src $(DAP_CFLAGS)
+    -I$(top_srcdir)/http -I$(top_srcdir)/modules/dmrpp_module/ngap_container -I$(top_srcdir)/pugixml/src $(DAP_CFLAGS) \
+    -I$(top_srcdir)/aws
 AM_CXXFLAGS = -Wno-vla-extension -Wno-inconsistent-missing-override
 
 # FIXME Remove this hack. Set these with configure. jhrg 11/25/19
@@ -27,7 +28,7 @@ AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\"  -DMODULE_VERSION=\"$(M_VER)\"
 # the --disable-shared is not required, but it seems to help with debuggers.
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align 
 
-AM_LDFLAGS = 
+AM_LDFLAGS = -L$(aws_libdir)
 include $(top_srcdir)/coverage.mk
 
 SUBDIRS = ngap_container dmrpp_transmitter build_dmrpp_h4 . unit-tests tests data tests_build_dmrpp get_dmrpp
@@ -76,7 +77,14 @@ build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) DmrppRequestHandler.cc DmrppReques
 build_dmrpp_LDFLAGS = $(top_builddir)/dap/.libs/libdap_module.a
 build_dmrpp_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(H5_LDFLAGS) \
     $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
-    $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
+    $(top_builddir)/aws/libbes_aws.la $(aws_libs) \
+    $(XML2_LIBS) $(BYTESWAP_LIBS) -lz 
+
+if DARWIN
+AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,@loader_path
+else
+AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,'$$ORIGIN'
+endif
 
 # jhrg 6/2/23 $(BES_EXTRA_LIBS)
 

@@ -2,7 +2,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/aws -I$(top_srcdir)/dispatch
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/aws -I$(top_srcdir)/dispatch -I$(top_srcdir)/http
 
 # Help the link step find libs at build time too (not just run time)
 AM_LDFLAGS = -L$(aws_libdir)
@@ -11,7 +11,7 @@ AM_LDFLAGS = -L$(aws_libdir)
 # like bin_PROGRAMS.
 # NB: aws_libs is set in configure.ac. jhrg 10/16/25
 
-LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/aws/libbes_aws.la $(aws_libs)
+LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/aws/libbes_aws.la $(aws_libs) $(BES_HTTP_LIB)
 
 # aws_libdir is set in configure.ac. jhrg 10/16/25
 # aws_libdir64 is also set in configure.ac sbl 11/14/25
@@ -88,7 +88,7 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 
 if CPPUNIT
 
-UNIT_TESTS = AWS_SDK_Test
+UNIT_TESTS = AWS_SDK_Test SignedUrlCacheTest
 
 else
 
@@ -110,3 +110,6 @@ clean-local:
 
 AWS_SDK_Test_SOURCES = AWS_SDK_Test.cc
 AWS_SDK_Test_LDADD = $(LDADD)
+
+SignedUrlCacheTest_SOURCES = SignedUrlCacheTest.cc
+SignedUrlCacheTest_LDADD = $(LDADD)
