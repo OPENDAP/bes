@@ -458,6 +458,7 @@ public:
         DBG(cerr << prolog << "END" << endl);
     }
 
+#if 0
     /**
  * Tests for NgapApi::append_hyrax_edl_client_id()
  *
@@ -568,6 +569,7 @@ public:
 
         DBG(cerr << prolog << "END" << endl);
     }
+#endif
 
     CPPUNIT_TEST_SUITE(NgapApiTest);
 
@@ -589,11 +591,12 @@ public:
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_podaac);
     CPPUNIT_TEST (test_dmrpp_is_removed_from_data_url);
 
+#if 0
     CPPUNIT_TEST (append_hyrax_edl_client_id_appends_after_qmark_without_extra_amp);
     CPPUNIT_TEST (append_hyrax_edl_client_id_appends_when_trailing_amp_present);
     CPPUNIT_TEST (append_hyrax_edl_client_id_inserts_amp_when_needed);
     CPPUNIT_TEST (append_hyrax_edl_client_id_noop_when_context_not_set);
-
+#endif
     CPPUNIT_TEST_SUITE_END();
 };
 

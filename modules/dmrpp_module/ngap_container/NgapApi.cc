@@ -50,6 +50,7 @@ using namespace std;
 
 namespace ngap {
 
+#if 0
 /**
  * @brief Append the EDL client id for Hyrax to the URL sent to CMR
  * @note This function assumes that the URL either ends in a '?' or
@@ -73,6 +74,7 @@ bool NgapApi::append_hyrax_edl_client_id(string &cmr_url) {
     }
     return found;
 }
+#endif
 
 /**
  * @brief Get the CMR search endpoint URL using information from the BES Keys.
@@ -193,10 +195,10 @@ string NgapApi::build_cmr_query_url_old_rpath_format(const string &restified_pat
         esc_url_content = curl_easy_escape(ceh, granule.c_str(), granule.size());
         cmr_url += string(CMR_GRANULE_UR).append("=").append(esc_url_content);
         curl_free(esc_url_content);
-
+#if 0
         // Assume the client id text is URL safe. jhrg 10/8/25
         append_hyrax_edl_client_id(cmr_url);
-
+#endif
         curl_easy_cleanup(ceh);
     }
 
@@ -297,10 +299,10 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
         esc_url_content = curl_easy_escape(ceh, granule_name.c_str(), granule_name.size());
         cmr_url += string(CMR_GRANULE_UR).append("=").append(esc_url_content);
         curl_free(esc_url_content);
-
+#if 0
         // Assume the client id text is URL safe. jhrg 10/8/25
         append_hyrax_edl_client_id(cmr_url);
-
+#endif
         curl_easy_cleanup(ceh);
     }
     return cmr_url;

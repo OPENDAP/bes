@@ -87,6 +87,8 @@ public:
         // happen even if exceptions are thrown by the add_edl...() test.
         BESContextManager::TheManager()->unset_context(EDL_UID_KEY);
         BESContextManager::TheManager()->unset_context(EDL_AUTH_TOKEN_KEY);
+        // TODO Remove this and all instances of EDL_ECHO_TOKEN_KEY in this test suite.
+        //  See HYRAX-1036. jhrg 11/13/25
         BESContextManager::TheManager()->unset_context(EDL_ECHO_TOKEN_KEY);
 
         // We have to remove the cookie file between test invocations.
