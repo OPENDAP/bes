@@ -77,7 +77,7 @@
 
 // jhrg 11/13/25
 #define CMR_CLIENT_ID_CONTEXT_KEY "edl_client_application_id"
-#define CMR_CLIENT_ID_KEY "client_id"
+#define CMR_CLIENT_ID_KEY "Client-Id"
 
 #define REMOTE_RESOURCE_TMP_DIR_KEY "Http.RemoteResource.TmpDir"    // default is /tmp/bes_rr_tmp
 #define REMOTE_RESOURCE_DELETE_TMP_FILE "Http.RemoteResource.TmpFile.Delete"    // default is true

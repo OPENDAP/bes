@@ -53,9 +53,6 @@ public:
     typedef std::tuple<std::string, std::string, std::string> DataAccessUrls;
 
 private:
-#if 0
-    static bool append_hyrax_edl_client_id(std::string &cmr_url);
-#endif
     static std::string get_cmr_search_endpoint_url();
 
     static NgapApi::DataAccessUrls get_urls_from_granules_umm_json_v1_4(const std::string &rest_path, const std::string &cmr_granule_json_string);
