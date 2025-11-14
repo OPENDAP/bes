@@ -577,16 +577,20 @@ static inline bool is_eq(const char *value, const char *key) {
 NgapApi::DataAccessUrls NgapOwnedContainer::extract_s3_data_urls_from_dmrpp(const string &dmrpp_string) {
     // If the dmrpp is invalid, we will have hit a failure before now---so we can assume
     // it's generally safe---so do basically no additional safety checking
+    string href_attr;
+    string s3_attr;
+    string s3credentials_attr;
 
     // Load the xml document
     pugi::xml_document result_xml_doc;
     pugi::xml_parse_result result = result_xml_doc.load_string(dmrpp_string.c_str(), pugi::parse_default | pugi::parse_ws_pcdata_single);
+    if (!result) {
+        // It would be SO surprising to end up here! Nonetheless, if we do, handle it gracefully.
+        return tie(href_attr, s3_attr, s3credentials_attr);
+    }
     auto xml_root_node = result_xml_doc.first_child();
 
     // Pull the expected data values from the xml
-    string href_attr;
-    string s3_attr;
-    string s3credentials_attr;
     for (xml_attribute attr = xml_root_node.first_attribute(); attr; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "dmrpp:href")) {
             href_attr = attr.value();
