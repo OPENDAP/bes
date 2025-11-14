@@ -577,6 +577,7 @@ dnl libraries are not found/used. jhrg 10/16/25
 aws_prefix=
 aws_libs=
 aws_libdir=
+aws_libdir64=
 
 AM_COND_IF([LOOK_FOR_AWS],
     [
@@ -620,7 +621,7 @@ AM_COND_IF([LOOK_FOR_AWS],
                 AS_IF(
                     dnl 64-bit system
                     [test "$ARCH" = "64"],
-                    [aws_libdir=$aws_prefix/lib64],
+                    [aws_libdir64=$aws_prefix/lib64;aws_libdir=$aws_prefix/lib],
                     dnl 32-bit system
                     [test "$ARCH" = "32"],
                     [aws_libdir=$aws_prefix/lib]
@@ -628,7 +629,8 @@ AM_COND_IF([LOOK_FOR_AWS],
          ])
 
          AC_MSG_NOTICE([AWS C++ SDK Found.])
-         AC_MSG_NOTICE([AWS libs dir: $aws_libdir])
+         AC_MSG_NOTICE([AWS libs 32x dir: $aws_libdir])
+         AC_MSG_NOTICE([AWS libs 64x dir: $aws_libdir64])
          AM_CONDITIONAL([USE_AWS_SDK], [true])],
         [AC_MSG_NOTICE([AWS C++ SDK not Found.])
          AM_CONDITIONAL([USE_AWS_SDK], [false])])
@@ -637,6 +639,7 @@ AM_COND_IF([LOOK_FOR_AWS],
 AC_SUBST(aws_prefix)
 AC_SUBST(aws_libs)
 AC_SUBST(aws_libdir)
+AC_SUBST(aws_libdir64)
 
 dnl Freeform hacks
 
