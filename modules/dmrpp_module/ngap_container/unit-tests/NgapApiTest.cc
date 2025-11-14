@@ -201,6 +201,9 @@ public:
         }
     }
 
+    // This _used_ to test if a query string was appended to the URL, but now
+    // we use a header for that same information, so it tests that the query
+    // string is not appended. jhrg 11/14/25
     void resty_path_to_cmr_query_test_04() {
         DBG(cerr << prolog << "BEGIN" << endl);
 
@@ -216,7 +219,6 @@ public:
             "https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?"
             CMR_COLLECTION_CONCEPT_ID "=C1443727145-LAADS&"
             CMR_GRANULE_UR "=MOD08_D3.A2020308.061.2020309092644.hdf.nc"
-            "&client_id=hyrax-test-client"
         );
         try {
             string cmr_query_url = NgapApi::build_cmr_query_url(resty_path);
