@@ -43,7 +43,7 @@ public:
     DapFunctionsRequestHandler(const std::string &name);
     virtual ~DapFunctionsRequestHandler() {}
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static bool build_help(BESDataHandlerInterface &dhi);
     static bool build_version(BESDataHandlerInterface &dhi);

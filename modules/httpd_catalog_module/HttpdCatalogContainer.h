@@ -63,15 +63,15 @@ public:
 
     HttpdCatalogContainer(const HttpdCatalogContainer &copy_from);
 
-    virtual ~HttpdCatalogContainer();
+    ~HttpdCatalogContainer() override;
 
-    virtual BESContainer * ptr_duplicate();
+    BESContainer * ptr_duplicate() override;
 
-    virtual std::string access();
+    std::string access() override;
 
-    virtual bool release();
+    bool release() override;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 } // namespace http_catalog

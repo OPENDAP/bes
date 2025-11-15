@@ -46,19 +46,19 @@
  * @see BESContainer
  * @see BESTransmitter
  */
-class BESConfigResponseHandler : public BESResponseHandler
-{
+class BESConfigResponseHandler : public BESResponseHandler {
 public:
-				BESConfigResponseHandler( const std::string &name ) ;
-    virtual			~BESConfigResponseHandler( void ) ;
+    explicit BESConfigResponseHandler(const std::string &name);
 
-    virtual void		execute( BESDataHandlerInterface &dhi ) ;
-    virtual void		transmit( BESTransmitter *transmitter,
-                                          BESDataHandlerInterface &dhi ) ;
+    ~BESConfigResponseHandler() override;
 
-    virtual void		dump( std::ostream &strm ) const ;
+    void execute(BESDataHandlerInterface &dhi) override;
 
-    static BESResponseHandler *ConfigResponseBuilder( const std::string &handler_name ) ;
+    void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;
+
+    void dump(std::ostream &strm) const override;
+
+    static BESResponseHandler *ConfigResponseBuilder(const std::string &handler_name);
 };
 
 #endif // I_BESConfigResponseHandler_h

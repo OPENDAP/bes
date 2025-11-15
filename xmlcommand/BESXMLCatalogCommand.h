@@ -53,7 +53,7 @@ public:
         return true;
     }
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static BESXMLCommand * CommandBuilder(const BESDataHandlerInterface &base_dhi);
 };

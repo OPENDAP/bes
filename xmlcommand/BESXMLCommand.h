@@ -123,7 +123,7 @@ public:
         return d_xmlcmd_dhi;
     }
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static void add_command(const std::string &cmd_str, p_xmlcmd_builder cmd);
     static void del_command(const std::string &cmd_str);

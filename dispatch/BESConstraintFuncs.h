@@ -39,8 +39,7 @@
 
 namespace BESConstraintFuncs
 {
-	std::string pre_to_post_constraint( const std::string &name,
-				   const std::string &pre_constraint ) ;
+    std::string pre_to_post_constraint( const std::string &name, const std::string &pre_constraint ) ;
     void post_append( BESDataHandlerInterface &dhi ) ;
 }
 

@@ -50,7 +50,7 @@ public:
     FoCovJsonRequestHandler(const std::string &name);
     virtual ~FoCovJsonRequestHandler(void);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
     
     static bool obtain_beskeys_info(const std::string& key, bool & has_key);
     static bool get_may_ignore_z_axis() { return _may_ignore_z_axis; }

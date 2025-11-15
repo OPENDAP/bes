@@ -62,7 +62,7 @@ public:
 
     CSV_Field *getField(const std::string &fieldName);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // I_CSV_Header_h

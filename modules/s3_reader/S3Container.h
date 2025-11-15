@@ -59,7 +59,7 @@ public:
     S3Container(const S3Container &copy_from) = delete;
     S3Container& operator=(const S3Container& other) = delete;
 
-    ~S3Container() = default;
+    ~S3Container() override = default ;
 
     // These three methods are abstract in the BESContainer parent class. jhrg 10/18/22
     BESContainer *ptr_duplicate() override;

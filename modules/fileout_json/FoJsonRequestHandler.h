@@ -43,7 +43,7 @@ public:
     FoJsonRequestHandler(const std::string &name);
     virtual ~FoJsonRequestHandler(void);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static bool build_help(BESDataHandlerInterface &dhi);
     static bool build_version(BESDataHandlerInterface &dhi);

@@ -49,13 +49,14 @@
  */
 class BESShowErrorResponseHandler: public BESResponseHandler {
 public:
-    BESShowErrorResponseHandler(const std::string &name);
-    virtual ~BESShowErrorResponseHandler(void);
+    explicit BESShowErrorResponseHandler(const std::string &name);
 
-    virtual void execute(BESDataHandlerInterface &dhi);
-    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+    ~BESShowErrorResponseHandler() override;
 
-    virtual void dump(std::ostream &strm) const;
+    void execute(BESDataHandlerInterface &dhi) override;
+    void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;
+
+    void dump(std::ostream &strm) const override;
 
     static BESResponseHandler *ResponseBuilder(const std::string &name);
 };

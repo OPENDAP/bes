@@ -66,7 +66,7 @@ public:
     unsigned long long get_row_number() const { return _row_number; }
     std::string get_file_name() const { return _filepath; }
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // I_CSV_Reader_h

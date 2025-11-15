@@ -46,7 +46,7 @@ public:
 
     virtual void run();
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // BuildTInterface_h_

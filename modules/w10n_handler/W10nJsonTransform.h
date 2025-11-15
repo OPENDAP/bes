@@ -117,7 +117,7 @@ public:
 	virtual void sendW10nMetaForVariable(string &vName, bool isTop);
 	virtual void sendW10nDataForVariable(string &vName);
 
-	virtual void dump(std::ostream &strm) const;
+	void dump(std::ostream &strm) const override;
 
 };
 

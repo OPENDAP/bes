@@ -50,25 +50,26 @@ namespace bes {
  * @brief Catalogs from a directory structure
  */
 class BESCatalogDirectory: public BESCatalog {
-private:
     bes::CatalogItem *make_item(std::string item, std::string fullpath) const;
+#if 0
+    // not impl. jhrg 11/14/25
     bes::CatalogItem *make_item(std::string item) const;
-
-
+#endif
 public:
-    BESCatalogDirectory(const std::string &name);
-    virtual ~BESCatalogDirectory();
+    explicit BESCatalogDirectory(const std::string &name);
 
-    virtual BESCatalogEntry * show_catalog(const std::string &container, BESCatalogEntry *entry);
+    ~BESCatalogDirectory() override;
 
-    virtual std::string get_root() const;
+    BESCatalogEntry * show_catalog(const std::string &container, BESCatalogEntry *entry) override;
 
-    virtual bes::CatalogNode *get_node(const std::string &path) const;
+    std::string get_root() const override;
+
+    bes::CatalogNode *get_node(const std::string &path) const override;
 
     virtual void get_site_map(const std::string &prefix, const std::string &node_suffix, const std::string &leaf_suffix, std::ostream &out,
         const std::string &path = "/") const;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // I_BESCatalogDirectory_h

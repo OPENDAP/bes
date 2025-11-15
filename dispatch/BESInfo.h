@@ -122,7 +122,7 @@ public:
      *
      * @param strm output stream to use to dump the contents of this object
      */
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // BESInfo_h_

@@ -54,7 +54,7 @@ public:
     virtual void set_container(const std::string &cn);
     virtual void clear_container();
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     virtual libdap::DAS * get_das()
     {

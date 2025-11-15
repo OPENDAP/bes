@@ -42,7 +42,7 @@ public:
 	CSVRequestHandler(std::string name);
 	virtual ~CSVRequestHandler(void);
 
-	virtual void dump(std::ostream &strm) const;
+	void dump(std::ostream &strm) const override;
 
 	static bool csv_build_das(BESDataHandlerInterface &dhi);
 	static bool csv_build_dds(BESDataHandlerInterface &dhi);

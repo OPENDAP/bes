@@ -112,7 +112,7 @@ public:
     //virtual void add_attributes(BESDataHandlerInterface &bhdi);
     virtual void add_attributes(BESDataHandlerInterface &);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // I_BESRequestHandler_h

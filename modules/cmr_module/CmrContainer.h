@@ -55,8 +55,7 @@ class CmrContainer: public BESContainer {
 private:
     http::RemoteResource *d_remoteResource;
 
-    CmrContainer() :
-        BESContainer(), d_remoteResource(0)
+    CmrContainer() : BESContainer(), d_remoteResource(nullptr)
     {
     }
 
@@ -68,15 +67,15 @@ public:
 
     CmrContainer(const CmrContainer &copy_from);
 
-    virtual ~CmrContainer();
+    ~CmrContainer() override;
 
-    virtual BESContainer * ptr_duplicate();
+    BESContainer * ptr_duplicate() override;
 
-    virtual std::string access();
+    std::string access() override;
 
-    virtual bool release();
+    bool release() override;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static std::unique_ptr<Granule> getTemporalFacetGranule(const std::string &granule_path);
 };

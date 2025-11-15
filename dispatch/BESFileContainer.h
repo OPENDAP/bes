@@ -75,21 +75,19 @@ public:
     BESFileContainer(const BESFileContainer &copy_from);
 
     // TODO Make this destructor call the release() method? jhrg 7/25/18
-    virtual ~BESFileContainer()
-    {
-    }
+    ~BESFileContainer() override = default;
 
-    virtual BESContainer * ptr_duplicate();
+    BESContainer * ptr_duplicate() override;
 
-    virtual std::string access();
+    std::string access() override;
 
-    virtual bool release();
+    bool release() override;
 
     /** @brief Displays debug information about this object
      *
      * @param strm output stream to use to dump the contents of this object
      */
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // BESFileContainer_h_
