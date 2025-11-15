@@ -39,12 +39,12 @@
 
 class BESAbstractModule: public BESObj {
 public:
-    BESAbstractModule() {  }
-    virtual ~BESAbstractModule()  {  }
+    BESAbstractModule() = default;
+    ~BESAbstractModule() override  = default;
 
     virtual void initialize(const std::string &modname) = 0;
     virtual void terminate(const std::string &modname) = 0;
-    virtual void dump(std::ostream &strm) const = 0;
+    void dump(std::ostream &strm) const override = 0;
 };
 
 #endif // A_BESAbstractModule_H

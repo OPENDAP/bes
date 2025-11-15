@@ -65,31 +65,37 @@
  * @see BESFileContainer
  * @see BESKeys
  */
-class BESContainerStorageFile: public BESContainerStorage {
-private:
-	std::string _file;
+class BESContainerStorageFile : public BESContainerStorage {
+    std::string _file;
+
     typedef struct _container {
-    	std::string _symbolic_name;
-    	std::string _real_name;
-    	std::string _container_type;
+        std::string _symbolic_name;
+        std::string _real_name;
+        std::string _container_type;
     } container;
+
     std::map<std::string, BESContainerStorageFile::container *> _container_list;
-    typedef std::map<std::string, BESContainerStorageFile::container *>::const_iterator Container_citer;
-    typedef std::map<std::string, BESContainerStorageFile::container *>::iterator Container_iter;
+    using Container_citer = std::map<std::string, BESContainerStorageFile::container *>::const_iterator;
+    using Container_iter = std::map<std::string, BESContainerStorageFile::container *>::iterator;
 
 public:
-    BESContainerStorageFile(const std::string &n);
-    virtual ~BESContainerStorageFile();
+    explicit BESContainerStorageFile(const std::string &n);
 
-    virtual BESContainer * look_for(const std::string &sym_name);
-    virtual void add_container(const std::string &sym_name, const std::string &real_name, const std::string &type);
-    virtual void add_container(BESContainer *c);
-    virtual bool del_container(const std::string &s_name);
-    virtual bool del_containers();
+    ~BESContainerStorageFile() override;
 
-    virtual bool isData(const std::string &inQuestion, std::list<std::string> &provides);
+    BESContainer *look_for(const std::string &sym_name) override;
 
-    virtual void show_containers(BESInfo &info);
+    void add_container(const std::string &sym_name, const std::string &real_name, const std::string &type) override;
+
+    void add_container(BESContainer *c) override;
+
+    bool del_container(const std::string &s_name) override;
+
+    bool del_containers() override;
+
+    bool isData(const std::string &inQuestion, std::list<std::string> &provides) override;
+
+    void show_containers(BESInfo &info) override;
 
     void dump(std::ostream &strm) const override;
 };

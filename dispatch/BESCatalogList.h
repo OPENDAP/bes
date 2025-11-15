@@ -93,9 +93,11 @@ private:
 
     static BESCatalogList * d_instance;
 
+#if 0
+    //no impl. jhrg 11/14/25
     static void initialize_instance();  // originally used with pthread_once(). jhrg 7/22/18
     static void delete_instance();
-
+#endif
     friend class BESCatalogListTest;
 
     BESCatalogList();
@@ -113,7 +115,7 @@ public:
 
     /// @brief The number of non-default catalogs
     /// @todo Change this to include the default!
-    virtual int num_catalogs() const { return d_catalogs.size();  }
+    virtual int num_catalogs() const { return static_cast<int>(d_catalogs.size());  }
     virtual int empty() const { return d_catalogs.empty();  }
 
     /// @brief The name of the default catalog
