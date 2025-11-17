@@ -572,8 +572,13 @@ static inline bool is_eq(const char *value, const char *key) {
     return strcmp(value, key) == 0;
 }
 
-// TODO-docstring
-// Implementation borrowed from DMZ::process_dataset
+/**
+ * @brief parse a DMR++ to retrieve the tuple of urls required for NGAP's
+ * S3 data access.
+ *
+ * Implementation adapted from `DMZ::process_dataset`.
+ * @param dmrpp_string DMR++
+ */
 NgapApi::DataAccessUrls NgapOwnedContainer::extract_s3_data_urls_from_dmrpp(const string &dmrpp_string) {
     // If the dmrpp is invalid, we will have hit a failure before now---so we can assume
     // it's generally safe---so do basically no additional safety checking
