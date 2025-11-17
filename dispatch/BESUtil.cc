@@ -32,9 +32,9 @@
 
 #include "config.h"
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <sys/resource.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include <fcntl.h>
 
@@ -42,32 +42,32 @@
 #include <unistd.h>
 #endif
 
-#include <thread>         // std::this_thread::sleep_for
-#include <chrono>         // std::chrono::seconds
-#include <string>     // std::string, std::stol
-#include <cstdio>
-#include <cerrno>
-#include <cstring>
-#include <cstdlib>
-#include <ctime>
+#include <algorithm>
 #include <cassert>
-#include <vector>
+#include <cerrno>
+#include <chrono> // std::chrono::seconds
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#include <iomanip>
+#include <iostream>
 #include <list>
 #include <sstream>
-#include <iostream>
-#include <algorithm>
-#include <iomanip>
+#include <string> // std::string, std::stol
+#include <thread> // std::this_thread::sleep_for
+#include <vector>
 
 #include <uuid/uuid.h>
 
-#include "TheBESKeys.h"
-#include "BESUtil.h"
+#include "BESCatalogList.h"
 #include "BESDebug.h"
 #include "BESForbiddenError.h"
-#include "BESNotFoundError.h"
 #include "BESInternalError.h"
 #include "BESLog.h"
-#include "BESCatalogList.h"
+#include "BESNotFoundError.h"
+#include "BESUtil.h"
+#include "TheBESKeys.h"
 
 #include "BESInternalFatalError.h"
 #include "RequestServiceTimer.h"
@@ -85,9 +85,7 @@ const string BES_KEY_TIMEOUT_CANCEL = "BES.CancelTimeoutOnSend";
  * @brief Get the Resident Set Size in KB
  * @return The RSS or 0 if getrusage() returns an error
  */
-long
-BESUtil::get_current_memory_usage() noexcept
-{
+long BESUtil::get_current_memory_usage() noexcept {
     struct rusage usage;
     if (getrusage(RUSAGE_SELF, &usage) == 0) { // getrusage()  successful?
 #ifdef __APPLE__
@@ -97,8 +95,7 @@ BESUtil::get_current_memory_usage() noexcept
 #else
         return usage.ru_maxrss; // get the max size (man page says it is in kilobytes)
 #endif
-    }
-    else {
+    } else {
         return 0;
     }
 }
@@ -110,10 +107,9 @@ BESUtil::get_current_memory_usage() noexcept
  * @note See https://stackoverflow.com/questions/2310939/remove-last-character-from-c-string
  * @param value The string, modified in place
  */
-void BESUtil::trim_if_trailing_slash(string &value)
-{
+void BESUtil::trim_if_trailing_slash(string &value) {
     if (!value.empty() && value.back() == '/')
-        value.pop_back();   // requires C++-11
+        value.pop_back(); // requires C++-11
     // value.erase(value.end () -1);
 }
 
@@ -123,12 +119,11 @@ void BESUtil::trim_if_trailing_slash(string &value)
  * string.
  * @param value The string, modified
  */
-void BESUtil::trim_if_surrounding_quotes(std::string &value)
-{
+void BESUtil::trim_if_surrounding_quotes(std::string &value) {
     if (!value.empty() && value[0] == '"')
         value.erase(0, 1);
     if (!value.empty() && value.back() == '"')
-        value.pop_back();   // requires C++-11
+        value.pop_back(); // requires C++-11
     // value.erase(value.end () -1);
 }
 
@@ -136,8 +131,7 @@ void BESUtil::trim_if_surrounding_quotes(std::string &value)
 
  @param strm Write the MIME header to this ostream.
  */
-void BESUtil::set_mime_text(ostream &strm)
-{
+void BESUtil::set_mime_text(ostream &strm) {
     strm << "HTTP/1.0 200 OK" << CRLF;
     strm << "XBES-Server: " << PACKAGE_STRING << CRLF;
 
@@ -155,8 +149,7 @@ void BESUtil::set_mime_text(ostream &strm)
 
  @param strm Write the MIME header to this ostream.
  */
-void BESUtil::set_mime_html(ostream &strm)
-{
+void BESUtil::set_mime_html(ostream &strm) {
     strm << "HTTP/1.0 200 OK" << CRLF;
     strm << "XBES-Server: " << PACKAGE_STRING << CRLF;
 
@@ -202,8 +195,8 @@ void BESUtil::set_mime_html(ostream &strm)
 //                   / ( ("+" / "-") 4DIGIT )        ; Local differential
 //                                                   ;  hours+min. (HHMM)
 
-static const char *days[] = { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
-static const char *months[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+static const char *days[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+static const char *months[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
 /** Given a constant pointer to a <tt>time_t</tt>, return a RFC
  822/1123 style date.
@@ -214,20 +207,18 @@ static const char *months[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul",
  @return The RFC 822/1123 style date in a C++ string.
  @param t A const <tt>time_t</tt> pointer.
  */
-string BESUtil::rfc822_date(const time_t t)
-{
+string BESUtil::rfc822_date(const time_t t) {
     struct tm stm{};
     gmtime_r(&t, &stm);
     char d[256];
 
-    snprintf(d, 255, "%s, %02d %s %4d %02d:%02d:%02d GMT", days[stm.tm_wday], stm.tm_mday,
-             months[stm.tm_mon], 1900 + stm.tm_year, stm.tm_hour, stm.tm_min, stm.tm_sec);
+    snprintf(d, 255, "%s, %02d %s %4d %02d:%02d:%02d GMT", days[stm.tm_wday], stm.tm_mday, months[stm.tm_mon],
+             1900 + stm.tm_year, stm.tm_hour, stm.tm_min, stm.tm_sec);
     d[255] = '\0';
     return {d};
 }
 
-string BESUtil::unhexstring(const string& s)
-{
+string BESUtil::unhexstring(const string &s) {
     int val;
     istringstream ss(s);
     ss >> std::hex >> val;
@@ -239,8 +230,7 @@ string BESUtil::unhexstring(const string& s)
 
 // I modified this to mirror the version in libdap. The change allows several
 // escape sequences to by listed in 'except'. jhrg 2/18/09
-string BESUtil::www2id(const string &in, const string &escape, const string &except)
-{
+string BESUtil::www2id(const string &in, const string &escape, const string &except) {
     string::size_type i = 0;
     string res = in;
     while ((i = res.find_first_of(escape, i)) != string::npos) {
@@ -254,18 +244,16 @@ string BESUtil::www2id(const string &in, const string &escape, const string &exc
     return res;
 }
 
-string BESUtil::lowercase(const string &s)
-{
+string BESUtil::lowercase(const string &s) {
     string return_string = s;
     for (int j = 0; j < static_cast<int>(return_string.size()); j++) {
-        return_string[j] = (char) tolower(return_string[j]);
+        return_string[j] = (char)tolower(return_string[j]);
     }
 
     return return_string;
 }
 
-string BESUtil::unescape(const string &s)
-{
+string BESUtil::unescape(const string &s) {
     bool done = false;
     string::size_type index = 0;
     /* string::size_type new_index = 0 ; */
@@ -275,8 +263,7 @@ string BESUtil::unescape(const string &s)
         if (bs == string::npos) {
             new_str += s.substr(index, s.size() - index);
             done = true;
-        }
-        else {
+        } else {
             new_str += s.substr(index, bs - index);
             new_str += s[bs + 1];
             index = bs + 2;
@@ -291,21 +278,20 @@ string BESUtil::unescape(const string &s)
  * @param pathname The pathname that failed
  * @param error_number The error number (from errno)
  */
-static void throw_access_error(const string &pathname, long error_number)
-{
-    switch(error_number) {
-        case ENOENT:
-        case ENOTDIR: {
-            string message = string("Failed to locate '").append(pathname).append("'\n");
-            INFO_LOG(message);
-            throw BESNotFoundError(message, __FILE__, __LINE__);
-        }
+static void throw_access_error(const string &pathname, long error_number) {
+    switch (error_number) {
+    case ENOENT:
+    case ENOTDIR: {
+        string message = string("Failed to locate '").append(pathname).append("'\n");
+        INFO_LOG(message);
+        throw BESNotFoundError(message, __FILE__, __LINE__);
+    }
 
-        default: {
-            string message = string("Not allowed to access '").append(pathname).append("'\n");
-            INFO_LOG(message);
-            throw BESForbiddenError(message, __FILE__, __LINE__);
-        }
+    default: {
+        string message = string("Not allowed to access '").append(pathname).append("'\n");
+        INFO_LOG(message);
+        throw BESForbiddenError(message, __FILE__, __LINE__);
+    }
     }
 }
 
@@ -315,8 +301,7 @@ static void throw_access_error(const string &pathname, long error_number)
  * a root component of path that is known to be free of sym links.
  * @return Return true if the any part of the given pathname contains a symbolic link
  */
-bool pathname_contains_symlink(const string &path, int search_limit)
-{
+bool pathname_contains_symlink(const string &path, int search_limit) {
     // This kludge to remove a trailing '/' is needed because lstat and readlinkat fail
     // to detect a dir symlink when the dir name ends in '/'. On OSX readlinkat (and readlink)
     // does detect embedded links, but not on Linux. The lstat() service doesn't detect
@@ -335,8 +320,7 @@ bool pathname_contains_symlink(const string &path, int search_limit)
         int status = lstat(pathname.c_str(), &buf);
         if (status == 0) {
             is_link = S_ISLNK(buf.st_mode);
-        }
-        else {
+        } else {
             string msg = "Could not resolve path when testing for symbolic links: ";
             msg.append(strerror(errno));
             BESDEBUG(MODULE, prolog << msg << endl);
@@ -345,7 +329,7 @@ bool pathname_contains_symlink(const string &path, int search_limit)
 
         // remove the last part of pathname, including the trailing '/'
         pos = pathname.find_last_of('/');
-        if (pos != string::npos)    // find_last_of returns npos if the char is not found
+        if (pos != string::npos) // find_last_of returns npos if the char is not found
             pathname.erase(pos);
     } while (++i < search_limit && !is_link && pos != string::npos && !pathname.empty());
 
@@ -384,10 +368,11 @@ bool pathname_contains_symlink(const string &path, int search_limit)
  */
 void BESUtil::check_path(const string &path, const string &root, bool follow_sym_links) {
     // if nothing is passed in path, then the path checks out since root is assumed to be valid.
-    if (path == "") return;
+    if (path == "")
+        return;
 
     if (path.find("..") != string::npos) {
-        throw_access_error(path, EACCES);   // use the code for 'access would be denied'
+        throw_access_error(path, EACCES); // use the code for 'access would be denied'
     }
 
     // Check if the combination of root + path exists on this machine. If so, check if it
@@ -409,21 +394,16 @@ void BESUtil::check_path(const string &path, const string &root, bool follow_sym
         // using 'n' for the search_limit may not be optimal (when path ends in '/', an extra
         // component may be searched) but it's better than testing for a trailing '/' on every call.
         if (pathname_contains_symlink(pathname, n)) {
-            throw_access_error(pathname, EACCES);   // use the code for 'access would be denied'
+            throw_access_error(pathname, EACCES); // use the code for 'access would be denied'
         }
     }
 }
 
-char *
-BESUtil::fastpidconverter(char *buf, int base)
-{
-    return fastpidconverter(getpid(), buf, base);
-}
+char *BESUtil::fastpidconverter(char *buf, int base) { return fastpidconverter(getpid(), buf, base); }
 
-char *
-BESUtil::fastpidconverter(long val, /* value to be converted */
-char *buf, /* output string         */
-int base) /* conversion base       */
+char *BESUtil::fastpidconverter(long val,  /* value to be converted */
+                                char *buf, /* output string         */
+                                int base)  /* conversion base       */
 {
     ldiv_t r; /* result of val / base  */
 
@@ -432,21 +412,22 @@ int base) /* conversion base       */
         *buf = '\0';
         return buf;
     }
-    if (val < 0) *buf++ = '-';
+    if (val < 0)
+        *buf++ = '-';
     r = ldiv(labs(val), base);
 
     /* output digits of val/base first */
 
-    if (r.quot > 0) buf = fastpidconverter(r.quot, buf, base);
+    if (r.quot > 0)
+        buf = fastpidconverter(r.quot, buf, base);
     /* output last digit */
 
-    *buf++ = "0123456789abcdefghijklmnopqrstuvwxyz"[(int) r.rem];
+    *buf++ = "0123456789abcdefghijklmnopqrstuvwxyz"[(int)r.rem];
     *buf = '\0';
     return buf;
 }
 
-void BESUtil::removeLeadingAndTrailingBlanks(string &key)
-{
+void BESUtil::removeLeadingAndTrailingBlanks(string &key) {
     if (!key.empty()) {
         string::size_type first = key.find_first_not_of(" \t\n\r");
         string::size_type last = key.find_last_not_of(" \t\n\r");
@@ -460,8 +441,7 @@ void BESUtil::removeLeadingAndTrailingBlanks(string &key)
     }
 }
 
-string BESUtil::entity(char c)
-{
+string BESUtil::entity(char c) {
     switch (c) {
     case '>':
         return "&gt;";
@@ -484,8 +464,7 @@ string BESUtil::entity(char c)
  @param not_allowed The set of characters that are not allowed in XML.
  default: ><&'(single quote)"(double quote)
  @return The modified identifier. */
-string BESUtil::id2xml(string in, const string &not_allowed)
-{
+string BESUtil::id2xml(string in, const string &not_allowed) {
     string::size_type i = 0;
 
     while ((i = in.find_first_of(not_allowed, i)) != string::npos) {
@@ -501,8 +480,7 @@ string BESUtil::id2xml(string in, const string &not_allowed)
 
  @param in The string to modify.
  @return The modified string. */
-string BESUtil::xml2id(string in)
-{
+string BESUtil::xml2id(string in) {
     string::size_type i = 0;
 
     while ((i = in.find("&gt;", i)) != string::npos)
@@ -540,8 +518,7 @@ string BESUtil::xml2id(string in)
  * @throws BESInternalError if missing ending quote or delimiter does not
  * follow end quote
  */
-void BESUtil::explode(char delim, const string &str, list<string> &values)
-{
+void BESUtil::explode(char delim, const string &str, list<string> &values) {
     std::string::size_type start = 0;
     std::string::size_type qstart = 0;
     std::string::size_type adelim = 0;
@@ -565,12 +542,10 @@ void BESUtil::explode(char delim, const string &str, list<string> &values)
                     if (str[aquote - 2] == '\\') {
                         endquote = true;
                         qstart = aquote + 1;
-                    }
-                    else {
+                    } else {
                         qstart = aquote + 1;
                     }
-                }
-                else {
+                } else {
                     endquote = true;
                     qstart = aquote + 1;
                 }
@@ -582,19 +557,16 @@ void BESUtil::explode(char delim, const string &str, list<string> &values)
             }
             if (qstart == str.size()) {
                 adelim = string::npos;
-            }
-            else {
+            } else {
                 adelim = qstart;
             }
-        }
-        else {
+        } else {
             adelim = str.find(delim, start);
         }
         if (adelim == string::npos) {
             aval = str.substr(start, str.size() - start);
             done = true;
-        }
-        else {
+        } else {
             aval = str.substr(start, adelim - start);
         }
 
@@ -617,21 +589,21 @@ void BESUtil::explode(char delim, const string &str, list<string> &values)
  * @param delim the delimiter to use in creating the resulting string
  * @return the delim delimited string of values
  */
-string BESUtil::implode(const list<string> &values, char delim)
-{
+string BESUtil::implode(const list<string> &values, char delim) {
     string result;
     list<string>::const_iterator i = values.begin();
     list<string>::const_iterator e = values.end();
     bool first = true;
     string::size_type d; // = string::npos ;
     for (; i != e; i++) {
-        if (!first) result += delim;
+        if (!first)
+            result += delim;
         d = (*i).find(delim);
         if (d != string::npos && (*i)[0] != '"') {
             string err = (string) "BESUtil::implode - delimiter exists in value " + (*i);
             throw BESInternalError(err, __FILE__, __LINE__);
         }
-        //d = string::npos ;
+        // d = string::npos ;
         result += (*i);
         first = false;
     }
@@ -655,10 +627,9 @@ string BESUtil::implode(const list<string> &values, char delim)
  *  } ;
 
  * @param url string representation of the URL
- * @param 
+ * @param
  */
-void BESUtil::url_explode(const string &url_str, BESUtil::url &url_parts)
-{
+void BESUtil::url_explode(const string &url_str, BESUtil::url &url_parts) {
     string rest;
 
     string::size_type colon = url_str.find(":");
@@ -678,7 +649,8 @@ void BESUtil::url_explode(const string &url_str, BESUtil::url &url_parts)
     rest = url_str.substr(colon);
 
     string::size_type slash = rest.find("/");
-    if (slash == string::npos) slash = rest.size();
+    if (slash == string::npos)
+        slash = rest.size();
 
     string::size_type at = rest.find("@");
     if ((at != string::npos) && (at < slash)) {
@@ -688,15 +660,15 @@ void BESUtil::url_explode(const string &url_str, BESUtil::url &url_parts)
         if (colon != string::npos) {
             url_parts.uname = up.substr(0, colon);
             url_parts.psswd = up.substr(colon + 1);
-        }
-        else {
+        } else {
             url_parts.uname = up;
         }
         // everything after the @ is domain/path
         rest = rest.substr(at + 1);
     }
     slash = rest.find("/");
-    if (slash == string::npos) slash = rest.size();
+    if (slash == string::npos)
+        slash = rest.size();
     colon = rest.find(":");
     if ((colon != string::npos) && (colon < slash)) {
         // everything before the colon is the domain
@@ -707,39 +679,37 @@ void BESUtil::url_explode(const string &url_str, BESUtil::url &url_parts)
         if (slash != string::npos) {
             url_parts.port = rest.substr(0, slash);
             url_parts.path = rest.substr(slash + 1);
-        }
-        else {
+        } else {
             url_parts.port = rest;
             url_parts.path = "";
         }
-    }
-    else {
+    } else {
         slash = rest.find("/");
         if (slash != string::npos) {
             url_parts.domain = rest.substr(0, slash);
             url_parts.path = rest.substr(slash + 1);
-        }
-        else {
+        } else {
             url_parts.domain = rest;
         }
     }
 }
 
-string BESUtil::url_create(BESUtil::url &url_parts)
-{
+string BESUtil::url_create(BESUtil::url &url_parts) {
     string url = url_parts.protocol + "://";
     if (!url_parts.uname.empty()) {
         url += url_parts.uname;
-        if (!url_parts.psswd.empty()) url += ":" + url_parts.psswd;
+        if (!url_parts.psswd.empty())
+            url += ":" + url_parts.psswd;
         url += "@";
     }
     url += url_parts.domain;
-    if (!url_parts.port.empty()) url += ":" + url_parts.port;
-    if (!url_parts.path.empty()) url += "/" + url_parts.path;
+    if (!url_parts.port.empty())
+        url += ":" + url_parts.port;
+    if (!url_parts.path.empty())
+        url += "/" + url_parts.path;
 
     return url;
 }
-
 
 /**
  * @brief Concatenate path fragments making sure that they are separated by a single '/' character.
@@ -751,11 +721,10 @@ string BESUtil::url_create(BESUtil::url &url_parts)
  * @param secondPart The second string to concatenate.
  * @param separator The separator character to use between the two concatenated strings. Default: '/'
  */
-string BESUtil::pathConcat(const string &firstPart, const string &secondPart, char separator)
-{
+string BESUtil::pathConcat(const string &firstPart, const string &secondPart, char separator) {
     string first = firstPart;
     string second = secondPart;
-    string sep(1,separator);
+    string sep(1, separator);
 
     // make sure there are not multiple slashes at the end of the first part...
     // Note that this removes all the slashes. jhrg 9/27/16
@@ -771,11 +740,9 @@ string BESUtil::pathConcat(const string &firstPart, const string &secondPart, ch
     string newPath;
     if (first.empty()) {
         newPath = second;
-    }
-    else if (second.empty()) {
+    } else if (second.empty()) {
         newPath = first;
-    }
-    else {
+    } else {
         newPath = first.append(sep).append(second);
     }
     return newPath;
@@ -801,8 +768,7 @@ string BESUtil::pathConcat(const string &firstPart, const string &secondPart, ch
  *   trailingSlash is false, then the returned string will not end with a slash. If trailing
  *   slash(es) need to be removed to accomplish this, then they will be removed. Default False.
  */
-string BESUtil::assemblePath(const string &firstPart, const string &secondPart, bool leadingSlash, bool trailingSlash)
-{
+string BESUtil::assemblePath(const string &firstPart, const string &secondPart, bool leadingSlash, bool trailingSlash) {
     BESDEBUG(MODULE, prolog << "firstPart:  '" << firstPart << "'" << endl);
     BESDEBUG(MODULE, prolog << "secondPart: '" << secondPart << "'" << endl);
 
@@ -810,8 +776,7 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
     if (leadingSlash) {
         if (newPath.empty()) {
             newPath = "/";
-        }
-        else if (newPath.front() != '/') {
+        } else if (newPath.front() != '/') {
             newPath = "/" + newPath;
         }
     }
@@ -820,10 +785,9 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
         if (newPath.empty() || newPath.back() != '/') {
             newPath.append("/");
         }
-    }
-    else {
+    } else {
         while (!newPath.empty() && newPath.back() == '/')
-            newPath.erase(newPath.size()-1);
+            newPath.erase(newPath.size() - 1);
     }
 
     BESDEBUG(MODULE, prolog << "newPath: " << newPath << endl);
@@ -834,12 +798,10 @@ string BESUtil::assemblePath(const string &firstPart, const string &secondPart, 
  * Returns true if (the value of) 'fullString' ends with (the value of) 'ending',
  * false otherwise.
  */
-bool BESUtil::endsWith(string const &fullString, string const &ending)
-{
+bool BESUtil::endsWith(string const &fullString, string const &ending) {
     if (fullString.size() >= ending.size()) {
         return (0 == fullString.compare(fullString.size() - ending.size(), ending.size(), ending));
-    }
-    else {
+    } else {
         return false;
     }
 }
@@ -865,8 +827,7 @@ bool BESUtil::endsWith(string const &fullString, string const &ending)
  * @see See the send_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
  * methods of the children of BESTransmitter
  */
-void BESUtil::exit_on_request_timeout()
-{
+void BESUtil::exit_on_request_timeout() {
     if (RequestServiceTimer::TheTimer()->is_expired()) {
         stringstream msg;
         msg << "The submitted request took too long to service.";
@@ -895,8 +856,7 @@ void BESUtil::exit_on_request_timeout()
  * @see See the send_data(BESResponseObject *obj, BESDataHandlerInterface &dhi)
  * methods of the children of BESTransmitter
  */
-void BESUtil::conditional_timeout_cancel()
-{
+void BESUtil::conditional_timeout_cancel() {
     const string false_str = "false";
     const string no_str = "no";
 
@@ -907,9 +867,11 @@ void BESUtil::conditional_timeout_cancel()
     TheBESKeys::TheKeys()->get_value(BES_KEY_TIMEOUT_CANCEL, value, found);
     if (found) {
         value = BESUtil::lowercase(value);
-        if ( value == false_str || value == no_str) cancel_timeout_on_send = false;
+        if (value == false_str || value == no_str)
+            cancel_timeout_on_send = false;
     }
-    BESDEBUG(MODULE, __func__ << "() - cancel_timeout_on_send: " << (cancel_timeout_on_send ? "true" : "false") << endl);
+    BESDEBUG(MODULE,
+             __func__ << "() - cancel_timeout_on_send: " << (cancel_timeout_on_send ? "true" : "false") << endl);
     if (cancel_timeout_on_send) {
         RequestServiceTimer::TheTimer()->disable_timeout();
         alarm(0);
@@ -921,8 +883,7 @@ void BESUtil::conditional_timeout_cancel()
  * 'find_this' with the value of the string 'replace_with_this'
  * @param
  */
-unsigned int BESUtil::replace_all(string &s, string find_this, string replace_with_this)
-{
+unsigned int BESUtil::replace_all(string &s, string find_this, string replace_with_this) {
     unsigned int replace_count = 0;
     size_t pos = s.find(find_this);
     while (pos != string::npos) {
@@ -946,10 +907,12 @@ unsigned int BESUtil::replace_all(string &s, string find_this, string replace_wi
  * @param separator A string, of length one, containing the separator character for the path. This
  * parameter is optional and its value defaults to the slash '/' character.
  */
-string BESUtil::normalize_path(const string &raw_path, bool leading_separator, bool trailing_separator, const string separator /* = "/" */)
-{
+string BESUtil::normalize_path(const string &raw_path, bool leading_separator, bool trailing_separator,
+                               const string separator /* = "/" */) {
     if (separator.size() != 1)
-        throw BESInternalError("Path separators must be a single character. The string '" + separator + "' does not qualify.", __FILE__, __LINE__);
+        throw BESInternalError("Path separators must be a single character. The string '" + separator +
+                                   "' does not qualify.",
+                               __FILE__, __LINE__);
     char separator_char = separator[0];
     string double_separator;
     double_separator = double_separator.append(separator).append(separator);
@@ -968,8 +931,7 @@ string BESUtil::normalize_path(const string &raw_path, bool leading_separator, b
         if (path[0] != separator_char) {
             path = string(separator).append(path);
         }
-    }
-    else {
+    } else {
         if (path[0] == separator_char) {
             path = path.substr(1);
         }
@@ -978,8 +940,7 @@ string BESUtil::normalize_path(const string &raw_path, bool leading_separator, b
         if (*path.rbegin() != separator_char) {
             path = path.append(separator);
         }
-    }
-    else {
+    } else {
         if (*path.rbegin() == separator_char) {
             path = path.substr(0, path.size() - 1);
         }
@@ -992,8 +953,7 @@ string BESUtil::normalize_path(const string &raw_path, bool leading_separator, b
  * http://www.oopweb.com/CPP/Documents/CPPHOWTO/Volume/C++Programming-HOWTO-7.html
  * for the tokenizer.
  */
-void BESUtil::tokenize(const string& str, vector<string>& tokens, const string& delimiters /* = "/" */)
-{
+void BESUtil::tokenize(const string &str, vector<string> &tokens, const string &delimiters /* = "/" */) {
     // Skip delimiters at beginning.
     string::size_type lastPos = str.find_first_not_of(delimiters, 0);
     // Find first "non-delimiter".
@@ -1014,10 +974,7 @@ void BESUtil::tokenize(const string& str, vector<string>& tokens, const string& 
  * @param use_local_time True to use the local time, false (default) to use GMT
  * @return The time, either local or GMT/UTC as an ISO8601 string
  */
-string BESUtil::get_time(bool use_local_time)
-{
-    return get_time(time(0), use_local_time);
-}
+string BESUtil::get_time(bool use_local_time) { return get_time(time(0), use_local_time); }
 
 /**
  * @brief Returns the time represented by 'the_time' as an ISO8601 string.
@@ -1026,8 +983,7 @@ string BESUtil::get_time(bool use_local_time)
  * @param use_local_time True to use the local time, false (default) to use GMT
  * @return The time, either local or GMT/UTC as an ISO8601 string
  */
-string BESUtil::get_time(time_t the_time, bool use_local_time)
-{
+string BESUtil::get_time(time_t the_time, bool use_local_time) {
     char buf[sizeof "YYYY-MM-DDTHH:MM:SS zones"];
     int status = 0;
 
@@ -1041,8 +997,7 @@ string BESUtil::get_time(time_t the_time, bool use_local_time)
     if (!use_local_time) {
         gmtime_r(&the_time, &result);
         status = strftime(buf, sizeof buf, "%FT%T%Z", &result);
-    }
-    else {
+    } else {
         localtime_r(&the_time, &result);
         status = strftime(buf, sizeof buf, "%FT%T%Z", &result);
     }
@@ -1065,8 +1020,7 @@ string BESUtil::get_time(time_t the_time, bool use_local_time)
  * @return A vector of strings each of which is a token in the string read left to right.
  * @see BESUtil::tokenize() is probably faster
  */
-vector<string> BESUtil::split(const string &s, char delim /* '/' */, bool skip_empty /* true */)
-{
+vector<string> BESUtil::split(const string &s, char delim /* '/' */, bool skip_empty /* true */) {
     stringstream ss(s);
     string item;
     vector<string> tokens;
@@ -1082,9 +1036,8 @@ vector<string> BESUtil::split(const string &s, char delim /* '/' */, bool skip_e
     return tokens;
 }
 
-BESCatalog *BESUtil::separateCatalogFromPath(std::string &ppath)
-{
-    BESCatalog *catalog = 0;    // pointer to a singleton; do not delete
+BESCatalog *BESUtil::separateCatalogFromPath(std::string &ppath) {
+    BESCatalog *catalog = 0; // pointer to a singleton; do not delete
     vector<string> path_tokens;
 
     // BESUtil::normalize_path() removes duplicate separators and adds leading and trailing separators as directed.
@@ -1102,7 +1055,8 @@ BESCatalog *BESUtil::separateCatalogFromPath(std::string &ppath)
         BESDEBUG(MODULE, "First path token: " << path_tokens[0] << endl);
         catalog = BESCatalogList::TheCatalogList()->find_catalog(path_tokens[0]);
         if (catalog) {
-            BESDEBUG(MODULE, prolog << "Located catalog " << catalog->get_catalog_name() << " from path component" << endl);
+            BESDEBUG(MODULE,
+                     prolog << "Located catalog " << catalog->get_catalog_name() << " from path component" << endl);
             // Since the catalog name is in the path we
             // need to drop it this should leave container
             // with a leading
@@ -1116,9 +1070,9 @@ BESCatalog *BESUtil::separateCatalogFromPath(std::string &ppath)
 
 void ios_state_msg(std::ios &ios_ref, std::stringstream &msg) {
     msg << " {ios.good()=" << (ios_ref.good() ? "true" : "false") << "}";
-    msg << " {ios.eof()="  <<  (ios_ref.eof()?"true":"false") << "}";
-    msg << " {ios.fail()=" << (ios_ref.fail()?"true":"false") << "}";
-    msg << " {ios.bad()="  <<  (ios_ref.bad()?"true":"false") << "}";
+    msg << " {ios.eof()=" << (ios_ref.eof() ? "true" : "false") << "}";
+    msg << " {ios.fail()=" << (ios_ref.fail() ? "true" : "false") << "}";
+    msg << " {ios.bad()=" << (ios_ref.bad() ? "true" : "false") << "}";
 }
 
 // size of the buffer used to read from the temporary file built on disk and
@@ -1133,74 +1087,73 @@ void ios_state_msg(std::ios &ios_ref, std::stringstream &msg) {
  * @param o_strm
  * @return The number of bytes read/written
  */
-uint64_t BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm, uint64_t read_start_position)
-{
+uint64_t BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_strm, uint64_t read_start_position) {
 #ifndef NDEBUG
     stringstream msg;
-    msg << prolog << "Using ostream: " << (void *) &o_strm << " cout: " << (void *) &cout << endl;
-    BESDEBUG(MODULE,  msg.str());
-    INFO_LOG( msg.str());
+    msg << prolog << "Using ostream: " << (void *)&o_strm << " cout: " << (void *)&cout << endl;
+    BESDEBUG(MODULE, msg.str());
+    INFO_LOG(msg.str());
 #endif
 
     vector<char> rbuffer(OUTPUT_FILE_BLOCK_SIZE);
-    std::ifstream i_stream(file_name, std::ios_base::in | std::ios_base::binary);  // Use binary mode so we can
+    std::ifstream i_stream(file_name, std::ios_base::in | std::ios_base::binary); // Use binary mode so we can
 
     // good() returns true if !(eofbit || badbit || failbit)
-    if(!i_stream.good()){
+    if (!i_stream.good()) {
         stringstream msg;
         msg << prolog << "Failed to open file " << file_name;
         ios_state_msg(i_stream, msg);
         BESDEBUG(MODULE, msg.str() << endl);
-        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 
     // good() returns true if !(eofbit || badbit || failbit)
-    if(!o_strm.good()){
+    if (!o_strm.good()) {
         stringstream msg;
         msg << prolog << "Problem with ostream. " << file_name;
         ios_state_msg(i_stream, msg);
         BESDEBUG(MODULE, msg.str() << endl);
-        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
     // this is where we advance to the last byte that was read
     i_stream.seekg(read_start_position);
 
-    //vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
-    // This is where the file is copied.
+    // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+    //  This is where the file is copied.
     uint64_t tcount = 0;
-    while (i_stream.good() && o_strm.good()){
-        i_stream.read(rbuffer.data(), OUTPUT_FILE_BLOCK_SIZE);      // Read at most n bytes into
-        o_strm.write(rbuffer.data(), i_stream.gcount()); // buf, then write the buf to
+    while (i_stream.good() && o_strm.good()) {
+        i_stream.read(rbuffer.data(), OUTPUT_FILE_BLOCK_SIZE); // Read at most n bytes into
+        o_strm.write(rbuffer.data(), i_stream.gcount());       // buf, then write the buf to
         tcount += i_stream.gcount();
     }
     o_strm.flush();
 
     // fail() is true if failbit || badbit got set, but does not consider eofbit
-    if(i_stream.fail() && !i_stream.eof()){
+    if (i_stream.fail() && !i_stream.eof()) {
         stringstream msg;
         msg << prolog << "There was an ifstream error when reading from: " << file_name;
         ios_state_msg(i_stream, msg);
         msg << " last_lap: " << i_stream.gcount() << " bytes";
         msg << " total_read: " << tcount << " bytes";
         BESDEBUG(MODULE, msg.str() << endl);
-        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 
     // If we're not at the eof of the input stream then we have failed.
-    if (!i_stream.eof()){
+    if (!i_stream.eof()) {
         stringstream msg;
         msg << prolog << "Failed to reach EOF on source file: " << file_name;
         ios_state_msg(i_stream, msg);
         msg << " last_lap: " << i_stream.gcount() << " bytes";
         msg << " total_read: " << tcount << " bytes";
         BESDEBUG(MODULE, msg.str() << endl);
-        throw BESInternalError(msg.str(),__FILE__,__LINE__);
+        throw BESInternalError(msg.str(), __FILE__, __LINE__);
     }
 
     // And if something went wrong on the output stream we have failed.
-    if(!o_strm.good()){
+    if (!o_strm.good()) {
         stringstream msg;
-        msg << prolog << "There was an ostream error during transmit. Transmitted " << tcount  << " bytes.";
+        msg << prolog << "There was an ostream error during transmit. Transmitted " << tcount << " bytes.";
         ios_state_msg(o_strm, msg);
         auto crntpos = o_strm.tellp();
         msg << " current_position: " << crntpos << endl;
@@ -1210,8 +1163,8 @@ uint64_t BESUtil::file_to_stream(const std::string &file_name, std::ostream &o_s
 
 #ifndef NDEBUG
     msg.str("");
-    msg << prolog << "Sent "<< tcount << " bytes from file '" << file_name<< "'. " << endl;
-    BESDEBUG(MODULE,msg.str());
+    msg << prolog << "Sent " << tcount << " bytes from file '" << file_name << "'. " << endl;
+    BESDEBUG(MODULE, msg.str());
     INFO_LOG(msg.str());
 #endif
 
@@ -1236,11 +1189,9 @@ string BESUtil::get_dir_name(const string &p) {
     size_t pos = p.find_last_of('/');
     if (pos == string::npos) {
         return ".";
-    }
-    else if (pos == 0) {
+    } else if (pos == 0) {
         return "/";
-    }
-    else {
+    } else {
         return p.substr(0, pos);
     }
 }
@@ -1332,14 +1283,13 @@ void BESUtil::string_to_file(const string &filename, const string &content) {
  * @return A reference to the sanitized string.
  */
 std::string &BESUtil::remove_crlf(std::string &str) {
-    const auto the_bad_things ="\r\n";
+    const auto the_bad_things = "\r\n";
     size_t pos = 0;
     while ((pos = str.find_first_of(the_bad_things, pos)) != std::string::npos) {
         str[pos] = ' ';
     }
     return str;
 }
-
 
 std::string BESUtil::uuid() {
     uuid_t raw_uuid;
@@ -1348,5 +1298,3 @@ std::string BESUtil::uuid() {
     uuid_unparse_lower(raw_uuid, uuid_str);
     return {uuid_str};
 }
-
-

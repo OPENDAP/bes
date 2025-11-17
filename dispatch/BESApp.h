@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -53,12 +53,12 @@
  *
  * @see BESObj
  */
-class BESApp: public BESObj {
+class BESApp : public BESObj {
 protected:
     std::string _appName;
-    bool _debug {false};
-    bool _isInitialized {false};
-    static BESApp * _theApplication;
+    bool _debug{false};
+    bool _isInitialized{false};
+    static BESApp *_theApplication;
 
     BESApp() = default;
 
@@ -127,20 +127,13 @@ public:
      *
      * @return name of the application
      */
-    std::string appName() const
-    {
-        return _appName;
-    }
+    std::string appName() const { return _appName; }
 
     /** @brief Returns the BESApp application object for this application
      *
      * @return The application object
      */
-    static BESApp * TheApplication()
-    {
-        return _theApplication;
-    }
+    static BESApp *TheApplication() { return _theApplication; }
 };
 
 #endif
-

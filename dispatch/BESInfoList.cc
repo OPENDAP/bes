@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -38,8 +38,8 @@
 
 #include <mutex>
 
-#include "BESInfoList.h"
 #include "BESInfo.h"
+#include "BESInfoList.h"
 #include "TheBESKeys.h"
 
 using std::endl;
@@ -50,9 +50,7 @@ using std::string;
 
 BESInfoList::BESInfoList() {}
 
-bool
-BESInfoList::add_info_builder(const string &info_type,
-                              p_info_builder info_builder) {
+bool BESInfoList::add_info_builder(const string &info_type, p_info_builder info_builder) {
 
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
@@ -65,8 +63,7 @@ BESInfoList::add_info_builder(const string &info_type,
     return false;
 }
 
-bool
-BESInfoList::rem_info_builder(const string &info_type) {
+bool BESInfoList::rem_info_builder(const string &info_type) {
 
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
@@ -79,8 +76,7 @@ BESInfoList::rem_info_builder(const string &info_type) {
     return false;
 }
 
-BESInfo *
-BESInfoList::build_info() {
+BESInfo *BESInfoList::build_info() {
 
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
@@ -109,13 +105,11 @@ BESInfoList::build_info() {
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESInfoList::dump(ostream &strm) const {
+void BESInfoList::dump(ostream &strm) const {
 
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    strm << BESIndent::LMarg << "BESInfoList::dump - ("
-         << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "BESInfoList::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     if (_info_list.size()) {
         strm << BESIndent::LMarg << "registered builders:" << endl;
@@ -139,8 +133,7 @@ BESInfoList::dump(ostream &strm) const {
     BESIndent::UnIndent();
 }
 
-BESInfoList *
-BESInfoList::TheList() {
+BESInfoList *BESInfoList::TheList() {
     static BESInfoList infoList;
     return &infoList;
 }

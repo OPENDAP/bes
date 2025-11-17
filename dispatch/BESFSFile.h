@@ -37,35 +37,33 @@
 
 #include "BESFSFile.h"
 
-class BESFSFile
-{
+class BESFSFile {
 private:
-	std::string    _dirName ;
-	std::string    _fileName ;
-	std::string    _baseName ;
-	std::string    _extension ;
+    std::string _dirName;
+    std::string _fileName;
+    std::string _baseName;
+    std::string _extension;
 
-    void    breakApart(const std::string &fullPath) ;
-    void    breakExtension() ;
+    void breakApart(const std::string &fullPath);
+    void breakExtension();
+
 public:
-    BESFSFile(const std::string &fullPath) ;
-    BESFSFile(const std::string &dirName,
-                const std::string &fileName) ;
-    BESFSFile(const BESFSFile &copyFrom) ;
-    virtual    ~BESFSFile() ;
+    BESFSFile(const std::string &fullPath);
+    BESFSFile(const std::string &dirName, const std::string &fileName);
+    BESFSFile(const BESFSFile &copyFrom);
+    virtual ~BESFSFile();
 
-    virtual std::string   getDirName() ;
-    virtual std::string   getFileName() ;
-    virtual std::string   getBaseName() ;
-    virtual std::string   getExtension() ;
-    virtual std::string   getFullPath() ;
+    virtual std::string getDirName();
+    virtual std::string getFileName();
+    virtual std::string getBaseName();
+    virtual std::string getExtension();
+    virtual std::string getFullPath();
 
-    virtual bool exists( std::string &reason ) ;
-    virtual bool isReadable( std::string &reason ) ;
-    virtual bool isWritable( std::string &reason ) ;
-    virtual bool isExecutable( std::string &reason ) ;
-    virtual bool hasDotDot() ;
-} ;
+    virtual bool exists(std::string &reason);
+    virtual bool isReadable(std::string &reason);
+    virtual bool isWritable(std::string &reason);
+    virtual bool isExecutable(std::string &reason);
+    virtual bool hasDotDot();
+};
 
 #endif // I_BESDir_h
-

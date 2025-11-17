@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -30,15 +30,15 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <sstream>
 #include <iostream>
 #include <map>
+#include <sstream>
 
-using std::ostringstream;
 using std::endl;
 using std::map;
-using std::string;
 using std::ostream;
+using std::ostringstream;
+using std::string;
 
 #include "BESTextInfo.h"
 #include "BESUtil.h"
@@ -52,10 +52,7 @@ using std::ostream;
  * @see BESInfo
  * @see BESResponseObject
  */
-BESTextInfo::BESTextInfo(bool ishttp) :
-    BESInfo(), _ishttp(ishttp), _header(false)
-{
-}
+BESTextInfo::BESTextInfo(bool ishttp) : BESInfo(), _ishttp(ishttp), _header(false) {}
 
 /** @brief constructs a basic text information response object.
  *
@@ -76,14 +73,10 @@ BESTextInfo::BESTextInfo(bool ishttp) :
  * @see BESInfo
  * @see BESResponseObject
  */
-BESTextInfo::BESTextInfo(const string &key, ostream *strm, bool strm_owned, bool ishttp) :
-    BESInfo(key, strm, strm_owned), _ishttp(ishttp), _header(false)
-{
-}
+BESTextInfo::BESTextInfo(const string &key, ostream *strm, bool strm_owned, bool ishttp)
+    : BESInfo(key, strm, strm_owned), _ishttp(ishttp), _header(false) {}
 
-BESTextInfo::~BESTextInfo()
-{
-}
+BESTextInfo::~BESTextInfo() {}
 
 /** @brief begin the informational response
  *
@@ -92,8 +85,7 @@ BESTextInfo::~BESTextInfo()
  * @param response_name name of the response this information represents
  * @param dhi information about the request and response
  */
-void BESTextInfo::begin_response(const string &response_name, BESDataHandlerInterface &dhi)
-{
+void BESTextInfo::begin_response(const string &response_name, BESDataHandlerInterface &dhi) {
     BESInfo::begin_response(response_name, dhi);
 }
 
@@ -103,8 +95,7 @@ void BESTextInfo::begin_response(const string &response_name, BESDataHandlerInte
  * @param tag_data information describing the tag
  * @param attrs map of attributes to add to the tag
  */
-void BESTextInfo::add_tag(const string &tag_name, const string &tag_data, map<string, string, std::less<>> *attrs)
-{
+void BESTextInfo::add_tag(const string &tag_name, const string &tag_data, map<string, string, std::less<>> *attrs) {
     add_data(_indent + tag_name + ": " + tag_data + "\n");
     if (attrs) {
         map<string, string>::const_iterator i = attrs->begin();
@@ -122,8 +113,7 @@ void BESTextInfo::add_tag(const string &tag_name, const string &tag_data, map<st
  * @param tag_name name of the tag to begin
  * @param attrs map of attributes to begin the tag with
  */
-void BESTextInfo::begin_tag(const string &tag_name, map<string, string, std::less<>> *attrs)
-{
+void BESTextInfo::begin_tag(const string &tag_name, map<string, string, std::less<>> *attrs) {
     BESInfo::begin_tag(tag_name);
     add_data(_indent + tag_name + "\n");
     _indent += "    ";
@@ -144,18 +134,17 @@ void BESTextInfo::begin_tag(const string &tag_name, map<string, string, std::les
  *
  * @param tag_name name of the tag to end
  */
-void BESTextInfo::end_tag(const string &tag_name)
-{
+void BESTextInfo::end_tag(const string &tag_name) {
     BESInfo::end_tag(tag_name);
-    if (_indent.size() >= 4) _indent = _indent.substr(0, _indent.size() - 4);
+    if (_indent.size() >= 4)
+        _indent = _indent.substr(0, _indent.size() - 4);
 }
 
 /** @brief add string data to the informational response
  *
  * @param s string data to add the informational response
  */
-void BESTextInfo::add_data(const string & s)
-{
+void BESTextInfo::add_data(const string &s) {
     if (_ishttp && !_header && !_buffered) {
         BESUtil::set_mime_text(*_strm);
         _header = true;
@@ -167,8 +156,7 @@ void BESTextInfo::add_data(const string & s)
  *
  * @param num_spaces the number of spaces to add to the information
  */
-void BESTextInfo::add_space(unsigned long num_spaces)
-{
+void BESTextInfo::add_space(unsigned long num_spaces) {
     string to_add;
     for (unsigned long i = 0; i < num_spaces; i++) {
         to_add += " ";
@@ -180,8 +168,7 @@ void BESTextInfo::add_space(unsigned long num_spaces)
  *
  * @param num_breaks the number of line breaks to add to the information
  */
-void BESTextInfo::add_break(unsigned long num_breaks)
-{
+void BESTextInfo::add_break(unsigned long num_breaks) {
     string to_add;
     for (unsigned long i = 0; i < num_breaks; i++) {
         to_add += "\n";
@@ -197,8 +184,7 @@ void BESTextInfo::add_break(unsigned long num_breaks)
  * @param key Key from the initialization file specifying the file to be
  * @param name A description of what is the information being loaded
  */
-void BESTextInfo::add_data_from_file(const string &key, const string &name)
-{
+void BESTextInfo::add_data_from_file(const string &key, const string &name) {
     string newkey = key + ".TXT";
     BESInfo::add_data_from_file(newkey, name);
 }
@@ -211,8 +197,7 @@ void BESTextInfo::add_data_from_file(const string &key, const string &name)
  * @param transmitter The type of transmitter to use to transmit the info
  * @param dhi information to help with the transmission
  */
-void BESTextInfo::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
-{
+void BESTextInfo::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) {
     transmitter->send_text(*this, dhi);
 }
 
@@ -223,9 +208,8 @@ void BESTextInfo::transmit(BESTransmitter *transmitter, BESDataHandlerInterface 
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESTextInfo::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESTextInfo::dump - (" << (void *) this << ")" << endl;
+void BESTextInfo::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESTextInfo::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     strm << BESIndent::LMarg << "has header been added? " << _header << endl;
     strm << BESIndent::LMarg << "indentation \"" << _indent << "\"" << endl;
@@ -234,9 +218,4 @@ void BESTextInfo::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
-BESInfo *
-BESTextInfo::BuildTextInfo(const string &/*info_type*/)
-{
-    return new BESTextInfo();
-}
-
+BESInfo *BESTextInfo::BuildTextInfo(const string & /*info_type*/) { return new BESTextInfo(); }

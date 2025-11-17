@@ -30,15 +30,15 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <sstream>
 #include <iostream>
 #include <map>
+#include <sstream>
 
-using std::ostringstream;
 using std::endl;
 using std::map;
-using std::string;
 using std::ostream;
+using std::ostringstream;
+using std::string;
 
 #include "BESHTMLInfo.h"
 #include "BESUtil.h"
@@ -48,10 +48,7 @@ using std::ostream;
  * @see BESInfo
  * @see BESResponseObject
  */
-BESHTMLInfo::BESHTMLInfo() :
-    BESInfo(), _header(false), _do_indent(true)
-{
-}
+BESHTMLInfo::BESHTMLInfo() : BESInfo(), _header(false), _do_indent(true) {}
 
 /** @brief constructs a basic text information response object.
  *
@@ -61,14 +58,10 @@ BESHTMLInfo::BESHTMLInfo() :
  * @see BESInfo
  * @see BESResponseObject
  */
-BESHTMLInfo::BESHTMLInfo(const string &key, ostream *strm, bool strm_owned) :
-    BESInfo(key, strm, strm_owned), _header(false), _do_indent(true)
-{
-}
+BESHTMLInfo::BESHTMLInfo(const string &key, ostream *strm, bool strm_owned)
+    : BESInfo(key, strm, strm_owned), _header(false), _do_indent(true) {}
 
-BESHTMLInfo::~BESHTMLInfo()
-{
-}
+BESHTMLInfo::~BESHTMLInfo() {}
 
 /** @brief begin the informational response
  *
@@ -77,15 +70,15 @@ BESHTMLInfo::~BESHTMLInfo()
  * @param response_name name of the response this information represents
  * @param dhi information about the request and response
  */
-void BESHTMLInfo::begin_response(const string &response_name, BESDataHandlerInterface &dhi)
-{
+void BESHTMLInfo::begin_response(const string &response_name, BESDataHandlerInterface &dhi) {
     BESInfo::begin_response(response_name, dhi);
     add_data("<HTML>\n");
     _indent += "    ";
     add_data("<HEAD>\n");
     _indent += "    ";
     add_data((string) "<TITLE>" + response_name + "</TITLE>\n");
-    if (_indent.size() >= 4) _indent = _indent.substr(0, _indent.size() - 4);
+    if (_indent.size() >= 4)
+        _indent = _indent.substr(0, _indent.size() - 4);
     add_data("</HEAD>\n");
     add_data("<BODY>\n");
     _indent += "    ";
@@ -98,11 +91,12 @@ void BESHTMLInfo::begin_response(const string &response_name, BESDataHandlerInte
  * thrown.
  *
  */
-void BESHTMLInfo::end_response()
-{
-    if (_indent.size() >= 4) _indent = _indent.substr(0, _indent.size() - 4);
+void BESHTMLInfo::end_response() {
+    if (_indent.size() >= 4)
+        _indent = _indent.substr(0, _indent.size() - 4);
     add_data("</BODY>\n");
-    if (_indent.size() >= 4) _indent = _indent.substr(0, _indent.size() - 4);
+    if (_indent.size() >= 4)
+        _indent = _indent.substr(0, _indent.size() - 4);
     add_data("</HTML>\n");
 }
 
@@ -112,9 +106,7 @@ void BESHTMLInfo::end_response()
  * @param tag_data information describing the tag
  * @param attrs map of attributes to add to the tag
  */
-void BESHTMLInfo::add_tag(const string &tag_name,
-                          const string &tag_data,
-                          map<string, string, std::less<>> *attrs){
+void BESHTMLInfo::add_tag(const string &tag_name, const string &tag_data, map<string, string, std::less<>> *attrs) {
     string to_add = tag_name + ": " + tag_data + "<BR />\n";
     add_data(to_add);
     if (attrs) {
@@ -133,8 +125,7 @@ void BESHTMLInfo::add_tag(const string &tag_name,
  * @param tag_name name of the tag to begin
  * @param attrs map of attributes to begin the tag with
  */
-void BESHTMLInfo::begin_tag(const string &tag_name, map<string, string, std::less<>> *attrs)
-{
+void BESHTMLInfo::begin_tag(const string &tag_name, map<string, string, std::less<>> *attrs) {
     BESInfo::begin_tag(tag_name);
     string to_add = tag_name + "<BR />\n";
     add_data(to_add);
@@ -156,18 +147,17 @@ void BESHTMLInfo::begin_tag(const string &tag_name, map<string, string, std::les
  *
  * @param tag_name name of the tag to end
  */
-void BESHTMLInfo::end_tag(const string &tag_name)
-{
+void BESHTMLInfo::end_tag(const string &tag_name) {
     BESInfo::end_tag(tag_name);
-    if (_indent.size() >= 4) _indent = _indent.substr(0, _indent.size() - 4);
+    if (_indent.size() >= 4)
+        _indent = _indent.substr(0, _indent.size() - 4);
 }
 
 /** @brief add a space to the informational response
  *
  * @param num_spaces the number of spaces to add to the information
  */
-void BESHTMLInfo::add_space(unsigned long num_spaces)
-{
+void BESHTMLInfo::add_space(unsigned long num_spaces) {
     string to_add;
     for (unsigned long i = 0; i < num_spaces; i++) {
         to_add += "&nbsp;";
@@ -180,8 +170,7 @@ void BESHTMLInfo::add_space(unsigned long num_spaces)
  *
  * @param num_breaks the number of line breaks to add to the information
  */
-void BESHTMLInfo::add_break(unsigned long num_breaks)
-{
+void BESHTMLInfo::add_break(unsigned long num_breaks) {
     string to_add;
     for (unsigned long i = 0; i < num_breaks; i++) {
         to_add += "<BR />";
@@ -200,8 +189,7 @@ void BESHTMLInfo::add_break(unsigned long num_breaks)
  *
  * @param s information to be added to this response object
  */
-void BESHTMLInfo::add_data(const string &s)
-{
+void BESHTMLInfo::add_data(const string &s) {
     if (!_header && !_buffered) {
         BESUtil::set_mime_html(*_strm);
         _header = true;
@@ -221,8 +209,7 @@ void BESHTMLInfo::add_data(const string &s)
  * @param key Key from the initialization file specifying the file to be
  * @param name A description of what is the information being loaded
  */
-void BESHTMLInfo::add_data_from_file(const string &key, const string &name)
-{
+void BESHTMLInfo::add_data_from_file(const string &key, const string &name) {
     string newkey = key + ".HTML";
     BESInfo::add_data_from_file(newkey, name);
 }
@@ -235,8 +222,7 @@ void BESHTMLInfo::add_data_from_file(const string &key, const string &name)
  * @param transmitter The type of transmitter to use to transmit the info
  * @param dhi information to help with the transmission
  */
-void BESHTMLInfo::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
-{
+void BESHTMLInfo::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) {
     transmitter->send_html(*this, dhi);
 }
 
@@ -247,9 +233,8 @@ void BESHTMLInfo::transmit(BESTransmitter *transmitter, BESDataHandlerInterface 
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESHTMLInfo::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESHTMLInfo::dump - (" << (void *) this << ")" << endl;
+void BESHTMLInfo::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESHTMLInfo::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     strm << BESIndent::LMarg << "has header been added? " << _header << endl;
     strm << BESIndent::LMarg << "indentation \"" << _indent << "\"" << endl;
@@ -258,9 +243,4 @@ void BESHTMLInfo::dump(ostream &strm) const
     BESIndent::UnIndent();
 }
 
-BESInfo *
-BESHTMLInfo::BuildHTMLInfo(const string &/*info_type*/)
-{
-    return new BESHTMLInfo();
-}
-
+BESInfo *BESHTMLInfo::BuildHTMLInfo(const string & /*info_type*/) { return new BESHTMLInfo(); }

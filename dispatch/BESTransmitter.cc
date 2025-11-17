@@ -32,74 +32,69 @@
 
 #include "config.h"
 
+#include <algorithm>
 #include <iostream>
 #include <string>
-#include <algorithm>
 #include <unistd.h>
 
-#include "BESDataHandlerInterface.h"
-#include "BESResponseObject.h"
-#include "BESInternalError.h"
 #include "BESContextManager.h"
+#include "BESDataHandlerInterface.h"
+#include "BESInternalError.h"
+#include "BESResponseObject.h"
 
-#include "TheBESKeys.h"
+#include "BESDebug.h"
 #include "BESInfo.h"
 #include "BESUtil.h"
-#include "BESDebug.h"
+#include "TheBESKeys.h"
 
 #include "BESTransmitter.h"
 
 using std::endl;
-using std::string;
 using std::ostream;
+using std::string;
 
-bool BESTransmitter::add_method(string method_name, p_transmitter trans_method)
-{
-	BESTransmitter::_method_citer i;
-	i = _method_list.find(method_name);
-	if (i == _method_list.end()) {
-		_method_list[method_name] = trans_method;
-		return true;
-	}
-	return false;
+bool BESTransmitter::add_method(string method_name, p_transmitter trans_method) {
+    BESTransmitter::_method_citer i;
+    i = _method_list.find(method_name);
+    if (i == _method_list.end()) {
+        _method_list[method_name] = trans_method;
+        return true;
+    }
+    return false;
 }
 
-bool BESTransmitter::remove_method(string method_name)
-{
-	BESTransmitter::_method_iter i;
-	i = _method_list.find(method_name);
-	if (i != _method_list.end()) {
-		_method_list.erase(i);
-		return true;
-	}
-	return false;
+bool BESTransmitter::remove_method(string method_name) {
+    BESTransmitter::_method_iter i;
+    i = _method_list.find(method_name);
+    if (i != _method_list.end()) {
+        _method_list.erase(i);
+        return true;
+    }
+    return false;
 }
 
-p_transmitter BESTransmitter::find_method(string method_name)
-{
-	BESTransmitter::_method_citer i;
-	i = _method_list.find(method_name);
-	if (i != _method_list.end()) {
-		p_transmitter p = (*i).second;
-		return p;
-	}
-	return 0;
+p_transmitter BESTransmitter::find_method(string method_name) {
+    BESTransmitter::_method_citer i;
+    i = _method_list.find(method_name);
+    if (i != _method_list.end()) {
+        p_transmitter p = (*i).second;
+        return p;
+    }
+    return 0;
 }
 
-void BESTransmitter::send_response(const string &method_name, BESResponseObject *response, BESDataHandlerInterface &dhi)
-{
-	p_transmitter p = find_method(method_name);
-	if (p) {
-		p(response, dhi);
-	}
-	else {
-		throw BESInternalError(string("Unable to transmit response, no transmitter for ") + method_name, __FILE__,
-				__LINE__);
-	}
+void BESTransmitter::send_response(const string &method_name, BESResponseObject *response,
+                                   BESDataHandlerInterface &dhi) {
+    p_transmitter p = find_method(method_name);
+    if (p) {
+        p(response, dhi);
+    } else {
+        throw BESInternalError(string("Unable to transmit response, no transmitter for ") + method_name, __FILE__,
+                               __LINE__);
+    }
 }
 
-void BESTransmitter::send_text(BESInfo &info, BESDataHandlerInterface &dhi)
-{
+void BESTransmitter::send_text(BESInfo &info, BESDataHandlerInterface &dhi) {
     bool found = false;
     string context = "transmit_protocol";
     string protocol = BESContextManager::TheManager()->get_context(context, found);
@@ -111,8 +106,7 @@ void BESTransmitter::send_text(BESInfo &info, BESDataHandlerInterface &dhi)
     info.print(dhi.get_output_stream());
 }
 
-void BESTransmitter::send_html(BESInfo &info, BESDataHandlerInterface &dhi)
-{
+void BESTransmitter::send_html(BESInfo &info, BESDataHandlerInterface &dhi) {
     bool found = false;
     string context = "transmit_protocol";
     string protocol = BESContextManager::TheManager()->get_context(context, found);
@@ -131,23 +125,20 @@ void BESTransmitter::send_html(BESInfo &info, BESDataHandlerInterface &dhi)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESTransmitter::dump(ostream &strm) const
-{
-	strm << BESIndent::LMarg << "BESTransmitter::dump - (" << (void *) this << ")" << endl;
-	BESIndent::Indent();
-	if (_method_list.size()) {
-		strm << BESIndent::LMarg << "registered methods:" << endl;
-		BESIndent::Indent();
-		_method_citer i = _method_list.begin();
-		_method_citer ie = _method_list.end();
-		for (; i != ie; i++) {
-			strm << BESIndent::LMarg << (*i).first << ": " << (void *) (*i).second << endl;
-		}
-		BESIndent::UnIndent();
-	}
-	else {
-		strm << BESIndent::LMarg << "registered methods: none" << endl;
-	}
-	BESIndent::UnIndent();
+void BESTransmitter::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESTransmitter::dump - (" << (void *)this << ")" << endl;
+    BESIndent::Indent();
+    if (_method_list.size()) {
+        strm << BESIndent::LMarg << "registered methods:" << endl;
+        BESIndent::Indent();
+        _method_citer i = _method_list.begin();
+        _method_citer ie = _method_list.end();
+        for (; i != ie; i++) {
+            strm << BESIndent::LMarg << (*i).first << ": " << (void *)(*i).second << endl;
+        }
+        BESIndent::UnIndent();
+    } else {
+        strm << BESIndent::LMarg << "registered methods: none" << endl;
+    }
+    BESIndent::UnIndent();
 }
-

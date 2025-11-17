@@ -32,122 +32,102 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-using namespace CppUnit ;
+using namespace CppUnit;
 
 #include <iostream>
 
-using std::cerr ;
-using std::cout ;
-using std::endl ;
+using std::cerr;
+using std::cout;
+using std::endl;
 using std::string;
 
 #include "TestRequestHandler.h"
 
-TestRequestHandler *trh = 0 ;
+TestRequestHandler *trh = 0;
 
-TestRequestHandler::TestRequestHandler( string name )
-    : BESRequestHandler( name ),
-      _resp_num( 0 )
-{
-    trh = this ;
-    CPPUNIT_ASSERT( add_method( "resp1",
-				 TestRequestHandler::test_build_resp1 ) ) ;
-    CPPUNIT_ASSERT( add_method( "resp2",
-				 TestRequestHandler::test_build_resp2 ) ) ;
-    CPPUNIT_ASSERT( add_method( "resp3",
-				 TestRequestHandler::test_build_resp3 ) ) ;
-    CPPUNIT_ASSERT( add_method( "resp4",
-				 TestRequestHandler::test_build_resp4 ) ) ;
+TestRequestHandler::TestRequestHandler(string name) : BESRequestHandler(name), _resp_num(0) {
+    trh = this;
+    CPPUNIT_ASSERT(add_method("resp1", TestRequestHandler::test_build_resp1));
+    CPPUNIT_ASSERT(add_method("resp2", TestRequestHandler::test_build_resp2));
+    CPPUNIT_ASSERT(add_method("resp3", TestRequestHandler::test_build_resp3));
+    CPPUNIT_ASSERT(add_method("resp4", TestRequestHandler::test_build_resp4));
 }
 
-TestRequestHandler::~TestRequestHandler()
-{
+TestRequestHandler::~TestRequestHandler() {}
+
+bool TestRequestHandler::test_build_resp1(BESDataHandlerInterface &r) {
+    trh->_resp_num = 1;
+    return true;
 }
 
-bool
-TestRequestHandler::test_build_resp1( BESDataHandlerInterface &r )
-{
-    trh->_resp_num = 1 ;
-    return true ;
+bool TestRequestHandler::test_build_resp2(BESDataHandlerInterface &r) {
+    trh->_resp_num = 2;
+    return true;
 }
 
-bool
-TestRequestHandler::test_build_resp2( BESDataHandlerInterface &r )
-{
-    trh->_resp_num = 2 ;
-    return true ;
+bool TestRequestHandler::test_build_resp3(BESDataHandlerInterface &r) {
+    trh->_resp_num = 3;
+    return true;
 }
 
-bool
-TestRequestHandler::test_build_resp3( BESDataHandlerInterface &r )
-{
-    trh->_resp_num = 3 ;
-    return true ;
+bool TestRequestHandler::test_build_resp4(BESDataHandlerInterface &r) {
+    trh->_resp_num = 4;
+    return true;
 }
 
-bool
-TestRequestHandler::test_build_resp4( BESDataHandlerInterface &r )
-{
-    trh->_resp_num = 4 ;
-    return true ;
-}
-
-int
-TestRequestHandler::test()
-{
+int TestRequestHandler::test() {
     cout << "*****************************************" << endl;
-    cout << "finding the handlers" << endl ;
-    BESDataHandlerInterface dhi ;
+    cout << "finding the handlers" << endl;
+    BESDataHandlerInterface dhi;
 
-    cout << "    finding resp1" << endl ;
-    p_request_handler_method p = find_method( "resp1" ) ;
-    CPPUNIT_ASSERT( p ) ;
-    p( dhi ) ;
-    CPPUNIT_ASSERT( _resp_num == 1 ) ;
+    cout << "    finding resp1" << endl;
+    p_request_handler_method p = find_method("resp1");
+    CPPUNIT_ASSERT(p);
+    p(dhi);
+    CPPUNIT_ASSERT(_resp_num == 1);
 
-    cout << "    finding resp2" << endl ;
-    p = find_method( "resp2" ) ;
-    CPPUNIT_ASSERT( p ) ;
-    p( dhi ) ;
-    CPPUNIT_ASSERT( _resp_num == 2 ) ;
+    cout << "    finding resp2" << endl;
+    p = find_method("resp2");
+    CPPUNIT_ASSERT(p);
+    p(dhi);
+    CPPUNIT_ASSERT(_resp_num == 2);
 
-    cout << "    finding resp3" << endl ;
-    p = find_method( "resp3" ) ;
-    CPPUNIT_ASSERT( p ) ;
-    p( dhi ) ;
-    CPPUNIT_ASSERT( _resp_num == 3 ) ;
+    cout << "    finding resp3" << endl;
+    p = find_method("resp3");
+    CPPUNIT_ASSERT(p);
+    p(dhi);
+    CPPUNIT_ASSERT(_resp_num == 3);
 
-    cout << "    finding resp4" << endl ;
-    p = find_method( "resp4" ) ;
-    CPPUNIT_ASSERT( p ) ;
-    p( dhi ) ;
-    CPPUNIT_ASSERT( _resp_num == 4 ) ;
+    cout << "    finding resp4" << endl;
+    p = find_method("resp4");
+    CPPUNIT_ASSERT(p);
+    p(dhi);
+    CPPUNIT_ASSERT(_resp_num == 4);
 
-    cout << "    finding not_there" << endl ;
-    p = find_method( "not_there" ) ;
-    CPPUNIT_ASSERT( !p ) ;
+    cout << "    finding not_there" << endl;
+    p = find_method("not_there");
+    CPPUNIT_ASSERT(!p);
 
     cout << "*****************************************" << endl;
-    cout << "try to add resp3 again" << endl ;
-    bool ret = add_method( "resp3", TestRequestHandler::test_build_resp3 ) ;
-    CPPUNIT_ASSERT( ret == false ) ;
+    cout << "try to add resp3 again" << endl;
+    bool ret = add_method("resp3", TestRequestHandler::test_build_resp3);
+    CPPUNIT_ASSERT(ret == false);
 
     cout << "*****************************************" << endl;
-    cout << "removing resp2" << endl ;
-    CPPUNIT_ASSERT( remove_method( "resp2" ) ) ;
-    p = find_method( "resp2" ) ;
-    CPPUNIT_ASSERT( !p ) ;
+    cout << "removing resp2" << endl;
+    CPPUNIT_ASSERT(remove_method("resp2"));
+    p = find_method("resp2");
+    CPPUNIT_ASSERT(!p);
 
     cout << "*****************************************" << endl;
-    cout << "add resp2 back" << endl ;
-    ret = add_method( "resp2", TestRequestHandler::test_build_resp2 ) ;
-    CPPUNIT_ASSERT( ret == true ) ;
+    cout << "add resp2 back" << endl;
+    ret = add_method("resp2", TestRequestHandler::test_build_resp2);
+    CPPUNIT_ASSERT(ret == true);
 
-    p = find_method( "resp2" ) ;
-    CPPUNIT_ASSERT( p ) ;
-    p( dhi ) ;
-    CPPUNIT_ASSERT( _resp_num == 2 ) ;
+    p = find_method("resp2");
+    CPPUNIT_ASSERT(p);
+    p(dhi);
+    CPPUNIT_ASSERT(_resp_num == 2);
 
-    return 0 ;
+    return 0;
 }
-

@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -34,8 +34,8 @@
 #define I_BESCatalogDirectory_h 1
 
 #include <list>
-#include <string>
 #include <ostream>
+#include <string>
 
 #include "BESCatalog.h"
 #include "CatalogItem.h"
@@ -43,13 +43,13 @@
 class BESCatalogEntry;
 
 namespace bes {
-    class CatalogNode;
+class CatalogNode;
 }
 
 /**
  * @brief Catalogs from a directory structure
  */
-class BESCatalogDirectory: public BESCatalog {
+class BESCatalogDirectory : public BESCatalog {
     bes::CatalogItem *make_item(std::string item, std::string fullpath) const;
 #if 0
     // not impl. jhrg 11/14/25
@@ -60,17 +60,16 @@ public:
 
     ~BESCatalogDirectory() override;
 
-    BESCatalogEntry * show_catalog(const std::string &container, BESCatalogEntry *entry) override;
+    BESCatalogEntry *show_catalog(const std::string &container, BESCatalogEntry *entry) override;
 
     std::string get_root() const override;
 
     bes::CatalogNode *get_node(const std::string &path) const override;
 
-    virtual void get_site_map(const std::string &prefix, const std::string &node_suffix, const std::string &leaf_suffix, std::ostream &out,
-        const std::string &path = "/") const;
+    virtual void get_site_map(const std::string &prefix, const std::string &node_suffix, const std::string &leaf_suffix,
+                              std::ostream &out, const std::string &path = "/") const;
 
     void dump(std::ostream &strm) const override;
 };
 
 #endif // I_BESCatalogDirectory_h
-

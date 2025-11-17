@@ -35,10 +35,10 @@
 #include <cstdlib>
 #include <sstream>
 
-#include "BESCatalogList.h"
 #include "BESCatalog.h"
 #include "BESCatalogDirectory.h"
 #include "BESCatalogEntry.h"
+#include "BESCatalogList.h"
 #include "BESInfo.h"
 
 #include "TheBESKeys.h"
@@ -65,9 +65,7 @@ BESCatalogList *BESCatalogList::d_instance = 0;
  *
  * @return A pointer to the CatalogList singleton
  */
-BESCatalogList *
-BESCatalogList::TheCatalogList()
-{
+BESCatalogList *BESCatalogList::TheCatalogList() {
     static BESCatalogList catalog;
     return &catalog;
 }
@@ -76,8 +74,7 @@ BESCatalogList::TheCatalogList()
  *
  * @see BESCatalog
  */
-BESCatalogList::BESCatalogList()
-{
+BESCatalogList::BESCatalogList() {
     bool found = false;
     string key = "BES.Catalog.Default";
 
@@ -108,8 +105,7 @@ BESCatalogList::BESCatalogList()
  * already exists. Returns true otherwise.
  * @see BESCatalog
  */
-bool BESCatalogList::add_catalog(BESCatalog *catalog)
-{
+bool BESCatalogList::add_catalog(BESCatalog *catalog) {
     bool result = false;
     if (catalog) {
         if (find_catalog(catalog->get_catalog_name()) == 0) {
@@ -118,7 +114,7 @@ bool BESCatalogList::add_catalog(BESCatalog *catalog)
             d_catalogs[catalog->get_catalog_name()] = catalog;
 #endif
             string name = catalog->get_catalog_name();
-            pair<const string, BESCatalog*> p = make_pair(name, catalog);
+            pair<const string, BESCatalog *> p = make_pair(name, catalog);
             result = d_catalogs.insert(p).second;
 #if 0
             result = true;
@@ -165,8 +161,7 @@ bool BESCatalogList::add_catalog(BESCatalog *catalog)
  * @return true if successfully found and referenced, false otherwise
  * @see BESCatalog
  */
-bool BESCatalogList::ref_catalog(const string &catalog_name)
-{
+bool BESCatalogList::ref_catalog(const string &catalog_name) {
     bool ret = false;
     BESCatalog *cat = 0;
     BESCatalogList::catalog_iter i;
@@ -196,8 +191,7 @@ bool BESCatalogList::ref_catalog(const string &catalog_name)
  * @return true if successfully de-referenced, false otherwise
  * @see BESCatalog
  */
-bool BESCatalogList::deref_catalog(const string &catalog_name)
-{
+bool BESCatalogList::deref_catalog(const string &catalog_name) {
     bool ret = false;
     BESCatalog *cat = 0;
     BESCatalogList::catalog_iter i;
@@ -219,9 +213,7 @@ bool BESCatalogList::deref_catalog(const string &catalog_name)
  * @return a BESCatalog with the given name if found, 0 otherwise
  * @see BESCatalog
  */
-BESCatalog *
-BESCatalogList::find_catalog(const string &catalog_name) const
-{
+BESCatalog *BESCatalogList::find_catalog(const string &catalog_name) const {
     BESCatalogList::catalog_citer i = d_catalogs.find(catalog_name);
     if (i != d_catalogs.end()) {
         return (*i).second;
@@ -257,9 +249,7 @@ BESCatalogList::find_catalog(const string &catalog_name) const
  * the 'entry' parameter was null, the caller is responsible for deleting the
  * returned object.
  */
-BESCatalogEntry *
-BESCatalogList::show_catalogs(BESCatalogEntry *entry, bool show_default)
-{
+BESCatalogEntry *BESCatalogList::show_catalogs(BESCatalogEntry *entry, bool show_default) {
     BESCatalogEntry *myentry = entry;
     if (!myentry) {
         myentry = new BESCatalogEntry("/", "");
@@ -286,9 +276,8 @@ BESCatalogList::show_catalogs(BESCatalogEntry *entry, bool show_default)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESCatalogList::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESCatalogList::dump - (" << (void *) this << ")" << endl;
+void BESCatalogList::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESCatalogList::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     strm << BESIndent::LMarg << "default catalog: " << d_default_catalog_name << endl;
     if (d_catalogs.size()) {
@@ -301,10 +290,8 @@ void BESCatalogList::dump(ostream &strm) const
             strm << BESIndent::LMarg << (*i).first << catalog << endl;
         }
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "catalog list: empty" << endl;
     }
     BESIndent::UnIndent();
 }
-

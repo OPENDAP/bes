@@ -31,8 +31,8 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
 
 using namespace CppUnit;
 
@@ -50,36 +50,29 @@ using std::string;
 static bool debug = false;
 
 #undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
+#define DBG(x)                                                                                                         \
+    do {                                                                                                               \
+        if (debug)                                                                                                     \
+            (x);                                                                                                       \
+    } while (false);
 
-class replistT: public TestFixture {
+class replistT : public TestFixture {
 private:
-
 public:
-    replistT()
-    {
-    }
-    ~replistT()
-    {
-    }
+    replistT() {}
+    ~replistT() {}
 
-    void setUp()
-    {
-    }
+    void setUp() {}
 
-    void tearDown()
-    {
-    }
+    void tearDown() {}
 
-CPPUNIT_TEST_SUITE( replistT );
+    CPPUNIT_TEST_SUITE(replistT);
 
-    CPPUNIT_TEST( do_test );
+    CPPUNIT_TEST(do_test);
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 
-    void do_test()
-    {
+    void do_test() {
         cout << "*****************************************" << endl;
         cout << "Entered replistT::run" << endl;
 
@@ -89,50 +82,50 @@ CPPUNIT_TEST_SUITE( replistT );
         char num[10];
         for (int i = 0; i < 5; i++) {
             sprintf(num, "rep%d", i);
-            CPPUNIT_ASSERT( rl->add_reporter( num, new TestReporter( num ) ) );
+            CPPUNIT_ASSERT(rl->add_reporter(num, new TestReporter(num)));
         }
 
         cout << "*****************************************" << endl;
         cout << "try to add rep3 again" << endl;
         TestReporter *r = new TestReporter("rep3");
-        CPPUNIT_ASSERT( rl->add_reporter( "rep3", r ) == false );
+        CPPUNIT_ASSERT(rl->add_reporter("rep3", r) == false);
 
         cout << "*****************************************" << endl;
         cout << "finding the reporters" << endl;
         for (int i = 4; i >= 0; i--) {
             sprintf(num, "rep%d", i);
             cout << "    looking for " << num << endl;
-            r = (TestReporter *) rl->find_reporter(num);
-            CPPUNIT_ASSERT( r );
-            CPPUNIT_ASSERT( r->get_name() == num );
+            r = (TestReporter *)rl->find_reporter(num);
+            CPPUNIT_ASSERT(r);
+            CPPUNIT_ASSERT(r->get_name() == num);
         }
 
         cout << "*****************************************" << endl;
         cout << "finding non-existing reporter" << endl;
-        r = (TestReporter *) rl->find_reporter("notthere");
-        CPPUNIT_ASSERT( !r );
+        r = (TestReporter *)rl->find_reporter("notthere");
+        CPPUNIT_ASSERT(!r);
 
         cout << "*****************************************" << endl;
         cout << "removing rep2" << endl;
-        r = (TestReporter *) rl->remove_reporter("rep2");
-        CPPUNIT_ASSERT( r );
-        CPPUNIT_ASSERT( r->get_name() == "rep2" );
+        r = (TestReporter *)rl->remove_reporter("rep2");
+        CPPUNIT_ASSERT(r);
+        CPPUNIT_ASSERT(r->get_name() == "rep2");
 
         cout << "*****************************************" << endl;
         cout << "find rep2" << endl;
-        r = (TestReporter *) rl->find_reporter("rep2");
-        CPPUNIT_ASSERT( !r );
+        r = (TestReporter *)rl->find_reporter("rep2");
+        CPPUNIT_ASSERT(!r);
 
         cout << "*****************************************" << endl;
         cout << "add rep2 again" << endl;
         r = new TestReporter("rep2");
-        CPPUNIT_ASSERT( rl->add_reporter( "rep2", r ) );
+        CPPUNIT_ASSERT(rl->add_reporter("rep2", r));
 
         cout << "*****************************************" << endl;
         cout << "find rep2" << endl;
-        r = (TestReporter *) rl->find_reporter("rep2");
-        CPPUNIT_ASSERT( r );
-        CPPUNIT_ASSERT( r->get_name() == "rep2" );
+        r = (TestReporter *)rl->find_reporter("rep2");
+        CPPUNIT_ASSERT(r);
+        CPPUNIT_ASSERT(r->get_name() == "rep2");
 
         cout << "*****************************************" << endl;
         cout << "report" << endl;
@@ -141,7 +134,7 @@ CPPUNIT_TEST_SUITE( replistT );
         for (int i = 4; i >= 0; i--) {
             sprintf(num, "rep%d", i);
             cout << "    " << num << " reported?" << endl;
-            CPPUNIT_ASSERT( dhi.data[num] == num );
+            CPPUNIT_ASSERT(dhi.data[num] == num);
         }
 
         cout << "*****************************************" << endl;
@@ -149,21 +142,20 @@ CPPUNIT_TEST_SUITE( replistT );
     }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( replistT );
+CPPUNIT_TEST_SUITE_REGISTRATION(replistT);
 
-int main(int argc, char*argv[])
-{
+int main(int argc, char *argv[]) {
     int option_char;
     while ((option_char = getopt(argc, argv, "dh")) != EOF)
         switch (option_char) {
         case 'd':
-            debug = 1;  // debug is a static global
+            debug = 1; // debug is a static global
             break;
-        case 'h': {     // help - show test names
+        case 'h': { // help - show test names
             cerr << "Usage: replistT has the following tests:" << endl;
-            const std::vector<Test*> &tests = replistT::suite()->getTests();
+            const std::vector<Test *> &tests = replistT::suite()->getTests();
             unsigned int prefix_len = replistT::suite()->getName().append("::").size();
-            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+            for (std::vector<Test *>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }
             break;
@@ -183,11 +175,11 @@ int main(int argc, char*argv[])
     if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
-    }
-    else {
+    } else {
         int i = 0;
         while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
+            if (debug)
+                cerr << "Running " << argv[i] << endl;
             test = replistT::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
@@ -195,4 +187,3 @@ int main(int argc, char*argv[])
 
     return wasSuccessful ? 0 : 1;
 }
-

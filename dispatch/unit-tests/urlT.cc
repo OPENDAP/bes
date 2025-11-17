@@ -31,14 +31,14 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
 
 using namespace CppUnit;
 
-#include <iostream>
-#include <fstream>
 #include <cstdlib>
+#include <fstream>
+#include <iostream>
 
 using std::cerr;
 using std::cout;
@@ -46,54 +46,46 @@ using std::endl;
 using std::ifstream;
 using std::string;
 
-#include "BESUtil.h"
 #include "BESError.h"
+#include "BESUtil.h"
 #include <unistd.h>
 
 static bool debug = false;
 
 #undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
+#define DBG(x)                                                                                                         \
+    do {                                                                                                               \
+        if (debug)                                                                                                     \
+            (x);                                                                                                       \
+    } while (false);
 
-class urlT: public TestFixture {
+class urlT : public TestFixture {
 private:
-
 public:
-    urlT()
-    {
-    }
-    ~urlT()
-    {
-    }
+    urlT() {}
+    ~urlT() {}
 
-    void setUp()
-    {
-    }
+    void setUp() {}
 
-    void tearDown()
-    {
-    }
+    void tearDown() {}
 
-CPPUNIT_TEST_SUITE( urlT );
+    CPPUNIT_TEST_SUITE(urlT);
 
-    CPPUNIT_TEST( do_test );
+    CPPUNIT_TEST(do_test);
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 
-    void check(const string &found, const string &shouldbe, const string &msg)
-    {
+    void check(const string &found, const string &shouldbe, const string &msg) {
         if (shouldbe != found) {
             cerr << "  " << msg << " FAIL" << endl;
             cerr << "    should be: " << shouldbe << endl;
             cerr << "    found: " << found << endl;
-            CPPUNIT_ASSERT( shouldbe == found );
+            CPPUNIT_ASSERT(shouldbe == found);
         }
     }
 
     void tryme(const string &url, const string &protocol, const string &u, const string &p, const string &domain,
-        const string &port, const string &path)
-    {
+               const string &port, const string &path) {
         cerr << "**** Trying " << url << endl;
 
         BESUtil::url url_parts;
@@ -107,12 +99,12 @@ CPPUNIT_TEST_SUITE( urlT );
         check(url_parts.path, path, "path");
 
         string url_s = BESUtil::url_create(url_parts);
-        if (url_s != url) url_s += "/";
+        if (url_s != url)
+            url_s += "/";
         check(url_s, url, "url");
     }
 
-    void do_test()
-    {
+    void do_test() {
         cout << "*****************************************" << endl;
         cout << "Entered urlT::run" << endl;
 
@@ -154,21 +146,20 @@ CPPUNIT_TEST_SUITE( urlT );
     }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( urlT );
+CPPUNIT_TEST_SUITE_REGISTRATION(urlT);
 
-int main(int argc, char*argv[])
-{
+int main(int argc, char *argv[]) {
     int option_char;
     while ((option_char = getopt(argc, argv, "dh")) != EOF)
         switch (option_char) {
         case 'd':
-            debug = 1;  // debug is a static global
+            debug = 1; // debug is a static global
             break;
-        case 'h': {     // help - show test names
+        case 'h': { // help - show test names
             cerr << "Usage: urlT has the following tests:" << endl;
-            const std::vector<Test*> &tests = urlT::suite()->getTests();
+            const std::vector<Test *> &tests = urlT::suite()->getTests();
             unsigned int prefix_len = urlT::suite()->getName().append("::").size();
-            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+            for (std::vector<Test *>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }
             break;
@@ -188,11 +179,11 @@ int main(int argc, char*argv[])
     if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
-    }
-    else {
+    } else {
         int i = 0;
         while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
+            if (debug)
+                cerr << "Running " << argv[i] << endl;
             test = urlT::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
@@ -200,4 +191,3 @@ int main(int argc, char*argv[])
 
     return wasSuccessful ? 0 : 1;
 }
-

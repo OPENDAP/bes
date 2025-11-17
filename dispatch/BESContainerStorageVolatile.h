@@ -11,12 +11,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -34,10 +34,10 @@
 #ifndef BESContainerStorageVolatile_h_
 #define BESContainerStorageVolatile_h_ 1
 
-#include <map>
 #include <list>
-#include <string>
+#include <map>
 #include <ostream>
+#include <string>
 
 #include "BESContainerStorage.h"
 
@@ -54,7 +54,7 @@
  * @see BESContainerStorage
  * @see BESContainer
  */
-class BESContainerStorageVolatile: public BESContainerStorage {
+class BESContainerStorageVolatile : public BESContainerStorage {
     std::map<std::string, BESContainer *> _container_list;
 
 protected:
@@ -62,6 +62,7 @@ protected:
     bool _follow_sym_links;
 
     void add_container(BESContainer *c) override;
+
 public:
     explicit BESContainerStorageVolatile(const std::string &n);
     ~BESContainerStorageVolatile() override;
@@ -69,7 +70,7 @@ public:
     using Container_citer = std::map<std::string, BESContainer *>::const_iterator;
     using Container_iter = std::map<std::string, BESContainer *>::iterator;
 
-    BESContainer * look_for(const std::string &sym_name) override;
+    BESContainer *look_for(const std::string &sym_name) override;
     void add_container(const std::string &sym_name, const std::string &real_name, const std::string &type) override;
     bool del_container(const std::string &s_name) override;
     bool del_containers() override;

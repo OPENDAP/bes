@@ -36,8 +36,8 @@
 #include "TheBESKeys.h"
 
 // New cache system
-#include "BESUncompressManager3.h"
 #include "BESUncompressCache.h"
+#include "BESUncompressManager3.h"
 
 #include "BESForbiddenError.h"
 
@@ -50,18 +50,14 @@ using std::string;
 #define MODULE "cache2"
 #define prolog std::string("BESFileContainer::").append(__func__).append("() - ")
 
-
-
-
 /** @brief construct a container representing a file
  *
  * @param sym_name symbolic name of the container
  * @param real_name real name of the container, a file name in this case
  * @param type type of the data represented in the file
  */
-BESFileContainer::BESFileContainer(const string &sym_name, const string &real_name, const string &type) :
-    BESContainer(sym_name, real_name, type), _cached(false), _target("")
-{
+BESFileContainer::BESFileContainer(const string &sym_name, const string &real_name, const string &type)
+    : BESContainer(sym_name, real_name, type), _cached(false), _target("") {
     string::size_type dotdot = real_name.find("..");
     if (dotdot != string::npos) {
         string s = prolog + "'../' not allowed in container real name " + real_name;
@@ -73,22 +69,16 @@ BESFileContainer::BESFileContainer(const string &sym_name, const string &real_na
  *
  * @param copy_from The container to copy
  */
-BESFileContainer::BESFileContainer(const BESFileContainer &copy_from) :
-    BESContainer(copy_from), _cached(copy_from._cached), _target(copy_from._target)
-{}
+BESFileContainer::BESFileContainer(const BESFileContainer &copy_from)
+    : BESContainer(copy_from), _cached(copy_from._cached), _target(copy_from._target) {}
 
-void BESFileContainer::_duplicate(BESContainer &copy_to)
-{
-    BESContainer::_duplicate(copy_to);
-}
+void BESFileContainer::_duplicate(BESContainer &copy_to) { BESContainer::_duplicate(copy_to); }
 
 /** @brief duplicate this instances of BESFileContainer
  *
  * @return a copy of this instance
  */
-BESContainer *
-BESFileContainer::ptr_duplicate()
-{
+BESContainer *BESFileContainer::ptr_duplicate() {
     BESContainer *container = new BESFileContainer;
     BESContainer::_duplicate(*container);
     return container;
@@ -99,8 +89,7 @@ BESFileContainer::ptr_duplicate()
  *
  * @return name of file to access
  */
-string BESFileContainer::access()
-{
+string BESFileContainer::access() {
     BESDEBUG(MODULE, prolog << "BEGIN real_name: " << get_real_name() << endl);
 
     // Get a pointer to the singleton cache instance for this process.
@@ -116,8 +105,7 @@ string BESFileContainer::access()
     if (_cached) {
         BESDEBUG(MODULE, prolog << "END Cached as: " << _target << endl);
         return _target;
-    }
-    else {
+    } else {
         BESDEBUG(MODULE, prolog << "END Not cached" << endl);
         return get_real_name();
     }
@@ -131,11 +119,10 @@ string BESFileContainer::access()
  * @todo Call this in the dtor? jhrg 7/25/18
  * @return if successfully released, returns true, otherwise returns false
  */
-bool BESFileContainer::release()
-{
+bool BESFileContainer::release() {
     BESDEBUG(MODULE, prolog << "_cached: " << _cached << ", _target: " << _target << endl);
     if (_cached)
-    	BESUncompressCache::get_instance()->unlock_and_close(_target);
+        BESUncompressCache::get_instance()->unlock_and_close(_target);
 
     return true;
 }
@@ -147,11 +134,9 @@ bool BESFileContainer::release()
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESFileContainer::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << prolog << "(" << (void *) this << ")" << endl;
+void BESFileContainer::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << prolog << "(" << (void *)this << ")" << endl;
     BESIndent::Indent();
     BESContainer::dump(strm);
     BESIndent::UnIndent();
 }
-

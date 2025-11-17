@@ -32,28 +32,23 @@
 
 #include <sstream>
 
-using std::istringstream;
 using std::endl;
-using std::string;
+using std::istringstream;
 using std::ostream;
+using std::string;
 
-#include "BESShowErrorResponseHandler.h"
+#include "BESDataHandlerInterface.h"
 #include "BESDataNames.h"
+#include "BESForbiddenError.h"
 #include "BESInternalError.h"
 #include "BESInternalFatalError.h"
-#include "BESSyntaxUserError.h"
-#include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
-#include "BESDataHandlerInterface.h"
+#include "BESShowErrorResponseHandler.h"
+#include "BESSyntaxUserError.h"
 
-BESShowErrorResponseHandler::BESShowErrorResponseHandler(const string &name) :
-    BESResponseHandler(name)
-{
-}
+BESShowErrorResponseHandler::BESShowErrorResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESShowErrorResponseHandler::~BESShowErrorResponseHandler()
-{
-}
+BESShowErrorResponseHandler::~BESShowErrorResponseHandler() {}
 
 /** @brief throws a specific exception to test error handling in clients
  *
@@ -69,8 +64,7 @@ BESShowErrorResponseHandler::~BESShowErrorResponseHandler()
  * @see BESInfo
  * @see BESContextManager
  */
-void BESShowErrorResponseHandler::execute(BESDataHandlerInterface &dhi)
-{
+void BESShowErrorResponseHandler::execute(BESDataHandlerInterface &dhi) {
     string etype_s = dhi.data[SHOW_ERROR_TYPE];
     if (etype_s.empty()) {
         string err = dhi.action + " error type missing";
@@ -120,8 +114,7 @@ void BESShowErrorResponseHandler::execute(BESDataHandlerInterface &dhi)
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void BESShowErrorResponseHandler::transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/)
-{
+void BESShowErrorResponseHandler::transmit(BESTransmitter * /*transmitter*/, BESDataHandlerInterface & /*dhi*/) {
     string err = "An exception should have been thrown, nothing to transmit";
     throw BESInternalError(err, __FILE__, __LINE__);
 }
@@ -132,17 +125,13 @@ void BESShowErrorResponseHandler::transmit(BESTransmitter */*transmitter*/, BESD
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESShowErrorResponseHandler::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESShowErrorResponseHandler::dump - (" << (void *) this << ")" << endl;
+void BESShowErrorResponseHandler::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESShowErrorResponseHandler::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     BESResponseHandler::dump(strm);
     BESIndent::UnIndent();
 }
 
-BESResponseHandler *
-BESShowErrorResponseHandler::ResponseBuilder(const string &name)
-{
+BESResponseHandler *BESShowErrorResponseHandler::ResponseBuilder(const string &name) {
     return new BESShowErrorResponseHandler(name);
 }
-

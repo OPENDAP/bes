@@ -33,18 +33,18 @@
 #ifndef BESDataHandlerInterface_h_
 #define BESDataHandlerInterface_h_ 1
 
-#include <string>
+#include <iostream>
 #include <list>
 #include <map>
-#include <iostream>
+#include <string>
 
 class BESResponseHandler;
 class BESResponseObject;
 class BESInfo;
 
-#include "BESObj.h"
 #include "BESContainer.h"
 #include "BESInternalError.h"
+#include "BESObj.h"
 #include "BESResponseHandler.h"
 
 /** @brief Structure storing information used by the BES to handle the request
@@ -53,7 +53,7 @@ class BESInfo;
  request and to also store information for logging and reporting.
  */
 
-class BESDataHandlerInterface: public BESObj {
+class BESDataHandlerInterface : public BESObj {
     std::ostream *output_stream = nullptr;
 
     // I tried adding a complete 'clone the dhi' method to see if that
@@ -81,7 +81,7 @@ public:
 
     /** @brief request protocol, such as HTTP
      */
-    std::string transmit_protocol;   // FIXME Not used? jhrg 5/30/18
+    std::string transmit_protocol; // FIXME Not used? jhrg 5/30/18
 
     /** @brief the map of string data that will be required for the current
      * request.
@@ -101,20 +101,17 @@ public:
     // I implemented these - and made clone() private, since that's a more common pattern.
     // jhrg 4/18/14
     BESDataHandlerInterface(const BESDataHandlerInterface &from);
-    BESDataHandlerInterface & operator=(const BESDataHandlerInterface &rhs);
+    BESDataHandlerInterface &operator=(const BESDataHandlerInterface &rhs);
 
     // Added 5/11/22 based on valgrind output. jhrg
-    ~BESDataHandlerInterface() override {
-        clean();
-    }
+    ~BESDataHandlerInterface() override { clean(); }
 
     /// deprecated
     void make_copy(const BESDataHandlerInterface &copy_from);
 
     void clean();
 
-    void set_output_stream(std::ostream *strm)
-    {
+    void set_output_stream(std::ostream *strm) {
         if (output_stream) {
             std::string err = "output stream has already been set";
             throw BESInternalError(err, __FILE__, __LINE__);
@@ -132,8 +129,7 @@ public:
 
     /** @brief set the container pointer to the first container in the containers list
      */
-    void first_container()
-    {
+    void first_container() {
         containers_iterator = containers.begin();
         if (containers_iterator != containers.end())
             container = (*containers_iterator);
@@ -141,10 +137,10 @@ public:
             container = nullptr;
     }
 
-    /** @brief set the container pointer to the next * container in the list, null if at the end or no containers in list
+    /** @brief set the container pointer to the next * container in the list, null if at the end or no containers in
+     * list
      */
-    void next_container()
-    {
+    void next_container() {
         ++containers_iterator;
         if (containers_iterator != containers.end())
             container = (*containers_iterator);
@@ -152,10 +148,7 @@ public:
             container = nullptr;
     }
 
-    const std::map<std::string, std::string> &data_c() const
-    {
-        return data;
-    }
+    const std::map<std::string, std::string> &data_c() const { return data; }
 
     void dump(std::ostream &strm) const override;
 };

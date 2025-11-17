@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -35,16 +35,16 @@
 #ifndef I_BESContainerStorageList_H
 #define I_BESContainerStorageList_H 1
 
-#include <vector>          // For std::vector
-#include <string>          // For std::string
-#include <mutex>           // For std::recursive_mutex
-#include <ostream>         // For dump method parameter
-#include <stdexcept>       // For potential exceptions (though none shown here yet)
-#include <algorithm>       // For std::find_if
-#include <memory>          // Although not using unique_ptr, still good practice include
+#include <algorithm> // For std::find_if
+#include <memory>    // Although not using unique_ptr, still good practice include
+#include <mutex>     // For std::recursive_mutex
+#include <ostream>   // For dump method parameter
+#include <stdexcept> // For potential exceptions (though none shown here yet)
+#include <string>    // For std::string
+#include <vector>    // For std::vector
 
-#include "BESObj.h"
 #include "BESContainerStorage.h"
+#include "BESObj.h"
 
 class BESContainer;
 class BESInfo;
@@ -71,12 +71,12 @@ private:
     // Structure to hold the managed storage object and its application-level reference count.
     struct StorageEntry {
         std::unique_ptr<BESContainerStorage> storage_obj; // Manages ownership
-        unsigned int reference_count = 0;                   // Application-level ref count
+        unsigned int reference_count = 0;                 // Application-level ref count
 
         // Constructor takes ownership of the provided storage object
         // Note: Prefer passing unique_ptr directly if possible in add_persistence.
-        explicit StorageEntry(BESContainerStorage* obj)
-                : storage_obj(obj)  // Takes ownership, starts with 0 refs
+        explicit StorageEntry(BESContainerStorage *obj)
+            : storage_obj(obj) // Takes ownership, starts with 0 refs
         {
             if (!obj) {
                 // Handle null input if necessary, perhaps throw?
@@ -85,21 +85,20 @@ private:
         }
 
         // Constructor for moving a unique_ptr in (preferred)
-        explicit StorageEntry(std::unique_ptr<BESContainerStorage> obj_ptr)
-                : storage_obj(std::move(obj_ptr)) {}
+        explicit StorageEntry(std::unique_ptr<BESContainerStorage> obj_ptr) : storage_obj(std::move(obj_ptr)) {}
 
         // Deleted copy operations because unique_ptr is not copyable
-        StorageEntry(const StorageEntry&) = delete;
-        StorageEntry& operator=(const StorageEntry&) = delete;
+        StorageEntry(const StorageEntry &) = delete;
+        StorageEntry &operator=(const StorageEntry &) = delete;
 
         // Default move operations are fine
-        StorageEntry(StorageEntry&&) = default;
-        StorageEntry& operator=(StorageEntry&&) = default;
+        StorageEntry(StorageEntry &&) = default;
+        StorageEntry &operator=(StorageEntry &&) = default;
 
         // Helper to get the name from the storage object.
         // Assumes BESContainerStorage has a method like get_name() const.
         // Replace 'get_name' with the actual method name if different.
-        const std::string& get_name() const {
+        const std::string &get_name() const {
             if (storage_obj) {
                 // return storage_obj->get_name(); // Hypothetical method call
                 // If get_name() is not const, you might need a const_cast or redesign.
@@ -117,22 +116,21 @@ private:
     // Private helper to find an entry by name (implementation detail)
     // Returns an iterator to the found entry or d_storage_entries.end() if not found.
     // Note: Lock should be held by the caller.
-    auto find_entry_iterator(const std::string& persist_name) {
+    auto find_entry_iterator(const std::string &persist_name) {
         return std::find_if(d_storage_entries.begin(), d_storage_entries.end(),
-                            [&persist_name](const StorageEntry& entry) {
+                            [&persist_name](const StorageEntry &entry) {
                                 // Check if storage_obj is valid before calling get_name()
                                 return entry.storage_obj && entry.get_name() == persist_name;
                             });
     }
 
     // Const version of the helper
-    auto find_entry_iterator(const std::string& persist_name) const {
+    auto find_entry_iterator(const std::string &persist_name) const {
         return std::find_if(d_storage_entries.begin(), d_storage_entries.end(),
-                            [&persist_name](const StorageEntry& entry) {
+                            [&persist_name](const StorageEntry &entry) {
                                 return entry.storage_obj && entry.get_name() == persist_name;
                             });
     }
-
 
 public:
     // Default constructor is acceptable
@@ -145,16 +143,16 @@ public:
 
     // --- Singleton Pattern ---
     // Make the singleton non-copyable and non-movable
-    BESContainerStorageList(const BESContainerStorageList&) = delete;
-    BESContainerStorageList& operator=(const BESContainerStorageList&) = delete;
-    BESContainerStorageList(BESContainerStorageList&&) = delete;
-    BESContainerStorageList& operator=(BESContainerStorageList&&) = delete;
+    BESContainerStorageList(const BESContainerStorageList &) = delete;
+    BESContainerStorageList &operator=(const BESContainerStorageList &) = delete;
+    BESContainerStorageList(BESContainerStorageList &&) = delete;
+    BESContainerStorageList &operator=(BESContainerStorageList &&) = delete;
 
     /**
      * @brief Get the singleton instance of the list.
      * @return Pointer to the singleton BESContainerStorageList.
      */
-    static BESContainerStorageList* TheList() {
+    static BESContainerStorageList *TheList() {
         // C++11 guarantees thread-safe initialization of static locals
         static BESContainerStorageList instance;
         return &instance;
@@ -193,4 +191,3 @@ public:
 };
 
 #endif // I_BESContainerStorageList_H
-

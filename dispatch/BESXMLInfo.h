@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -45,7 +45,7 @@
  * @see BESInfo
  * @see BESResponseObject
  */
-class BESXMLInfo: public BESInfo {
+class BESXMLInfo : public BESInfo {
 private:
     xmlTextWriterPtr _writer;
     xmlBufferPtr _doc_buf;
@@ -54,21 +54,24 @@ private:
     std::string _doc;
 
     void cleanup();
+
 protected:
-    void begin_tag(const std::string &tag_name,
-                           const std::string &ns,
-                           const std::string &uri,
-                           std::map<std::string, std::string, std::less<>> *attrs);
+    void begin_tag(const std::string &tag_name, const std::string &ns, const std::string &uri,
+                   std::map<std::string, std::string, std::less<>> *attrs);
+
 public:
     BESXMLInfo();
     ~BESXMLInfo() override;
 
     void begin_response(const std::string &response_name, BESDataHandlerInterface &dhi) override;
-    void begin_response(const std::string &response_name, std::map<std::string, std::string, std::less<>> *attrs, BESDataHandlerInterface &dhi) override;
+    void begin_response(const std::string &response_name, std::map<std::string, std::string, std::less<>> *attrs,
+                        BESDataHandlerInterface &dhi) override;
     void end_response() override;
 
-    void add_tag(const std::string &tag_name, const std::string &tag_data, std::map<std::string, std::string, std::less<>> *attrs=nullptr) override;
-    void begin_tag(const std::string &tag_name, std::map<std::string, std::string, std::less<>> *attrs=nullptr) override;
+    void add_tag(const std::string &tag_name, const std::string &tag_data,
+                 std::map<std::string, std::string, std::less<>> *attrs = nullptr) override;
+    void begin_tag(const std::string &tag_name,
+                   std::map<std::string, std::string, std::less<>> *attrs = nullptr) override;
     void end_tag(const std::string &tag_name) override;
 
     void add_data(const std::string &s) override;
@@ -85,4 +88,3 @@ public:
 };
 
 #endif // BESXMLInfo_h_
-

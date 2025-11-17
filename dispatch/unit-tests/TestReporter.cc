@@ -32,25 +32,14 @@
 
 #include <iostream>
 
-using std::cout ;
-using std::endl ;
+using std::cout;
+using std::endl;
 using std::string;
 
 #include "TestReporter.h"
 
-TestReporter::TestReporter( string name )
-    : BESReporter(),
-      _name( name )
-{
-}
+TestReporter::TestReporter(string name) : BESReporter(), _name(name) {}
 
-TestReporter::~TestReporter()
-{
-}
+TestReporter::~TestReporter() {}
 
-void
-TestReporter::report( BESDataHandlerInterface &dhi )
-{
-    dhi.data[_name] = _name ;
-}
-
+void TestReporter::report(BESDataHandlerInterface &dhi) { dhi.data[_name] = _name; }

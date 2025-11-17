@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -32,16 +32,16 @@
 
 #include <zlib.h>
 
+#include <cerrno>
 #include <cstdio>
 #include <cstring>
-#include <cerrno>
 #include <sstream>
 
 using std::ostringstream;
 using std::string;
 
-#include "BESUncompress3GZ.h"
 #include "BESInternalError.h"
+#include "BESUncompress3GZ.h"
 // #include "BESDebug.h"
 
 #define CHUNK 4096
@@ -53,8 +53,7 @@ using std::string;
  * file. This must be an open file descriptor; it will not be
  * closed on exit from this static method.
  */
-void BESUncompress3GZ::uncompress(const string &src, int dest_fd)
-{
+void BESUncompress3GZ::uncompress(const string &src, int dest_fd) {
     // buffer to hold the uncompressed data
     char in[CHUNK];
 
@@ -74,13 +73,12 @@ void BESUncompress3GZ::uncompress(const string &src, int dest_fd)
         int bytes_read = gzread(gsrc, in, CHUNK);
         if (bytes_read == 0) {
             done = true;
-        }
-        else {
+        } else {
             int bytes_written = write(dest_fd, in, bytes_read);
             if (bytes_written < bytes_read) {
                 ostringstream strm;
-                strm << "Error writing uncompressed data for file " << gsrc << ": wrote "
-                        << bytes_written << " instead of " << bytes_read;
+                strm << "Error writing uncompressed data for file " << gsrc << ": wrote " << bytes_written
+                     << " instead of " << bytes_read;
                 gzclose(gsrc);
 
                 throw BESInternalError(strm.str(), __FILE__, __LINE__);
@@ -90,4 +88,3 @@ void BESUncompress3GZ::uncompress(const string &src, int dest_fd)
 
     gzclose(gsrc);
 }
-

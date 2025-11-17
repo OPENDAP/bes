@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -33,15 +33,15 @@
 #ifndef BESInfo_h_
 #define BESInfo_h_ 1
 
-#include <string>
+#include <map>
 #include <ostream>
 #include <stack>
-#include <map>
+#include <string>
 
-#include "BESResponseObject.h"
 #include "BESDataHandlerInterface.h"
-#include "BESTransmitter.h"
 #include "BESError.h"
+#include "BESResponseObject.h"
+#include "BESTransmitter.h"
 
 /** @brief informational response object
  *
@@ -60,9 +60,9 @@
  *
  * @see BESResponseObject
  */
-class BESInfo: public BESResponseObject {
+class BESInfo : public BESResponseObject {
 protected:
-	std::ostream *_strm;
+    std::ostream *_strm;
     bool _strm_owned;
     bool _buffered;
     bool _response_started;
@@ -77,12 +77,10 @@ public:
 
     virtual void begin_response(const std::string &response_name, BESDataHandlerInterface &dhi);
     virtual void begin_response(const std::string &response_name,
-                                std::map<std::string, std::string, std::less<>> *attrs,
-                                BESDataHandlerInterface &dhi);
+                                std::map<std::string, std::string, std::less<>> *attrs, BESDataHandlerInterface &dhi);
     virtual void end_response();
 
-    virtual void add_tag(const std::string &tag_name,
-                         const std::string &tag_data,
+    virtual void add_tag(const std::string &tag_name, const std::string &tag_data,
                          std::map<std::string, std::string, std::less<>> *attrs = nullptr) = 0;
     virtual void begin_tag(const std::string &tag_name,
                            std::map<std::string, std::string, std::less<>> *attrs = nullptr);
@@ -113,10 +111,7 @@ public:
      *
      * @return true if information is buffered, false if not
      */
-    virtual bool is_buffered()
-    {
-        return _buffered;
-    }
+    virtual bool is_buffered() { return _buffered; }
 
     /** @brief Displays debug information about this object
      *
@@ -126,4 +121,3 @@ public:
 };
 
 #endif // BESInfo_h_
-

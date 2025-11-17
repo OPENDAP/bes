@@ -30,41 +30,31 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <dirent.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #ifdef WIN32
-#include <config.h>  //  for S_ISDIR macro
+#include <config.h> //  for S_ISDIR macro
 #endif
 #include <stdio.h>
 
 #include "BESFSDir.h"
-#include "BESRegex.h"
 #include "BESInternalError.h"
+#include "BESRegex.h"
 
 using std::string;
 
-BESFSDir::BESFSDir(const string &dirName) :
-    _dirName(dirName), _fileExpr(""), _dirLoaded(false)
-{
-}
+BESFSDir::BESFSDir(const string &dirName) : _dirName(dirName), _fileExpr(""), _dirLoaded(false) {}
 
-BESFSDir::BESFSDir(const string &dirName, const string &fileExpr) :
-    _dirName(dirName), _fileExpr(fileExpr), _dirLoaded(false)
-{
-}
+BESFSDir::BESFSDir(const string &dirName, const string &fileExpr)
+    : _dirName(dirName), _fileExpr(fileExpr), _dirLoaded(false) {}
 
-BESFSDir::BESFSDir(const BESFSDir &copyFrom) :
-    _dirName(copyFrom._dirName), _fileExpr(copyFrom._fileExpr), _dirLoaded(false)
-{
-}
+BESFSDir::BESFSDir(const BESFSDir &copyFrom)
+    : _dirName(copyFrom._dirName), _fileExpr(copyFrom._fileExpr), _dirLoaded(false) {}
 
-BESFSDir::~BESFSDir()
-{
-}
+BESFSDir::~BESFSDir() {}
 
-BESFSDir::dirIterator BESFSDir::beginOfDirList()
-{
+BESFSDir::dirIterator BESFSDir::beginOfDirList() {
     if (_dirLoaded == false) {
         loadDir();
         _dirLoaded = true;
@@ -72,8 +62,7 @@ BESFSDir::dirIterator BESFSDir::beginOfDirList()
     return _dirList.begin();
 }
 
-BESFSDir::dirIterator BESFSDir::endOfDirList()
-{
+BESFSDir::dirIterator BESFSDir::endOfDirList() {
     if (_dirLoaded == false) {
         loadDir();
         _dirLoaded = true;
@@ -81,8 +70,7 @@ BESFSDir::dirIterator BESFSDir::endOfDirList()
     return _dirList.end();
 }
 
-BESFSDir::fileIterator BESFSDir::beginOfFileList()
-{
+BESFSDir::fileIterator BESFSDir::beginOfFileList() {
     if (_dirLoaded == false) {
         loadDir();
         _dirLoaded = true;
@@ -90,8 +78,7 @@ BESFSDir::fileIterator BESFSDir::beginOfFileList()
     return _fileList.begin();
 }
 
-BESFSDir::fileIterator BESFSDir::endOfFileList()
-{
+BESFSDir::fileIterator BESFSDir::endOfFileList() {
     if (_dirLoaded == false) {
         loadDir();
         _dirLoaded = true;
@@ -99,9 +86,8 @@ BESFSDir::fileIterator BESFSDir::endOfFileList()
     return _fileList.end();
 }
 
-void BESFSDir::loadDir()
-{
-    DIR * dip;
+void BESFSDir::loadDir() {
+    DIR *dip;
     struct dirent *dit;
 
     try {
@@ -110,8 +96,7 @@ void BESFSDir::loadDir()
         if ((dip = opendir(_dirName.c_str())) == NULL) {
             string err_str = "ERROR: failed to open directory '" + _dirName + "'";
             throw BESError(err_str, BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
-        }
-        else {
+        } else {
             // read in the files in this directory
             // add each filename to the list of filenames
             while ((dit = readdir(dip)) != NULL) {
@@ -141,16 +126,14 @@ void BESFSDir::loadDir()
                     // or a directory name
                     if (S_ISDIR(buf.st_mode)) {
                         _dirList.push_back(BESFSDir(fullPath));
-                    }
-                    else {
+                    } else {
                         if (_fileExpr != "") {
                             BESRegex reg_expr(_fileExpr.c_str());
                             int match_ret = reg_expr.match(dirEntry.c_str(), dirEntry.size());
                             if (match_ret == static_cast<int>(dirEntry.size())) {
                                 _fileList.push_back(BESFSFile(_dirName, dirEntry));
                             }
-                        }
-                        else {
+                        } else {
                             _fileList.push_back(BESFSFile(_dirName, dirEntry));
                         }
                     }
@@ -160,11 +143,9 @@ void BESFSDir::loadDir()
 
         // close the directory
         closedir(dip);
-    }
-    catch (...) {
+    } catch (...) {
         // close the directory
         closedir(dip);
         throw;
     }
 }
-

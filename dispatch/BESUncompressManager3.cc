@@ -31,20 +31,20 @@
 
 #include <sstream>
 
-using std::istringstream;
 using std::endl;
+using std::istringstream;
 using std::ostream;
 using std::string;
 
-#include "BESUncompressManager3.h"
-#include "BESUncompress3GZ.h"
 #include "BESUncompress3BZ2.h"
+#include "BESUncompress3GZ.h"
 #include "BESUncompress3Z.h"
+#include "BESUncompressManager3.h"
 
 #include "BESFileLockingCache.h"
 
-#include "BESInternalError.h"
 #include "BESDebug.h"
+#include "BESInternalError.h"
 
 #include "TheBESKeys.h"
 
@@ -60,8 +60,7 @@ static std::once_flag d_euc_init_once;
  * lock the cache (BES.Uncompress.NumTries) and the time in microseconds
  * between tries (BES.Uncompress.Retry).
  */
-BESUncompressManager3::BESUncompressManager3()
-{
+BESUncompressManager3::BESUncompressManager3() {
     add_method("gz", BESUncompress3GZ::uncompress);
     add_method("bz2", BESUncompress3BZ2::uncompress);
     add_method("Z", BESUncompress3Z::uncompress);
@@ -78,8 +77,7 @@ BESUncompressManager3::~BESUncompressManager3() {}
  * @param method the static function that uncompress the particular type of file
  * @return true if successfully added, false if it already exists
  */
-bool BESUncompressManager3::add_method(const string &name, p_bes_uncompress method)
-{
+bool BESUncompressManager3::add_method(const string &name, p_bes_uncompress method) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESUncompressManager3::UCIter i;
@@ -99,8 +97,7 @@ bool BESUncompressManager3::add_method(const string &name, p_bes_uncompress meth
  * @param name name of the uncompression method to find
  * @return the function of type p_bes_uncompress
  */
-p_bes_uncompress BESUncompressManager3::find_method(const string &name)
-{
+p_bes_uncompress BESUncompressManager3::find_method(const string &name) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESUncompressManager3::UCIter i;
@@ -143,11 +140,10 @@ p_bes_uncompress BESUncompressManager3::find_method(const string &name)
  * @throws BESInternalError if there is a problem uncompressing
  * the file
  */
-bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BESFileLockingCache *cache)
-{
+bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BESFileLockingCache *cache) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    BESDEBUG( "uncompress2", "BESUncompressManager3::uncompress() - src: " << src << endl );
+    BESDEBUG("uncompress2", "BESUncompressManager3::uncompress() - src: " << src << endl);
 
     /**
      * If the cache object is a null pointer then we can't go further, and
@@ -169,7 +165,7 @@ bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BE
     // All compressed files have a 'dot extension'.
     string::size_type dot = src.rfind(".");
     if (dot == string::npos) {
-        BESDEBUG( "uncompress2", "BESUncompressManager3::uncompress() - no file extension" << endl );
+        BESDEBUG("uncompress2", "BESUncompressManager3::uncompress() - no file extension" << endl);
         return false;
     }
 
@@ -179,7 +175,7 @@ bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BE
     // Otherwise, 'p' points to a function that uncompresses the data.
     p_bes_uncompress p = find_method(ext);
     if (!p) {
-        BESDEBUG( "uncompress2", "BESUncompressManager3::uncompress() - not compressed " << endl );
+        BESDEBUG("uncompress2", "BESUncompressManager3::uncompress() - not compressed " << endl);
         return false;
     }
 
@@ -192,43 +188,42 @@ bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BE
         BESDEBUG( "uncompress2", "BESUncompressManager3::uncompress() - is cached? " << src << endl );
 #endif
 
-        int fd;
+    int fd;
+    if (cache->get_read_lock(cache_file, fd)) {
+        BESDEBUG("uncompress", "BESUncompressManager3::uncompress() - cached hit: " << cache_file << endl);
+        return true;
+    }
+
+    // Now we actually try to uncompress the file, given that there's not a decomp'd version
+    // in the cache. First make an empty file and get an exclusive lock on it.
+    if (cache->create_and_lock(cache_file, fd)) {
+        BESDEBUG("uncompress", "BESUncompressManager3::uncompress() - caching " << cache_file << endl);
+
+        // uncompress. Make sure that the decompression function does not close
+        // the file descriptor.
+        p(src, fd);
+
+        // Change the exclusive lock on the new file to a shared lock. This keeps
+        // other processes from purging the new file and ensures that the reading
+        // process can use it.
+        cache->exclusive_to_shared_lock(fd);
+
+        // Now update the total cache size info and purge if needed. The new file's
+        // name is passed into the purge method because this process cannot detect its
+        // own lock on the file.
+        unsigned long long size = cache->update_cache_info(cache_file);
+        if (cache->cache_too_big(size))
+            cache->update_and_purge(cache_file);
+
+        return true;
+    } else {
         if (cache->get_read_lock(cache_file, fd)) {
-            BESDEBUG( "uncompress", "BESUncompressManager3::uncompress() - cached hit: " << cache_file << endl );
+            BESDEBUG("uncompress", "BESUncompressManager3::uncompress() - cached hit: " << cache_file << endl);
             return true;
         }
+    }
 
-        // Now we actually try to uncompress the file, given that there's not a decomp'd version
-        // in the cache. First make an empty file and get an exclusive lock on it.
-        if (cache->create_and_lock(cache_file, fd)) {
-            BESDEBUG( "uncompress", "BESUncompressManager3::uncompress() - caching " << cache_file << endl );
-
-            // uncompress. Make sure that the decompression function does not close
-            // the file descriptor.
-            p(src, fd);
-
-            // Change the exclusive lock on the new file to a shared lock. This keeps
-            // other processes from purging the new file and ensures that the reading
-            // process can use it.
-            cache->exclusive_to_shared_lock(fd);
-
-            // Now update the total cache size info and purge if needed. The new file's
-            // name is passed into the purge method because this process cannot detect its
-            // own lock on the file.
-            unsigned long long size = cache->update_cache_info(cache_file);
-            if (cache->cache_too_big(size))
-            	cache->update_and_purge(cache_file);
-
-            return true;
-        }
-        else {
-            if (cache->get_read_lock(cache_file, fd)) {
-                BESDEBUG( "uncompress", "BESUncompressManager3::uncompress() - cached hit: " << cache_file << endl );
-                return true;
-            }
-        }
-
-        return false;
+    return false;
 #if 0
     }
     catch (...) {
@@ -248,11 +243,10 @@ bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BE
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESUncompressManager3::dump(ostream &strm) const
-{
+void BESUncompressManager3::dump(ostream &strm) const {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    strm << BESIndent::LMarg << "BESUncompressManager3::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "BESUncompressManager3::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     if (_uncompress_list.size()) {
         strm << BESIndent::LMarg << "registered uncompression methods:" << endl;
@@ -263,17 +257,14 @@ void BESUncompressManager3::dump(ostream &strm) const
             strm << BESIndent::LMarg << (*i).first << endl;
         }
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "registered uncompress methods: none" << endl;
     }
     BESIndent::UnIndent();
 }
 
-BESUncompressManager3 *
-BESUncompressManager3::TheManager()
-{
-    std::call_once(d_euc_init_once,BESUncompressManager3::initialize_instance);
+BESUncompressManager3 *BESUncompressManager3::TheManager() {
+    std::call_once(d_euc_init_once, BESUncompressManager3::initialize_instance);
     return d_instance;
 }
 

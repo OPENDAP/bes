@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -30,27 +30,24 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include "config.h"
 #include <iostream>
 #include <mutex>
-#include "config.h"
 
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
 
 using std::endl;
-using std::string;
 using std::ostream;
+using std::string;
 
-#include "BESDefinitionStorageList.h"
-#include "BESDefinitionStorage.h"
 #include "BESDefine.h"
+#include "BESDefinitionStorage.h"
+#include "BESDefinitionStorageList.h"
 #include "BESInfo.h"
 
-BESDefinitionStorageList::BESDefinitionStorageList() :
-    _first(0)
-{
-}
+BESDefinitionStorageList::BESDefinitionStorageList() : _first(0) {}
 
 /** @brief Add a persistent store to the list
  *
@@ -64,8 +61,7 @@ BESDefinitionStorageList::BESDefinitionStorageList() :
  * @return true if successfully added, false otherwise
  * @see BESDefinitionStorage
  */
-bool BESDefinitionStorageList::add_persistence(BESDefinitionStorage *cp)
-{
+bool BESDefinitionStorageList::add_persistence(BESDefinitionStorage *cp) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     bool ret = false;
@@ -75,16 +71,14 @@ bool BESDefinitionStorageList::add_persistence(BESDefinitionStorage *cp)
         _first->_reference = 1;
         _first->_next = 0;
         ret = true;
-    }
-    else {
+    } else {
         BESDefinitionStorageList::persistence_list *pl = _first;
         bool done = false;
         while (done == false) {
             if (pl->_persistence_obj->get_name() != cp->get_name()) {
                 if (pl->_next) {
                     pl = pl->_next;
-                }
-                else {
+                } else {
                     pl->_next = new BESDefinitionStorageList::persistence_list;
                     pl->_next->_persistence_obj = cp;
                     pl->_next->_reference = 1;
@@ -92,8 +86,7 @@ bool BESDefinitionStorageList::add_persistence(BESDefinitionStorage *cp)
                     done = true;
                     ret = true;
                 }
-            }
-            else {
+            } else {
                 done = true;
                 ret = false;
             }
@@ -110,8 +103,7 @@ bool BESDefinitionStorageList::add_persistence(BESDefinitionStorage *cp)
  * @return true if successfully referenced, false if not found
  * @see BESDefinitionStorage
  */
-bool BESDefinitionStorageList::ref_persistence(const string &persist_name)
-{
+bool BESDefinitionStorageList::ref_persistence(const string &persist_name) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     bool ret = false;
@@ -124,12 +116,10 @@ bool BESDefinitionStorageList::ref_persistence(const string &persist_name)
                 ret = true;
                 done = true;
                 pl->_reference++;
-            }
-            else {
+            } else {
                 pl = pl->_next;
             }
-        }
-        else {
+        } else {
             done = true;
         }
     }
@@ -147,8 +137,7 @@ bool BESDefinitionStorageList::ref_persistence(const string &persist_name)
  * @return true if successfully de-referenced, false if not found
  * @see BESDefinitionStorage
  */
-bool BESDefinitionStorageList::deref_persistence(const string &persist_name)
-{
+bool BESDefinitionStorageList::deref_persistence(const string &persist_name) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     bool ret = false;
@@ -165,22 +154,20 @@ bool BESDefinitionStorageList::deref_persistence(const string &persist_name)
                 if (!pl->_reference) {
                     if (pl == _first) {
                         _first = _first->_next;
-                    }
-                    else {
-                        if (!last) throw BESInternalError("ContainerStorageList last is null", __FILE__, __LINE__);
+                    } else {
+                        if (!last)
+                            throw BESInternalError("ContainerStorageList last is null", __FILE__, __LINE__);
                         last->_next = pl->_next;
                     }
                     delete pl->_persistence_obj;
                     delete pl;
                     pl = 0;
                 }
-            }
-            else {
+            } else {
                 last = pl;
                 pl = pl->_next;
             }
-        }
-        else {
+        } else {
             done = true;
         }
     }
@@ -196,9 +183,7 @@ bool BESDefinitionStorageList::deref_persistence(const string &persist_name)
  * @return the persistence store BESDefinitionStorage
  * @see BESDefinitionStorage
  */
-BESDefinitionStorage *
-BESDefinitionStorageList::find_persistence(const string &persist_name)
-{
+BESDefinitionStorage *BESDefinitionStorageList::find_persistence(const string &persist_name) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESDefinitionStorage *ret = NULL;
@@ -209,12 +194,10 @@ BESDefinitionStorageList::find_persistence(const string &persist_name)
             if (persist_name == pl->_persistence_obj->get_name()) {
                 ret = pl->_persistence_obj;
                 done = true;
-            }
-            else {
+            } else {
                 pl = pl->_next;
             }
-        }
-        else {
+        } else {
             done = true;
         }
     }
@@ -231,9 +214,7 @@ BESDefinitionStorageList::find_persistence(const string &persist_name)
  * @see BESDefinitionStorage
  * @see BESDefine
  */
-BESDefine *
-BESDefinitionStorageList::look_for(const string &def_name)
-{
+BESDefine *BESDefinitionStorageList::look_for(const string &def_name) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESDefine *ret_def = NULL;
@@ -244,12 +225,10 @@ BESDefinitionStorageList::look_for(const string &def_name)
             ret_def = pl->_persistence_obj->look_for(def_name);
             if (ret_def) {
                 done = true;
-            }
-            else {
+            } else {
                 pl = pl->_next;
             }
-        }
-        else {
+        } else {
             done = true;
         }
     }
@@ -270,8 +249,7 @@ BESDefinitionStorageList::look_for(const string &def_name)
  * @param info object to store the definition and persistent store information
  * @see BESInfo
  */
-void BESDefinitionStorageList::show_definitions(BESInfo &info)
-{
+void BESDefinitionStorageList::show_definitions(BESInfo &info) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESDefinitionStorageList::persistence_list *pl = _first;
@@ -298,11 +276,10 @@ void BESDefinitionStorageList::show_definitions(BESInfo &info)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESDefinitionStorageList::dump(ostream &strm) const
-{
+void BESDefinitionStorageList::dump(ostream &strm) const {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    strm << BESIndent::LMarg << "BESDefinitionStorageList::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "BESDefinitionStorageList::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     if (_first) {
         strm << BESIndent::LMarg << "registered definition storage:" << endl;
@@ -313,17 +290,13 @@ void BESDefinitionStorageList::dump(ostream &strm) const
             pl = pl->_next;
         }
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "registered definition storage: none" << endl;
     }
     BESIndent::UnIndent();
 }
 
-BESDefinitionStorageList *
-BESDefinitionStorageList::TheList()
-{
+BESDefinitionStorageList *BESDefinitionStorageList::TheList() {
     static BESDefinitionStorageList list;
     return &list;
 }
-

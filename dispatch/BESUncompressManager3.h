@@ -28,8 +28,8 @@
 #define I_BESUncompressManager3_h 1
 
 #include <map>
-#include <string>
 #include <mutex>
+#include <string>
 
 #include "BESObj.h"
 
@@ -53,9 +53,9 @@ typedef void (*p_bes_uncompress)(const std::string &src, int fd);
  * @see BESUncompressZ
  * @see BESCache
  */
-class BESUncompressManager3: public BESObj {
+class BESUncompressManager3 : public BESObj {
 private:
-    static BESUncompressManager3 * d_instance;
+    static BESUncompressManager3 *d_instance;
     mutable std::recursive_mutex d_cache_lock_mutex;
 
     static void initialize_instance();
@@ -73,9 +73,9 @@ public:
 
     virtual bool uncompress(const std::string &src, std::string &target, BESFileLockingCache *cache);
 
-    virtual void dump(std::ostream &strm) const ;
+    virtual void dump(std::ostream &strm) const;
 
-    static BESUncompressManager3 * TheManager();
+    static BESUncompressManager3 *TheManager();
 };
 
 #endif // I_BESUncompressManager3_h

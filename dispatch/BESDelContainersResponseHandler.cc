@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -36,34 +36,29 @@
 #include "BESSilentInfo.h"
 #endif
 
-#include "BESDefinitionStorageList.h"
-#include "BESDefinitionStorage.h"
-#include "BESDefine.h"
-#include "BESContainerStorageList.h"
-#include "BESContainerStorage.h"
 #include "BESContainer.h"
-#include "BESDataNames.h"
-#include "BESSyntaxUserError.h"
-#include "BESResponseNames.h"
+#include "BESContainerStorage.h"
+#include "BESContainerStorageList.h"
 #include "BESDataHandlerInterface.h"
+#include "BESDataNames.h"
+#include "BESDefine.h"
+#include "BESDefinitionStorage.h"
+#include "BESDefinitionStorageList.h"
+#include "BESResponseNames.h"
+#include "BESSyntaxUserError.h"
 
 using std::endl;
 using std::ostream;
 using std::string;
 
-BESDelContainersResponseHandler::BESDelContainersResponseHandler(const string &name) :
-    BESResponseHandler(name)
-{
-}
+BESDelContainersResponseHandler::BESDelContainersResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESDelContainersResponseHandler::~BESDelContainersResponseHandler()
-{
-}
+BESDelContainersResponseHandler::~BESDelContainersResponseHandler() {}
 
 /** @brief executes the command to delete all containers from a specified
  * container store.
  *
- * Removes all containers from a specified container storage found in 
+ * Removes all containers from a specified container storage found in
  * BESContainerStorageList::TheList(). If no container store is specified,
  * the default is volatile.
  *
@@ -80,8 +75,7 @@ BESDelContainersResponseHandler::~BESDelContainersResponseHandler()
  * @see BESContainerStorage
  * @see BESContainerStorageList
  */
-void BESDelContainersResponseHandler::execute(BESDataHandlerInterface &dhi)
-{
+void BESDelContainersResponseHandler::execute(BESDataHandlerInterface &dhi) {
 #if 0
     dhi.action_name = DELETE_CONTAINERS_STR;
     BESInfo *info = new BESSilentInfo();
@@ -100,9 +94,9 @@ void BESDelContainersResponseHandler::execute(BESDataHandlerInterface &dhi)
             string line = (string) "Unable to delete containers from \"" + dhi.data[STORE_NAME] + "\" container store";
             throw BESSyntaxUserError(line, __FILE__, __LINE__);
         }
-    }
-    else {
-        string line = (string) "Container storage \"" + dhi.data[STORE_NAME] + "\" does not exist. " + "Unable to delete containers";
+    } else {
+        string line = (string) "Container storage \"" + dhi.data[STORE_NAME] + "\" does not exist. " +
+                      "Unable to delete containers";
         throw BESSyntaxUserError(line, __FILE__, __LINE__);
     }
 }
@@ -119,8 +113,7 @@ void BESDelContainersResponseHandler::execute(BESDataHandlerInterface &dhi)
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void BESDelContainersResponseHandler::transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/)
-{
+void BESDelContainersResponseHandler::transmit(BESTransmitter * /*transmitter*/, BESDataHandlerInterface & /*dhi*/) {
 #if 0
     if( d_response_object )
     {
@@ -138,16 +131,13 @@ void BESDelContainersResponseHandler::transmit(BESTransmitter */*transmitter*/, 
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESDelContainersResponseHandler::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESDelContainersResponseHandler::dump - (" << (void *) this << ")" << endl;
+void BESDelContainersResponseHandler::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESDelContainersResponseHandler::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     BESResponseHandler::dump(strm);
     BESIndent::UnIndent();
 }
 
-BESResponseHandler *
-BESDelContainersResponseHandler::DelContainersResponseBuilder(const string &name)
-{
+BESResponseHandler *BESDelContainersResponseHandler::DelContainersResponseBuilder(const string &name) {
     return new BESDelContainersResponseHandler(name);
 }

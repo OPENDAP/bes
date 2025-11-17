@@ -24,9 +24,9 @@
 #ifndef I_CatalogNode_h
 #define I_CatalogNode_h 1
 
+#include <ostream>
 #include <string>
 #include <vector>
-#include <ostream>
 
 #include "BESObj.h"
 
@@ -42,23 +42,23 @@ class CatalogItem;
 /**
  *
  */
-class CatalogNode: public BESObj {
+class CatalogNode : public BESObj {
 private:
     std::string d_name;
     std::string d_catalog_name;
     std::string d_lmt;
 
-    CatalogItem* d_no_really_im_a_leaf;
+    CatalogItem *d_no_really_im_a_leaf;
 
 #if ITEMS
-    std::vector<CatalogItem*> d_items;
+    std::vector<CatalogItem *> d_items;
 #endif
 
 #if NODES_AND_LEAVES
     // Separate the child nodes and leaves so they can be treated as
     // a group more easily (all the nodes listed first, e.g.).
-    std::vector<CatalogItem*> d_nodes;
-    std::vector<CatalogItem*> d_leaves;
+    std::vector<CatalogItem *> d_nodes;
+    std::vector<CatalogItem *> d_leaves;
 #endif
 
     CatalogNode(const CatalogNode &rhs);
@@ -66,12 +66,11 @@ private:
 
 public:
     /// @brief Make an empty instance.
-    CatalogNode() : d_name(""), d_catalog_name(""), d_lmt(""), d_no_really_im_a_leaf(0){ }
+    CatalogNode() : d_name(""), d_catalog_name(""), d_lmt(""), d_no_really_im_a_leaf(0) {}
 
-    CatalogNode(const std::string &name) : d_name(name), d_catalog_name(""), d_lmt(""), d_no_really_im_a_leaf(0) { }
+    CatalogNode(const std::string &name) : d_name(name), d_catalog_name(""), d_lmt(""), d_no_really_im_a_leaf(0) {}
 
     virtual ~CatalogNode();
-
 
     void set_leaf(CatalogItem *leaf) { d_no_really_im_a_leaf = leaf; }
     CatalogItem *get_leaf() const { return d_no_really_im_a_leaf; }
@@ -91,8 +90,8 @@ public:
     /// @brief Set the LMT for this node.
     void set_lmt(std::string lmt) { d_lmt = lmt; }
 
-    typedef std::vector<CatalogItem*>::const_iterator item_citer;
-    typedef std::vector<CatalogItem*>::iterator item_iter;
+    typedef std::vector<CatalogItem *>::const_iterator item_citer;
+    typedef std::vector<CatalogItem *>::iterator item_iter;
 
 #if ITEMS
     item_citer items_begin() { return d_items.begin(); }

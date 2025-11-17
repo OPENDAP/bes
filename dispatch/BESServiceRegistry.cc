@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -32,15 +32,15 @@
 
 #include <mutex>
 
-#include "BESServiceRegistry.h"
 #include "BESInfo.h"
 #include "BESInternalError.h"
+#include "BESServiceRegistry.h"
 
 using std::endl;
+using std::list;
+using std::map;
 using std::ostream;
 using std::string;
-using std::map;
-using std::list;
 
 BESServiceRegistry::BESServiceRegistry() {}
 
@@ -49,22 +49,16 @@ BESServiceRegistry::BESServiceRegistry() {}
  * @param name name of the service to be added
  * @throws BESInternalError if the service already exists
  */
-void
-BESServiceRegistry::add_service( const string &name ) 
-{
+void BESServiceRegistry::add_service(const string &name) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    map<string,map<string,service_cmd> >::iterator i = _services.find( name ) ;
-    if( i == _services.end() )
-    {
-	map<string,service_cmd> cmds ;
-	_services[name] = cmds ;
-    }
-    else
-    {
-	string err = (string)"The service " + name
-		     + " has already been registered" ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    map<string, map<string, service_cmd>>::iterator i = _services.find(name);
+    if (i == _services.end()) {
+        map<string, service_cmd> cmds;
+        _services[name] = cmds;
+    } else {
+        string err = (string) "The service " + name + " has already been registered";
+        throw BESInternalError(err, __FILE__, __LINE__);
     }
 }
 
@@ -82,37 +76,28 @@ BESServiceRegistry::add_service( const string &name )
  * @throws BESInternalError if the service does not exist or the
  * command is already reigstered with the service
  */
-void
-BESServiceRegistry::add_to_service( const string &service,
-				    const string &cmd,
-				    const string &cmd_descript,
-				    const string &format )
-{
+void BESServiceRegistry::add_to_service(const string &service, const string &cmd, const string &cmd_descript,
+                                        const string &format) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    map<string,map<string,service_cmd> >::iterator si ;
-    si = _services.find( service ) ;
-    if( si != _services.end() )
-    {
-	map<string,service_cmd>::const_iterator ci ;
-	ci = (*si).second.find( cmd ) ;
-	if( ci != (*si).second.end() )
-	{
-	    string err = (string)"Attempting to add command "
-			 + (*ci).first + " to the service "
-			 + service + ", command alrady exists" ;
-	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
-	}
-	service_cmd sc ;
-	sc._description = cmd_descript ;
-	sc._formats[format] = format ;
-	(*si).second[cmd] = sc ;
-    }
-    else
-    {
-	string err = (string)"Attempting to add commands to the service "
-		     + service + " that has not yet been registered" ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    map<string, map<string, service_cmd>>::iterator si;
+    si = _services.find(service);
+    if (si != _services.end()) {
+        map<string, service_cmd>::const_iterator ci;
+        ci = (*si).second.find(cmd);
+        if (ci != (*si).second.end()) {
+            string err = (string) "Attempting to add command " + (*ci).first + " to the service " + service +
+                         ", command alrady exists";
+            throw BESInternalError(err, __FILE__, __LINE__);
+        }
+        service_cmd sc;
+        sc._description = cmd_descript;
+        sc._formats[format] = format;
+        (*si).second[cmd] = sc;
+    } else {
+        string err =
+            (string) "Attempting to add commands to the service " + service + " that has not yet been registered";
+        throw BESInternalError(err, __FILE__, __LINE__);
     }
 }
 
@@ -124,49 +109,32 @@ BESServiceRegistry::add_to_service( const string &service,
  * @throws BESInternalError if the service or command do not exist or if
  * the format has already been registered.
  */
-void
-BESServiceRegistry::add_format( const string &service,
-				const string &cmd,
-				const string &format )
-{
+void BESServiceRegistry::add_format(const string &service, const string &cmd, const string &format) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    map<string,map<string,service_cmd> >::iterator si ;
-    si = _services.find( service ) ;
-    if( si != _services.end() )
-    {
-	map<string,service_cmd>::iterator ci = (*si).second.find( cmd ) ;
-	if( ci != (*si).second.end() )
-	{
-	    map<string,string>::iterator fi ;
-	    fi = (*ci).second._formats.find( format ) ;
-	    if( fi == (*ci).second._formats.end() )
-	    {
-		(*ci).second._formats[format] = format ;
-	    }
-	    else
-	    {
-		string err = (string)"Attempting to add format "
-			     + format + " to command " + cmd
-			     + " for service " + service
-			     + " where the format has already been registered" ;
-		throw BESInternalError( err, __FILE__, __LINE__ ) ;
-	    }
-	}
-	else
-	{
-	    string err = (string)"Attempting to add a format " + format
-			 + " to command " + cmd + " for service " + service
-			 + " where the command has not been registered" ;
-	    throw BESInternalError( err, __FILE__, __LINE__ ) ;
-	}
-    }
-    else
-    {
-	string err = (string)"Attempting to add a format " + format
-		     + " to command " + cmd + " for a service " + service
-		     + " that has not been registered" ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    map<string, map<string, service_cmd>>::iterator si;
+    si = _services.find(service);
+    if (si != _services.end()) {
+        map<string, service_cmd>::iterator ci = (*si).second.find(cmd);
+        if (ci != (*si).second.end()) {
+            map<string, string>::iterator fi;
+            fi = (*ci).second._formats.find(format);
+            if (fi == (*ci).second._formats.end()) {
+                (*ci).second._formats[format] = format;
+            } else {
+                string err = (string) "Attempting to add format " + format + " to command " + cmd + " for service " +
+                             service + " where the format has already been registered";
+                throw BESInternalError(err, __FILE__, __LINE__);
+            }
+        } else {
+            string err = (string) "Attempting to add a format " + format + " to command " + cmd + " for service " +
+                         service + " where the command has not been registered";
+            throw BESInternalError(err, __FILE__, __LINE__);
+        }
+    } else {
+        string err = (string) "Attempting to add a format " + format + " to command " + cmd + " for a service " +
+                     service + " that has not been registered";
+        throw BESInternalError(err, __FILE__, __LINE__);
     }
 }
 
@@ -178,31 +146,26 @@ BESServiceRegistry::add_format( const string &service,
  *
  * @param service name of the service to remove
  */
-void
-BESServiceRegistry::remove_service( const string &service )
-{
+void BESServiceRegistry::remove_service(const string &service) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    map<string,map<string,service_cmd> >::iterator i ;
-    i = _services.find( service ) ;
-    if( i != _services.end() )
-    {
-	// erase the service from the registry
-	_services.erase( i ) ;
+    map<string, map<string, service_cmd>>::iterator i;
+    i = _services.find(service);
+    if (i != _services.end()) {
+        // erase the service from the registry
+        _services.erase(i);
 
-	// remove the service from the _handles list as well, so that if
-	// asked, the handlers no longer handler the service because it no
-	// longer exists.
-	map<string,map<string,string> >::iterator hi = _handles.begin() ;
-	map<string,map<string,string> >::iterator he = _handles.end() ;
-	for( ; hi != he; hi++ )
-	{
-	    map<string,string>::iterator hsi = (*hi).second.find( service ) ;
-	    if( hsi != (*hi).second.end() )
-	    {
-		(*hi).second.erase( hsi ) ;
-	    }
-	}
+        // remove the service from the _handles list as well, so that if
+        // asked, the handlers no longer handler the service because it no
+        // longer exists.
+        map<string, map<string, string>>::iterator hi = _handles.begin();
+        map<string, map<string, string>>::iterator he = _handles.end();
+        for (; hi != he; hi++) {
+            map<string, string>::iterator hsi = (*hi).second.find(service);
+            if (hsi != (*hi).second.end()) {
+                (*hi).second.erase(hsi);
+            }
+        }
     }
 }
 
@@ -220,44 +183,31 @@ BESServiceRegistry::remove_service( const string &service )
  * provided by the service and, if format is provided, the return format
  * of the service and command
  */
-bool
-BESServiceRegistry::service_available( const string &service,
-				       const string &cmd,
-				       const string &format )
-{
+bool BESServiceRegistry::service_available(const string &service, const string &cmd, const string &format) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    bool isit = false ;
-    map<string,map<string,service_cmd> >::iterator si ;
-    si = _services.find( service ) ;
-    if( si != _services.end() )
-    {
-	if( !cmd.empty() )
-	{
-	    map<string,service_cmd>::iterator ci = (*si).second.find( cmd ) ;
-	    if( ci != (*si).second.end() )
-	    {
-		if( !format.empty() )
-		{
-		    map<string,string>::iterator fi ;
-		    fi = (*ci).second._formats.find( format ) ;
-		    if( fi != (*ci).second._formats.end() )
-		    {
-			isit = true ;
-		    }
-		}
-		else
-		{
-		    isit = true ;
-		}
-	    }
-	}
-	else
-	{
-	    isit = true ;
-	}
+    bool isit = false;
+    map<string, map<string, service_cmd>>::iterator si;
+    si = _services.find(service);
+    if (si != _services.end()) {
+        if (!cmd.empty()) {
+            map<string, service_cmd>::iterator ci = (*si).second.find(cmd);
+            if (ci != (*si).second.end()) {
+                if (!format.empty()) {
+                    map<string, string>::iterator fi;
+                    fi = (*ci).second._formats.find(format);
+                    if (fi != (*ci).second._formats.end()) {
+                        isit = true;
+                    }
+                } else {
+                    isit = true;
+                }
+            }
+        } else {
+            isit = true;
+        }
     }
-    return isit ;
+    return isit;
 }
 
 /** @brief The specified handler can handle the specified service
@@ -271,35 +221,27 @@ BESServiceRegistry::service_available( const string &service,
  * @param service name of the service the handler now provides
  * @throws BESInternalError if the service does not exist
  */
-void
-BESServiceRegistry::handles_service( const string &handler,
-				     const string &service )
-{
+void BESServiceRegistry::handles_service(const string &handler, const string &service) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    map<string,map<string,service_cmd> >::iterator si ;
-    si = _services.find( service ) ;
-    if( si == _services.end() )
-    {
-	string err = (string)"Registering a handler to handle service "
-		     + service + " that has not yet been registered" ;
-	throw BESInternalError( err, __FILE__, __LINE__ ) ;
+    map<string, map<string, service_cmd>>::iterator si;
+    si = _services.find(service);
+    if (si == _services.end()) {
+        string err =
+            (string) "Registering a handler to handle service " + service + " that has not yet been registered";
+        throw BESInternalError(err, __FILE__, __LINE__);
     }
 
-    map<string,map<string,string> >::iterator hi = _handles.find( handler ) ;
-    if( hi == _handles.end() )
-    {
-	map<string,string> services ;
-	services[service] = service ;
-	_handles[handler] = services ;
-    }
-    else
-    {
-	map<string,string>::iterator ci = (*hi).second.find( service ) ;
-	if( ci == (*hi).second.end() )
-	{
-	    (*hi).second[service] = service ;
-	}
+    map<string, map<string, string>>::iterator hi = _handles.find(handler);
+    if (hi == _handles.end()) {
+        map<string, string> services;
+        services[service] = service;
+        _handles[handler] = services;
+    } else {
+        map<string, string>::iterator ci = (*hi).second.find(service);
+        if (ci == (*hi).second.end()) {
+            (*hi).second[service] = service;
+        }
     }
 }
 
@@ -311,23 +253,18 @@ BESServiceRegistry::handles_service( const string &handler,
  * @param service name of the service the handler might handle
  * @returns true if the handler does provide the service, false otherwise
  */
-bool
-BESServiceRegistry::does_handle_service( const string &handler,
-					 const string &service )
-{
+bool BESServiceRegistry::does_handle_service(const string &handler, const string &service) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    bool handled = false ;
-    map<string,map<string,string> >::iterator hi = _handles.find( handler ) ;
-    if( hi != _handles.end() )
-    {
-	map<string,string>::iterator si = (*hi).second.find( service ) ;
-	if( si != (*hi).second.end() )
-	{
-	    handled = true ;
-	}
+    bool handled = false;
+    map<string, map<string, string>>::iterator hi = _handles.find(handler);
+    if (hi != _handles.end()) {
+        map<string, string>::iterator si = (*hi).second.find(service);
+        if (si != (*hi).second.end()) {
+            handled = true;
+        }
     }
-    return handled ;
+    return handled;
 }
 
 /** @brief returns the list of servies provided by the handler in question
@@ -338,21 +275,16 @@ BESServiceRegistry::does_handle_service( const string &handler,
  * @param services out parameter that will hold the services provided by the
  * handler
  */
-void
-BESServiceRegistry::services_handled( const string &handler,
-				      list<string> &services )
-{
+void BESServiceRegistry::services_handled(const string &handler, list<string> &services) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    map<string,map<string,string> >::iterator hi = _handles.find( handler ) ;
-    if( hi != _handles.end() )
-    {
-	map<string,string>::const_iterator si = (*hi).second.begin() ;
-	map<string,string>::const_iterator se = (*hi).second.end() ;
-	for( ; si != se; si++ )
-	{
-	    services.push_back( (*si).second ) ;
-	}
+    map<string, map<string, string>>::iterator hi = _handles.find(handler);
+    if (hi != _handles.end()) {
+        map<string, string>::const_iterator si = (*hi).second.begin();
+        map<string, string>::const_iterator se = (*hi).second.end();
+        for (; si != se; si++) {
+            services.push_back((*si).second);
+        }
     }
 }
 
@@ -364,117 +296,101 @@ BESServiceRegistry::services_handled( const string &handler,
  *
  * @param info The BES informational object that will hold the response
  */
-void
-BESServiceRegistry::show_services( BESInfo &info )
-{
+void BESServiceRegistry::show_services(BESInfo &info) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    auto si = _services.begin() ;
-    auto se = _services.end() ;
-    for( ; si != se; si++ )
-    {
-	map<string, string, std::less<>> props ;
-	props["name"] = (*si).first ;
-	info.begin_tag( "serviceDescription", &props ) ;
-        auto ci = (*si).second.begin() ;
-        auto ce = (*si).second.end() ;
-	for( ; ci != ce; ci++ )
-	{
-	    map<string, string, std::less<>> cprops ;
-	    cprops["name"] = (*ci).first ;
-	    info.begin_tag( "command", &cprops ) ;
-	    info.add_tag( "description", (*ci).second._description ) ;
-        auto fi = (*ci).second._formats.begin() ;
-        auto fe = (*ci).second._formats.end() ;
-	    for( ; fi != fe; fi++ )
-	    {
-		map<string, string, std::less<>> fprops ;
-		fprops["name"] = (*fi).first ;
-		info.add_tag( "format", "", &fprops ) ;
-	    }
-	    info.end_tag( "command" ) ;
-	}
-	info.end_tag( "serviceDescription" ) ;
+    auto si = _services.begin();
+    auto se = _services.end();
+    for (; si != se; si++) {
+        map<string, string, std::less<>> props;
+        props["name"] = (*si).first;
+        info.begin_tag("serviceDescription", &props);
+        auto ci = (*si).second.begin();
+        auto ce = (*si).second.end();
+        for (; ci != ce; ci++) {
+            map<string, string, std::less<>> cprops;
+            cprops["name"] = (*ci).first;
+            info.begin_tag("command", &cprops);
+            info.add_tag("description", (*ci).second._description);
+            auto fi = (*ci).second._formats.begin();
+            auto fe = (*ci).second._formats.end();
+            for (; fi != fe; fi++) {
+                map<string, string, std::less<>> fprops;
+                fprops["name"] = (*fi).first;
+                info.add_tag("format", "", &fprops);
+            }
+            info.end_tag("command");
+        }
+        info.end_tag("serviceDescription");
     }
 }
 
 /** @brief dumps information about this object
  *
  * Displays the pointer value of this instance along with information about
- * the service registry 
+ * the service registry
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESServiceRegistry::dump( ostream &strm ) const
-{
+void BESServiceRegistry::dump(ostream &strm) const {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    strm << BESIndent::LMarg << "BESServiceRegistry::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "registered services" << endl ;
-    BESIndent::Indent() ;
-    map<string,map<string,service_cmd> >::const_iterator si ;
-    si = _services.begin() ;
-    map<string,map<string,service_cmd> >::const_iterator se ;
-    se = _services.end() ;
-    for( ; si != se; si++ )
-    {
-	strm << BESIndent::LMarg << (*si).first << endl ;
-	BESIndent::Indent() ;
-	map<string,service_cmd>::const_iterator ci = (*si).second.begin() ;
-	map<string,service_cmd>::const_iterator ce = (*si).second.end() ;
-	for( ; ci != ce; ci++ )
-	{
-	    strm << BESIndent::LMarg << (*ci).first << endl ;
-	    BESIndent::Indent() ;
-	    strm << BESIndent::LMarg << "description: "
-		 << (*ci).second._description << endl ;
-	    strm << BESIndent::LMarg << "formats:" << endl ;
-	    BESIndent::Indent() ;
-	    map<string,string>::const_iterator fi ;
-	    fi = (*ci).second._formats.begin() ;
-	    map<string,string>::const_iterator fe ;
-	    fe = (*ci).second._formats.end() ;
-	    for( ; fi != fe; fi++ )
-	    {
-		strm << BESIndent::LMarg << (*fi).first << endl ;
-	    }
-	    BESIndent::UnIndent() ;
-	    BESIndent::UnIndent() ;
-	}
-	BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESServiceRegistry::dump - (" << (void *)this << ")" << endl;
+    BESIndent::Indent();
+    strm << BESIndent::LMarg << "registered services" << endl;
+    BESIndent::Indent();
+    map<string, map<string, service_cmd>>::const_iterator si;
+    si = _services.begin();
+    map<string, map<string, service_cmd>>::const_iterator se;
+    se = _services.end();
+    for (; si != se; si++) {
+        strm << BESIndent::LMarg << (*si).first << endl;
+        BESIndent::Indent();
+        map<string, service_cmd>::const_iterator ci = (*si).second.begin();
+        map<string, service_cmd>::const_iterator ce = (*si).second.end();
+        for (; ci != ce; ci++) {
+            strm << BESIndent::LMarg << (*ci).first << endl;
+            BESIndent::Indent();
+            strm << BESIndent::LMarg << "description: " << (*ci).second._description << endl;
+            strm << BESIndent::LMarg << "formats:" << endl;
+            BESIndent::Indent();
+            map<string, string>::const_iterator fi;
+            fi = (*ci).second._formats.begin();
+            map<string, string>::const_iterator fe;
+            fe = (*ci).second._formats.end();
+            for (; fi != fe; fi++) {
+                strm << BESIndent::LMarg << (*fi).first << endl;
+            }
+            BESIndent::UnIndent();
+            BESIndent::UnIndent();
+        }
+        BESIndent::UnIndent();
     }
-    BESIndent::UnIndent() ;
-    strm << BESIndent::LMarg << "services provided by handler" << endl ;
-    BESIndent::Indent() ;
-    map<string,map<string,string> >::const_iterator hi = _handles.begin() ;
-    map<string,map<string,string> >::const_iterator he = _handles.end() ;
-    for( ; hi != he; hi++ )
-    {
-	strm << BESIndent::LMarg << (*hi).first ;
-	map<string,string>::const_iterator hsi = (*hi).second.begin() ;
-	map<string,string>::const_iterator hse = (*hi).second.end() ;
-	bool isfirst = true ;
-	for( ; hsi != hse; hsi++ )
-	{
-	    if( !isfirst ) strm << ", " ;
-	    else strm << ": " ;
-	    strm << (*hsi).first ;
-	    isfirst = false ;
-	}
-	strm << endl ;
+    BESIndent::UnIndent();
+    strm << BESIndent::LMarg << "services provided by handler" << endl;
+    BESIndent::Indent();
+    map<string, map<string, string>>::const_iterator hi = _handles.begin();
+    map<string, map<string, string>>::const_iterator he = _handles.end();
+    for (; hi != he; hi++) {
+        strm << BESIndent::LMarg << (*hi).first;
+        map<string, string>::const_iterator hsi = (*hi).second.begin();
+        map<string, string>::const_iterator hse = (*hi).second.end();
+        bool isfirst = true;
+        for (; hsi != hse; hsi++) {
+            if (!isfirst)
+                strm << ", ";
+            else
+                strm << ": ";
+            strm << (*hsi).first;
+            isfirst = false;
+        }
+        strm << endl;
     }
-    BESIndent::UnIndent() ;
-    BESIndent::UnIndent() ;
+    BESIndent::UnIndent();
+    BESIndent::UnIndent();
 }
 
-BESServiceRegistry *
-BESServiceRegistry::TheRegistry()
-{
+BESServiceRegistry *BESServiceRegistry::TheRegistry() {
     static BESServiceRegistry registry;
     return &registry;
 }
-
-

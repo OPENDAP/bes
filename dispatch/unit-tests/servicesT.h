@@ -39,12 +39,12 @@
 
 class servicesT : public baseApp {
 private:
-	std::string			_keyFile ;
+    std::string _keyFile;
+
 public:
-                                servicesT(void) : baseApp() {}
-    virtual                     ~servicesT(void) {}
-    virtual int			run(void);
+    servicesT(void) : baseApp() {}
+    virtual ~servicesT(void) {}
+    virtual int run(void);
 };
 
 #endif
-

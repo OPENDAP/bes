@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -30,27 +30,22 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include "config.h"
 #include "BESHelpResponseHandler.h"
-#include "BESInfoList.h"
 #include "BESInfo.h"
-#include "BESRequestHandlerList.h"
+#include "BESInfoList.h"
 #include "BESRequestHandler.h"
+#include "BESRequestHandlerList.h"
 #include "BESResponseNames.h"
+#include "config.h"
 
 using std::endl;
+using std::map;
 using std::ostream;
 using std::string;
-using std::map;
 
-BESHelpResponseHandler::BESHelpResponseHandler( const string &name )
-    : BESResponseHandler( name )
-{
-}
+BESHelpResponseHandler::BESHelpResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESHelpResponseHandler::~BESHelpResponseHandler( )
-{
-}
+BESHelpResponseHandler::~BESHelpResponseHandler() {}
 
 /** @brief executes the command 'show help;' by returning general help
  * information as well as help information for all of the data request
@@ -71,28 +66,26 @@ BESHelpResponseHandler::~BESHelpResponseHandler( )
  * @see BESHTMLInfo
  * @see BESRequestHandlerList
  */
-void
-BESHelpResponseHandler::execute( BESDataHandlerInterface &dhi )
-{
-    BESInfo *info = BESInfoList::TheList()->build_info() ;
-    d_response_object = info ;
+void BESHelpResponseHandler::execute(BESDataHandlerInterface &dhi) {
+    BESInfo *info = BESInfoList::TheList()->build_info();
+    d_response_object = info;
 
-    info->begin_response( HELP_RESPONSE_STR, dhi ) ;
-    dhi.action_name = HELP_RESPONSE_STR ;
+    info->begin_response(HELP_RESPONSE_STR, dhi);
+    dhi.action_name = HELP_RESPONSE_STR;
 
-    map<string, string, std::less<>> attrs ;
-    attrs["name"] = PACKAGE_NAME ;
-    attrs["version"] = PACKAGE_VERSION ;
-    info->begin_tag( "module", &attrs ) ;
-    info->add_data_from_file( "BES.Help", "BES Help" ) ;
-    info->end_tag( "module" ) ;
+    map<string, string, std::less<>> attrs;
+    attrs["name"] = PACKAGE_NAME;
+    attrs["version"] = PACKAGE_VERSION;
+    info->begin_tag("module", &attrs);
+    info->add_data_from_file("BES.Help", "BES Help");
+    info->end_tag("module");
 
     // execute help for each registered request server
-    info->add_break( 2 ) ;
+    info->add_break(2);
 
-    BESRequestHandlerList::TheList()->execute_all( dhi ) ;
+    BESRequestHandlerList::TheList()->execute_all(dhi);
 
-    info->end_response() ;
+    info->end_response();
 }
 
 /** @brief transmit the response object built by the execute command
@@ -107,16 +100,12 @@ BESHelpResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void
-BESHelpResponseHandler::transmit( BESTransmitter *transmitter,
-                               BESDataHandlerInterface &dhi )
-{
-    if( d_response_object )
-    {
-	BESInfo *info = dynamic_cast<BESInfo *>(d_response_object) ;
-	if( !info )
-	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-	info->transmit( transmitter, dhi ) ;
+void BESHelpResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) {
+    if (d_response_object) {
+        BESInfo *info = dynamic_cast<BESInfo *>(d_response_object);
+        if (!info)
+            throw BESInternalError("cast error", __FILE__, __LINE__);
+        info->transmit(transmitter, dhi);
     }
 }
 
@@ -126,19 +115,13 @@ BESHelpResponseHandler::transmit( BESTransmitter *transmitter,
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESHelpResponseHandler::dump( ostream &strm ) const
-{
-    strm << BESIndent::LMarg << "BESHelpResponseHandler::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESResponseHandler::dump( strm ) ;
-    BESIndent::UnIndent() ;
+void BESHelpResponseHandler::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESHelpResponseHandler::dump - (" << (void *)this << ")" << endl;
+    BESIndent::Indent();
+    BESResponseHandler::dump(strm);
+    BESIndent::UnIndent();
 }
 
-BESResponseHandler *
-BESHelpResponseHandler::HelpResponseBuilder( const string &name )
-{
-    return new BESHelpResponseHandler( name ) ;
+BESResponseHandler *BESHelpResponseHandler::HelpResponseBuilder(const string &name) {
+    return new BESHelpResponseHandler(name);
 }
-

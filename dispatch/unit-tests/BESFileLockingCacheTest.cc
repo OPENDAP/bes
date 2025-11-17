@@ -23,18 +23,18 @@
 
 #include "config.h"
 
-#include <memory>
-#include <iostream>
-#include <future>
-#include <thread>
 #include <algorithm>
+#include <future>
+#include <iostream>
+#include <memory>
+#include <thread>
 
 #include <dirent.h>
 
-#include "BESFileLockingCache.h"
 #include "BESDebug.h"
-#include "BESUtil.h"
+#include "BESFileLockingCache.h"
 #include "BESInternalError.h"
+#include "BESUtil.h"
 
 #include "test_config.h"
 
@@ -51,8 +51,8 @@ static const string TEST_CACHE_DIR = BESUtil::assemblePath(TEST_SRC_DIR, "cache"
 // namespace http {
 
 class BESFileLockingCacheTest : public CppUnit::TestFixture {
-    string d_data_dir = TEST_DATA_DIR;  // TODO Never used jhrg 6/26/23
-    string d_build_dir = TEST_BUILD_DIR;    // TODO Used only in the MT test jhrg 6/26/23
+    string d_data_dir = TEST_DATA_DIR;   // TODO Never used jhrg 6/26/23
+    string d_build_dir = TEST_BUILD_DIR; // TODO Used only in the MT test jhrg 6/26/23
 
     static void purge_cache(const string &cache_dir, const string &cache_prefix) {
         if (!(cache_dir.empty() && cache_prefix.empty())) {
@@ -99,7 +99,7 @@ class BESFileLockingCacheTest : public CppUnit::TestFixture {
 
     /// Print all the things in cache_dir that match match_prefix.
     static string show_cache(const string &cache_dir, const string &match_prefix) {
-        map<string, string> contents;   // TODO Remove jhrg 6/26/23
+        map<string, string> contents; // TODO Remove jhrg 6/26/23
         ostringstream oss;
         DIR *dip = opendir(cache_dir.c_str());
         CPPUNIT_ASSERT(dip);
@@ -137,7 +137,6 @@ class BESFileLockingCacheTest : public CppUnit::TestFixture {
     }
 
 public:
-
     // Called once before everything gets tested
     BESFileLockingCacheTest() = default;
 
@@ -162,9 +161,9 @@ public:
 
         DBG(cerr << "tearDown() - END" << endl);
     }
-    
-/*##################################################################################################*/
-/* TESTS BEGIN */
+
+    /*##################################################################################################*/
+    /* TESTS BEGIN */
 
     void test_empty_cache_dir_name_cache_creation() {
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
@@ -174,58 +173,51 @@ public:
             DBG(cerr << __func__ << "() - Cache is " << (cache.cache_enabled() ? "en" : "dis") << "abled." << endl);
             CPPUNIT_ASSERT(!cache.cache_enabled());
 
-        }
-        catch (const BESError &e) {
+        } catch (const BESError &e) {
             CPPUNIT_FAIL("Failed to create disabled cache. msg: " + e.get_verbose_message());
         }
         DBG(cerr << __func__ << "() - END " << endl);
     }
 
-    void test_missing_cache_dir_cache_creation()
-    {
+    void test_missing_cache_dir_cache_creation() {
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
-        //Only run this test if you don't have access (mainly for in case something is built in root)
+        // Only run this test if you don't have access (mainly for in case something is built in root)
         if (access("/", W_OK) != 0) {
             CPPUNIT_ASSERT_THROW_MESSAGE("Expected an exception - should not be able to create cache in root dir",
-                                         BESFileLockingCache cache("/dummy", CACHE_PREFIX, 0),
-                                         BESError);
+                                         BESFileLockingCache cache("/dummy", CACHE_PREFIX, 0), BESError);
         }
         DBG(cerr << __func__ << "() - END " << endl);
     }
 
-    void test_empty_prefix_name_cache_creation()
-    {
+    void test_empty_prefix_name_cache_creation() {
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
         CPPUNIT_ASSERT_THROW_MESSAGE("Expected an exception - should not be able to to create cache with empty prefix",
-                                     BESFileLockingCache cache(TEST_CACHE_DIR, "", 1),
-                                     BESError);
+                                     BESFileLockingCache cache(TEST_CACHE_DIR, "", 1), BESError);
         DBG(cerr << __func__ << "() - END " << endl);
     }
 
-    void test_size_zero_cache_creation()
-    {
+    void test_size_zero_cache_creation() {
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
         try {
             BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 0);
             CPPUNIT_ASSERT("Created cache with 0 size - correct given new behavior for this class");
-        }
-        catch (const BESError &e) {
-            DBG(cerr << __func__ << "() - Unable to create cache with 0 size. " << "That's good. msg: " << e.get_message() << endl);
-            CPPUNIT_FAIL("Could not make cache with zero size - new behavior uses this as an unbounded cache - it should work");
+        } catch (const BESError &e) {
+            DBG(cerr << __func__ << "() - Unable to create cache with 0 size. "
+                     << "That's good. msg: " << e.get_message() << endl);
+            CPPUNIT_FAIL(
+                "Could not make cache with zero size - new behavior uses this as an unbounded cache - it should work");
         }
         DBG(cerr << __func__ << "() - END " << endl);
     }
 
-    void test_good_cache_creation()
-    {
+    void test_good_cache_creation() {
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
         try {
             BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
             DBG(cerr << __func__ << "() - Cache is " << (cache.cache_enabled() ? "en" : "dis") << "abled." << endl);
             CPPUNIT_ASSERT(cache.cache_enabled());
 
-        }
-        catch (const BESError &e) {
+        } catch (const BESError &e) {
             DBG(cerr << __func__ << "() - FAILED to create cache! msg: " << e.get_message() << endl);
             CPPUNIT_ASSERT(!"Failed to create cache");
         }
@@ -242,8 +234,10 @@ public:
         bool success = cache.get_read_lock(no_such_file, fd);
         DBG(cerr << __func__ << "() - cache.get_read_lock() returned " << (success ? "true" : "false") << endl);
         if (success) {
-            DBG(cerr << __func__ << "() - OUCH! That shouldn't have worked! "
-                                    "Releasing lock and closing file before we ASSERT... " << endl);
+            DBG(cerr << __func__
+                     << "() - OUCH! That shouldn't have worked! "
+                        "Releasing lock and closing file before we ASSERT... "
+                     << endl);
             CPPUNIT_FAIL("Able to acquire a read lock on non-existent file");
         }
         CPPUNIT_ASSERT(!success);
@@ -251,8 +245,7 @@ public:
         DBG(cerr << __func__ << "() - END " << endl);
     }
 
-    void test_find_existing_cached_file()
-    {
+    void test_find_existing_cached_file() {
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
 
         BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
@@ -270,8 +263,7 @@ public:
         DBG(cerr << __func__ << "() - END " << endl);
     }
 
-    void test_cache_purge()
-    {
+    void test_cache_purge() {
         DBG(cerr << endl << __func__ << "() - BEGIN " << endl);
 
         string latest_file = "/usr/local/data/template01.txt";
@@ -288,9 +280,8 @@ public:
 
             // I used a hard-coded string because 'latest_cache_file' contains
             // extra path information that won't be found by check_cache. jhrg 4/26/17
-            check_cache(TEST_CACHE_DIR, "bes_cache#usr#local#data#template01.txt"/*latest_cache_file*/, 4);
-        }
-        catch (const BESError &e) {
+            check_cache(TEST_CACHE_DIR, "bes_cache#usr#local#data#template01.txt" /*latest_cache_file*/, 4);
+        } catch (const BESError &e) {
             CPPUNIT_FAIL("purge failed: " + e.get_message());
         }
 
@@ -300,9 +291,8 @@ public:
             BESFileLockingCache cache(TEST_CACHE_DIR, CACHE_PREFIX, 1);
             string latest_cache_file = cache.get_cache_file_name(latest_file);
             cache.update_and_purge(latest_cache_file);
-            check_cache(TEST_CACHE_DIR, "bes_cache#usr#local#data#template01.txt"/*latest_cache_file*/, 4);
-        }
-        catch (const BESError &e) {
+            check_cache(TEST_CACHE_DIR, "bes_cache#usr#local#data#template01.txt" /*latest_cache_file*/, 4);
+        } catch (const BESError &e) {
             CPPUNIT_FAIL("purge failed: " + e.get_message());
         }
 
@@ -427,10 +417,9 @@ public:
         vector<future<string>> futures;
 
         for (size_t i = 0; i < 3; ++i) {
-            futures.emplace_back(std::async(std::launch::async,
-                                            [cache](const string &url) {
-                                                return cache->get_cache_file_name("bob", url);
-                                            }, url));
+            futures.emplace_back(std::async(
+                std::launch::async, [cache](const string &url) { return cache->get_cache_file_name("bob", url); },
+                url));
         }
 
         DBG(cerr << "I'm doing my own work!" << endl);
@@ -446,7 +435,8 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Expected get_instance() to return the same string", fn2 == fn3);
 
         const string prefix = d_build_dir + "/cache/hut_";
-        const string hash = "49fbd7c6653d2291399c8018cfebe34a98e368ad34485f641d52f282915d9d55#file.nc.dap"; // 'sha256 hash' of the url
+        const string hash =
+            "49fbd7c6653d2291399c8018cfebe34a98e368ad34485f641d52f282915d9d55#file.nc.dap"; // 'sha256 hash' of the url
         DBG(cerr << prolog << "file_name: " << fn1 << endl);
         CPPUNIT_ASSERT_MESSAGE("Expected file name to use when caching data", fn1 == prefix + "bob_" + hash);
 
@@ -454,19 +444,19 @@ public:
     }
 #endif
 
-/* TESTS END */
-/*##################################################################################################*/
+    /* TESTS END */
+    /*##################################################################################################*/
 
     CPPUNIT_TEST_SUITE(BESFileLockingCacheTest);
 
-        CPPUNIT_TEST(test_empty_cache_dir_name_cache_creation);
-        CPPUNIT_TEST(test_missing_cache_dir_cache_creation);
-        CPPUNIT_TEST(test_empty_prefix_name_cache_creation);
-        CPPUNIT_TEST(test_size_zero_cache_creation);
-        CPPUNIT_TEST(test_good_cache_creation);
-        CPPUNIT_TEST(test_check_cache_for_non_existent_compressed_file);
-        CPPUNIT_TEST(test_find_existing_cached_file);
-        CPPUNIT_TEST(test_cache_purge);
+    CPPUNIT_TEST(test_empty_cache_dir_name_cache_creation);
+    CPPUNIT_TEST(test_missing_cache_dir_cache_creation);
+    CPPUNIT_TEST(test_empty_prefix_name_cache_creation);
+    CPPUNIT_TEST(test_size_zero_cache_creation);
+    CPPUNIT_TEST(test_good_cache_creation);
+    CPPUNIT_TEST(test_check_cache_for_non_existent_compressed_file);
+    CPPUNIT_TEST(test_find_existing_cached_file);
+    CPPUNIT_TEST(test_cache_purge);
 
 #if 0
         CPPUNIT_TEST(test_find_existing_cached_file_mt);
@@ -481,5 +471,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION(BESFileLockingCacheTest);
 // } // namespace http
 
 int main(int argc, char *argv[]) {
-    return bes_run_tests</*http::*/BESFileLockingCacheTest>(argc, argv, "cerr,cache,cache-lock,cache-lock-status") ? 0 : 1;
+    return bes_run_tests</*http::*/ BESFileLockingCacheTest>(argc, argv, "cerr,cache,cache-lock,cache-lock-status") ? 0
+                                                                                                                    : 1;
 }

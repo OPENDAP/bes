@@ -24,23 +24,22 @@
 
 #include "test_config.h"
 
+#include <chrono>
 #include <memory>
 #include <sstream>
-#include <chrono>
 
 #include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
 
 #include <unistd.h>
 
-#include "BESTimeoutError.h"
 #include "BESDebug.h"
 #include "BESLog.h"
+#include "BESTimeoutError.h"
 #include "TheBESKeys.h"
 
 #include "RequestServiceTimer.h"
-
 
 using namespace std;
 using namespace std::chrono;
@@ -49,29 +48,30 @@ static bool debug = false;
 static bool bes_debug = false;
 
 #undef DBG
-#define DBG(x) do { if (debug) x; } while(false)
+#define DBG(x)                                                                                                         \
+    do {                                                                                                               \
+        if (debug)                                                                                                     \
+            x;                                                                                                         \
+    } while (false)
 #define prolog std::string("RequestTimerTest::").append(__func__).append("() - ")
 
 namespace timer {
 
-class RequestTimerTest: public CppUnit::TestFixture {
+class RequestTimerTest : public CppUnit::TestFixture {
 private:
-
 public:
     // Called once before everything gets tested
-    RequestTimerTest()
-    {
-    }
+    RequestTimerTest() {}
 
     // Called at the end of the test
-    ~RequestTimerTest()
-    {
-    }
+    ~RequestTimerTest() {}
 
     // Called before each test
     void setUp() {
-        if (debug) cerr << endl;
-        if (bes_debug) BESDebug::SetUp("cerr,bes");
+        if (debug)
+            cerr << endl;
+        if (bes_debug)
+            BESDebug::SetUp("cerr,bes");
 
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
         // TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log", false);
@@ -81,9 +81,7 @@ public:
     /**
      *
      */
-    void tearDown()
-    {
-    }
+    void tearDown() {}
 
     /**
      *
@@ -96,7 +94,7 @@ public:
         DBG(cerr << prolog << RequestServiceTimer::TheTimer()->dump(true) << endl);
         stringstream ss;
         RequestServiceTimer::TheTimer()->dump(ss);
-        DBG(cerr << prolog << "dump(ostream): "<< ss.str() << endl);
+        DBG(cerr << prolog << "dump(ostream): " << ss.str() << endl);
         DBG(cerr << prolog << "END" << endl);
     }
 
@@ -114,14 +112,12 @@ public:
             sleep(2);
             CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == false);
             DBG(cerr << prolog << RequestServiceTimer::TheTimer()->dump(true) << endl);
-        }
-        catch(std::exception &se){
+        } catch (std::exception &se) {
             ostringstream msg;
             msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-        }
-        catch(...){
+        } catch (...) {
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
         DBG(cerr << prolog << "END" << endl);
@@ -139,25 +135,21 @@ public:
             sleep(1);
             CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == false);
             DBG(cerr << prolog << RequestServiceTimer::TheTimer()->dump(true) << endl);
-        }
-        catch(std::exception &se){
+        } catch (std::exception &se) {
             ostringstream msg;
             msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-        }
-        catch(...){
+        } catch (...) {
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
         DBG(cerr << prolog << "END" << endl);
     }
 
-
     /**
      *
      */
-    void test_is_expired()
-    {
+    void test_is_expired() {
         DBG(cerr << prolog << "BEGIN" << endl);
         try {
             milliseconds time_out{10};
@@ -166,14 +158,12 @@ public:
             sleep(1);
             DBG(cerr << prolog << RequestServiceTimer::TheTimer()->dump(true) << endl);
             CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == true);
-        }
-        catch(std::exception &se){
+        } catch (std::exception &se) {
             ostringstream msg;
             msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-        }
-        catch(...){
+        } catch (...) {
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
         DBG(cerr << prolog << "END" << endl);
@@ -182,16 +172,15 @@ public:
     /**
      *
      */
-    void test_throw_if_timeout_expired()
-    {
+    void test_throw_if_timeout_expired() {
         DBG(cerr << prolog << "BEGIN" << endl);
         try {
             milliseconds time_out{10};
             RequestServiceTimer::TheTimer()->start(time_out);
             try {
-                RequestServiceTimer::TheTimer()->throw_if_timeout_expired("<This request should NOT be expired.>",__FILE__,__LINE__);
-            }
-            catch(BESTimeoutError btoe){
+                RequestServiceTimer::TheTimer()->throw_if_timeout_expired("<This request should NOT be expired.>",
+                                                                          __FILE__, __LINE__);
+            } catch (BESTimeoutError btoe) {
                 CPPUNIT_FAIL(prolog + "Timeout expired prematurely.");
             }
             DBG(cerr << prolog << RequestServiceTimer::TheTimer()->dump(true) << endl);
@@ -200,23 +189,24 @@ public:
 
             CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == true);
             try {
-                RequestServiceTimer::TheTimer()->throw_if_timeout_expired("<This request should be expired.>",__FILE__,__LINE__);
-            }
-            catch(BESTimeoutError btoe){
-                DBG(cerr << prolog << "RequestServiceTimer::TheTimer()->throw_if_timeout_expired() threw a "
-                                              "BESTimeoutError." << endl << "Message: " << btoe.get_message() << endl);
+                RequestServiceTimer::TheTimer()->throw_if_timeout_expired("<This request should be expired.>", __FILE__,
+                                                                          __LINE__);
+            } catch (BESTimeoutError btoe) {
+                DBG(cerr << prolog
+                         << "RequestServiceTimer::TheTimer()->throw_if_timeout_expired() threw a "
+                            "BESTimeoutError."
+                         << endl
+                         << "Message: " << btoe.get_message() << endl);
                 CPPUNIT_ASSERT("RequestServiceTimer::TheTimer()->throw_if_timeout_expired() threw a BESTimeoutError "
                                "as expected.");
             }
 
-        }
-        catch(std::exception &se){
+        } catch (std::exception &se) {
             ostringstream msg;
             msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-        }
-        catch(...){
+        } catch (...) {
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
         DBG(cerr << endl << prolog << "END" << endl);
@@ -225,8 +215,7 @@ public:
     /**
      *
      */
-    void test_restart_1()
-    {
+    void test_restart_1() {
         DBG(cerr << prolog << "BEGIN" << endl);
         try {
             milliseconds time_out{100};
@@ -237,7 +226,7 @@ public:
             DBG(cerr << prolog << RequestServiceTimer::TheTimer()->dump(true) << endl);
             CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == true);
 
-            time_out=seconds{2};
+            time_out = seconds{2};
             RequestServiceTimer::TheTimer()->start(time_out);
             CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == false);
             DBG(cerr << prolog << RequestServiceTimer::TheTimer()->dump(true) << endl);
@@ -245,21 +234,18 @@ public:
             DBG(cerr << prolog << RequestServiceTimer::TheTimer()->dump(true) << endl);
             CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == false);
 
-        }
-        catch(std::exception &se){
+        } catch (std::exception &se) {
             ostringstream msg;
             msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-        }
-        catch(...){
+        } catch (...) {
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
         DBG(cerr << prolog << "END" << endl);
     }
 
-    void test_restart_2()
-    {
+    void test_restart_2() {
         DBG(cerr << prolog << "BEGIN" << endl);
         try {
             milliseconds time_out{100};
@@ -269,7 +255,7 @@ public:
             DBG(cerr << prolog << RequestServiceTimer::TheTimer()->dump(true) << endl);
             CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == true);
 
-            time_out=seconds{2};
+            time_out = seconds{2};
             RequestServiceTimer::TheTimer()->start(time_out);
             CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == false);
             DBG(cerr << prolog << RequestServiceTimer::TheTimer()->dump(true) << endl);
@@ -277,29 +263,27 @@ public:
             DBG(cerr << prolog << RequestServiceTimer::TheTimer()->dump(true) << endl);
             CPPUNIT_ASSERT(RequestServiceTimer::TheTimer()->is_expired() == false);
 
-        }
-        catch(std::exception &se){
+        } catch (std::exception &se) {
             ostringstream msg;
             msg << prolog << "Caught std::exception! Message: " << se.what();
             cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
-        }
-        catch(...){
+        } catch (...) {
             CPPUNIT_FAIL(prolog + "Caught unknown exception.");
         }
         DBG(cerr << prolog << "END" << endl);
     }
 
-CPPUNIT_TEST_SUITE( RequestTimerTest );
+    CPPUNIT_TEST_SUITE(RequestTimerTest);
 
-        CPPUNIT_TEST(test_dump);
-        CPPUNIT_TEST(test_disable_timeout);
-        CPPUNIT_TEST(test_no_timeout);
-        CPPUNIT_TEST(test_is_expired);
-        CPPUNIT_TEST(test_throw_if_timeout_expired);
-        CPPUNIT_TEST(test_restart_1);
-        CPPUNIT_TEST(test_restart_2);
-        //CPPUNIT_TEST_EXCEPTION(test_ingest_chunk_dimension_sizes_4, BESError);
+    CPPUNIT_TEST(test_dump);
+    CPPUNIT_TEST(test_disable_timeout);
+    CPPUNIT_TEST(test_no_timeout);
+    CPPUNIT_TEST(test_is_expired);
+    CPPUNIT_TEST(test_throw_if_timeout_expired);
+    CPPUNIT_TEST(test_restart_1);
+    CPPUNIT_TEST(test_restart_2);
+    // CPPUNIT_TEST_EXCEPTION(test_ingest_chunk_dimension_sizes_4, BESError);
 
     CPPUNIT_TEST_SUITE_END();
 };
@@ -308,23 +292,22 @@ CPPUNIT_TEST_SUITE_REGISTRATION(RequestTimerTest);
 
 } // namespace timer
 
-int main(int argc, char*argv[])
-{
+int main(int argc, char *argv[]) {
     CppUnit::TextTestRunner runner;
     runner.addTest(CppUnit::TestFactoryRegistry::getRegistry().makeTest());
 
     int option_char;
     while ((option_char = getopt(argc, argv, "dD")) != -1) {
         switch (option_char) {
-            case 'd':
-                debug = true;  // debug is a static global
-                break;
-            case 'D':
-                debug = true;  // debug is a static global
-                bes_debug = true;  // debug is a static global
-                break;
-            default:
-                break;
+        case 'd':
+            debug = true; // debug is a static global
+            break;
+        case 'D':
+            debug = true;     // debug is a static global
+            bes_debug = true; // debug is a static global
+            break;
+        default:
+            break;
         }
     }
     argc -= optind;
@@ -335,11 +318,11 @@ int main(int argc, char*argv[])
     if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
-    }
-    else {
+    } else {
         int i = 0;
         while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
+            if (debug)
+                cerr << "Running " << argv[i] << endl;
             test = timer::RequestTimerTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
             ++i;

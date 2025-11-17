@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -36,9 +36,9 @@
 
 using std::endl;
 using std::list;
-using std::string;
 using std::map;
 using std::ostream;
+using std::string;
 
 /** @brief constructs a basic text information response object to write version
  *         information
@@ -46,29 +46,20 @@ using std::ostream;
  * @see BESXMLInfo
  * @see BESResponseObject
  */
-BESVersionInfo::BESVersionInfo() :
-    BESInfo(), _inbes(false), _inhandler(false), _info(0)
-{
+BESVersionInfo::BESVersionInfo() : BESInfo(), _inbes(false), _inhandler(false), _info(0) {
     _info = BESInfoList::TheList()->build_info();
 }
 
-BESVersionInfo::~BESVersionInfo()
-{
-    if (_info) delete _info;
+BESVersionInfo::~BESVersionInfo() {
+    if (_info)
+        delete _info;
 }
 
-void BESVersionInfo::add_library(const string &name, const string &vers)
-{
-    add_version("library", name, vers);
-}
+void BESVersionInfo::add_library(const string &name, const string &vers) { add_version("library", name, vers); }
 
-void BESVersionInfo::add_module(const string &name, const string &vers)
-{
-    add_version("module", name, vers);
-}
+void BESVersionInfo::add_module(const string &name, const string &vers) { add_version("module", name, vers); }
 
-void BESVersionInfo::add_service(const string &name, const list<string> &vers)
-{
+void BESVersionInfo::add_service(const string &name, const list<string> &vers) {
     map<string, string, std::less<>> props;
     props["name"] = name;
     begin_tag("serviceVersion", &props);
@@ -80,8 +71,7 @@ void BESVersionInfo::add_service(const string &name, const list<string> &vers)
     end_tag("serviceVersion");
 }
 
-void BESVersionInfo::add_version(const string &type, const string &name, const string &vers)
-{
+void BESVersionInfo::add_version(const string &type, const string &name, const string &vers) {
     map<string, string, std::less<>> attrs;
     attrs["name"] = name;
     attrs["version"] = vers;
@@ -95,9 +85,8 @@ void BESVersionInfo::add_version(const string &type, const string &name, const s
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESVersionInfo::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESVersionInfo::dump - (" << (void *) this << ")" << endl;
+void BESVersionInfo::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESVersionInfo::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     strm << BESIndent::LMarg << "in BES version? " << _inbes << endl;
     strm << BESIndent::LMarg << "in Handler version? " << _inhandler << endl;
@@ -106,11 +95,9 @@ void BESVersionInfo::dump(ostream &strm) const
         BESIndent::Indent();
         _info->dump(strm);
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "redirection info object: null" << endl;
     }
     BESInfo::dump(strm);
     BESIndent::UnIndent();
 }
-

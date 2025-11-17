@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -33,9 +33,9 @@
 #ifndef BESContainerStorage_h_
 #define BESContainerStorage_h_ 1
 
-#include <string>
 #include <list>
 #include <ostream>
+#include <string>
 
 #include "BESObj.h"
 
@@ -60,14 +60,15 @@ class BESInfo;
  * If the user wishes to remove one of these persistence stores they would
  * request that a named BESContainerStorage object be removed from the
  * list.
- * 
+ *
  * @see BESContainer
  * @see BESContainerStorageList
  */
-class BESContainerStorage: public BESObj {
+class BESContainerStorage : public BESObj {
 protected:
     std::string _my_name;
-    virtual void show_container(const std::string &sym_name, const std::string &real_name, const std::string &type, BESInfo &info);
+    virtual void show_container(const std::string &sym_name, const std::string &real_name, const std::string &type,
+                                BESInfo &info);
 
 public:
     /** @brief create an instance of BESContainerStorage with the given
@@ -75,9 +76,7 @@ public:
      *
      * @param name name of this persistence store
      */
-    explicit BESContainerStorage(const std::string &name) : _my_name(name)
-    {
-    }
+    explicit BESContainerStorage(const std::string &name) : _my_name(name) {}
 
     ~BESContainerStorage() override = default;
 
@@ -85,10 +84,7 @@ public:
      *
      * @return name of this persistent store.
      */
-    virtual const std::string & get_name() const
-    {
-        return _my_name;
-    }
+    virtual const std::string &get_name() const { return _my_name; }
 
     /** @brief looks for a container in this persistent store
      *
@@ -98,7 +94,7 @@ public:
      * @return If sym_name is found, the BESContainer instance representing
      * that symbolic name, else NULL is returned.
      */
-    virtual BESContainer * look_for(const std::string &sym_name) = 0;
+    virtual BESContainer *look_for(const std::string &sym_name) = 0;
 
     /** @brief adds a container with the provided information
      *

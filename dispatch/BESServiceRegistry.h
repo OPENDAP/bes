@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -33,10 +33,10 @@
 #ifndef I_BESServiceRegistry_h
 #define I_BESServiceRegistry_h 1
 
-#include <string>
-#include <map>
 #include <list>
+#include <map>
 #include <mutex>
+#include <string>
 
 #include "BESObj.h"
 
@@ -63,8 +63,8 @@ private:
 
     mutable std::recursive_mutex d_cache_lock_mutex;
 
-    std::map<std::string, std::map<std::string, service_cmd> > _services;
-    std::map<std::string, std::map<std::string, std::string> > _handles;
+    std::map<std::string, std::map<std::string, service_cmd>> _services;
+    std::map<std::string, std::map<std::string, std::string>> _handles;
 
     BESServiceRegistry();
 
@@ -77,29 +77,21 @@ public:
 
     virtual void add_service(const std::string &name);
 
-    virtual void add_to_service(const std::string &service,
-                                const std::string &cmd,
-                                const std::string &cmd_descript,
+    virtual void add_to_service(const std::string &service, const std::string &cmd, const std::string &cmd_descript,
                                 const std::string &format);
 
-    virtual void add_format(const std::string &service,
-                            const std::string &cmd,
-                            const std::string &format);
+    virtual void add_format(const std::string &service, const std::string &cmd, const std::string &format);
 
     virtual void remove_service(const std::string &name);
 
-    virtual bool service_available(const std::string &name,
-                                   const std::string &cmd = "",
+    virtual bool service_available(const std::string &name, const std::string &cmd = "",
                                    const std::string &format = "");
 
-    virtual void handles_service(const std::string &handler,
-                                 const std::string &service);
+    virtual void handles_service(const std::string &handler, const std::string &service);
 
-    virtual bool does_handle_service(const std::string &handler,
-                                     const std::string &service);
+    virtual bool does_handle_service(const std::string &handler, const std::string &service);
 
-    virtual void services_handled(const std::string &handler,
-                                  std::list<std::string> &services);
+    virtual void services_handled(const std::string &handler, std::list<std::string> &services);
 
     virtual void show_services(BESInfo &info);
 

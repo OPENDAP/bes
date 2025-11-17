@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -33,27 +33,27 @@
 #include "config.h"
 
 #include "BESContainerStorageVolatile.h"
-#include "BESFileContainer.h"
-#include "BESInternalError.h"
-#include "BESSyntaxUserError.h"
-#include "BESInfo.h"
-#include "TheBESKeys.h"
-#include "BESUtil.h"
-#include "BESServiceRegistry.h"
 #include "BESDebug.h"
+#include "BESFileContainer.h"
+#include "BESInfo.h"
+#include "BESInternalError.h"
+#include "BESServiceRegistry.h"
+#include "BESSyntaxUserError.h"
+#include "BESUtil.h"
+#include "TheBESKeys.h"
 
 // FIXME This is a lie, but it will help with debugging/design for the RemoteResources
 // FIXME design/fix. Remove this once that's done. jhrg 8/7/20
 #if 0
-  #define MODULE "ngap"
+#define MODULE "ngap"
 #endif
 
 #define prolog std::string("BESContainerStorageVolatile::").append(__func__).append("() - ")
 
 using std::endl;
-using std::string;
 using std::list;
 using std::ostream;
+using std::string;
 
 /** @brief create an instance of this persistent store with the given name.
  *
@@ -69,9 +69,8 @@ using std::ostream;
  * @param n name of this persistent store
  * @see BESContainer
  */
-BESContainerStorageVolatile::BESContainerStorageVolatile(const string &n) :
-    BESContainerStorage(n), _root_dir(""), _follow_sym_links(false)
-{
+BESContainerStorageVolatile::BESContainerStorageVolatile(const string &n)
+    : BESContainerStorage(n), _root_dir(""), _follow_sym_links(false) {
     string key = "BES.Data.RootDirectory";
     bool found = false;
     TheBESKeys::TheKeys()->get_value(key, _root_dir, found);
@@ -90,10 +89,7 @@ BESContainerStorageVolatile::BESContainerStorageVolatile(const string &n) :
     }
 }
 
-BESContainerStorageVolatile::~BESContainerStorageVolatile()
-{
-    BESContainerStorageVolatile::del_containers();
-}
+BESContainerStorageVolatile::~BESContainerStorageVolatile() { BESContainerStorageVolatile::del_containers(); }
 
 /** @brief looks for the specified container using the symbolic name passed
  *
@@ -104,9 +100,7 @@ BESContainerStorageVolatile::~BESContainerStorageVolatile()
  * @return a new BESContainer instance using the ptr_duplicate method on
  * BESContainer
  */
-BESContainer *
-BESContainerStorageVolatile::look_for(const string &sym_name)
-{
+BESContainer *BESContainerStorageVolatile::look_for(const string &sym_name) {
     BESContainer *ret_container = nullptr;
 
     BESContainerStorageVolatile::Container_citer i;
@@ -135,18 +129,20 @@ BESContainerStorageVolatile::look_for(const string &sym_name)
  * @throws BESInternalError if a container with the passed
  * symbolic name already exists.
  */
-void BESContainerStorageVolatile::add_container(const string &sym_name, const string &real_name, const string &type)
-{
+void BESContainerStorageVolatile::add_container(const string &sym_name, const string &real_name, const string &type) {
     // The type must be specified so that we can find the request handler
     // that knows how to handle the container.
     // Changed sym_name to real_name to clarify the message. jhrg 11/14/19
     if (type.empty())
-        throw BESInternalError(string("Unable to add container '").append(real_name).append("', the type of data must be specified."), __FILE__, __LINE__);
+        throw BESInternalError(
+            string("Unable to add container '").append(real_name).append("', the type of data must be specified."),
+            __FILE__, __LINE__);
 
     // if the container already exists then throw an error
     BESContainerStorageVolatile::Container_citer i = _container_list.find(sym_name);
     if (i != _container_list.end()) {
-        throw BESInternalError(string("A container with the name '").append(sym_name).append("' already exists"), __FILE__, __LINE__);
+        throw BESInternalError(string("A container with the name '").append(sym_name).append("' already exists"),
+                               __FILE__, __LINE__);
     }
 
     // make sure that the path to the container exists. If follow_sym_links
@@ -158,13 +154,10 @@ void BESContainerStorageVolatile::add_container(const string &sym_name, const st
     // Removed the 'false' since that is the default value. jhrg 3/3/25
     string fully_qualified_real_name = BESUtil::assemblePath(_root_dir, real_name);
 
-    BESDEBUG("container","BESContainerStorageVolatile::add_container() - "
-    		<< " _root_dir: " << _root_dir
-    		<< " real_name: " << real_name
-    		<< " symbolic name: " << sym_name
-			<< " fully_qualified_real_name: " << fully_qualified_real_name
-			<< " type: " << type
-			<< endl);
+    BESDEBUG("container",
+             "BESContainerStorageVolatile::add_container() - "
+                 << " _root_dir: " << _root_dir << " real_name: " << real_name << " symbolic name: " << sym_name
+                 << " fully_qualified_real_name: " << fully_qualified_real_name << " type: " << type << endl);
 
     // Create the file container with the new information
     BESContainer *c = new BESFileContainer(sym_name, fully_qualified_real_name, type);
@@ -191,8 +184,7 @@ void BESContainerStorageVolatile::add_container(const string &sym_name, const st
  * @throws BESContainerStorageExcpetion if a container with the passed
  * symbolic name already exists.
  */
-void BESContainerStorageVolatile::add_container(BESContainer *c)
-{
+void BESContainerStorageVolatile::add_container(BESContainer *c) {
     if (!c) {
         throw BESInternalError("Unable to add container, container passed is null", __FILE__, __LINE__);
     }
@@ -204,7 +196,8 @@ void BESContainerStorageVolatile::add_container(BESContainer *c)
 
     BESContainerStorageVolatile::Container_citer i = _container_list.find(sym_name);
     if (i != _container_list.end()) {
-        throw BESInternalError(string("A container with the name '").append(sym_name).append("' already exists"), __FILE__, __LINE__);
+        throw BESInternalError(string("A container with the name '").append(sym_name).append("' already exists"),
+                               __FILE__, __LINE__);
     }
 
     _container_list[sym_name] = c;
@@ -216,8 +209,7 @@ void BESContainerStorageVolatile::add_container(BESContainer *c)
  * @param s_name symbolic name for the container
  * @return true if successfully removed and false otherwise
  */
-bool BESContainerStorageVolatile::del_container(const string &s_name)
-{
+bool BESContainerStorageVolatile::del_container(const string &s_name) {
     bool ret = false;
     const auto i = _container_list.find(s_name);
     if (i != _container_list.end()) {
@@ -236,8 +228,7 @@ bool BESContainerStorageVolatile::del_container(const string &s_name)
  *
  * @return true if successfully removed and false otherwise
  */
-bool BESContainerStorageVolatile::del_containers()
-{
+bool BESContainerStorageVolatile::del_containers() {
     while (!_container_list.empty()) {
         auto ci = _container_list.begin();
         BESContainer *c = (*ci).second;
@@ -255,8 +246,7 @@ bool BESContainerStorageVolatile::del_containers()
  * @param provides an output parameter for storing the list of
  * services provided for this container
  */
-bool BESContainerStorageVolatile::isData(const string &inQuestion, list<string> &provides)
-{
+bool BESContainerStorageVolatile::isData(const string &inQuestion, list<string> &provides) {
     bool isit = false;
     const BESContainer *c = look_for(inQuestion);
     if (c) {
@@ -271,8 +261,8 @@ bool BESContainerStorageVolatile::isData(const string &inQuestion, list<string> 
  *
  * For each container in this persistent store, add information about each of
  * those containers. The information added to the information object
- * includes a line for each container within this persistent store which 
- * includes the symbolic name, the real name, and the data type, 
+ * includes a line for each container within this persistent store which
+ * includes the symbolic name, the real name, and the data type,
  * separated by commas.
  *
  * In the case of this persistent store information from each container
@@ -281,8 +271,7 @@ bool BESContainerStorageVolatile::isData(const string &inQuestion, list<string> 
  * @param info object to store the container and persistent store information
  * @see BESInfo
  */
-void BESContainerStorageVolatile::show_containers(BESInfo &info)
-{
+void BESContainerStorageVolatile::show_containers(BESInfo &info) {
     info.add_tag("name", get_name());
     string::size_type root_len = _root_dir.size();
     auto i = _container_list.begin();
@@ -307,9 +296,8 @@ void BESContainerStorageVolatile::show_containers(BESInfo &info)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESContainerStorageVolatile::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESContainerStorageVolatile::dump - (" << (void *) this << ")" << endl;
+void BESContainerStorageVolatile::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESContainerStorageVolatile::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     strm << BESIndent::LMarg << "name: " << get_name() << endl;
     if (!_container_list.empty()) {
@@ -321,10 +309,8 @@ void BESContainerStorageVolatile::dump(ostream &strm) const
             c->dump(strm);
         }
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "containers: none" << endl;
     }
     BESIndent::UnIndent();
 }
-

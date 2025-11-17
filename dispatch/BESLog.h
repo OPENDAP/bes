@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -46,22 +46,52 @@
 // TRACE_LOGGING provides a way to see just where in the code the log info
 // is written from. jhrg 11/14/17
 
-#undef  TRACE_LOGGING
+#undef TRACE_LOGGING
 
 #ifdef TRACE_LOGGING
-#define REQUEST_LOG(x) do { BESLog::TheLog()->trace_request(x, __FILE__ ,__LINE__); } while(0)
-#define INFO_LOG(x)    do { BESLog::TheLog()->trace_info(x, __FILE__ ,__LINE__); } while(0)
-#define ERROR_LOG(x)   do { BESLog::TheLog()->trace_error(x, __FILE__ ,__LINE__); } while(0)
-#define VERBOSE(x)     do {if (BESLog::TheLog()->is_verbose()) BESLog::TheLog()->trace_verbose(x, __FILE__, __LINE__; } while(0)
-#define TIMING_LOG(x)  do { BESLog::TheLog()->trace_timing(x, __FILE__ ,__LINE__); } while(0)
+#define REQUEST_LOG(x)                                                                                                 \
+    do {                                                                                                               \
+        BESLog::TheLog()->trace_request(x, __FILE__, __LINE__);                                                        \
+    } while (0)
+#define INFO_LOG(x)                                                                                                    \
+    do {                                                                                                               \
+        BESLog::TheLog()->trace_info(x, __FILE__, __LINE__);                                                           \
+    } while (0)
+#define ERROR_LOG(x)                                                                                                   \
+    do {                                                                                                               \
+        BESLog::TheLog()->trace_error(x, __FILE__, __LINE__);                                                          \
+    } while (0)
+#define VERBOSE(x)                                                                                                     \
+    do {                                                                                                               \
+        if (BESLog::TheLog()->is_verbose()) BESLog::TheLog()->trace_verbose(x, __FILE__, __LINE__;  \
+    } while (0)
+#define TIMING_LOG(x)                                                                                                  \
+    do {                                                                                                               \
+        BESLog::TheLog()->trace_timing(x, __FILE__, __LINE__);                                                         \
+    } while (0)
 #else
-#define REQUEST_LOG(x) do { BESLog::TheLog()->request(x); } while(0)
-#define INFO_LOG(x)    do { BESLog::TheLog()->info(x); } while(0)
-#define ERROR_LOG(x)   do { BESLog::TheLog()->error(x); } while(0)
-#define VERBOSE(x)     do {if (BESLog::TheLog()->is_verbose()) BESLog::TheLog()->verbose(x); } while(0)
-#define TIMING_LOG(x)  do { BESLog::TheLog()->timing(x); } while(0)
+#define REQUEST_LOG(x)                                                                                                 \
+    do {                                                                                                               \
+        BESLog::TheLog()->request(x);                                                                                  \
+    } while (0)
+#define INFO_LOG(x)                                                                                                    \
+    do {                                                                                                               \
+        BESLog::TheLog()->info(x);                                                                                     \
+    } while (0)
+#define ERROR_LOG(x)                                                                                                   \
+    do {                                                                                                               \
+        BESLog::TheLog()->error(x);                                                                                    \
+    } while (0)
+#define VERBOSE(x)                                                                                                     \
+    do {                                                                                                               \
+        if (BESLog::TheLog()->is_verbose())                                                                            \
+            BESLog::TheLog()->verbose(x);                                                                              \
+    } while (0)
+#define TIMING_LOG(x)                                                                                                  \
+    do {                                                                                                               \
+        BESLog::TheLog()->timing(x);                                                                                   \
+    } while (0)
 #endif
-
 
 /** @brief Provides a mechanism for applications to log information to an
  * external file.
@@ -111,9 +141,9 @@
  *
  * @see TheBESKeys
  */
-class BESLog: public BESObj {
+class BESLog : public BESObj {
 private:
-    static BESLog * d_instance;
+    static BESLog *d_instance;
 
     std::ofstream *d_file_buffer = nullptr;
     std::string d_file_name;
@@ -131,11 +161,11 @@ private:
     // Use the UNIX time value as the log time.
     bool d_use_unix_time = false;
 
-    const char* REQUEST_LOG_TYPE_KEY = "request";
-    const char* INFO_LOG_TYPE_KEY = "info";
-    const char* ERROR_LOG_TYPE_KEY = "error";
-    const char* VERBOSE_LOG_TYPE_KEY = "verbose";
-    const char* TIMING_LOG_TYPE_KEY = "timing";
+    const char *REQUEST_LOG_TYPE_KEY = "request";
+    const char *INFO_LOG_TYPE_KEY = "info";
+    const char *ERROR_LOG_TYPE_KEY = "error";
+    const char *VERBOSE_LOG_TYPE_KEY = "verbose";
+    const char *TIMING_LOG_TYPE_KEY = "timing";
 
 protected:
     BESLog();
@@ -144,7 +174,8 @@ protected:
     std::string log_record_begin() const;
 
     void log_record(const std::string &record_type, const std::string &msg) const;
-    void trace_log_record(const std::string &record_type, const std::string &msg, const std::string &file, int line) const;
+    void trace_log_record(const std::string &record_type, const std::string &msg, const std::string &file,
+                          int line) const;
 
 public:
     ~BESLog() override;
@@ -157,7 +188,7 @@ public:
      * ability to log more detailed debugging information. If verbose is
      * already turned on then nothing is changed.
      */
-    void verbose_on(){ d_verbose = true; }
+    void verbose_on() { d_verbose = true; }
 
     /** @brief turns off verbose logging
      *
@@ -186,82 +217,73 @@ public:
     pid_t update_pid();
 
     /**
-    * @brief Writes request msg to the log stream.
-    */
-    void request(const std::string &msg) const {
-        log_record(REQUEST_LOG_TYPE_KEY, msg);
-    }
+     * @brief Writes request msg to the log stream.
+     */
+    void request(const std::string &msg) const { log_record(REQUEST_LOG_TYPE_KEY, msg); }
 
     /**
-    * @brief Writes info msg to the log stream.
-    */
-    void info(const std::string &msg) const {
-        log_record(INFO_LOG_TYPE_KEY, msg);
-    }
+     * @brief Writes info msg to the log stream.
+     */
+    void info(const std::string &msg) const { log_record(INFO_LOG_TYPE_KEY, msg); }
 
     /**
-    * @brief Writes error msg to the log stream.
-    */
-    void error(const std::string &msg) const {
-        log_record(ERROR_LOG_TYPE_KEY, msg);
-    }
+     * @brief Writes error msg to the log stream.
+     */
+    void error(const std::string &msg) const { log_record(ERROR_LOG_TYPE_KEY, msg); }
 
     /**
-    * @brief Writes verbose msg to the log stream, if verbose logging is enabled.
-    */
+     * @brief Writes verbose msg to the log stream, if verbose logging is enabled.
+     */
     void verbose(const std::string &msg) const {
-        if(d_verbose) {
+        if (d_verbose) {
             log_record(VERBOSE_LOG_TYPE_KEY, msg);
         }
     }
 
     /**
-    * @brief Writes timing msg to the log stream.
-    */
-    void timing(const std::string &msg) const {
-        log_record(TIMING_LOG_TYPE_KEY, msg);
-    }
+     * @brief Writes timing msg to the log stream.
+     */
+    void timing(const std::string &msg) const { log_record(TIMING_LOG_TYPE_KEY, msg); }
 
     /**
-    * @brief Writes request msg to the log stream with FILE and LINE
-    */
+     * @brief Writes request msg to the log stream with FILE and LINE
+     */
     void trace_request(const std::string &msg, const std::string &file, int line) const {
         trace_log_record(REQUEST_LOG_TYPE_KEY, msg, file, line);
     }
 
     /**
-    * @brief Writes info msg to the log stream with FILE and LINE
-    */
+     * @brief Writes info msg to the log stream with FILE and LINE
+     */
     void trace_info(const std::string &msg, const std::string &file, int line) const {
         trace_log_record(INFO_LOG_TYPE_KEY, msg, file, line);
     }
 
     /**
-    * @brief Writes error msg to the log stream with FILE and LINE
-    */
+     * @brief Writes error msg to the log stream with FILE and LINE
+     */
     void trace_error(const std::string &msg, const std::string &file, int line) const {
         trace_log_record(ERROR_LOG_TYPE_KEY, msg, file, line);
     }
 
     /**
-    * @brief Writes verbose msg to the log stream with FILE and LINE, if verbose logging is enabled.
-    */
+     * @brief Writes verbose msg to the log stream with FILE and LINE, if verbose logging is enabled.
+     */
     void trace_verbose(const std::string &msg, const std::string &file, int line) const {
-        if(d_verbose) {
+        if (d_verbose) {
             trace_log_record(VERBOSE_LOG_TYPE_KEY, msg, file, line);
         }
     }
 
     /**
-    * @brief Writes timing msg to the log stream with FILE and LINE
-    */
+     * @brief Writes timing msg to the log stream with FILE and LINE
+     */
     void trace_timing(const std::string &msg, const std::string &file, int line) const {
         trace_log_record(TIMING_LOG_TYPE_KEY, msg, file, line);
     }
 
-
     void set_request_id(const std::string &id);
-    std::string get_request_id() const {return request_id;}
+    std::string get_request_id() const { return request_id; }
 
     void dump(std::ostream &strm) const override;
 
@@ -270,10 +292,7 @@ public:
     // I added this so that it's easy to route the BESDebug messages to the
     // log file. This will enable the Admin Interface to display the contents
     // of those debug messages when it displays the log file. jhrg
-    std::ostream *get_log_ostream() const {
-        return d_file_buffer;
-    }
+    std::ostream *get_log_ostream() const { return d_file_buffer; }
 };
 
 #endif // BESLog_h_
-

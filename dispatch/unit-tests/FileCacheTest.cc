@@ -23,13 +23,13 @@
 
 #include "config.h"
 
-#include <memory>
 #include <iostream>
+#include <memory>
 
-#include <thread>
+#include <chrono>
 #include <future>
 #include <iomanip>
-#include <chrono>
+#include <thread>
 
 #include <algorithm>
 
@@ -38,9 +38,9 @@
 
 #include <openssl/sha.h>
 
+#include "BESDebug.h"
 #include "FileCache.h"
 #include "TheBESKeys.h"
-#include "BESDebug.h"
 
 #include "test_config.h"
 
@@ -51,8 +51,7 @@ using namespace std;
 #define prolog string("FileCacheTest::").append(__func__).append("() - ")
 #define CLEAN_CACHE 1
 
-string sha256(const string &filename)
-{
+string sha256(const string &filename) {
     fstream file(filename, ios::in);
     if (!file)
         CPPUNIT_FAIL("Tried to open a file to compute the SHA256 hash of its contents");
@@ -60,9 +59,9 @@ string sha256(const string &filename)
     SHA256_CTX sha256;
     SHA256_Init(&sha256);
 
-    file.seekg (0, fstream::end);
+    file.seekg(0, fstream::end);
     streamoff length = file.tellg();
-    file.seekg (0, fstream::beg);
+    file.seekg(0, fstream::beg);
 
     vector<char> buffer(length);
     file.read(buffer.data(), length);
@@ -72,33 +71,31 @@ string sha256(const string &filename)
     SHA256_Final(hash.data(), &sha256);
 
     stringstream ss;
-    for(int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
+    for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
         ss << hex << setw(2) << setfill('0') << (int)hash[i];
     }
     return ss.str();
 }
 
-string
-read_file(const string &fn)
-{
+string read_file(const string &fn) {
     ifstream is;
-    is.open (fn.c_str(), ios::binary);
+    is.open(fn.c_str(), ios::binary);
 
     if (!is)
         CPPUNIT_FAIL("Could not read file: " + fn);
 
     // get length of file:
-    is.seekg (0, ios::end);
+    is.seekg(0, ios::end);
     long length = is.tellg();
 
     // back to start
-    is.seekg (0, ios::beg);
+    is.seekg(0, ios::beg);
 
     // allocate memory:
-    vector<char> buffer(length+1);
+    vector<char> buffer(length + 1);
 
     // read data as a block:
-    is.read (buffer.data(), length);
+    is.read(buffer.data(), length);
     is.close();
     buffer[length] = '\0';
 
@@ -116,8 +113,7 @@ public:
     ~FileCacheTest() override = default;
 
     // Called before each test
-    void setUp() override
-    {
+    void setUp() override {
         TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log");
         TheBESKeys::TheKeys()->set_key("BES.LogVerbose", "yes");
         // Create the cache directory
@@ -127,8 +123,7 @@ public:
         }
     }
 
-    void tearDown() override
-    {
+    void tearDown() override {
 #if CLEAN_CACHE
         // Remove the cache directory
         DIR *dir = nullptr;
@@ -149,10 +144,9 @@ public:
             if (remove(cache_dir.c_str()) != 0) {
                 CPPUNIT_FAIL("Error removing cache directory:" + cache_dir);
             }
-        }
-        else {
-            DBG(cerr << prolog << "Could not clean the cache directory: " << cache_dir << "(process: "
-                << getpid() << ")\n");
+        } else {
+            DBG(cerr << prolog << "Could not clean the cache directory: " << cache_dir << "(process: " << getpid()
+                     << ")\n");
         }
 #endif
     }
@@ -169,10 +163,11 @@ public:
             CPPUNIT_FAIL("Failed to fork in flock demonstrator: " + get_errno());
         }
 
-        if (pid == 0) {  // Child process
+        if (pid == 0) { // Child process
             int fd2 = open(filename.c_str(), O_RDWR, 0666);
             if (fd2 == -1) {
-                CPPUNIT_FAIL("Failed to open the file for flock demonstration: " + string(filename) + " " + get_errno());
+                CPPUNIT_FAIL("Failed to open the file for flock demonstration: " + string(filename) + " " +
+                             get_errno());
             }
             DBG(cerr << prolog << "Child: Attempting to acquire lock...\n");
             if (flock(fd2, LOCK_EX | LOCK_NB) == -1) {
@@ -192,7 +187,7 @@ public:
             }
             close(fd2);
             exit(EXIT_SUCCESS);
-        } else {  // Parent process
+        } else { // Parent process
             DBG(cerr << prolog << "Parent: Attempting to acquire lock...\n");
             if (flock(fd, LOCK_EX | LOCK_NB) == -1) {
                 if (errno == EWOULDBLOCK) {
@@ -221,8 +216,10 @@ public:
         demonstrate_flock(test_file_path);
         string contents = read_file(test_file_path);
         DBG(cerr << prolog << "File contents: " << contents << '\n');
-        auto result = (contents.find("Parent: Writing to the file.") != string::npos && contents.find("Child: Writing to the file.") == string::npos)
-                || (contents.find("Child: Writing to the file.") != string::npos && contents.find("Parent: Writing to the file.") == string::npos);
+        auto result = (contents.find("Parent: Writing to the file.") != string::npos &&
+                       contents.find("Child: Writing to the file.") == string::npos) ||
+                      (contents.find("Child: Writing to the file.") != string::npos &&
+                       contents.find("Parent: Writing to the file.") == string::npos);
         CPPUNIT_ASSERT_MESSAGE("The file should contain the child's xor the parent's message", result);
     }
 
@@ -256,14 +253,12 @@ public:
     }
 
     // a cache that has not been initialized should fail the invariant test
-    void test_uninitialized_cache()
-    {
+    void test_uninitialized_cache() {
         FileCache fc;
         CPPUNIT_ASSERT_MESSAGE("Cache invariant should be false - no cache file open", !fc.invariant());
     }
 
-    void test_initialized_cache()
-    {
+    void test_initialized_cache() {
         FileCache fc;
         CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
         CPPUNIT_ASSERT_MESSAGE("Cache invariant should be true - cache initialized", fc.invariant());
@@ -274,8 +269,7 @@ public:
         CPPUNIT_ASSERT_MESSAGE("d_cache_dir should be \"/tmp/\" - cache initialized", fc.d_cache_dir == cache_dir);
     }
 
-    void test_two_initialized_caches_same_directory()
-    {
+    void test_two_initialized_caches_same_directory() {
         FileCache fc;
         CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
         CPPUNIT_ASSERT_MESSAGE("Cache invariant should be true - cache initialized", fc.invariant());
@@ -296,8 +290,7 @@ public:
     }
 
     // test the private open_cache_into() method
-    void test_open_cache_info()
-    {
+    void test_open_cache_info() {
         FileCache fc;
         CPPUNIT_ASSERT_MESSAGE("Cache invariant should be false - no cache file open", !fc.invariant());
 
@@ -314,16 +307,14 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The cache file should be 8 bytes", cifsb.st_size == 8);
     }
 
-    void test_open_cache_info_cache_dir_not_set()
-    {
+    void test_open_cache_info_cache_dir_not_set() {
         FileCache fc;
         CPPUNIT_ASSERT_MESSAGE("Cache invariant should be false - no cache file open", !fc.invariant());
 
         CPPUNIT_ASSERT_MESSAGE("The cache file should not be opened", !fc.open_cache_info());
     }
 
-    void test_get_cache_info_size()
-    {
+    void test_get_cache_info_size() {
         FileCache fc;
         CPPUNIT_ASSERT_MESSAGE("Cache invariant should be false - no cache file open", !fc.invariant());
 
@@ -333,8 +324,7 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Initially, the cache info size should be zero", fc.get_cache_info_size() == 0);
     }
 
-    void test_update_cache_info_size()
-    {
+    void test_update_cache_info_size() {
         FileCache fc;
         CPPUNIT_ASSERT_MESSAGE("Cache invariant should be false - no cache file open", !fc.invariant());
 
@@ -349,11 +339,9 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The cache info size should be updated",
                                fc.update_cache_info_size(fc.get_cache_info_size() + 17));
         CPPUNIT_ASSERT_MESSAGE("The cache info size should be 10", fc.get_cache_info_size() == 27);
-
     }
 
-    void test_put_single_file()
-    {
+    void test_put_single_file() {
         DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
 
         FileCache fc;
@@ -384,8 +372,7 @@ public:
                                sha256(source_file) == sha256(raw_cached_file_path));
     }
 
-    void test_put_two_files()
-    {
+    void test_put_two_files() {
         DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
 
         FileCache fc;
@@ -406,8 +393,7 @@ public:
                                fc.get_cache_info_size() == sb.st_size * 2);
     }
 
-    void test_put_duplicate_key()
-    {
+    void test_put_duplicate_key() {
         DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
 
         FileCache fc;
@@ -424,8 +410,7 @@ public:
         CPPUNIT_ASSERT_MESSAGE("third put() with duplicate key name should return false", !status);
     }
 
-    void test_put_duplicate_key_two_processes()
-    {
+    void test_put_duplicate_key_two_processes() {
         DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
 
         FileCache fc;
@@ -439,9 +424,8 @@ public:
 
             bool status = fc2.put("key1", source_file);
             DBG(cerr << prolog << "child process put() status: " << status << '\n');
-            exit(status ? 0 : 1);   // exit with 0 if status is true, 1 if false (it's a process)
-        }
-        else {
+            exit(status ? 0 : 1); // exit with 0 if status is true, 1 if false (it's a process)
+        } else {
             // parent process - generally faster. I used std::this_thread::sleep_for() but this is
             // not multi-threaded code. It's just a way to sleep for a short time.
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -461,26 +445,29 @@ public:
 
     /// Used in three places. jhrg 11/7/23
     static bool multiple_put_operations(FileCache &fc, const string &source_file) {
-        auto f1 = async(launch::async,
-                        [source_file, &fc](const string &key) -> bool {
-                            // give the other threads a head start
-                            this_thread::sleep_for(chrono::milliseconds(1));
-                            bool status = fc.put(key, source_file);
-                            return status;
-                        },
-                        "key1");
-        auto f2 = async(launch::async,
-                        [source_file, &fc](const string &key) -> bool {
-                            bool status = fc.put(key, source_file);
-                            return status;
-                        },
-                        "key1");
-        auto f3 = async(launch::async,
-                        [source_file, &fc](const string &key) -> bool {
-                            bool status = fc.put(key, source_file);
-                            return status;
-                        },
-                        "key1");
+        auto f1 = async(
+            launch::async,
+            [source_file, &fc](const string &key) -> bool {
+                // give the other threads a head start
+                this_thread::sleep_for(chrono::milliseconds(1));
+                bool status = fc.put(key, source_file);
+                return status;
+            },
+            "key1");
+        auto f2 = async(
+            launch::async,
+            [source_file, &fc](const string &key) -> bool {
+                bool status = fc.put(key, source_file);
+                return status;
+            },
+            "key1");
+        auto f3 = async(
+            launch::async,
+            [source_file, &fc](const string &key) -> bool {
+                bool status = fc.put(key, source_file);
+                return status;
+            },
+            "key1");
 
         DBG(cerr << "Start querying\n");
 
@@ -490,14 +477,12 @@ public:
         DBG(cerr << "f1_status: " << f1_status << '\n');
         DBG(cerr << "f2_status: " << f2_status << '\n');
         DBG(cerr << "f3_status: " << f3_status << '\n');
-        bool xor_status = (f1_status && !f2_status && !f3_status) ||
-                          (!f1_status && f2_status && !f3_status) ||
+        bool xor_status = (f1_status && !f2_status && !f3_status) || (!f1_status && f2_status && !f3_status) ||
                           (!f1_status && !f2_status && f3_status);
         return xor_status;
     }
 
-    void test_put_duplicate_key_three_threads()
-    {
+    void test_put_duplicate_key_three_threads() {
         FileCache fc;
         CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
         string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
@@ -510,8 +495,7 @@ public:
                                sha256(source_file) == sha256(BESUtil::pathConcat(cache_dir, "key1")));
     }
 
-    void test_put_duplicate_key_two_processes_three_threads_each()
-    {
+    void test_put_duplicate_key_two_processes_three_threads_each() {
         DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
 
         FileCache fc;
@@ -526,9 +510,8 @@ public:
             bool xor_status = multiple_put_operations(fc2, source_file);
 
             DBG(cerr << prolog << "child process put() status: " << xor_status << '\n');
-            exit(xor_status ? 0 : 1);   // exit with 0 if status is true, 1 if false (it's a process)
-        }
-        else {
+            exit(xor_status ? 0 : 1); // exit with 0 if status is true, 1 if false (it's a process)
+        } else {
             // parent process - generally faster. I used std::this_thread::sleep_for() but this is
             // not multi-threaded code. It's just a way to sleep for a short time.
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -539,7 +522,8 @@ public:
             wait(&child_status);
             DBG(cerr << prolog << "child process exit status: " << WEXITSTATUS(child_status) << '\n');
             // exit status for a process: 0 is true, 1 is false
-            bool xor_parent_child_status = (xor_status && WEXITSTATUS(child_status) != 0) || (!xor_status && WEXITSTATUS(child_status) == 0);
+            bool xor_parent_child_status =
+                (xor_status && WEXITSTATUS(child_status) != 0) || (!xor_status && WEXITSTATUS(child_status) == 0);
             CPPUNIT_ASSERT_MESSAGE("one status should be true and one false", xor_parent_child_status);
         }
     }
@@ -554,7 +538,7 @@ public:
     void put_helper(FileCache &fc, const string &source_file, const string &key) {
         FileCache::PutItem item(fc);
 
-        bool status = fc.put(key, source_file);    // creates and locks an empty file.
+        bool status = fc.put(key, source_file); // creates and locks an empty file.
         CPPUNIT_ASSERT_MESSAGE("put() should return true", status);
 
         // cached file is really there
@@ -584,14 +568,14 @@ public:
         DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
 
         FileCache fc;
-        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100*MEGABYTE, 20*MEGABYTE));
-        string source_file_1 = string(TEST_SRC_DIR) + "/cache/testfile.txt.bz2";    // 74 bytes
-        string source_file_2 = string(TEST_SRC_DIR) + "/cache/testfile.txt.gz";     // 70 bytes
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100 * MEGABYTE, 20 * MEGABYTE));
+        string source_file_1 = string(TEST_SRC_DIR) + "/cache/testfile.txt.bz2"; // 74 bytes
+        string source_file_2 = string(TEST_SRC_DIR) + "/cache/testfile.txt.gz";  // 70 bytes
 
         if (fork() == 0) {
             // child process.
             FileCache fc2;
-            CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc2.initialize(cache_dir, 100*MEGABYTE, 20*MEGABYTE));
+            CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc2.initialize(cache_dir, 100 * MEGABYTE, 20 * MEGABYTE));
             // Each process will put 1000 files into the cache. This will test the cache_info file
             // for protection against simultaneous writes.
             for (int i = 0; i < 1000; i++) {
@@ -601,9 +585,8 @@ public:
             FileCache::Item item;
             bool status = fc2.get("key1-999", item);
             DBG(cerr << prolog << "child process get() status: " << status << '\n');
-            exit(status ? 0 : 1);   // exit with 0 if status is true, 1 if false (it's a process)
-        }
-        else {
+            exit(status ? 0 : 1); // exit with 0 if status is true, 1 if false (it's a process)
+        } else {
             // parent process - generally faster. I used std::this_thread::sleep_for() but, this is
             // not multithreaded code. It's just a way to sleep for a short time.
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -623,24 +606,22 @@ public:
             CPPUNIT_ASSERT_MESSAGE("get() in the child should return true", WEXITSTATUS(child_status) == 0);
         }
 
-
         auto cache_info_file_size = FileCache::get_file_size(fc.d_cache_info_fd);
         auto cache_size = fc.get_cache_info_size();
-        CPPUNIT_ASSERT_MESSAGE("Cache info file size should be 8 bytes but is " + to_string(cache_info_file_size)
-                               + " and the recorded cache size should be 144,000 but is " + to_string(cache_size),
+        CPPUNIT_ASSERT_MESSAGE("Cache info file size should be 8 bytes but is " + to_string(cache_info_file_size) +
+                                   " and the recorded cache size should be 144,000 but is " + to_string(cache_size),
                                cache_info_file_size == 8);
         CPPUNIT_ASSERT_MESSAGE("Cache size should be 144,000, but is " + to_string(cache_size), cache_size == 144'000);
     }
 
-    void test_put_fd_version_single_file()
-    {
+    void test_put_fd_version_single_file() {
         DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
 
         FileCache fc;
         CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
         string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
 
-        struct stat sb = {};  // used later...
+        struct stat sb = {}; // used later...
         if (stat(source_file.c_str(), &sb) != 0)
             CPPUNIT_FAIL("stat() failed on cached file");
 
@@ -673,7 +654,8 @@ public:
             if (stat(raw_cached_file_path.c_str(), &rcfp_b) != 0)
                 CPPUNIT_FAIL("stat() failed on cached file");
 
-            CPPUNIT_ASSERT_MESSAGE("Cached file should be the same size as the source file", sb.st_size == rcfp_b.st_size);
+            CPPUNIT_ASSERT_MESSAGE("Cached file should be the same size as the source file",
+                                   sb.st_size == rcfp_b.st_size);
 
             CPPUNIT_ASSERT_MESSAGE("Cached and source file should have the same sha256 hash",
                                    sha256(source_file) == sha256(raw_cached_file_path));
@@ -693,7 +675,7 @@ public:
                                fc.get_cache_info_size() == sb.st_size);
 
         {
-            FileCache::Item get_item;   // get_item unlocks the file on exit from the block
+            FileCache::Item get_item; // get_item unlocks the file on exit from the block
             CPPUNIT_ASSERT_MESSAGE("get() should work now since the file is not locked", fc.get("key1", get_item));
             CPPUNIT_ASSERT_MESSAGE("del() should not work since the file is locked, now by get()", !fc.del("key1"));
         }
@@ -701,19 +683,17 @@ public:
         CPPUNIT_ASSERT_MESSAGE("del() should work since the file is not locked", fc.del("key1"));
 
         // Was cache_info_size updated correctly?
-        CPPUNIT_ASSERT_MESSAGE("Cached info size should be the size of this one file",
-                               fc.get_cache_info_size() == 0);
+        CPPUNIT_ASSERT_MESSAGE("Cached info size should be the size of this one file", fc.get_cache_info_size() == 0);
     }
 
-    void test_put_fd_version_single_file_with_purge()
-    {
+    void test_put_fd_version_single_file_with_purge() {
         DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
 
         FileCache fc;
         CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
         string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
 
-        struct stat sb = {};  // used later...
+        struct stat sb = {}; // used later...
         if (stat(source_file.c_str(), &sb) != 0)
             CPPUNIT_FAIL("stat() failed on cached file");
 
@@ -746,7 +726,8 @@ public:
             if (stat(raw_cached_file_path.c_str(), &rcfp_b) != 0)
                 CPPUNIT_FAIL("stat() failed on cached file");
 
-            CPPUNIT_ASSERT_MESSAGE("Cached file should be the same size as the source file", sb.st_size == rcfp_b.st_size);
+            CPPUNIT_ASSERT_MESSAGE("Cached file should be the same size as the source file",
+                                   sb.st_size == rcfp_b.st_size);
 
             CPPUNIT_ASSERT_MESSAGE("Cached and source file should have the same sha256 hash",
                                    sha256(source_file) == sha256(raw_cached_file_path));
@@ -761,7 +742,8 @@ public:
             // cache_info should be updated.
 
             // will this deadlock?
-            CPPUNIT_ASSERT_MESSAGE("purge() should work since the item (key1) is locked, but not the cache itself.", fc.purge());
+            CPPUNIT_ASSERT_MESSAGE("purge() should work since the item (key1) is locked, but not the cache itself.",
+                                   fc.purge());
         }
 
         // Was cache_info_size updated correctly?
@@ -769,7 +751,7 @@ public:
                                fc.get_cache_info_size() == sb.st_size);
 
         {
-            FileCache::Item get_item;   // get_item unlocks the file on exit from the block
+            FileCache::Item get_item; // get_item unlocks the file on exit from the block
             CPPUNIT_ASSERT_MESSAGE("get() should work now since the file is not locked", fc.get("key1", get_item));
             CPPUNIT_ASSERT_MESSAGE("del() should not work since the file is locked, now by get()", !fc.del("key1"));
         }
@@ -777,8 +759,7 @@ public:
         CPPUNIT_ASSERT_MESSAGE("del() should work since the file is not locked", fc.del("key1"));
 
         // Was cache_info_size updated correctly?
-        CPPUNIT_ASSERT_MESSAGE("Cached info size should be the size of this one file",
-                               fc.get_cache_info_size() == 0);
+        CPPUNIT_ASSERT_MESSAGE("Cached info size should be the size of this one file", fc.get_cache_info_size() == 0);
     }
 
     /**
@@ -790,7 +771,7 @@ public:
     void put_an_item_helper(FileCache &fc, const string &source_file, const string &key) {
         FileCache::PutItem item(fc);
 
-        bool status = fc.put(key, item);    // creates and locks an empty file.
+        bool status = fc.put(key, item); // creates and locks an empty file.
         CPPUNIT_ASSERT_MESSAGE("put() should return true", status);
 
         // cached file is really there
@@ -819,7 +800,8 @@ public:
         if (stat(raw_cached_file_path.c_str(), &rcfp_b) != 0)
             CPPUNIT_FAIL("stat() failed on cached file");
 
-        CPPUNIT_ASSERT_MESSAGE("Cached file should be the same size as the source file", source_file_size == rcfp_b.st_size);
+        CPPUNIT_ASSERT_MESSAGE("Cached file should be the same size as the source file",
+                               source_file_size == rcfp_b.st_size);
 
         CPPUNIT_ASSERT_MESSAGE("Cached and source file should have the same sha256 hash",
                                sha256(source_file) == sha256(raw_cached_file_path));
@@ -832,17 +814,17 @@ public:
         DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
 
         FileCache fc;
-        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100*MEGABYTE, 20*MEGABYTE));
-        string source_file_1 = string(TEST_SRC_DIR) + "/cache/testfile.txt.bz2";    // 74 bytes
-        string source_file_2 = string(TEST_SRC_DIR) + "/cache/testfile.txt.gz";     // 70 bytes
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100 * MEGABYTE, 20 * MEGABYTE));
+        string source_file_1 = string(TEST_SRC_DIR) + "/cache/testfile.txt.bz2"; // 74 bytes
+        string source_file_2 = string(TEST_SRC_DIR) + "/cache/testfile.txt.gz";  // 70 bytes
 
         if (fork() == 0) {
             // child process
             // Use a new cache object to ensure each process opens its own cache_info file. There is an
             // issue where if two processes share the same fd, flock(2) will not lock the file as expected.
             // This can be fixed by having each process open the cache_info file. jhrg 1/1/25
-            FileCache fc2;  // Use a new cache object to ensure each process opens its own cache_info file.
-            CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc2.initialize(cache_dir, 100*MEGABYTE, 20*MEGABYTE));
+            FileCache fc2; // Use a new cache object to ensure each process opens its own cache_info file.
+            CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc2.initialize(cache_dir, 100 * MEGABYTE, 20 * MEGABYTE));
             // Both processes will put the same file in the cache, 1000 times over. In testing, this
             // has always caused a collision if the cache_info file is not locked correctly. jhrg 1/2/25
             for (int i = 0; i < 1000; i++) {
@@ -852,13 +834,12 @@ public:
             FileCache::Item item;
             bool status = fc2.get("key1-999", item);
             DBG(cerr << prolog << "child process get() status: " << status << '\n');
-            exit(status ? 0 : 1);   // exit with 0 if status is true, 1 if false (it's a process)
-        }
-        else {
+            exit(status ? 0 : 1); // exit with 0 if status is true, 1 if false (it's a process)
+        } else {
             // parent process - generally faster. I used std::this_thread::sleep_for() but this is
             // not multi-threaded code. It's just a way to sleep for a short time.
             // Put the second file in the cache.
-             for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 1000; i++) {
                 put_an_item_helper(fc, source_file_2, "key2-" + to_string(i));
             }
 
@@ -876,21 +857,20 @@ public:
 
         auto cache_info_file_size = FileCache::get_file_size(fc.d_cache_info_fd);
         auto cache_size = fc.get_cache_info_size();
-        CPPUNIT_ASSERT_MESSAGE("Cache info file size should be 8 bytes but is " + to_string(cache_info_file_size)
-                                + " and the recorded cache size should be 144,000 but is " + to_string(cache_size),
-                                cache_info_file_size == 8);
+        CPPUNIT_ASSERT_MESSAGE("Cache info file size should be 8 bytes but is " + to_string(cache_info_file_size) +
+                                   " and the recorded cache size should be 144,000 but is " + to_string(cache_size),
+                               cache_info_file_size == 8);
         CPPUNIT_ASSERT_MESSAGE("Cache size should be 144,000, but is " + to_string(cache_size), cache_size == 144'000);
     }
 
-    void test_put_data_version_single_file()
-    {
+    void test_put_data_version_single_file() {
         DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
 
         FileCache fc;
         CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
         string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
 
-        struct stat sb = {};  // used later...
+        struct stat sb = {}; // used later...
         if (stat(source_file.c_str(), &sb) != 0)
             CPPUNIT_FAIL("stat() failed on cached file");
 
@@ -915,7 +895,7 @@ public:
                                fc.get_cache_info_size() == key1_data.size());
 
         {
-            FileCache::Item get_item;   // get_item unlocks the file on exit from the block
+            FileCache::Item get_item; // get_item unlocks the file on exit from the block
             CPPUNIT_ASSERT_MESSAGE("get() should work now since the file is not locked", fc.get("key1", get_item));
             CPPUNIT_ASSERT_MESSAGE("del() should not work since the file is locked, now by get()", !fc.del("key1"));
         }
@@ -923,18 +903,17 @@ public:
         CPPUNIT_ASSERT_MESSAGE("del() should work since the file is not locked", fc.del("key1"));
 
         // Was cache_info_size updated correctly?
-        CPPUNIT_ASSERT_MESSAGE("Cached info size should be the size of this one file",
-                               fc.get_cache_info_size() == 0);
+        CPPUNIT_ASSERT_MESSAGE("Cached info size should be the size of this one file", fc.get_cache_info_size() == 0);
     }
 
     void test_put_data_version_single_file_with_purge() {
         DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
 
         FileCache fc;
-        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100*MEGABYTE, 20*MEGABYTE));
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100 * MEGABYTE, 20 * MEGABYTE));
         string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
 
-        struct stat sb = {};  // used later...
+        struct stat sb = {}; // used later...
         if (stat(source_file.c_str(), &sb) != 0)
             CPPUNIT_FAIL("stat() failed on cached file");
 
@@ -961,11 +940,12 @@ public:
         CPPUNIT_ASSERT_MESSAGE("purge() should work.", fc.purge());
 
         // Was cache_info_size updated correctly?
-        CPPUNIT_ASSERT_MESSAGE("Cached info size (" + to_string(fc.get_cache_info_size()) + ") should be the size of this one file",
+        CPPUNIT_ASSERT_MESSAGE("Cached info size (" + to_string(fc.get_cache_info_size()) +
+                                   ") should be the size of this one file",
                                fc.get_cache_info_size() == sb.st_size);
 
         {
-            FileCache::Item get_item;   // get_item unlocks the file on exit from the block
+            FileCache::Item get_item; // get_item unlocks the file on exit from the block
             CPPUNIT_ASSERT_MESSAGE("get() should work now since the file is not locked", fc.get("key1", get_item));
             CPPUNIT_ASSERT_MESSAGE("del() should not work since the file is locked, now by get()", !fc.del("key1"));
         }
@@ -973,8 +953,7 @@ public:
         CPPUNIT_ASSERT_MESSAGE("del() should work since the file is not locked", fc.del("key1"));
 
         // Was cache_info_size updated correctly?
-        CPPUNIT_ASSERT_MESSAGE("Cached info size should be the size of this one file",
-                               fc.get_cache_info_size() == 0);
+        CPPUNIT_ASSERT_MESSAGE("Cached info size should be the size of this one file", fc.get_cache_info_size() == 0);
     }
 
     /**
@@ -984,7 +963,7 @@ public:
      * to see that the cache_info file is correctly protected against simultaneous writes .
      */
     void put_a_string_helper(FileCache &fc, const string &data, const string &key) {
-        bool status = fc.put_data(key, data);    // creates-locks and stores data.
+        bool status = fc.put_data(key, data); // creates-locks and stores data.
         CPPUNIT_ASSERT_MESSAGE("put() should return true", status);
 
         // cached file is really there
@@ -1008,8 +987,8 @@ public:
         DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
 
         FileCache fc;
-        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100*MEGABYTE, 20*MEGABYTE));
-        string source_data_1 = read_file(string(TEST_SRC_DIR) + "/cache/testfile_plain.txt");    // 40 bytes
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100 * MEGABYTE, 20 * MEGABYTE));
+        string source_data_1 = read_file(string(TEST_SRC_DIR) + "/cache/testfile_plain.txt"); // 40 bytes
         string source_data_2 = read_file(string(TEST_SRC_DIR) + "/cache/testfile_plain_2.txt");
 
         if (fork() == 0) {
@@ -1017,8 +996,8 @@ public:
             // Use a new cache object to ensure each process opens its own cache_info file. There is an
             // issue where if two processes share the same fd, flock(2) will not lock the file as expected.
             // This can be fixed by having each process open the cache_info file. jhrg 1/1/25
-            FileCache fc2;  // Use a new cache object to ensure each process opens its own cache_info file.
-            CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc2.initialize(cache_dir, 100*MEGABYTE, 20*MEGABYTE));
+            FileCache fc2; // Use a new cache object to ensure each process opens its own cache_info file.
+            CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc2.initialize(cache_dir, 100 * MEGABYTE, 20 * MEGABYTE));
             // Both processes will put the same file in the cache, 1000 times over. In testing, this
             // has always caused a collision if the cache_info file is not locked correctly. jhrg 1/2/25
             for (int i = 0; i < 1000; i++) {
@@ -1028,9 +1007,8 @@ public:
             FileCache::Item item;
             bool status = fc2.get("key1-999", item);
             DBG(cerr << prolog << "child process get() status: " << status << '\n');
-            exit(status ? 0 : 1);   // exit with 0 if status is true, 1 if false (it's a process)
-        }
-        else {
+            exit(status ? 0 : 1); // exit with 0 if status is true, 1 if false (it's a process)
+        } else {
             // parent process - generally faster. I used std::this_thread::sleep_for() but this is
             // not multi-threaded code. It's just a way to sleep for a short time.
             // Put the second file in the cache.
@@ -1052,8 +1030,8 @@ public:
 
         auto cache_info_file_size = FileCache::get_file_size(fc.d_cache_info_fd);
         auto cache_size = fc.get_cache_info_size();
-        CPPUNIT_ASSERT_MESSAGE("Cache info file size should be 8 bytes but is " + to_string(cache_info_file_size)
-                               + " and the recorded cache size should be 143,000 but is " + to_string(cache_size),
+        CPPUNIT_ASSERT_MESSAGE("Cache info file size should be 8 bytes but is " + to_string(cache_info_file_size) +
+                                   " and the recorded cache size should be 143,000 but is " + to_string(cache_size),
                                cache_info_file_size == 8);
         CPPUNIT_ASSERT_MESSAGE("Cache size should be 143,000, but is " + to_string(cache_size), cache_size == 143'000);
     }
@@ -1061,7 +1039,7 @@ public:
     // This version of put_a_string helper handles when put() fails. Return true/false if the
     // put succeeded. jhrg 1/10/25
     bool relaxed_put_a_string_helper(FileCache &fc, const string &data, const string &key) {
-        bool status = fc.put_data(key, data);    // creates and locks an empty file.
+        bool status = fc.put_data(key, data); // creates and locks an empty file.
 
         if (status) {
             // cached file is really there - for collisions, the file might be there in name only
@@ -1078,7 +1056,8 @@ public:
             if (stat(raw_cached_file_path.c_str(), &rcfp_b) != 0)
                 CPPUNIT_FAIL("stat() failed on cached file");
 
-            CPPUNIT_ASSERT_MESSAGE("Cached file should be the same size as the source file", data.size() == rcfp_b.st_size);
+            CPPUNIT_ASSERT_MESSAGE("Cached file should be the same size as the source file",
+                                   data.size() == rcfp_b.st_size);
         }
 
         return status;
@@ -1091,7 +1070,7 @@ public:
             // Use a new cache object to ensure each process opens its own cache_info file. There is an
             // issue where if two processes share the same fd, flock(2) will not lock the file as expected.
             // This can be fixed by having each process open the cache_info file. jhrg 1/1/25
-            FileCache fc;  // Use a new cache object to ensure each process opens its own cache_info file.
+            FileCache fc; // Use a new cache object to ensure each process opens its own cache_info file.
             CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100 * MEGABYTE, 20 * MEGABYTE));
             // Both processes will put the same file in the cache, 1000 times over. In testing, this
             // has always caused a collision if the cache_info file is not locked correctly. jhrg 1/2/25
@@ -1101,9 +1080,8 @@ public:
                     success += 1;
             }
             DBG(cerr << "child process put() success: " << success << '\n');
-            exit(0);   // exit with 0 if status is true, 1 if false (it's a process)
-        }
-        else {
+            exit(0); // exit with 0 if status is true, 1 if false (it's a process)
+        } else {
             DBG(cerr << prolog << "child process pid: " << child_pid << '\n');
             return child_pid;
         }
@@ -1113,8 +1091,8 @@ public:
         DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
 
         FileCache fc;
-        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100*MEGABYTE, 20*MEGABYTE));
-        string source_data_1 = read_file(string(TEST_SRC_DIR) + "/cache/testfile_plain.txt");    // 40 bytes
+        CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100 * MEGABYTE, 20 * MEGABYTE));
+        string source_data_1 = read_file(string(TEST_SRC_DIR) + "/cache/testfile_plain.txt"); // 40 bytes
         string source_data_2 = read_file(string(TEST_SRC_DIR) + "/cache/testfile_plain_2.txt");
 
         // Lots of collisions here. This test is a stress test for the cache_info file. jhrg 1/2/25
@@ -1140,23 +1118,23 @@ public:
         int child_status;
         int child_pid;
         while ((child_pid = wait(&child_status)) > 0) {
-            DBG(cerr << prolog << "child process " << to_string(child_pid) << ") exit status: "
-                << WEXITSTATUS(child_status) << '\n');
+            DBG(cerr << prolog << "child process " << to_string(child_pid)
+                     << ") exit status: " << WEXITSTATUS(child_status) << '\n');
             // exit status for a process: 0 is true, 1 is false
-            CPPUNIT_ASSERT_MESSAGE("get() in the child should return true, but returned: "
-                                    + to_string(WEXITSTATUS(child_status)), WEXITSTATUS(child_status) == 0);
+            CPPUNIT_ASSERT_MESSAGE("get() in the child should return true, but returned: " +
+                                       to_string(WEXITSTATUS(child_status)),
+                                   WEXITSTATUS(child_status) == 0);
         }
 
         auto cache_info_file_size = FileCache::get_file_size(fc.d_cache_info_fd);
         auto cache_size = fc.get_cache_info_size();
-        CPPUNIT_ASSERT_MESSAGE("Cache info file size should be 8 bytes but is " + to_string(cache_info_file_size)
-                               + " and the recorded cache size should be 143,000 but is " + to_string(cache_size),
+        CPPUNIT_ASSERT_MESSAGE("Cache info file size should be 8 bytes but is " + to_string(cache_info_file_size) +
+                                   " and the recorded cache size should be 143,000 but is " + to_string(cache_size),
                                cache_info_file_size == 8);
         CPPUNIT_ASSERT_MESSAGE("Cache size should be 143,000, but is " + to_string(cache_size), cache_size == 143'000);
     }
 
-    void test_get_a_file_not_cached()
-    {
+    void test_get_a_file_not_cached() {
         DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
 
         FileCache fc;
@@ -1200,9 +1178,8 @@ public:
             FileCache::Item item;
             bool status = fc2.get("key1", item);
             DBG(cerr << prolog << "child process put() status: " << status << '\n');
-            exit(status ? 0 : 1);   // exit with 0 if status is true, 1 if false (it's a process)
-        }
-        else {
+            exit(status ? 0 : 1); // exit with 0 if status is true, 1 if false (it's a process)
+        } else {
             // parent process - generally faster. I used std::this_thread::sleep_for() but this is
             // not multi-threaded code. It's just a way to sleep for a short time.
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -1227,37 +1204,39 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Item::get_fd() should not return -1", item.get_fd() != -1);
     }
 
-    void test_get_duplicate_key_three_threads()
-    {
+    void test_get_duplicate_key_three_threads() {
         FileCache fc;
         CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
         string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
 
         CPPUNIT_ASSERT_MESSAGE("Cache put(key1) should work", fc.put("key1", source_file));
 
-        auto f1 = async(launch::async,
-                        [source_file, &fc](const string &key) -> bool {
-                            FileCache::Item item;
-                            bool status = fc.get(key, item);
-                            return status;
-                        },
-                        "key1");
-        auto f2 = async(launch::async,
-                        [source_file, &fc](const string &key) -> bool {
-                            FileCache::Item item;
-                            bool status = fc.get(key, item);
-                            return status;
-                        },
-                        "key1");
-        auto f3 = async(launch::async,
-                        [source_file, &fc](const string &key) -> bool {
-                            FileCache::Item item;
-                            bool status = fc.get(key, item);
-                            return status;
-                        },
-                        "key1");
+        auto f1 = async(
+            launch::async,
+            [source_file, &fc](const string &key) -> bool {
+                FileCache::Item item;
+                bool status = fc.get(key, item);
+                return status;
+            },
+            "key1");
+        auto f2 = async(
+            launch::async,
+            [source_file, &fc](const string &key) -> bool {
+                FileCache::Item item;
+                bool status = fc.get(key, item);
+                return status;
+            },
+            "key1");
+        auto f3 = async(
+            launch::async,
+            [source_file, &fc](const string &key) -> bool {
+                FileCache::Item item;
+                bool status = fc.get(key, item);
+                return status;
+            },
+            "key1");
 
-        DBG(cerr << "Start querying\n" );
+        DBG(cerr << "Start querying\n");
 
         bool f1_status = f1.get();
         bool f2_status = f2.get();
@@ -1271,8 +1250,7 @@ public:
 
     // This tests the cases where the file is open/locked for 'get()' and when it has been closed
     // (i.e., unlocked).
-    void test_get_key_in_thread_then_del()
-    {
+    void test_get_key_in_thread_then_del() {
         FileCache fc;
         CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
         string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
@@ -1281,11 +1259,10 @@ public:
 
         FileCache::Item item;
 
-        auto f1 = async(launch::async,
-                        [source_file, &fc, &item]() {
-                            bool status = fc.get("key1", item);
-                            return status;
-                        });
+        auto f1 = async(launch::async, [source_file, &fc, &item]() {
+            bool status = fc.get("key1", item);
+            return status;
+        });
 
         bool status = f1.get();
         CPPUNIT_ASSERT_MESSAGE("Cache get(key1, item) should work", status);
@@ -1296,8 +1273,7 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Cache del(key1) should work here", fc.del("key1"));
     }
 
-    void test_get_and_put_duplicate_key_two_processes()
-    {
+    void test_get_and_put_duplicate_key_two_processes() {
         DBG(cerr << prolog << "cache dir: " << cache_dir << '\n');
 
         string source_file = string(TEST_SRC_DIR) + "/cache/template.txt";
@@ -1313,9 +1289,8 @@ public:
             CPPUNIT_ASSERT_MESSAGE("Cache should initialize", fc.initialize(cache_dir, 100, 20));
             bool status = fc.put("key1", source_file);
             DBG(cerr << prolog << "child process put() status: " << status << '\n');
-            exit(status ? 0 : 1);   // exit with 0 if status is true, 1 if false (it's a process)
-        }
-        else {
+            exit(status ? 0 : 1); // exit with 0 if status is true, 1 if false (it's a process)
+        } else {
             // parent process - generally faster. I used std::this_thread::sleep_for() but this is
             // not multi-threaded code. It's just a way to sleep for a short time.
             FileCache fc;
@@ -1344,8 +1319,7 @@ public:
                 DBG(cerr << prolog << "parent process get() status: " << status << '\n');
                 CPPUNIT_ASSERT_MESSAGE("Cached info size should be the size of the source file (first get() call)",
                                        cb.st_size == source_file_size);
-            }
-            else {
+            } else {
                 // if the get operation failed, it might have run into the put operation. Since we know the
                 // put has finished, get should work now. And the put operation should have worked
                 status = fc.get("key1", item);
@@ -1403,7 +1377,8 @@ public:
 
         auto size_with_one_file = fc.get_cache_info_size();
         // key1 and key2 cache the same contents
-        CPPUNIT_ASSERT_MESSAGE("Size in cache_info should be smaller by half", size_with_both_files == 2 * size_with_one_file);
+        CPPUNIT_ASSERT_MESSAGE("Size in cache_info should be smaller by half",
+                               size_with_both_files == 2 * size_with_one_file);
     }
 
     // Test del() on a file when it might be locked by get(). This code uses timing to
@@ -1431,7 +1406,6 @@ public:
             bool status1 = fc2.get("key1", item1);
             DBG(cerr << prolog << "child process get() key1 status: " << status1 << '\n');
 
-
             FileCache::Item item2;
             bool status2 = fc2.get("key2", item2);
             DBG(cerr << prolog << "child process get() key2 status: " << status2 << '\n');
@@ -1441,9 +1415,8 @@ public:
             DBG(cerr << prolog << "child process has shared locks on both key1 and key2\n");
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             DBG(cerr << prolog << "child process exit\n");
-            exit(EXIT_SUCCESS);   // exit with 0 if status is true, 1 if false (it's a process)
-        }
-        else {
+            exit(EXIT_SUCCESS); // exit with 0 if status is true, 1 if false (it's a process)
+        } else {
             // parent process - generally faster. I used std::this_thread::sleep_for() but this is
             // not multi-threaded code. It's just a way to sleep for a short time.
             std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -1467,10 +1440,9 @@ public:
             bool status;
             FileCache::Item item1;
             if (del_status) {
-                 status = fc.get("key1", item1);
+                status = fc.get("key1", item1);
                 CPPUNIT_ASSERT_MESSAGE("get() should return false since key1 has been deleted", !status);
-            }
-            else {
+            } else {
                 status = fc.get("key1", item1);
                 CPPUNIT_ASSERT_MESSAGE("get() should return true since key1 was not deleted", status);
             }
@@ -1498,7 +1470,6 @@ public:
             bool status1 = fc.get("key1", item1);
             DBG(cerr << prolog << "child process get() key1 status: " << status1 << '\n');
 
-
             FileCache::Item item2;
             bool status2 = fc.get("key2", item2);
             DBG(cerr << prolog << "child process get() key2 status: " << status2 << '\n');
@@ -1508,9 +1479,8 @@ public:
             DBG(cerr << prolog << "child process has shared locks on both key1 and key2\n");
             std::this_thread::sleep_for(std::chrono::milliseconds(100));
             DBG(cerr << prolog << "child process exit\n");
-            exit(EXIT_SUCCESS);   // exit with 0 if status is true, 1 if false (it's a process)
-        }
-        else {
+            exit(EXIT_SUCCESS); // exit with 0 if status is true, 1 if false (it's a process)
+        } else {
             // parent process - generally faster. I used std::this_thread::sleep_for() but this is
             // not multi-threaded code. It's just a way to sleep for a short time.
             FileCache fc;
@@ -1539,8 +1509,7 @@ public:
             if (del_status) {
                 status = fc.get("key1", item1);
                 CPPUNIT_ASSERT_MESSAGE("get() should return false since key1 has been deleted", !status);
-            }
-            else {
+            } else {
                 status = fc.get("key1", item1);
                 CPPUNIT_ASSERT_MESSAGE("get() should return true since key1 was not deleted", status);
             }
@@ -1577,7 +1546,7 @@ public:
 
         string key0 = BESUtil::pathConcat(cache_dir, "key0");
         CPPUNIT_ASSERT_MESSAGE("Cache should have key0 before purge",
-                                std::find(files.begin(), files.end(), key0) != files.end());
+                               std::find(files.begin(), files.end(), key0) != files.end());
 
         fc.purge();
 
@@ -1599,10 +1568,10 @@ public:
         string key2 = BESUtil::pathConcat(cache_dir, "key2");
         string key3 = BESUtil::pathConcat(cache_dir, "key3");
         CPPUNIT_ASSERT_MESSAGE("Cache should not have key9 after purge",
-                               std::find(files.begin(), files.end(), key0) == files.end()
-                               || std::find(files.begin(), files.end(), key1) == files.end()
-                               || std::find(files.begin(), files.end(), key2) == files.end()
-                               || std::find(files.begin(), files.end(), key3) == files.end());
+                               std::find(files.begin(), files.end(), key0) == files.end() ||
+                                   std::find(files.begin(), files.end(), key1) == files.end() ||
+                                   std::find(files.begin(), files.end(), key2) == files.end() ||
+                                   std::find(files.begin(), files.end(), key3) == files.end());
     }
 
     void test_purge_key0_used_most_recently() {
@@ -1704,8 +1673,7 @@ public:
 
         CPPUNIT_ASSERT_MESSAGE("Cache purge should do nothing, but return true", fc.purge());
 
-        CPPUNIT_ASSERT_MESSAGE("Cache info size should be unchanged",
-                               fc.get_cache_info_size() == 1'889'730);
+        CPPUNIT_ASSERT_MESSAGE("Cache info size should be unchanged", fc.get_cache_info_size() == 1'889'730);
     }
 
     CPPUNIT_TEST_SUITE(FileCacheTest);
@@ -1762,7 +1730,4 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(FileCacheTest);
 
-int main(int argc, char *argv[])
-{
-    return bes_run_tests<FileCacheTest>(argc, argv, "cerr,file-cache") ? 0 : 1;
-}
+int main(int argc, char *argv[]) { return bes_run_tests<FileCacheTest>(argc, argv, "cerr,file-cache") ? 0 : 1; }

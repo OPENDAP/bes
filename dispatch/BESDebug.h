@@ -38,8 +38,8 @@
 
 #include <iostream>
 #include <map>
-#include <string>
 #include <mutex>
+#include <string>
 
 // Helper function for writing debug log lines
 std::string get_debug_log_line_prefix();
@@ -48,7 +48,7 @@ static std::mutex bes_debug_log_mutex;
 
 /// When NDEBUG is defined, BESDEBUG and BESISDEBUG are no-ops.
 #ifdef NDEBUG
-#define BESDEBUG( x, y )
+#define BESDEBUG(x, y)
 #else
 /** @brief macro used to send debug information to the debug stream
  *
@@ -63,11 +63,15 @@ static std::mutex bes_debug_log_mutex;
  * @param x the debug context to check
  * @param y information to send to the output stream
  */
-#define BESDEBUG( x, y ) do { if( BESDebug::IsSet( x ) ) *(BESDebug::GetStrm()) << get_debug_log_line_prefix() << "["<< x << "] " << y ; } while( 0 )
+#define BESDEBUG(x, y)                                                                                                 \
+    do {                                                                                                               \
+        if (BESDebug::IsSet(x))                                                                                        \
+            *(BESDebug::GetStrm()) << get_debug_log_line_prefix() << "[" << x << "] " << y;                            \
+    } while (0)
 #endif // NDEBUG
 
 #ifdef NDEBUG
-#define BESISDEBUG( x ) (false)
+#define BESISDEBUG(x) (false)
 #else
 /** @brief macro used to determine if the specified debug context is set
  *
@@ -89,7 +93,7 @@ static std::mutex bes_debug_log_mutex;
  *
  * @param x bes debug to check
  */
-#define BESISDEBUG( x ) BESDebug::IsSet( x )
+#define BESISDEBUG(x) BESDebug::IsSet(x)
 #endif
 
 class BESDebug {
@@ -105,15 +109,12 @@ private:
     static bool _debug_strm_created;
 
 public:
-    static const DebugMap &debug_map()
-    {
-        return _debug_map;
-    }
+    static const DebugMap &debug_map() { return _debug_map; }
 
     // Moved to the .cc file to avoid <algorithm> in a header file. jhrg 4/14/23
     static void Set(const std::string &flagName, bool value);
 
-     /** @brief register the specified debug flag
+    /** @brief register the specified debug flag
      *
      * Allows developers to register a debug flag for when the Help method
      * is called. It's OK to register a context more than once (subsequent
@@ -123,15 +124,13 @@ public:
      *
      * @param flagName debug context to register
      */
-    static void Register(const std::string &flagName)
-    {
+    static void Register(const std::string &flagName) {
         auto i = _debug_map.find(flagName);
         if (i == _debug_map.end()) {
             auto a = _debug_map.find("all");
             if (a == _debug_map.end()) {
                 _debug_map[flagName] = false;
-            }
-            else {
+            } else {
                 _debug_map[flagName] = true;
             }
         }
@@ -142,8 +141,7 @@ public:
      * @param flagName debug context to check if set
      * @return whether the specified flagName is set or not
      */
-    static bool IsSet(const std::string &flagName)
-    {
+    static bool IsSet(const std::string &flagName) {
         auto i = _debug_map.find(flagName);
         if (i != _debug_map.end())
             return (*i).second;
@@ -162,10 +160,7 @@ public:
      *
      * @return the current debug stream
      */
-    static std::ostream * GetStrm()
-    {
-        return _debug_strm;
-    }
+    static std::ostream *GetStrm() { return _debug_strm; }
 
     /** @brief set the debug output stream to the specified stream
      *
@@ -182,21 +177,18 @@ public:
      * @param strm set the current debug stream to strm
      * @param created whether the passed debug stream was created
      */
-    static void SetStrm(std::ostream *strm, bool created)
-    {
+    static void SetStrm(std::ostream *strm, bool created) {
         if (_debug_strm_created && _debug_strm) {
             _debug_strm->flush();
             delete _debug_strm;
             _debug_strm = nullptr;
-        }
-        else if (_debug_strm) {
+        } else if (_debug_strm) {
             _debug_strm->flush();
         }
         if (!strm) {
             _debug_strm = &std::cerr;
             _debug_strm_created = false;
-        }
-        else {
+        } else {
             _debug_strm = strm;
             _debug_strm_created = created;
         }

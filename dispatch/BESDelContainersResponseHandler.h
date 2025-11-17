@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -49,20 +49,17 @@
  * @see BESContainer
  * @see BESTransmitter
  */
-class BESDelContainersResponseHandler : public BESResponseHandler
-{
+class BESDelContainersResponseHandler : public BESResponseHandler {
 public:
-				BESDelContainersResponseHandler( const std::string &name ) ;
-    virtual			~BESDelContainersResponseHandler( void ) ;
+    BESDelContainersResponseHandler(const std::string &name);
+    virtual ~BESDelContainersResponseHandler(void);
 
-    virtual void		execute( BESDataHandlerInterface &dhi ) ;
-    virtual void		transmit( BESTransmitter *transmitter,
-                                          BESDataHandlerInterface &dhi ) ;
+    virtual void execute(BESDataHandlerInterface &dhi);
+    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
 
-    virtual void		dump( std::ostream &strm ) const ;
+    virtual void dump(std::ostream &strm) const;
 
-    static BESResponseHandler *DelContainersResponseBuilder( const std::string &name ) ;
+    static BESResponseHandler *DelContainersResponseBuilder(const std::string &name);
 };
 
 #endif // I_BESDelContainersResponseHandler_h
-

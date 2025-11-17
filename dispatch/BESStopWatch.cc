@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -34,10 +34,10 @@
 #include "config.h"
 
 #include <cerrno>
-#include <string>
-#include <iostream>
 #include <cstring>
+#include <iostream>
 #include <sstream>
+#include <string>
 
 #include "BESStopWatch.h"
 
@@ -46,10 +46,9 @@
 #include "BESDebug.h"
 #include "BESLog.h"
 
-using std::string;
 using std::endl;
 using std::ostream;
-
+using std::string;
 
 #define MODULE TIMING_LOG_KEY
 #define prolog string("BESStopWatch::").append(__func__).append("() - ")
@@ -57,7 +56,7 @@ using std::ostream;
 namespace bes_timing {
 BESStopWatch *elapsedTimeToReadStart = nullptr;
 BESStopWatch *elapsedTimeToTransmitStart = nullptr;
-}
+} // namespace bes_timing
 
 /**
  * Starts the timer. NB: This method will attempt to write logging
@@ -69,25 +68,22 @@ BESStopWatch *elapsedTimeToTransmitStart = nullptr;
 bool BESStopWatch::start(const std::string &name, BESDataHandlerInterface *dhi) {
     string reqId = dhi->data[REQUEST_ID_KEY];
     if (!reqId.empty()) {
-        string uuid =  dhi->data[REQUEST_UUID_KEY];
+        string uuid = dhi->data[REQUEST_UUID_KEY];
         if (uuid.empty()) {
             uuid = "BESStopWatch-" + BESUtil::uuid();
             dhi->data[REQUEST_UUID_KEY] = uuid;
         }
         reqId = reqId + "-" + uuid;
-    }
-    else {
+    } else {
         // If we grab it from BESLog we know the uuid is already a part of the request id value.
         reqId = BESLog::TheLog()->get_request_id();
     }
     if (reqId.empty()) {
-        reqId = prolog + "OUCH! The values of dhi->data[\"" REQUEST_ID_KEY "\" and BESLog::TheLog()->get_request_id() were empty.";
+        reqId = prolog + "OUCH! The values of dhi->data[\"" REQUEST_ID_KEY
+                         "\" and BESLog::TheLog()->get_request_id() were empty.";
     }
-    return start(name,reqId);
+    return start(name, reqId);
 }
-
-
-
 
 /**
  * Starts the timer.
@@ -101,7 +97,7 @@ bool BESStopWatch::start(const std::string &name, BESDataHandlerInterface *dhi) 
  */
 bool BESStopWatch::start(const string &name, const string &reqID) {
     d_timer_name = name;
-    d_req_id = (reqID.empty()?"ReqIdEmpty":reqID);
+    d_req_id = (reqID.empty() ? "ReqIdEmpty" : reqID);
 
     // get timing for current usage
     if (!get_time_of_day(d_start_usage)) {
@@ -128,7 +124,7 @@ bool BESStopWatch::get_time_of_day(struct timeval &time_val) {
         const char *c_err = strerror(errno);
         string errno_msg = c_err != nullptr ? c_err : "unknown error";
         string msg = prolog + "ERROR The gettimeofday() function failed. errno_msg: " + errno_msg + "\n";
-        BESDEBUG(TIMING_LOG_KEY, msg );
+        BESDEBUG(TIMING_LOG_KEY, msg);
         ERROR_LOG(msg);
         retval = false;
     }
@@ -152,17 +148,17 @@ BESStopWatch::~BESStopWatch() {
             return;
         }
 
-        BESDEBUG(TIMING_LOG_KEY, get_debug_log_line_prefix() +  "[" << d_log_name + "]"
-            + "[ELAPSED][" + std::to_string(get_elapsed_us()) + " us]"
-            + "[STARTED][" + std::to_string(get_start_us()) + " us]"
-            + "[STOPPED][" + std::to_string(get_stop_us()) + " us]"
-            + "[" + (d_req_id.empty() ? "-" : d_req_id) + "]" + "[" << d_timer_name + "]\n");
+        BESDEBUG(TIMING_LOG_KEY, get_debug_log_line_prefix() + "["
+                                     << d_log_name + "]" + "[ELAPSED][" + std::to_string(get_elapsed_us()) + " us]" +
+                                            "[STARTED][" + std::to_string(get_start_us()) + " us]" + "[STOPPED][" +
+                                            std::to_string(get_stop_us()) + " us]" + "[" +
+                                            (d_req_id.empty() ? "-" : d_req_id) + "]" + "["
+                                     << d_timer_name + "]\n");
 
-        TIMING_LOG( "elapsed-us" + BESLog::mark + std::to_string(get_elapsed_us()) + BESLog::mark
-                    + "start-us" + BESLog::mark + std::to_string(get_start_us()) + BESLog::mark
-                    +  "stop-us" + BESLog::mark + std::to_string(get_stop_us()) + BESLog::mark
-                    + (d_req_id.empty() ? "-" : d_req_id) + BESLog::mark
-                    + d_timer_name + "\n");
+        TIMING_LOG("elapsed-us" + BESLog::mark + std::to_string(get_elapsed_us()) + BESLog::mark + "start-us" +
+                   BESLog::mark + std::to_string(get_start_us()) + BESLog::mark + "stop-us" + BESLog::mark +
+                   std::to_string(get_stop_us()) + BESLog::mark + (d_req_id.empty() ? "-" : d_req_id) + BESLog::mark +
+                   d_timer_name + "\n");
     }
 }
 
@@ -171,18 +167,13 @@ BESStopWatch::~BESStopWatch() {
  *
  * @return
  */
-unsigned long int BESStopWatch::get_elapsed_us() const {
-    return get_stop_us() - get_start_us();
-}
+unsigned long int BESStopWatch::get_elapsed_us() const { return get_stop_us() - get_start_us(); }
 
 unsigned long int BESStopWatch::get_start_us() const {
     return d_start_usage.tv_sec * 1000 * 1000 + d_start_usage.tv_usec;
 }
 
-unsigned long int BESStopWatch::get_stop_us() const {
-    return d_stop_usage.tv_sec * 1000 * 1000 + d_stop_usage.tv_usec;
-}
-
+unsigned long int BESStopWatch::get_stop_us() const { return d_stop_usage.tv_sec * 1000 * 1000 + d_stop_usage.tv_usec; }
 
 /** @brief dumps information about this object
  *
@@ -190,13 +181,6 @@ unsigned long int BESStopWatch::get_stop_us() const {
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESStopWatch::dump(ostream &strm) const {
-    strm << BESIndent::LMarg << "BESStopWatch::dump - ("
-         << (void *) this << ")" << endl;
+void BESStopWatch::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESStopWatch::dump - (" << (void *)this << ")" << endl;
 }
-
-
-
-
-

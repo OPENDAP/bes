@@ -34,11 +34,11 @@
 #define I_BESReturnManager_h 1
 
 #include <map>
-#include <string>
 #include <mutex>
+#include <string>
 
-#include "BESObj.h"
 #include "BESDataHandlerInterface.h"
+#include "BESObj.h"
 #include "BESTransmitter.h"
 
 class BESTransmitter;
@@ -57,8 +57,8 @@ private:
 public:
     ~BESReturnManager() override = default;
 
-    BESReturnManager(const BESReturnManager&) = delete;
-    BESReturnManager& operator=(const BESReturnManager&) = delete;
+    BESReturnManager(const BESReturnManager &) = delete;
+    BESReturnManager &operator=(const BESReturnManager &) = delete;
 
     virtual bool add_transmitter(const std::string &name, BESTransmitter *transmitter);
 

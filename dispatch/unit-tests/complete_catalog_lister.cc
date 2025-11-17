@@ -29,37 +29,41 @@
 #include <iostream>
 #include <sstream>
 
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
 #include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
 
-//#include <GetOpt.h>
+// #include <GetOpt.h>
 
-#include "BESCatalogList.h"
 #include "BESCatalog.h"
-#include "BESCatalogEntry.h"
 #include "BESCatalogDirectory.h"
-#include "BESError.h"
-#include "TheBESKeys.h"
-#include "BESXMLInfo.h"
-#include "BESNames.h"
-#include "BESDataNames.h"
-#include "BESDataHandlerInterface.h"
+#include "BESCatalogEntry.h"
+#include "BESCatalogList.h"
 #include "BESCatalogResponseHandler.h"
+#include "BESDataHandlerInterface.h"
+#include "BESDataNames.h"
 #include "BESDefaultModule.h"
+#include "BESError.h"
+#include "BESNames.h"
+#include "BESXMLInfo.h"
+#include "TheBESKeys.h"
 
 #include "test_config.h"
 #include "test_utils.h"
 
 static bool debug = false;
 #undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
+#define DBG(x)                                                                                                         \
+    do {                                                                                                               \
+        if (debug)                                                                                                     \
+            (x);                                                                                                       \
+    } while (false);
 
 using namespace CppUnit;
 
@@ -70,38 +74,29 @@ using std::ostringstream;
 
 const string root_dir = "/catalog_test";
 
-class complete_catalog_lister: public TestFixture {
+class complete_catalog_lister : public TestFixture {
 private:
-
 public:
-    complete_catalog_lister()
-    {
-    }
-    ~complete_catalog_lister()
-    {
-    }
+    complete_catalog_lister() {}
+    ~complete_catalog_lister() {}
 
-    void setUp()
-    {
-        string bes_conf = (string) TEST_SRC_DIR + "/bes.conf";
+    void setUp() {
+        string bes_conf = (string)TEST_SRC_DIR + "/bes.conf";
         TheBESKeys::ConfigFile = bes_conf;
         TheBESKeys::TheKeys()->set_key("BES.Data.RootDirectory=/dev/null");
         TheBESKeys::TheKeys()->set_key("BES.Info.Buffered=no");
         TheBESKeys::TheKeys()->set_key("BES.Info.Type=xml");
         try {
             BESDefaultModule::initialize(0, 0);
-        }
-        catch (BESError &e) {
+        } catch (BESError &e) {
             cerr << e.get_message() << endl;
             throw e;
         }
     }
 
-    void tearDown()
-    {
-    }
+    void tearDown() {}
 
-    CPPUNIT_TEST_SUITE( complete_catalog_lister );
+    CPPUNIT_TEST_SUITE(complete_catalog_lister);
 
     CPPUNIT_TEST(root_dir_test1);
 
@@ -109,7 +104,8 @@ public:
 
     // This test should be broken up into smaller pieces. jhrg 8/23/17
     void root_dir_test1() {
-        TheBESKeys::TheKeys()->set_key(string("BES.Catalog.default.RootDirectory=").append(TEST_SRC_DIR).append(root_dir));
+        TheBESKeys::TheKeys()->set_key(
+            string("BES.Catalog.default.RootDirectory=").append(TEST_SRC_DIR).append(root_dir));
         TheBESKeys::TheKeys()->set_key("BES.Catalog.default.TypeMatch=conf:conf&;");
 #if 0
         TheBESKeys::TheKeys()->set_key("BES.Catalog.default.Include=.*file.*$;");
@@ -142,17 +138,15 @@ public:
             BESCatalogEntry *e = (*i).second;
             if (e->is_collection()) {
                 cerr << "Found collection: " << e->get_name() << endl;
-                (void) catobj->show_catalog(pathname.append(e->get_name()), e);
-            }
-            else {
-                cerr << "Leaf: " << e->get_name() << ", dumping:"<< endl;
+                (void)catobj->show_catalog(pathname.append(e->get_name()), e);
+            } else {
+                cerr << "Leaf: " << e->get_name() << ", dumping:" << endl;
                 e->dump(cerr);
             }
         }
 
         cerr << "After traversal, the default catalog:";
         entry->dump(cerr);
-
     }
 
 #if 0
@@ -408,19 +402,18 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(complete_catalog_lister);
 
-int main(int argc, char*argv[])
-{
+int main(int argc, char *argv[]) {
     int option_char;
     while ((option_char = getopt(argc, argv, "dh")) != EOF)
         switch (option_char) {
         case 'd':
-            debug = 1;  // debug is a static global
+            debug = 1; // debug is a static global
             break;
-        case 'h': {     // help - show test names
+        case 'h': { // help - show test names
             cerr << "Usage: catT has the following tests:" << endl;
-            const std::vector<Test*> &tests = complete_catalog_lister::suite()->getTests();
+            const std::vector<Test *> &tests = complete_catalog_lister::suite()->getTests();
             unsigned int prefix_len = complete_catalog_lister::suite()->getName().append("::").size();
-            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
+            for (std::vector<Test *>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
                 cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
             }
             break;
@@ -440,11 +433,11 @@ int main(int argc, char*argv[])
     if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
-    }
-    else {
+    } else {
         int i = 0;
         while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
+            if (debug)
+                cerr << "Running " << argv[i] << endl;
             test = complete_catalog_lister::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
 
@@ -454,4 +447,3 @@ int main(int argc, char*argv[])
 
     return wasSuccessful ? 0 : 1;
 }
-

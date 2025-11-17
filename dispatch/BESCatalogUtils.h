@@ -33,14 +33,14 @@
 #ifndef S_BESCatalogUtils_h
 #define S_BESCatalogUtils_h 1
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <dirent.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
-#include <map>
-#include <vector>
 #include <list>
+#include <map>
 #include <string>
+#include <vector>
 
 #include "BESObj.h"
 #include "BESUtil.h"
@@ -57,18 +57,17 @@ class BESCatalogEntry;
 // a list of classes. jhrg 2.25.18
 #endif
 
-
-class BESCatalogUtils: public BESObj {
+class BESCatalogUtils : public BESObj {
 private:
 #if 0
 	static std::map<std::string, BESCatalogUtils *> _instances;
 #endif
 
-    std::string d_name;      ///< The name of the catalog
-    std::string d_root_dir;  ///< The pathname of the root directory
-    std::list<std::string> d_exclude;    ///< list of regexes; exclude matches
-    std::list<std::string> d_include;    ///< include regexes
-    bool d_follow_syms;      ///< Follow file system symbolic links?
+    std::string d_name;               ///< The name of the catalog
+    std::string d_root_dir;           ///< The pathname of the root directory
+    std::list<std::string> d_exclude; ///< list of regexes; exclude matches
+    std::list<std::string> d_include; ///< include regexes
+    bool d_follow_syms;               ///< Follow file system symbolic links?
 
     /// This identifies handlers to the things they can read. It is used
     /// to determine which catalog items can be treated as 'data.'
@@ -77,13 +76,13 @@ private:
         std::string regex;
     };
 
-    std::vector<handler_regex> d_match_list;  ///< The list of types & regexes
+    std::vector<handler_regex> d_match_list; ///< The list of types & regexes
 
     using match_citer = std::vector<handler_regex>::const_iterator;
     BESCatalogUtils::match_citer match_list_begin() const;
     BESCatalogUtils::match_citer match_list_end() const;
 
-    BESCatalogUtils():d_follow_syms(false) {}
+    BESCatalogUtils() : d_follow_syms(false) {}
 
     static void bes_add_stat_info(BESCatalogEntry *entry, struct stat &buf);
 
@@ -97,15 +96,9 @@ public:
      *
      * @return The pathname that is the root of the 'catalog'
      */
-    const std::string & get_root_dir() const
-    {
-        return d_root_dir;
-    }
+    const std::string &get_root_dir() const { return d_root_dir; }
 
-    bool follow_sym_links() const
-    {
-        return d_follow_syms;
-    }
+    bool follow_sym_links() const { return d_follow_syms; }
 
     virtual bool include(const std::string &inQuestion) const;
     virtual bool exclude(const std::string &inQuestion) const;
@@ -116,7 +109,7 @@ public:
     // TODO remove these once we no longer need showCatalog. jhrg 7/27/18
 #if 1
     virtual unsigned int get_entries(DIR *dip, const std::string &fullnode, const std::string &use_node,
-        BESCatalogEntry *entry, bool dirs_only);
+                                     BESCatalogEntry *entry, bool dirs_only);
 
     static void display_entry(BESCatalogEntry *entry, BESInfo *info);
 

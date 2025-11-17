@@ -31,14 +31,14 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <cerrno>
-#include <sstream>
-#include <iostream>
-#include <fstream>
 #include <cstring>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
 #include "BESInfo.h"
-#include "TheBESKeys.h"
 #include "BESInternalError.h"
+#include "TheBESKeys.h"
 
 using namespace std;
 
@@ -49,8 +49,7 @@ using namespace std;
  * By default, informational responses are buffered, so the output stream is
  * created
  */
-BESInfo::BESInfo() :
-        _strm(0), _strm_owned(false), _buffered(true), _response_started(false) {
+BESInfo::BESInfo() : _strm(0), _strm_owned(false), _buffered(true), _response_started(false) {
     _strm = new ostringstream;
     _strm_owned = true;
 }
@@ -68,8 +67,8 @@ BESInfo::BESInfo() :
  * @param strm_owned if stream was created (not cout or cerr for example) then either take
  * ownership or not
  */
-BESInfo::BESInfo(const string &key, ostream *strm, bool strm_owned) :
-        _strm(nullptr), _strm_owned(false), _buffered(true), _response_started(false) {
+BESInfo::BESInfo(const string &key, ostream *strm, bool strm_owned)
+    : _strm(nullptr), _strm_owned(false), _buffered(true), _response_started(false) {
     bool found = false;
     vector<string> vals;
     string b;
@@ -78,7 +77,8 @@ BESInfo::BESInfo(const string &key, ostream *strm, bool strm_owned) :
         _strm = new ostringstream;
         _strm_owned = true;
         _buffered = true;
-        if (strm && strm_owned) delete strm;
+        if (strm && strm_owned)
+            delete strm;
     } else {
         if (!strm) {
             string s = "Informational response not buffered but no stream passed";
@@ -104,8 +104,8 @@ BESInfo::~BESInfo() {
  * @param response_name name of the response this information represents
  * @param dhi information about the request and response
  */
-void
-BESInfo::begin_response(const string &response_name, map<string, string, std::less<>> */*attrs*/, BESDataHandlerInterface &/*dhi*/) {
+void BESInfo::begin_response(const string &response_name, map<string, string, std::less<>> * /*attrs*/,
+                             BESDataHandlerInterface & /*dhi*/) {
     _response_started = true;
     _response_name = response_name;
 }
@@ -117,7 +117,7 @@ BESInfo::begin_response(const string &response_name, map<string, string, std::le
  * @param response_name name of the response this information represents
  * @param dhi information about the request and response
  */
-void BESInfo::begin_response(const string &response_name, BESDataHandlerInterface &/*dhi*/) {
+void BESInfo::begin_response(const string &response_name, BESDataHandlerInterface & /*dhi*/) {
     _response_started = true;
     _response_name = response_name;
 }
@@ -130,9 +130,7 @@ void BESInfo::end_response() {
     }
 }
 
-void BESInfo::begin_tag(const string &tag_name, map<string, string, std::less<>> */*attrs*/) {
-    _tags.push(tag_name);
-}
+void BESInfo::begin_tag(const string &tag_name, map<string, string, std::less<>> * /*attrs*/) { _tags.push(tag_name); }
 
 void BESInfo::end_tag(const string &tag_name) {
     if (_tags.empty() || _tags.top() != tag_name) {
@@ -174,8 +172,7 @@ void BESInfo::add_data_from_file(const string &key, const string &name) {
     string file;
     try {
         TheBESKeys::TheKeys()->get_value(key, file, found);
-    }
-    catch (...) {
+    } catch (...) {
         found = false;
     }
     if (found == false) {
@@ -248,7 +245,7 @@ void BESInfo::add_exception(const BESError &error, const string &admin) {
  */
 void BESInfo::print(ostream &strm) {
     if (_buffered) {
-        strm << ((ostringstream *) _strm)->str();
+        strm << ((ostringstream *)_strm)->str();
     }
 }
 
@@ -260,7 +257,7 @@ void BESInfo::print(ostream &strm) {
  * @param strm C++ i/o stream to dump the information to
  */
 void BESInfo::dump(ostream &strm) const {
-    strm << BESIndent::LMarg << "BESInfo::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "BESInfo::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     strm << BESIndent::LMarg << "response name: " << _response_name << endl;
     strm << BESIndent::LMarg << "is it buffered? " << _buffered << endl;
@@ -280,4 +277,3 @@ void BESInfo::dump(ostream &strm) const {
     }
     BESIndent::UnIndent();
 }
-

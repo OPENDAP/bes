@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -35,25 +35,19 @@
 #include "BESDefineResponseHandler.h"
 
 #include "BESDefine.h"
-#include "BESDefinitionStorageList.h"
 #include "BESDefinitionStorage.h"
+#include "BESDefinitionStorageList.h"
 
-#include "BESDataNames.h"
-#include "BESSyntaxUserError.h"
-#include "BESResponseNames.h"
 #include "BESDataHandlerInterface.h"
-
+#include "BESDataNames.h"
+#include "BESResponseNames.h"
+#include "BESSyntaxUserError.h"
 
 using namespace std;
 
-BESDefineResponseHandler::BESDefineResponseHandler(const string &name) :
-    BESResponseHandler(name)
-{
-}
+BESDefineResponseHandler::BESDefineResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESDefineResponseHandler::~BESDefineResponseHandler()
-{
-}
+BESDefineResponseHandler::~BESDefineResponseHandler() {}
 
 /** @brief executes the command to create a new definition.
  *
@@ -73,8 +67,7 @@ BESDefineResponseHandler::~BESDefineResponseHandler()
  * @see BESDefine
  * @see DefintionStorageList
  */
-void BESDefineResponseHandler::execute(BESDataHandlerInterface &dhi)
-{
+void BESDefineResponseHandler::execute(BESDataHandlerInterface &dhi) {
     dhi.action_name = DEFINE_RESPONSE_STR;
 
     string def_name = dhi.data[DEF_NAME];
@@ -92,10 +85,10 @@ void BESDefineResponseHandler::execute(BESDataHandlerInterface &dhi)
         }
 
         store->add_definition(def_name, dd);
-    }
-    else {
-        throw BESSyntaxUserError(string("Unable to add definition '") + def_name + "' to '" + store_name
-                                 + "' store. Store does not exist", __FILE__, __LINE__);
+    } else {
+        throw BESSyntaxUserError(string("Unable to add definition '") + def_name + "' to '" + store_name +
+                                     "' store. Store does not exist",
+                                 __FILE__, __LINE__);
     }
 }
 
@@ -108,9 +101,7 @@ void BESDefineResponseHandler::execute(BESDataHandlerInterface &dhi)
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void BESDefineResponseHandler::transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/)
-{
-}
+void BESDefineResponseHandler::transmit(BESTransmitter * /*transmitter*/, BESDataHandlerInterface & /*dhi*/) {}
 
 /** @brief dumps information about this object
  *
@@ -118,16 +109,13 @@ void BESDefineResponseHandler::transmit(BESTransmitter */*transmitter*/, BESData
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESDefineResponseHandler::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESDefineResponseHandler::dump - (" << (void *) this << ")" << endl;
+void BESDefineResponseHandler::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESDefineResponseHandler::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     BESResponseHandler::dump(strm);
     BESIndent::UnIndent();
 }
 
-BESResponseHandler *
-BESDefineResponseHandler::DefineResponseBuilder(const string &name)
-{
+BESResponseHandler *BESDefineResponseHandler::DefineResponseBuilder(const string &name) {
     return new BESDefineResponseHandler(name);
 }

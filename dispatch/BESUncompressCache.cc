@@ -21,16 +21,16 @@
 
 #include "config.h"
 
-#include <string>
 #include <fstream>
 #include <sstream>
+#include <string>
 #include <sys/stat.h>
 
-#include "BESInternalError.h"
-#include "BESUtil.h"
 #include "BESDebug.h"
-#include "TheBESKeys.h"
+#include "BESInternalError.h"
 #include "BESUncompressCache.h"
+#include "BESUtil.h"
+#include "TheBESKeys.h"
 
 using std::endl;
 using std::string;
@@ -45,8 +45,7 @@ std::once_flag BESUncompressCache::d_initialize;
 #define MODULE "cache"
 #define prolog std::string("BESUncompressCache::").append(__func__).append("() - ")
 
-unsigned long BESUncompressCache::getCacheSizeFromConfig()
-{
+unsigned long BESUncompressCache::getCacheSizeFromConfig() {
     bool found;
     string size;
     unsigned long size_in_megabytes = 0;
@@ -54,44 +53,40 @@ unsigned long BESUncompressCache::getCacheSizeFromConfig()
     if (found) {
         std::istringstream iss(size);
         iss >> size_in_megabytes;
-    }
-    else {
-        string msg = prolog+ "The BES Key " + SIZE_KEY
-            + " is not set! It MUST be set to utilize the decompression cache. ";
-        BESDEBUG( MODULE, msg << endl);
+    } else {
+        string msg =
+            prolog + "The BES Key " + SIZE_KEY + " is not set! It MUST be set to utilize the decompression cache. ";
+        BESDEBUG(MODULE, msg << endl);
         throw BESInternalError(msg, __FILE__, __LINE__);
     }
     return size_in_megabytes;
 }
 
-string BESUncompressCache::getCacheDirFromConfig()
-{
+string BESUncompressCache::getCacheDirFromConfig() {
     bool found;
     string subdir = "";
     TheBESKeys::TheKeys()->get_value(DIR_KEY, subdir, found);
 
     if (!found) {
-        string msg = prolog + "The BES Key " + DIR_KEY
-            + " is not set! It MUST be set to utilize the decompression cache. ";
-        BESDEBUG( MODULE, msg << endl);
+        string msg =
+            prolog + "The BES Key " + DIR_KEY + " is not set! It MUST be set to utilize the decompression cache. ";
+        BESDEBUG(MODULE, msg << endl);
         throw BESInternalError(msg, __FILE__, __LINE__);
     }
 
     return subdir;
 }
 
-string BESUncompressCache::getCachePrefixFromConfig()
-{
+string BESUncompressCache::getCachePrefixFromConfig() {
     bool found;
     string prefix = "";
     TheBESKeys::TheKeys()->get_value(PREFIX_KEY, prefix, found);
     if (found) {
         prefix = BESUtil::lowercase(prefix);
-    }
-    else {
-        string msg = prolog + "The BES Key " + PREFIX_KEY
-            + " is not set! It MUST be set to utilize the decompression cache. ";
-        BESDEBUG( MODULE, msg << endl);
+    } else {
+        string msg =
+            prolog + "The BES Key " + PREFIX_KEY + " is not set! It MUST be set to utilize the decompression cache. ";
+        BESDEBUG(MODULE, msg << endl);
         throw BESInternalError(msg, __FILE__, __LINE__);
     }
 
@@ -125,8 +120,7 @@ string BESUncompressCache::getCachePrefixFromConfig()
  * string) but do turn the string into a pathname located in the cache directory
  * with the cache prefix. the 'mangle' param is true by default.
  */
-string BESUncompressCache::get_cache_file_name(const string &src, bool mangle)
-{
+string BESUncompressCache::get_cache_file_name(const string &src, bool mangle) {
     string cache_file_name = src;
 
     if (mangle) {
@@ -137,7 +131,7 @@ string BESUncompressCache::get_cache_file_name(const string &src, bool mangle)
     }
     cache_file_name = BESFileLockingCache::get_cache_file_name(cache_file_name);
 
-    BESDEBUG( MODULE, prolog << "cache_file_name:      '" << cache_file_name << "'" << endl);
+    BESDEBUG(MODULE, prolog << "cache_file_name:      '" << cache_file_name << "'" << endl);
 
     return cache_file_name;
 }
@@ -165,26 +159,22 @@ BESUncompressCache::BESUncompressCache()
  * of SUBDIR_KEY, PREFIX_KEY, an SIZE_KEY to initialize the cache.
  * @note if fct is called without cache dir being set, the code will throw an internal error
  */
-BESUncompressCache *
-BESUncompressCache::get_instance()
-{
+BESUncompressCache *BESUncompressCache::get_instance() {
     static BESUncompressCache cache;
-    std::call_once(d_initialize, [](){
+    std::call_once(d_initialize, []() {
         d_enabled = true;
         string tmp_dimCacheDir = getCacheDirFromConfig();
 
-        if (tmp_dimCacheDir.empty()){
+        if (tmp_dimCacheDir.empty()) {
             cache.disable();
-        }
-        else{
+        } else {
             cache.enable();
             cache.initialize(tmp_dimCacheDir, getCachePrefixFromConfig(), getCacheSizeFromConfig());
         }
     });
-    if (cache.cache_enabled()){
+    if (cache.cache_enabled()) {
         return &cache;
-    }
-    else{
+    } else {
         return nullptr;
     }
 }
@@ -203,8 +193,7 @@ BESUncompressCache::~BESUncompressCache() {}
  * @param local_id The id, relative to the BES Catalog/Data root of the source dataset.
  * @return True if the thing is valid, false otherwise.
  */
-bool BESUncompressCache::is_valid(const string &cache_file_name, const string &local_id)
-{
+bool BESUncompressCache::is_valid(const string &cache_file_name, const string &local_id) {
     // If the cached response is zero bytes in size, it's not valid.
     // (hmmm...)
     string datasetFileName = BESUtil::assemblePath(d_dataRootDir, local_id, true);
@@ -215,12 +204,12 @@ bool BESUncompressCache::is_valid(const string &cache_file_name, const string &l
     if (stat(cache_file_name.c_str(), &buf) == 0) {
         entry_size = buf.st_size;
         entry_time = buf.st_mtime;
-    }
-    else {
+    } else {
         return false;
     }
 
-    if (entry_size == 0) return false;
+    if (entry_size == 0)
+        return false;
 
     time_t dataset_time = entry_time;
     if (stat(datasetFileName.c_str(), &buf) == 0) {
@@ -234,8 +223,8 @@ bool BESUncompressCache::is_valid(const string &cache_file_name, const string &l
     // TODO Consider adding a getLastModified() method to the libdap::DDS object to support this
     // TODO The DDS may be expensive to instantiate - I think the handler may be a better location
     // for an LMT method, if we can access the handler when/where needed.
-    if (dataset_time > entry_time) return false;
+    if (dataset_time > entry_time)
+        return false;
 
     return true;
 }
-

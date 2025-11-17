@@ -64,11 +64,7 @@ public:
     virtual BESFSDir::fileIterator beginOfFileList();
     virtual BESFSDir::fileIterator endOfFileList();
 
-    virtual std::string getDirName()
-    {
-        return _dirName;
-    }
+    virtual std::string getDirName() { return _dirName; }
 };
 
 #endif // I_BESFSDir_h
-

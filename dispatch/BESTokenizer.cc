@@ -38,17 +38,12 @@ using std::endl;
 using std::ostream;
 using std::string;
 
-#include "BESTokenizer.h"
 #include "BESSyntaxUserError.h"
+#include "BESTokenizer.h"
 
-BESTokenizer::BESTokenizer() :
-    _counter(-1), _number_tokens(0)
-{
-}
+BESTokenizer::BESTokenizer() : _counter(-1), _number_tokens(0) {}
 
-BESTokenizer::~BESTokenizer()
-{
-}
+BESTokenizer::~BESTokenizer() {}
 
 /** @brief throws an exception giving the tokens up to the point of the
  * problem
@@ -62,8 +57,7 @@ BESTokenizer::~BESTokenizer()
  * @throws BESSyntaxUserError with the passed error string as well as all tokens
  * leading up to the error.
  */
-void BESTokenizer::parse_error(const string &s)
-{
+void BESTokenizer::parse_error(const string &s) {
     string error = "Parse error.";
     string where = "";
     if (_counter >= 0) {
@@ -72,7 +66,8 @@ void BESTokenizer::parse_error(const string &s)
         where += "<----HERE IS THE ERROR";
         error += "\n" + where;
     }
-    if (s != "") error += "\n" + s;
+    if (s != "")
+        error += "\n" + s;
     throw BESSyntaxUserError(error, __FILE__, __LINE__);
 }
 
@@ -84,9 +79,7 @@ void BESTokenizer::parse_error(const string &s)
  *
  * @returns the first token in the token list
  */
-string &
-BESTokenizer::get_first_token()
-{
+string &BESTokenizer::get_first_token() {
     _counter = 0;
     return tokens[_counter];
 }
@@ -100,9 +93,7 @@ BESTokenizer::get_first_token()
  * the caller is attempting to access more tokens than are available.
  * @see BESError
  */
-string &
-BESTokenizer::get_current_token()
-{
+string &BESTokenizer::get_current_token() {
     if (_counter < 0 || _counter > (int)_number_tokens - 1) {
         parse_error("incomplete expression!");
     }
@@ -119,14 +110,12 @@ BESTokenizer::get_current_token()
  * the caller is attempting to access more tokens than are available.
  * @see BESError
  */
-string &
-BESTokenizer::get_next_token()
-{
+string &BESTokenizer::get_next_token() {
     if (_counter == -1) {
         parse_error("incomplete expression!");
     }
 
-    if (_counter >= (int) (_number_tokens - 1)) {
+    if (_counter >= (int)(_number_tokens - 1)) {
         parse_error("incomplete expression!");
     }
 
@@ -148,7 +137,7 @@ BESTokenizer::get_next_token()
  *  When the tokenizer sees a double quote it then finds the next double
  *  quote and includes all test between the quotes, and including the
  *  quotes, as a single token.
- * 
+ *
  * When a "\" is character is encountered it is treated as an escape character.
  * The "\" is removed from the token and the character following it is added
  * to the token - even if it's a double qoute.
@@ -159,8 +148,7 @@ BESTokenizer::get_next_token()
  * is less than 2.
  * @see BESError
  */
-void BESTokenizer::tokenize(const char *p)
-{
+void BESTokenizer::tokenize(const char *p) {
     size_t len = strlen(p);
     string s = "";
     bool passing_raw = false;
@@ -175,38 +163,33 @@ void BESTokenizer::tokenize(const char *p)
                     s += "\"";
                     tokens.push_back(s);
                     s = "";
-                }
-                else {
+                } else {
                     tokens.push_back(s);
                     s = "\"";
                 }
-            }
-            else {
+            } else {
                 s += "\"";
             }
             passing_raw = !passing_raw;
 
-        }
-        else if (passing_raw) {
+        } else if (passing_raw) {
 
             if (!escaped && p[j] == '\\') {
                 escaped = true;
-            }
-            else {
+            } else {
                 s += p[j];
 
-                if (escaped) escaped = false;
+                if (escaped)
+                    escaped = false;
             }
 
-        }
-        else {
+        } else {
             if ((p[j] == ' ') || (p[j] == '\n') || (p[j] == 0x0D) || (p[j] == 0x0A)) {
                 if (s != "") {
                     tokens.push_back(s);
                     s = "";
                 }
-            }
-            else if ((p[j] == ',') || (p[j] == ';')) {
+            } else if ((p[j] == ',') || (p[j] == ';')) {
                 if (s != "") {
                     tokens.push_back(s);
                     s = "";
@@ -219,17 +202,20 @@ void BESTokenizer::tokenize(const char *p)
                     tokens.push_back(";");
                     break;
                 }
-            }
-            else
+            } else
                 s += p[j];
         }
     }
 
-    if (s != "") tokens.push_back(s);
+    if (s != "")
+        tokens.push_back(s);
     _number_tokens = tokens.size();
-    if (passing_raw) parse_error("Unclose quote found.(\")");
-    if (_number_tokens < 1) parse_error("Unknown command: '" + (string) p + (string) "'");
-    if (tokens[_number_tokens - 1] != ";") parse_error("The request must be terminated by a semicolon (;)");
+    if (passing_raw)
+        parse_error("Unclose quote found.(\")");
+    if (_number_tokens < 1)
+        parse_error("Unknown command: '" + (string)p + (string) "'");
+    if (tokens[_number_tokens - 1] != ";")
+        parse_error("The request must be terminated by a semicolon (;)");
 }
 
 /** @brief parses a container name for constraint and attributes
@@ -252,25 +238,22 @@ void BESTokenizer::tokenize(const char *p)
  * @throws BESError if the syntax is incorrect
  * @see BESError
  */
-string BESTokenizer::parse_container_name(const string &s, unsigned int &type)
-{
+string BESTokenizer::parse_container_name(const string &s, unsigned int &type) {
     string::size_type where = s.rfind(".constraint=", s.size());
     if (where == string::npos) {
         where = s.rfind(".attributes=", s.size());
         if (where == string::npos) {
             parse_error("Expected property declaration.");
-        }
-        else {
+        } else {
             type = 2;
         }
-    }
-    else {
+    } else {
         type = 1;
     }
     string valid = s.substr(where, s.size());
     if ((valid != ".constraint=") && (valid != ".attributes=")) {
-        string err = (string) "Invalid container property " + valid + " for container " + s.substr(0, where)
-            + ". constraint expressions and attribute lists " + "must be wrapped in quotes";
+        string err = (string) "Invalid container property " + valid + " for container " + s.substr(0, where) +
+                     ". constraint expressions and attribute lists " + "must be wrapped in quotes";
         parse_error(err);
     }
     return s.substr(0, where);
@@ -287,8 +270,7 @@ string BESTokenizer::parse_container_name(const string &s, unsigned int &type)
  * quote
  * @see BESError
  */
-string BESTokenizer::remove_quotes(const string &s)
-{
+string BESTokenizer::remove_quotes(const string &s) {
     if ((s[0] != '"') || (s[s.size() - 1] != '"')) {
         parse_error("item " + s + " must be enclosed by quotes");
     }
@@ -303,8 +285,7 @@ string BESTokenizer::remove_quotes(const string &s)
  * in. The tokens are all displayed with double quotes around them to show
  * if there are any spaces or special characters in the token.
  */
-void BESTokenizer::dump_tokens()
-{
+void BESTokenizer::dump_tokens() {
     tokens_citerator i = tokens.begin();
     tokens_citerator ie = tokens.end();
     for (; i != ie; i++) {
@@ -318,9 +299,8 @@ void BESTokenizer::dump_tokens()
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESTokenizer::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESTokenizer::dump - (" << (void *) this << ")" << endl;
+void BESTokenizer::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESTokenizer::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     tokens_citerator i = tokens.begin();
     tokens_citerator ie = tokens.end();
@@ -329,4 +309,3 @@ void BESTokenizer::dump(ostream &strm) const
     }
     BESIndent::UnIndent();
 }
-
