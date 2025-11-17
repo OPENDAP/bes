@@ -92,10 +92,10 @@ private:
     BESCatalog *d_default_catalog;
 
     static BESCatalogList * d_instance;
-
+#if 0
     static void initialize_instance();  // originally used with pthread_once(). jhrg 7/22/18
     static void delete_instance();
-
+#endif
     friend class BESCatalogListTest;
 
     BESCatalogList();
@@ -113,12 +113,12 @@ public:
 
     /// @brief The number of non-default catalogs
     /// @todo Change this to include the default!
-    virtual int num_catalogs() const { return d_catalogs.size();  }
+    virtual int num_catalogs() const { return static_cast<int>(d_catalogs.size());  }
     virtual int empty() const { return d_catalogs.empty();  }
 
     /// @brief The name of the default catalog
     virtual std::string default_catalog_name() const { return d_default_catalog_name; }
-    /// @brief The  the default catalog
+    /// @brief The default catalog
     virtual BESCatalog *default_catalog() const { return d_default_catalog; }
 
     virtual bool add_catalog(BESCatalog *catalog);
@@ -127,8 +127,7 @@ public:
 
     virtual BESCatalog * find_catalog(const std::string &catalog_name) const;
 
-    // TODO Remove this ASAP. jhrg 7/22/18
-    virtual BESCatalogEntry * show_catalogs(BESCatalogEntry *entry, bool show_default = true);
+    virtual BESCatalogEntry *show_catalogs(BESCatalogEntry *entry, bool show_default = true);
 
     /// @brief Iterator to the first catalog
     virtual catalog_citer first_catalog() const { return d_catalogs.begin(); }
