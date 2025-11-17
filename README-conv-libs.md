@@ -1,5 +1,5 @@
 
-# Convenience Libraris and Autotools
+# Convenience Libraries and Autotools
 
 What are 'best practices' for convenience libraries in a large autotools project with a number of developers?
 
