@@ -71,7 +71,7 @@ public:
      */
     BESDefinitionStorage(const std::string &name) : _my_name(name) {};
 
-    virtual ~BESDefinitionStorage() {};
+    ~BESDefinitionStorage() override {};
 
     /** @brief retrieve the name of this persistent store
      *
@@ -131,7 +131,7 @@ public:
      *
      * @param strm output stream to use to dump the contents of this object
      */
-    virtual void dump(std::ostream &strm) const = 0;
+    void dump(std::ostream &strm) const override = 0;
 };
 
 #endif // BESDefinitionStorage_h_

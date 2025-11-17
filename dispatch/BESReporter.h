@@ -41,11 +41,11 @@ protected:
     BESReporter() {};
 
 public:
-    virtual ~BESReporter() {};
+    ~BESReporter() override {};
 
     virtual void report(BESDataHandlerInterface &dhi) = 0;
 
-    virtual void dump(std::ostream &strm) const = 0;
+    void dump(std::ostream &strm) const override = 0;
 };
 
 #endif // A_BESReporter_h

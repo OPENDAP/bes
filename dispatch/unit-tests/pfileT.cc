@@ -49,7 +49,7 @@
 #include "BESError.h"
 #include "BESTextInfo.h"
 #include "TheBESKeys.h"
-#include <test_config.h> // Assumed to define TEST_SRC_DIR
+#include "test_config.h" // Assumed to define TEST_SRC_DIR
 
 #include "modules/common/run_tests_cppunit.h"
 // **************************************************

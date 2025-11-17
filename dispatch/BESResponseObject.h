@@ -45,9 +45,9 @@
 class BESResponseObject : public BESObj {
 public:
     BESResponseObject() {};
-    virtual ~BESResponseObject() {};
+    ~BESResponseObject() override {};
 
-    virtual void dump(std::ostream &strm) const = 0;
+    void dump(std::ostream &strm) const override = 0;
 };
 
 #endif // BESResponseObject_h_

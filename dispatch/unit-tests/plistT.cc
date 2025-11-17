@@ -46,7 +46,7 @@
 #include "BESError.h"
 #include "BESTextInfo.h"
 #include "TheBESKeys.h"
-#include <test_config.h>
+#include "test_config.h"
 
 // Include the header-only test runner and its debug macros.
 #include "modules/common/run_tests_cppunit.h"
@@ -186,7 +186,7 @@ using std::string;
 #include "BESError.h"
 #include "BESTextInfo.h"
 #include "TheBESKeys.h"
-#include <test_config.h>
+#include "test_config.h"
 #include <unistd.h>
 
 static bool debug = false;

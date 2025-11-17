@@ -79,7 +79,7 @@ private:
 public:
     BESRequestHandler(const std::string &name) : _name(name) {}
 
-    virtual ~BESRequestHandler(void) {}
+    ~BESRequestHandler(void) override {}
 
     typedef std::map<std::string, p_request_handler_method>::const_iterator Handler_citer;
     typedef std::map<std::string, p_request_handler_method>::iterator Handler_iter;

@@ -54,8 +54,8 @@
 #include "BESXMLInfo.h"
 #include "TheBESKeys.h"
 
-#include "test_config.h"
-#include "test_utils.h"
+#include "../../../dispatch/unit-tests/test_config.h"
+#include "../../../dispatch/unit-tests/test_utils.h"
 
 static bool debug = false;
 #undef DBG

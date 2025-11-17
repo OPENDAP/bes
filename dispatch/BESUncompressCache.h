@@ -66,7 +66,7 @@ public:
 
     std::string get_cache_file_name(const std::string &src, bool mangle = true) override;
 
-    virtual ~BESUncompressCache();
+    ~BESUncompressCache() override;
 };
 
 #endif /* DISPATCH_BESUNCOMPRESSCACHE_H_ */

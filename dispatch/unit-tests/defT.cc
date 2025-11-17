@@ -51,7 +51,8 @@ using std::stringstream;
 #include "BESDefinitionStorageVolatile.h"
 #include "BESTextInfo.h"
 #include "TheBESKeys.h"
-#include <test_config.h>
+#include "test_config.h"
+
 #include <unistd.h>
 
 static bool debug = false;

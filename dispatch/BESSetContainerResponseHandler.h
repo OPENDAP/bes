@@ -56,12 +56,12 @@
 class BESSetContainerResponseHandler : public BESResponseHandler {
 public:
     BESSetContainerResponseHandler(const std::string &name);
-    virtual ~BESSetContainerResponseHandler(void);
+    ~BESSetContainerResponseHandler(void) override;
 
-    virtual void execute(BESDataHandlerInterface &dhi);
-    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+    void execute(BESDataHandlerInterface &dhi) override;
+    void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static BESResponseHandler *SetContainerResponseBuilder(const std::string &name);
 };

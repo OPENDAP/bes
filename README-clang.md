@@ -36,7 +36,7 @@ to use the C++14 _override_ keyword were applicable:
 SDK=$(xcrun --show-sdk-path)
 
 clang-tidy -p . -checks='-*,modernize-use-override' -fix \
-  -extra-arg=-std=c++17 \
+  -extra-arg=-std=c++14 \
   -extra-arg=-stdlib=libc++ \
   -extra-arg=-isysroot -extra-arg="$SDK" \
   -extra-arg=-I"$SDK/usr/include/c++/v1" \
@@ -48,8 +48,58 @@ slowly working on groups of files. Test and commit. Also, the above will need
 more _-I<directory>_ options if the code in question references headers that 
 clang-tidy cannot find in the CWD. 
 
+Here is an example of the error from a missing header directory:
+```bash
+/Users/jimg/src/opendap/hyrax/bes/dispatch/unit-tests/BESCatalogListTest.cc:25:10: error: 'cppunit/TextTestRunner.h' file not found [clang-diagnostic-error]
+   25 | #include <cppunit/TextTestRunner.h>
+      |          ^~~~~~~~~~~~~~~~~~~~~~~~~~
+```
+
+[!CAUTION] Avoid the temptation of running clang-tidy in parallel using xargs.
+Doing that will result in corrupt files.
+
+When clang-tidy finds errors, it will not fix _anything_ in that source file.
+There is a work around; use the _-fix-error_ option. But, this may not be what is best.
+The output of clang-tidy should not contain errors. Warnings are OK, but errors
+mean the command is likely missing some header files. Here's what the output should look like:
+```aiignore
+[1/10] Processing file /Users/jimg/src/opendap/hyrax/bes/dispatch/unit-tests/BESCatalogListTest.cc.
+[2/10] Processing file /Users/jimg/src/opendap/hyrax/bes/dispatch/unit-tests/BESFileLockingCacheTest.cc.
+[3/10] Processing file /Users/jimg/src/opendap/hyrax/bes/dispatch/unit-tests/CatalogItemTest.cc.
+[4/10] Processing file /Users/jimg/src/opendap/hyrax/bes/dispatch/unit-tests/CatalogNodeTest.cc.
+[5/10] Processing file /Users/jimg/src/opendap/hyrax/bes/dispatch/unit-tests/FileCacheTest.cc.
+4 warnings generated.
+[6/10] Processing file /Users/jimg/src/opendap/hyrax/bes/dispatch/unit-tests/RequestTimerTest.cc.
+4 warnings generated.
+[7/10] Processing file /Users/jimg/src/opendap/hyrax/bes/dispatch/unit-tests/ServerAdministratorTest.cc.
+4 warnings generated.
+[8/10] Processing file /Users/jimg/src/opendap/hyrax/bes/dispatch/unit-tests/TestReporter.cc.
+4 warnings generated.
+[9/10] Processing file /Users/jimg/src/opendap/hyrax/bes/dispatch/unit-tests/TestRequestHandler.cc.
+4 warnings generated.
+[10/10] Processing file /Users/jimg/src/opendap/hyrax/bes/dispatch/unit-tests/TestResponseHandler.cc.
+4 warnings generated.
+/Users/jimg/src/opendap/hyrax/bes/dispatch/unit-tests/FileCacheTest.cc:60:5: warning: 'SHA256_Init' is deprecated [clang-diagnostic-deprecated-declarations]
+   60 |     SHA256_Init(&sha256);
+      |     ^
+/usr/local/include/openssl/sha.h:73:1: note: 'SHA256_Init' has been explicitly marked deprecated here
+   73 | OSSL_DEPRECATEDIN_3_0 int SHA256_Init(SHA256_CTX *c);
+      | ^
+/usr/local/include/openssl/macros.h:229:49: note: expanded from macro 'OSSL_DEPRECATEDIN_3_0'
+  229 | #   define OSSL_DEPRECATEDIN_3_0                OSSL_DEPRECATED(3.0)
+      |                                                 ^
+/usr/local/include/openssl/macros.h:62:52: note: expanded from macro 'OSSL_DEPRECATED'
+   62 | #     define OSSL_DEPRECATED(since) __attribute__((deprecated))
+      |                                                    ^
+/Users/jimg/src/opendap/hyrax/bes/dispatch/unit-tests/FileCacheTest.cc:69:5: warning: 'SHA256_Update' is deprecated [clang-diagnostic-deprecated-declarations]
+   69 |     SHA256_Update(&sha256, buffer.data(), length);
+      |     ^
+...
+```
+
 There is a way to make a compilation database using the command _bear_, but I
-found that was harder to use and limit the cope of changes.
+found that was harder to use and limit the cope of changes. There is also a second
+command _run-clang-tidy_ but I found there were issues with that.
 
 ## What should be changed and how to do that
 

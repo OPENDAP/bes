@@ -128,7 +128,8 @@ class BESFileLockingCacheTest : public CppUnit::TestFixture {
             if (entry.find(MATCH_PREFIX) != string::npos) //(entry.compare(0, match_prefix.size(), match_prefix) == 0)
                 contents.emplace_back(entry);
         }
-        closedir(dip);
+        if (dip)
+            closedir(dip);
 
         CPPUNIT_ASSERT_MESSAGE("Number of entries did not match expected number", num_files == contents.size());
 

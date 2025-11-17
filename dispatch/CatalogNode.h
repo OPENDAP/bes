@@ -70,7 +70,7 @@ public:
 
     CatalogNode(const std::string &name) : d_name(name), d_catalog_name(""), d_lmt(""), d_no_really_im_a_leaf(0) {}
 
-    virtual ~CatalogNode();
+    ~CatalogNode() override;
 
     void set_leaf(CatalogItem *leaf) { d_no_really_im_a_leaf = leaf; }
     CatalogItem *get_leaf() const { return d_no_really_im_a_leaf; }

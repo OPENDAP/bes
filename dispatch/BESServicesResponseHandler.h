@@ -48,12 +48,12 @@
 class BESServicesResponseHandler : public BESResponseHandler {
 public:
     BESServicesResponseHandler(const std::string &name);
-    virtual ~BESServicesResponseHandler(void);
+    ~BESServicesResponseHandler(void) override;
 
-    virtual void execute(BESDataHandlerInterface &dhi);
-    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+    void execute(BESDataHandlerInterface &dhi) override;
+    void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static BESResponseHandler *ResponseBuilder(const std::string &handler_name);
 };

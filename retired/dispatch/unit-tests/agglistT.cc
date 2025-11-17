@@ -46,7 +46,7 @@ using std::endl;
 #include "BESAggFactory.h"
 #include "BESError.h"
 #include "BESTextInfo.h"
-#include "TestAggServer.h"
+#include "../../../dispatch/unit-tests/TestAggServer.h"
 #include "TheBESKeys.h"
 #include <test_config.h>
 #include <unistd.h>

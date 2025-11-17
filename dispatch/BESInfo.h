@@ -73,7 +73,7 @@ protected:
 public:
     BESInfo();
     BESInfo(const std::string &buffered_key, std::ostream *strm, bool strm_owned);
-    virtual ~BESInfo();
+    ~BESInfo() override;
 
     virtual void begin_response(const std::string &response_name, BESDataHandlerInterface &dhi);
     virtual void begin_response(const std::string &response_name,

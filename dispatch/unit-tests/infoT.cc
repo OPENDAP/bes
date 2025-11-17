@@ -54,7 +54,8 @@ using std::string;
 #include "BESTextInfo.h"
 #include "BESXMLInfo.h"
 #include "TheBESKeys.h"
-#include <test_config.h>
+#include "test_config.h"
+
 #include <unistd.h>
 
 static bool debug = false;

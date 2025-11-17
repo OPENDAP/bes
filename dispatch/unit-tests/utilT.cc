@@ -67,9 +67,9 @@ private:
 public:
     utilT() = default;
 
-    ~utilT() = default;
+    ~utilT() override = default;
 
-    void setUp() {
+    void setUp() override {
         if (debug)
             cerr << endl;
         string bes_conf = (string)TEST_SRC_DIR + "/bes.conf";

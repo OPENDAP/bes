@@ -134,7 +134,6 @@ HDRS = BESInterface.h BESLog.h 			\
 	BESSyntaxUserError.h BESForbiddenError.h BESNotFoundError.h 	\
 	BESTimeoutError.h \
 	BESConstraintFuncs.h  			\
-	BESServerSystemResources.h 					\
 	BESReturnManager.h 						\
 	BESDataNames.h BESApp.h BESObj.h BESIndent.h 	\
 	BESAbstractModule.h BESPluginFactory.h BESPlugin.h 		\
@@ -156,7 +155,7 @@ HDRS = BESInterface.h BESLog.h 			\
 	RequestServiceTimer.h \
 	ServerAdministrator.h FileCache.h
 
-#	BESAggFactory.h BESAggregationServer.h BESContainerStorageCatalog.h
+#	BESAggFactory.h BESAggregationServer.h BESContainerStorageCatalog.h BESServerSystemResources.h
 
 C4_DB=$(C4_DIR)/dispatch.db
 C4_HTML=$(C4_dir)/dispatch.html

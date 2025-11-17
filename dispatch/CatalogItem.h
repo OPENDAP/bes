@@ -126,7 +126,7 @@ public:
     CatalogItem(const std::string &name, size_t size, const std::string &lmt, bool is_data, item_type type)
         : d_name(name), d_size(size), d_lmt(lmt), d_is_data(is_data), d_type(type) {}
 
-    virtual ~CatalogItem() {}
+    ~CatalogItem() override {}
 
     struct CatalogItemAscending {
         bool operator()(CatalogItem *i, CatalogItem *j) { return (i->d_name < j->d_name); }

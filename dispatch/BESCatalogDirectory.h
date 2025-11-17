@@ -66,8 +66,8 @@ public:
 
     bes::CatalogNode *get_node(const std::string &path) const override;
 
-    virtual void get_site_map(const std::string &prefix, const std::string &node_suffix, const std::string &leaf_suffix,
-                              std::ostream &out, const std::string &path = "/") const;
+    void get_site_map(const std::string &prefix, const std::string &node_suffix, const std::string &leaf_suffix,
+                              std::ostream &out, const std::string &path = "/") const override;
 
     void dump(std::ostream &strm) const override;
 };

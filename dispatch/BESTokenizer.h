@@ -74,7 +74,7 @@ private:
 
 public:
     BESTokenizer();
-    ~BESTokenizer();
+    ~BESTokenizer() override;
 
     void tokenize(const char *p);
     std::string &get_first_token();

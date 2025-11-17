@@ -80,10 +80,10 @@ private:
 
 public:
     BESFileContainerStorage(const std::string &n);
-    virtual ~BESFileContainerStorage();
+    ~BESFileContainerStorage() override;
 
-    virtual void add_container(const std::string &sym_name, const std::string &real_name, const std::string &type);
-    virtual bool isData(const std::string &inQuestion, std::list<std::string> &provides);
+    void add_container(const std::string &sym_name, const std::string &real_name, const std::string &type) override;
+    bool isData(const std::string &inQuestion, std::list<std::string> &provides) override;
 
     void dump(std::ostream &strm) const override;
 };
