@@ -263,6 +263,8 @@ shared_ptr<SignedUrlCache::S3AccessKeyTuple> SignedUrlCache::get_s3credentials_f
     std::string s3credentials_json_string;
     try {
         BES_PROFILE_TIMING(string("Request s3 credentials from TEA - ") + s3credentials_url);
+
+        // Note: this http_get call internally adds edl auth headers, if available
         curl::http_get(s3credentials_url, s3credentials_json_string);
     }
     catch (http::HttpError &http_error) {
