@@ -92,10 +92,10 @@ private:
     BESCatalog *d_default_catalog;
 
     static BESCatalogList * d_instance;
-
+#if 0
     static void initialize_instance();  // originally used with pthread_once(). jhrg 7/22/18
     static void delete_instance();
-
+#endif
     friend class BESCatalogListTest;
 
     BESCatalogList();
@@ -118,7 +118,7 @@ public:
 
     /// @brief The name of the default catalog
     virtual std::string default_catalog_name() const { return d_default_catalog_name; }
-    /// @brief The  the default catalog
+    /// @brief The default catalog
     virtual BESCatalog *default_catalog() const { return d_default_catalog; }
 
     virtual bool add_catalog(BESCatalog *catalog);
