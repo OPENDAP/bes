@@ -3,12 +3,12 @@
 AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/modules/common \
-    -I$(top_srcdir)/modules/dmrpp_module/ngap_container -I$(top_srcdir)/dispatch \
-    -I$(top_srcdir)/dap -I$(top_srcdir)/http -I$(top_srcdir)/aws $(DAP_CFLAGS)
+    -I$(top_srcdir)/modules/dmrpp_module/ngap_container -I$(top_srcdir)/aws -I$(top_srcdir)/dispatch \
+    -I$(top_srcdir)/dap -I$(top_srcdir)/http $(DAP_CFLAGS)
 
 LIBADD = -L$(top_builddir)/modules/common -lmodules_common -L$(builddir)/../ -lngap \
     $(BES_DISPATCH_LIB) $(top_builddir)/dap/.libs/libdap_module.a $(BES_HTTP_LIB) \
-    $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+    $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -L$(top_builddir)/aws/libbes_aws.la
 
 # $(BES_DAP_LIB) Replace with static library explicitly referenced. jhrg 4/29/24
 
@@ -22,8 +22,23 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 
 AM_CXXFLAGS=
-AM_LDFLAGS =
+AM_LDFLAGS = -L$(aws_libdir)
 include $(top_srcdir)/coverage.mk
+
+LDADD = $(top_builddir)/aws/libbes_aws.la $(aws_libs)
+
+if DARWIN
+AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,@loader_path
+else
+AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,'$$ORIGIN'
+    ifeq ($(strip $(aws_libdir64)),)
+        $(info "aws_libdir64 not set, skipping")
+    else
+        AM_LDFLAGS += -L$(aws_libdir64)
+        AM_LDFLAGS += -Wl,-rpath,$(aws_libdir64)
+    endif
+endif
+
 
 DISTCLEANFILES = test_config.h *.Po
 
