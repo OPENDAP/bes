@@ -31,7 +31,7 @@ CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 AM_LDFLAGS = -L$(aws_libdir)
 include $(top_srcdir)/coverage.mk
 
-LDADD = $(top_builddir)/aws/libbes_aws.la $(aws_libs)
+LDADD = $(abs_top_builddir)/aws/libbes_aws.la $(aws_libs)
 
 SUBDIRS = ngap_container dmrpp_transmitter build_dmrpp_h4 . unit-tests tests data tests_build_dmrpp get_dmrpp
 

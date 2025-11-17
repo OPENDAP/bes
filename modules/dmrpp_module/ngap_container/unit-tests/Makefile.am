@@ -8,7 +8,7 @@ AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/modules/common \
 
 LIBADD = -L$(top_builddir)/modules/common -lmodules_common -L$(builddir)/../ -lngap \
     $(BES_DISPATCH_LIB) $(top_builddir)/dap/.libs/libdap_module.a $(BES_HTTP_LIB) \
-    $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -L$(top_builddir)/aws/libbes_aws.la
+    $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 # $(BES_DAP_LIB) Replace with static library explicitly referenced. jhrg 4/29/24
 
@@ -25,7 +25,7 @@ AM_CXXFLAGS=
 AM_LDFLAGS = -L$(aws_libdir)
 include $(top_srcdir)/coverage.mk
 
-LDADD = $(top_builddir)/aws/libbes_aws.la $(aws_libs)
+LDADD = $(abs_top_builddir)/aws/libbes_aws.la $(aws_libs)
 
 if DARWIN
 AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,@loader_path
@@ -115,11 +115,11 @@ clean-local:
 	test ! -d $(builddir)/owned-cache || rm -rf $(builddir)/owned-cache
 
 MemoryCacheTest_SOURCES = MemoryCacheTest.cc
-MemoryCacheTest_LDADD = $(LIBADD)
+MemoryCacheTest_LDADD = $(LIBADD) $(LDADD)
 
 NgapApiTest_SOURCES = NgapApiTest.cc
-NgapApiTest_LDADD =  $(LIBADD)
+NgapApiTest_LDADD =  $(LIBADD) $(LDADD)
 
 NgapOwnedContainerTest_SOURCES = NgapOwnedContainerTest.cc
-NgapOwnedContainerTest_LDADD = $(LIBADD)
+NgapOwnedContainerTest_LDADD = $(LIBADD) $(LDADD)
 

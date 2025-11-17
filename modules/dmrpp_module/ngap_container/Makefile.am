@@ -9,7 +9,7 @@ ACLOCAL_AMFLAGS = -I conf
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand \
 -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src -I$(top_srcdir)/aws $(DAP_CFLAGS)
 
-LIBADD = $(top_builddir)/aws/libbes_aws.la
+LDADD = $(abs_top_builddir)/aws/libbes_aws.la $(aws_libs)
 
 AM_CXXFLAGS=
 AM_LDFLAGS = -L$(aws_libdir)
@@ -26,9 +26,7 @@ SUBDIRS = . unit-tests
 noinst_LTLIBRARIES = libngap.la
 libngap_la_SOURCES = $(NGAP_SRC) $(NGAP_HDR) 
 libngap_la_LDFLAGS =
-libngap_la_LIBADD = $(LIBADD)
-
-LDADD = $(aws_libs)
+libngap_la_LIBADD = $(LDADD)
 
 NGAP_SRC = NgapOwnedContainer.cc NgapOwnedContainerStorage.cc  NgapApi.cc
 
