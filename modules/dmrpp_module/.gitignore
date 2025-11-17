@@ -20,9 +20,21 @@
 /unit-tests/Chunk.Tpo
 /unit-tests/CredentialsManager.Tpo
 /unit-tests/DmrppRequestHandler.Tpo
+get_dmrpp/unit-tests/gen_dmrpp_side_car
+get_dmrpp/unit-tests/get_dmrpp_h5
+get_dmrpp/unit-tests/get_hdf_side_car
+get_dmrpp/unit-tests/grid_1_2d.h5.dmr
+get_dmrpp/unit-tests/grid_1_2d.h5.dmr.bescmd
+get_dmrpp/unit-tests/grid_1_2d.hdf.dmr
+get_dmrpp/unit-tests/grid_1_2d.hdf.dmr.bescmd
+get_dmrpp/unit-tests/grid_2_2d_ps.hdf.dmr
+get_dmrpp/unit-tests/grid_2_2d_ps.hdf.dmr.bescmd
+get_dmrpp/unit-tests/grid_2_2d_sin.h5.dmr
+get_dmrpp/unit-tests/grid_2_2d_sin.h5.dmr.bescmd
 
 /tests_build_dmrpp/testsuite_dmrpp_tests
 /tests_build_dmrpp/test_bes.conf
+/tests/testsuite_return_as_dmrpp
 
 /writer/h5common.cc
 /writer/h5common.h
