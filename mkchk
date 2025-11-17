@@ -25,4 +25,4 @@ then
 fi
 
     
-make -k -j20 check 2>&1 | tee mk.log | grep -e "Making check in" -e "FAILED" -e "^FAIL: "
+make -k -j20 check 2>&1 | tee mk.log | grep -e "Making check in" -e "FAILED" -e "^FAIL: " -e " Error 2"
