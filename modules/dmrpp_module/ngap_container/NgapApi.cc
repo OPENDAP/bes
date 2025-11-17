@@ -51,30 +51,6 @@ using namespace std;
 namespace ngap {
 
 /**
- * @brief Append the EDL client id for Hyrax to the URL sent to CMR
- * @note This function assumes that the URL either ends in a '?' or
- * has at least one key=value pair in the query string. If the context
- * key is not set, this function is mildly expensive noop.
- *
- * @param cmr_url The CMR URL, assumed to already have query string parameters.
- * This value-result parameter is edited in place.
- * @return True if the context was found, false otherwise.
- */
-bool NgapApi::append_hyrax_edl_client_id(string &cmr_url) {
-    bool found;
-    const string client_id = BESContextManager::TheManager()->get_context(CMR_CLIENT_ID_CONTEXT_KEY, found);
-    if (found) {
-        // If this is not the very first key-value pair and there isn't already a trailing '&', add one.
-        // There is an assumption that if this is the first key pair, a trailing '?' is present.
-        // jhrg 10/8/25
-        if (cmr_url.back() != '?' && cmr_url.back() != '&')
-            cmr_url.push_back('&');
-        cmr_url.append(CMR_CLIENT_ID_KEY).append("=").append(client_id);
-    }
-    return found;
-}
-
-/**
  * @brief Get the CMR search endpoint URL using information from the BES Keys.
  * This method only reads the BES keys once and caches the results, including
  * the assembled URL.
@@ -194,9 +170,6 @@ string NgapApi::build_cmr_query_url_old_rpath_format(const string &restified_pat
         cmr_url += string(CMR_GRANULE_UR).append("=").append(esc_url_content);
         curl_free(esc_url_content);
 
-        // Assume the client id text is URL safe. jhrg 10/8/25
-        append_hyrax_edl_client_id(cmr_url);
-
         curl_easy_cleanup(ceh);
     }
 
@@ -285,6 +258,7 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
 
     // Build the CMR query URL for the dataset
     string cmr_url = get_cmr_search_endpoint_url() + "?";
+
     {
         // This easy-handle is only created so we can use the curl_easy_escape() on the token values
         CURL *ceh = curl_easy_init();
@@ -298,11 +272,9 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
         cmr_url += string(CMR_GRANULE_UR).append("=").append(esc_url_content);
         curl_free(esc_url_content);
 
-        // Assume the client id text is URL safe. jhrg 10/8/25
-        append_hyrax_edl_client_id(cmr_url);
-
         curl_easy_cleanup(ceh);
     }
+
     return cmr_url;
 }
 

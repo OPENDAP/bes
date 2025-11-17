@@ -416,43 +416,6 @@ public:
         DBG(cerr << __func__ << "() - END " << endl);
     }
 #endif
-#if NEVER
-    void get_cache_file_name_test_4_2() {
-        DBG(cerr << endl);
-        DBG(cerr << prolog << "BEGIN" << endl);
-
-        auto cache = HttpCache::get_instance();
-        string url = "http://www.opendap.org/opendap/data/file.nc.dap?dap4.ce=/stuff;/stuff/here;/stuff/here.there";
-
-        vector<future<string>> futures;
-
-        for (size_t i = 0; i < 3; ++i) {
-            futures.emplace_back(std::async(std::launch::async,
-                                            [cache](const string &url) {
-                                                return cache->get_cache_file_name("bob", url);
-                                            }, url));
-        }
-
-        DBG(cerr << "I'm doing my own work!" << endl);
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-        DBG(cerr << "I'm done with my own work!" << endl);
-
-        DBG(cerr << "Start querying" << endl);
-        auto fn1 = futures[0].get();
-        auto fn2 = futures[1].get();
-        auto fn3 = futures[2].get();
-        DBG(cerr << "Done querying" << endl);
-        CPPUNIT_ASSERT_MESSAGE("Expected get_instance() to return the same string", fn1 == fn2);
-        CPPUNIT_ASSERT_MESSAGE("Expected get_instance() to return the same string", fn2 == fn3);
-
-        const string prefix = d_build_dir + "/cache/hut_";
-        const string hash = "49fbd7c6653d2291399c8018cfebe34a98e368ad34485f641d52f282915d9d55#file.nc.dap"; // 'sha256 hash' of the url
-        DBG(cerr << prolog << "file_name: " << fn1 << endl);
-        CPPUNIT_ASSERT_MESSAGE("Expected file name to use when caching data", fn1 == prefix + "bob_" + hash);
-
-        DBG(cerr << prolog << "END" << endl);
-    }
-#endif
 
 /* TESTS END */
 /*##################################################################################################*/

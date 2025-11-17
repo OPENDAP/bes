@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="grid_1_2d.hdf" dmrpp:href="data/grid_1_2d.hdf" dmrpp:version="3.21.1">
+    <Dimension name="YDim_GeoGrid" size="4"/>
+    <Dimension name="XDim_GeoGrid" size="8"/>
+    <Attribute name="HDFEOSVersion" type="String">
+        <Value>HDFEOS_V2.18</Value>
+    </Attribute>
+    <Attribute name="StructMetadata_0" type="String">
+        <Value>GROUP=SwathStructure
+END_GROUP=SwathStructure
+GROUP=GridStructure
+	GROUP=GRID_1
+		GridName=&quot;GeoGrid&quot;
+		XDim=8
+		YDim=4
+		UpperLeftPointMtrs=(0.000000,4000000.000000)
+		LowerRightMtrs=(8000000.000000,0.000000)
+		Projection=GCTP_GEO
+		GridOrigin=HDFE_GD_UR
+		GROUP=Dimension
+		END_GROUP=Dimension
+		GROUP=DataField
+			OBJECT=DataField_1
+				DataFieldName=&quot;temperature&quot;
+				DataType=DFNT_FLOAT32
+				DimList=(&quot;YDim&quot;,&quot;XDim&quot;)
+			END_OBJECT=DataField_1
+		END_GROUP=DataField
+		GROUP=MergedFields
+		END_GROUP=MergedFields
+	END_GROUP=GRID_1
+END_GROUP=GridStructure
+GROUP=PointStructure
+END_GROUP=PointStructure
+END
+</Value>
+    </Attribute>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2025-11-04T14:47:29Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp_h4 -f /Users/myang6/work/opendap/hyrax-1915/bes/modules/fileout_netcdf/data/grid_1_2d.hdf -r grid_1_2d.hdf.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+        </Attribute>
+    </Attribute>
+    <Group name="GeoGrid">
+        <Float64 name="YDim_GeoGrid">
+            <Dim name="/YDim_GeoGrid"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_north</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>GeoGrid lat</Value>
+            </Attribute>
+            <dmrpp:missingdata>eJxjYAABHgcwxcACpX/YQ+gH9gAaBgLn</dmrpp:missingdata>
+        </Float64>
+        <Float64 name="XDim_GeoGrid">
+            <Dim name="/XDim_GeoGrid"/>
+            <Attribute name="units" type="String">
+                <Value>degrees_east</Value>
+            </Attribute>
+            <Attribute name="eos_latlon" type="String">
+                <Value>GeoGrid lon</Value>
+            </Attribute>
+            <dmrpp:missingdata>eJxjYACBB/ZgiuEHlGZxgNA8UFoISotBaSkoLecAAKPmBEc=</dmrpp:missingdata>
+        </Float64>
+        <Group name="Data_Fields">
+            <Float32 name="temperature">
+                <Dim name="/YDim_GeoGrid"/>
+                <Dim name="/XDim_GeoGrid"/>
+                <Attribute name="dmr_sds_ref" type="Int32">
+                    <Value>5</Value>
+                </Attribute>
+                <dmrpp:chunks byteOrder="BE">
+                    <dmrpp:chunk offset="294" nBytes="128" chunkPositionInArray="[0,0]"/>
+                </dmrpp:chunks>
+            </Float32>
+        </Group>
+        <Group name="Grid_Attributes"/>
+    </Group>
+</Dataset>

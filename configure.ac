@@ -577,6 +577,7 @@ dnl libraries are not found/used. jhrg 10/16/25
 aws_prefix=
 aws_libs=
 aws_libdir=
+aws_libdir64=
 
 AM_COND_IF([LOOK_FOR_AWS],
     [
@@ -601,9 +602,35 @@ AM_COND_IF([LOOK_FOR_AWS],
                   -laws-c-event-stream -laws-c-mqtt -laws-c-s3 -laws-c-sdkutils -laws-c-common \
                   -lxml2 -lz -lbz2 -lcurl"
 
-         aws_libdir=$aws_prefix/lib
+         dnl AC_CANONICAL_HOST is needed to access the 'host_os' variable
+         AC_CANONICAL_HOST
+
+         AS_IF(
+            dnl OSX test
+            [echo ${host} | grep -q 'darwin.*'],
+            [aws_libdir=$aws_prefix/lib; AC_MSG_NOTICE([    OSX Arch Found: $host])],
+            dnl else
+            [
+                ARCH=""
+                AS_CASE([$host_cpu],
+                    [x86_64|aarch64*|mips64*|ppc64*|sparc64*],
+                    [ARCH="64"; AC_MSG_NOTICE([    64x Arch Found: $host_cpu])],
+                    [i?86|arm*|mips*|ppc*|sparc],
+                    [ARCH="32"; AC_MSG_NOTICE([    32x Arch Found: $host_cpu])])
+
+                AS_IF(
+                    dnl 64-bit system
+                    [test "$ARCH" = "64"],
+                    [aws_libdir64=$aws_prefix/lib64;aws_libdir=$aws_prefix/lib],
+                    dnl 32-bit system
+                    [test "$ARCH" = "32"],
+                    [aws_libdir=$aws_prefix/lib]
+                )
+         ])
 
          AC_MSG_NOTICE([AWS C++ SDK Found.])
+         AC_MSG_NOTICE([AWS libs 32x dir: $aws_libdir])
+         AC_MSG_NOTICE([AWS libs 64x dir: $aws_libdir64])
          AM_CONDITIONAL([USE_AWS_SDK], [true])],
         [AC_MSG_NOTICE([AWS C++ SDK not Found.])
          AM_CONDITIONAL([USE_AWS_SDK], [false])])
@@ -612,6 +639,7 @@ AM_COND_IF([LOOK_FOR_AWS],
 AC_SUBST(aws_prefix)
 AC_SUBST(aws_libs)
 AC_SUBST(aws_libdir)
+AC_SUBST(aws_libdir64)
 
 dnl Freeform hacks
 
@@ -1141,7 +1169,12 @@ AC_CONFIG_TESTDIR(dispatch/tests, [dispatch/tests])
 AC_CONFIG_TESTDIR(xmlcommand/tests, [standalone])
 
 dnl Output files if building the modules too
-		 
+
+dnl Removed these for HYRAX-1921. jhrg 10/29/25
+dnl modules/cmr_module/tests/Makefile
+dnl modules/cmr_module/tests/atlocal
+dnl modules/cmr_module/unit-tests/Makefile
+
 AM_COND_IF([DAP_BUILTIN_MODULES],
     [
     AC_CONFIG_FILES([modules/Makefile
@@ -1161,9 +1194,6 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/asciival/unit-tests/Makefile
 
     modules/cmr_module/Makefile
-    modules/cmr_module/tests/Makefile
-    modules/cmr_module/tests/atlocal
-    modules/cmr_module/unit-tests/Makefile
 
     modules/s3_reader/Makefile
     modules/s3_reader/tests/Makefile
@@ -1296,7 +1326,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
         
     AC_CONFIG_TESTDIR(modules/httpd_catalog_module/tests, [standalone])
 
-    AC_CONFIG_TESTDIR(modules/cmr_module/tests, [standalone])
+    dnl AC_CONFIG_TESTDIR(modules/cmr_module/tests, [standalone]) HYRAX-1921 jhrg 10/29/25
     AC_CONFIG_TESTDIR(modules/s3_reader/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_json/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/fileout_covjson/tests, [standalone])

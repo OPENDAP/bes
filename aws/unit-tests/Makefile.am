@@ -14,12 +14,20 @@ AM_LDFLAGS = -L$(aws_libdir)
 LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/aws/libbes_aws.la $(aws_libs) $(BES_HTTP_LIB)
 
 # aws_libdir is set in configure.ac. jhrg 10/16/25
+# aws_libdir64 is also set in configure.ac sbl 11/14/25
 
 if DARWIN
 AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,@loader_path
 else
 AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,'$$ORIGIN'
+    ifeq ($(strip $(aws_libdir64)),)
+        $(info "aws_libdir64 not set, skipping")
+    else
+        AM_LDFLAGS += -L$(aws_libdir64)
+        AM_LDFLAGS += -Wl,-rpath,$(aws_libdir64)
+    endif
 endif
+# $(info "AM_LDFLAGS: $(AM_LDFLAGS)")
 
 # This will help make 'make check' predictable with varying build environments.
 # jhrg 10/15/25

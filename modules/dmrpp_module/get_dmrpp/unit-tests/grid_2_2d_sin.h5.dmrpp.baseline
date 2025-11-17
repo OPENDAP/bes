@@ -2,7 +2,7 @@
 <Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="grid_2_2d_sin.h5" dmrpp:href="OPeNDAP_DMRpp_DATA_ACCESS_URL" dmrpp:version="3.21.1">
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="created" type="String">
-            <Value>2025-02-11T19:32:05Z</Value>
+            <Value>2025-11-11T13:44:28Z</Value>
         </Attribute>
         <Attribute name="build_dmrpp" type="String">
             <Value>3.21.1</Value>
@@ -14,7 +14,7 @@
             <Value>libdap-3.21.1</Value>
         </Attribute>
         <Attribute name="invocation" type="String">
-            <Value>build_dmrpp -f /Users/myang6/work/opendap/hyrax-1549/bes/modules/dmrpp_module/get_dmrpp/grid_2_2d_sin.h5 -r grid_2_2d_sin.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/hyrax-1913-test/bes/modules/dmrpp_module/get_dmrpp/unit-tests/grid_2_2d_sin.h5 -r grid_2_2d_sin.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
         </Attribute>
     </Attribute>
     <Group name="HDFEOS">
@@ -39,7 +39,7 @@
                         <Value>GeoX GeoY</Value>
                     </Attribute>
                     <dmrpp:chunks fillValue="0" byteOrder="LE">
-                        <dmrpp:chunk offset="12300" nBytes="1" href="grid_2_2d_sin.h5_mvs.h5" />
+                        <dmrpp:chunk offset="12299" nBytes="1" href="grid_2_2d_sin.h5_mvs.h5" />
                     </dmrpp:chunks>
                 </Byte>
                 <Float64 name="XDim">
@@ -58,7 +58,7 @@
                     </Attribute>
                     <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
-                        <dmrpp:chunk offset="12301" nBytes="25" chunkPositionInArray="[0]" href="grid_2_2d_sin.h5_mvs.h5" />
+                        <dmrpp:chunk offset="12300" nBytes="25" chunkPositionInArray="[0]" href="grid_2_2d_sin.h5_mvs.h5" />
                     </dmrpp:chunks>
                 </Float64>
                 <Float64 name="YDim">
@@ -77,7 +77,7 @@
                     </Attribute>
                     <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
-                        <dmrpp:chunk offset="12326" nBytes="24" chunkPositionInArray="[0]" href="grid_2_2d_sin.h5_mvs.h5" />
+                        <dmrpp:chunk offset="12325" nBytes="24" chunkPositionInArray="[0]" href="grid_2_2d_sin.h5_mvs.h5" />
                     </dmrpp:chunks>
                 </Float64>
                 <Float64 name="Latitude">
@@ -88,7 +88,7 @@
                     </Attribute>
                     <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
-                        <dmrpp:chunk offset="12350" nBytes="28" chunkPositionInArray="[0,0]" href="grid_2_2d_sin.h5_mvs.h5" />
+                        <dmrpp:chunk offset="12349" nBytes="28" chunkPositionInArray="[0,0]" href="grid_2_2d_sin.h5_mvs.h5" />
                     </dmrpp:chunks>
                 </Float64>
                 <Float64 name="Longitude">
@@ -99,7 +99,7 @@
                     </Attribute>
                     <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
-                        <dmrpp:chunk offset="12378" nBytes="41" chunkPositionInArray="[0,0]" href="grid_2_2d_sin.h5_mvs.h5" />
+                        <dmrpp:chunk offset="12377" nBytes="41" chunkPositionInArray="[0,0]" href="grid_2_2d_sin.h5_mvs.h5" />
                     </dmrpp:chunks>
                 </Float64>
                 <Group name="Data_Fields">
@@ -141,7 +141,7 @@
                         <Value>GeoX GeoY</Value>
                     </Attribute>
                     <dmrpp:chunks fillValue="0" byteOrder="LE">
-                        <dmrpp:chunk offset="12419" nBytes="1" href="grid_2_2d_sin.h5_mvs.h5" />
+                        <dmrpp:chunk offset="12418" nBytes="1" href="grid_2_2d_sin.h5_mvs.h5" />
                     </dmrpp:chunks>
                 </Byte>
                 <Float64 name="XDim">
@@ -160,7 +160,7 @@
                     </Attribute>
                     <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>4</dmrpp:chunkDimensionSizes>
-                        <dmrpp:chunk offset="12420" nBytes="43" chunkPositionInArray="[0]" href="grid_2_2d_sin.h5_mvs.h5" />
+                        <dmrpp:chunk offset="12419" nBytes="43" chunkPositionInArray="[0]" href="grid_2_2d_sin.h5_mvs.h5" />
                     </dmrpp:chunks>
                 </Float64>
                 <Float64 name="YDim">
@@ -179,7 +179,7 @@
                     </Attribute>
                     <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>4</dmrpp:chunkDimensionSizes>
-                        <dmrpp:chunk offset="12463" nBytes="40" chunkPositionInArray="[0]" href="grid_2_2d_sin.h5_mvs.h5" />
+                        <dmrpp:chunk offset="12462" nBytes="40" chunkPositionInArray="[0]" href="grid_2_2d_sin.h5_mvs.h5" />
                     </dmrpp:chunks>
                 </Float64>
                 <Float64 name="Latitude">
@@ -190,7 +190,7 @@
                     </Attribute>
                     <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>4 4</dmrpp:chunkDimensionSizes>
-                        <dmrpp:chunk offset="12503" nBytes="46" chunkPositionInArray="[0,0]" href="grid_2_2d_sin.h5_mvs.h5" />
+                        <dmrpp:chunk offset="12502" nBytes="46" chunkPositionInArray="[0,0]" href="grid_2_2d_sin.h5_mvs.h5" />
                     </dmrpp:chunks>
                 </Float64>
                 <Float64 name="Longitude">
@@ -201,7 +201,7 @@
                     </Attribute>
                     <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>4 4</dmrpp:chunkDimensionSizes>
-                        <dmrpp:chunk offset="12549" nBytes="139" chunkPositionInArray="[0,0]" href="grid_2_2d_sin.h5_mvs.h5" />
+                        <dmrpp:chunk offset="12548" nBytes="139" chunkPositionInArray="[0,0]" href="grid_2_2d_sin.h5_mvs.h5" />
                     </dmrpp:chunks>
                 </Float64>
                 <Group name="Data_Fields">

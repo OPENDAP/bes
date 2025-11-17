@@ -9,7 +9,7 @@
         </Attribute>
         <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>8</dmrpp:chunkDimensionSizes>
-            <dmrpp:chunk offset="3218" nBytes="33" chunkPositionInArray="[0]" href="http://some.where.over.the.rainbow.oz" />
+            <dmrpp:chunk offset="3217" nBytes="33" chunkPositionInArray="[0]" href="http://some.where.over.the.rainbow.oz" />
         </dmrpp:chunks>
     </Float32>
     <Float32 name="lat">
@@ -19,7 +19,7 @@
         </Attribute>
         <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
             <dmrpp:chunkDimensionSizes>4</dmrpp:chunkDimensionSizes>
-            <dmrpp:chunk offset="5347" nBytes="22" chunkPositionInArray="[0]" href="http://some.where.over.the.rainbow.oz" />
+            <dmrpp:chunk offset="5346" nBytes="22" chunkPositionInArray="[0]" href="http://some.where.over.the.rainbow.oz" />
         </dmrpp:chunks>
     </Float32>
     <Float32 name="temperature">
