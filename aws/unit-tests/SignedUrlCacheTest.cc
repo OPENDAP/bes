@@ -329,10 +329,6 @@ public:
         std::tm timestamp_time = {};
         auto time_parse_result = strptime(datetime_string.c_str(), "%F %T%z", &timestamp_time);
 
-        // auto foo = std::mktime(&timestamp_time);
-        // auto bar = std::chrono::system_clock::from_time_t(foo);
-        // return bar;
-
         return std::chrono::system_clock::from_time_t(std::mktime(&timestamp_time));
     }
 

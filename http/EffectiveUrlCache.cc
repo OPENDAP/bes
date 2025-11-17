@@ -116,6 +116,7 @@ shared_ptr <EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr <url> 
     // It not found or expired, (re)load.
     if (retrieve_and_cache) {
         BESDEBUG(MODULE, prolog << "Acquiring effective URL for  " << source_url->str() << endl);
+        INFO_LOG(prolog + "DEPRECATION WARNING: Acquiring effective URL via redirects.");
         {
             BES_STOPWATCH_START(MODULE_TIMER, prolog + "Retrieve and cache effective url for source url: " + source_url->str());
             try {
