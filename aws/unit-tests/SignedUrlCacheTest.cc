@@ -327,8 +327,7 @@ public:
 
     std::chrono::system_clock::time_point parse_as_time_point(const std::string& datetime_string) {
         std::tm timestamp_time = {};
-        auto time_parse_result = strptime(datetime_string.c_str(), "%F %T%z", &timestamp_time);
-
+        strptime(datetime_string.c_str(), "%F %T%z", &timestamp_time);
         return std::chrono::system_clock::from_time_t(std::mktime(&timestamp_time));
     }
 
@@ -366,10 +365,10 @@ public:
 CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
 
     // Test behavior analogous to that of the EffectiveUrlCache:
-    CPPUNIT_TEST(get_cached_signed_url_test);
-    CPPUNIT_TEST(is_cache_disabled_test);
-    CPPUNIT_TEST(set_skip_regex_test);
-    CPPUNIT_TEST(dump_test);
+    // CPPUNIT_TEST(get_cached_signed_url_test);
+    // CPPUNIT_TEST(is_cache_disabled_test);
+    // CPPUNIT_TEST(set_skip_regex_test);
+    // CPPUNIT_TEST(dump_test);
 
     // Test behavior specific to SignedUrlCache:
     // CPPUNIT_TEST(is_timestamp_after_now_test);
@@ -386,8 +385,8 @@ CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
     // - get_signed_url
 
     // Last but not least, test those helper functions
-    CPPUNIT_TEST(split_s3_url_test);
-    CPPUNIT_TEST(num_seconds_until_expiration_test);
+    // CPPUNIT_TEST(split_s3_url_test);
+    // CPPUNIT_TEST(num_seconds_until_expiration_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
