@@ -36,7 +36,7 @@
 /** @brief Structure storing information from the Apache module
  */
 
-typedef struct _BESDataRequestInterface
+using BESDataRequestInterface = struct _BESDataRequestInterface
 {
     /** @brief name of server running Apache server
      */
@@ -68,8 +68,7 @@ typedef struct _BESDataRequestInterface
     /** @brief session token passed in URL
      */
     const char *token;
-
-} BESDataRequestInterface;
+};
 
 #endif // BESDataRequestInterface_h_
 

@@ -22,7 +22,7 @@
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -39,42 +39,41 @@
 #include "BESObj.h"
 #include "BESContainer.h"
 
-class BESDefine : public BESObj
-{
-private:
-	std::list<BESContainer *>	_containers ;
-	std::string			_agg_cmd ;
-	std::string			_agg_handler ;
+class BESDefine : public BESObj {
+    std::list<BESContainer *> _containers;
+    std::string _agg_cmd;
+    std::string _agg_handler;
+
 public:
-    				BESDefine() {}
-    virtual			~BESDefine() ;
+    BESDefine() = default;
 
-    typedef std::list<BESContainer *>::iterator containers_iter ;
-    typedef std::list<BESContainer *>::const_iterator containers_citer ;
+    ~BESDefine() override;
 
-    void			add_container( BESContainer *container ) ;
-    BESDefine::containers_citer first_container() { return _containers.begin() ; }
-    BESDefine::containers_citer end_container() { return _containers.end() ; }
+    using containers_iter = std::list<BESContainer *>::iterator;
+    using containers_citer = std::list<BESContainer *>::const_iterator;
 
-    void			set_agg_cmd( const std::string &cmd )
-				{
-				    _agg_cmd = cmd ;
-				}
-    const std::string &		get_agg_cmd()
-				{
-				    return _agg_cmd ;
-				}
-    void			set_agg_handler( const std::string &handler )
-				{
-				    _agg_handler = handler ;
-				}
-    const std::string &		get_agg_handler()
-				{
-				    return _agg_handler ;
-				}
+    void add_container(BESContainer *container);
 
-    virtual void		dump( std::ostream &strm ) const ;
-} ;
+    BESDefine::containers_citer first_container() { return _containers.begin(); }
+    BESDefine::containers_citer end_container() { return _containers.end(); }
+
+    void set_agg_cmd(const std::string &cmd) {
+        _agg_cmd = cmd;
+    }
+
+    const std::string &get_agg_cmd() {
+        return _agg_cmd;
+    }
+
+    void set_agg_handler(const std::string &handler) {
+        _agg_handler = handler;
+    }
+
+    const std::string &get_agg_handler() {
+        return _agg_handler;
+    }
+
+    void dump(std::ostream &strm) const override;
+};
 
 #endif // BESDefine_h_
-

@@ -59,23 +59,13 @@ public:
     BESCatalog() = delete;
     explicit BESCatalog(const std::string &catalog_name);
 
-    virtual ~BESCatalog();
-#if 0
-    {
-        // TODO delete d_utils when it's no longer a singleton.
-        // Or leave that class as the weird singleton it is and treat this
-        // as a weak pointer. jhrg 7/21/18
-    }
-#endif
+    ~BESCatalog() override;
 
     /**
      * @brief Increase the count of clients that reference this catalog.
      *
      * This class maintains a count of the clients that reference the catalog.
-     * When count of clients drops to zero, the instance can be deleted.
-     *
-     * @todo Revisit the reference counting behavior - maybe there's a better
-     * way to manage these catalogs?
+     * When the count of clients drops to zero, the instance can be deleted.
      */
     virtual void reference_catalog()
     {
@@ -133,7 +123,7 @@ public:
     virtual void get_site_map(const std::string &prefix, const std::string &node_suffix, const std::string &leaf_suffix, std::ostream &out,
         const std::string &path = "/") const = 0;
 
-    virtual void dump(std::ostream &strm) const = 0;
+    void dump(std::ostream &strm) const override = 0;
 };
 
 #endif // I_BESCatalog_h

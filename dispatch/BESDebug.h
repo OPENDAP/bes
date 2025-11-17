@@ -72,7 +72,7 @@ static std::mutex bes_debug_log_mutex;
 /** @brief macro used to determine if the specified debug context is set
  *
  * If there is a lot of debugging information, use this macro to determine if
- * debug context is set.
+ * the debug context is set.
  *
  * example:
  *
@@ -94,7 +94,7 @@ static std::mutex bes_debug_log_mutex;
 
 class BESDebug {
 private:
-    // The time to make 10000000 calls to IsSet with a std::map was 3 763 862 us and
+    // The time to make 10'000'000 calls to IsSet with a std::map was 3 763 862 us and
     // to make the same calls to IsSet with a std::unordered_map was 2 675 492 us
     // jhrg 4/12/23
     // typedef std::unordered_map<std::string, bool> DebugMap;
@@ -115,9 +115,9 @@ public:
 
      /** @brief register the specified debug flag
      *
-     * Allows developers to register a debug flag for when Help method
+     * Allows developers to register a debug flag for when the Help method
      * is called. It's OK to register a context more than once (subsequent
-     * calls to Register() have no affect. If the pseudo-context 'all' has
+     * calls to Register() have no effect. If the pseudo-context 'all' has
      * been registered, the context is set to true (messages will be printed),
      * otherwise it is set to false.
      *

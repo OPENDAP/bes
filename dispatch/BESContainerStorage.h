@@ -75,14 +75,11 @@ public:
      *
      * @param name name of this persistence store
      */
-    BESContainerStorage(const std::string &name) :
-            _my_name(name)
+    explicit BESContainerStorage(const std::string &name) : _my_name(name)
     {
     }
 
-    virtual ~BESContainerStorage()
-    {
-    }
+    ~BESContainerStorage() override = default;
 
     /** @brief retrieve the name of this persistent store
      *
@@ -167,7 +164,7 @@ public:
      *
      * @param strm output stream to use to dump the contents of this object
      */
-    virtual void dump(std::ostream &strm) const = 0;
+    void dump(std::ostream &strm) const override = 0;
 };
 
 #endif // BESContainerStorage_h_

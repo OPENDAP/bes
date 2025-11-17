@@ -42,42 +42,41 @@ class BESDefine;
 class BESInfo;
 
 /** @brief provides volatile storage for a specific definition/view of
- * different containers including contraints and aggregation.
+ * different containers, including constraints and aggregation.
  *
  * An implementation of the abstract interface BESDefinitionStorage
  * provides volatile storage for a definition, or view, of a set of data
- * including possibly constraints on each of those containers and possibly
+ * including possible constraints on each of those containers and possibly
  * aggregation of those containers.
  *
  * @see BESDefine
  * @see BESDefinitionStorageList
  */
-class BESDefinitionStorageVolatile: public BESDefinitionStorage {
-private:
-	std::map<std::string, BESDefine *> _def_list;
-    typedef std::map<std::string, BESDefine *>::const_iterator Define_citer;
-    typedef std::map<std::string, BESDefine *>::iterator Define_iter;
+class BESDefinitionStorageVolatile : public BESDefinitionStorage {
+    std::map<std::string, BESDefine *> _def_list;
+    using Define_citer = std::map<std::string, BESDefine *>::const_iterator;
+    using Define_iter = std::map<std::string, BESDefine *>::iterator;
+
 public:
     /** @brief create an instance of BESDefinitionStorageVolatile with the give
      * name.
      *
      * @param name name of this persistence store
      */
-    BESDefinitionStorageVolatile(const std::string &name) :
-        BESDefinitionStorage(name)
-    {
+    explicit BESDefinitionStorageVolatile(const std::string &name) : BESDefinitionStorage(name) {
     }
 
-    virtual ~BESDefinitionStorageVolatile();
+    ~BESDefinitionStorageVolatile() override;
 
-    virtual BESDefine * look_for(const std::string &def_name);
+    BESDefine *look_for(const std::string &def_name) override;
 
-    virtual bool add_definition(const std::string &def_name, BESDefine *d);
+    bool add_definition(const std::string &def_name, BESDefine *d) override;
 
-    virtual bool del_definition(const std::string &def_name);
-    virtual bool del_definitions();
+    bool del_definition(const std::string &def_name) override;
 
-    virtual void show_definitions(BESInfo &info);
+    bool del_definitions() override;
+
+    void show_definitions(BESInfo &info) override;
 
     void dump(std::ostream &strm) const override;
 };

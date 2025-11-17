@@ -61,7 +61,8 @@ private:
 
 public:
     BESCatalogEntry(const std::string &name, const std::string &catalog);
-    virtual ~BESCatalogEntry(void);
+
+    ~BESCatalogEntry() override;
 
     virtual void add_entry(BESCatalogEntry *entry)
     {
@@ -137,7 +138,7 @@ public:
         _metadata[name] = value;
     }
 
-    typedef std::map<std::string, BESCatalogEntry *>::const_iterator catalog_citer;
+    using catalog_citer = std::map<std::string, BESCatalogEntry *>::const_iterator;
 
     virtual catalog_citer get_beginning_entry()
     {

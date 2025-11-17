@@ -79,7 +79,7 @@ private:
 
     std::vector<handler_regex> d_match_list;  ///< The list of types & regexes
 
-    typedef std::vector<handler_regex>::const_iterator match_citer;
+    using match_citer = std::vector<handler_regex>::const_iterator;
     BESCatalogUtils::match_citer match_list_begin() const;
     BESCatalogUtils::match_citer match_list_end() const;
 
@@ -88,11 +88,9 @@ private:
     static void bes_add_stat_info(BESCatalogEntry *entry, struct stat &buf);
 
 public:
-    BESCatalogUtils(const std::string &name, bool strict = true);
+    explicit BESCatalogUtils(const std::string &name, bool strict = true);
 
-    virtual ~BESCatalogUtils()
-    {
-    }
+    ~BESCatalogUtils() override = default;
 
     /**
      * @brief Get the root directory of the catalog
@@ -128,17 +126,6 @@ public:
 #endif
 
     void dump(std::ostream &strm) const override;
-
-#if 0
-    static BESCatalogUtils * Utils(const std::string &name);
-#endif
-
-
-#if 0
-    // Added because of reported memory leaks. jhrg 12/24/12
-    static void delete_all_catalogs();
-#endif
-
 };
 
 #endif // S_BESCatalogUtils_h

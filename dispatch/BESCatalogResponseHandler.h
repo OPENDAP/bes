@@ -47,11 +47,12 @@
 class BESCatalogResponseHandler: public BESResponseHandler {
 private:
 public:
-    BESCatalogResponseHandler(const std::string &name);
-    virtual ~BESCatalogResponseHandler(void);
+    explicit BESCatalogResponseHandler(const std::string &name);
 
-    virtual void execute(BESDataHandlerInterface &dhi);
-    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+    ~BESCatalogResponseHandler() override;
+
+    void execute(BESDataHandlerInterface &dhi) override;
+    void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;
 
     void dump(std::ostream &strm) const override;
 

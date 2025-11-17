@@ -68,11 +68,6 @@ public:
 
     using Container_citer = std::map<std::string, BESContainer *>::const_iterator;
     using Container_iter = std::map<std::string, BESContainer *>::iterator;
-#if 0
-      typedef std::map<std::string, BESContainer *>::const_iterator Container_citer;
-    typedef std::map<std::string, BESContainer *>::iterator Container_iter;
-#endif
-
 
     BESContainer * look_for(const std::string &sym_name) override;
     void add_container(const std::string &sym_name, const std::string &real_name, const std::string &type) override;

@@ -36,10 +36,10 @@
 /**
  * @brief Names used with the DHI data map.
  *
- * The DataHanderInterface uses a map<string, string> hash map as a simple
+ * The DataHandlerInterface uses a map<string, string> hash map as a simple
  * 'database' of key/value pairs to pass information about a request from
  * place to place in the BESInterface, BESCommand, RequestHandler and
- * ResponseHandler classes. Knowning these names and how the information
+ * ResponseHandler classes. Knowing these names and how the information
  * is used helps reveal the BES flow of control.
  */
 
@@ -80,11 +80,6 @@
 #define SYMBOLIC_NAME "symbolic_name"
 #define REAL_NAME "real_name"
 
-// TODO Never used
-#if 0
-#define REAL_NAME_LIST "real_name_list"
-#endif
-
 #define CONTAINER_TYPE "type"
 
 #define DEF_NAME "def_name"
@@ -93,7 +88,6 @@
 #define CONTAINER "container"
 #define CATALOG "catalog"
 
-// FIXME Change this to "default" ASAP. jhrg 7/22/18
 #define DEFAULT_CATALOG "catalog"
 
 #define BES_KEY "besKey"
