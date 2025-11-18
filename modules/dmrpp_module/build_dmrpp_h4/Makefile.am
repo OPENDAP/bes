@@ -22,6 +22,14 @@ AM_CXXFLAGS=
 AM_LDFLAGS = -L$(aws_libdir)
 include $(top_srcdir)/coverage.mk
 
+if DARWIN
+AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,@loader_path
+else
+AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,'$$ORIGIN'
+endif
+
+LDADD = $(abs_top_builddir)/aws/libbes_aws.la $(aws_libs)
+
 # SUBDIRS = . unit-tests tests
 
 # These tests will fail if the DmrApiTest also fails: tests jhrg 6/29/23
@@ -51,13 +59,7 @@ build_dmrpp_h4_LDFLAGS = $(HDFEOS2_LDFLAGS) $(HDF4_LDFLAGS) $(BES_DAP_LIB_LDFLAG
 # jhrg 12/18/23 $(top_builddir)/dap/.libs/libdap_module.a
 
 build_dmrpp_h4_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
-    $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) $(HDFEOS2_LIBS) $(HDF4_LIBS) $(abs_top_builddir)/aws/libbes_aws.la $(aws_libs)
-
-if DARWIN
-AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,@loader_path
-else
-AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,'$$ORIGIN'
-endif
+    $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) $(HDFEOS2_LIBS) $(HDF4_LIBS) $(LDADD)
 
 lib_besdir=$(libdir)/bes
 

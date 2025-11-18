@@ -33,6 +33,18 @@ include $(top_srcdir)/coverage.mk
 
 LDADD = $(abs_top_builddir)/aws/libbes_aws.la $(aws_libs)
 
+if DARWIN
+AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,@loader_path
+else
+AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,'$$ORIGIN'
+    ifeq ($(strip $(aws_libdir64)),)
+        $(info "aws_libdir64 not set, skipping")
+    else
+        AM_LDFLAGS += -L$(aws_libdir64)
+        AM_LDFLAGS += -Wl,-rpath,$(aws_libdir64)
+    endif
+endif
+
 SUBDIRS = ngap_container dmrpp_transmitter build_dmrpp_h4 . unit-tests tests data tests_build_dmrpp get_dmrpp
 
 lib_besdir=$(libdir)/bes
@@ -59,7 +71,7 @@ DMRPP_MODULE = DmrppModule.cc DmrppRequestHandler.cc DmrppModule.h DmrppRequestH
 libdmrpp_module_la_SOURCES = $(BES_HDRS) $(BES_SRCS) $(DMRPP_MODULE)
 libdmrpp_module_la_LDFLAGS = -avoid-version -module
 libdmrpp_module_la_LIBADD = -L$(builddir)/ngap_container -lngap $(BES_DISPATCH_LIB) \
-    $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
+    $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(LDADD) \
     $(H5_LDFLAGS) $(H5_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -ltest-types \
     -Ldmrpp_transmitter -ldmrpp_return_as
 
@@ -79,20 +91,7 @@ build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) DmrppRequestHandler.cc DmrppReques
 build_dmrpp_LDFLAGS = $(top_builddir)/dap/.libs/libdap_module.a
 build_dmrpp_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(H5_LDFLAGS) \
     $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
-    $(LDADD) \
-    $(XML2_LIBS) $(BYTESWAP_LIBS) -lz 
-
-if DARWIN
-AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,@loader_path
-else
-AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,'$$ORIGIN'
-    ifeq ($(strip $(aws_libdir64)),)
-        $(info "aws_libdir64 not set, skipping")
-    else
-        AM_LDFLAGS += -L$(aws_libdir64)
-        AM_LDFLAGS += -Wl,-rpath,$(aws_libdir64)
-    endif
-endif
+    $(LDADD) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz 
 
 # jhrg 6/2/23 $(BES_EXTRA_LIBS)
 
