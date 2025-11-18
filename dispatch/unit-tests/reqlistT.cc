@@ -73,7 +73,7 @@ public:
     CPPUNIT_TEST_SUITE_END();
 
     void do_test() {
-        BESRequestHandler *rh = 0;
+        BESRequestHandler *rh = nullptr;
 
         cout << "*****************************************" << endl;
         cout << "Entered reqlistT::run" << endl;

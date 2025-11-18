@@ -47,7 +47,7 @@ using std::string;
 #include "BESDefinitionStorageList.h"
 #include "BESInfo.h"
 
-BESDefinitionStorageList::BESDefinitionStorageList() : _first(0) {}
+BESDefinitionStorageList::BESDefinitionStorageList() : _first(nullptr) {}
 
 /** @brief Add a persistent store to the list
  *
@@ -69,7 +69,7 @@ bool BESDefinitionStorageList::add_persistence(BESDefinitionStorage *cp) {
         _first = new BESDefinitionStorageList::persistence_list;
         _first->_persistence_obj = cp;
         _first->_reference = 1;
-        _first->_next = 0;
+        _first->_next = nullptr;
         ret = true;
     } else {
         BESDefinitionStorageList::persistence_list *pl = _first;
@@ -82,7 +82,7 @@ bool BESDefinitionStorageList::add_persistence(BESDefinitionStorage *cp) {
                     pl->_next = new BESDefinitionStorageList::persistence_list;
                     pl->_next->_persistence_obj = cp;
                     pl->_next->_reference = 1;
-                    pl->_next->_next = 0;
+                    pl->_next->_next = nullptr;
                     done = true;
                     ret = true;
                 }
@@ -142,7 +142,7 @@ bool BESDefinitionStorageList::deref_persistence(const string &persist_name) {
 
     bool ret = false;
     BESDefinitionStorageList::persistence_list *pl = _first;
-    BESDefinitionStorageList::persistence_list *last = 0;
+    BESDefinitionStorageList::persistence_list *last = nullptr;
 
     bool done = false;
     while (done == false) {
@@ -161,7 +161,7 @@ bool BESDefinitionStorageList::deref_persistence(const string &persist_name) {
                     }
                     delete pl->_persistence_obj;
                     delete pl;
-                    pl = 0;
+                    pl = nullptr;
                 }
             } else {
                 last = pl;
@@ -186,7 +186,7 @@ bool BESDefinitionStorageList::deref_persistence(const string &persist_name) {
 BESDefinitionStorage *BESDefinitionStorageList::find_persistence(const string &persist_name) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    BESDefinitionStorage *ret = NULL;
+    BESDefinitionStorage *ret = nullptr;
     BESDefinitionStorageList::persistence_list *pl = _first;
     bool done = false;
     while (done == false) {
@@ -217,7 +217,7 @@ BESDefinitionStorage *BESDefinitionStorageList::find_persistence(const string &p
 BESDefine *BESDefinitionStorageList::look_for(const string &def_name) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    BESDefine *ret_def = NULL;
+    BESDefine *ret_def = nullptr;
     BESDefinitionStorageList::persistence_list *pl = _first;
     bool done = false;
     while (done == false) {

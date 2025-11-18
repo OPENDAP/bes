@@ -45,7 +45,7 @@
 
 using namespace std;
 
-BESCatalogList *BESCatalogList::d_instance = 0;
+BESCatalogList *BESCatalogList::d_instance = nullptr;
 
 /** @brief Get the singleton BESCatalogList instance.
  *
@@ -108,7 +108,7 @@ BESCatalogList::BESCatalogList() {
 bool BESCatalogList::add_catalog(BESCatalog *catalog) {
     bool result = false;
     if (catalog) {
-        if (find_catalog(catalog->get_catalog_name()) == 0) {
+        if (find_catalog(catalog->get_catalog_name()) == nullptr) {
             // TODO I have no idea why this code was re-written. jhrg 2.25.18
 #if 0
             d_catalogs[catalog->get_catalog_name()] = catalog;
@@ -163,7 +163,7 @@ bool BESCatalogList::add_catalog(BESCatalog *catalog) {
  */
 bool BESCatalogList::ref_catalog(const string &catalog_name) {
     bool ret = false;
-    BESCatalog *cat = 0;
+    BESCatalog *cat = nullptr;
     BESCatalogList::catalog_iter i;
     i = d_catalogs.find(catalog_name);
     if (i != d_catalogs.end()) {
@@ -193,7 +193,7 @@ bool BESCatalogList::ref_catalog(const string &catalog_name) {
  */
 bool BESCatalogList::deref_catalog(const string &catalog_name) {
     bool ret = false;
-    BESCatalog *cat = 0;
+    BESCatalog *cat = nullptr;
     BESCatalogList::catalog_iter i;
     i = d_catalogs.find(catalog_name);
     if (i != d_catalogs.end()) {
@@ -218,7 +218,7 @@ BESCatalog *BESCatalogList::find_catalog(const string &catalog_name) const {
     if (i != d_catalogs.end()) {
         return (*i).second;
     }
-    return 0;
+    return nullptr;
 }
 
 /**

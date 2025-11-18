@@ -143,7 +143,7 @@ public:
                 CPPUNIT_ASSERT(BESDebug::IsSet("cdf"));
                 CPPUNIT_ASSERT(BESDebug::IsSet("hdf4"));
 
-                BESDebug::SetStrm(0, false);
+                BESDebug::SetStrm(nullptr, false);
                 result = remove("myfile.debug");
                 CPPUNIT_ASSERT(result != -1);
             } catch (BESError &e) {

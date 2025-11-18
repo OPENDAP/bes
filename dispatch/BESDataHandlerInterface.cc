@@ -137,7 +137,7 @@ void BESDataHandlerInterface::clean() {
  * @return The response object for this request
  */
 BESResponseObject *BESDataHandlerInterface::get_response_object() {
-    BESResponseObject *response = 0;
+    BESResponseObject *response = nullptr;
 
     if (response_handler) {
         response = response_handler->get_response_object();

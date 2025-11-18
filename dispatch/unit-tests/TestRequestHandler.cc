@@ -43,7 +43,7 @@ using std::string;
 
 #include "TestRequestHandler.h"
 
-TestRequestHandler *trh = 0;
+TestRequestHandler *trh = nullptr;
 
 TestRequestHandler::TestRequestHandler(string name) : BESRequestHandler(name), _resp_num(0) {
     trh = this;

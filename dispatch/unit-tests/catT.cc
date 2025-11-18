@@ -209,7 +209,7 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Info.Type=xml");
 
         try {
-            BESDefaultModule::initialize(0, 0);
+            BESDefaultModule::initialize(0, nullptr);
         } catch (BESError &e) {
             cerr << e.get_message() << endl;
             throw e;
@@ -263,8 +263,8 @@ public:
             // show_catalogs(...) the false value for show_default will suppress
             // showing anything for the default catalog. Since there's no other
             // catalog, there's nothing to show. jhrg 2.25.18
-            BESCatalogEntry *entry = 0;
-            entry = BESCatalogList::TheCatalogList()->show_catalogs(0, false);
+            BESCatalogEntry *entry = nullptr;
+            entry = BESCatalogList::TheCatalogList()->show_catalogs(nullptr, false);
             ostringstream strm;
             entry->dump(strm);
             string str = strm.str();
@@ -309,9 +309,9 @@ public:
 #endif
         DBG(cerr << "manipulate non-existent catalog" << endl);
         BESCatalog *catobj = BESCatalogList::TheCatalogList()->find_catalog("dummy");
-        CPPUNIT_ASSERT(catobj == 0);
+        CPPUNIT_ASSERT(catobj == nullptr);
 
-        CPPUNIT_ASSERT(BESCatalogList::TheCatalogList()->add_catalog(0) == false);
+        CPPUNIT_ASSERT(BESCatalogList::TheCatalogList()->add_catalog(nullptr) == false);
         CPPUNIT_ASSERT(BESCatalogList::TheCatalogList()->ref_catalog("dummy") == false);
         CPPUNIT_ASSERT(BESCatalogList::TheCatalogList()->deref_catalog("dummy") == false);
 
@@ -359,7 +359,7 @@ public:
 
         try {
             BESDataHandlerInterface dhi;
-            BESCatalogEntry *entry = BESCatalogList::TheCatalogList()->show_catalogs(0, false /* show default*/);
+            BESCatalogEntry *entry = BESCatalogList::TheCatalogList()->show_catalogs(nullptr, false /* show default*/);
             ostringstream strm;
             entry->dump(strm);
             string str = strm.str();
@@ -422,7 +422,7 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Catalog." + new_cat_name + ".Include=.*file.*$;");
         TheBESKeys::TheKeys()->set_key("BES.Catalog." + new_cat_name + ".Exclude=README;");
 
-        BESCatalog *other = 0;
+        BESCatalog *other = nullptr;
         try {
             other = new BESCatalogDirectory(new_cat_name);
             BESCatalogList::TheCatalogList()->add_catalog(other);

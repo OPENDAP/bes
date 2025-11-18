@@ -198,11 +198,11 @@ class servicesT : public TestFixture {
 private:
 public:
     servicesT() = default;
-    ~servicesT() = default;
+    ~servicesT() override = default;
 
-    void setUp() {}
+    void setUp() override {}
 
-    void tearDown() {}
+    void tearDown() override {}
 
     CPPUNIT_TEST_SUITE(servicesT);
 

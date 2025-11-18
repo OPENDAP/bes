@@ -44,7 +44,7 @@ BESReporterList::BESReporterList() = default;
 bool BESReporterList::add_reporter(string reporter_name, BESReporter *reporter_object) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    if (find_reporter(reporter_name) == 0) {
+    if (find_reporter(reporter_name) == nullptr) {
         _reporter_list[reporter_name] = reporter_object;
         return true;
     }
@@ -54,7 +54,7 @@ bool BESReporterList::add_reporter(string reporter_name, BESReporter *reporter_o
 BESReporter *BESReporterList::remove_reporter(string reporter_name) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    BESReporter *ret = 0;
+    BESReporter *ret = nullptr;
     BESReporterList::Reporter_iter i;
     i = _reporter_list.find(reporter_name);
     if (i != _reporter_list.end()) {
@@ -72,13 +72,13 @@ BESReporter *BESReporterList::find_reporter(string reporter_name) {
     if (i != _reporter_list.end()) {
         return (*i).second;
     }
-    return 0;
+    return nullptr;
 }
 
 void BESReporterList::report(BESDataHandlerInterface &dhi) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    BESReporter *reporter = 0;
+    BESReporter *reporter = nullptr;
     BESReporterList::Reporter_iter i = _reporter_list.begin();
     for (; i != _reporter_list.end(); i++) {
         reporter = (*i).second;

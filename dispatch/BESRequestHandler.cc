@@ -56,7 +56,7 @@ using std::string;
  * @see BESResponseNames
  */
 bool BESRequestHandler::add_method(const string &handler_name, p_request_handler_method handler_method) {
-    if (find_method(handler_name) == 0) {
+    if (find_method(handler_name) == nullptr) {
         _handler_list[handler_name] = handler_method;
         return true;
     }
@@ -96,7 +96,7 @@ p_request_handler_method BESRequestHandler::find_method(const string &handler_na
     if (i != _handler_list.end()) {
         return (*i).second;
     }
-    return 0;
+    return nullptr;
 }
 
 /** @brief return a comma separated list of response object types handled by

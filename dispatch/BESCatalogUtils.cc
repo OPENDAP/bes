@@ -92,7 +92,7 @@ BESCatalogUtils::BESCatalogUtils(const string &n, bool strict) : d_name(n), d_fo
     if (d_root_dir != "UNUSED") {
         // TODO access() or stat() would test for existence faster. jhrg 2.25.18
         DIR *dip = opendir(d_root_dir.c_str());
-        if (dip == NULL) {
+        if (dip == nullptr) {
             string serr = "BESCatalogDirectory - root directory " + d_root_dir + " does not exist";
             throw BESNotFoundError(serr, __FILE__, __LINE__);
         }
@@ -288,7 +288,7 @@ unsigned int BESCatalogUtils::get_entries(DIR *dip, const string &fullnode, cons
     }
 
     struct dirent *dit;
-    while ((dit = readdir(dip)) != NULL) {
+    while ((dit = readdir(dip)) != nullptr) {
         string dirEntry = dit->d_name;
         if (dirEntry == "." || dirEntry == "..") {
             continue;

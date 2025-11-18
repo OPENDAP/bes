@@ -80,7 +80,7 @@ p_transmitter BESTransmitter::find_method(string method_name) {
         p_transmitter p = (*i).second;
         return p;
     }
-    return 0;
+    return nullptr;
 }
 
 void BESTransmitter::send_response(const string &method_name, BESResponseObject *response,

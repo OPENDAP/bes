@@ -105,7 +105,7 @@ p_bes_uncompress BESUncompressManager3::find_method(const string &name) {
     if (i != _uncompress_list.end()) {
         return (*i).second;
     }
-    return 0;
+    return nullptr;
 }
 
 /** @brief If the file 'src' should be uncompressed, do so and return a
@@ -155,7 +155,7 @@ bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BE
      * appears to be compressed, will fail. This may however be difficult
      * to diagnose for the users.
      */
-    if (cache == NULL) {
+    if (cache == nullptr) {
         std::ostringstream oss;
         oss << "BESUncompressManager3::" << __func__ << "() - ";
         oss << "The supplied Cache object is NULL. Decompression Requires An Operational Cache.";
@@ -277,5 +277,5 @@ void BESUncompressManager3::initialize_instance() {
 
 void BESUncompressManager3::delete_instance() {
     delete d_instance;
-    d_instance = 0;
+    d_instance = nullptr;
 }

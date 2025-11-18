@@ -57,7 +57,7 @@ CatalogNode::~CatalogNode() {
     d_leaves.clear();
 #endif
     delete d_no_really_im_a_leaf;
-    d_no_really_im_a_leaf = 0;
+    d_no_really_im_a_leaf = nullptr;
     ;
 }
 

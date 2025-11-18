@@ -845,7 +845,7 @@ unsigned long long BESFileLockingCache::m_collect_cache_dir_info(CacheFiles &con
     vector<string> files;
     // go through the cache directory and collect all the files that
     // start with the matching prefix
-    while ((dit = readdir(dip)) != NULL) {
+    while ((dit = readdir(dip)) != nullptr) {
         string dirEntry = dit->d_name;
         if (dirEntry.compare(0, d_prefix.size(), d_prefix) == 0 && dirEntry != d_cache_info) {
             files.push_back(d_cache_dir + "/" + dirEntry);

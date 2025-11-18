@@ -112,7 +112,7 @@ BESResponseHandler *BESResponseHandlerList::find_handler(const string &handler_n
             return p(handler_name);
         }
     }
-    return 0;
+    return nullptr;
 }
 
 /** @brief returns the comma separated list of all response handlers currently registered with this server.

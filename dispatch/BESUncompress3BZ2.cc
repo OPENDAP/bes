@@ -90,10 +90,10 @@ void BESUncompress3BZ2::uncompress(const string &src_name, int fd) {
     // unused int nunused = 0; // the size of the unused buffer
     char in[CHUNK]; // input buffer used to read uncompressed data in bzRead
 
-    BZFILE *bsrc = NULL;
+    BZFILE *bsrc = nullptr;
 
-    bsrc = BZ2_bzReadOpen(&bzerror, src, verbosity, small, NULL, 0);
-    if (bsrc == NULL) {
+    bsrc = BZ2_bzReadOpen(&bzerror, src, verbosity, small, nullptr, 0);
+    if (bsrc == nullptr) {
         const char *berr = BZ2_bzerror(bsrc, &bzerror);
         string err = "bzReadOpen failed on " + src_name + ": ";
         if (berr) {

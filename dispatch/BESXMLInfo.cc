@@ -51,7 +51,7 @@ using std::string;
  * @see BESInfo
  * @see BESResponseObject
  */
-BESXMLInfo::BESXMLInfo() : BESInfo(), _writer(0), _doc_buf(0), _started(false), _ended(false) {}
+BESXMLInfo::BESXMLInfo() : BESInfo(), _writer(nullptr), _doc_buf(nullptr), _started(false), _ended(false) {}
 
 BESXMLInfo::~BESXMLInfo() { cleanup(); }
 
@@ -59,13 +59,13 @@ void BESXMLInfo::cleanup() {
     // make sure the buffer and writer are all cleaned up
     if (_writer) {
         xmlFreeTextWriter(_writer);
-        _writer = 0;
-        _doc_buf = 0;
+        _writer = nullptr;
+        _doc_buf = nullptr;
     }
 
     if (_doc_buf) {
         xmlBufferFree(_doc_buf);
-        _doc_buf = 0;
+        _doc_buf = nullptr;
     }
 
     // this always seems to be causing a memory fault
@@ -113,7 +113,7 @@ void BESXMLInfo::begin_response(const string &response_name, map<string, string,
     /* Create a new XML buffer, to which the XML document will be
      * written */
     _doc_buf = xmlBufferCreate();
-    if (_doc_buf == NULL) {
+    if (_doc_buf == nullptr) {
         cleanup();
         string err = (string) "Error creating the xml buffer for response " + _response_name;
         throw BESInternalError(err, __FILE__, __LINE__);
@@ -122,7 +122,7 @@ void BESXMLInfo::begin_response(const string &response_name, map<string, string,
     /* Create a new XmlWriter for memory, with no compression.
      * Remark: there is no compression for this kind of xmlTextWriter */
     _writer = xmlNewTextWriterMemory(_doc_buf, 0);
-    if (_writer == NULL) {
+    if (_writer == nullptr) {
         cleanup();
         string err = (string) "Error creating the xml writer for response " + _response_name;
         throw BESInternalError(err, __FILE__, __LINE__);
@@ -147,7 +147,7 @@ void BESXMLInfo::begin_response(const string &response_name, map<string, string,
     /* Start the document with the xml default for the version,
      * encoding ISO 8859-1 and the default for the standalone
      * declaration. MY_ENCODING defined at top of this file*/
-    rc = xmlTextWriterStartDocument(_writer, NULL, MY_ENCODING, NULL);
+    rc = xmlTextWriterStartDocument(_writer, nullptr, MY_ENCODING, nullptr);
     if (rc < 0) {
         cleanup();
         string err = (string) "Error starting xml response document for " + _response_name;
@@ -156,7 +156,7 @@ void BESXMLInfo::begin_response(const string &response_name, map<string, string,
 
     /* Start an element named "response". Since this is the first element,
      * this will be the root element of the document */
-    rc = xmlTextWriterStartElementNS(_writer, NULL, BAD_CAST "response", BAD_CAST BES_SCHEMA);
+    rc = xmlTextWriterStartElementNS(_writer, nullptr, BAD_CAST "response", BAD_CAST BES_SCHEMA);
     if (rc < 0) {
         cleanup();
         string err = (string) "Error starting the response element for response " + _response_name;
@@ -242,7 +242,7 @@ void BESXMLInfo::end_response() {
 
     // must call this before getting the buffer content
     xmlFreeTextWriter(_writer);
-    _writer = 0;
+    _writer = nullptr;
 
     // get the xml document as a string and return
     if (!_doc_buf->content) {

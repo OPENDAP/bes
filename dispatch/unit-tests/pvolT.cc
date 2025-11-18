@@ -82,7 +82,7 @@ private:
 
 public:
     pvolT()
-        : cpv(0), real1(cache_dir + "/real1"), real2(cache_dir + "/real2"), real3(cache_dir + "/real3"),
+        : cpv(nullptr), real1(cache_dir + "/real1"), real2(cache_dir + "/real2"), real3(cache_dir + "/real3"),
           real4(cache_dir + "/real4"), real5(cache_dir + "/real5") {
         string bes_conf = (string)TEST_SRC_DIR + "/persistence_cgi_test.ini";
         TheBESKeys::ConfigFile = bes_conf;

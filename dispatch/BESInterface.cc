@@ -268,7 +268,7 @@ void BESInterface::set_bes_timeout() {
     bool found = false;
     string context = BESContextManager::TheManager()->get_context("bes_timeout", found);
     if (found) {
-        d_bes_timeout = strtol(context.c_str(), NULL, 10);
+        d_bes_timeout = strtol(context.c_str(), nullptr, 10);
         VERBOSE(d_dhi_ptr->data[REQUEST_FROM] + "Set request timeout to " + std::to_string(d_bes_timeout) +
                 " seconds (from context).");
 
@@ -434,7 +434,7 @@ int BESInterface::finish(int status) {
     if (d_dhi_ptr->error_info) {
         d_dhi_ptr->error_info->print(*d_strm /*cout*/);
         delete d_dhi_ptr->error_info;
-        d_dhi_ptr->error_info = 0;
+        d_dhi_ptr->error_info = nullptr;
     }
 
     // if there is a problem with the rest of these steps then all we will

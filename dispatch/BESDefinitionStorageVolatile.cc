@@ -52,7 +52,7 @@ BESDefine *BESDefinitionStorageVolatile::look_for(const string &def_name) {
     if (i != _def_list.end()) {
         return (*i).second;
     }
-    return NULL;
+    return nullptr;
 }
 
 /** @brief adds a given definition to this volatile storage
@@ -63,7 +63,7 @@ BESDefine *BESDefinitionStorageVolatile::look_for(const string &def_name) {
  * @param d definition to add
  */
 bool BESDefinitionStorageVolatile::add_definition(const string &def_name, BESDefine *d) {
-    if (look_for(def_name) == NULL) {
+    if (look_for(def_name) == nullptr) {
         _def_list[def_name] = d;
         return true;
     }

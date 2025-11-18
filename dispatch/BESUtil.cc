@@ -135,7 +135,7 @@ void BESUtil::set_mime_text(ostream &strm) {
     strm << "HTTP/1.0 200 OK" << CRLF;
     strm << "XBES-Server: " << PACKAGE_STRING << CRLF;
 
-    const time_t t = time(0);
+    const time_t t = time(nullptr);
     strm << "Date: " << rfc822_date(t).c_str() << CRLF;
     strm << "Last-Modified: " << rfc822_date(t).c_str() << CRLF;
 
@@ -153,7 +153,7 @@ void BESUtil::set_mime_html(ostream &strm) {
     strm << "HTTP/1.0 200 OK" << CRLF;
     strm << "XBES-Server: " << PACKAGE_STRING << CRLF;
 
-    const time_t t = time(0);
+    const time_t t = time(nullptr);
     strm << "Date: " << rfc822_date(t).c_str() << CRLF;
     strm << "Last-Modified: " << rfc822_date(t).c_str() << CRLF;
 
@@ -974,7 +974,7 @@ void BESUtil::tokenize(const string &str, vector<string> &tokens, const string &
  * @param use_local_time True to use the local time, false (default) to use GMT
  * @return The time, either local or GMT/UTC as an ISO8601 string
  */
-string BESUtil::get_time(bool use_local_time) { return get_time(time(0), use_local_time); }
+string BESUtil::get_time(bool use_local_time) { return get_time(time(nullptr), use_local_time); }
 
 /**
  * @brief Returns the time represented by 'the_time' as an ISO8601 string.
@@ -1037,7 +1037,7 @@ vector<string> BESUtil::split(const string &s, char delim /* '/' */, bool skip_e
 }
 
 BESCatalog *BESUtil::separateCatalogFromPath(std::string &ppath) {
-    BESCatalog *catalog = 0; // pointer to a singleton; do not delete
+    BESCatalog *catalog = nullptr; // pointer to a singleton; do not delete
     vector<string> path_tokens;
 
     // BESUtil::normalize_path() removes duplicate separators and adds leading and trailing separators as directed.

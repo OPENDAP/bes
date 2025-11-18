@@ -93,7 +93,7 @@ public:
         DBG(cerr << "cont.get_relative_name: " << cont.get_relative_name() << endl);
 
         BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler("test_handler");
-        CPPUNIT_ASSERT(besRH != 0);
+        CPPUNIT_ASSERT(besRH != nullptr);
 
         try {
             int fd = open(real_name.c_str(), O_RDWR | O_CREAT, 00664 /*mode = rw rw r*/);
@@ -134,7 +134,7 @@ public:
         DBG(cerr << "cont.get_relative_name: " << cont.get_relative_name() << endl);
 
         BESRequestHandler *besRH = BESRequestHandlerList::TheList()->find_handler("test_handler");
-        CPPUNIT_ASSERT(besRH != 0);
+        CPPUNIT_ASSERT(besRH != nullptr);
 
         try {
             int fd = open(real_name.c_str(), O_RDWR | O_CREAT, 00664 /*mode = rw rw r*/);

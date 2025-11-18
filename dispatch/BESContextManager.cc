@@ -215,5 +215,5 @@ void BESContextManager::initialize_instance() {
 
 void BESContextManager::delete_instance() {
     delete d_instance;
-    d_instance = 0;
+    d_instance = nullptr;
 }

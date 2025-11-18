@@ -134,7 +134,7 @@ void check_cache(const string &cache_dir, const string &should_be, unsigned int 
     DIR *dip = opendir(cache_dir.c_str());
     CPPUNIT_ASSERT(dip);
     struct dirent *dit;
-    while ((dit = readdir(dip)) != NULL) {
+    while ((dit = readdir(dip)) != nullptr) {
         string dirEntry = dit->d_name;
         if (dirEntry.compare(0, match_prefix.size(), match_prefix) == 0)
             contents[dirEntry] = dirEntry;
@@ -172,7 +172,7 @@ string show_cache(const string &cache_dir, const string &match_prefix) {
     DIR *dip = opendir(cache_dir.c_str());
     CPPUNIT_ASSERT(dip);
     struct dirent *dit = nullptr;
-    while ((dit = readdir(dip)) != NULL) {
+    while ((dit = readdir(dip)) != nullptr) {
         string dirEntry = dit->d_name;
         if (dirEntry.compare(0, match_prefix.size(), match_prefix) == 0) {
             oss << dirEntry << endl;

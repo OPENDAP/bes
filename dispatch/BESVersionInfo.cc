@@ -46,7 +46,7 @@ using std::string;
  * @see BESXMLInfo
  * @see BESResponseObject
  */
-BESVersionInfo::BESVersionInfo() : BESInfo(), _inbes(false), _inhandler(false), _info(0) {
+BESVersionInfo::BESVersionInfo() : BESInfo(), _inbes(false), _inhandler(false), _info(nullptr) {
     _info = BESInfoList::TheList()->build_info();
 }
 

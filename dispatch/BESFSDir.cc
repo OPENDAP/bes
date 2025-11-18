@@ -93,13 +93,13 @@ void BESFSDir::loadDir() {
     try {
         // open a directory stream
         // make sure the directory is valid and readable
-        if ((dip = opendir(_dirName.c_str())) == NULL) {
+        if ((dip = opendir(_dirName.c_str())) == nullptr) {
             string err_str = "ERROR: failed to open directory '" + _dirName + "'";
             throw BESError(err_str, BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
         } else {
             // read in the files in this directory
             // add each filename to the list of filenames
-            while ((dit = readdir(dip)) != NULL) {
+            while ((dit = readdir(dip)) != nullptr) {
                 struct stat buf;
                 string dirEntry = dit->d_name;
                 if (dirEntry != "." && dirEntry != "..") {

@@ -256,7 +256,7 @@ bool BESContainerStorageFile::isData(const string &inQuestion, list<string> &pro
         string node_type = c->get_container_type();
         BESServiceRegistry::TheRegistry()->services_handled(node_type, provides);
         delete c;
-        c = 0; // added jhrg 1.4.12
+        c = nullptr; // added jhrg 1.4.12
     }
     return isit;
 }

@@ -97,7 +97,7 @@ void BESDebug::SetUp(const string &values) {
         string err = "Missing comma in debug options: " + values;
         throw BESInternalError(err, __FILE__, __LINE__);
     }
-    ostream *strm = 0;
+    ostream *strm = nullptr;
     bool created = false;
     string s_strm = values.substr(0, comma);
     if (s_strm == "cerr") {
@@ -108,7 +108,7 @@ void BESDebug::SetUp(const string &values) {
         strm = new ofstream(s_strm.c_str(), ios::out);
         if (strm && strm->fail()) {
             delete strm;
-            strm = 0;
+            strm = nullptr;
             string err = "Unable to open the debug file: " + s_strm;
             throw BESInternalError(err, __FILE__, __LINE__);
         }

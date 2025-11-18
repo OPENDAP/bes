@@ -66,9 +66,9 @@ private:
 
 public:
     /// @brief Make an empty instance.
-    CatalogNode() : d_name(""), d_catalog_name(""), d_lmt(""), d_no_really_im_a_leaf(0) {}
+    CatalogNode() : d_name(""), d_catalog_name(""), d_lmt(""), d_no_really_im_a_leaf(nullptr) {}
 
-    CatalogNode(const std::string &name) : d_name(name), d_catalog_name(""), d_lmt(""), d_no_really_im_a_leaf(0) {}
+    CatalogNode(const std::string &name) : d_name(name), d_catalog_name(""), d_lmt(""), d_no_really_im_a_leaf(nullptr) {}
 
     ~CatalogNode() override;
 

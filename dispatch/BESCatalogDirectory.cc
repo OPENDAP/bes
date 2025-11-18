@@ -288,7 +288,7 @@ static string get_time(time_t the_time, bool use_local_time = false) {
  */
 CatalogItem *BESCatalogDirectory::make_item(string path_prefix, string item) const {
     if (item == "." || item == "..")
-        return 0;
+        return nullptr;
 
     string item_path = BESUtil::assemblePath(path_prefix, item);
     BESDEBUG(MODULE, PROLOG << "Processing POSIX entry: " << item_path << endl);
@@ -312,7 +312,7 @@ CatalogItem *BESCatalogDirectory::make_item(string path_prefix, string item) con
         struct stat lbuf;
         (void)lstat(item_path.c_str(), &lbuf);
         if (S_ISLNK(lbuf.st_mode))
-            return 0;
+            return nullptr;
     }
     // Is this a directory or a file? Should it be excluded or included?
     struct stat buf;
@@ -339,7 +339,7 @@ CatalogItem *BESCatalogDirectory::make_item(string path_prefix, string item) con
     BESDEBUG(MODULE, PROLOG << msg.str());
     VERBOSE(msg.str());
 
-    return 0;
+    return nullptr;
 }
 
 // path must start with a '/'. By this class it will be interpreted as a
@@ -411,7 +411,7 @@ CatalogNode *BESCatalogDirectory::get_node(const string &path) const {
         return node;
     } else if (S_ISDIR(full_path_stat_buf.st_mode)) {
         BESDEBUG(MODULE, PROLOG << "Processing directory node: " << fullpath << endl);
-        DIR *dip = 0;
+        DIR *dip = nullptr;
         try {
             // The node is a directory
             // Based on other code (show_catalogs()), use BESCatalogUtils::exclude() on
@@ -425,7 +425,7 @@ CatalogNode *BESCatalogDirectory::get_node(const string &path) const {
             node->set_lmt(get_time(full_path_stat_buf.st_mtime));
 
             dip = opendir(fullpath.c_str());
-            if (dip == NULL) {
+            if (dip == nullptr) {
                 // That went well...
                 // We need to return this "node", and at this point it is empty.
                 // Which is probably enough, so we do nothing more.
@@ -434,7 +434,7 @@ CatalogNode *BESCatalogDirectory::get_node(const string &path) const {
             } else {
                 // otherwise we grind through the node contents...
                 struct dirent *dit;
-                while ((dit = readdir(dip)) != NULL) {
+                while ((dit = readdir(dip)) != nullptr) {
                     CatalogItem *item = make_item(fullpath, dit->d_name);
                     if (item) {
                         if (item->get_type() == CatalogItem::node) {

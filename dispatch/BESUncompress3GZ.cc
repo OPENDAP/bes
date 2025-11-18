@@ -61,7 +61,7 @@ void BESUncompress3GZ::uncompress(const string &src, int dest_fd) {
     // using gzip then all this function will do is trasnfer the data to the
     // destination file.
     gzFile gsrc = gzopen(src.c_str(), "rb");
-    if (gsrc == NULL) {
+    if (gsrc == nullptr) {
         string err = "Could not open the compressed file " + src;
         throw BESInternalError(err, __FILE__, __LINE__);
     }

@@ -66,7 +66,7 @@ private:
     BESResponseHandlerList *handler_list;
 
 public:
-    resplistT() : handler_list(0) {
+    resplistT() : handler_list(nullptr) {
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
         DBG(cerr << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl);
     }
@@ -115,7 +115,7 @@ public:
 
     void test_find_all_handlers() {
         try {
-            BESResponseHandler *rh = 0;
+            BESResponseHandler *rh = nullptr;
             char num[10];
             for (int i = 4; i >= 0; i--) {
                 sprintf(num, "resp%d", i);

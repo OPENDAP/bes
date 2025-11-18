@@ -55,7 +55,7 @@ class CatalogNodeTest : public CppUnit::TestFixture {
 
 public:
     // Called once before everything gets tested
-    CatalogNodeTest() : d_node(0) {}
+    CatalogNodeTest() : d_node(nullptr) {}
 
     // Called at the end of the test
     ~CatalogNodeTest() = default;
@@ -75,7 +75,7 @@ public:
         TheBESKeys::ConfigFile = "";
 
         delete d_node;
-        d_node = 0;
+        d_node = nullptr;
     }
 
     CPPUNIT_TEST_SUITE(CatalogNodeTest);

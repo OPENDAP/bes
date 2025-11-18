@@ -95,7 +95,7 @@ BESInfo *BESInfoList::build_info() {
             return p(info_type);
         }
     }
-    return 0;
+    return nullptr;
 }
 
 /** @brief dumps information about this object

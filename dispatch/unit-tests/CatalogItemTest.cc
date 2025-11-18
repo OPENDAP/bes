@@ -56,7 +56,7 @@ class CatalogItemTest : public CppUnit::TestFixture {
 
 public:
     // Called once before everything gets tested
-    CatalogItemTest() : d_item(0) {}
+    CatalogItemTest() : d_item(nullptr) {}
 
     // Called at the end of the test
     ~CatalogItemTest() = default;
@@ -83,9 +83,9 @@ public:
         TheBESKeys::ConfigFile = "";
 
         delete d_item;
-        d_item = 0;
+        d_item = nullptr;
         delete d_item_2;
-        d_item_2 = 0;
+        d_item_2 = nullptr;
     }
 
     CPPUNIT_TEST_SUITE(CatalogItemTest);
