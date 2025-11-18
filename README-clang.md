@@ -1,5 +1,7 @@
 # How to use clang-tidy and clang-format to update older C++ code
 
+_James Gallagher, source ChatGPT 5.0_
+
 ## Reformat all the C++ files in a directory
 
 To reformat only the C++ source files in git, use _git_ with the _ls-files_ 
