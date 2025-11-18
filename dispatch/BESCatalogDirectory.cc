@@ -105,7 +105,7 @@ BESCatalogEntry *BESCatalogDirectory::show_catalog(const string &node, BESCatalo
     // use_node should only end in '/' if that's the only character in which
     // case there's no need to call find()
     if (!node.empty() && node != "/") {
-        string::size_type pos = use_node.find_last_not_of("/");
+        string::size_type pos = use_node.find_last_not_of('/');
         use_node = use_node.substr(0, pos + 1);
     }
 
@@ -126,7 +126,7 @@ BESCatalogEntry *BESCatalogDirectory::show_catalog(const string &node, BESCatalo
     }
 
     string basename;
-    string::size_type slash = fullnode.rfind("/");
+    string::size_type slash = fullnode.rfind('/');
     if (slash != string::npos) {
         basename = fullnode.substr(slash + 1, fullnode.size() - slash);
     } else {

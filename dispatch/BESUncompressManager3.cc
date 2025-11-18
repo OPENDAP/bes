@@ -163,7 +163,7 @@ bool BESUncompressManager3::uncompress(const string &src, string &cache_file, BE
     }
 
     // All compressed files have a 'dot extension'.
-    string::size_type dot = src.rfind(".");
+    string::size_type dot = src.rfind('.');
     if (dot == string::npos) {
         BESDEBUG("uncompress2", "BESUncompressManager3::uncompress() - no file extension" << endl);
         return false;

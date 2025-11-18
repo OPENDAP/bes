@@ -282,28 +282,6 @@ public:
     // This is really three different tests. jhrg 2.25.18
     void no_default_test() {
         DBG(cerr << __func__ << endl);
-
-#if 0
-        // This seems odd - simple changes to the catalog system make this particular
-        // test fail because there are several competing ways to make the 'default'
-        // catalog. Once the refactoring is done, maybe this test can be resurrected...
-        // jhrg 7/16/18
-        string defcat = BESCatalogList::TheCatalogList()->default_catalog_name();
-        DBG(cerr << "defcat: " << defcat << endl);
-        CPPUNIT_ASSERT(defcat == "");
-
-        try {
-            BESDataHandlerInterface dhi;
-            dhi.data[CATALOG_OR_INFO] = CATALOG_RESPONSE;
-            BESCatalogResponseHandler handler("catalog");
-            handler.execute(dhi);
-            CPPUNIT_FAIL("Should have failed, no default catalog");
-        }
-        catch (BESError &e) {
-            DBG(cerr << e.get_message() << endl);
-            CPPUNIT_ASSERT("Correctly caught exception");
-        }
-#endif
         DBG(cerr << "manipulate non-existent catalog" << endl);
         BESCatalog *catobj = BESCatalogList::TheCatalogList()->find_catalog("dummy");
         CPPUNIT_ASSERT(catobj == nullptr);

@@ -128,7 +128,7 @@ bool break_includes(const string &listStr, string &err) {
     string::size_type semi = 0;
     bool done = false;
     while (done == false) {
-        semi = listStr.find(";", str_begin);
+        semi = listStr.find(';', str_begin);
         if (semi == string::npos) {
             err = (string) "regular expression malformed, no semicolon";
             return false;
@@ -153,7 +153,7 @@ bool break_types(const string &listStr, string &err) {
     string::size_type semi = 0;
     bool done = false;
     while (done == false) {
-        semi = listStr.find(";", str_begin);
+        semi = listStr.find(';', str_begin);
         if (semi == string::npos) {
             err = (string) "type match malformed, no semicolon, " + "looking for type:regexp;[type:regexp;]";
             return false;
@@ -164,7 +164,7 @@ bool break_types(const string &listStr, string &err) {
                 done = true;
             }
 
-            string::size_type col = a_pair.find(":");
+            string::size_type col = a_pair.find(':');
             if (col == string::npos) {
                 err = (string) "Catalog type match malformed, no colon, " + "looking for type:regexp;[type:regexp;]";
                 return false;

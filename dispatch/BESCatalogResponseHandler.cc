@@ -73,7 +73,7 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi) {
 
     // Remove all of the leading slashes from the container (path) name
     string container = dhi.data[CONTAINER];
-    string::size_type notslash = container.find_first_not_of("/", 0);
+    string::size_type notslash = container.find_first_not_of('/', 0);
     if (notslash != string::npos) {
         container = container.substr(notslash);
     }

@@ -201,6 +201,143 @@ If you want a practical sequence that’s unlikely to blow anything up:
    modernize-use-emplace
    ```
 
+## Here's another take on the options and the order to apply them
+
+Here’s a conservative, low-drama order I’d use for a legacy C++14 codebase, with short “why” notes. Each bullet is a *pass* (one clang-tidy run), and you can always split a pass into multiple runs if you want even smaller diffs.
+
+I’ll assume you run `clang-format` **at the very end**, once.
+
+---
+
+## Phase 1 – Class interfaces & obvious correctness
+
+**1. Overrides & special members & `(void)`**
+
+* `modernize-use-override`
+* `modernize-use-equals-default`
+* `modernize-use-equals-delete`
+* `modernize-redundant-void-arg`
+
+*Why first:*
+Touches class APIs and function declarations, but is very low-risk and clarifies intent for later checks. Also reduces noise when you inspect later diffs.
+
+---
+
+**2. Null pointers (and optionally smart pointers)**
+
+* **Always**: `modernize-use-nullptr`
+* **Optional**: `modernize-make-unique`
+
+If you’re at all nervous about ownership/ABI, split this into two passes and run `modernize-use-nullptr` alone first.
+
+*Why now:*
+Null semantics get cleaned up early; later checks may be easier to read with `nullptr`. `modernize-make-unique` is still “semantic” (ownership), so keep it relatively early so you can test it in isolation.
+
+---
+
+## Phase 2 – Linkage & class shape
+
+**3. Member functions to `static`**
+
+* `readability-convert-member-functions-to-static`
+
+*Why here:*
+This changes member function signatures (removes the implicit `this`), but only for functions that don’t use `this`, so behavior is preserved. Doing it after override / equals/delete means member APIs are already in good shape; doing it before stylistic loops/emplace avoids their noise when reviewing these more structural changes.
+
+---
+
+**4. Internal linkage / `static` for free functions**
+
+* `misc-use-internal-linkage`
+
+*Why here:*
+This can change linkage and may have minor ABI or symbol visibility implications. Keeping it after the obvious “interface cleanup” but before cosmetic stuff makes it easier to reason about symbol changes.
+
+---
+
+## Phase 3 – Literals & string/char cleanup
+
+**5. Single-character string → `char` in `string::find`**
+
+* `performance-faster-string-find`
+
+*Why here:*
+Purely local changes (`"x"` → `'x'` in specific call contexts). Running it before raw string literals and loop/emplace changes keeps its diff small and easy to inspect.
+
+---
+
+**6. Heavily escaped strings → raw strings**
+
+* `modernize-raw-string-literal`
+
+*Why here:*
+This can produce big, visually noisy changes (long `R"(...)` blocks, changed line breaks), but doesn’t affect control flow. Doing it before loop/emplace conversions avoids mixing “big string blobs” with control-structure changes in the same diff chunks.
+
+If you have some particularly critical files, you might run this with a narrow `HeaderFilterRegex` first, then broaden it.
+
+---
+
+## Phase 4 – Loop & container usage
+
+**7. Loop conversions**
+
+* `modernize-loop-convert`
+
+*Why this late:*
+Changes the *shape* of control flow (index-based loops → range-for). Semantics should stay the same, but it can interact with subtle off-by-one code, and the visual diff is larger. Doing it after your APIs, linkage, and string literals are stable makes regressions easier to isolate.
+
+---
+
+**8. Container emplace**
+
+* `modernize-use-emplace`
+
+*Why after loops:*
+It mostly affects call sites (`push_back(T(...))` → `emplace_back(...)`) and can change which constructor gets picked (usually for the better, but still). Put it after all structural cleanups so if something misbehaves it’s obvious this pass was the cause.
+
+---
+
+## Phase 5 – Minor expression / header cleanups (optional, anywhere late)
+
+These are pretty safe and can be slotted after Phase 2 or 3 if you like; I’d still keep them **before** loops/emplace in case they interact with templates/macros.
+
+* `modernize-use-bool-literals`
+* `modernize-deprecated-headers`
+
+You can bundle them or run separately:
+
+```text
+modernize-use-bool-literals
+modernize-deprecated-headers
+```
+
+---
+
+## Final step – Formatting
+
+Once all clang-tidy passes are done and committed (ideally one commit per phase so you can bisect easily):
+
+* Run `clang-format -i --style=file` over your whole tree.
+
+This will normalize all the whitespace/indentation churn caused by the edits above.
+
+---
+
+### Super-short checklist in order
+
+1. `modernize-use-override, modernize-use-equals-default, modernize-use-equals-delete, modernize-redundant-void-arg`
+2. `modernize-use-nullptr` (then maybe `modernize-make-unique`)
+3. `readability-convert-member-functions-to-static`
+4. `misc-use-internal-linkage`
+5. `performance-faster-string-find`
+6. `modernize-raw-string-literal`
+7. `modernize-loop-convert`
+8. `modernize-use-emplace`
+9. (Optional) `modernize-use-bool-literals`, `modernize-deprecated-headers` (anywhere after 2, before 7)
+10. `clang-format` pass
+
+If you tell me which phases you actually want to run (maybe you want to skip linkage changes or smart pointers), I can collapse this to a 3–4-pass plan tailored to your exact appetite for change.
+
 ## Getting _clang-tidy_ on OSX
 
 [!NOTE]

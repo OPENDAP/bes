@@ -68,7 +68,7 @@ string BESFSFile::getExtension() { return _extension; }
 string BESFSFile::getFullPath() { return _dirName + "/" + _fileName; }
 
 void BESFSFile::breakApart(const string &fullPath) {
-    string::size_type pos = fullPath.rfind("/");
+    string::size_type pos = fullPath.rfind('/');
     if (pos != string::npos) {
         _dirName = fullPath.substr(0, pos);
         _fileName = fullPath.substr(pos + 1, fullPath.size() - pos);
@@ -81,7 +81,7 @@ void BESFSFile::breakApart(const string &fullPath) {
 }
 
 void BESFSFile::breakExtension() {
-    string::size_type pos = _fileName.rfind(".");
+    string::size_type pos = _fileName.rfind('.');
     if (pos != string::npos) {
         _baseName = _fileName.substr(0, pos);
         _extension = _fileName.substr(pos + 1, _fileName.size() - pos);

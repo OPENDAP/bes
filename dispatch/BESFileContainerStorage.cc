@@ -131,7 +131,7 @@ void BESFileContainerStorage::add_container(const string &sym_name, const string
     string new_name = real_name.substr(0, stopat + 1);
 
     string basename;
-    string::size_type slash = new_name.rfind("/");
+    string::size_type slash = new_name.rfind('/');
     if (slash != string::npos) {
         basename = new_name.substr(slash + 1, new_name.size() - slash);
     } else {

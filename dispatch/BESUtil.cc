@@ -632,7 +632,7 @@ string BESUtil::implode(const list<string> &values, char delim) {
 void BESUtil::url_explode(const string &url_str, BESUtil::url &url_parts) {
     string rest;
 
-    string::size_type colon = url_str.find(":");
+    string::size_type colon = url_str.find(':');
     if (colon == string::npos) {
         string err = "BESUtil::url_explode: missing colon for protocol";
         throw BESInternalError(err, __FILE__, __LINE__);
@@ -648,15 +648,15 @@ void BESUtil::url_explode(const string &url_str, BESUtil::url &url_parts) {
     colon += 3;
     rest = url_str.substr(colon);
 
-    string::size_type slash = rest.find("/");
+    string::size_type slash = rest.find('/');
     if (slash == string::npos)
         slash = rest.size();
 
-    string::size_type at = rest.find("@");
+    string::size_type at = rest.find('@');
     if ((at != string::npos) && (at < slash)) {
         // everything before the @ is username:password
         string up = rest.substr(0, at);
-        colon = up.find(":");
+        colon = up.find(':');
         if (colon != string::npos) {
             url_parts.uname = up.substr(0, colon);
             url_parts.psswd = up.substr(colon + 1);
@@ -666,16 +666,16 @@ void BESUtil::url_explode(const string &url_str, BESUtil::url &url_parts) {
         // everything after the @ is domain/path
         rest = rest.substr(at + 1);
     }
-    slash = rest.find("/");
+    slash = rest.find('/');
     if (slash == string::npos)
         slash = rest.size();
-    colon = rest.find(":");
+    colon = rest.find(':');
     if ((colon != string::npos) && (colon < slash)) {
         // everything before the colon is the domain
         url_parts.domain = rest.substr(0, colon);
         // everything after the folon is port/path
         rest = rest.substr(colon + 1);
-        slash = rest.find("/");
+        slash = rest.find('/');
         if (slash != string::npos) {
             url_parts.port = rest.substr(0, slash);
             url_parts.path = rest.substr(slash + 1);
@@ -684,7 +684,7 @@ void BESUtil::url_explode(const string &url_str, BESUtil::url &url_parts) {
             url_parts.path = "";
         }
     } else {
-        slash = rest.find("/");
+        slash = rest.find('/');
         if (slash != string::npos) {
             url_parts.domain = rest.substr(0, slash);
             url_parts.path = rest.substr(slash + 1);
