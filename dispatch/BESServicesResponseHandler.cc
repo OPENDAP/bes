@@ -42,7 +42,7 @@ using std::string;
 
 BESServicesResponseHandler::BESServicesResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESServicesResponseHandler::~BESServicesResponseHandler() {}
+BESServicesResponseHandler::~BESServicesResponseHandler() = default;
 
 /** @brief executes the command 'show services;' by returning the list of
  * all registered services for this BES.

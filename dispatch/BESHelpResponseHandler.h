@@ -52,7 +52,7 @@
 class BESHelpResponseHandler : public BESResponseHandler {
 public:
     BESHelpResponseHandler(const std::string &name);
-    ~BESHelpResponseHandler(void) override;
+    ~BESHelpResponseHandler() override;
 
     void execute(BESDataHandlerInterface &dhi) override;
     void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;

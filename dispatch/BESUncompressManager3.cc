@@ -66,7 +66,7 @@ BESUncompressManager3::BESUncompressManager3() {
     add_method("Z", BESUncompress3Z::uncompress);
 }
 
-BESUncompressManager3::~BESUncompressManager3() {}
+BESUncompressManager3::~BESUncompressManager3() = default;
 
 /** @brief create_and_lock a uncompress method to the list
  *

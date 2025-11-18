@@ -62,8 +62,8 @@ static bool debug = false;
 class urlT : public TestFixture {
 private:
 public:
-    urlT() {}
-    ~urlT() {}
+    urlT() = default;
+    ~urlT() = default;
 
     void setUp() {}
 

@@ -53,7 +53,7 @@ using std::string;
 
 BESDelContainerResponseHandler::BESDelContainerResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESDelContainerResponseHandler::~BESDelContainerResponseHandler() {}
+BESDelContainerResponseHandler::~BESDelContainerResponseHandler() = default;
 
 /** @brief executes the command to delete a container
  *

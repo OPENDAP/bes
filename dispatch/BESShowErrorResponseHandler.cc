@@ -48,7 +48,7 @@ using std::string;
 
 BESShowErrorResponseHandler::BESShowErrorResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESShowErrorResponseHandler::~BESShowErrorResponseHandler() {}
+BESShowErrorResponseHandler::~BESShowErrorResponseHandler() = default;
 
 /** @brief throws a specific exception to test error handling in clients
  *

@@ -50,10 +50,10 @@ class ServerAdministratorTest : public CppUnit::TestFixture {
 
 public:
     // Called once before everything gets tested
-    ServerAdministratorTest() {}
+    ServerAdministratorTest() = default;
 
     // Called at the end of the test
-    ~ServerAdministratorTest() {}
+    ~ServerAdministratorTest() = default;
 
     // Called before each test
     void setUp() {

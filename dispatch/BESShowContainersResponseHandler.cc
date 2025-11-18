@@ -42,7 +42,7 @@ using std::string;
 
 BESShowContainersResponseHandler::BESShowContainersResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESShowContainersResponseHandler::~BESShowContainersResponseHandler() {}
+BESShowContainersResponseHandler::~BESShowContainersResponseHandler() = default;
 
 /** @brief executes the command 'show containers;' by returning the list of
  * currently defined containers in all container stores

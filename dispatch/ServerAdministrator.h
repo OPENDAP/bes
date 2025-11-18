@@ -65,7 +65,7 @@ private:
 
 public:
     ServerAdministrator();
-    virtual ~ServerAdministrator() {}
+    virtual ~ServerAdministrator() = default;
 
     virtual std::string get(const std::string &key);
 

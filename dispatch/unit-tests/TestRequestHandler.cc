@@ -53,7 +53,7 @@ TestRequestHandler::TestRequestHandler(string name) : BESRequestHandler(name), _
     CPPUNIT_ASSERT(add_method("resp4", TestRequestHandler::test_build_resp4));
 }
 
-TestRequestHandler::~TestRequestHandler() {}
+TestRequestHandler::~TestRequestHandler() = default;
 
 bool TestRequestHandler::test_build_resp1(BESDataHandlerInterface &r) {
     trh->_resp_num = 1;

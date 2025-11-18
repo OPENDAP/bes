@@ -61,7 +61,7 @@ BESHTMLInfo::BESHTMLInfo() : BESInfo(), _header(false), _do_indent(true) {}
 BESHTMLInfo::BESHTMLInfo(const string &key, ostream *strm, bool strm_owned)
     : BESInfo(key, strm, strm_owned), _header(false), _do_indent(true) {}
 
-BESHTMLInfo::~BESHTMLInfo() {}
+BESHTMLInfo::~BESHTMLInfo() = default;
 
 /** @brief begin the informational response
  *

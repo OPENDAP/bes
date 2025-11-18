@@ -59,8 +59,8 @@ static bool debug = false;
 class reqlistT : public TestFixture {
 private:
 public:
-    reqlistT() {}
-    ~reqlistT() {}
+    reqlistT() = default;
+    ~reqlistT() = default;
 
     void setUp() {}
 

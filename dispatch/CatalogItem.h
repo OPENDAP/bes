@@ -83,8 +83,8 @@ private:
     std::string d_description;
     std::string d_dap_service_url;
 
-    CatalogItem(const CatalogItem &rhs);
-    CatalogItem &operator=(const CatalogItem &rhs);
+    CatalogItem(const CatalogItem &rhs) = delete;
+    CatalogItem &operator=(const CatalogItem &rhs) = delete;
 
 public:
     /// @brief Make an empty instance.
@@ -126,7 +126,7 @@ public:
     CatalogItem(const std::string &name, size_t size, const std::string &lmt, bool is_data, item_type type)
         : d_name(name), d_size(size), d_lmt(lmt), d_is_data(is_data), d_type(type) {}
 
-    ~CatalogItem() override {}
+    ~CatalogItem() override = default;
 
     struct CatalogItemAscending {
         bool operator()(CatalogItem *i, CatalogItem *j) { return (i->d_name < j->d_name); }

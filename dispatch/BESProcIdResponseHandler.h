@@ -48,7 +48,7 @@
 class BESProcIdResponseHandler : public BESResponseHandler {
 public:
     BESProcIdResponseHandler(const std::string &name);
-    ~BESProcIdResponseHandler(void) override;
+    ~BESProcIdResponseHandler() override;
 
     void execute(BESDataHandlerInterface &dhi) override;
     void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;

@@ -54,7 +54,7 @@ const auto MODULE = "BESCatalog";
 
 BESCatalogResponseHandler::BESCatalogResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESCatalogResponseHandler::~BESCatalogResponseHandler() {}
+BESCatalogResponseHandler::~BESCatalogResponseHandler() = default;
 
 /** @brief Execute the showCatalog command.
  *

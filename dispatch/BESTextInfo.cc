@@ -76,7 +76,7 @@ BESTextInfo::BESTextInfo(bool ishttp) : BESInfo(), _ishttp(ishttp), _header(fals
 BESTextInfo::BESTextInfo(const string &key, ostream *strm, bool strm_owned, bool ishttp)
     : BESInfo(key, strm, strm_owned), _ishttp(ishttp), _header(false) {}
 
-BESTextInfo::~BESTextInfo() {}
+BESTextInfo::~BESTextInfo() = default;
 
 /** @brief begin the informational response
  *

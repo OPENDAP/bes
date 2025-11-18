@@ -48,7 +48,7 @@ using std::string;
 
 #define BES_DEFAULT_INFO_TYPE "txt"
 
-BESInfoList::BESInfoList() {}
+BESInfoList::BESInfoList() = default;
 
 bool BESInfoList::add_info_builder(const string &info_type, p_info_builder info_builder) {
 

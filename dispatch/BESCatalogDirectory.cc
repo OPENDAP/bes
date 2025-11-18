@@ -88,7 +88,7 @@ BESCatalogDirectory::BESCatalogDirectory(const string &name) : BESCatalog(name) 
 #endif
 }
 
-BESCatalogDirectory::~BESCatalogDirectory() {}
+BESCatalogDirectory::~BESCatalogDirectory() = default;
 
 /**
  * @brief Get the CatalogEntry for the given node.

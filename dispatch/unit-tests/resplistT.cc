@@ -70,7 +70,7 @@ public:
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
         DBG(cerr << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl);
     }
-    ~resplistT() {}
+    ~resplistT() = default;
 
     void setUp() {
         handler_list = BESResponseHandlerList::TheList();

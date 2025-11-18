@@ -40,6 +40,6 @@ using std::string;
 
 TestReporter::TestReporter(string name) : BESReporter(), _name(name) {}
 
-TestReporter::~TestReporter() {}
+TestReporter::~TestReporter() = default;
 
 void TestReporter::report(BESDataHandlerInterface &dhi) { dhi.data[_name] = _name; }

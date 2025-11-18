@@ -58,7 +58,7 @@ public:
     CatalogNodeTest() : d_node(0) {}
 
     // Called at the end of the test
-    ~CatalogNodeTest() {}
+    ~CatalogNodeTest() = default;
 
     // Called before each test
     void setUp() {

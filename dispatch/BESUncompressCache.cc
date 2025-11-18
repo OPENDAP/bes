@@ -179,7 +179,7 @@ BESUncompressCache *BESUncompressCache::get_instance() {
     }
 }
 
-BESUncompressCache::~BESUncompressCache() {}
+BESUncompressCache::~BESUncompressCache() = default;
 
 /**
  * Is the item named by cache_entry_name valid? This code tests that the

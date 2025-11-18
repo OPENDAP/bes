@@ -155,7 +155,7 @@ int BESDefaultModule::initialize(int, char **) {
     return 0;
 }
 
-int BESDefaultModule::terminate(void) {
+int BESDefaultModule::terminate() {
     BESDEBUG("bes", "Removing default modules" << endl);
 
 #ifdef BES_DEVELOPER

@@ -76,7 +76,7 @@
 class BESDefineResponseHandler : public BESResponseHandler {
 public:
     BESDefineResponseHandler(const std::string &name);
-    ~BESDefineResponseHandler(void) override;
+    ~BESDefineResponseHandler() override;
 
     void execute(BESDataHandlerInterface &dhi) override;
     void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;

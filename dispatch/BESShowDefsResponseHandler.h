@@ -49,7 +49,7 @@
 class BESShowDefsResponseHandler : public BESResponseHandler {
 public:
     BESShowDefsResponseHandler(const std::string &name);
-    ~BESShowDefsResponseHandler(void) override;
+    ~BESShowDefsResponseHandler() override;
 
     void execute(BESDataHandlerInterface &dhi) override;
     void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;

@@ -52,10 +52,10 @@ BESFSFile::BESFSFile(const string &dirName, const string &fileName)
 }
 
 BESFSFile::BESFSFile(const BESFSFile &copyFrom)
-    : _dirName(copyFrom._dirName), _fileName(copyFrom._fileName), _baseName(copyFrom._baseName),
-      _extension(copyFrom._extension) {}
+    
+      = default;
 
-BESFSFile::~BESFSFile() {}
+BESFSFile::~BESFSFile() = default;
 
 string BESFSFile::getDirName() { return _dirName; }
 

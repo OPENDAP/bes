@@ -70,7 +70,7 @@ BESFileContainer::BESFileContainer(const string &sym_name, const string &real_na
  * @param copy_from The container to copy
  */
 BESFileContainer::BESFileContainer(const BESFileContainer &copy_from)
-    : BESContainer(copy_from), _cached(copy_from._cached), _target(copy_from._target) {}
+     = default;
 
 void BESFileContainer::_duplicate(BESContainer &copy_to) { BESContainer::_duplicate(copy_to); }
 

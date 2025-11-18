@@ -41,7 +41,7 @@ using std::string;
 
 TestResponseHandler::TestResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-TestResponseHandler::~TestResponseHandler() {}
+TestResponseHandler::~TestResponseHandler() = default;
 
 void TestResponseHandler::execute(BESDataHandlerInterface &) {}
 

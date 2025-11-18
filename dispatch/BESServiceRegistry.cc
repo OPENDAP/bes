@@ -42,7 +42,7 @@ using std::map;
 using std::ostream;
 using std::string;
 
-BESServiceRegistry::BESServiceRegistry() {}
+BESServiceRegistry::BESServiceRegistry() = default;
 
 /** @brief Add a service to the BES
  *

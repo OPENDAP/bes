@@ -38,7 +38,7 @@
 class TestRequestHandler : public BESRequestHandler {
 public:
     TestRequestHandler(std::string name);
-    virtual ~TestRequestHandler(void);
+    virtual ~TestRequestHandler();
 
     static bool test_build_resp1(BESDataHandlerInterface &r);
     static bool test_build_resp2(BESDataHandlerInterface &r);

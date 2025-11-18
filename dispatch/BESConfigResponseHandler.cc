@@ -40,7 +40,7 @@ using namespace std;
 
 BESConfigResponseHandler::BESConfigResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESConfigResponseHandler::~BESConfigResponseHandler() {}
+BESConfigResponseHandler::~BESConfigResponseHandler() = default;
 
 /** @brief executes the command 'show keys;' by returning the list of
  * all key/value pairs defined in the BES initialization file.

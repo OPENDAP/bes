@@ -53,7 +53,7 @@ using std::string;
 
 BESDelContainersResponseHandler::BESDelContainersResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESDelContainersResponseHandler::~BESDelContainersResponseHandler() {}
+BESDelContainersResponseHandler::~BESDelContainersResponseHandler() = default;
 
 /** @brief executes the command to delete all containers from a specified
  * container store.

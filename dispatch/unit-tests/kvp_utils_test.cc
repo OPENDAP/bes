@@ -81,9 +81,9 @@ private:
     }
 
 public:
-    KeyValuePairTest() {}
+    KeyValuePairTest() = default;
 
-    ~KeyValuePairTest() {}
+    ~KeyValuePairTest() = default;
 
     void setUp() { string bes_dir = string(TEST_SRC_DIR).append("/bes/kvp_test.ini"); }
 

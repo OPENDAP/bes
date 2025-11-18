@@ -53,7 +53,7 @@
 class BESSetContextResponseHandler : public BESResponseHandler {
 public:
     BESSetContextResponseHandler(const std::string &name);
-    ~BESSetContextResponseHandler(void) override;
+    ~BESSetContextResponseHandler() override;
 
     void execute(BESDataHandlerInterface &dhi) override;
     void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;

@@ -53,7 +53,7 @@
 class BESDelDefResponseHandler : public BESResponseHandler {
 public:
     BESDelDefResponseHandler(const std::string &name);
-    ~BESDelDefResponseHandler(void) override;
+    ~BESDelDefResponseHandler() override;
 
     void execute(BESDataHandlerInterface &dhi) override;
     void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;

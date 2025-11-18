@@ -59,8 +59,8 @@ static bool debug = false;
 class replistT : public TestFixture {
 private:
 public:
-    replistT() {}
-    ~replistT() {}
+    replistT() = default;
+    ~replistT() = default;
 
     void setUp() {}
 

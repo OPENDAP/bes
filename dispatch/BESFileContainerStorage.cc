@@ -84,7 +84,7 @@ BESFileContainerStorage::BESFileContainerStorage(const string &n) : BESContainer
     _follow_sym_links = _utils->follow_sym_links();
 }
 
-BESFileContainerStorage::~BESFileContainerStorage() {}
+BESFileContainerStorage::~BESFileContainerStorage() = default;
 
 /** @brief adds a container with the provided information
  *

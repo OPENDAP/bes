@@ -45,7 +45,7 @@ using std::string;
 
 BESProcIdResponseHandler::BESProcIdResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESProcIdResponseHandler::~BESProcIdResponseHandler() {}
+BESProcIdResponseHandler::~BESProcIdResponseHandler() = default;
 
 /** @brief executes the command 'show process;' by returning the process id of
  * the server process

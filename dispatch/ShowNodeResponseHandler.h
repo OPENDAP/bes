@@ -51,7 +51,7 @@ private:
 public:
     ShowNodeResponseHandler(const std::string &name) : BESResponseHandler(name) {}
 
-    ~ShowNodeResponseHandler() override {}
+    ~ShowNodeResponseHandler() override = default;
 
     void execute(BESDataHandlerInterface &dhi) override;
     void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;

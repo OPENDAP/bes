@@ -36,7 +36,7 @@
 class BESDefaultModule {
 public:
     static int initialize(int argc, char **argv);
-    static int terminate(void);
+    static int terminate();
 };
 
 #endif // BESDefaultModule_h

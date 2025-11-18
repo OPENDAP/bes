@@ -52,7 +52,7 @@ BESFSDir::BESFSDir(const string &dirName, const string &fileExpr)
 BESFSDir::BESFSDir(const BESFSDir &copyFrom)
     : _dirName(copyFrom._dirName), _fileExpr(copyFrom._fileExpr), _dirLoaded(false) {}
 
-BESFSDir::~BESFSDir() {}
+BESFSDir::~BESFSDir() = default;
 
 BESFSDir::dirIterator BESFSDir::beginOfDirList() {
     if (_dirLoaded == false) {

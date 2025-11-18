@@ -47,7 +47,7 @@ using namespace std;
 
 BESDefineResponseHandler::BESDefineResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESDefineResponseHandler::~BESDefineResponseHandler() {}
+BESDefineResponseHandler::~BESDefineResponseHandler() = default;
 
 /** @brief executes the command to create a new definition.
  *

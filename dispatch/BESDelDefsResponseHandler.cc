@@ -53,7 +53,7 @@ using std::string;
 
 BESDelDefsResponseHandler::BESDelDefsResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESDelDefsResponseHandler::~BESDelDefsResponseHandler() {}
+BESDelDefsResponseHandler::~BESDelDefsResponseHandler() = default;
 
 /** @brief executes the command to delete a container, a definition, or all
  * definitions.

@@ -97,8 +97,8 @@ string xml_baseline = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
 class infoT : public TestFixture {
 private:
 public:
-    infoT() {}
-    ~infoT() {}
+    infoT() = default;
+    ~infoT() = default;
 
     void setUp() {
         string bes_conf = (string)TEST_SRC_DIR + "/info_test.ini";

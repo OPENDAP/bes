@@ -48,7 +48,7 @@ using std::string;
 
 BESSetContextResponseHandler::BESSetContextResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESSetContextResponseHandler::~BESSetContextResponseHandler() {}
+BESSetContextResponseHandler::~BESSetContextResponseHandler() = default;
 
 /** @brief executes the command to set context within the BES
  *

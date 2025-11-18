@@ -50,7 +50,7 @@
 class BESVersionResponseHandler : public BESResponseHandler {
 public:
     BESVersionResponseHandler(const std::string &name);
-    ~BESVersionResponseHandler(void) override;
+    ~BESVersionResponseHandler() override;
 
     void execute(BESDataHandlerInterface &dhi) override;
     void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;

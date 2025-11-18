@@ -61,10 +61,10 @@ class RequestTimerTest : public CppUnit::TestFixture {
 private:
 public:
     // Called once before everything gets tested
-    RequestTimerTest() {}
+    RequestTimerTest() = default;
 
     // Called at the end of the test
-    ~RequestTimerTest() {}
+    ~RequestTimerTest() = default;
 
     // Called before each test
     void setUp() {

@@ -42,7 +42,7 @@ using std::string;
 
 BESShowDefsResponseHandler::BESShowDefsResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESShowDefsResponseHandler::~BESShowDefsResponseHandler() {}
+BESShowDefsResponseHandler::~BESShowDefsResponseHandler() = default;
 
 /** @brief executes the command 'show definitions;' by returning the list of
  * currently defined definitions

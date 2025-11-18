@@ -51,7 +51,7 @@
 class BESShowContextResponseHandler : public BESResponseHandler {
 public:
     BESShowContextResponseHandler(const std::string &name);
-    ~BESShowContextResponseHandler(void) override;
+    ~BESShowContextResponseHandler() override;
 
     void execute(BESDataHandlerInterface &dhi) override;
     void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;

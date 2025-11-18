@@ -74,8 +74,8 @@ static const string CACHE_PREFIX("container_test");
 class uncompressT : public TestFixture {
 private:
 public:
-    uncompressT() {}
-    ~uncompressT() {}
+    uncompressT() = default;
+    ~uncompressT() = default;
 
     int clean_dir(const string &cache_dir, const string &cache_prefix) {
         DBG(cerr << __func__ << "() - BEGIN " << endl);

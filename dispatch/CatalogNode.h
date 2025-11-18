@@ -61,8 +61,8 @@ private:
     std::vector<CatalogItem *> d_leaves;
 #endif
 
-    CatalogNode(const CatalogNode &rhs);
-    CatalogNode &operator=(const CatalogNode &rhs);
+    CatalogNode(const CatalogNode &rhs) = delete;
+    CatalogNode &operator=(const CatalogNode &rhs) = delete;
 
 public:
     /// @brief Make an empty instance.

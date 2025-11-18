@@ -42,7 +42,7 @@ using std::string;
 
 BESShowContextResponseHandler::BESShowContextResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESShowContextResponseHandler::~BESShowContextResponseHandler() {}
+BESShowContextResponseHandler::~BESShowContextResponseHandler() = default;
 
 /** @brief executes the command to list the current context in the BES
  *

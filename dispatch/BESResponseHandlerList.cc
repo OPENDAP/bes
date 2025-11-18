@@ -43,7 +43,7 @@ using std::endl;
 using std::ostream;
 using std::string;
 
-BESResponseHandlerList::BESResponseHandlerList() {}
+BESResponseHandlerList::BESResponseHandlerList() = default;
 
 /** @brief add a response handler to the list
  *

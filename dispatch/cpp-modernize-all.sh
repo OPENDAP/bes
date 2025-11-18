@@ -12,7 +12,6 @@ test_to_run="${2:-'-*,-modernize-use-override'}"
 echo "Files: $pattern"
 echo "Tests: $test_to_run"
 
-# xargs -n 50 -P "$(sysctl -n hw.ncpu)"
 git  ls-files $pattern \
   | xargs -n 10 \
   clang-tidy -p . -header-filter='.*' -checks="$test_to_run" -fix \

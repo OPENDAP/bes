@@ -197,8 +197,8 @@ string show2 = "<showServices>\n\
 class servicesT : public TestFixture {
 private:
 public:
-    servicesT() {}
-    ~servicesT() {}
+    servicesT() = default;
+    ~servicesT() = default;
 
     void setUp() {}
 

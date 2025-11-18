@@ -61,8 +61,8 @@ static bool debug = false;
 class connT : public TestFixture {
 private:
 public:
-    connT() {}
-    ~connT() {}
+    connT() = default;
+    ~connT() = default;
 
     void setUp() {}
 

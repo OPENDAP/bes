@@ -45,7 +45,7 @@ using std::string;
 
 BESHelpResponseHandler::BESHelpResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESHelpResponseHandler::~BESHelpResponseHandler() {}
+BESHelpResponseHandler::~BESHelpResponseHandler() = default;
 
 /** @brief executes the command 'show help;' by returning general help
  * information as well as help information for all of the data request

@@ -39,7 +39,7 @@ using std::endl;
 using std::ostream;
 using std::string;
 
-BESReporterList::BESReporterList() {}
+BESReporterList::BESReporterList() = default;
 
 bool BESReporterList::add_reporter(string reporter_name, BESReporter *reporter_object) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);

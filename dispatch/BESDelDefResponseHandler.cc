@@ -53,7 +53,7 @@ using std::string;
 
 BESDelDefResponseHandler::BESDelDefResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESDelDefResponseHandler::~BESDelDefResponseHandler() {}
+BESDelDefResponseHandler::~BESDelDefResponseHandler() = default;
 
 /** @brief executes the command to delete a definition
  *

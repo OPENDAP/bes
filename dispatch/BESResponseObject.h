@@ -44,8 +44,8 @@
  */
 class BESResponseObject : public BESObj {
 public:
-    BESResponseObject() {};
-    ~BESResponseObject() override {};
+    BESResponseObject() = default;
+    ~BESResponseObject() override = default;
 
     void dump(std::ostream &strm) const override = 0;
 };

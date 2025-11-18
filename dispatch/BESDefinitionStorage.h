@@ -71,7 +71,7 @@ public:
      */
     BESDefinitionStorage(const std::string &name) : _my_name(name) {};
 
-    ~BESDefinitionStorage() override {};
+    ~BESDefinitionStorage() override = default;
 
     /** @brief retrieve the name of this persistent store
      *

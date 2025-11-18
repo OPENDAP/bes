@@ -53,7 +53,7 @@ using std::string;
 
 BESSetContainerResponseHandler::BESSetContainerResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESSetContainerResponseHandler::~BESSetContainerResponseHandler() {}
+BESSetContainerResponseHandler::~BESSetContainerResponseHandler() = default;
 
 /** @brief executes the command to create a new container or replaces an
  * already existing container based on the provided symbolic name.

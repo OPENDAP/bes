@@ -43,7 +43,7 @@ using std::string;
 
 BESTokenizer::BESTokenizer() : _counter(-1), _number_tokens(0) {}
 
-BESTokenizer::~BESTokenizer() {}
+BESTokenizer::~BESTokenizer() = default;
 
 /** @brief throws an exception giving the tokens up to the point of the
  * problem

@@ -41,7 +41,7 @@ protected:
     BESReporter() {};
 
 public:
-    ~BESReporter() override {};
+    ~BESReporter() override = default;
 
     virtual void report(BESDataHandlerInterface &dhi) = 0;
 

@@ -49,10 +49,10 @@ class BESCatalogListTest : public CppUnit::TestFixture {
 
 public:
     // Called once before everything gets tested
-    BESCatalogListTest() {}
+    BESCatalogListTest() = default;
 
     // Called at the end of the test
-    ~BESCatalogListTest() {}
+    ~BESCatalogListTest() = default;
 
     // Called before each test
     void setUp() { TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf"); }

@@ -67,8 +67,8 @@ static bool debug = false;
 class defT : public TestFixture {
 private:
 public:
-    defT() {}
-    ~defT() {}
+    defT() = default;
+    ~defT() = default;
 
     void setUp() {
         string bes_conf = (string)TEST_SRC_DIR + "/defT.ini";

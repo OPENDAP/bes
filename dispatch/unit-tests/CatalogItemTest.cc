@@ -59,7 +59,7 @@ public:
     CatalogItemTest() : d_item(0) {}
 
     // Called at the end of the test
-    ~CatalogItemTest() {}
+    ~CatalogItemTest() = default;
 
     // Called before each test
     void setUp() {

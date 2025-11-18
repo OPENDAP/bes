@@ -109,7 +109,7 @@ class TheBESKeys : public BESObj {
     // Only called by the static TheBESKeys::TheKeys() method.
     explicit TheBESKeys(std::string keys_file_name);
 
-    TheBESKeys();
+    TheBESKeys() = delete;
 
 public:
     /**

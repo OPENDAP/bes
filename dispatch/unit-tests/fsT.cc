@@ -69,8 +69,8 @@ private:
     map<string, string> fileList;
 
 public:
-    fsT() {}
-    ~fsT() {}
+    fsT() = default;
+    ~fsT() = default;
 
     void setUp() {
         fileList.insert(make_pair("agglistT.cc", "agglistT.cc"));

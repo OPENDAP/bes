@@ -50,7 +50,7 @@ BESContextManager *BESContextManager::d_instance = nullptr;
 #define MODULE "context"
 #define prolog std::string("BESContextManager::").append(__func__).append("() - ")
 
-BESContextManager::BESContextManager() {}
+BESContextManager::BESContextManager() = default;
 
 /** @brief set context in the BES
  *

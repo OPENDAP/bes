@@ -50,7 +50,7 @@ using std::vector;
 
 BESVersionResponseHandler::BESVersionResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESVersionResponseHandler::~BESVersionResponseHandler() {}
+BESVersionResponseHandler::~BESVersionResponseHandler() = default;
 
 /** @brief executes the command 'show version;' by returning the version of
  * the BES and the version of all registered data request
