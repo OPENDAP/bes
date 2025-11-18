@@ -12,7 +12,7 @@ test_to_run="${2:-'-*,-modernize-use-override'}"
 echo "Files: $pattern"
 echo "Tests: $test_to_run"
 
-git  ls-files $pattern \
+git  ls-files "$pattern" \
   | xargs -n 10 \
   clang-tidy -p . -header-filter='.*' -checks="$test_to_run" -fix \
     -extra-arg=-std=c++14 \
