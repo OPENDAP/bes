@@ -99,15 +99,17 @@ endif
 # check_dmrpp config
 check_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS)
 check_dmrpp_SOURCES = check_dmrpp.cc
+check_dmrpp_LDADD = $(LDADD)
 
 # merge_dmrpp config
 merge_dmrpp_CPPFLAGS = $(AM_CPPFLAGS)
 merge_dmrpp_SOURCES = merge_dmrpp.cc
+merge_dmrpp_LDADD = $(LDADD)
 
 # reduce_mdf config
 reduce_mdf_CPPFLAGS = $(AM_CPPFLAGS)
 reduce_mdf_SOURCES = reduce_mdf.cc
-reduce_mdf_LDADD = $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -lz
+reduce_mdf_LDADD = $(OPENSSL_LDFLAGS) $(LDADD) $(OPENSSL_LIBS) -lz
 
 EXTRA_PROGRAMS =
 
