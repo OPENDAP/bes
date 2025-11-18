@@ -1,0 +1,10 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+# This test is for testing build_dmrpp for real NASA files.
+
+AT_INIT([bes/modules/dmrpp_module/tests_build_dmrpp testsuite_dmrpp_tests])
+
+m4_include([build_dmrpp_macros.m4])
+
+AT_BUILD_DMRPP([modules/dmrpp_module/data/20120201000000-STAR-L3U_GHRSST-SSTsubskin-VIIRS_NPP-ACSPO_V2.80-v02.0-fv01.0.nc])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/20220607120000-STAR-L3S_GHRSST-SSTsubskin-LEO_PM_D-ACSPO_V2.80-v02.0-fv01.0.nc.h5])
+

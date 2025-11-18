@@ -62,8 +62,6 @@ HDRS = CurlUtils.h \
     CredentialsManager.h \
     awsv4.h
 
-# Removed jhrg 2/26/24 HttpCache.h     HttpCache.cc
-
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = http.conf
 

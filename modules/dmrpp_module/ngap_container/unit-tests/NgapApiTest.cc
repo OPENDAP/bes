@@ -201,6 +201,9 @@ public:
         }
     }
 
+    // This _used_ to test if a query string was appended to the URL, but now
+    // we use a header for that same information, so it tests that the query
+    // string is not appended. jhrg 11/14/25
     void resty_path_to_cmr_query_test_04() {
         DBG(cerr << prolog << "BEGIN" << endl);
 
@@ -216,7 +219,6 @@ public:
             "https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?"
             CMR_COLLECTION_CONCEPT_ID "=C1443727145-LAADS&"
             CMR_GRANULE_UR "=MOD08_D3.A2020308.061.2020309092644.hdf.nc"
-            "&client_id=hyrax-test-client"
         );
         try {
             string cmr_query_url = NgapApi::build_cmr_query_url(resty_path);
@@ -458,117 +460,6 @@ public:
         DBG(cerr << prolog << "END" << endl);
     }
 
-    /**
- * Tests for NgapApi::append_hyrax_edl_client_id()
- *
- * These tests cover:
- *  - When the URL ends with '?', no extra '&' is added.
- *  - When the URL ends with '&', no extra '&' is added.
- *  - When the URL has existing params and no trailing '&'/'?', an '&' is inserted.
- *  - (Optional / conditional) If the EDL client id context is not set, method is a no-op.
- *
- * Note: We intentionally set the context for the first three tests and do not restore it,
- * because the rest of this suite does not depend on that context. If you prefer to restore
- * any previous value, you can capture it and add a teardown step that calls your context
- * manager’s "remove/unset" API (if available in your environment).
- */
-
-    void append_hyrax_edl_client_id_appends_after_qmark_without_extra_amp() {
-        DBG(cerr << prolog << "BEGIN" << endl);
-
-        // Arrange: ensure the client-id context is set
-        const std::string test_client_id = "hyrax-test-client";
-        BESContextManager::TheManager()->set_context(CMR_CLIENT_ID_CONTEXT_KEY, test_client_id);
-
-        // URL ends with '?': should become "?<CMR_CLIENT_ID_KEY>=<value>" (no extra '&')
-        std::string url = "https://cmr.earthdata.nasa.gov/search/granules?";
-
-        // Act
-        bool result = NgapApi::append_hyrax_edl_client_id(url);
-
-        // Assert
-        const std::string expected = std::string("https://cmr.earthdata.nasa.gov/search/granules?")
-                                     + CMR_CLIENT_ID_KEY + "=" + test_client_id;
-
-        CPPUNIT_ASSERT_MESSAGE("Expected a 'true' return value but got: " + to_string(result), result);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Expected: " + expected + ", but got: " + url, expected, url);
-
-        DBG(cerr << prolog << "END" << endl);
-    }
-
-    void append_hyrax_edl_client_id_appends_when_trailing_amp_present() {
-        DBG(cerr << prolog << "BEGIN" << endl);
-
-        // Arrange
-        const std::string test_client_id = "hyrax-test-client";
-        BESContextManager::TheManager()->set_context(CMR_CLIENT_ID_CONTEXT_KEY, test_client_id);
-
-        // URL ends with '&': should directly append "<CMR_CLIENT_ID_KEY>=<value>"
-        std::string url = "https://cmr.earthdata.nasa.gov/search/granules?foo=bar&";
-
-        // Act
-        bool result = NgapApi::append_hyrax_edl_client_id(url);
-
-        // Assert
-        const std::string expected = std::string("https://cmr.earthdata.nasa.gov/search/granules?foo=bar&")
-                                     + CMR_CLIENT_ID_KEY + "=" + test_client_id;
-
-        CPPUNIT_ASSERT_MESSAGE("Expected a 'true' return value but got: " + to_string(result), result);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Expected: " + expected + ", but got: " + url, expected, url);
-
-        DBG(cerr << prolog << "END" << endl);
-    }
-
-    void append_hyrax_edl_client_id_inserts_amp_when_needed() {
-        DBG(cerr << prolog << "BEGIN" << endl);
-
-        // Arrange
-        const std::string test_client_id = "hyrax-test-client";
-        BESContextManager::TheManager()->set_context(CMR_CLIENT_ID_CONTEXT_KEY, test_client_id);
-
-        // URL has existing params and no trailing '&'/'?': method must insert '&'
-        std::string url = "https://cmr.earthdata.nasa.gov/search/granules?foo=bar";
-
-        // Act
-        bool result = NgapApi::append_hyrax_edl_client_id(url);
-
-        // Assert
-        const std::string expected = std::string("https://cmr.earthdata.nasa.gov/search/granules?foo=bar&")
-                                     + CMR_CLIENT_ID_KEY + "=" + test_client_id;
-
-        CPPUNIT_ASSERT_MESSAGE("Expected a 'true' return value but got: " + to_string(result), result);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Expected: " + expected + ", but got: " + url, expected, url);
-
-        DBG(cerr << prolog << "END" << endl);
-    }
-
-    /**
-     * Optional “no-op” test for the case when the context is not set.
-     * If the context is set in your environment (e.g., by a harness), we just return so
-     * the test won’t flap. If your BESContextManager supports removing a key, you can
-     * explicitly remove it before running this test.
-     */
-    void append_hyrax_edl_client_id_noop_when_context_not_set() {
-        DBG(cerr << prolog << "BEGIN (noop-if-context-present)" << endl);
-
-        bool found = false;
-        (void) BESContextManager::TheManager()->get_context(CMR_CLIENT_ID_CONTEXT_KEY, found);
-        if (found) {
-            DBG(cerr << prolog << "Context is set; skipping assertions for no-op case." << endl);
-            return; // effectively a no-op "skip" to avoid flaky behavior
-        }
-
-        std::string original = "https://cmr.earthdata.nasa.gov/search/granules?foo=bar";
-        std::string url = original;
-
-        bool result = NgapApi::append_hyrax_edl_client_id(url);
-
-        CPPUNIT_ASSERT_MESSAGE("Expected a 'false' return value but got: " + to_string(result), !result);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Expected: " + original + ", but got: " + url, original, url);
-
-        DBG(cerr << prolog << "END" << endl);
-    }
-
     CPPUNIT_TEST_SUITE(NgapApiTest);
 
     CPPUNIT_TEST (resty_path_to_cmr_query_test_01);
@@ -588,11 +479,6 @@ public:
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_lpdaac);
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_podaac);
     CPPUNIT_TEST (test_dmrpp_is_removed_from_data_url);
-
-    CPPUNIT_TEST (append_hyrax_edl_client_id_appends_after_qmark_without_extra_amp);
-    CPPUNIT_TEST (append_hyrax_edl_client_id_appends_when_trailing_amp_present);
-    CPPUNIT_TEST (append_hyrax_edl_client_id_inserts_amp_when_needed);
-    CPPUNIT_TEST (append_hyrax_edl_client_id_noop_when_context_not_set);
 
     CPPUNIT_TEST_SUITE_END();
 };
