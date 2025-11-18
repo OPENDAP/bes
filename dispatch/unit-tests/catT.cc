@@ -49,8 +49,6 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 
-#include <unistd.h>
-
 #include "BESCatalog.h"
 #include "BESCatalogDirectory.h"
 #include "BESCatalogEntry.h"
@@ -198,9 +196,9 @@ private:
 public:
     catT() = default;
 
-    ~catT() = default;
+    ~catT() override = default;
 
-    void setUp() {
+    void setUp() override {
         TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
 
         TheBESKeys::TheKeys()->set_key("BES.Catalog.Default=default");
@@ -223,7 +221,6 @@ public:
 
     CPPUNIT_TEST(default_test);
     CPPUNIT_TEST(no_default_test);
-    // CPPUNIT_TEST(configure_catalog);
     CPPUNIT_TEST(root_dir_test_2);
     CPPUNIT_TEST(root_dir_test_3);
     CPPUNIT_TEST(root_dir_test_4);
@@ -325,7 +322,7 @@ public:
         }
     }
 
-    void configure_catalog(string catName) {
+    void configure_catalog(const string& catName) {
         // TheBESKeys::TheKeys()->set_key("BES.Catalog.Default=cat_test");
         TheBESKeys::TheKeys()->set_key(string("BES.Catalog." + catName + ".RootDirectory=") + TEST_SRC_DIR + root_dir);
         try {
@@ -807,14 +804,14 @@ public:
 
     // This test is good, especially for timing, etc., but the differences between
     // source in a typical git clone and what gets into the tar ball and thus, shows
-    // up in a distcheck build, are too great to expect it to pass when we run those
+    // up in a distcheck build are too great to expect it to pass when we run those
     // builds. jhrg 3/7/18
-    void get_site_map_test_2() {
+    static void get_site_map_test_2() {
         TheBESKeys::TheKeys()->set_key(string("BES.Catalog.sm2.RootDirectory=") + TOP_SRC_DIR);
         TheBESKeys::TheKeys()->set_key("BES.Catalog.sm2.TypeMatch=src:.*\\.cc$;src:.*\\.h$;");
         TheBESKeys::TheKeys()->set_key("BES.Catalog.sm2.Include=.*$;");
         TheBESKeys::TheKeys()->set_key(
-            "BES.Catalog.sm2.Exclude=README;not_used$;_build;bes-[0-9.]*;.*\\.o;.*\\.Po;.*\\.html;");
+            R"(BES.Catalog.sm2.Exclude=README;not_used$;_build;bes-[0-9.]*;.*\.o;.*\.Po;.*\.html;)");
 
         unique_ptr<BESCatalog> catalog(new BESCatalogDirectory("sm2"));
         CPPUNIT_ASSERT(catalog.get());
