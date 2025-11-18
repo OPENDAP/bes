@@ -271,29 +271,29 @@ public:
 
     void test_implode_1() {
         list<string> values;
-        values.push_back("a");
-        values.push_back("b");
-        values.push_back("c");
-        values.push_back("d");
+        values.emplace_back("a");
+        values.emplace_back("b");
+        values.emplace_back("c");
+        values.emplace_back("d");
         CPPUNIT_ASSERT(BESUtil::implode(values, ',') == "a,b,c,d");
     }
 
     void test_implode_2() {
         list<string> values;
-        values.push_back("a");
-        values.push_back("b");
-        values.push_back("c");
-        values.push_back("d");
-        values.push_back("a,b");
+        values.emplace_back("a");
+        values.emplace_back("b");
+        values.emplace_back("c");
+        values.emplace_back("d");
+        values.emplace_back("a,b");
         CPPUNIT_ASSERT_THROW_MESSAGE("imploding of value with comma should throw BESError",
                                      BESUtil::implode(values, ','), BESError);
     }
 
     void test_implode_3() {
         list<string> values;
-        values.push_back("a");
-        values.push_back("\"a,b\"");
-        values.push_back("b");
+        values.emplace_back("a");
+        values.emplace_back("\"a,b\"");
+        values.emplace_back("b");
         CPPUNIT_ASSERT(BESUtil::implode(values, ',') == "a,\"a,b\",b");
     }
 

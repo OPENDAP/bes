@@ -34,7 +34,7 @@
 #include <mutex>
 
 #ifdef HAVE_STDLIB_H
-#include <stdlib.h>
+#include <cstdlib>
 #endif
 
 #include "BESResponseHandlerList.h"

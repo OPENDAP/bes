@@ -21,7 +21,7 @@
 
 #include "config.h"
 
-#include <stdlib.h>    // for system
+#include <cstdlib>    // for system
 #include <sys/param.h> // See clear_cache_dir
 #include <unistd.h>
 

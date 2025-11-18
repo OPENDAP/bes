@@ -856,11 +856,11 @@ unsigned long long BESFileLockingCache::m_collect_cache_dir_info(CacheFiles &con
 
     unsigned long long current_size = 0;
     struct stat buf;
-    for (vector<string>::iterator file = files.begin(); file != files.end(); ++file) {
-        if (stat(file->c_str(), &buf) == 0) {
+    for (auto & file : files) {
+        if (stat(file.c_str(), &buf) == 0) {
             current_size += buf.st_size;
             cache_entry entry;
-            entry.name = *file;
+            entry.name = file;
             entry.size = buf.st_size;
             entry.time = buf.st_atime;
             // Sanity check; Removed after initial testing since some files might be zero bytes

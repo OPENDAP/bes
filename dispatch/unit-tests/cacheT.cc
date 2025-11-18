@@ -145,9 +145,9 @@ void check_cache(const string &cache_dir, const string &should_be, unsigned int 
     CPPUNIT_ASSERT(num_files == contents.size());
 
     bool found = false;
-    for (map<string, string>::const_iterator ci = contents.begin(), ce = contents.end(); ci != ce; ci++) {
-        DBG(cerr << "contents: " << (*ci).first << endl);
-        if ((*ci).first == should_be) {
+    for (const auto & content : contents) {
+        DBG(cerr << "contents: " << content.first << endl);
+        if (content.first == should_be) {
             found = true;
             break;
         }
@@ -520,8 +520,8 @@ int main(int argc, char *argv[]) {
             cerr << "Usage: cacheT has the following tests:" << endl;
             const std::vector<Test *> &tests = cacheT::suite()->getTests();
             unsigned int prefix_len = cacheT::suite()->getName().append("::").size();
-            for (std::vector<Test *>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            for (auto test : tests) {
+                cerr << test->getName().replace(0, prefix_len, "") << endl;
             }
             break;
         }

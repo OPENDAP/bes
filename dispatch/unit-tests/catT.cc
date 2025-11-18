@@ -912,8 +912,8 @@ int main(int argc, char *argv[]) {
             cerr << "Usage: catT has the following tests:" << endl;
             const std::vector<Test *> &tests = catT::suite()->getTests();
             unsigned int prefix_len = catT::suite()->getName().append("::").size();
-            for (std::vector<Test *>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            for (auto test : tests) {
+                cerr << test->getName().replace(0, prefix_len, "") << endl;
             }
             break;
         }

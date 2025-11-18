@@ -30,7 +30,7 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <string.h>
+#include <cstring>
 #include <sys/stat.h>
 
 #include "BESNotFoundError.h"

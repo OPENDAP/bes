@@ -36,7 +36,7 @@
 #ifdef WIN32
 #include <config.h> //  for S_ISDIR macro
 #endif
-#include <stdio.h>
+#include <cstdio>
 
 #include "BESFSDir.h"
 #include "BESInternalError.h"
@@ -125,16 +125,16 @@ void BESFSDir::loadDir() {
                     // look at the mode and determine if this is a filename
                     // or a directory name
                     if (S_ISDIR(buf.st_mode)) {
-                        _dirList.push_back(BESFSDir(fullPath));
+                        _dirList.emplace_back(fullPath);
                     } else {
                         if (_fileExpr != "") {
                             BESRegex reg_expr(_fileExpr.c_str());
                             int match_ret = reg_expr.match(dirEntry.c_str(), dirEntry.size());
                             if (match_ret == static_cast<int>(dirEntry.size())) {
-                                _fileList.push_back(BESFSFile(_dirName, dirEntry));
+                                _fileList.emplace_back(_dirName, dirEntry);
                             }
                         } else {
-                            _fileList.push_back(BESFSFile(_dirName, dirEntry));
+                            _fileList.emplace_back(_dirName, dirEntry);
                         }
                     }
                 }

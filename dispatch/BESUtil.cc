@@ -246,8 +246,8 @@ string BESUtil::www2id(const string &in, const string &escape, const string &exc
 
 string BESUtil::lowercase(const string &s) {
     string return_string = s;
-    for (int j = 0; j < static_cast<int>(return_string.size()); j++) {
-        return_string[j] = (char)tolower(return_string[j]);
+    for (char & j : return_string) {
+        j = (char)tolower(j);
     }
 
     return return_string;
@@ -573,7 +573,7 @@ void BESUtil::explode(char delim, const string &str, list<string> &values) {
         values.push_back(aval);
         start = adelim + 1;
         if (start == str.size()) {
-            values.push_back("");
+            values.emplace_back("");
             done = true;
         }
     }

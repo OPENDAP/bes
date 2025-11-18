@@ -196,10 +196,10 @@ void BESTokenizer::tokenize(const char *p) {
                 }
                 switch (p[j]) {
                 case ',':
-                    tokens.push_back(",");
+                    tokens.emplace_back(",");
                     break;
                 case ';':
-                    tokens.push_back(";");
+                    tokens.emplace_back(";");
                     break;
                 }
             } else

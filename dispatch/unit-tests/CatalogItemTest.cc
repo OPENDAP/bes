@@ -166,15 +166,15 @@ int main(int argc, char *argv[]) {
     while ((option_char = getopt(argc, argv, "dh")) != EOF)
         switch (option_char) {
         case 'd': {
-            debug = 1; // debug is a static global
+            debug = true; // debug is a static global
             break;
         }
         case 'h': { // help - show test names
             cerr << "Usage: CatalogItemTest has the following tests:" << endl;
             const std::vector<Test *> &tests = CatalogItemTest::suite()->getTests();
             unsigned int prefix_len = CatalogItemTest::suite()->getName().append("::").size();
-            for (std::vector<Test *>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            for (auto test : tests) {
+                cerr << test->getName().replace(0, prefix_len, "") << endl;
             }
             break;
         }

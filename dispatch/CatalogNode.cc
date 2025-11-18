@@ -48,12 +48,12 @@ CatalogNode::~CatalogNode() {
 #endif
 
 #if NODES_AND_LEAVES
-    for (std::vector<CatalogItem *>::iterator i = d_nodes.begin(), e = d_nodes.end(); i != e; ++i)
-        delete *i;
+    for (auto & d_node : d_nodes)
+        delete d_node;
     d_nodes.clear();
 
-    for (std::vector<CatalogItem *>::iterator i = d_leaves.begin(), e = d_leaves.end(); i != e; ++i)
-        delete *i;
+    for (auto & d_leave : d_leaves)
+        delete d_leave;
     d_leaves.clear();
 #endif
     delete d_no_really_im_a_leaf;

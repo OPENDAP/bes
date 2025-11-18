@@ -33,7 +33,7 @@
 #include "config.h"
 
 #ifdef HAVE_STDLIB_H
-#include <stdlib.h>
+#include <cstdlib>
 #endif
 
 #include <mutex>

@@ -32,7 +32,7 @@
 
 #include "config.h"
 
-#include <limits.h>
+#include <climits>
 #include <memory>
 
 #include "BESRegex.h"

@@ -39,7 +39,7 @@ using namespace CppUnit;
 #include <fcntl.h>
 #include <iostream>
 #include <libdap/util.h>
-#include <string.h>
+#include <cstring>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -198,14 +198,14 @@ int main(int argc, char *argv[]) {
     while ((option_char = getopt(argc, argv, "dh")) != EOF)
         switch (option_char) {
         case 'd':
-            debug = 1; // debug is a static global
+            debug = true; // debug is a static global
             break;
         case 'h': { // help - show test names
             cerr << "Usage: reqhandlerT has the following tests:" << endl;
             const std::vector<Test *> &tests = reqhandlerT::suite()->getTests();
             unsigned int prefix_len = reqhandlerT::suite()->getName().append("::").size();
-            for (std::vector<Test *>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            for (auto test : tests) {
+                cerr << test->getName().replace(0, prefix_len, "") << endl;
             }
             break;
         }
