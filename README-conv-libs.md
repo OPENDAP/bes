@@ -43,14 +43,14 @@ Here’s what “good” looks like and the gotchas to avoid.
   ```make
   libawsutil_la_LIBADD = -laws-cpp-sdk-s3 -laws-crt-cpp
   ```
-* **However** for anything you **install** (e.g., `libhyrax.la` or a program), *explicitly list* all external libs you truly need **even if they’re already pulled by convenience libs**:
+* **However**, for anything you **install** (e.g., `libhyrax.la` or a program), *explicitly list* all external libs you truly need **even if they’re already pulled by convenience libs**:
 
   ```make
   libhyrax_la_LIBADD = libawsutil.la libdaphelpers.la \
                        -laws-cpp-sdk-s3 -laws-crt-cpp $(OTHER_PUBLIC_LIBS)
   ```
 
-  Why: relying on transitive `.la` `dependency_libs` is brittle (different linkers, `--as-needed`, relinking on install, and some distros strip `.la` files entirely). Being explicit makes link behavior deterministic across macOS/Linux.
+  Why: relying on transitive `.la` `dependency_libs` is brittle (different linkers, `--as-needed`, relinking on installation, and some distros strip `.la` files entirely). Being explicit makes link behavior deterministic across macOS/Linux.
 
 ## 3) Keep boundaries coherent, not tiny
 
@@ -96,11 +96,11 @@ Here’s what “good” looks like and the gotchas to avoid.
   Libs.private: -laws-crt-cpp -laws-cpp-sdk-s3
   ```
 
-  Consumers linking dynamically usually need only `-lhyrax`; static users do `pkg-config --static --libs hyrax` to get the private deps.
+  Consumers linking dynamically usually only need `-lhyrax`; static users do `pkg-config --static --libs hyrax` to get the private deps.
 
 ## 8) macOS/Linux rpaths belong to installed things
 
-* Set rpaths on the **installed lib or program** (not on convenience libs) so runtime lookup is stable:
+* Set rpaths on the **installed lib or program** (not on convenience libs) so the runtime lookup is stable:
 
   ```make
   if DARWIN
@@ -110,7 +110,7 @@ Here’s what “good” looks like and the gotchas to avoid.
   endif
   ```
 
-# Anti-patterns to avoid
+# Antipatterns to avoid
 
 * Relying on convenience libs’ `.la` to “pull” external deps into the final link—works until it doesn’t.
 * Installing convenience libs (defeats the purpose and complicates ABI/semver).
