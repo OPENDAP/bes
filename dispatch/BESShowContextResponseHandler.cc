@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -31,23 +31,18 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESShowContextResponseHandler.h"
-#include "BESInfoList.h"
-#include "BESInfo.h"
 #include "BESContextManager.h"
+#include "BESInfo.h"
+#include "BESInfoList.h"
 #include "BESResponseNames.h"
 
 using std::endl;
-using std::string;
 using std::ostream;
+using std::string;
 
-BESShowContextResponseHandler::BESShowContextResponseHandler( const string &name )
-    : BESResponseHandler( name )
-{
-}
+BESShowContextResponseHandler::BESShowContextResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESShowContextResponseHandler::~BESShowContextResponseHandler( )
-{
-}
+BESShowContextResponseHandler::~BESShowContextResponseHandler() = default;
 
 /** @brief executes the command to list the current context in the BES
  *
@@ -63,16 +58,14 @@ BESShowContextResponseHandler::~BESShowContextResponseHandler( )
  * @see BESInfo
  * @see BESContextManager
  */
-void
-BESShowContextResponseHandler::execute( BESDataHandlerInterface &dhi )
-{
-    dhi.action_name = SET_CONTEXT_STR ;
-    BESInfo *info = BESInfoList::TheList()->build_info() ;
-    d_response_object = info ;
+void BESShowContextResponseHandler::execute(BESDataHandlerInterface &dhi) {
+    dhi.action_name = SET_CONTEXT_STR;
+    BESInfo *info = BESInfoList::TheList()->build_info();
+    d_response_object = info;
 
-    info->begin_response( SHOW_CONTEXT_STR, dhi ) ;
-    BESContextManager::TheManager()->list_context( *info ) ;
-    info->end_response() ;
+    info->begin_response(SHOW_CONTEXT_STR, dhi);
+    BESContextManager::TheManager()->list_context(*info);
+    info->end_response();
 }
 
 /** @brief transmit the response object built by the execute command
@@ -87,16 +80,12 @@ BESShowContextResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void
-BESShowContextResponseHandler::transmit( BESTransmitter *transmitter,
-				        BESDataHandlerInterface &dhi )
-{
-    if( d_response_object )
-    {
-	BESInfo *info = dynamic_cast<BESInfo *>(d_response_object) ;
-	if( !info )
-	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-	info->transmit( transmitter, dhi ) ;
+void BESShowContextResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) {
+    if (d_response_object) {
+        BESInfo *info = dynamic_cast<BESInfo *>(d_response_object);
+        if (!info)
+            throw BESInternalError("cast error", __FILE__, __LINE__);
+        info->transmit(transmitter, dhi);
     }
 }
 
@@ -106,19 +95,13 @@ BESShowContextResponseHandler::transmit( BESTransmitter *transmitter,
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESShowContextResponseHandler::dump( ostream &strm ) const
-{
-    strm << BESIndent::LMarg << "BESShowContextResponseHandler::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESResponseHandler::dump( strm ) ;
-    BESIndent::UnIndent() ;
+void BESShowContextResponseHandler::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESShowContextResponseHandler::dump - (" << (void *)this << ")" << endl;
+    BESIndent::Indent();
+    BESResponseHandler::dump(strm);
+    BESIndent::UnIndent();
 }
 
-BESResponseHandler *
-BESShowContextResponseHandler::ShowContextResponseBuilder( const string &name )
-{
-    return new BESShowContextResponseHandler( name ) ;
+BESResponseHandler *BESShowContextResponseHandler::ShowContextResponseBuilder(const string &name) {
+    return new BESShowContextResponseHandler(name);
 }
-

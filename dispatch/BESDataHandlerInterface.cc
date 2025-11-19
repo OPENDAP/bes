@@ -32,9 +32,9 @@
 
 #include "BESDataHandlerInterface.h"
 #include "BESContainer.h"
-#include "BESResponseHandler.h"
-#include "BESInfo.h"
 #include "BESIndent.h"
+#include "BESInfo.h"
+#include "BESResponseHandler.h"
 
 using std::endl;
 using std::list;
@@ -55,10 +55,7 @@ using std::ostream;
  *
  * @param copy_from object to copy information from
  */
-void BESDataHandlerInterface::make_copy(const BESDataHandlerInterface &copy_from)
-{
-	clone(copy_from);
-}
+void BESDataHandlerInterface::make_copy(const BESDataHandlerInterface &copy_from) { clone(copy_from); }
 
 /** @brief Clone
  * Unlike make_copy(), make an exact copy of the BESDataHandlerInterface object.
@@ -69,8 +66,7 @@ void BESDataHandlerInterface::make_copy(const BESDataHandlerInterface &copy_from
  *
  * @param rhs The instance to clone
  */
-void BESDataHandlerInterface::clone(const BESDataHandlerInterface &copy_from)
-{
+void BESDataHandlerInterface::clone(const BESDataHandlerInterface &copy_from) {
 #if 0
 	// Added because this can be called from make_copy() which is public.
 	// jhrg 4/18/14
@@ -81,47 +77,42 @@ void BESDataHandlerInterface::clone(const BESDataHandlerInterface &copy_from)
 	if (this == &copy_from)
 		return;
 #endif
-	output_stream = copy_from.output_stream;
-	response_handler = copy_from.response_handler;
+    output_stream = copy_from.output_stream;
+    response_handler = copy_from.response_handler;
 
-	containers = copy_from.containers;
-	containers_iterator = copy_from.containers_iterator;
-	container = copy_from.container;
+    containers = copy_from.containers;
+    containers_iterator = copy_from.containers_iterator;
+    container = copy_from.container;
 
-	action = copy_from.action;
-	action_name = copy_from.action_name;
-	executed = copy_from.executed;
+    action = copy_from.action;
+    action_name = copy_from.action_name;
+    executed = copy_from.executed;
 
     transmit_protocol = copy_from.transmit_protocol;
 
     // I do this because clang 5 (on OSX 10.9) will remove everything from 'data'
     // if copy_from.data and 'data' are the same object. Since the ncml handler uses
-	// make_copy() and may be using a reference to a DHI and/or the DHI's 'data' map,
-	// I'm leaving the test in here. That is, it could be building a new DHI instance
+    // make_copy() and may be using a reference to a DHI and/or the DHI's 'data' map,
+    // I'm leaving the test in here. That is, it could be building a new DHI instance
     // that uses a reference to an existing 'data' field and then assign the original
     // DHI instance to the new one. The DHIs are different, but the 'data' map are
-	// not. jhrg 4/18/14
+    // not. jhrg 4/18/14
     if (&data != &copy_from.data)
-    	data = copy_from.data;
+        data = copy_from.data;
 
-	error_info = copy_from.error_info;
+    error_info = copy_from.error_info;
 }
 
-BESDataHandlerInterface::BESDataHandlerInterface(const BESDataHandlerInterface &from)
-{
-	clone(from);
-}
+BESDataHandlerInterface::BESDataHandlerInterface(const BESDataHandlerInterface &from) { clone(from); }
 
-BESDataHandlerInterface &
-BESDataHandlerInterface::operator=(const BESDataHandlerInterface &rhs)
-{
-	if (&rhs == this) {
-		return *this;
-	}
+BESDataHandlerInterface &BESDataHandlerInterface::operator=(const BESDataHandlerInterface &rhs) {
+    if (&rhs == this) {
+        return *this;
+    }
 
-	clone(rhs);
+    clone(rhs);
 
-	return *this;
+    return *this;
 }
 
 /** @brief clean up any information created within this data handler
@@ -131,8 +122,7 @@ BESDataHandlerInterface::operator=(const BESDataHandlerInterface &rhs)
  * handler
  *
  */
-void BESDataHandlerInterface::clean()
-{
+void BESDataHandlerInterface::clean() {
     if (response_handler) {
         delete response_handler;
     }
@@ -146,10 +136,8 @@ void BESDataHandlerInterface::clean()
  *
  * @return The response object for this request
  */
-BESResponseObject *
-BESDataHandlerInterface::get_response_object()
-{
-    BESResponseObject *response = 0;
+BESResponseObject *BESDataHandlerInterface::get_response_object() {
+    BESResponseObject *response = nullptr;
 
     if (response_handler) {
         response = response_handler->get_response_object();
@@ -164,8 +152,7 @@ BESDataHandlerInterface::get_response_object()
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESDataHandlerInterface::dump(ostream &strm) const
-{
+void BESDataHandlerInterface::dump(ostream &strm) const {
     strm << BESIndent::LMarg << "BESDataHandlerInterface::dump" << endl;
     BESIndent::Indent();
     if (response_handler) {
@@ -173,8 +160,7 @@ void BESDataHandlerInterface::dump(ostream &strm) const
         BESIndent::Indent();
         response_handler->dump(strm);
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "response handler: not set" << endl;
     }
 
@@ -183,8 +169,7 @@ void BESDataHandlerInterface::dump(ostream &strm) const
         BESIndent::Indent();
         container->dump(strm);
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "current container: not set" << endl;
     }
 
@@ -197,8 +182,7 @@ void BESDataHandlerInterface::dump(ostream &strm) const
             (*i)->dump(strm);
         }
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "container list: empty" << endl;
     }
 
@@ -214,8 +198,7 @@ void BESDataHandlerInterface::dump(ostream &strm) const
             strm << BESIndent::LMarg << (*i).first << ": " << (*i).second << endl;
         }
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "data: none" << endl;
     }
 
@@ -224,10 +207,8 @@ void BESDataHandlerInterface::dump(ostream &strm) const
         BESIndent::Indent();
         error_info->dump(strm);
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "error info: null" << endl;
     }
     BESIndent::UnIndent();
 }
-

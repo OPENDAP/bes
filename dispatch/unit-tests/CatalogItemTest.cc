@@ -23,15 +23,15 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 #include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
 
 #include <unistd.h>
 
-#include "TheBESKeys.h"
-#include "BESXMLInfo.h"
 #include "BESTextInfo.h"
+#include "BESXMLInfo.h"
 #include "CatalogItem.h"
+#include "TheBESKeys.h"
 
 #include "test_config.h"
 #include "test_utils.h"
@@ -39,32 +39,30 @@
 static bool debug = false;
 
 #undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
+#define DBG(x)                                                                                                         \
+    do {                                                                                                               \
+        if (debug)                                                                                                     \
+            (x);                                                                                                       \
+    } while (false);
 
 using namespace std;
 using namespace CppUnit;
 using namespace bes;
 
-class CatalogItemTest: public CppUnit::TestFixture {
+class CatalogItemTest : public CppUnit::TestFixture {
 
     CatalogItem *d_item;
     CatalogItem *d_item_2;
 
 public:
-
     // Called once before everything gets tested
-    CatalogItemTest(): d_item(0)
-    {
-    }
+    CatalogItemTest() : d_item(nullptr) {}
 
     // Called at the end of the test
-    ~CatalogItemTest()
-    {
-    }
+    ~CatalogItemTest() = default;
 
     // Called before each test
-    void setUp()
-    {
+    void setUp() {
         TheBESKeys::ConfigFile = string(TEST_SRC_DIR).append("/bes.conf");
 
         d_item = new CatalogItem;
@@ -81,23 +79,23 @@ public:
     }
 
     // Called after each test
-    void tearDown()
-    {
+    void tearDown() {
         TheBESKeys::ConfigFile = "";
 
-        delete d_item; d_item = 0;
-        delete d_item_2; d_item_2 = 0;
+        delete d_item;
+        d_item = nullptr;
+        delete d_item_2;
+        d_item_2 = nullptr;
     }
 
-    CPPUNIT_TEST_SUITE( CatalogItemTest );
+    CPPUNIT_TEST_SUITE(CatalogItemTest);
 
     CPPUNIT_TEST(encode_item_test);
     CPPUNIT_TEST(encode_item_text_test);
 
     CPPUNIT_TEST_SUITE_END();
 
-    void encode_item_test()
-    {
+    void encode_item_test() {
         try {
             unique_ptr<BESInfo> info(new BESXMLInfo);
 
@@ -115,22 +113,21 @@ public:
             ostringstream oss;
             info->print(oss);
 
-            string show_item_response = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/show_item_test_1.txt");
+            string show_item_response =
+                read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/show_item_test_1.txt");
 
             DBG(cerr << "baseline: " << show_item_response << endl);
             DBG(cerr << "response: " << oss.str() << endl);
 
             CPPUNIT_ASSERT(oss.str() == show_item_response);
-        }
-        catch (BESError &e) {
+        } catch (BESError &e) {
             cerr << "encode_item_test() - Error: " << e.get_verbose_message() << endl;
             CPPUNIT_ASSERT(false);
         }
     }
 
     // This is the same test as encode_item_test but using a BESTextInfo object.
-    void encode_item_text_test()
-    {
+    void encode_item_text_test() {
         try {
             unique_ptr<BESInfo> info(new BESTextInfo);
 
@@ -146,40 +143,38 @@ public:
             ostringstream oss;
             info->print(oss);
 
-            string show_item_response = read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/show_item_test_2.txt");
+            string show_item_response =
+                read_test_baseline(string(TEST_SRC_DIR) + "/catalog_test_baselines/show_item_test_2.txt");
 
             DBG(cerr << "baseline: " << show_item_response << endl);
             DBG(cerr << "response: " << oss.str() << endl);
 
             CPPUNIT_ASSERT(oss.str() == show_item_response);
-        }
-        catch (BESError &e) {
+        } catch (BESError &e) {
             cerr << "encode_item_test() - Error: " << e.get_verbose_message() << endl;
             CPPUNIT_ASSERT(false);
         }
     }
-
 };
 
 // BindTest
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CatalogItemTest);
 
-int main(int argc, char*argv[])
-{
+int main(int argc, char *argv[]) {
     int option_char;
     while ((option_char = getopt(argc, argv, "dh")) != EOF)
         switch (option_char) {
         case 'd': {
-            debug = 1;  // debug is a static global
+            debug = true; // debug is a static global
             break;
         }
-        case 'h': {     // help - show test names
+        case 'h': { // help - show test names
             cerr << "Usage: CatalogItemTest has the following tests:" << endl;
-            const std::vector<Test*> &tests = CatalogItemTest::suite()->getTests();
+            const std::vector<Test *> &tests = CatalogItemTest::suite()->getTests();
             unsigned int prefix_len = CatalogItemTest::suite()->getName().append("::").size();
-            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            for (auto test : tests) {
+                cerr << test->getName().replace(0, prefix_len, "") << endl;
             }
             break;
         }
@@ -198,11 +193,11 @@ int main(int argc, char*argv[])
     if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
-    }
-    else {
+    } else {
         int i = 0;
         while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
+            if (debug)
+                cerr << "Running " << argv[i] << endl;
             test = CatalogItemTest::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
             ++i;
@@ -211,4 +206,3 @@ int main(int argc, char*argv[])
 
     return wasSuccessful ? 0 : 1;
 }
-

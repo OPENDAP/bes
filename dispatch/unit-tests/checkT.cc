@@ -31,12 +31,12 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
 
 #include "config.h"
 
-//#include <sys/types.h>
+// #include <sys/types.h>
 #include <sys/stat.h>
 
 #ifdef HAVE_UNISTD_H
@@ -44,12 +44,12 @@
 #endif
 
 #include <cerrno>
-//#include <cstdlib>
+// #include <cstdlib>
 #include <iostream>
-//#include <fstream>
+// #include <fstream>
 
 #include "BESUtil.h"
-//#include "BESError.h"
+// #include "BESError.h"
 #include "BESForbiddenError.h"
 #include "BESNotFoundError.h"
 #include "TheBESKeys.h"
@@ -62,21 +62,28 @@ static bool debug = false;
 static bool debug2 = false;
 
 #undef DBG
-#define DBG(x) do { if (debug) (x); } while(false)
+#define DBG(x)                                                                                                         \
+    do {                                                                                                               \
+        if (debug)                                                                                                     \
+            (x);                                                                                                       \
+    } while (false)
 
 #undef DBG2
-#define DBG2(x) do { if (debug2) (x); } while(false)
+#define DBG2(x)                                                                                                        \
+    do {                                                                                                               \
+        if (debug2)                                                                                                    \
+            (x);                                                                                                       \
+    } while (false)
 
-class checkT: public TestFixture {
+class checkT : public TestFixture {
 
 public:
     checkT() = default;
 
     virtual ~checkT() = default;
 
-    virtual void setUp()
-    {
-        string bes_conf = (string) TEST_BUILD_DIR + "/bes.conf";
+    virtual void setUp() {
+        string bes_conf = (string)TEST_BUILD_DIR + "/bes.conf";
         TheBESKeys::ConfigFile = bes_conf;
 
         DBG2(cerr << "*****************************************" << endl);
@@ -151,123 +158,102 @@ public:
     // check_path() throws when the root + path item does not exist or is a sym link if follow_sym_links
     // is false. Otherwise, it simply returns.
 
-    void test_slash_path()
-    {
+    void test_slash_path() {
         DBG(cerr << "checking /" << endl);
         CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /", BESUtil::check_path("/", "./", true));
     }
 
-    void test_slash_path_no_sym_links()
-    {
+    void test_slash_path_no_sym_links() {
         DBG(cerr << "checking /, follow_sym_links == false" << endl);
         CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /, follow_sym_links == false", BESUtil::check_path("/", "./", false));
     }
 
-    void test_empty_path()
-    {
+    void test_empty_path() {
         DBG(cerr << "checking /" << endl);
         CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /", BESUtil::check_path("", "./", true));
     }
 
-    void test_empty_path_no_sym_links()
-    {
+    void test_empty_path_no_sym_links() {
         DBG(cerr << "checking /, follow_sym_links == false" << endl);
         CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /, follow_sym_links == false", BESUtil::check_path("", "./", false));
     }
 
-    void test_slash_root()
-    {
+    void test_slash_root() {
         DBG(cerr << "checking /" << endl);
         CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /", BESUtil::check_path("/", TEST_BUILD_DIR, true));
     }
 
-    void test_empty_root()
-    {
+    void test_empty_root() {
         DBG(cerr << "checking /" << endl);
         CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /", BESUtil::check_path("", TEST_BUILD_DIR, true));
     }
 
-    void test_slash_root_no_sym_links()
-    {
+    void test_slash_root_no_sym_links() {
         DBG(cerr << "checking /" << endl);
         CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /", BESUtil::check_path("/", TEST_BUILD_DIR, false));
     }
 
-    void test_empty_root_no_sym_links()
-    {
+    void test_empty_root_no_sym_links() {
         DBG(cerr << "checking /" << endl);
         CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /", BESUtil::check_path("", TEST_BUILD_DIR, false));
     }
 
-    void test_one_dir()
-    {
+    void test_one_dir() {
         DBG(cerr << "checking /testdir/" << endl);
-        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/",
-                                        BESUtil::check_path("/testdir/", "./", true));
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/", BESUtil::check_path("/testdir/", "./", true));
     }
 
-    void test_two_dirs()
-    {
+    void test_two_dirs() {
         DBG(cerr << "checking /testdir/nc/" << endl);
-        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/nc/",
-                                        BESUtil::check_path("/testdir/nc/", "./", true));
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/nc/", BESUtil::check_path("/testdir/nc/", "./", true));
     }
 
-    void test_file()
-    {
+    void test_file() {
         DBG(cerr << "checking /testdir/nc/testfile.nc" << endl);
         CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/nc/testfile.nc",
                                         BESUtil::check_path("/testdir/nc/testfile.nc", "./", true));
     }
 
-    void test_file_abs_root()
-    {
+    void test_file_abs_root() {
         DBG(cerr << "checking /testdir/nc/testfile.nc" << endl);
         CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/nc/testfile.nc",
                                         BESUtil::check_path("/testdir/nc/testfile.nc", TEST_BUILD_DIR, true));
     }
 
-    void test_sym_link_when_allowed()
-    {
+    void test_sym_link_when_allowed() {
         DBG(cerr << "checking /testdir/link_to_nc/" << endl);
         CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/link_to_nc/",
                                         BESUtil::check_path("/testdir/link_to_nc/", "./", true));
     }
 
-    void test_sym_link_to_file_allowed()
-    {
+    void test_sym_link_to_file_allowed() {
         DBG(cerr << "checking /testdir/link_to_nc/link_to_testfile.nc" << endl);
         CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/link_to_nc/link_to_testfile.nc",
                                         BESUtil::check_path("/testdir/link_to_nc/link_to_testfile.nc", "./", true));
     }
 
-    void test_sym_link_dir_not_allowed()
-    {
+    void test_sym_link_dir_not_allowed() {
         DBG(cerr << "checking /testdir/, follow syms = false" << endl);
         CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/, follow syms = false",
                                         BESUtil::check_path("/testdir/", "./", false));
     }
 
-    void test_dirs_sym_link_not_allowed()
-    {
+    void test_dirs_sym_link_not_allowed() {
         DBG(cerr << "checking /testdir/nc/, follow syms = false" << endl);
         CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/nc/, follow syms = false",
                                         BESUtil::check_path("/testdir/nc/", "./", false));
     }
 
-    void test_file_sym_link_not_allowed()
-    {
+    void test_file_sym_link_not_allowed() {
         DBG(cerr << "checking /testdir/nc/testfile.nc, follow syms = false" << endl);
         CPPUNIT_ASSERT_NO_THROW_MESSAGE("checking /testdir/nc/testfile.nc, follow syms = false",
                                         BESUtil::check_path("/testdir/nc/testfile.nc", "./", false));
     }
 
-    void test_sym_link_sym_links_not_allowed()
-    {
+    void test_sym_link_sym_links_not_allowed() {
         DBG(cerr << "checking /testdir/link_to_nc/, follow_syms = false" << endl);
         CPPUNIT_ASSERT_THROW_MESSAGE("checking /testdir/link_to_nc/, follow_syms = false",
-                                     BESUtil::check_path("/testdir/link_to_nc/", "./", false),
-                                     BESForbiddenError);
+                                     BESUtil::check_path("/testdir/link_to_nc/", "./", false), BESForbiddenError);
     }
 
     void test_link_to_file_in_sym_link_dir_sym_links_not_allowed() {
@@ -284,47 +270,36 @@ public:
                                      BESForbiddenError);
     }
 
-    void test_link_to_file_syn_link_not_allowed()
-    {
+    void test_link_to_file_syn_link_not_allowed() {
         DBG(cerr << "checking /testdir/nc/link_to_testfile.nc, " << "follow syms = false" << endl);
         CPPUNIT_ASSERT_THROW_MESSAGE("checking /testdir/nc/link_to_testfile.nc, follow syms = false",
                                      BESUtil::check_path("/testdir/nc/link_to_testfile.nc", "./", false),
                                      BESForbiddenError);
     }
 
-    void test_no_dir_syn_link_allowed_1()
-    {
+    void test_no_dir_syn_link_allowed_1() {
         DBG(cerr << "checking /nodir/" << endl);
-        CPPUNIT_ASSERT_THROW_MESSAGE("checking /nodir/",
-                                     BESUtil::check_path("/nodir/", "./", true),
-                                     BESNotFoundError);
+        CPPUNIT_ASSERT_THROW_MESSAGE("checking /nodir/", BESUtil::check_path("/nodir/", "./", true), BESNotFoundError);
     }
 
-    void test_no_dir_syn_link_not_allowed()
-    {
+    void test_no_dir_syn_link_not_allowed() {
         DBG(cerr << "checking /nodir/, follow syms = false" << endl);
         CPPUNIT_ASSERT_THROW_MESSAGE("checking /nodir/, follow syms = false",
-                                     BESUtil::check_path("/nodir/", "./", false),
-                                     BESNotFoundError);
+                                     BESUtil::check_path("/nodir/", "./", false), BESNotFoundError);
     }
 
-    void test_no_dir_syn_link_allowed_2()
-    {
+    void test_no_dir_syn_link_allowed_2() {
         DBG(cerr << "checking /testdir/nodir/" << endl);
-        CPPUNIT_ASSERT_THROW_MESSAGE("checking /testdir/nodir/",
-                                     BESUtil::check_path("/testdir/nodir/", "./", true),
+        CPPUNIT_ASSERT_THROW_MESSAGE("checking /testdir/nodir/", BESUtil::check_path("/testdir/nodir/", "./", true),
                                      BESNotFoundError);
     }
-    void test_no_file_syn_link_allowed()
-    {
+    void test_no_file_syn_link_allowed() {
         DBG(cerr << "checking /testdir/nc/nofile.nc" << endl);
         CPPUNIT_ASSERT_THROW_MESSAGE("checking /testdir/nc/nofile.nc",
-                                     BESUtil::check_path("/testdir/nc/nofile.nc", "./", true),
-                                     BESNotFoundError);
+                                     BESUtil::check_path("/testdir/nc/nofile.nc", "./", true), BESNotFoundError);
     }
 
-    void test_no_file_linked_dir_syn_link_allowed()
-    {
+    void test_no_file_linked_dir_syn_link_allowed() {
         // This and the next test return NotFoundError because that is checked
         // before the tests for the sym link (which, for this case would return
         // BESForbiddenError). jhrg 12/31/21
@@ -334,8 +309,7 @@ public:
                                      BESNotFoundError);
     }
 
-    void test_no_file_linked_dir_syn_link_not_allowed()
-    {
+    void test_no_file_linked_dir_syn_link_not_allowed() {
         DBG(cerr << "checking /testdir/link_to_nc/nofile.nc, follow syms = false" << endl);
         CPPUNIT_ASSERT_THROW_MESSAGE("checking /testdir/link_to_nc/nofile.nc, follow syms = false",
                                      BESUtil::check_path("/testdir/link_to_nc/nofile.nc", "./", false),
@@ -349,24 +323,24 @@ int main(int argc, char *argv[]) {
     int option_char;
     while ((option_char = getopt(argc, argv, "dDh")) != EOF)
         switch (option_char) {
-            case 'd':
-                debug = true;  // debug is a static global
-                break;
-            case 'D':
-                debug2 = true;  // debug is a static global
-                break;
-            case 'h': {     // help - show test names
-                cerr << "Usage: checkT has the following tests:" << endl;
-                const std::vector<Test *> &tests = checkT::suite()->getTests();
-                unsigned int prefix_len = checkT::suite()->getName().append("::").size();
-                for (auto test: tests) {
-                    cerr << test->getName().replace(0, prefix_len, "") << endl;
-                }
-
-                return 0;
+        case 'd':
+            debug = true; // debug is a static global
+            break;
+        case 'D':
+            debug2 = true; // debug is a static global
+            break;
+        case 'h': { // help - show test names
+            cerr << "Usage: checkT has the following tests:" << endl;
+            const std::vector<Test *> &tests = checkT::suite()->getTests();
+            unsigned int prefix_len = checkT::suite()->getName().append("::").size();
+            for (auto test : tests) {
+                cerr << test->getName().replace(0, prefix_len, "") << endl;
             }
-            default:
-                break;
+
+            return 0;
+        }
+        default:
+            break;
         }
 
     argc -= optind;
@@ -380,8 +354,7 @@ int main(int argc, char *argv[]) {
     if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
-    }
-    else {
+    } else {
         int i = 0;
         while (i < argc) {
             DBG(cerr << "Running " << argv[i] << endl);
@@ -392,4 +365,3 @@ int main(int argc, char *argv[]) {
 
     return wasSuccessful ? 0 : 1;
 }
-

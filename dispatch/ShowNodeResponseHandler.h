@@ -25,8 +25,8 @@
 #ifndef I_ShowNodeResponseHandler_h
 #define I_ShowNodeResponseHandler_h 1
 
-#include <string>
 #include <ostream>
+#include <string>
 
 #include "BESResponseHandler.h"
 
@@ -46,26 +46,21 @@ namespace bes {
  * @see BESContainer
  * @see BESTransmitter
  */
-class ShowNodeResponseHandler: public BESResponseHandler {
+class ShowNodeResponseHandler : public BESResponseHandler {
 private:
 public:
-    ShowNodeResponseHandler(const std::string &name): BESResponseHandler(name)
-    {
-    }
+    ShowNodeResponseHandler(const std::string &name) : BESResponseHandler(name) {}
 
-    virtual ~ShowNodeResponseHandler()
-    {
-    }
+    ~ShowNodeResponseHandler() override = default;
 
-    virtual void execute(BESDataHandlerInterface &dhi);
-    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+    void execute(BESDataHandlerInterface &dhi) override;
+    void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static BESResponseHandler *ShowNodeResponseBuilder(const std::string &name);
 };
 
-}
+} // namespace bes
 
 #endif // I_ShowNodeResponseHandler_h
-

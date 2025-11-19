@@ -73,7 +73,7 @@ public:
 
     virtual bool release();
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 } // namespace gateway

@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -30,11 +30,11 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
+#include <cstring>
 #include <sys/stat.h>
-#include <string.h>
 
-#include "BESRequestHandler.h"
 #include "BESNotFoundError.h"
+#include "BESRequestHandler.h"
 
 using std::endl;
 using std::ostream;
@@ -55,9 +55,8 @@ using std::string;
  * @see BESResponseObject
  * @see BESResponseNames
  */
-bool BESRequestHandler::add_method(const string &handler_name, p_request_handler_method handler_method)
-{
-    if (find_method(handler_name) == 0) {
+bool BESRequestHandler::add_method(const string &handler_name, p_request_handler_method handler_method) {
+    if (find_method(handler_name) == nullptr) {
         _handler_list[handler_name] = handler_method;
         return true;
     }
@@ -71,8 +70,7 @@ bool BESRequestHandler::add_method(const string &handler_name, p_request_handler
  * @return true if successfully removed, false if not found
  * @see BESResponseNames
  */
-bool BESRequestHandler::remove_method(const string &handler_name)
-{
+bool BESRequestHandler::remove_method(const string &handler_name) {
     BESRequestHandler::Handler_iter i;
     i = _handler_list.find(handler_name);
     if (i != _handler_list.end()) {
@@ -87,19 +85,18 @@ bool BESRequestHandler::remove_method(const string &handler_name)
  * Find the method that can handle the specified response object type. The
  * response object type is the same as the handler name.
  *
- * @param handler_name name of the method that can fill in the response object type 
+ * @param handler_name name of the method that can fill in the response object type
  * @return the method that can fill in the specified response object type
  * @see BESResponseObject
  * @see BESResponseNames
  */
-p_request_handler_method BESRequestHandler::find_method(const string &handler_name)
-{
+p_request_handler_method BESRequestHandler::find_method(const string &handler_name) {
     BESRequestHandler::Handler_citer i;
     i = _handler_list.find(handler_name);
     if (i != _handler_list.end()) {
         return (*i).second;
     }
-    return 0;
+    return nullptr;
 }
 
 /** @brief return a comma separated list of response object types handled by
@@ -109,13 +106,13 @@ p_request_handler_method BESRequestHandler::find_method(const string &handler_na
  * @see BESResponseObject
  * @see BESResponseNames
  */
-string BESRequestHandler::get_method_names()
-{
+string BESRequestHandler::get_method_names() {
     string ret = "";
     bool first_name = true;
     BESRequestHandler::Handler_citer i = _handler_list.begin();
     for (; i != _handler_list.end(); i++) {
-        if (!first_name) ret += ", ";
+        if (!first_name)
+            ret += ", ";
         ret += (*i).first;
         first_name = false;
     }
@@ -130,24 +127,24 @@ string BESRequestHandler::get_method_names()
  * @param name
  * @return The LMT
  */
-time_t BESRequestHandler::get_lmt(const string &name){
-// 5/31/19 - SBL - Initial code
-// 6/03/19 - SBL - using BESUtil::pathConcat and throws BESNotFoundError
+time_t BESRequestHandler::get_lmt(const string &name) {
+    // 5/31/19 - SBL - Initial code
+    // 6/03/19 - SBL - using BESUtil::pathConcat and throws BESNotFoundError
     // Get the bes catalog root path from the conf info
-    //string root_dir = TheBESKeys::TheKeys()->read_string_key("BES.Catalog.catalog.RootDirectory", "");
+    // string root_dir = TheBESKeys::TheKeys()->read_string_key("BES.Catalog.catalog.RootDirectory", "");
     // Get the name's LMT from the file system
-    //string filepath = BESUtil::pathConcat(root_dir, name, '/');
+    // string filepath = BESUtil::pathConcat(root_dir, name, '/');
     struct stat statbuf;
-    if (stat(name.c_str(), &statbuf) == -1){
-    	//perror(filepath);
-    	throw BESNotFoundError(strerror(errno), __FILE__, __LINE__);
-    }//end if
+    if (stat(name.c_str(), &statbuf) == -1) {
+        // perror(filepath);
+        throw BESNotFoundError(strerror(errno), __FILE__, __LINE__);
+    } // end if
 
     return statbuf.st_mtime;
-}//end get_lmt()
+} // end get_lmt()
 
-//void BESRequestHandler::add_attributes(BESDataHandlerInterface &bdhi){
-void BESRequestHandler::add_attributes(BESDataHandlerInterface &){
+// void BESRequestHandler::add_attributes(BESDataHandlerInterface &bdhi){
+void BESRequestHandler::add_attributes(BESDataHandlerInterface &) {
 
     // The current implementation ensures the execution of this function in the derived class.
     // So will throw an error if code comes here. KY 10/30/19
@@ -161,9 +158,8 @@ void BESRequestHandler::add_attributes(BESDataHandlerInterface &){
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESRequestHandler::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESRequestHandler::dump - (" << (void *) this << ")" << endl;
+void BESRequestHandler::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESRequestHandler::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     strm << BESIndent::LMarg << "name: " << _name << endl;
     if (_handler_list.size()) {
@@ -175,10 +171,8 @@ void BESRequestHandler::dump(ostream &strm) const
             strm << BESIndent::LMarg << (*i).first << endl;
         }
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "registered handler functions: none" << endl;
     }
     BESIndent::UnIndent();
 }
-

@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -31,23 +31,18 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESShowDefsResponseHandler.h"
-#include "BESInfoList.h"
-#include "BESInfo.h"
 #include "BESDefinitionStorageList.h"
+#include "BESInfo.h"
+#include "BESInfoList.h"
 #include "BESResponseNames.h"
 
 using std::endl;
-using std::string;
 using std::ostream;
+using std::string;
 
-BESShowDefsResponseHandler::BESShowDefsResponseHandler( const string &name )
-    : BESResponseHandler( name )
-{
-}
+BESShowDefsResponseHandler::BESShowDefsResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESShowDefsResponseHandler::~BESShowDefsResponseHandler( )
-{
-}
+BESShowDefsResponseHandler::~BESShowDefsResponseHandler() = default;
 
 /** @brief executes the command 'show definitions;' by returning the list of
  * currently defined definitions
@@ -61,15 +56,13 @@ BESShowDefsResponseHandler::~BESShowDefsResponseHandler( )
  * @see BESInfo
  * @see BESDefinitionStorageList
  */
-void
-BESShowDefsResponseHandler::execute( BESDataHandlerInterface &dhi )
-{
-    BESInfo *info = BESInfoList::TheList()->build_info() ;
-    d_response_object = info ;
-    dhi.action_name = SHOWDEFS_RESPONSE_STR ;
-    info->begin_response( SHOWDEFS_RESPONSE_STR, dhi ) ;
-    BESDefinitionStorageList::TheList()->show_definitions( *info ) ;
-    info->end_response() ;
+void BESShowDefsResponseHandler::execute(BESDataHandlerInterface &dhi) {
+    BESInfo *info = BESInfoList::TheList()->build_info();
+    d_response_object = info;
+    dhi.action_name = SHOWDEFS_RESPONSE_STR;
+    info->begin_response(SHOWDEFS_RESPONSE_STR, dhi);
+    BESDefinitionStorageList::TheList()->show_definitions(*info);
+    info->end_response();
 }
 
 /** @brief transmit the response object built by the execute command
@@ -84,16 +77,12 @@ BESShowDefsResponseHandler::execute( BESDataHandlerInterface &dhi )
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void
-BESShowDefsResponseHandler::transmit( BESTransmitter *transmitter,
-                               BESDataHandlerInterface &dhi )
-{
-    if( d_response_object )
-    {
-	BESInfo *info = dynamic_cast<BESInfo *>(d_response_object) ;
-	if( !info )
-	    throw BESInternalError( "cast error", __FILE__, __LINE__ ) ;
-	info->transmit( transmitter, dhi ) ;
+void BESShowDefsResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) {
+    if (d_response_object) {
+        BESInfo *info = dynamic_cast<BESInfo *>(d_response_object);
+        if (!info)
+            throw BESInternalError("cast error", __FILE__, __LINE__);
+        info->transmit(transmitter, dhi);
     }
 }
 
@@ -103,19 +92,13 @@ BESShowDefsResponseHandler::transmit( BESTransmitter *transmitter,
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESShowDefsResponseHandler::dump( ostream &strm ) const
-{
-    strm << BESIndent::LMarg << "BESShowDefsResponseHandler::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    BESResponseHandler::dump( strm ) ;
-    BESIndent::UnIndent() ;
+void BESShowDefsResponseHandler::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESShowDefsResponseHandler::dump - (" << (void *)this << ")" << endl;
+    BESIndent::Indent();
+    BESResponseHandler::dump(strm);
+    BESIndent::UnIndent();
 }
 
-BESResponseHandler *
-BESShowDefsResponseHandler::ShowDefsResponseBuilder( const string &name )
-{
-    return new BESShowDefsResponseHandler( name ) ;
+BESResponseHandler *BESShowDefsResponseHandler::ShowDefsResponseBuilder(const string &name) {
+    return new BESShowDefsResponseHandler(name);
 }
-

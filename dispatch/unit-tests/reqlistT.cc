@@ -31,8 +31,8 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
 
 using namespace CppUnit;
 
@@ -50,37 +50,30 @@ using std::string;
 static bool debug = false;
 
 #undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
+#define DBG(x)                                                                                                         \
+    do {                                                                                                               \
+        if (debug)                                                                                                     \
+            (x);                                                                                                       \
+    } while (false);
 
-class reqlistT: public TestFixture {
+class reqlistT : public TestFixture {
 private:
-
 public:
-    reqlistT()
-    {
-    }
-    ~reqlistT()
-    {
-    }
+    reqlistT() = default;
+    ~reqlistT() = default;
 
-    void setUp()
-    {
-    }
+    void setUp() {}
 
-    void tearDown()
-    {
-    }
+    void tearDown() {}
 
-CPPUNIT_TEST_SUITE( reqlistT );
+    CPPUNIT_TEST_SUITE(reqlistT);
 
-    CPPUNIT_TEST( do_test );
+    CPPUNIT_TEST(do_test);
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 
-    void do_test()
-    {
-        BESRequestHandler *rh = 0;
+    void do_test() {
+        BESRequestHandler *rh = nullptr;
 
         cout << "*****************************************" << endl;
         cout << "Entered reqlistT::run" << endl;
@@ -93,13 +86,13 @@ CPPUNIT_TEST_SUITE( reqlistT );
             sprintf(num, "req%d", i);
             cout << "    adding " << num << endl;
             rh = new TestRequestHandler(num);
-            CPPUNIT_ASSERT( rhl->add_handler( num, rh ) );
+            CPPUNIT_ASSERT(rhl->add_handler(num, rh));
         }
 
         cout << "*****************************************" << endl;
         cout << "try to add req3 again" << endl;
         rh = new TestRequestHandler("req3");
-        CPPUNIT_ASSERT( rhl->add_handler( "req3", rh ) == false );
+        CPPUNIT_ASSERT(rhl->add_handler("req3", rh) == false);
 
         cout << "*****************************************" << endl;
         cout << "finding the handlers" << endl;
@@ -107,32 +100,32 @@ CPPUNIT_TEST_SUITE( reqlistT );
             sprintf(num, "req%d", i);
             cout << "    finding " << num << endl;
             rh = rhl->find_handler(num);
-            CPPUNIT_ASSERT( rh );
-            CPPUNIT_ASSERT( rh->get_name() == num );
+            CPPUNIT_ASSERT(rh);
+            CPPUNIT_ASSERT(rh->get_name() == num);
         }
 
         cout << "*****************************************" << endl;
         cout << "find handler that doesn't exist" << endl;
         rh = rhl->find_handler("not_there");
-        CPPUNIT_ASSERT( !rh );
+        CPPUNIT_ASSERT(!rh);
 
         cout << "*****************************************" << endl;
         cout << "removing req2" << endl;
         rh = rhl->remove_handler("req2");
-        CPPUNIT_ASSERT( rh );
-        CPPUNIT_ASSERT( rh->get_name() == "req2" );
+        CPPUNIT_ASSERT(rh);
+        CPPUNIT_ASSERT(rh->get_name() == "req2");
 
         rh = rhl->find_handler("req2");
-        CPPUNIT_ASSERT( !rh );
+        CPPUNIT_ASSERT(!rh);
 
         cout << "*****************************************" << endl;
         cout << "add req2 back" << endl;
         rh = new TestRequestHandler("req2");
-        CPPUNIT_ASSERT( rhl->add_handler( "req2", rh ) );
+        CPPUNIT_ASSERT(rhl->add_handler("req2", rh));
 
         rh = rhl->find_handler("req2");
-        CPPUNIT_ASSERT( rh );
-        CPPUNIT_ASSERT( rh->get_name() == "req2" );
+        CPPUNIT_ASSERT(rh);
+        CPPUNIT_ASSERT(rh->get_name() == "req2");
 
         cout << "*****************************************" << endl;
         cout << "Iterating through handler list" << endl;
@@ -144,32 +137,31 @@ CPPUNIT_TEST_SUITE( reqlistT );
             char sb[10];
             sprintf(sb, "req%d", num_handlers);
             string n = rh->get_name();
-            CPPUNIT_ASSERT( n == sb );
+            CPPUNIT_ASSERT(n == sb);
             num_handlers++;
         }
-        CPPUNIT_ASSERT( num_handlers == 5 );
+        CPPUNIT_ASSERT(num_handlers == 5);
 
         cout << "*****************************************" << endl;
         cout << "Returning from reqlistT::run" << endl;
     }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( reqlistT );
+CPPUNIT_TEST_SUITE_REGISTRATION(reqlistT);
 
-int main(int argc, char*argv[])
-{
+int main(int argc, char *argv[]) {
     int option_char;
     while ((option_char = getopt(argc, argv, "dh")) != EOF)
         switch (option_char) {
         case 'd':
-            debug = 1;  // debug is a static global
+            debug = true; // debug is a static global
             break;
-        case 'h': {     // help - show test names
+        case 'h': { // help - show test names
             cerr << "Usage: reqlistT has the following tests:" << endl;
-            const std::vector<Test*> &tests = reqlistT::suite()->getTests();
+            const std::vector<Test *> &tests = reqlistT::suite()->getTests();
             unsigned int prefix_len = reqlistT::suite()->getName().append("::").size();
-            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            for (auto test : tests) {
+                cerr << test->getName().replace(0, prefix_len, "") << endl;
             }
             break;
         }
@@ -188,11 +180,11 @@ int main(int argc, char*argv[])
     if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
-    }
-    else {
+    } else {
         int i = 0;
         while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
+            if (debug)
+                cerr << "Running " << argv[i] << endl;
             test = reqlistT::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
@@ -200,4 +192,3 @@ int main(int argc, char*argv[])
 
     return wasSuccessful ? 0 : 1;
 }
-

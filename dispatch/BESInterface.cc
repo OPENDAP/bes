@@ -38,31 +38,31 @@
 #include <unistd.h>
 #endif
 
-#include <string>
-#include <sstream>
-#include <future>         // std::async, std::future
-#include <chrono>         // std::chrono::milliseconds
 #include <algorithm>
+#include <chrono> // std::chrono::milliseconds
+#include <future> // std::async, std::future
+#include <sstream>
+#include <string>
 
 #include "BESInterface.h"
 
-#include "TheBESKeys.h"
 #include "BESContextManager.h"
+#include "TheBESKeys.h"
 
-#include "BESTransmitterNames.h"
 #include "BESDataNames.h"
 #include "BESReturnManager.h"
+#include "BESTransmitterNames.h"
 
 #include "BESInfoList.h"
 #include "BESXMLInfo.h"
 
-#include "BESUtil.h"
 #include "BESDebug.h"
-#include "BESStopWatch.h"
 #include "BESInternalError.h"
 #include "BESInternalFatalError.h"
-#include "ServerAdministrator.h"
+#include "BESStopWatch.h"
+#include "BESUtil.h"
 #include "RequestServiceTimer.h"
+#include "ServerAdministrator.h"
 
 #include "BESLog.h"
 
@@ -90,8 +90,7 @@ volatile int bes_timeout = 0;
 
 #define BES_TIMEOUT_KEY "BES.TimeOutInSeconds"
 
-static inline void downcase(string &s)
-{
+static inline void downcase(string &s) {
     transform(s.begin(), s.end(), s.begin(), [](int c) { return std::toupper(c); });
 }
 
@@ -99,32 +98,26 @@ static inline void downcase(string &s)
  * @brief Write a phrase that describes the current RSS for this process
  * @param out Write to this stream
  */
-std::string memory_info()
-{
+std::string memory_info() {
     long mem_size = BESUtil::get_current_memory_usage();
     string mem_info;
     if (mem_size) {
-        mem_info = "Current memory usage is: " + std::to_string(mem_size) +" KB.";
-    }
-    else {
-        mem_info =  "Current memory usage is unknown.";
+        mem_info = "Current memory usage is: " + std::to_string(mem_size) + " KB.";
+    } else {
+        mem_info = "Current memory usage is unknown.";
     }
 
     return mem_info;
 }
 
-
-static void log_error(const BESError &e)
-{
+static void log_error(const BESError &e) {
     string err_msg(e.get_message());
 
     if (TheBESKeys::read_bool_key(EXCLUDE_FILE_INFO_FROM_LOG, false)) {
         ERROR_LOG("ERROR! " + e.error_name() + ": " + BESUtil::remove_crlf(err_msg) + " " + memory_info());
-    }
-    else {
-        ERROR_LOG("ERROR! " + e.error_name() + ": " + BESUtil::remove_crlf(err_msg)
-            + " (" + e.get_file() + ":" + std::to_string(e.get_line()) + ") "
-            + memory_info() + "\n");
+    } else {
+        ERROR_LOG("ERROR! " + e.error_name() + ": " + BESUtil::remove_crlf(err_msg) + " (" + e.get_file() + ":" +
+                  std::to_string(e.get_line()) + ") " + memory_info() + "\n");
     }
 }
 
@@ -157,8 +150,7 @@ static void log_error(const BESError &e)
 
 static pthread_t alarm_thread;
 
-static void* alarm_wait(void * /* arg */)
-{
+static void *alarm_wait(void * /* arg */) {
     BESDEBUG("bes", "Starting: " << __PRETTY_FUNCTION__ << endl);
 
     // block SIGALRM
@@ -173,13 +165,12 @@ static void* alarm_wait(void * /* arg */)
     int result = sigwait(&sigset, &sig);
     if (result != 0) {
         BESDEBUG("bes", "Fatal error establishing timeout: " << strerror(result) << endl);
-        throw BESInternalFatalError(string("Fatal error establishing timeout: ") + strerror(result), __FILE__, __LINE__);
-    }
-    else if (result == 0 && sig == SIGALRM) {
+        throw BESInternalFatalError(string("Fatal error establishing timeout: ") + strerror(result), __FILE__,
+                                    __LINE__);
+    } else if (result == 0 && sig == SIGALRM) {
         BESDEBUG("bes", "Timeout found in " << __PRETTY_FUNCTION__ << endl);
         throw BESTimeoutError("Timeout", __FILE__, __LINE__);
-    }
-    else {
+    } else {
         stringstream oss;
         oss << "While waiting for a timeout, found signal '" << result << "' in " << __PRETTY_FUNCTION__ << ends;
         BESDEBUG("bes", oss.str() << endl);
@@ -187,26 +178,23 @@ static void* alarm_wait(void * /* arg */)
     }
 }
 
-static void wait_for_timeout()
-{
+static void wait_for_timeout() {
     BESDEBUG("bes", "Entering: " << __PRETTY_FUNCTION__ << endl);
 
     pthread_attr_t thread_attr;
 
     if (pthread_attr_init(&thread_attr) != 0)
-    throw BESInternalFatalError("Failed to initialize pthread attributes.", __FILE__, __LINE__);
+        throw BESInternalFatalError("Failed to initialize pthread attributes.", __FILE__, __LINE__);
     if (pthread_attr_setdetachstate(&thread_attr, PTHREAD_CREATE_DETACHED /*PTHREAD_CREATE_JOINABLE*/) != 0)
-    throw BESInternalFatalError("Failed to complete pthread attribute initialization.", __FILE__, __LINE__);
+        throw BESInternalFatalError("Failed to complete pthread attribute initialization.", __FILE__, __LINE__);
 
     int status = pthread_create(&alarm_thread, &thread_attr, alarm_wait, NULL);
     if (status != 0)
-    throw BESInternalFatalError("Failed to start the timeout wait thread.", __FILE__, __LINE__);
+        throw BESInternalFatalError("Failed to start the timeout wait thread.", __FILE__, __LINE__);
 }
 #endif
 
-BESInterface::BESInterface(ostream *output_stream) :
-    d_strm(output_stream)
-{
+BESInterface::BESInterface(ostream *output_stream) : d_strm(output_stream) {
     if (!d_strm) {
         throw BESInternalError("Output stream must be set in order to output responses", __FILE__, __LINE__);
     }
@@ -239,8 +227,7 @@ BESInterface::BESInterface(ostream *output_stream) :
  * @param dhi The BESDataHandlerInterface object
  * @return
  */
-int BESInterface::handleException(const BESError &e, BESDataHandlerInterface &dhi)
-{
+int BESInterface::handleException(const BESError &e, BESDataHandlerInterface &dhi) {
     bool found = false;
     string context = BESContextManager::TheManager()->get_context("errors", found);
     downcase(context);
@@ -255,8 +242,7 @@ int BESInterface::handleException(const BESError &e, BESDataHandlerInterface &dh
     try {
         bes::ServerAdministrator sd;
         admin_email = sd.get_email();
-    }
-    catch (...) {
+    } catch (...) {
         admin_email = "support@opendap.org";
     }
     if (admin_email.empty()) {
@@ -277,18 +263,16 @@ int BESInterface::handleException(const BESError &e, BESDataHandlerInterface &dh
  * Use either the value of a 'bes_timeout' context or the value set in the BES keys
  * to set the global volatile int 'bes_timeout'
  */
-void BESInterface::set_bes_timeout()
-{
+void BESInterface::set_bes_timeout() {
     // Set timeout? Use either the value from the keys or a context
     bool found = false;
     string context = BESContextManager::TheManager()->get_context("bes_timeout", found);
     if (found) {
-        d_bes_timeout = strtol(context.c_str(), NULL, 10);
-        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] + "Set request timeout to " + std::to_string(d_bes_timeout)
-            + " seconds (from context).");
+        d_bes_timeout = strtol(context.c_str(), nullptr, 10);
+        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] + "Set request timeout to " + std::to_string(d_bes_timeout) +
+                " seconds (from context).");
 
-    }
-    else {
+    } else {
         // Grab the BES Key for the timeout. Note that the Hyrax server generally
         // overrides this value using a 'context' that is set/sent by the OLFS.
         // Also note that a value of zero means no timeout, but that the context
@@ -297,16 +281,15 @@ void BESInterface::set_bes_timeout()
         // If the value is not set in teh BES keys, d_timeout_from_keys will get the
         // default value of 0. jhrg 4/20/22
         d_bes_timeout = TheBESKeys::TheKeys()->read_int_key(BES_TIMEOUT_KEY, 0);
-        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] + "Set request timeout to " + std::to_string(d_bes_timeout)
-            + " seconds (from keys).");
+        VERBOSE(d_dhi_ptr->data[REQUEST_FROM] + "Set request timeout to " + std::to_string(d_bes_timeout) +
+                " seconds (from keys).");
     }
 }
 
 /**
  * @brief Clear the bes timeout
  */
-void BESInterface::clear_bes_timeout()
-{
+void BESInterface::clear_bes_timeout() {
     d_bes_timeout = 0;
 
     // Clearing bes_timeout requires disabling the timeout in RequestServiceTimer::TheTimer()
@@ -351,8 +334,7 @@ void BESInterface::clear_bes_timeout()
  @see end_request()
  @see exception_manager()
  */
-int BESInterface::execute_request(const string &from)
-{
+int BESInterface::execute_request(const string &from) {
     BESDEBUG("bes", "Entering: " << __PRETTY_FUNCTION__ << endl);
 
     if (!d_dhi_ptr) {
@@ -377,7 +359,6 @@ int BESInterface::execute_request(const string &from)
     //  of the BES PID. jhrg 11/13/17
     d_dhi_ptr->data[SERVER_PID] = to_string(getpid());
 
-
     // We split up the calls for the reason that if we catch an
     // exception during the initialization, building, execution, or response
     // transmit of the request then we can transmit the exception/error
@@ -391,7 +372,8 @@ int BESInterface::execute_request(const string &from)
         // can be sent back to the OLFS should that be needed.
         d_transmitter = BESReturnManager::TheManager()->find_transmitter(BASIC_TRANSMITTER);
         if (!d_transmitter)
-            throw BESInternalError(string("Unable to find transmitter '") + BASIC_TRANSMITTER + "'", __FILE__, __LINE__);
+            throw BESInternalError(string("Unable to find transmitter '") + BASIC_TRANSMITTER + "'", __FILE__,
+                                   __LINE__);
 
         build_data_request_plan();
 
@@ -401,7 +383,7 @@ int BESInterface::execute_request(const string &from)
         // otherwise the timeout can be disabled by BESUtil::conditional_timeout_cancel()
         // used by the transmitters, transforms to disable request timeout as streaming begins.
         RequestServiceTimer::TheTimer()->start(std::chrono::seconds{d_bes_timeout});
-        BESDEBUG("request_timer",prolog << RequestServiceTimer::TheTimer()->dump() << endl);
+        BESDEBUG("request_timer", prolog << RequestServiceTimer::TheTimer()->dump() << endl);
 
         // This method (execute_data_request_plan()) does two key things:
         // Calls the request handler to make a response object' (the C++
@@ -417,28 +399,24 @@ int BESInterface::execute_request(const string &from)
         clear_bes_timeout();
 
         d_dhi_ptr->executed = true;
-    }
-    catch (const BESError &e) {
-        BESDEBUG("bes",  string(__PRETTY_FUNCTION__) +  " - Caught BESError. msg: " << e.get_message() << endl );
+    } catch (const BESError &e) {
+        BESDEBUG("bes", string(__PRETTY_FUNCTION__) + " - Caught BESError. msg: " << e.get_message() << endl);
         status = handleException(e, *d_dhi_ptr);
-    }
-    catch (const bad_alloc &e) {
+    } catch (const bad_alloc &e) {
         stringstream msg;
-        msg << __PRETTY_FUNCTION__ <<  " - BES out of memory. msg: " << e.what()  << endl;
-        BESDEBUG("bes", msg.str() << endl );
+        msg << __PRETTY_FUNCTION__ << " - BES out of memory. msg: " << e.what() << endl;
+        BESDEBUG("bes", msg.str() << endl);
         BESInternalFatalError ex(msg.str(), __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
-    }
-    catch (const exception &e) {
+    } catch (const exception &e) {
         stringstream msg;
         msg << __PRETTY_FUNCTION__ << " - Caught C++ Exception. msg: " << e.what() << endl;
-        BESDEBUG("bes", msg.str() << endl );
+        BESDEBUG("bes", msg.str() << endl);
         BESInternalError ex(msg.str(), __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
-    }
-    catch (...) {
-        string msg =  string(__PRETTY_FUNCTION__) +  " - An unidentified exception has been thrown.";
-        BESDEBUG("bes", msg << endl );
+    } catch (...) {
+        string msg = string(__PRETTY_FUNCTION__) + " - An unidentified exception has been thrown.";
+        BESDEBUG("bes", msg << endl);
         BESInternalError ex(msg, __FILE__, __LINE__);
         status = handleException(ex, *d_dhi_ptr);
     }
@@ -452,12 +430,11 @@ int BESInterface::execute_request(const string &from)
  * @param status
  * @return The status value.
  */
-int BESInterface::finish(int status)
-{
+int BESInterface::finish(int status) {
     if (d_dhi_ptr->error_info) {
         d_dhi_ptr->error_info->print(*d_strm /*cout*/);
         delete d_dhi_ptr->error_info;
-        d_dhi_ptr->error_info = 0;
+        d_dhi_ptr->error_info = nullptr;
     }
 
     // if there is a problem with the rest of these steps then all we will
@@ -466,11 +443,9 @@ int BESInterface::finish(int status)
     try {
         log_status();
         end_request();
-    }
-    catch (BESError &ex) {
+    } catch (BESError &ex) {
         ERROR_LOG("Problem logging status or running end of request cleanup: " + ex.get_message());
-    }
-    catch (...) {
+    } catch (...) {
         ERROR_LOG("Unknown problem logging status or running end of request cleanup");
     }
 
@@ -482,8 +457,7 @@ int BESInterface::finish(int status)
  *  This method allows developers to add callbacks at the end of a request,
  *  to do any cleanup or do any extra work at the end of a request
  */
-void BESInterface::end_request()
-{
+void BESInterface::end_request() {
     // now clean up any containers that were used in the request, release
     // the resource
     d_dhi_ptr->first_container();
@@ -501,9 +475,8 @@ void BESInterface::end_request()
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESInterface::dump(ostream & strm) const
-{
-    strm << BESIndent::LMarg << "BESInterface::dump - (" << (void *) this << ")" << endl;
+void BESInterface::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESInterface::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
 
     strm << BESIndent::LMarg << "data handler interface:" << endl;
@@ -516,11 +489,9 @@ void BESInterface::dump(ostream & strm) const
         BESIndent::Indent();
         d_transmitter->dump(strm);
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "transmitter: not set" << endl;
     }
 
     BESIndent::UnIndent();
 }
-

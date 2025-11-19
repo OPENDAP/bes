@@ -74,12 +74,12 @@ class BESTransmitter;
  * @see BESResponseHandlerList
  * @see BESTransmitter
  */
-class BESResponseHandler: public BESObj {
+class BESResponseHandler : public BESObj {
 protected:
     std::string d_response_name;
     BESResponseObject *d_response_object = nullptr;
 
-    std::string d_annotation_service_url;   //< If not null, include this in the DAS/DMR
+    std::string d_annotation_service_url; //< If not null, include this in the DAS/DMR
 
     friend class resplistT;
 
@@ -148,4 +148,3 @@ public:
 };
 
 #endif // I_BESResponseHandler_h
-

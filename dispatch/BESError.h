@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -33,8 +33,8 @@
 #ifndef BESError_h_
 #define BESError_h_ 1
 
-#include <string>
 #include <stdexcept>
+#include <string>
 
 #include "BESObj.h"
 
@@ -84,15 +84,15 @@ public:
      * @param line the line number within the file in which this error
      * object was created
      */
-    BESError(std::string msg, unsigned int type, std::string file, unsigned int line) :
-            _msg(std::move(msg)), _type(type), _file(std::move(file)), _line(line) {}
+    BESError(std::string msg, unsigned int type, std::string file, unsigned int line)
+        : _msg(std::move(msg)), _type(type), _file(std::move(file)), _line(line) {}
 
     /**
      * @note Define this copy constructor as noexcept. See the web for why (e.g.,
      * https://stackoverflow.com/questions/28627348/noexcept-and-copy-move-constructors)
      */
     BESError(const BESError &src) noexcept
-            : exception(), _msg(src._msg), _type(src._type), _file(src._file), _line(src._line) {}
+        : exception(), _msg(src._msg), _type(src._type), _file(src._file), _line(src._line) {}
 
     ~BESError() override = default;
 
@@ -105,9 +105,7 @@ public:
      *
      * @param msg message string
      */
-    void set_message(const std::string &msg) {
-        _msg = msg;
-    }
+    void set_message(const std::string &msg) { _msg = msg; }
 
     /**
      * Used to add error specific details to the BESInfo object
@@ -129,25 +127,19 @@ public:
      *
      * @return error message
      */
-    std::string get_message() const {
-        return _msg;
-    }
+    std::string get_message() const { return _msg; }
 
     /** @brief get the file name where the exception was thrown
      *
      * @return file name
      */
-    std::string get_file() const {
-        return _file;
-    }
+    std::string get_file() const { return _file; }
 
     /** @brief get the line number where the exception was thrown
      *
      * @return line number
      */
-    unsigned int get_line() const {
-        return _line;
-    }
+    unsigned int get_line() const { return _line; }
 
     // Return the message, file and line. Over load this for special messages, etc.
     virtual std::string get_verbose_message() const;
@@ -161,9 +153,7 @@ public:
      * be one of BES_INTERNAL_ERROR, BES_INTERNAL_FATAL_ERROR,
      * BES_SYNTAX_USER_ERROR, BES_FORBIDDEN_ERROR, BES_NOT_FOUND_ERROR
      */
-    void set_bes_error_type(unsigned int type) {
-        _type = type;
-    }
+    void set_bes_error_type(unsigned int type) { _type = type; }
 
     /** @brief Return the return code for this error class
      *
@@ -171,9 +161,7 @@ public:
      * the need to terminate or do something specific base on the error
      * @return context string
      */
-    unsigned int get_bes_error_type() const {
-        return _type;
-    }
+    unsigned int get_bes_error_type() const { return _type; }
 
     // The pointer is valid only for the lifetime of the BESError instance. jhrg 3/29/22
 
@@ -181,9 +169,7 @@ public:
      * @brief Return a brief message about the exception
      * @return A char* that points to the message and is valid for the lifetime of this instance.
      */
-    const char *what() const noexcept override {
-        return _msg.c_str();
-    }
+    const char *what() const noexcept override { return _msg.c_str(); }
 
     /** @brief Displays debug information about this object
      *
@@ -192,7 +178,6 @@ public:
     void dump(std::ostream &strm) const override;
 
     virtual std::string error_name() const { return "BESError"; }
-
 };
 
 #endif // BESError_h_

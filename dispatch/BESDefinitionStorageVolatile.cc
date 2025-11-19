@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -35,13 +35,10 @@
 #include "BESInfo.h"
 
 using std::endl;
-using std::string;
 using std::ostream;
+using std::string;
 
-BESDefinitionStorageVolatile::~BESDefinitionStorageVolatile()
-{
-    del_definitions();
-}
+BESDefinitionStorageVolatile::~BESDefinitionStorageVolatile() { del_definitions(); }
 
 /** @brief looks for a definition in this volatile store with the
  * given name
@@ -49,15 +46,13 @@ BESDefinitionStorageVolatile::~BESDefinitionStorageVolatile()
  * @param def_name name of the definition to look for
  * @return definition with the given name, NULL if not found
  */
-BESDefine *
-BESDefinitionStorageVolatile::look_for(const string &def_name)
-{
+BESDefine *BESDefinitionStorageVolatile::look_for(const string &def_name) {
     Define_citer i;
     i = _def_list.find(def_name);
     if (i != _def_list.end()) {
         return (*i).second;
     }
-    return NULL;
+    return nullptr;
 }
 
 /** @brief adds a given definition to this volatile storage
@@ -67,9 +62,8 @@ BESDefinitionStorageVolatile::look_for(const string &def_name)
  * @param def_name name of the definition to add
  * @param d definition to add
  */
-bool BESDefinitionStorageVolatile::add_definition(const string &def_name, BESDefine *d)
-{
-    if (look_for(def_name) == NULL) {
+bool BESDefinitionStorageVolatile::add_definition(const string &def_name, BESDefine *d) {
+    if (look_for(def_name) == nullptr) {
         _def_list[def_name] = d;
         return true;
     }
@@ -84,8 +78,7 @@ bool BESDefinitionStorageVolatile::add_definition(const string &def_name, BESDef
  * @param def_name name of the defintion to delete
  * @return true if successfully deleted and false otherwise
  */
-bool BESDefinitionStorageVolatile::del_definition(const string &def_name)
-{
+bool BESDefinitionStorageVolatile::del_definition(const string &def_name) {
     bool ret = false;
     Define_iter i;
     i = _def_list.find(def_name);
@@ -102,8 +95,7 @@ bool BESDefinitionStorageVolatile::del_definition(const string &def_name)
  *
  * @return true if successfully deleted and false otherwise
  */
-bool BESDefinitionStorageVolatile::del_definitions()
-{
+bool BESDefinitionStorageVolatile::del_definitions() {
     while (_def_list.size() != 0) {
         Define_iter di = _def_list.begin();
         BESDefine *d = (*di).second;
@@ -125,8 +117,7 @@ bool BESDefinitionStorageVolatile::del_definitions()
  *
  * @param info information object to store the information in
  */
-void BESDefinitionStorageVolatile::show_definitions(BESInfo &info)
-{
+void BESDefinitionStorageVolatile::show_definitions(BESInfo &info) {
     std::map<string, string, std::less<>> dprops; // for the definition
     std::map<string, string, std::less<>> cprops; // for the container
     std::map<string, string, std::less<>> aprops; // for aggregation
@@ -184,9 +175,8 @@ void BESDefinitionStorageVolatile::show_definitions(BESInfo &info)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESDefinitionStorageVolatile::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESDefinitionStorageVolatile::dump - (" << (void *) this << ")" << endl;
+void BESDefinitionStorageVolatile::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESDefinitionStorageVolatile::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     strm << BESIndent::LMarg << "name: " << get_name() << endl;
     if (_def_list.size()) {
@@ -198,10 +188,8 @@ void BESDefinitionStorageVolatile::dump(ostream &strm) const
             (*di).second->dump(strm);
         }
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "definitions: none" << endl;
     }
     BESIndent::UnIndent();
 }
-

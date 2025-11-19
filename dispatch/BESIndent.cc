@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -36,47 +36,26 @@
 
 using namespace std;
 
-string BESIndent::_indent ;
+string BESIndent::_indent;
 
-void
-BESIndent::Indent()
-{
-    _indent += "    " ;
-}
+void BESIndent::Indent() { _indent += "    "; }
 
-void
-BESIndent::UnIndent()
-{
-    if( _indent.size() == 0 )
-	return ;
-    if( _indent.size() == 4 )
-	_indent = "" ;
+void BESIndent::UnIndent() {
+    if (_indent.size() == 0)
+        return;
+    if (_indent.size() == 4)
+        _indent = "";
     else
-	_indent = _indent.substr( 0, _indent.size() - 4 ) ;
+        _indent = _indent.substr(0, _indent.size() - 4);
 }
 
-void
-BESIndent::Reset()
-{
-    _indent = "" ;
-}
+void BESIndent::Reset() { _indent = ""; }
 
-const string &
-BESIndent::GetIndent()
-{
-    return _indent ;
-}
+const string &BESIndent::GetIndent() { return _indent; }
 
-void
-BESIndent::SetIndent( const string &indent )
-{
-    _indent = indent ;
-}
+void BESIndent::SetIndent(const string &indent) { _indent = indent; }
 
-ostream &
-BESIndent::LMarg( ostream &strm )
-{
-    strm << _indent ;
-    return strm ;
+ostream &BESIndent::LMarg(ostream &strm) {
+    strm << _indent;
+    return strm;
 }
-

@@ -34,20 +34,20 @@
 
 // CppUnit includes are now likely handled by bes_run_tests_cppunit.h,
 // but keeping them doesn't hurt for clarity or if used directly elsewhere.
-#include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
 
+#include <cstdlib> // Required for exit codes
 #include <iostream>
 #include <memory> // Required for std::unique_ptr, std::make_unique
 #include <string> // Required for std::string
 #include <vector> // Required for std::vector
-#include <cstdlib> // Required for exit codes
 
 // Include necessary BES headers
-#include "BESFileContainer.h"
-#include "BESDataHandlerInterface.h"
 #include "BESConstraintFuncs.h"
+#include "BESDataHandlerInterface.h"
 #include "BESDataNames.h"
+#include "BESFileContainer.h"
 #include "TheBESKeys.h"
 #include "test_config.h" // Assumed to define TEST_SRC_DIR
 
@@ -112,8 +112,8 @@ public:
 
         DBG(cout << "  post constraint = " << actual << endl);
         DBG(cout << "  should be       = " << should_be << endl);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Post constraint mismatch when both containers have constraints",
-                                     should_be, actual);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Post constraint mismatch when both containers have constraints", should_be,
+                                     actual);
     }
 
     /**
@@ -140,8 +140,8 @@ public:
 
         DBG(cout << "  post constraint = " << actual << endl);
         DBG(cout << "  should be       = " << should_be << endl);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Post constraint mismatch when only second container has constraint",
-                                     should_be, actual);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Post constraint mismatch when only second container has constraint", should_be,
+                                     actual);
     }
 
     /**
@@ -168,8 +168,8 @@ public:
 
         DBG(cout << "  post constraint = " << actual << endl);
         DBG(cout << "  should be       = " << should_be << endl);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Post constraint mismatch when only first container has constraint",
-                                     should_be, actual);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Post constraint mismatch when only first container has constraint", should_be,
+                                     actual);
     }
 
 }; // End class constraintT

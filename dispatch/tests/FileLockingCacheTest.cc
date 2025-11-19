@@ -29,35 +29,37 @@
 #include <sstream>
 #include <string>
 
+#include <cstdio> /* printf */
 #include <cstdlib>
-#include <cstdio>      /* printf */
 #include <ctime>
 
-#include <unistd.h>  // for sleep
+#include <unistd.h> // for sleep
 
-#include "TheBESKeys.h"
-#include "BESError.h"
 #include "BESDebug.h"
-#include "BESUtil.h"
+#include "BESError.h"
 #include "BESFileLockingCache.h"
+#include "BESUtil.h"
+#include "TheBESKeys.h"
 
 #include "test_config.h"
 
 using namespace std;
 
-#define CACHE_PREFIX  "flc_"
+#define CACHE_PREFIX "flc_"
 #define LOCK_TEST_FILE "lock_test"
-#define TEST_CACHE_DIR TEST_BUILD_DIR"/cache"
-
+#define TEST_CACHE_DIR TEST_BUILD_DIR "/cache"
 
 bool debug = false;
 bool bes_debug = false;
 #undef DBG
-#define DBG(x) do { if (debug) (x); } while(false)
+#define DBG(x)                                                                                                         \
+    do {                                                                                                               \
+        if (debug)                                                                                                     \
+            (x);                                                                                                       \
+    } while (false)
 #define prolog string("FileLockingCacheTest::").append(__func__).append("() - ")
 
-void run_sys(const string &cmd)
-{
+void run_sys(const string &cmd) {
     int status;
     DBG(cerr << prolog << " command: '" << cmd);
     status = system(cmd.c_str());
@@ -67,8 +69,7 @@ void run_sys(const string &cmd)
 /**
  * Purge the cache by removing the contents of the directory.
  */
-int purge_cache(const string &cache_dir, const string &cache_prefix)
-{
+int purge_cache(const string &cache_dir, const string &cache_prefix) {
     DBG(cerr << prolog << "BEGIN " << endl);
 
     ostringstream s;
@@ -82,7 +83,6 @@ int purge_cache(const string &cache_dir, const string &cache_prefix)
 
 class FileLockingCacheTest {
 private:
-
 public:
     FileLockingCacheTest() = default;
 
@@ -92,27 +92,27 @@ public:
      * Get a read lock for given time on a file. By default the file is the
      * LOCK_TEST_FILE file defined as a global above.
      */
-    int get_and_hold_read_lock(long int nap_time, const string &file_name = LOCK_TEST_FILE, const string &cache_dir = TEST_CACHE_DIR)
-    {
+    int get_and_hold_read_lock(long int nap_time, const string &file_name = LOCK_TEST_FILE,
+                               const string &cache_dir = TEST_CACHE_DIR) {
         DBG(cerr << endl << prolog << "BEGIN " << endl);
 
         BESFileLockingCache cache(cache_dir, CACHE_PREFIX, 1);
         DBG(cerr << prolog << "Made FLC object. d_cache_info_fd: " << cache.d_cache_info_fd << endl);
 
         string cache_file_name = cache.get_cache_file_name(file_name);
-        int fd=0;
+        int fd = 0;
 
         DBG(cerr << prolog << "cache file name: " << cache_file_name << endl);
-        time_t start = time(nullptr);  /* get current time; same as: timer = time(NULL)  */
+        time_t start = time(nullptr); /* get current time; same as: timer = time(NULL)  */
         DBG(cerr << prolog << "Read lock REQUESTED @" << start << endl);
         bool locked = cache.get_read_lock(cache_file_name, fd);
         time_t stop = time(nullptr);
-        DBG(cerr << prolog << "cache.get_read_lock() returned " << (locked ? "TRUE" : "FALSE")
-                << " (fd: " << fd  << ")" << endl);
+        DBG(cerr << prolog << "cache.get_read_lock() returned " << (locked ? "TRUE" : "FALSE") << " (fd: " << fd << ")"
+                 << endl);
 
         DBG(cerr << prolog << "cache.d_cache_info_fd: " << cache.d_cache_info_fd << endl);
 
-        if(!locked){
+        if (!locked) {
             DBG(cerr << prolog << "END - FAILED to get read lock on " << cache_file_name << endl);
             return 2;
         }
@@ -132,8 +132,8 @@ public:
     /**
      * Create and lock a file. By default, the file is the LOCK_TEST_FILE defined above.
      */
-    int get_and_hold_exclusive_lock(long int nap_time, const string &file_name = LOCK_TEST_FILE, const string &cache_dir = TEST_CACHE_DIR)
-    {
+    int get_and_hold_exclusive_lock(long int nap_time, const string &file_name = LOCK_TEST_FILE,
+                                    const string &cache_dir = TEST_CACHE_DIR) {
         DBG(cerr << endl << prolog << "BEGIN " << endl);
         try {
             BESFileLockingCache cache(cache_dir, CACHE_PREFIX, 1);
@@ -143,30 +143,28 @@ public:
 
             time_t start = time(nullptr);
             DBG(cerr << prolog << "Exclusive lock REQUESTED @" << start << endl);
-            bool locked = cache.create_and_lock(cache_file_name,fd);
+            bool locked = cache.create_and_lock(cache_file_name, fd);
             time_t stop = time(nullptr);
             DBG(cerr << prolog << "cache.create_and_lock() returned " << (locked ? "true" : "false") << endl);
-            if(!locked){
+            if (!locked) {
                 cerr << "Failed to get exclusive lock on " << cache_file_name << endl;
                 return 1;
             }
             DBG(cerr << prolog << "Exclusive lock  ACQUIRED @" << stop << endl);
             DBG(cerr << prolog << "Lock acquisition took " << stop - start << " seconds." << endl);
             DBG(cerr << prolog << "Holding lock for " << nap_time << " seconds" << endl);
-            for(long int i=0; i<nap_time ;i++){
-                write(fd,".", 1);
+            for (long int i = 0; i < nap_time; i++) {
+                write(fd, ".", 1);
                 sleep(1);
             }
             cache.unlock_and_close(cache_file_name);
             DBG(cerr << prolog << "Lock Released" << endl);
-        }
-        catch (BESError &e) {
+        } catch (BESError &e) {
             DBG(cerr << prolog << "FAILED to create cache! msg: " << e.get_message() << endl);
         }
         return 0;
         DBG(cerr << prolog << "END " << endl);
     }
-
 };
 
 const string version = "FileLockingCacheTest: 1.0";
@@ -177,8 +175,7 @@ const string version = "FileLockingCacheTest: 1.0";
  * If a task returns a non-zero value then the program exits.
  *
  */
-int main(int argc, char*argv[])
-{
+int main(int argc, char *argv[]) {
     FileLockingCacheTest flc_test;
 
     int option_char;
@@ -192,12 +189,12 @@ int main(int argc, char*argv[])
             exit(0);
 
         case 'd':
-            debug = true;  // debug is a static global
+            debug = true; // debug is a static global
             cerr << "Debug enabled." << endl;
             break;
 
         case 'b':
-            bes_debug = true;  // bes_debug is a static global
+            bes_debug = true; // bes_debug is a static global
             BESDebug::SetUp(string(optarg));
             cerr << "BESDEBUG is enabled." << endl;
             break;
@@ -212,12 +209,12 @@ int main(int argc, char*argv[])
             DBG(cerr << prolog << "Using cache dir: " << cache_dir << endl);
             break;
 
-        case 'p':
-        {
-            DBG(cerr << prolog << "Purging cache directory: " << cache_dir << " cache_prefix: "<< CACHE_PREFIX << endl);
+        case 'p': {
+            DBG(cerr << prolog << "Purging cache directory: " << cache_dir << " cache_prefix: " << CACHE_PREFIX
+                     << endl);
             int status;
             status = purge_cache(cache_dir, CACHE_PREFIX);
-            if(status){
+            if (status) {
                 cerr << prolog << "purge_cache() FAILED. status: " << status << endl;
                 return status;
             }
@@ -225,29 +222,30 @@ int main(int argc, char*argv[])
             break;
         }
 
-        case 'r':
-        {
+        case 'r': {
             std::istringstream(optarg) >> time;
             DBG(cerr << prolog << "Get and hold lock for " << time << " seconds" << endl);
             int status;
             status = flc_test.get_and_hold_read_lock(time, file_name, cache_dir);
-            if(status){ return status; }
+            if (status) {
+                return status;
+            }
             break;
         }
 
-        case 'x':
-        {
+        case 'x': {
             std::istringstream(optarg) >> time;
             DBG(cerr << prolog << "Get and hold exclusive lock for " << time << " seconds." << endl);
             int status;
             status = flc_test.get_and_hold_exclusive_lock(time, file_name, cache_dir);
-            if(status){ return status; }
+            if (status) {
+                return status;
+            }
             break;
         }
 
         case 'h':
-        default:
-        {
+        default: {
             cerr << "" << endl;
             cerr << "FileLockingCacheTest            (BES Dispatch)             FileLockingCacheTest" << endl;
             cerr << "" << endl;
@@ -255,7 +253,8 @@ int main(int argc, char*argv[])
             cerr << "    FileLockingCacheTest -- Test a systems advisory file locking capability." << endl;
             cerr << "" << endl;
             cerr << "Description" << endl;
-            cerr << "    FileLockingCacheTest [-d][-b bes_debug_string][-p][-c cache_dir][-r time][-x time][-h]" << endl;
+            cerr << "    FileLockingCacheTest [-d][-b bes_debug_string][-p][-c cache_dir][-r time][-x time][-h]"
+                 << endl;
             cerr << "    -x time      -- Get and hold an exclusive write lock for 'time' seconds." << endl;
             cerr << "    -r time      -- Get and hold a shared read lock for 'time' seconds." << endl;
             cerr << "    -f file name -- Lock this file. If not given, uses a default name." << endl;
@@ -296,4 +295,3 @@ int main(int argc, char*argv[])
 
     return 0;
 }
-

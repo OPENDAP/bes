@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -36,9 +36,9 @@
 #include <list>
 #include <string>
 
+#include "BESAbstractModule.h"
 #include "BESApp.h"
 #include "BESPluginFactory.h"
-#include "BESAbstractModule.h"
 
 /** @brief Base application object for all BES applications
  *
@@ -52,23 +52,23 @@
  *
  * @see BESApp
  */
-class BESModuleApp: public BESApp {
+class BESModuleApp : public BESApp {
 private:
-	BESPluginFactory<BESAbstractModule> _moduleFactory;
-	typedef struct _bes_module {
-		std::string _module_name;
-		std::string _module_library;
-	} bes_module;
-	std::list<bes_module> _module_list;
-	int loadModules();
+    BESPluginFactory<BESAbstractModule> _moduleFactory;
+    typedef struct _bes_module {
+        std::string _module_name;
+        std::string _module_library;
+    } bes_module;
+    std::list<bes_module> _module_list;
+    int loadModules();
 
 public:
-	BESModuleApp();
-	~BESModuleApp() override = default;
-	int initialize(int argC, char **argV) override;
-	int terminate(int sig = 0) override ;
+    BESModuleApp();
+    ~BESModuleApp() override = default;
+    int initialize(int argC, char **argV) override;
+    int terminate(int sig = 0) override;
 
-	void dump(std::ostream &strm) const override;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif

@@ -31,44 +31,48 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
 
 using namespace CppUnit;
 
+#include <cstdlib>
 #include <iostream>
 #include <sstream>
-#include <cstdlib>
 
 using std::cerr;
 using std::cout;
 using std::endl;
+using std::map;
 using std::ostringstream;
 using std::string;
-using std::map;
 
-#include "TheBESKeys.h"
-#include "BESTextInfo.h"
+#include "BESDataHandlerInterface.h"
 #include "BESHTMLInfo.h"
-#include "BESXMLInfo.h"
 #include "BESInfoList.h"
 #include "BESInfoNames.h"
-#include "BESDataHandlerInterface.h"
-#include <test_config.h>
+#include "BESTextInfo.h"
+#include "BESXMLInfo.h"
+#include "TheBESKeys.h"
+#include "test_config.h"
+
 #include <unistd.h>
 
 static bool debug = false;
 
 #undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
+#define DBG(x)                                                                                                         \
+    do {                                                                                                               \
+        if (debug)                                                                                                     \
+            (x);                                                                                                       \
+    } while (false);
 
 string txt_baseline = "tag1: tag1 data\n\
 tag2\n\
     tag3: tag3 data\n\
         attr_name: \"attr_val\"\n";
 
-string html_baseline =
-    "<HTML>\n\
+string html_baseline = "<HTML>\n\
     <HEAD>\n\
         <TITLE>testHTMLResponse</TITLE>\n\
     </HEAD>\n\
@@ -80,8 +84,7 @@ string html_baseline =
     </BODY>\n\
 </HTML>\n";
 
-string xml_baseline =
-    "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
+string xml_baseline = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\
 <response xmlns=\"http://xml.opendap.org/ns/bes/1.0#\">\n\
     <testXMLResponse>\n\
         <tag1>tag1 data</tag1>\n\
@@ -91,47 +94,34 @@ string xml_baseline =
     </testXMLResponse>\n\
 </response>\n";
 
-class infoT: public TestFixture {
+class infoT : public TestFixture {
 private:
-
 public:
-    infoT()
-    {
-    }
-    ~infoT()
-    {
-    }
+    infoT() = default;
+    ~infoT() = default;
 
-    void setUp()
-    {
-        string bes_conf = (string) TEST_SRC_DIR + "/info_test.ini";
+    void setUp() {
+        string bes_conf = (string)TEST_SRC_DIR + "/info_test.ini";
         TheBESKeys::ConfigFile = bes_conf;
     }
 
-    void tearDown()
-    {
-    }
+    void tearDown() {}
 
-CPPUNIT_TEST_SUITE( infoT );
+    CPPUNIT_TEST_SUITE(infoT);
 
-    CPPUNIT_TEST( do_test );
+    CPPUNIT_TEST(do_test);
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 
-    void do_test()
-    {
+    void do_test() {
         cout << "*****************************************" << endl;
         cout << "Entered infoT::run" << endl;
 
         cout << "*****************************************" << endl;
         cout << "add info builders to info list" << endl;
-        CPPUNIT_ASSERT( BESInfoList::TheList()->add_info_builder( BES_TEXT_INFO,
-                BESTextInfo::BuildTextInfo ) );
-        CPPUNIT_ASSERT( BESInfoList::TheList()->add_info_builder( BES_HTML_INFO,
-                BESHTMLInfo::BuildHTMLInfo ) );
-        CPPUNIT_ASSERT( BESInfoList::TheList()->add_info_builder( BES_XML_INFO,
-                BESXMLInfo::BuildXMLInfo ) );
+        CPPUNIT_ASSERT(BESInfoList::TheList()->add_info_builder(BES_TEXT_INFO, BESTextInfo::BuildTextInfo));
+        CPPUNIT_ASSERT(BESInfoList::TheList()->add_info_builder(BES_HTML_INFO, BESHTMLInfo::BuildHTMLInfo));
+        CPPUNIT_ASSERT(BESInfoList::TheList()->add_info_builder(BES_XML_INFO, BESXMLInfo::BuildXMLInfo));
 
         map<string, string, std::less<>> attrs;
         attrs["attr_name"] = "\"attr_val\"";
@@ -141,7 +131,7 @@ CPPUNIT_TEST_SUITE( infoT );
         TheBESKeys::TheKeys()->set_key("BES.Info.Type", "txt");
         BESInfo *info = BESInfoList::TheList()->build_info();
         auto t_info = dynamic_cast<BESTextInfo *>(info);
-        CPPUNIT_ASSERT( t_info );
+        CPPUNIT_ASSERT(t_info);
 
         BESDataHandlerInterface dhi;
         t_info->begin_response("testTextResponse", dhi);
@@ -152,14 +142,14 @@ CPPUNIT_TEST_SUITE( infoT );
         t_info->end_response();
         ostringstream tstrm;
         t_info->print(tstrm);
-        CPPUNIT_ASSERT( tstrm.str() == txt_baseline );
+        CPPUNIT_ASSERT(tstrm.str() == txt_baseline);
 
         cout << "*****************************************" << endl;
         cout << "Set Info type to html" << endl;
         TheBESKeys::TheKeys()->set_key("BES.Info.Type", "html");
         info = BESInfoList::TheList()->build_info();
         auto h_info = dynamic_cast<BESHTMLInfo *>(info);
-        CPPUNIT_ASSERT( h_info );
+        CPPUNIT_ASSERT(h_info);
 
         h_info->begin_response("testHTMLResponse", dhi);
         h_info->add_tag("tag1", "tag1 data");
@@ -169,14 +159,14 @@ CPPUNIT_TEST_SUITE( infoT );
         h_info->end_response();
         ostringstream hstrm;
         h_info->print(hstrm);
-        CPPUNIT_ASSERT( hstrm.str() == html_baseline );
+        CPPUNIT_ASSERT(hstrm.str() == html_baseline);
 
         cout << "*****************************************" << endl;
         cout << "Set Info type to xml" << endl;
         TheBESKeys::TheKeys()->set_key("BES.Info.Type", "xml");
         info = BESInfoList::TheList()->build_info();
         BESXMLInfo *x_info = dynamic_cast<BESXMLInfo *>(info);
-        CPPUNIT_ASSERT( x_info );
+        CPPUNIT_ASSERT(x_info);
 
         x_info->begin_response("testXMLResponse", dhi);
         x_info->add_tag("tag1", "tag1 data");
@@ -186,29 +176,28 @@ CPPUNIT_TEST_SUITE( infoT );
         x_info->end_response();
         ostringstream xstrm;
         x_info->print(xstrm);
-        CPPUNIT_ASSERT( xstrm.str() == xml_baseline );
+        CPPUNIT_ASSERT(xstrm.str() == xml_baseline);
 
         cout << "*****************************************" << endl;
         cout << "Returning from infoT::run" << endl;
     }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( infoT );
+CPPUNIT_TEST_SUITE_REGISTRATION(infoT);
 
-int main(int argc, char*argv[])
-{
+int main(int argc, char *argv[]) {
     int option_char;
     while ((option_char = getopt(argc, argv, "dh")) != EOF)
         switch (option_char) {
         case 'd':
-            debug = 1;  // debug is a static global
+            debug = true; // debug is a static global
             break;
-        case 'h': {     // help - show test names
+        case 'h': { // help - show test names
             cerr << "Usage: infoT has the following tests:" << endl;
-            const std::vector<Test*> &tests = infoT::suite()->getTests();
+            const std::vector<Test *> &tests = infoT::suite()->getTests();
             unsigned int prefix_len = infoT::suite()->getName().append("::").size();
-            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            for (auto test : tests) {
+                cerr << test->getName().replace(0, prefix_len, "") << endl;
             }
             break;
         }
@@ -227,11 +216,11 @@ int main(int argc, char*argv[])
     if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
-    }
-    else {
+    } else {
         int i = 0;
         while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
+            if (debug)
+                cerr << "Running " << argv[i] << endl;
             test = infoT::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
@@ -239,4 +228,3 @@ int main(int argc, char*argv[])
 
     return wasSuccessful ? 0 : 1;
 }
-

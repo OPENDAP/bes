@@ -1,4 +1,4 @@
-// servicesT.h
+// BESServerSystemResources.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -30,21 +30,21 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#ifndef I_servicesT_H
-#define I_servicesT_H
+#ifndef BESServerSystemResources_h_
+#define BESServerSystemResources_h_ 1
 
-#include <string>
+#include "BESMemoryStorage.h"
 
-#include "baseApp.h"
+class BESServerSystemResources {
+    static int _counter;
+    static BESMemoryStorage *_storage;
 
-class servicesT : public baseApp {
-private:
-	std::string			_keyFile ;
 public:
-                                servicesT(void) : baseApp() {}
-    virtual                     ~servicesT(void) {}
-    virtual int			run(void);
+    BESServerSystemResources();
+    ~BESServerSystemResources();
+
+    void release_the_memory() { _storage->release_the_memory(); }
+    bool try_to_get_the_memory() { return _storage->try_to_get_the_memory(); }
 };
 
-#endif
-
+#endif // BESServerSystemResources_h_

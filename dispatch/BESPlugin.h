@@ -36,36 +36,30 @@
 #define T_BESPlugin_h
 
 #include <dlfcn.h>
-#include <string>
 #include <iostream>
+#include <string>
 
-#include "BESObj.h"
-#include "BESInternalFatalError.h"
-#include "BESInternalError.h"
 #include "BESDebug.h"
+#include "BESInternalError.h"
+#include "BESInternalFatalError.h"
+#include "BESObj.h"
 
 #undef UNPLUG_HANDLERS
 
 /** Thrown as an exception when BESPlugin cannot find the named shareable
  library.
  */
-class NoSuchLibrary: public BESInternalFatalError {
+class NoSuchLibrary : public BESInternalFatalError {
 public:
-    NoSuchLibrary(const std::string &msg, const std::string &file, int line) :
-            BESInternalFatalError(msg, file, line)
-    {
-    }
+    NoSuchLibrary(const std::string &msg, const std::string &file, int line) : BESInternalFatalError(msg, file, line) {}
 };
 
 /** Thrown as an exception when BESPlugin cannot find or run the maker()
  function in a shared library already loaded.
  */
-class NoSuchObject: public BESInternalFatalError {
+class NoSuchObject : public BESInternalFatalError {
 public:
-    NoSuchObject(const std::string &msg, const std::string &file, int line) :
-            BESInternalFatalError(msg, file, line)
-    {
-    }
+    NoSuchObject(const std::string &msg, const std::string &file, int line) : BESInternalFatalError(msg, file, line) {}
 };
 
 /** BESPlugin provides a mechanism that can load C++ classes at runtime.
@@ -88,18 +82,17 @@ public:
  @author James Gallagher
  */
 
-template<typename M>
-class BESPlugin: public BESObj {
+template <typename M> class BESPlugin : public BESObj {
 private:
-	std::string d_filename; // Library filename
-    void *d_lib = nullptr; // Open library handle
+    std::string d_filename; // Library filename
+    void *d_lib = nullptr;  // Open library handle
 
     /// THis is pretty simple caching scheme. However, do we need this?
     /// but it probably does not cost that much.
     void *get_lib() {
         if (!d_lib) {
             d_lib = dlopen(d_filename.c_str(), RTLD_LAZY /*RTLD_NOW*/ | RTLD_GLOBAL);
-            BESDEBUG( "bes", "BESPlugin: plug in handler:" << d_filename << ", " << d_lib << std::endl);
+            BESDEBUG("bes", "BESPlugin: plug in handler:" << d_filename << ", " << d_lib << std::endl);
             if (d_lib == nullptr) {
                 throw NoSuchLibrary(std::string(dlerror()), __FILE__, __LINE__);
             }
@@ -116,7 +109,7 @@ public:
      * Create a new BESPlugin.
      * @param filename The name of the sharable object library that holds the class' implementation.
      */
-    explicit BESPlugin(const std::string &filename) : d_filename(filename) { }
+    explicit BESPlugin(const std::string &filename) : d_filename(filename) {}
 
     ~BESPlugin() override = default;
 
@@ -127,20 +120,20 @@ public:
      * create a new instance of class \b M where \b M was the template parameter of BESPlugin.
      * @return A pointer to the new instance.
      */
-    M* instantiate() {
+    M *instantiate() {
         void *maker = dlsym(get_lib(), "maker");
         if (!maker) {
             throw NoSuchObject(std::string(dlerror()), __FILE__, __LINE__);
         }
 
         typedef M *(*maker_func_ptr)();
-        maker_func_ptr my_maker = *reinterpret_cast<maker_func_ptr*>(&maker);
+        maker_func_ptr my_maker = *reinterpret_cast<maker_func_ptr *>(&maker);
         M *my_M = my_maker();
 
         return my_M;
     }
 
-    void dump(std::ostream &strm) const override  {
+    void dump(std::ostream &strm) const override {
         strm << "BESPlugin::dump - (" << std::ios::hex << this << ")" << std::endl;
         strm << "    plugin name: " << d_filename << std::endl;
         strm << "    library handle: " << std::ios::hex << d_lib << std::endl;

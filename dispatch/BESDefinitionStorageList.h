@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -33,8 +33,8 @@
 #ifndef I_BESDefinitionStorageList_H
 #define I_BESDefinitionStorageList_H 1
 
-#include <string>
 #include <mutex>
+#include <string>
 
 #include "BESObj.h"
 
@@ -49,7 +49,6 @@ class BESInfo;
 #ifndef CATALOG
 #define CATALOG "catalog"
 #endif
-
 
 /** @brief Provides a mechanism for accessing definitions from
  * different definition stores registered with this server.
@@ -67,7 +66,7 @@ class BESInfo;
  * @see BESDefine
  * @see BESDefinitionStorageException
  */
-class BESDefinitionStorageList: public BESObj {
+class BESDefinitionStorageList : public BESObj {
 private:
     mutable std::recursive_mutex d_cache_lock_mutex;
 
@@ -86,22 +85,21 @@ private:
 public:
     ~BESDefinitionStorageList() override = default;
 
-    BESDefinitionStorageList(const BESDefinitionStorageList&) = delete;
-    BESDefinitionStorageList& operator=(const BESDefinitionStorageList&) = delete;
+    BESDefinitionStorageList(const BESDefinitionStorageList &) = delete;
+    BESDefinitionStorageList &operator=(const BESDefinitionStorageList &) = delete;
 
     virtual bool add_persistence(BESDefinitionStorage *p);
     virtual bool ref_persistence(const std::string &persist_name);
     virtual bool deref_persistence(const std::string &persist_name);
     virtual BESDefinitionStorage *find_persistence(const std::string &persist_name);
 
-    virtual BESDefine * look_for(const std::string &def_name);
+    virtual BESDefine *look_for(const std::string &def_name);
 
     virtual void show_definitions(BESInfo &info);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static BESDefinitionStorageList *TheList();
 };
 
 #endif // I_BESDefinitionStorageList_H
-

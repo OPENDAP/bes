@@ -28,27 +28,27 @@
 #ifndef FileCache_h_
 #define FileCache_h_ 1
 
-#include <utility>
-#include <vector>
 #include <algorithm>
+#include <iomanip>
 #include <map>
 #include <mutex>
 #include <sstream>
-#include <iomanip>
+#include <utility>
+#include <vector>
 
 #include <cstring>
 
-#include <fcntl.h>
-#include <unistd.h>
 #include <dirent.h>
+#include <fcntl.h>
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#include <unistd.h>
 
 #include <openssl/sha.h>
 
-#include "BESUtil.h"
 #include "BESLog.h"
+#include "BESUtil.h"
 
 // Make all the error log messages uniform in one small way. This is a macro
 // so that we can switch to exceptions if that seems necessary. jhrg 11/06/23
@@ -135,9 +135,7 @@ class FileCache {
 
     const std::string CACHE_INFO_FILE_NAME = "cache_info";
 
-    static std::string get_lock_type_string(int lock_type) {
-        return (lock_type == LOCK_EX) ? "Exclusive": "Shared";
-    }
+    static std::string get_lock_type_string(int lock_type) { return (lock_type == LOCK_EX) ? "Exclusive" : "Shared"; }
 
     /// Manage the Cache-level locking. Each instance has to be initialized with d_cache_info_fd.
     class CacheLock {
@@ -169,7 +167,7 @@ class FileCache {
                 if (msg.empty())
                     ERROR(msg + get_lock_type_string(lock_type) + get_errno());
                 else
-                    ERROR(msg + get_errno() );
+                    ERROR(msg + get_errno());
                 return false;
             }
             return true;
@@ -189,10 +187,9 @@ class FileCache {
         int fd;
         if ((fd = open(key_file_name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666)) < 0) {
             if (errno == EEXIST) {
-                INFO_LOG("Could not create the key/file; it already exists: " + key + " " + get_errno() );
+                INFO_LOG("Could not create the key/file; it already exists: " + key + " " + get_errno());
                 return -1;
-            }
-            else {
+            } else {
                 ERROR("Error creating key/file: " + key + " " + get_errno());
                 return -1;
             }
@@ -208,20 +205,19 @@ class FileCache {
         // When we move the C++-17, we can use std::filesystem to do this. jhrg 10/24/23
         DIR *dir;
         const struct dirent *ent;
-        if ((dir = opendir (d_cache_dir.c_str())) != nullptr) {
+        if ((dir = opendir(d_cache_dir.c_str())) != nullptr) {
             /* print all the files and directories within directory */
-            while ((ent = readdir (dir)) != nullptr) {
+            while ((ent = readdir(dir)) != nullptr) {
                 // Skip the '.' and '..' files and the cache info file
                 // TODO For large caches, this could be slow. Instead, build the list
                 //  and then use three operations to remove these three files. jhrg 12/27/24
-                if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0
-                    || strcmp(ent->d_name, CACHE_INFO_FILE_NAME.c_str()) == 0)
+                if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0 ||
+                    strcmp(ent->d_name, CACHE_INFO_FILE_NAME.c_str()) == 0)
                     continue;
                 files.emplace_back(BESUtil::pathConcat(d_cache_dir, ent->d_name));
             }
-            closedir (dir);
-        }
-        else {
+            closedir(dir);
+        } else {
             ERROR("Could not open the cache directory (" + d_cache_dir + ").");
             return false;
         }
@@ -252,12 +248,13 @@ class FileCache {
             return false;
         // If  O_CREAT and O_EXCL are used together and the file already exists, then open()
         // fails with the error EEXIST. In that case, try to open the file using simple RDWR.
-        if ((d_cache_info_fd = open(BESUtil::pathConcat(d_cache_dir, CACHE_INFO_FILE_NAME).c_str(), O_RDWR | O_CREAT | O_EXCL, 0666)) >= 0) {
+        if ((d_cache_info_fd = open(BESUtil::pathConcat(d_cache_dir, CACHE_INFO_FILE_NAME).c_str(),
+                                    O_RDWR | O_CREAT | O_EXCL, 0666)) >= 0) {
             unsigned long long size = 0;
             if (write(d_cache_info_fd, &size, sizeof(size)) != sizeof(size))
                 return false;
-        }
-        else if ((d_cache_info_fd = open(BESUtil::pathConcat(d_cache_dir, CACHE_INFO_FILE_NAME).c_str(), O_RDWR, 0666)) < 0) {
+        } else if ((d_cache_info_fd =
+                        open(BESUtil::pathConcat(d_cache_dir, CACHE_INFO_FILE_NAME).c_str(), O_RDWR, 0666)) < 0) {
             return false;
         }
         return true;
@@ -265,8 +262,7 @@ class FileCache {
 
     /// Return the size of the cache as recorded in the cache info file.
     /// Return zero on error or if there's nothing in the cache.
-    unsigned long long get_cache_info_size() const
-    {
+    unsigned long long get_cache_info_size() const {
         if (d_cache_info_fd == -1) {
             ERROR("Cache info file not open.");
             return 0;
@@ -315,7 +311,7 @@ public:
         unsigned char md[SHA256_DIGEST_LENGTH];
         SHA256(reinterpret_cast<const unsigned char *>(key.c_str()), key.size(), md);
         std::stringstream hex_stream;
-        for (auto b: md) {
+        for (auto b : md) {
             hex_stream << std::hex << std::setw(2) << std::setfill('0') << (int)b;
         }
         if (log_it)
@@ -330,21 +326,17 @@ public:
     public:
         Item() = default;
         Item(const Item &) = delete;
-        explicit Item(int fd) : d_fd(fd) { }
+        explicit Item(int fd) : d_fd(fd) {}
         Item &operator=(const Item &) = delete;
         virtual ~Item() {
             if (d_fd != -1) {
-                close(d_fd);    // Also releases any locks
+                close(d_fd); // Also releases any locks
                 d_fd = -1;
             }
         }
 
-        int get_fd() const {
-            return d_fd;
-        }
-        void set_fd(int fd) {
-            d_fd = fd;
-        }
+        int get_fd() const { return d_fd; }
+        void set_fd(int fd) { d_fd = fd; }
 
         bool lock_the_item(int lock_type, const std::string &msg = "") const {
             if (d_fd < 0) {
@@ -353,9 +345,9 @@ public:
             }
             if (flock(d_fd, lock_type) < 0) {
                 if (msg.empty())
-                    ERROR("Could not get " + get_lock_type_string(lock_type) + " lock: " + get_errno() );
+                    ERROR("Could not get " + get_lock_type_string(lock_type) + " lock: " + get_errno());
                 else
-                    ERROR(msg  +  ": " + get_errno());
+                    ERROR(msg + ": " + get_errno());
                 return false;
             }
 
@@ -384,10 +376,11 @@ public:
         ~PutItem() override {
             // Locking the cache before calling update_cache_info_size() is necessary. jhrg 1/1/25
             CacheLock lock(d_fc.d_cache_info_fd);
-            if (!lock.lock_the_cache(LOCK_EX, "locking the cache in ~PutItem() for descriptor: " + std::to_string(get_fd())))
+            if (!lock.lock_the_cache(LOCK_EX,
+                                     "locking the cache in ~PutItem() for descriptor: " + std::to_string(get_fd())))
                 return;
             if (!d_fc.update_cache_info_size(d_fc.get_cache_info_size() + get_file_size(get_fd()))) {
-                ERROR("Could not update the cache info file while unlocking a put item: " + get_errno() );
+                ERROR("Could not update the cache info file while unlocking a put item: " + get_errno());
             }
         }
     };
@@ -472,7 +465,7 @@ public:
             return false;
         }
 
-        Item fdl2(fd2);     // The 'source' file is not locked; the Item ensures it is closed.
+        Item fdl2(fd2); // The 'source' file is not locked; the Item ensures it is closed.
 
         // Here we might use st_blocks and st_blksize if that will speed up the transfer.
         // This is likely to matter only for large files (where large means...?). jhrg 11/02/23
@@ -514,7 +507,7 @@ public:
         // Here we might use st_blocks and st_blksize if that will speed up the transfer.
         // This is likely to matter only for large files (where large means...?). jhrg 11/02/23
 
-       if (write(fd, data.c_str(), data.size()) != data.size()) {
+        if (write(fd, data.c_str(), data.size()) != data.size()) {
             ERROR("Error writing to data to cache file: " + key + " " + get_errno());
             return false;
         }
@@ -654,7 +647,7 @@ public:
             return false;
         }
 
-        for (const auto &file: files) {
+        for (const auto &file : files) {
             if (remove(file.c_str()) != 0) {
                 ERROR("Error removing " + file + " from cache directory (" + d_cache_dir + ") - " + get_errno());
                 return false;
@@ -688,18 +681,18 @@ public:
         struct item_info {
             std::string d_name;
             off_t d_size;
-            item_info(std::string name, off_t size) :d_name(std::move(name)), d_size(size) {}
+            item_info(std::string name, off_t size) : d_name(std::move(name)), d_size(size) {}
         };
 
         // sorted by access time, with the oldest time first
         std::multimap<unsigned long, struct item_info, std::less<>> items;
-        uint64_t total_size = 0;    // for a sanity check. jhrg 11/03/23
+        uint64_t total_size = 0; // for a sanity check. jhrg 11/03/23
 
         std::vector<std::string> files;
         if (!files_in_cache(files))
             return false;
 
-        for (const auto &file: files) {
+        for (const auto &file : files) {
             struct stat sb = {};
 
             if (stat(file.c_str(), &sb) < 0) {
@@ -708,16 +701,17 @@ public:
             }
 
             items.insert(std::pair<unsigned long, item_info>(sb.st_atime, item_info(file, sb.st_size)));
-            total_size += sb.st_size;   // sanity check; remove some day? jhrg 11/03/23
+            total_size += sb.st_size; // sanity check; remove some day? jhrg 11/03/23
         }
 
         if (ci_size != total_size) {
-            ERROR("Error cache_info and the measured size of items differ by " + std::to_string(total_size) + " bytes.");
+            ERROR("Error cache_info and the measured size of items differ by " + std::to_string(total_size) +
+                  " bytes.");
         }
 
         // choose which files to remove - since the 'items' map orders the things by time, use that ordering
         uint64_t removed_bytes = 0;
-        for (const auto &item: items) {
+        for (const auto &item : items) {
             if (removed_bytes > d_purge_size)
                 break;
 
@@ -728,15 +722,15 @@ public:
                 ERROR("Error opening the cache item in purge() for: " + item.second.d_name + " " + get_errno());
                 return false;
             }
-            Item item_lock(fd);  // The Item dtor is called on every loop iteration according to Google. jhrg 11/03/23
-            if (!item_lock.lock_the_item(LOCK_EX | LOCK_NB, "locking the cache item in purge() for: " + item.second.d_name))
+            Item item_lock(fd); // The Item dtor is called on every loop iteration according to Google. jhrg 11/03/23
+            if (!item_lock.lock_the_item(LOCK_EX | LOCK_NB,
+                                         "locking the cache item in purge() for: " + item.second.d_name))
                 continue;
 
             if (remove(item.second.d_name.c_str()) != 0) {
                 ERROR("Error removing " + item.second.d_name + " from cache directory in purge() - " + get_errno());
                 // but keep going; this is a soft error
-            }
-            else {
+            } else {
                 // but only count the bytes if they are actually removed
                 removed_bytes += item.second.d_size;
             }

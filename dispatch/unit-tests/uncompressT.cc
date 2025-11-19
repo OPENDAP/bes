@@ -33,21 +33,21 @@
 #include "config.h"
 
 #include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
 
-#include <iostream>
 #include <cstdlib>
+#include <iostream>
 #include <unistd.h>
 
 #include "BESInternalError.h"
 
-#include "BESUncompressManager3.h"
-#include "BESUncompressCache.h"
-#include "BESError.h"
-#include "TheBESKeys.h"
 #include "BESDebug.h"
+#include "BESError.h"
+#include "BESUncompressCache.h"
+#include "BESUncompressManager3.h"
 #include "BESUtil.h"
+#include "TheBESKeys.h"
 #include "test_config.h"
 
 using namespace CppUnit;
@@ -65,21 +65,19 @@ static const string CACHE_FILE_NAME = BESUtil::assemblePath(CACHE_DIR, "template
 static const string CACHE_PREFIX("container_test");
 
 #undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
+#define DBG(x)                                                                                                         \
+    do {                                                                                                               \
+        if (debug)                                                                                                     \
+            (x);                                                                                                       \
+    } while (false);
 
-class uncompressT: public TestFixture {
+class uncompressT : public TestFixture {
 private:
-
 public:
-    uncompressT()
-    {
-    }
-    ~uncompressT()
-    {
-    }
+    uncompressT() = default;
+    ~uncompressT() = default;
 
-    int clean_dir(const string &cache_dir, const string &cache_prefix)
-    {
+    int clean_dir(const string &cache_dir, const string &cache_prefix) {
         DBG(cerr << __func__ << "() - BEGIN " << endl);
         std::ostringstream s;
         s << "rm -" << (debug ? "v" : "") << "f " << BESUtil::assemblePath(cache_dir, cache_prefix) << "*";
@@ -114,9 +112,7 @@ public:
     }
 #endif
 
-
-    void setUp()
-    {
+    void setUp() {
 #if 0
         string bes_conf = (string) TEST_SRC_DIR + "/uncompressT_bes.keys";
         TheBESKeys::ConfigFile = bes_conf;
@@ -129,12 +125,9 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.Uncompress.NumTries", "10");
     }
 
-    void tearDown()
-    {
-    }
+    void tearDown() {}
 
-    void test_worker(string cache_prefix, string test_file_base, string test_file_suffix)
-    {
+    void test_worker(string cache_prefix, string test_file_base, string test_file_suffix) {
         DBG(cerr << __func__ << "() - BEGIN" << endl);
 
         TheBESKeys::TheKeys()->set_key("BES.UncompressCache.dir", CACHE_DIR);
@@ -143,7 +136,7 @@ public:
 
         DBG(cerr << __func__ << "() - cache_prefix: " << cache_prefix << endl);
 
-        string cache_dir = (string) TEST_SRC_DIR + "/cache";
+        string cache_dir = (string)TEST_SRC_DIR + "/cache";
         DBG(cerr << __func__ << "() - cache_dir: " << cache_dir << endl);
 
         // Clean it up...
@@ -159,74 +152,70 @@ public:
 
             // get the target name and make sure the target file doesn't exist
             string cache_file_name = cache->get_cache_file_name(src_file_base, false);
-            if (cache->is_valid(cache_file_name, src_file)) cache->purge_file(cache_file_name);
+            if (cache->is_valid(cache_file_name, src_file))
+                cache->purge_file(cache_file_name);
 
             DBG(cerr << __func__ << "() - *****************************************" << endl);
             DBG(cerr << __func__ << "() - uncompress a test " << test_file_suffix << " file" << endl);
             try {
                 string result;
                 bool cached = BESUncompressManager3::TheManager()->uncompress(src_file, result, cache);
-                CPPUNIT_ASSERT( cached );
+                CPPUNIT_ASSERT(cached);
                 DBG(cerr << __func__ << "() - Cache file expected: " << cache_file_name << endl);
                 DBG(cerr << __func__ << "() -   Cache file result: " << result << endl);
-                CPPUNIT_ASSERT( result == cache_file_name );
+                CPPUNIT_ASSERT(result == cache_file_name);
 
                 ifstream strm(cache_file_name.c_str());
-                CPPUNIT_ASSERT( strm );
+                CPPUNIT_ASSERT(strm);
 
                 char line[80];
-                strm.getline((char *) line, 80);
+                strm.getline((char *)line, 80);
                 string sline = line;
                 string should_be = "This is a test of a compression method.";
                 DBG(cerr << __func__ << "() - expected contents = " << should_be << endl);
                 DBG(cerr << __func__ << "() -   result contents = " << sline << endl);
-                CPPUNIT_ASSERT( sline == should_be );
-            }
-            catch (BESError &e) {
+                CPPUNIT_ASSERT(sline == should_be);
+            } catch (BESError &e) {
                 DBG(cerr << __func__ << "() - Caught BESError. msg: " << e.get_message() << endl);
-                CPPUNIT_ASSERT( !"Failed to uncompress the gz file" );
+                CPPUNIT_ASSERT(!"Failed to uncompress the gz file");
             }
 
             string tmp;
-            CPPUNIT_ASSERT( cache->is_valid(cache_file_name,src_file) );
+            CPPUNIT_ASSERT(cache->is_valid(cache_file_name, src_file));
 
             DBG(cerr << __func__ << "() - Uncompress a test " << test_file_suffix << " file, should be cached" << endl);
             try {
                 string result;
                 bool cached = BESUncompressManager3::TheManager()->uncompress(src_file, result, cache);
-                CPPUNIT_ASSERT( cached );
-                CPPUNIT_ASSERT( result == cache_file_name );
+                CPPUNIT_ASSERT(cached);
+                CPPUNIT_ASSERT(result == cache_file_name);
 
                 ifstream strm(cache_file_name.c_str());
-                CPPUNIT_ASSERT( strm );
+                CPPUNIT_ASSERT(strm);
 
                 char line[80];
-                strm.getline((char *) line, 80);
+                strm.getline((char *)line, 80);
                 string sline = line;
                 string should_be = "This is a test of a compression method.";
                 DBG(cerr << __func__ << "() - expected contents = " << should_be << endl);
                 DBG(cerr << __func__ << "() -   result contents = " << sline << endl);
-                CPPUNIT_ASSERT( sline == should_be );
-            }
-            catch (const BESError &e) {
+                CPPUNIT_ASSERT(sline == should_be);
+            } catch (const BESError &e) {
                 DBG(cerr << e.get_message() << endl);
-                CPPUNIT_FAIL( "Failed to uncompress the file" );
+                CPPUNIT_FAIL("Failed to uncompress the file");
             }
 
-            CPPUNIT_ASSERT( cache->is_valid(cache_file_name, src_file) );
-        }
-        catch (const BESError &e) {
+            CPPUNIT_ASSERT(cache->is_valid(cache_file_name, src_file));
+        } catch (const BESError &e) {
             DBG(cerr << __func__ << "() - Caught BESError. Message: " << e.get_message() << endl);
-            CPPUNIT_FAIL( "Unable to create the required cache object." );
+            CPPUNIT_FAIL("Unable to create the required cache object.");
         }
 
         clean_dir(cache_dir, cache_prefix);
         DBG(cerr << __func__ << "() - END" << endl);
-
     }
 
-    void gz_test()
-    {
+    void gz_test() {
         DBG(cerr << __func__ << "() - BEGIN" << endl);
         string cache_prefix = "zcache";
         string test_file_base = "/testfile.txt";
@@ -236,8 +225,7 @@ public:
         DBG(cerr << __func__ << "() - END" << endl);
     }
 
-    void Z_test()
-    {
+    void Z_test() {
         DBG(cerr << __func__ << "() - BEGIN" << endl);
         string cache_prefix = "zcache";
         string test_file_base = "/testfile.txt";
@@ -247,8 +235,7 @@ public:
         DBG(cerr << __func__ << "() - END" << endl);
     }
 
-    void libz2_test()
-    {
+    void libz2_test() {
 #ifdef HAVE_LIBBZ2
         DBG(cerr << __func__ << "() - BEGIN" << endl);
         string cache_prefix = "zcache";
@@ -260,34 +247,32 @@ public:
 #endif
     }
 
-    CPPUNIT_TEST_SUITE( uncompressT );
-    CPPUNIT_TEST( gz_test );
-    CPPUNIT_TEST( libz2_test );
-    CPPUNIT_TEST( Z_test );
+    CPPUNIT_TEST_SUITE(uncompressT);
+    CPPUNIT_TEST(gz_test);
+    CPPUNIT_TEST(libz2_test);
+    CPPUNIT_TEST(Z_test);
 
     CPPUNIT_TEST_SUITE_END();
-
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( uncompressT );
+CPPUNIT_TEST_SUITE_REGISTRATION(uncompressT);
 
-int main(int argc, char*argv[])
-{
+int main(int argc, char *argv[]) {
     int option_char;
     while ((option_char = getopt(argc, argv, "dbh")) != -1)
         switch (option_char) {
         case 'd':
-            debug = 1;  // debug is a static global
+            debug = true; // debug is a static global
             break;
         case 'b':
-            bes_debug = 1;  // debug is a static global
+            bes_debug = true; // debug is a static global
             break;
-        case 'h': {     // help - show test names
+        case 'h': { // help - show test names
             cerr << "Usage: uncompressT has the following tests:" << endl;
-            const std::vector<Test*> &tests = uncompressT::suite()->getTests();
+            const std::vector<Test *> &tests = uncompressT::suite()->getTests();
             unsigned int prefix_len = uncompressT::suite()->getName().append("::").size();
-            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            for (auto test : tests) {
+                cerr << test->getName().replace(0, prefix_len, "") << endl;
             }
             break;
         }
@@ -306,11 +291,11 @@ int main(int argc, char*argv[])
     if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
-    }
-    else {
+    } else {
         int i = 0;
         while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
+            if (debug)
+                cerr << "Running " << argv[i] << endl;
             test = uncompressT::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
@@ -318,4 +303,3 @@ int main(int argc, char*argv[])
 
     return wasSuccessful ? 0 : 1;
 }
-

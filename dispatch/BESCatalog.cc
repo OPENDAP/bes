@@ -32,12 +32,8 @@
 
 using namespace std;
 
-BESCatalog::BESCatalog(const string &catalog_name) : d_catalog_name(catalog_name), d_reference(0)
-{
+BESCatalog::BESCatalog(const string &catalog_name) : d_catalog_name(catalog_name), d_reference(0) {
     d_utils = new BESCatalogUtils(d_catalog_name);
 }
 
-BESCatalog::~BESCatalog()
-{
-    delete d_utils;
-}
+BESCatalog::~BESCatalog() { delete d_utils; }

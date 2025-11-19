@@ -32,24 +32,24 @@
 
 // connT.cc - Refactored
 
-#include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
 
+#include <cstdio>  // For sprintf (kept from original)
+#include <cstdlib> // For EXIT_SUCCESS in bes_run_tests
 #include <iostream>
-#include <string>   // Include <string> explicitly
-#include <memory>   // Although not using unique_ptr for 'd', good practice
-#include <vector>   // Needed for TestFactoryRegistry access if done manually
-#include <cstdio>   // For sprintf (kept from original)
-#include <cstdlib>  // For EXIT_SUCCESS in bes_run_tests
+#include <memory> // Although not using unique_ptr for 'd', good practice
 #include <sstream>
+#include <string> // Include <string> explicitly
+#include <vector> // Needed for TestFactoryRegistry access if done manually
 
 // Include necessary BES headers
-#include "BESContainerStorageFile.h"
 #include "BESContainer.h"
+#include "BESContainerStorageFile.h"
 #include "BESError.h"
 #include "BESTextInfo.h"
 #include "TheBESKeys.h"
-#include <test_config.h> // Assumed to define TEST_SRC_DIR
+#include "test_config.h" // Assumed to define TEST_SRC_DIR
 
 #include "modules/common/run_tests_cppunit.h"
 // **************************************************
@@ -68,7 +68,7 @@ using CppUnit::TestFixture;
 class connT final : public TestFixture {
 
 public:
-    connT() = default;  // Use default constructor
+    connT() = default;           // Use default constructor
     ~connT() override = default; // Use default virtual destructor
 
     // setUp now configures the necessary keys before each test
@@ -77,7 +77,7 @@ public:
         TheBESKeys::ConfigFile = bes_conf;
 
         // Get singleton instance
-        auto* keys = TheBESKeys::TheKeys(); // Use auto
+        auto *keys = TheBESKeys::TheKeys(); // Use auto
 
         // Set up file paths for various test cases
         // Using string() constructor for clarity, though implicit conversion often works
@@ -114,10 +114,9 @@ public:
     void testConstructor_IncompleteKeyInfo_Throws() {
         DBG(cout << "Running testConstructor_IncompleteKeyInfo_Throws" << endl);
         // Expecting BESError because "BES.Container.Persistence.File.File" key is not fully defined in setUp.
-        CPPUNIT_ASSERT_THROW_MESSAGE(
-            "Should throw BESError for incomplete key 'File'",
-            BESContainerStorageFile cpf("File"), // Action that should throw
-            BESError                       // Expected exception type
+        CPPUNIT_ASSERT_THROW_MESSAGE("Should throw BESError for incomplete key 'File'",
+                                     BESContainerStorageFile cpf("File"), // Action that should throw
+                                     BESError                             // Expected exception type
         );
     }
 
@@ -127,24 +126,18 @@ public:
     void testConstructor_NonExistentFile_Throws() {
         DBG(cout << "Running testConstructor_NonExistentFile_Throws" << endl);
         // Expecting BESError because the file specified by "FileNot" key doesn't exist.
-         CPPUNIT_ASSERT_THROW_MESSAGE(
-            "Should throw BESError for non-existent file 'FileNot'",
-            BESContainerStorageFile cpf("FileNot"),
-            BESError
-        );
+        CPPUNIT_ASSERT_THROW_MESSAGE("Should throw BESError for non-existent file 'FileNot'",
+                                     BESContainerStorageFile cpf("FileNot"), BESError);
     }
 
     /**
      * @brief Tests BESContainerStorageFile constructor with too many values on a line.
      */
     void testConstructor_FileTooManyColumns_Throws() {
-         DBG(cout << "Running testConstructor_FileTooManyColumns_Throws" << endl);
-         // Expecting BESError due to format error in the file specified by "FileTooMany".
-         CPPUNIT_ASSERT_THROW_MESSAGE(
-            "Should throw BESError for file with too many columns 'FileTooMany'",
-            BESContainerStorageFile cpf("FileTooMany"),
-            BESError
-        );
+        DBG(cout << "Running testConstructor_FileTooManyColumns_Throws" << endl);
+        // Expecting BESError due to format error in the file specified by "FileTooMany".
+        CPPUNIT_ASSERT_THROW_MESSAGE("Should throw BESError for file with too many columns 'FileTooMany'",
+                                     BESContainerStorageFile cpf("FileTooMany"), BESError);
     }
 
     /**
@@ -153,23 +146,18 @@ public:
     void testConstructor_FileTooFewColumns_Throws() {
         DBG(cout << "Running testConstructor_FileTooFewColumns_Throws" << endl);
         // Expecting BESError due to format error in the file specified by "FileTooFew".
-        CPPUNIT_ASSERT_THROW_MESSAGE(
-            "Should throw BESError for file with too few columns 'FileTooFew'",
-            BESContainerStorageFile cpf("FileTooFew"),
-            BESError
-        );
+        CPPUNIT_ASSERT_THROW_MESSAGE("Should throw BESError for file with too few columns 'FileTooFew'",
+                                     BESContainerStorageFile cpf("FileTooFew"), BESError);
     }
 
-   /**
-    * @brief Tests successful construction of BESContainerStorageFile with a valid file.
-    */
+    /**
+     * @brief Tests successful construction of BESContainerStorageFile with a valid file.
+     */
     void testConstructor_ValidFile_Opens() {
         DBG(cout << "Running testConstructor_ValidFile_Opens" << endl);
         // Expecting no exception for a valid file configuration "File1".
-        CPPUNIT_ASSERT_NO_THROW_MESSAGE(
-            "Should successfully open valid file 'File1'",
-            BESContainerStorageFile cpf("File1")
-        );
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("Should successfully open valid file 'File1'",
+                                        BESContainerStorageFile cpf("File1"));
     }
 
     /**
@@ -210,9 +198,9 @@ public:
         }
     }
 
-   /**
-    * @brief Tests that look_for returns null for a non-existent key.
-    */
+    /**
+     * @brief Tests that look_for returns null for a non-existent key.
+     */
     void testLookFor_NonExistentKey_ReturnsNull() {
         DBG(cout << "Running testLookFor_NonExistentKey_ReturnsNull" << endl);
         BESContainerStorageFile cpf("File1"); // Assumes File1 is valid
@@ -227,19 +215,16 @@ public:
      * Note: This doesn't verify the output content.
      */
     void testShowContainers_RunsWithoutError() {
-         DBG(cout << "Running testShowContainers_RunsWithoutError" << endl);
-         BESContainerStorageFile cpf("File1"); // Assumes File1 is valid
-         BESTextInfo info;
+        DBG(cout << "Running testShowContainers_RunsWithoutError" << endl);
+        BESContainerStorageFile cpf("File1"); // Assumes File1 is valid
+        BESTextInfo info;
 
-         CPPUNIT_ASSERT_NO_THROW_MESSAGE(
-             "show_containers should run without throwing exceptions",
-             cpf.show_containers(info)
-         );
-         // info.print(cout); // Optionally print for manual inspection if needed during debug
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("show_containers should run without throwing exceptions",
+                                        cpf.show_containers(info));
+        // info.print(cout); // Optionally print for manual inspection if needed during debug
     }
 
 }; // End class connT
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(connT);
 

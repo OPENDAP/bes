@@ -49,8 +49,7 @@ BESApp *BESApp::_theApplication = nullptr;
  * @param argC argc value passed to the main function
  * @param argV argv value passed to the main function
  */
-int BESApp::main(int argC, char **argV)
-{
+int BESApp::main(int argC, char **argV) {
     _appName = argV[0];
     int retVal = initialize(argC, argV);
     if (retVal == 0) {
@@ -67,8 +66,7 @@ int BESApp::main(int argC, char **argV)
  * @param argV argv value passed to the main function
  * @throws BESError if any exceptions or errors are encountered
  */
-int BESApp::initialize(int /*argC*/, char **/*argV*/)
-{
+int BESApp::initialize(int /*argC*/, char ** /*argV*/) {
     _isInitialized = true;
     return 0;
 }
@@ -81,10 +79,8 @@ int BESApp::initialize(int /*argC*/, char **/*argV*/)
  * @throws BESError if the derived class does not implement this
  * method
  */
-int BESApp::run()
-{
-    throw BESInternalError("BESApp::run - run method not implemented",
-    __FILE__, __LINE__);
+int BESApp::run() {
+    throw BESInternalError("BESApp::run - run method not implemented", __FILE__, __LINE__);
     return 0;
 }
 
@@ -97,8 +93,7 @@ int BESApp::run()
  * is passed.
  * @see BESGlobalIQ
  */
-int BESApp::terminate(int sig)
-{
+int BESApp::terminate(int sig) {
     _isInitialized = false;
     return sig;
 }
@@ -110,12 +105,10 @@ int BESApp::terminate(int sig)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESApp::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESApp::dump - (" << (void *) this << ")" << endl;
+void BESApp::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESApp::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     strm << BESIndent::LMarg << "appName: " << appName() << endl;
     strm << BESIndent::LMarg << "is initialized: " << _isInitialized << endl;
     BESIndent::UnIndent();
 }
-

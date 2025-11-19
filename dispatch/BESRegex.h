@@ -11,12 +11,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -46,29 +46,27 @@
 
 #if FORCE_OLD_REGEX
 
-#include <string>
 #include <memory>
 #include <regex.h>
+#include <string>
 #define HAVE_WORKING_REGEX 0
 
-#else   // FORCE_OLD_REGEX
+#else // FORCE_OLD_REGEX
 
-#if __cplusplus >= 201103L &&                             \
-          (!defined(__GLIBCXX__) || (__cplusplus >= 201402L) || \
-              (defined(_GLIBCXX_REGEX_DFS_QUANTIFIERS_LIMIT) || \
-               defined(_GLIBCXX_REGEX_STATE_LIMIT)           || \
-                   (defined(_GLIBCXX_RELEASE)                && \
-                   _GLIBCXX_RELEASE > 4)))
+#if __cplusplus >= 201103L &&                                                                                          \
+    (!defined(__GLIBCXX__) || (__cplusplus >= 201402L) ||                                                              \
+     (defined(_GLIBCXX_REGEX_DFS_QUANTIFIERS_LIMIT) || defined(_GLIBCXX_REGEX_STATE_LIMIT) ||                          \
+      (defined(_GLIBCXX_RELEASE) && _GLIBCXX_RELEASE > 4)))
 #include <regex>
 #define HAVE_WORKING_REGEX 1
 #else
-#include <string>
 #include <memory>
 #include <regex.h>
+#include <string>
 #define HAVE_WORKING_REGEX 0
-#endif  // __cplusplus >= 201103L
+#endif // __cplusplus >= 201103L
 
-#endif  // FORCE_OLD_REGEX
+#endif // FORCE_OLD_REGEX
 
 /**
  * @brief Regular expression matching
@@ -85,8 +83,7 @@
  *
  * @author James Gallagher <jgallagher@opendap.org>
  */
-class BESRegex
-{
+class BESRegex {
 private:
 #if HAVE_WORKING_REGEX
     std::regex d_exp;
@@ -97,7 +94,7 @@ private:
 #else
     // d_preg was a regex_t* but I needed to include both regex.h and config.h
     // to make the gnulib code work. Because this header is installed (and is
-    // used by other libraries) it cannot include config.h, so I moved the 
+    // used by other libraries) it cannot include config.h, so I moved the
     // regex.h and config.h (among other) includes to the implementation. It
     // would be cleaner to use a special class, but for one field that seems
     // like overkill.
@@ -105,7 +102,10 @@ private:
     std::string d_pattern;
 
     void init(const char *t);
-    void init(const std::string &s) { init(s.c_str()); d_pattern = s; }
+    void init(const std::string &s) {
+        init(s.c_str());
+        d_pattern = s;
+    }
 #endif
 
 public:
@@ -130,7 +130,7 @@ public:
     int match(const std::string &s) const;
 
     /// @brief Where does the pattern match.
-    int search(const char *s, int len, int &matchlen, int pos = 0) const ;
+    int search(const char *s, int len, int &matchlen, int pos = 0) const;
     /// @brief Where does the pattern match.
     int search(const std::string &s, int &matchlen) const;
 };

@@ -31,9 +31,9 @@
 
 #include <unistd.h>
 
+#include <list>
 #include <map>
 #include <string>
-#include <list>
 
 #include "BESObj.h"
 
@@ -48,7 +48,6 @@ typedef struct {
 } cache_entry;
 
 typedef std::list<cache_entry> CacheFiles;
-
 
 /**
  * @brief Implementation of a caching mechanism for compressed data.
@@ -83,9 +82,9 @@ typedef std::list<cache_entry> CacheFiles;
  * switch to flock(2) and get thread-safe locking, but we would trade off the
  * ability to work with files on NFS volumes.
  */
-class BESFileLockingCache: public BESObj {
+class BESFileLockingCache : public BESObj {
 
- private:
+private:
     const char DAP_CACHE_CHAR = '#';
 
     // TODO Should cache_enabled be false given that cache_dir is empty? jhrg 2/18/18
@@ -130,7 +129,7 @@ class BESFileLockingCache: public BESObj {
 #endif
 
     friend class cacheT;
-    friend class FileLockingCacheTest;  // This is in dispatch/tests
+    friend class FileLockingCacheTest; // This is in dispatch/tests
     friend class BESFileLockingCacheTest;
 
 public:
@@ -178,38 +177,26 @@ public:
      * @return True if the cache is unlimited in size, false if values
      * will be purged after a preset size is exceeded.
      */
-    bool is_unlimited() const {
-        return d_max_cache_size_in_bytes == 0;
-    }
+    bool is_unlimited() const { return d_max_cache_size_in_bytes == 0; }
 
     /// @return The prefix used for items in an instance of BESFileLockingCache
-    std::string get_cache_file_prefix() const {
-        return d_prefix;
-    }
+    std::string get_cache_file_prefix() const { return d_prefix; }
 
     /// @return The directory used for the an instance of BESFileLockingCache
-    std::string get_cache_directory() const {
-        return d_cache_dir;
-    }
+    std::string get_cache_directory() const { return d_cache_dir; }
 
     // This is a static method because it's often called from 'get_instance()'
     // methods that are static.
     static bool dir_exists(const std::string &dir);
 
     /// @return Is this cache enabled?
-    bool cache_enabled() const {
-        return d_cache_enabled;
-    }
+    bool cache_enabled() const { return d_cache_enabled; }
 
     /// @brief Disable the cache
-    void disable() {
-        d_cache_enabled = false;
-    }
+    void disable() { d_cache_enabled = false; }
 
     /// @brief Enable the cache
-    void enable() {
-        d_cache_enabled = true;
-    }
+    void enable() { d_cache_enabled = true; }
 
     void dump(std::ostream &strm) const override;
 };
