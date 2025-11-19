@@ -19,12 +19,18 @@ if DARWIN
 AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,@loader_path
 else
 AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,'$$ORIGIN'
+    ifeq ($(strip $(aws_libdir64)),)
+        $(info "aws_libdir64 not set, skipping")
+    else
+        AM_LDFLAGS += -L$(aws_libdir64)
+        AM_LDFLAGS += -Wl,-rpath,$(aws_libdir64)
+    endif
 endif
 
 SUBDIRS = . unit-tests
 
 noinst_LTLIBRARIES = libngap.la
-libngap_la_SOURCES = $(NGAP_SRC) $(NGAP_HDR) 
+libngap_la_SOURCES = $(NGAP_SRC) $(NGAP_HDR)
 libngap_la_LDFLAGS =
 libngap_la_LIBADD = $(LDADD)
 

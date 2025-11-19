@@ -25,7 +25,7 @@ AM_CXXFLAGS=
 AM_LDFLAGS = -L$(aws_libdir)
 include $(top_srcdir)/coverage.mk
 
-LDADD = $(top_builddir)/aws/libbes_aws.la $(aws_libs)
+LDADD_AWS = $(top_builddir)/aws/libbes_aws.la $(aws_libs)
 
 if DARWIN
 AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,@loader_path
@@ -115,11 +115,11 @@ clean-local:
 	test ! -d $(builddir)/owned-cache || rm -rf $(builddir)/owned-cache
 
 MemoryCacheTest_SOURCES = MemoryCacheTest.cc
-MemoryCacheTest_LDADD = $(LIBADD) $(LDADD)
+MemoryCacheTest_LDADD = $(LIBADD)
 
 NgapApiTest_SOURCES = NgapApiTest.cc
-NgapApiTest_LDADD =  $(LIBADD) $(LDADD)
+NgapApiTest_LDADD =  $(LIBADD) $(LDADD_AWS)
 
 NgapOwnedContainerTest_SOURCES = NgapOwnedContainerTest.cc
-NgapOwnedContainerTest_LDADD = $(LIBADD) $(LDADD)
+NgapOwnedContainerTest_LDADD = $(LIBADD) $(LDADD_AWS)
 
