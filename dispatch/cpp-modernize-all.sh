@@ -3,7 +3,7 @@
 # Reformat all of the files that are part of the git repo that
 # match a given pattern using the repo's .clang-format file.
 
-ROOT=/Users/jimg/src/opendap/hyrax/bes/
+ROOT=/Users/jimg/src/opendap/hyrax/bes
 SDK=$(xcrun --show-sdk-path)
 
 pattern="${1:-'*.[ch]pp *.cc *.h *.hh'}"
@@ -21,4 +21,5 @@ git  ls-files $pattern \
     -extra-arg=-I"$SDK/usr/include/c++/v1" \
     -extra-arg=-I"$ROOT/dap" \
     -extra-arg=-I"$ROOT/xmlcommand" \
-    -extra-arg=-I"/usr/local/include"
+    -extra-arg=-isystem -extra-arg=/usr/local/include \
+    -extra-arg=-DLIBC_INLINE=inline

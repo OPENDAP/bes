@@ -1,6 +1,6 @@
 # How to use clang-tidy and clang-format to update older C++ code
 
-_James Gallagher, source ChatGPT 5.0_
+_James Gallagher, ChatGPT 5.0_
 
 ## Reformat all the C++ files in a directory
 
@@ -32,17 +32,22 @@ git  ls-files '*.[ch]pp' '*.cc' '*.h' '*.hh' \
 ## Updating C++ code to use 'modern' C++ features
 
 Here's a basic one-file fix that will change all the declarations in a header
-to use the C++14 _override_ keyword were applicable:
+to use the C++14 _override_ keyword were applicable. There is a script that will
+run this in _bes/dispatch/cpp-modernize-all.sh_.
 
 ```bash
+ROOT=/Users/jimg/src/opendap/hyrax/bes # <-- fix this path
 SDK=$(xcrun --show-sdk-path)
 
 clang-tidy -p . -checks='-*,modernize-use-override' -fix \
-  -extra-arg=-std=c++14 \
-  -extra-arg=-stdlib=libc++ \
-  -extra-arg=-isysroot -extra-arg="$SDK" \
-  -extra-arg=-I"$SDK/usr/include/c++/v1" \
-  BESVersionResponseHandler.h
+    -extra-arg=-std=c++14 \
+    -extra-arg=-stdlib=libc++ \
+    -extra-arg=-isysroot -extra-arg="$SDK" \
+    -extra-arg=-I"$SDK/usr/include/c++/v1" \
+    -extra-arg=-I"$ROOT/dap" \
+    -extra-arg=-I"$ROOT/xmlcommand" \
+    -extra-arg=-isystem -extra-arg=/usr/local/include \
+    BESVersionResponseHandler.h
 ```
 
 It's tempting to make up a 'one script to rule them all,' but don't. Plod along
@@ -61,10 +66,12 @@ Here is an example of the error from a missing header directory:
 Doing that will result in corrupt files.
 
 When clang-tidy finds errors, it will not fix _anything_ in that source file.
-There is a work around; use the _-fix-error_ option. But, this may not be what is best.
+There is a workaround; use the _-fix-errors_ option. But this may not be what is best.
 The output of clang-tidy should not contain errors. Warnings are OK, but errors
-mean the command is likely missing some header files. Here's what the output should look like:
-```aiignore
+mean the command is likely missing some header files. Here's what the output should look like.
+The warnings are OK, but if you see errors, then there are problems clang-tidy cannot 
+ handle, and I would not trust it to edit the code.
+```bash
 [1/10] Processing file /Users/jimg/src/opendap/hyrax/bes/dispatch/unit-tests/BESCatalogListTest.cc.
 [2/10] Processing file /Users/jimg/src/opendap/hyrax/bes/dispatch/unit-tests/BESFileLockingCacheTest.cc.
 [3/10] Processing file /Users/jimg/src/opendap/hyrax/bes/dispatch/unit-tests/CatalogItemTest.cc.
@@ -101,7 +108,7 @@ mean the command is likely missing some header files. Here's what the output sho
 
 There is a way to make a compilation database using the command _bear_, but I
 found that was harder to use and limit the cope of changes. There is also a second
-command _run-clang-tidy_ but I found there were issues with that.
+command _run-clang-tidy_, but I found there were issues with that.
 
 ## What should be changed and how to do that
 
@@ -155,7 +162,7 @@ These are usually low drama:
 
 ## 5. Things I’d be *careful* with in legacy code
 
-These are *powerful* but more likely to cause friction in an older, widely-used codebase, even though they’re C++14-compatible:
+These are *powerful* but more likely to cause friction in an older, widely used codebase, even though they’re C++14-compatible:
 
 * `modernize-use-auto` – can be stylistically controversial and occasionally hurt readability in generic-heavy code.
 * `modernize-pass-by-value` – changes function signatures; can cause ABI or overload selection changes.
@@ -169,7 +176,7 @@ I’d either:
 
 ## Suggested order of passes
 
-If you want a practical sequence that’s unlikely to blow anything up:
+If you want a practical sequence, that’s unlikely to blow anything up:
 
 1. **Overrides & special members & `void` args:**
 
@@ -209,7 +216,7 @@ I’ll assume you run `clang-format` **at the very end**, once.
 
 ---
 
-## Phase 1 – Class interfaces & obvious correctness
+## Phase 1 – Class interfaces and obvious correctness
 
 **1. Overrides & special members & `(void)`**
 
@@ -219,7 +226,7 @@ I’ll assume you run `clang-format` **at the very end**, once.
 * `modernize-redundant-void-arg`
 
 *Why first:*
-Touches class APIs and function declarations, but is very low-risk and clarifies intent for later checks. Also reduces noise when you inspect later diffs.
+Touches class APIs and function declarations, but is very low risk and clarifies intent for later checks. Also reduces noise when you inspect later diffs.
 
 ---
 
@@ -231,7 +238,8 @@ Touches class APIs and function declarations, but is very low-risk and clarifies
 If you’re at all nervous about ownership/ABI, split this into two passes and run `modernize-use-nullptr` alone first.
 
 *Why now:*
-Null semantics get cleaned up early; later checks may be easier to read with `nullptr`. `modernize-make-unique` is still “semantic” (ownership), so keep it relatively early so you can test it in isolation.
+Null semantics get cleaned up early; later checks may be easier to read with `nullptr`. `modernize-make-unique` 
+it is still “semantic” (ownership), so keep it relatively early so you can test it in isolation.
 
 ---
 
@@ -283,8 +291,8 @@ If you have some particularly critical files, you might run this with a narrow `
 
 * `modernize-loop-convert`
 
-*Why this late:*
-Changes the *shape* of control flow (index-based loops → range-for). Semantics should stay the same, but it can interact with subtle off-by-one code, and the visual diff is larger. Doing it after your APIs, linkage, and string literals are stable makes regressions easier to isolate.
+*Why this is applied later:*
+Changes the *shape* of control flow (index-based loops → range-for). Semantics should stay the same, but it can interact with subtle off-by-one code, and the visual diff is larger. Doing it after your APIs, linkage, and string literals are stable, makes regressions easier to isolate.
 
 ---
 
@@ -293,7 +301,7 @@ Changes the *shape* of control flow (index-based loops → range-for). Semantics
 * `modernize-use-emplace`
 
 *Why after loops:*
-It mostly affects call sites (`push_back(T(...))` → `emplace_back(...)`) and can change which constructor gets picked (usually for the better, but still). Put it after all structural cleanups so if something misbehaves it’s obvious this pass was the cause.
+It mostly affects call sites (`push_back(T(...))` → `emplace_back(...)`) and can change which constructor gets picked (usually for the better, but still). Put it after all structural cleanups, so if something misbehaves, it’s obvious this pass was the cause.
 
 ---
 
@@ -336,8 +344,6 @@ This will normalize all the whitespace/indentation churn caused by the edits abo
 9. (Optional) `modernize-use-bool-literals`, `modernize-deprecated-headers` (anywhere after 2, before 7)
 10. `clang-format` pass
 
-If you tell me which phases you actually want to run (maybe you want to skip linkage changes or smart pointers), I can collapse this to a 3–4-pass plan tailored to your exact appetite for change.
-
 ## Getting _clang-tidy_ on OSX
 
 [!NOTE]
@@ -353,10 +359,10 @@ Here’s how to install it and get it working:
    brew install llvm
    ```
 
-   This will install newer LLVM tools (including clang-tidy) but they will be keg-only (not automatically in your PATH). ([Gist][2])
+   This will install newer LLVM tools (including clang-tidy), but they will be keg-only (not automatically in your PATH). ([Gist][2])
 
 2. Add the LLVM tool-bin directory to your PATH (or create symlinks)
-   For example on Apple Silicon (homebrew default `/opt/homebrew`) you might do:
+   For example, on Apple Silicon (homebrew default `/opt/homebrew`) you might do:
 
    ```bash
    export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
@@ -386,7 +392,7 @@ Here’s how to install it and get it working:
 
 * Because this installs a newer LLVM than the system’s default clang, you may end up using a different compiler version than Xcode’s default — that’s usually fine but something to keep aware of.
 * On macOS with M1/ARM or newer SDKs, sometimes you’ll hit compatibility issues if the tooling was built for a different architecture or SDK. (There are issues reported for arm64 builds of clang-tidy on macOS) ([GitHub][5])
-* If you only want a lightweight install (just clang-tidy) you may look at alternative binaries (there is a “clang-tools” package on PyPI, etc) but the Homebrew llvm route is the most reliable. ([PyPI][6])
+* If you only want a lightweight installation (just clang-tidy), you may look at alternative binaries (there is a “clang-tools” package on PyPI, etc.), but the Homebrew llvm route is the most reliable. ([PyPI][6])
 
 ---
 

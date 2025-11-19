@@ -601,7 +601,7 @@ BESCatalogDirectory::get_node(const string &path) const
  * this is the empty string, do not print information about nodes. This
  * parameter's value should not include a leading slash (e.g., 'contents.html').
  * @param leaf_suffix Appended to each leaf item found. Likely '.html', but
- * _if the empty string_ do not print information about leaves.
+ * _if the empty string_ does not print information about leaves.
  * @param out Write the site map to this stream
  * @param path Write the data for this node in the catalog. Starts with a slash.
  */
