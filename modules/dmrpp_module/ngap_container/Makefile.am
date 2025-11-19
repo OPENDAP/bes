@@ -9,7 +9,7 @@ ACLOCAL_AMFLAGS = -I conf
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand \
 -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src -I$(top_srcdir)/aws $(DAP_CFLAGS)
 
-LDADD = $(abs_top_builddir)/aws/libbes_aws.la $(aws_libs)
+LDADD = $(top_builddir)/aws/libbes_aws.la $(aws_libs)
 
 AM_CXXFLAGS=
 AM_LDFLAGS = -L$(aws_libdir)

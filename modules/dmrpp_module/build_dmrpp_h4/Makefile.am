@@ -26,9 +26,15 @@ if DARWIN
 AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,@loader_path
 else
 AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,'$$ORIGIN'
+    ifeq ($(strip $(aws_libdir64)),)
+        $(info "aws_libdir64 not set, skipping")
+    else
+        AM_LDFLAGS += -L$(aws_libdir64)
+        AM_LDFLAGS += -Wl,-rpath,$(aws_libdir64)
+    endif
 endif
 
-LDADD = $(abs_top_builddir)/aws/libbes_aws.la $(aws_libs)
+LDADD = $(top_builddir)/aws/libbes_aws.la $(aws_libs)
 
 # SUBDIRS = . unit-tests tests
 

@@ -42,4 +42,4 @@ besstandalone_SOURCES = besstandalone.cc StandAloneApp.cc StandAloneClient.cc \
 # This depends on building in bes/cmdln first. It's not a good way to write
 # teh Makefile.am, but I cannot get distcheck to work otherwise. jhrg 9/8/23
 besstandalone_LDADD = $(top_builddir)/cmdln/CmdTranslation.o $(top_builddir)/dispatch/libbes_dispatch.la \
-    $(top_builddir)/xmlcommand/libbes_xml_command.la $(READLINE_LIBS) $(XML2_LIBS) $(abs_top_builddir)/aws/libbes_aws.la $(aws_libs)
+    $(top_builddir)/xmlcommand/libbes_xml_command.la $(READLINE_LIBS) $(XML2_LIBS) $(top_builddir)/aws/libbes_aws.la $(aws_libs)

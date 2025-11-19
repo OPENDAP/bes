@@ -25,7 +25,7 @@ AM_CXXFLAGS=
 AM_LDFLAGS = -L$(aws_libdir)
 include $(top_srcdir)/coverage.mk
 
-LDADD = $(abs_top_builddir)/aws/libbes_aws.la $(aws_libs)
+LDADD = $(top_builddir)/aws/libbes_aws.la $(aws_libs)
 
 if DARWIN
 AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,@loader_path

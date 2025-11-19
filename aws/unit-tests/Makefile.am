@@ -11,7 +11,7 @@ AM_LDFLAGS = -L$(aws_libdir)
 # like bin_PROGRAMS.
 # NB: aws_libs is set in configure.ac. jhrg 10/16/25
 
-LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(abs_top_builddir)/aws/libbes_aws.la $(aws_libs) $(BES_HTTP_LIB)
+LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/aws/libbes_aws.la $(aws_libs) $(BES_HTTP_LIB)
 
 # aws_libdir is set in configure.ac. jhrg 10/16/25
 # aws_libdir64 is also set in configure.ac sbl 11/14/25
