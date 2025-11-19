@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -44,12 +44,13 @@
  * @see BESXMLInfo
  * @see BESResponseObject
  */
-class BESVersionInfo: public BESInfo {
+class BESVersionInfo : public BESInfo {
 private:
     bool _inbes;
     bool _inhandler;
-    BESInfo * _info;
+    BESInfo *_info;
     void add_version(const std::string &type, const std::string &name, const std::string &vers);
+
 public:
     BESVersionInfo();
     ~BESVersionInfo() override;
@@ -58,62 +59,34 @@ public:
     virtual void add_module(const std::string &n, const std::string &v);
     virtual void add_service(const std::string &n, const std::list<std::string> &vers);
 
-    void begin_response(const std::string &response_name, BESDataHandlerInterface &dhi) override
-    {
+    void begin_response(const std::string &response_name, BESDataHandlerInterface &dhi) override {
         _info->begin_response(response_name, dhi);
     }
-    void end_response() override
-    {
-        _info->end_response();
-    }
+    void end_response() override { _info->end_response(); }
 
-    void add_tag(const std::string &tag_name,
-                         const std::string &tag_data,
-                         std::map<std::string, std::string, std::less<>> *attrs = nullptr) override
-    {
+    void add_tag(const std::string &tag_name, const std::string &tag_data,
+                 std::map<std::string, std::string, std::less<>> *attrs = nullptr) override {
         _info->add_tag(tag_name, tag_data, attrs);
     }
     void begin_tag(const std::string &tag_name,
-                           std::map<std::string, std::string, std::less<>> *attrs = nullptr) override
-    {
+                   std::map<std::string, std::string, std::less<>> *attrs = nullptr) override {
         _info->begin_tag(tag_name, attrs);
     }
-    void end_tag(const std::string &tag_name) override
-    {
-        _info->end_tag(tag_name);
-    }
+    void end_tag(const std::string &tag_name) override { _info->end_tag(tag_name); }
 
-    void add_data(const std::string &s) override
-    {
-        _info->add_data(s);
-    }
-    void add_space(unsigned long num_spaces) override
-    {
-        _info->add_space(num_spaces);
-    }
-    void add_break(unsigned long num_breaks) override
-    {
-        _info->add_break(num_breaks);
-    }
-    void add_data_from_file(const std::string &key, const std::string &name) override
-    {
+    void add_data(const std::string &s) override { _info->add_data(s); }
+    void add_space(unsigned long num_spaces) override { _info->add_space(num_spaces); }
+    void add_break(unsigned long num_breaks) override { _info->add_break(num_breaks); }
+    void add_data_from_file(const std::string &key, const std::string &name) override {
         _info->add_data_from_file(key, name);
     }
-    void add_exception(const BESError &e, const std::string &admin) override
-    {
-        _info->add_exception(e, admin);
-    }
-    void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override
-    {
+    void add_exception(const BESError &e, const std::string &admin) override { _info->add_exception(e, admin); }
+    void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override {
         _info->transmit(transmitter, dhi);
     }
-    void print(std::ostream &strm) override
-    {
-        _info->print(strm);
-    }
+    void print(std::ostream &strm) override { _info->print(strm); }
 
     void dump(std::ostream &strm) const override;
 };
 
 #endif // BESVersionInfo_h_
-

@@ -38,13 +38,9 @@
 
 using namespace std;
 
-BESCatalogEntry::BESCatalogEntry(const string &name, const string &catalog) :
-        _name(name), _catalog(catalog)
-{
-}
+BESCatalogEntry::BESCatalogEntry(const string &name, const string &catalog) : _name(name), _catalog(catalog) {}
 
-BESCatalogEntry::~BESCatalogEntry()
-{
+BESCatalogEntry::~BESCatalogEntry() {
     // iterate through the entry list and delete them all
     map<string, BESCatalogEntry *>::iterator i = _entry_list.begin();
     map<string, BESCatalogEntry *>::iterator e = _entry_list.end();
@@ -55,8 +51,7 @@ BESCatalogEntry::~BESCatalogEntry()
     }
 }
 
-void BESCatalogEntry::set_size(off_t size)
-{
+void BESCatalogEntry::set_size(off_t size) {
     ostringstream strm;
     strm << size;
     _size = strm.str();
@@ -69,9 +64,8 @@ void BESCatalogEntry::set_size(off_t size)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESCatalogEntry::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESCatalogEntry::dump - (" << (void *) this << ")" << endl;
+void BESCatalogEntry::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESCatalogEntry::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
 
     strm << BESIndent::LMarg << "name: " << _name << endl;
@@ -89,8 +83,7 @@ void BESCatalogEntry::dump(ostream &strm) const
             strm << BESIndent::LMarg << (*si) << endl;
         }
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << "none" << endl;
     }
 
@@ -104,8 +97,7 @@ void BESCatalogEntry::dump(ostream &strm) const
             strm << BESIndent::LMarg << (*mi).first << " = " << (*mi).second << endl;
         }
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << "none" << endl;
     }
 
@@ -128,4 +120,3 @@ void BESCatalogEntry::dump(ostream &strm) const
 
     BESIndent::UnIndent();
 }
-

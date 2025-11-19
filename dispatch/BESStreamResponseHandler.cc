@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundatiion; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -33,23 +33,23 @@
 #include <unistd.h>
 
 #include <cerrno>
-#include <iostream>
-#include <fstream>
-#include <string>
 #include <cstring>
+#include <fstream>
+#include <iostream>
+#include <string>
 
+using std::endl;
 using std::ifstream;
 using std::ios;
-using std::endl;
-using std::string;
 using std::ostream;
+using std::string;
 
-#include "BESStreamResponseHandler.h"
-#include "BESForbiddenError.h"
-#include "BESNotFoundError.h"
-#include "BESInternalError.h"
 #include "BESContainer.h"
 #include "BESDataHandlerInterface.h"
+#include "BESForbiddenError.h"
+#include "BESInternalError.h"
+#include "BESNotFoundError.h"
+#include "BESStreamResponseHandler.h"
 #include "BESUtil.h"
 #include "RequestServiceTimer.h"
 
@@ -68,12 +68,12 @@ using std::ostream;
  * @see BESHTMLInfo
  * @see BESRequestHandlerList
  */
-void BESStreamResponseHandler::execute(BESDataHandlerInterface &dhi)
-{
+void BESStreamResponseHandler::execute(BESDataHandlerInterface &dhi) {
     d_response_object = nullptr;
 
     // Verify the request hasn't exceeded bes_timeout, and disable timeout if allowed.
-    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit", __FILE__, __LINE__);
+    RequestServiceTimer::TheTimer()->throw_if_timeout_expired(prolog + "ERROR: bes-timeout expired before transmit",
+                                                              __FILE__, __LINE__);
     BESUtil::conditional_timeout_cancel();
 
     // What if there is a special way to stream back a data file?
@@ -103,7 +103,7 @@ void BESStreamResponseHandler::execute(BESDataHandlerInterface &dhi)
     if (!os) {
         string serr = "Unable to stream file because it cannot be opened. file: '" + filename + "'  msg: ";
         char *err = strerror(myerrno);
-        serr += err ? err: "Unknown error";
+        serr += err ? err : "Unknown error";
 
         // ENOENT means that the node wasn't found.
         // On some systems a file that doesn't exist returns ENOTDIR because: w.f.t?
@@ -118,10 +118,10 @@ void BESStreamResponseHandler::execute(BESDataHandlerInterface &dhi)
 
     std::streamsize nbytes;
     char block[BES_STREAM_BUFFER_SIZE];
-    os.read(block, sizeof block);   // read() returns the istream&
-    nbytes = os.gcount();   // gcount() returns the number of chars read above
+    os.read(block, sizeof block); // read() returns the istream&
+    nbytes = os.gcount();         // gcount() returns the number of chars read above
     while (nbytes) {
-        dhi.get_output_stream().write((char*) block, nbytes);
+        dhi.get_output_stream().write((char *)block, nbytes);
         os.read(block, sizeof block);
         nbytes = os.gcount();
     }
@@ -136,8 +136,7 @@ void BESStreamResponseHandler::execute(BESDataHandlerInterface &dhi)
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void BESStreamResponseHandler::transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/)
-{
+void BESStreamResponseHandler::transmit(BESTransmitter * /*transmitter*/, BESDataHandlerInterface & /*dhi*/) {
     // The Data is transmitted when it is read, dumped to stdout, so there is nothing
     // to transmit here.
 }
@@ -148,17 +147,13 @@ void BESStreamResponseHandler::transmit(BESTransmitter */*transmitter*/, BESData
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESStreamResponseHandler::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESStreamResponseHandler::dump - (" << (void *) this << ")" << endl;
+void BESStreamResponseHandler::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESStreamResponseHandler::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     BESResponseHandler::dump(strm);
     BESIndent::UnIndent();
 }
 
-BESResponseHandler *
-BESStreamResponseHandler::BESStreamResponseBuilder(const string &name)
-{
+BESResponseHandler *BESStreamResponseHandler::BESStreamResponseBuilder(const string &name) {
     return new BESStreamResponseHandler(name);
 }
-

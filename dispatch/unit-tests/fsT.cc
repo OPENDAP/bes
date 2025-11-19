@@ -31,14 +31,14 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
 
 using namespace CppUnit;
 
-#include <iostream>
-#include <fstream>
 #include <cstdlib>
+#include <fstream>
+#include <iostream>
 #include <map>
 #include <string>
 
@@ -46,34 +46,33 @@ using std::cerr;
 using std::cout;
 using std::endl;
 using std::ifstream;
+using std::make_pair;
 using std::map;
 using std::string;
-using std::make_pair;
 
-#include "test_config.h"
 #include "BESFSDir.h"
 #include "BESFSFile.h"
+#include "test_config.h"
 #include <unistd.h>
 
 static bool debug = false;
 
 #undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
+#define DBG(x)                                                                                                         \
+    do {                                                                                                               \
+        if (debug)                                                                                                     \
+            (x);                                                                                                       \
+    } while (false);
 
-class fsT: public TestFixture {
+class fsT : public TestFixture {
 private:
     map<string, string> fileList;
 
 public:
-    fsT()
-    {
-    }
-    ~fsT()
-    {
-    }
+    fsT() = default;
+    ~fsT() = default;
 
-    void setUp()
-    {
+    void setUp() {
         fileList.insert(make_pair("agglistT.cc", "agglistT.cc"));
         fileList.insert(make_pair("bz2T.cc", "bz2T.cc"));
         fileList.insert(make_pair("cacheT.cc", "cacheT.cc"));
@@ -106,19 +105,15 @@ public:
         fileList.insert(make_pair("zT.cc", "zT.cc"));
     }
 
-    void tearDown()
-    {
-    }
+    void tearDown() {}
 
-CPPUNIT_TEST_SUITE( fsT );
+    CPPUNIT_TEST_SUITE(fsT);
 
-    CPPUNIT_TEST( do_test );
+    CPPUNIT_TEST(do_test);
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 
-    void do_test()
-    {
+    void do_test() {
         cout << "*****************************************" << endl;
         cout << "Entered fsT::run" << endl;
 
@@ -127,52 +122,52 @@ CPPUNIT_TEST_SUITE( fsT );
         BESFSDir::fileIterator e = fsd.endOfFileList();
         for (; i != e; i++) {
             map<string, string>::iterator f = fileList.find((*i).getFileName());
-            CPPUNIT_ASSERT( f != fileList.end() );
-            CPPUNIT_ASSERT( (*i).getDirName() == "./" );
+            CPPUNIT_ASSERT(f != fileList.end());
+            CPPUNIT_ASSERT((*i).getDirName() == "./");
         }
 
         {
             BESFSFile fsf("/some/path/to/a/file/with/extension/fnoc1.nc");
-            CPPUNIT_ASSERT( fsf.getFullPath() == "/some/path/to/a/file/with/extension/fnoc1.nc" );
-            CPPUNIT_ASSERT( fsf.getDirName() == "/some/path/to/a/file/with/extension" );
-            CPPUNIT_ASSERT( fsf.getBaseName() == "fnoc1" );
-            CPPUNIT_ASSERT( fsf.getFileName() == "fnoc1.nc" );
-            CPPUNIT_ASSERT( fsf.getExtension() == "nc" );
+            CPPUNIT_ASSERT(fsf.getFullPath() == "/some/path/to/a/file/with/extension/fnoc1.nc");
+            CPPUNIT_ASSERT(fsf.getDirName() == "/some/path/to/a/file/with/extension");
+            CPPUNIT_ASSERT(fsf.getBaseName() == "fnoc1");
+            CPPUNIT_ASSERT(fsf.getFileName() == "fnoc1.nc");
+            CPPUNIT_ASSERT(fsf.getExtension() == "nc");
             string reason;
-            CPPUNIT_ASSERT( fsf.exists( reason ) == false );
-            CPPUNIT_ASSERT( fsf.isReadable( reason ) == false );
-            CPPUNIT_ASSERT( fsf.isWritable( reason ) == false );
-            CPPUNIT_ASSERT( fsf.isExecutable( reason ) == false );
-            CPPUNIT_ASSERT( fsf.hasDotDot() == false );
+            CPPUNIT_ASSERT(fsf.exists(reason) == false);
+            CPPUNIT_ASSERT(fsf.isReadable(reason) == false);
+            CPPUNIT_ASSERT(fsf.isWritable(reason) == false);
+            CPPUNIT_ASSERT(fsf.isExecutable(reason) == false);
+            CPPUNIT_ASSERT(fsf.hasDotDot() == false);
         }
 
         {
             BESFSFile fsf("./fsT");
-            CPPUNIT_ASSERT( fsf.getFullPath() == "./fsT" );
-            CPPUNIT_ASSERT( fsf.getDirName() == "." );
-            CPPUNIT_ASSERT( fsf.getBaseName() == "fsT" );
-            CPPUNIT_ASSERT( fsf.getExtension().empty() );
+            CPPUNIT_ASSERT(fsf.getFullPath() == "./fsT");
+            CPPUNIT_ASSERT(fsf.getDirName() == ".");
+            CPPUNIT_ASSERT(fsf.getBaseName() == "fsT");
+            CPPUNIT_ASSERT(fsf.getExtension().empty());
             string reason;
-            CPPUNIT_ASSERT( fsf.exists( reason ) == true );
-            CPPUNIT_ASSERT( fsf.isReadable( reason ) == true );
-            CPPUNIT_ASSERT( fsf.isWritable( reason ) == true );
-            CPPUNIT_ASSERT( fsf.isExecutable( reason ) == true );
-            CPPUNIT_ASSERT( fsf.hasDotDot() == false );
+            CPPUNIT_ASSERT(fsf.exists(reason) == true);
+            CPPUNIT_ASSERT(fsf.isReadable(reason) == true);
+            CPPUNIT_ASSERT(fsf.isWritable(reason) == true);
+            CPPUNIT_ASSERT(fsf.isExecutable(reason) == true);
+            CPPUNIT_ASSERT(fsf.hasDotDot() == false);
         }
 
         {
             BESFSFile fsf("/some/dir/../parent/dir/fnoc1.nc");
-            CPPUNIT_ASSERT( fsf.getFullPath() == "/some/dir/../parent/dir/fnoc1.nc" );
-            CPPUNIT_ASSERT( fsf.getDirName() == "/some/dir/../parent/dir" );
-            CPPUNIT_ASSERT( fsf.getBaseName() == "fnoc1" );
-            CPPUNIT_ASSERT( fsf.getFileName() == "fnoc1.nc" );
-            CPPUNIT_ASSERT( fsf.getExtension() == "nc" );
+            CPPUNIT_ASSERT(fsf.getFullPath() == "/some/dir/../parent/dir/fnoc1.nc");
+            CPPUNIT_ASSERT(fsf.getDirName() == "/some/dir/../parent/dir");
+            CPPUNIT_ASSERT(fsf.getBaseName() == "fnoc1");
+            CPPUNIT_ASSERT(fsf.getFileName() == "fnoc1.nc");
+            CPPUNIT_ASSERT(fsf.getExtension() == "nc");
             string reason;
-            CPPUNIT_ASSERT( fsf.exists( reason ) == false );
-            CPPUNIT_ASSERT( fsf.isReadable( reason ) == false );
-            CPPUNIT_ASSERT( fsf.isWritable( reason ) == false );
-            CPPUNIT_ASSERT( fsf.isExecutable( reason ) == false );
-            CPPUNIT_ASSERT( fsf.hasDotDot() == true );
+            CPPUNIT_ASSERT(fsf.exists(reason) == false);
+            CPPUNIT_ASSERT(fsf.isReadable(reason) == false);
+            CPPUNIT_ASSERT(fsf.isWritable(reason) == false);
+            CPPUNIT_ASSERT(fsf.isExecutable(reason) == false);
+            CPPUNIT_ASSERT(fsf.hasDotDot() == true);
         }
 
         cout << "*****************************************" << endl;
@@ -180,22 +175,21 @@ CPPUNIT_TEST_SUITE( fsT );
     }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( fsT );
+CPPUNIT_TEST_SUITE_REGISTRATION(fsT);
 
-int main(int argc, char*argv[])
-{
+int main(int argc, char *argv[]) {
     int option_char;
     while ((option_char = getopt(argc, argv, "dh")) != EOF)
         switch (option_char) {
         case 'd':
-            debug = 1;  // debug is a static global
+            debug = true; // debug is a static global
             break;
-        case 'h': {     // help - show test names
+        case 'h': { // help - show test names
             cerr << "Usage: fsT has the following tests:" << endl;
-            const std::vector<Test*> &tests = fsT::suite()->getTests();
+            const std::vector<Test *> &tests = fsT::suite()->getTests();
             unsigned int prefix_len = fsT::suite()->getName().append("::").size();
-            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            for (auto test : tests) {
+                cerr << test->getName().replace(0, prefix_len, "") << endl;
             }
             break;
         }
@@ -214,11 +208,11 @@ int main(int argc, char*argv[])
     if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
-    }
-    else {
+    } else {
         int i = 0;
         while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
+            if (debug)
+                cerr << "Running " << argv[i] << endl;
             test = fsT::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
@@ -226,4 +220,3 @@ int main(int argc, char*argv[])
 
     return wasSuccessful ? 0 : 1;
 }
-

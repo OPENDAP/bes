@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -32,33 +32,32 @@
 
 #include "config.h"
 
-#include <cstdlib>
 #include <cerrno>
+#include <cstdlib>
 #include <cstring>
 #include <mutex>
 
 #include "BESContextManager.h"
-#include "BESInfo.h"
 #include "BESDebug.h"
+#include "BESInfo.h"
 
 using std::endl;
-using std::string;
 using std::ostream;
+using std::string;
 
 BESContextManager *BESContextManager::d_instance = nullptr;
 
 #define MODULE "context"
 #define prolog std::string("BESContextManager::").append(__func__).append("() - ")
 
-BESContextManager::BESContextManager() {}
+BESContextManager::BESContextManager() = default;
 
 /** @brief set context in the BES
  *
  * @param name name of the context
  * @param value value the context is to take
  */
-void BESContextManager::set_context(const string &name, const string &value)
-{
+void BESContextManager::set_context(const string &name, const string &value) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESDEBUG(MODULE, prolog << "name=\"" << name << "\", value=\"" << value << "\"" << endl);
@@ -70,8 +69,7 @@ void BESContextManager::set_context(const string &name, const string &value)
  * @param name name of the context
  * @param value value the context is to take
  */
-void BESContextManager::unset_context(const string &name)
-{
+void BESContextManager::unset_context(const string &name) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESDEBUG(MODULE, prolog << "name=\"" << name << "\"" << endl);
@@ -87,8 +85,7 @@ void BESContextManager::unset_context(const string &name)
  * context was found or not. An empty string could be a valid value
  * @return the value of the requested context, empty string if not found
  */
-string BESContextManager::get_context(const string &name, bool &found)
-{
+string BESContextManager::get_context(const string &name, bool &found) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     string ret;
@@ -98,8 +95,7 @@ string BESContextManager::get_context(const string &name, bool &found)
     if (i != _context_list.end()) {
         ret = i->second;
         found = true;
-    }
-    else {
+    } else {
         found = false;
     }
 
@@ -117,53 +113,51 @@ string BESContextManager::get_context(const string &name, bool &found)
  * if the context \arg name was not found. If the \arg name was found but
  * the value is the empty string, return 0.
  */
-int BESContextManager::get_context_int(const string &name, bool &found)
-{
+int BESContextManager::get_context_int(const string &name, bool &found) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     string value = BESContextManager::TheManager()->get_context(name, found);
 
-    if (!found || value.empty()) return 0;
+    if (!found || value.empty())
+        return 0;
 
     char *endptr;
     errno = 0;
-    int val = strtol(value.c_str(), &endptr, /*int base*/10);
+    int val = strtol(value.c_str(), &endptr, /*int base*/ 10);
     if (val == 0 && errno > 0) {
-        throw BESInternalError(string("Error reading an integer value for the context '") + name + "': " + strerror(errno),
-            __FILE__, __LINE__);
+        throw BESInternalError(string("Error reading an integer value for the context '") + name +
+                                   "': " + strerror(errno),
+                               __FILE__, __LINE__);
     }
     BESDEBUG(MODULE, prolog << "name=\"" << name << "\", found=\"" << found << "\" value: \"" << val << "\"" << endl);
 
     return val;
 }
 
-uint64_t BESContextManager::get_context_uint64(const string &name, bool &found)
-{
+uint64_t BESContextManager::get_context_uint64(const string &name, bool &found) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     string value = BESContextManager::TheManager()->get_context(name, found);
 
-    if (!found || value.empty()) return 0;
+    if (!found || value.empty())
+        return 0;
 
     char *endptr;
     errno = 0;
-    uint64_t val = strtoull(value.c_str(), &endptr, /*int base*/10);
+    uint64_t val = strtoull(value.c_str(), &endptr, /*int base*/ 10);
     if (val == 0 && errno > 0) {
-        throw BESInternalError(string("Error reading an integer value for the context '") + name + "': " + strerror(errno),
+        throw BESInternalError(string("Error reading an integer value for the context '") + name +
+                                   "': " + strerror(errno),
                                __FILE__, __LINE__);
     }
     BESDEBUG(MODULE, prolog << "name=\"" << name << "\", found=\"" << found << "\" value: \"" << val << "\"" << endl);
     return val;
 }
 
-
-
-
 /** @brief Adds all context and their values to the given informational
  * object
  */
-void BESContextManager::list_context(BESInfo &info)
-{
+void BESContextManager::list_context(BESInfo &info) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     string name;
@@ -187,11 +181,10 @@ void BESContextManager::list_context(BESInfo &info)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESContextManager::dump(ostream &strm) const
-{
+void BESContextManager::dump(ostream &strm) const {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    strm << BESIndent::LMarg << prolog << "(this: " << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << prolog << "(this: " << (void *)this << ")" << endl;
     BESIndent::Indent();
     if (_context_list.size()) {
         strm << BESIndent::LMarg << "current context:" << endl;
@@ -202,16 +195,13 @@ void BESContextManager::dump(ostream &strm) const
             strm << BESIndent::LMarg << (*i).first << ": " << (*i).second << endl;
         }
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "no context" << endl;
     }
     BESIndent::UnIndent();
 }
 
-BESContextManager *
-BESContextManager::TheManager()
-{
+BESContextManager *BESContextManager::TheManager() {
     static BESContextManager manager;
     return &manager;
 }
@@ -225,6 +215,5 @@ void BESContextManager::initialize_instance() {
 
 void BESContextManager::delete_instance() {
     delete d_instance;
-    d_instance = 0;
+    d_instance = nullptr;
 }
-

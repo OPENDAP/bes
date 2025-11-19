@@ -47,7 +47,7 @@ public:
     FONcRequestHandler(const std::string &name);
     virtual ~FONcRequestHandler(void);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static std::string temp_dir;
     static bool byte_to_short;

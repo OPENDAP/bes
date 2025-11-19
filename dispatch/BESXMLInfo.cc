@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -30,18 +30,18 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <sstream>
 #include <map>
+#include <sstream>
 
-using std::ostringstream;
 using std::endl;
 using std::map;
-using std::string;
 using std::ostream;
+using std::ostringstream;
+using std::string;
 
-#include "BESXMLInfo.h"
-#include "BESUtil.h"
 #include "BESDataNames.h"
+#include "BESUtil.h"
+#include "BESXMLInfo.h"
 
 #define MY_ENCODING "ISO-8859-1"
 #define BES_SCHEMA "http://xml.opendap.org/ns/bes/1.0#"
@@ -51,28 +51,21 @@ using std::ostream;
  * @see BESInfo
  * @see BESResponseObject
  */
-BESXMLInfo::BESXMLInfo() :
-    BESInfo(), _writer(0), _doc_buf(0), _started(false), _ended(false)
-{
-}
+BESXMLInfo::BESXMLInfo() : BESInfo(), _writer(nullptr), _doc_buf(nullptr), _started(false), _ended(false) {}
 
-BESXMLInfo::~BESXMLInfo()
-{
-    cleanup();
-}
+BESXMLInfo::~BESXMLInfo() { cleanup(); }
 
-void BESXMLInfo::cleanup()
-{
+void BESXMLInfo::cleanup() {
     // make sure the buffer and writer are all cleaned up
     if (_writer) {
         xmlFreeTextWriter(_writer);
-        _writer = 0;
-        _doc_buf = 0;
+        _writer = nullptr;
+        _doc_buf = nullptr;
     }
 
     if (_doc_buf) {
         xmlBufferFree(_doc_buf);
-        _doc_buf = 0;
+        _doc_buf = nullptr;
     }
 
     // this always seems to be causing a memory fault
@@ -81,7 +74,7 @@ void BESXMLInfo::cleanup()
     _started = false;
     _ended = false;
     if (_strm) {
-        ((ostringstream *) _strm)->str("");
+        ((ostringstream *)_strm)->str("");
     }
 }
 
@@ -93,11 +86,9 @@ void BESXMLInfo::cleanup()
  * @param response_name name of the response this information represents
  * @param dhi information about the request and response
  */
-void BESXMLInfo::begin_response(const string &response_name, BESDataHandlerInterface &dhi)
-{
+void BESXMLInfo::begin_response(const string &response_name, BESDataHandlerInterface &dhi) {
     map<string, string, std::less<>> empty_attrs;
-    begin_response(response_name,  &empty_attrs, dhi);
-
+    begin_response(response_name, &empty_attrs, dhi);
 }
 /** @brief begin the informational response
  *
@@ -107,8 +98,8 @@ void BESXMLInfo::begin_response(const string &response_name, BESDataHandlerInter
  * @param response_name name of the response this information represents
  * @param dhi information about the request and response
  */
-void BESXMLInfo::begin_response(const string &response_name, map<string, string, std::less<>> *attrs, BESDataHandlerInterface &dhi)
-{
+void BESXMLInfo::begin_response(const string &response_name, map<string, string, std::less<>> *attrs,
+                                BESDataHandlerInterface &dhi) {
     BESInfo::begin_response(response_name, attrs, dhi);
 
     _response_name = response_name;
@@ -122,7 +113,7 @@ void BESXMLInfo::begin_response(const string &response_name, map<string, string,
     /* Create a new XML buffer, to which the XML document will be
      * written */
     _doc_buf = xmlBufferCreate();
-    if (_doc_buf == NULL) {
+    if (_doc_buf == nullptr) {
         cleanup();
         string err = (string) "Error creating the xml buffer for response " + _response_name;
         throw BESInternalError(err, __FILE__, __LINE__);
@@ -131,7 +122,7 @@ void BESXMLInfo::begin_response(const string &response_name, map<string, string,
     /* Create a new XmlWriter for memory, with no compression.
      * Remark: there is no compression for this kind of xmlTextWriter */
     _writer = xmlNewTextWriterMemory(_doc_buf, 0);
-    if (_writer == NULL) {
+    if (_writer == nullptr) {
         cleanup();
         string err = (string) "Error creating the xml writer for response " + _response_name;
         throw BESInternalError(err, __FILE__, __LINE__);
@@ -144,7 +135,7 @@ void BESXMLInfo::begin_response(const string &response_name, map<string, string,
         throw BESInternalError(err, __FILE__, __LINE__);
     }
 
-    rc = xmlTextWriterSetIndentString( _writer, BAD_CAST "    " );
+    rc = xmlTextWriterSetIndentString(_writer, BAD_CAST "    ");
     if (rc < 0) {
         cleanup();
         string err = (string) "Error setting indentation for response document " + _response_name;
@@ -156,7 +147,7 @@ void BESXMLInfo::begin_response(const string &response_name, map<string, string,
     /* Start the document with the xml default for the version,
      * encoding ISO 8859-1 and the default for the standalone
      * declaration. MY_ENCODING defined at top of this file*/
-    rc = xmlTextWriterStartDocument(_writer, NULL, MY_ENCODING, NULL);
+    rc = xmlTextWriterStartDocument(_writer, nullptr, MY_ENCODING, nullptr);
     if (rc < 0) {
         cleanup();
         string err = (string) "Error starting xml response document for " + _response_name;
@@ -165,7 +156,7 @@ void BESXMLInfo::begin_response(const string &response_name, map<string, string,
 
     /* Start an element named "response". Since this is the first element,
      * this will be the root element of the document */
-    rc = xmlTextWriterStartElementNS(_writer, NULL, BAD_CAST "response", BAD_CAST BES_SCHEMA);
+    rc = xmlTextWriterStartElementNS(_writer, nullptr, BAD_CAST "response", BAD_CAST BES_SCHEMA);
     if (rc < 0) {
         cleanup();
         string err = (string) "Error starting the response element for response " + _response_name;
@@ -175,8 +166,7 @@ void BESXMLInfo::begin_response(const string &response_name, map<string, string,
     /* Add the request id attribute */
     string reqid = dhi.data[REQUEST_ID_KEY];
     if (!reqid.empty()) {
-        rc = xmlTextWriterWriteAttribute( _writer, BAD_CAST REQUEST_ID_KEY,
-            BAD_CAST reqid.c_str() );
+        rc = xmlTextWriterWriteAttribute(_writer, BAD_CAST REQUEST_ID_KEY, BAD_CAST reqid.c_str());
         if (rc < 0) {
             cleanup();
             string err = (string) "Error adding attribute " + REQUEST_ID_KEY + " for response " + _response_name;
@@ -187,8 +177,8 @@ void BESXMLInfo::begin_response(const string &response_name, map<string, string,
     /* Add the request uuid attribute */
     string req_uuid = dhi.data[REQUEST_UUID_KEY];
     if (!req_uuid.empty()) {
-        rc = xmlTextWriterWriteAttribute( _writer, (const xmlChar *)( REQUEST_UUID_KEY),
-            (const xmlChar *)(req_uuid.c_str()) );
+        rc = xmlTextWriterWriteAttribute(_writer, (const xmlChar *)(REQUEST_UUID_KEY),
+                                         (const xmlChar *)(req_uuid.c_str()));
         if (rc < 0) {
             cleanup();
             string err = (string) "Error adding attribute " + REQUEST_UUID_KEY + " for response " + _response_name;
@@ -197,7 +187,7 @@ void BESXMLInfo::begin_response(const string &response_name, map<string, string,
     }
 
     /* Start an element for the specific response. */
-    rc = xmlTextWriterStartElement( _writer, BAD_CAST _response_name.c_str() );
+    rc = xmlTextWriterStartElement(_writer, BAD_CAST _response_name.c_str());
     if (rc < 0) {
         cleanup();
         string err = (string) "Error creating root element for response " + _response_name;
@@ -205,17 +195,15 @@ void BESXMLInfo::begin_response(const string &response_name, map<string, string,
     }
 
     map<string, string>::iterator it;
-    for ( it = attrs->begin(); it != attrs->end(); it++ )
-    {
-        rc = xmlTextWriterWriteAttribute( _writer, BAD_CAST it->first.c_str(), BAD_CAST it->second.c_str());
+    for (it = attrs->begin(); it != attrs->end(); it++) {
+        rc = xmlTextWriterWriteAttribute(_writer, BAD_CAST it->first.c_str(), BAD_CAST it->second.c_str());
         if (rc < 0) {
             cleanup();
             string err = (string) "Error creating root element for response " + _response_name;
             throw BESInternalError(err, __FILE__, __LINE__);
         }
     }
-
- }
+}
 
 /** @brief end the response
  *
@@ -224,8 +212,7 @@ void BESXMLInfo::begin_response(const string &response_name, map<string, string,
  * thrown.
  *
  */
-void BESXMLInfo::end_response()
-{
+void BESXMLInfo::end_response() {
     BESInfo::end_response();
 
     int rc = 0;
@@ -255,16 +242,15 @@ void BESXMLInfo::end_response()
 
     // must call this before getting the buffer content
     xmlFreeTextWriter(_writer);
-    _writer = 0;
+    _writer = nullptr;
 
     // get the xml document as a string and return
     if (!_doc_buf->content) {
         cleanup();
         string err = (string) "Error retrieving response document as string " + "for response " + _response_name;
         throw BESInternalError(err, __FILE__, __LINE__);
-    }
-    else {
-        _doc = (char *) _doc_buf->content;
+    } else {
+        _doc = (char *)_doc_buf->content;
     }
 
     _ended = true;
@@ -278,10 +264,9 @@ void BESXMLInfo::end_response()
  * @param tag_data information describing the tag
  * @param attrs map of attributes to add to the tag
  */
-void BESXMLInfo::add_tag(const string &tag_name, const string &tag_data, map<string, string, std::less<>> *attrs)
-{
+void BESXMLInfo::add_tag(const string &tag_name, const string &tag_data, map<string, string, std::less<>> *attrs) {
     /* Start an element named tag_name. */
-    int rc = xmlTextWriterStartElement( _writer, BAD_CAST tag_name.c_str() );
+    int rc = xmlTextWriterStartElement(_writer, BAD_CAST tag_name.c_str());
     if (rc < 0) {
         cleanup();
         string err = (string) "Error starting element " + tag_name + " for response " + _response_name;
@@ -297,8 +282,7 @@ void BESXMLInfo::add_tag(const string &tag_name, const string &tag_data, map<str
 
             // FIXME: is there one with no value?
             /* Add the attributes */
-            rc = xmlTextWriterWriteAttribute( _writer, BAD_CAST name.c_str(),
-                BAD_CAST val.c_str() );
+            rc = xmlTextWriterWriteAttribute(_writer, BAD_CAST name.c_str(), BAD_CAST val.c_str());
             if (rc < 0) {
                 cleanup();
                 string err = (string) "Error adding attribute " + name + " for response " + _response_name;
@@ -309,7 +293,7 @@ void BESXMLInfo::add_tag(const string &tag_name, const string &tag_data, map<str
 
     /* Write the value of the element */
     if (!tag_data.empty()) {
-        rc = xmlTextWriterWriteString( _writer, BAD_CAST tag_data.c_str() );
+        rc = xmlTextWriterWriteString(_writer, BAD_CAST tag_data.c_str());
         if (rc < 0) {
             cleanup();
             string err = (string) "Error writing the value for element " + tag_name + " for response " + _response_name;
@@ -331,8 +315,7 @@ void BESXMLInfo::add_tag(const string &tag_name, const string &tag_data, map<str
  * @param tag_name name of the tag to begin
  * @param attrs map of attributes to begin the tag with
  */
-void BESXMLInfo::begin_tag(const string &tag_name, map<string, string, std::less<>> *attrs)
-{
+void BESXMLInfo::begin_tag(const string &tag_name, map<string, string, std::less<>> *attrs) {
     begin_tag(tag_name, "", "", attrs);
 }
 
@@ -343,30 +326,24 @@ void BESXMLInfo::begin_tag(const string &tag_name, map<string, string, std::less
  * @param uri namespace uri
  * @param attrs map of attributes to begin the tag with
  */
-void BESXMLInfo::begin_tag(const string &tag_name,
-                           const string &ns,
-                           const string &uri,
-                           map<string, string, std::less<>> *attrs = nullptr)
-{
+void BESXMLInfo::begin_tag(const string &tag_name, const string &ns, const string &uri,
+                           map<string, string, std::less<>> *attrs = nullptr) {
     BESInfo::begin_tag(tag_name);
 
     /* Start an element named tag_name. */
     int rc = 0;
     if (ns.empty() && uri.empty()) {
-        rc = xmlTextWriterStartElement( _writer, BAD_CAST tag_name.c_str());
+        rc = xmlTextWriterStartElement(_writer, BAD_CAST tag_name.c_str());
         if (rc < 0) {
             cleanup();
             string err = (string) "Error starting element " + tag_name + " for response " + _response_name;
             throw BESInternalError(err, __FILE__, __LINE__);
         }
-    }
-    else {
+    } else {
         const char *cns = nullptr;
-        if (!ns.empty()) cns = ns.c_str();
-        rc = xmlTextWriterStartElementNS( _writer,
-            BAD_CAST cns,
-            BAD_CAST tag_name.c_str(),
-            BAD_CAST uri.c_str() );
+        if (!ns.empty())
+            cns = ns.c_str();
+        rc = xmlTextWriterStartElementNS(_writer, BAD_CAST cns, BAD_CAST tag_name.c_str(), BAD_CAST uri.c_str());
         if (rc < 0) {
             cleanup();
             string err = (string) "Error starting element " + tag_name + " for response " + _response_name;
@@ -382,8 +359,7 @@ void BESXMLInfo::begin_tag(const string &tag_name,
             string val = (*i).second;
 
             /* Add the attributes */
-            rc = xmlTextWriterWriteAttribute( _writer, BAD_CAST name.c_str(),
-                BAD_CAST val.c_str() );
+            rc = xmlTextWriterWriteAttribute(_writer, BAD_CAST name.c_str(), BAD_CAST val.c_str());
             if (rc < 0) {
                 cleanup();
                 string err = (string) "Error adding attribute " + name + " for response " + _response_name;
@@ -399,23 +375,22 @@ void BESXMLInfo::begin_tag(const string &tag_name,
  *
  * @param tag_name name of the tag to end
  */
-void BESXMLInfo::end_tag(const string &tag_name)
-{
+void BESXMLInfo::end_tag(const string &tag_name) {
     BESInfo::end_tag(tag_name);
 
     int rc = 0;
 
-    string s = ((ostringstream *) _strm)->str();
+    string s = ((ostringstream *)_strm)->str();
     if (!s.empty()) {
         /* Write the value of the element */
-        rc = xmlTextWriterWriteString( _writer, BAD_CAST s.c_str() );
+        rc = xmlTextWriterWriteString(_writer, BAD_CAST s.c_str());
         if (rc < 0) {
             cleanup();
             string err = (string) "Error writing the value for element " + tag_name + " for response " + _response_name;
             throw BESInternalError(err, __FILE__, __LINE__);
         }
 
-        ((ostringstream *) _strm)->str("");
+        ((ostringstream *)_strm)->str("");
     }
 
     // this should end the tag_name element
@@ -431,8 +406,7 @@ void BESXMLInfo::end_tag(const string &tag_name)
  *
  * @param num_spaces the number of spaces to add to the information
  */
-void BESXMLInfo::add_space(unsigned long num_spaces)
-{
+void BESXMLInfo::add_space(unsigned long num_spaces) {
     string to_add;
     for (unsigned long i = 0; i < num_spaces; i++) {
         to_add += " ";
@@ -444,8 +418,7 @@ void BESXMLInfo::add_space(unsigned long num_spaces)
  *
  * @param num_breaks the number of line breaks to add to the information
  */
-void BESXMLInfo::add_break(unsigned long num_breaks)
-{
+void BESXMLInfo::add_break(unsigned long num_breaks) {
     string to_add;
     for (unsigned long i = 0; i < num_breaks; i++) {
         to_add += "\n";
@@ -453,12 +426,11 @@ void BESXMLInfo::add_break(unsigned long num_breaks)
     BESInfo::add_data(to_add);
 }
 
-void BESXMLInfo::add_data(const string &s)
-{
+void BESXMLInfo::add_data(const string &s) {
 #if 0
     BESInfo::add_data(s);
 #else
-    int rc = xmlTextWriterWriteString( _writer, BAD_CAST s.c_str() );
+    int rc = xmlTextWriterWriteString(_writer, BAD_CAST s.c_str());
     if (rc < 0) {
         cleanup();
         throw BESInternalError(string("Error writing String data for response ") + _response_name, __FILE__, __LINE__);
@@ -474,8 +446,7 @@ void BESXMLInfo::add_data(const string &s)
  * @param key Key from the initialization file specifying the file to be
  * @param name A description of what is the information being loaded
  */
-void BESXMLInfo::add_data_from_file(const string &key, const string &name)
-{
+void BESXMLInfo::add_data_from_file(const string &key, const string &name) {
     // just add the html file with the <html ... wrapper around it
     // <html xmlns="http://www.w3.org/1999/xhtml">
     begin_tag("html", "", "http://www.w3.org/1999/xhtml");
@@ -494,8 +465,7 @@ void BESXMLInfo::add_data_from_file(const string &key, const string &name)
  * @param transmitter The type of transmitter to use to transmit the info
  * @param dhi information to help with the transmission
  */
-void BESXMLInfo::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
-{
+void BESXMLInfo::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) {
     if (_started && !_ended) {
         end_response();
     }
@@ -507,8 +477,7 @@ void BESXMLInfo::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &
  *
  * @param strm output to this stream
  */
-void BESXMLInfo::print(ostream &strm)
-{
+void BESXMLInfo::print(ostream &strm) {
     if (_started && !_ended) {
         end_response();
     }
@@ -522,17 +491,11 @@ void BESXMLInfo::print(ostream &strm)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESXMLInfo::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESXMLInfo::dump - (" << (void *) this << ")" << endl;
+void BESXMLInfo::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESXMLInfo::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     BESInfo::dump(strm);
     BESIndent::UnIndent();
 }
 
-BESInfo *
-BESXMLInfo::BuildXMLInfo(const string &/*info_type*/)
-{
-    return new BESXMLInfo();
-}
-
+BESInfo *BESXMLInfo::BuildXMLInfo(const string & /*info_type*/) { return new BESXMLInfo(); }

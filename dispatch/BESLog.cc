@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -32,16 +32,16 @@
 
 #include "config.h"
 
-#include <iostream>
 #include <ctime>
-#include <string>
+#include <iostream>
 #include <sstream>
+#include <string>
 
-#include "BESLog.h"
 #include "BESDebug.h"
+#include "BESInternalFatalError.h"
+#include "BESLog.h"
 #include "BESUtil.h"
 #include "TheBESKeys.h"
-#include "BESInternalFatalError.h"
 
 #if HAVE_UNISTD_H
 #include <unistd.h>
@@ -54,7 +54,6 @@ using namespace std;
 
 BESLog *BESLog::d_instance = nullptr;
 const string BESLog::mark = string("|&|");
-
 
 /** @brief constructor that sets up logging for the application.
  *
@@ -79,18 +78,17 @@ BESLog::BESLog() {
     bool found = false;
     try {
         d_instance_id = TheBESKeys::TheKeys()->read_string_key("AWS.instance-id", "-");
-    }
-    catch (BESInternalFatalError &bife) {
+    } catch (BESInternalFatalError &bife) {
         stringstream msg;
-        msg << prolog << "ERROR - Caught BESInternalFatalError! Will re-throw. Message: " << bife.get_message() << "  File: " << bife.get_file() << " Line: " << bife.get_line() << endl;
-        BESDEBUG(MODULE,msg.str());
+        msg << prolog << "ERROR - Caught BESInternalFatalError! Will re-throw. Message: " << bife.get_message()
+            << "  File: " << bife.get_file() << " Line: " << bife.get_line() << endl;
+        BESDEBUG(MODULE, msg.str());
         cerr << msg.str();
         throw;
-    }
-    catch (...) {
+    } catch (...) {
         stringstream msg;
         msg << prolog << "FATAL ERROR: Caught unknown exception! Unable to determine log file name." << endl;
-        BESDEBUG(MODULE,msg.str());
+        BESDEBUG(MODULE, msg.str());
         cerr << msg.str();
         throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
     }
@@ -98,22 +96,20 @@ BESLog::BESLog() {
     // Find the log filename.
     try {
         TheBESKeys::TheKeys()->get_value("BES.LogName", d_file_name, found);
-    }
-    catch (BESInternalFatalError &bife) {
+    } catch (BESInternalFatalError &bife) {
         stringstream msg;
-        msg << prolog << "ERROR - Caught BESInternalFatalError! Will re-throw. Message: " << bife.get_message() << "  File: " << bife.get_file() << " Line: " << bife.get_line() << endl;
-        BESDEBUG(MODULE,msg.str());
+        msg << prolog << "ERROR - Caught BESInternalFatalError! Will re-throw. Message: " << bife.get_message()
+            << "  File: " << bife.get_file() << " Line: " << bife.get_line() << endl;
+        BESDEBUG(MODULE, msg.str());
         cerr << msg.str();
         throw;
-    }
-    catch (...) {
+    } catch (...) {
         stringstream msg;
         msg << prolog << "FATAL ERROR: Caught unknown exception! Unable to determine log file name." << endl;
-        BESDEBUG(MODULE,msg.str());
+        BESDEBUG(MODULE, msg.str());
         cerr << msg.str();
         throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
     }
-
 
     // By default, use UTC in the logs.
     found = false;
@@ -121,12 +117,11 @@ BESLog::BESLog() {
         string local_time;
         TheBESKeys::TheKeys()->get_value("BES.LogTimeLocal", local_time, found);
         d_use_local_time = found && (BESUtil::lowercase(local_time) == "yes");
-        BESDEBUG(MODULE, prolog << "d_use_local_time: " << (d_use_local_time?"true":"false") << endl);
-    }
-    catch (...) {
+        BESDEBUG(MODULE, prolog << "d_use_local_time: " << (d_use_local_time ? "true" : "false") << endl);
+    } catch (...) {
         stringstream err;
         err << prolog << "FATAL ERROR: Caught unknown exception. Failed to read the value of BES.LogTimeLocal" << endl;
-        BESDEBUG(MODULE,err.str());
+        BESDEBUG(MODULE, err.str());
         cerr << err.str() << endl;
         throw BESInternalFatalError(err.str(), __FILE__, __LINE__);
     }
@@ -135,7 +130,7 @@ BESLog::BESLog() {
         stringstream err;
         err << prolog << "FATAL ERROR: unable to determine log file name. ";
         err << "Please set BES.LogName in your initialization file" << endl;
-        BESDEBUG(MODULE,err.str());
+        BESDEBUG(MODULE, err.str());
         cerr << err.str() << endl;
         throw BESInternalFatalError(err.str(), __FILE__, __LINE__);
     }
@@ -144,7 +139,7 @@ BESLog::BESLog() {
     if (!(*d_file_buffer)) {
         stringstream err;
         err << prolog << "BES Fatal; cannot open log file " + d_file_name + "." << endl;
-        BESDEBUG(MODULE,err.str());
+        BESDEBUG(MODULE, err.str());
         cerr << err.str() << endl;
         throw BESInternalFatalError(err.str(), __FILE__, __LINE__);
     }
@@ -153,13 +148,13 @@ BESLog::BESLog() {
     string s;
     TheBESKeys::TheKeys()->get_value("BES.LogVerbose", s, found);
     d_verbose = found && (BESUtil::lowercase(s) == "yes");
-    BESDEBUG(MODULE, prolog << "d_verbose: " << (d_verbose?"true":"false") << endl);
+    BESDEBUG(MODULE, prolog << "d_verbose: " << (d_verbose ? "true" : "false") << endl);
 
     found = false;
     s = "";
     TheBESKeys::TheKeys()->get_value("BES.LogUnixTime", s, found);
-    d_use_unix_time = found && (BESUtil::lowercase(s)=="true");
-    BESDEBUG(MODULE, prolog << "d_use_unix_time: " << (d_use_unix_time?"true":"false") << endl);
+    d_use_unix_time = found && (BESUtil::lowercase(s) == "true");
+    BESDEBUG(MODULE, prolog << "d_use_unix_time: " << (d_use_unix_time ? "true" : "false") << endl);
 
     // Set the pid and build the log rord prolog base...
     update_pid();
@@ -169,24 +164,21 @@ BESLog::BESLog() {
  *
  * Cleans up the logging mechanism by closing the log file.
  */
-BESLog::~BESLog()
-{
+BESLog::~BESLog() {
     d_file_buffer->close();
     delete d_file_buffer;
     d_file_buffer = nullptr;
 }
 
 /**
-* @brief Update the d_pid and the d_log_record_prolog_base values.
-*/
-pid_t BESLog::update_pid()
-{
+ * @brief Update the d_pid and the d_log_record_prolog_base values.
+ */
+pid_t BESLog::update_pid() {
     auto pid = getpid();
     d_pid = to_string(pid);
     d_log_record_prolog_base = mark + d_instance_id + mark + d_pid + mark;
     return pid;
 }
-
 
 /** @brief Protected method that returns a string with the first fields of a log record.
  *
@@ -202,16 +194,14 @@ std::string BESLog::log_record_begin() const {
 
     time_t now;
     time(&now);
-    if(d_use_unix_time){
+    if (d_use_unix_time) {
         log_record_prolog = std::to_string(now);
-    }
-    else {
+    } else {
         char buf[sizeof "YYYY-MM-DDTHH:MM:SS zones"];
         tm date_time{};
-        if (!d_use_local_time){
+        if (!d_use_local_time) {
             gmtime_r(&now, &date_time);
-        }
-        else{
+        } else {
             localtime_r(&now, &date_time);
         }
         (void)strftime(buf, sizeof buf, "%FT%T %Z", &date_time);
@@ -222,7 +212,6 @@ std::string BESLog::log_record_begin() const {
     return log_record_prolog;
 }
 
-
 /**
  * @brief Writes msg to a log record with type lrt.
  * @param lrt The log record type
@@ -230,8 +219,8 @@ std::string BESLog::log_record_begin() const {
  */
 void BESLog::log_record(const std::string &lrt, const std::string &msg) const {
 
-    *d_file_buffer << log_record_begin() << lrt << mark << msg ;
-    if(!msg.empty() && msg.back() != '\n')
+    *d_file_buffer << log_record_begin() << lrt << mark << msg;
+    if (!msg.empty() && msg.back() != '\n')
         *d_file_buffer << "\n";
 
     *d_file_buffer << flush;
@@ -242,11 +231,12 @@ void BESLog::log_record(const std::string &lrt, const std::string &msg) const {
  * @param lrt The log record type
  * @param msg The message to be logged.
  */
-void BESLog::trace_log_record(const std::string &lrt, const std::string &msg, const std::string &file, const int line) const {
+void BESLog::trace_log_record(const std::string &lrt, const std::string &msg, const std::string &file,
+                              const int line) const {
 
     *d_file_buffer << log_record_begin() << "trace-" << lrt << mark;
-    *d_file_buffer << file << mark << line << mark << msg ;
-    if(!msg.empty() && msg.back() != '\n')
+    *d_file_buffer << file << mark << line << mark << msg;
+    if (!msg.empty() && msg.back() != '\n')
         *d_file_buffer << "\n";
 
     *d_file_buffer << flush;
@@ -259,39 +249,32 @@ void BESLog::trace_log_record(const std::string &lrt, const std::string &msg, co
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESLog::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESLog::dump - (" << (void *) this << ")\n";
+void BESLog::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESLog::dump - (" << (void *)this << ")\n";
     BESIndent::Indent();
     strm << BESIndent::LMarg << "    log file: " << d_file_name;
     if (d_file_buffer && *d_file_buffer) {
         strm << BESIndent::LMarg << " (log is valid)\n";
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << " (log is NOT valid)\n";
     }
-    strm << BESIndent::LMarg << "    d_verbose: " << (d_verbose?"enabled":"disable") << "\n";
+    strm << BESIndent::LMarg << "    d_verbose: " << (d_verbose ? "enabled" : "disable") << "\n";
     strm << BESIndent::LMarg << "d_instance_id: " << d_instance_id << "\n";
     strm << BESIndent::LMarg << "        d_pid: " << d_pid << "\n";
     BESIndent::UnIndent();
 }
 
 /**
-* @brief Sets the current request id (cached in BESLog) to id
-*/
-void BESLog::set_request_id(const std::string &id){
+ * @brief Sets the current request id (cached in BESLog) to id
+ */
+void BESLog::set_request_id(const std::string &id) {
     request_id = id;
     BESDEBUG(MODULE, "request_id: " << request_id << endl);
 }
 
-
-
-BESLog *
-BESLog::TheLog()
-{
+BESLog *BESLog::TheLog() {
     if (d_instance == nullptr) {
         d_instance = new BESLog;
     }
     return d_instance;
 }
-

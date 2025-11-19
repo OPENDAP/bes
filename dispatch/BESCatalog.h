@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -41,14 +41,14 @@ class BESCatalogEntry;
 class BESCatalogUtils;
 
 namespace bes {
-    class CatalogNode;
-    // TODO class CatalogUtils;
-}
+class CatalogNode;
+// TODO class CatalogUtils;
+} // namespace bes
 
 /** @brief Catalogs provide a hierarchical organization for data.
  *
  */
-class BESCatalog: public BESObj {
+class BESCatalog : public BESObj {
 private:
     std::string d_catalog_name;
     unsigned int d_reference;
@@ -59,28 +59,15 @@ public:
     BESCatalog() = delete;
     explicit BESCatalog(const std::string &catalog_name);
 
-    virtual ~BESCatalog();
-#if 0
-    {
-        // TODO delete d_utils when it's no longer a singleton.
-        // Or leave that class as the weird singleton it is and treat this
-        // as a weak pointer. jhrg 7/21/18
-    }
-#endif
+    ~BESCatalog() override;
 
     /**
      * @brief Increase the count of clients that reference this catalog.
      *
      * This class maintains a count of the clients that reference the catalog.
-     * When count of clients drops to zero, the instance can be deleted.
-     *
-     * @todo Revisit the reference counting behavior - maybe there's a better
-     * way to manage these catalogs?
+     * When the count of clients drops to zero, the instance can be deleted.
      */
-    virtual void reference_catalog()
-    {
-        d_reference++;
-    }
+    virtual void reference_catalog() { d_reference++; }
 
     /**
      * @brief Decrement the count of clients that reference this catalog.
@@ -88,8 +75,7 @@ public:
      * @return The number of clients that reference this BESCatalog instance
      * @see reference_catalog()
      */
-    virtual unsigned int dereference_catalog()
-    {
+    virtual unsigned int dereference_catalog() {
         if (!d_reference)
             return d_reference;
         return --d_reference;
@@ -99,10 +85,7 @@ public:
      * @brief Get the name for this catalog
      * @return The catalog.
      */
-    virtual std::string get_catalog_name() const
-    {
-        return d_catalog_name;
-    }
+    virtual std::string get_catalog_name() const { return d_catalog_name; }
 
     /**
      * @brief Get a pointer to the utilities, customized for this catalog.
@@ -130,10 +113,10 @@ public:
     // a directory, but BESCatalogUtils::include() on a file).
     virtual bes::CatalogNode *get_node(const std::string &path) const = 0;
 
-    virtual void get_site_map(const std::string &prefix, const std::string &node_suffix, const std::string &leaf_suffix, std::ostream &out,
-        const std::string &path = "/") const = 0;
+    virtual void get_site_map(const std::string &prefix, const std::string &node_suffix, const std::string &leaf_suffix,
+                              std::ostream &out, const std::string &path = "/") const = 0;
 
-    virtual void dump(std::ostream &strm) const = 0;
+    void dump(std::ostream &strm) const override = 0;
 };
 
 #endif // I_BESCatalog_h

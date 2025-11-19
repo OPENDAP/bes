@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -30,17 +30,17 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 
 #include <iostream>
-#include <string>
 #include <map>
+#include <string>
 
 using std::cout;
 using std::endl;
-using std::string;
 using std::multimap;
 using std::pair;
+using std::string;
 
-#include "BESRegex.h"
 #include "BESError.h"
+#include "BESRegex.h"
 
 multimap<string, string> expressions;
 
@@ -48,24 +48,16 @@ bool break_includes(const string &s, string &err);
 bool break_types(const string &s, string &err);
 
 void usage(const string &prog) {
-    cout << "Usage: " << prog
-            << " include|exclude|type <regular_expression> <string_to_match>"
-            << endl;
+    cout << "Usage: " << prog << " include|exclude|type <regular_expression> <string_to_match>" << endl;
     cout << "  samples:" << endl;
-    cout
-            << "    besregtest include \"123456;\" 01234567 matches 6 of 8 characters"
-            << endl;
-    cout << "    besregtest include \"^123456$;\" 01234567 does not match"
-            << endl;
-    cout
-            << "    besregtest include \"^123456$;\" 123456 matches all 6 of 6 characters"
-            << endl;
+    cout << "    besregtest include \"123456;\" 01234567 matches 6 of 8 characters" << endl;
+    cout << "    besregtest include \"^123456$;\" 01234567 does not match" << endl;
+    cout << "    besregtest include \"^123456$;\" 123456 matches all 6 of 6 characters" << endl;
     cout << "    besregtest include \".*\\.nc$;\" fnoc1.nc matches" << endl;
-    cout << "    besregtest include \".*\\.nc$;\" fnoc1.ncd does not matche"
-            << endl;
-    cout
-            << "    besregtest type \"nc:.*\\.nc$;nc:.*\\.nc\\.gz$;ff:.*\\.dat$;ff:.*\\.dat\\.gz$;\" fnoc1.nc matches type nc"
-            << endl;
+    cout << "    besregtest include \".*\\.nc$;\" fnoc1.ncd does not matche" << endl;
+    cout << "    besregtest type \"nc:.*\\.nc$;nc:.*\\.nc\\.gz$;ff:.*\\.dat$;ff:.*\\.dat\\.gz$;\" fnoc1.nc matches "
+            "type nc"
+         << endl;
 }
 
 int main(int argc, char **argv) {
@@ -77,8 +69,7 @@ int main(int argc, char **argv) {
     string what = argv[1];
     if (what != "include" && what != "exclude" && what != "type") {
         cout << "please specify either an Include or TypeMatch expression "
-                << "by using include or type respectively as first parameter"
-                << endl;
+             << "by using include or type respectively as first parameter" << endl;
         usage(argv[0]);
         return 1;
     }
@@ -105,15 +96,13 @@ int main(int argc, char **argv) {
         string reg = (*i).second;
         try {
             BESRegex reg_expr(reg.c_str());
-            int result = reg_expr.match(inQuestion.c_str(),
-                    inQuestion.size());
+            int result = reg_expr.match(inQuestion.c_str(), inQuestion.size());
             if (result != -1) {
                 if ((unsigned int)result == inQuestion.size()) {
                     cout << "expression \"" << reg << "\" matches exactly";
                 } else {
-                    cout << "expression \"" << reg << "\" matches " << result
-                            << " characters out of " << inQuestion.size()
-                            << " characters";
+                    cout << "expression \"" << reg << "\" matches " << result << " characters out of "
+                         << inQuestion.size() << " characters";
                 }
                 if (what == "type")
                     cout << ", type = " << (*i).first;
@@ -125,8 +114,7 @@ int main(int argc, char **argv) {
                 cout << endl;
             }
         } catch (BESError &e) {
-            string serr = (string) "malformed regular expression \"" + reg
-                    + "\": " + e.get_message();
+            string serr = (string) "malformed regular expression \"" + reg + "\": " + e.get_message();
             cout << serr << endl;
         }
     }
@@ -140,7 +128,7 @@ bool break_includes(const string &listStr, string &err) {
     string::size_type semi = 0;
     bool done = false;
     while (done == false) {
-        semi = listStr.find(";", str_begin);
+        semi = listStr.find(';', str_begin);
         if (semi == string::npos) {
             err = (string) "regular expression malformed, no semicolon";
             return false;
@@ -165,10 +153,9 @@ bool break_types(const string &listStr, string &err) {
     string::size_type semi = 0;
     bool done = false;
     while (done == false) {
-        semi = listStr.find(";", str_begin);
+        semi = listStr.find(';', str_begin);
         if (semi == string::npos) {
-            err = (string) "type match malformed, no semicolon, "
-                    + "looking for type:regexp;[type:regexp;]";
+            err = (string) "type match malformed, no semicolon, " + "looking for type:regexp;[type:regexp;]";
             return false;
         } else {
             string a_pair = listStr.substr(str_begin, semi - str_begin);
@@ -177,10 +164,9 @@ bool break_types(const string &listStr, string &err) {
                 done = true;
             }
 
-            string::size_type col = a_pair.find(":");
+            string::size_type col = a_pair.find(':');
             if (col == string::npos) {
-                err = (string) "Catalog type match malformed, no colon, "
-                        + "looking for type:regexp;[type:regexp;]";
+                err = (string) "Catalog type match malformed, no colon, " + "looking for type:regexp;[type:regexp;]";
                 return false;
             } else {
                 string a_type = a_pair.substr(0, col);
@@ -192,4 +178,3 @@ bool break_types(const string &listStr, string &err) {
 
     return true;
 }
-

@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -37,19 +37,19 @@
 #include <iostream>
 #include <mutex>
 
-#include "BESContainerStorageList.h"
-#include "BESContainerStorage.h"
-#include "BESSyntaxUserError.h"
 #include "BESContainer.h"
-#include "TheBESKeys.h"
-#include "BESLog.h"
+#include "BESContainerStorage.h"
+#include "BESContainerStorageList.h"
 #include "BESInfo.h"
+#include "BESLog.h"
+#include "BESSyntaxUserError.h"
+#include "TheBESKeys.h"
 
 #include "BESDebug.h"
 
 using std::endl;
-using std::string;
 using std::ostream;
+using std::string;
 
 /**
  * @brief Add a persistent store pointer to the list.
@@ -68,15 +68,14 @@ using std::ostream;
  * @see BESContainerStorage
  * @see BESContainerStorageList::StorageEntry
  */
-bool BESContainerStorageList::add_persistence(BESContainerStorage *cp)
-{
+bool BESContainerStorageList::add_persistence(BESContainerStorage *cp) {
     std::lock_guard<std::recursive_mutex> lock(d_cache_lock_mutex);
 
     if (!cp) {
         return false;
     }
 
-    const std::string& new_name = cp->get_name();
+    const std::string &new_name = cp->get_name();
 
     // --- Check for Duplicates ---
     const auto it = find_entry_iterator(new_name);
@@ -140,7 +139,7 @@ bool BESContainerStorageList::deref_persistence(const std::string &persist_name)
  * @return Raw pointer to the found BESContainerStorage, or nullptr if not found. The caller
  * should not delete this pointer!
  */
-BESContainerStorage* BESContainerStorageList::find_persistence(const std::string& persist_name) {
+BESContainerStorage *BESContainerStorageList::find_persistence(const std::string &persist_name) {
     std::lock_guard<std::recursive_mutex> lock(d_cache_lock_mutex);
 
     const auto it = find_entry_iterator(persist_name);
@@ -173,12 +172,12 @@ bool BESContainerStorageList::is_nice() {
  * @return Pointer to the found BESContainer, or nullptr if not found in any store.
  * The caller of this method assumes ownership of the BESContainer pointer returned.
  */
-BESContainer* BESContainerStorageList::look_for(const std::string& sym_name) {
+BESContainer *BESContainerStorageList::look_for(const std::string &sym_name) {
     std::lock_guard<std::recursive_mutex> lock(d_cache_lock_mutex);
 
-    for (const auto& entry : d_storage_entries) {
+    for (const auto &entry : d_storage_entries) {
         if (entry.storage_obj) {
-            BESContainer* container = entry.storage_obj->look_for(sym_name);
+            BESContainer *container = entry.storage_obj->look_for(sym_name);
             if (container) {
                 return container;
             }
@@ -199,10 +198,10 @@ BESContainer* BESContainerStorageList::look_for(const std::string& sym_name) {
  * Iterates through stores and asks each to delete the container if found.
  * @param sym_name The symbolic name of the container to delete.
  */
-void BESContainerStorageList::delete_container(const std::string& sym_name) {
+void BESContainerStorageList::delete_container(const std::string &sym_name) {
     std::lock_guard<std::recursive_mutex> lock(d_cache_lock_mutex);
 
-    for (const auto& entry : d_storage_entries) {
+    for (const auto &entry : d_storage_entries) {
         if (entry.storage_obj) {
             entry.storage_obj->del_container(sym_name);
         }
@@ -213,10 +212,10 @@ void BESContainerStorageList::delete_container(const std::string& sym_name) {
  * @brief Populates BESInfo with details about the registered containers/stores.
  * @param info The BESInfo object to populate.
  */
-void BESContainerStorageList::show_containers(BESInfo& info) {
+void BESContainerStorageList::show_containers(BESInfo &info) {
     std::lock_guard<std::recursive_mutex> lock(d_cache_lock_mutex);
 
-    for (const auto& entry : d_storage_entries) {
+    for (const auto &entry : d_storage_entries) {
         if (entry.storage_obj) {
             std::map<std::string, std::string, std::less<>> props;
             props["name"] = entry.storage_obj->get_name();
@@ -231,16 +230,16 @@ void BESContainerStorageList::show_containers(BESInfo& info) {
  * @brief Dumps the state of the storage list to an output stream.
  * @param strm The output stream.
  */
-void BESContainerStorageList::dump(std::ostream& strm) const {
+void BESContainerStorageList::dump(std::ostream &strm) const {
     std::lock_guard<std::recursive_mutex> lock(d_cache_lock_mutex);
 
-    strm << BESIndent::LMarg << "BESContainerStorageList::dump - (" << (void*)this << ")" << std::endl;
+    strm << BESIndent::LMarg << "BESContainerStorageList::dump - (" << (void *)this << ")" << std::endl;
     BESIndent::Indent();
 
     if (!d_storage_entries.empty()) {
         strm << BESIndent::LMarg << "container storage:" << std::endl;
         BESIndent::Indent();
-        for (const auto& entry : d_storage_entries) {
+        for (const auto &entry : d_storage_entries) {
             if (entry.storage_obj) {
                 entry.storage_obj->dump(strm);
             } else {

@@ -33,21 +33,21 @@
 #include "config.h"
 
 #include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
 
-#include <iostream>
 #include <cstdlib>
+#include <iostream>
 #include <unistd.h>
 
 #include "BESInternalError.h"
 
-#include "BESUncompressManager3.h"
-#include "BESUncompressCache.h"
-#include "BESError.h"
-#include "TheBESKeys.h"
 #include "BESDebug.h"
+#include "BESError.h"
+#include "BESUncompressCache.h"
+#include "BESUncompressManager3.h"
 #include "BESUtil.h"
+#include "TheBESKeys.h"
 #include "test_config.h"
 
 using namespace CppUnit;
@@ -65,21 +65,19 @@ static const string CACHE_FILE_NAME = BESUtil::assemblePath(CACHE_DIR, "template
 static const string CACHE_PREFIX("container_test");
 
 #undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
+#define DBG(x)                                                                                                         \
+    do {                                                                                                               \
+        if (debug)                                                                                                     \
+            (x);                                                                                                       \
+    } while (false);
 
-class uncompressT: public TestFixture {
+class uncompressT : public TestFixture {
 private:
-
 public:
-    uncompressT()
-    {
-    }
-    ~uncompressT()
-    {
-    }
+    uncompressT() = default;
+    ~uncompressT() = default;
 
-    int clean_dir(const string &cache_dir, const string &cache_prefix)
-    {
+    int clean_dir(const string &cache_dir, const string &cache_prefix) {
         DBG(cerr << __func__ << "() - BEGIN " << endl);
         std::ostringstream s;
         s << "rm -" << (debug ? "v" : "") << "f " << BESUtil::assemblePath(cache_dir, cache_prefix) << "*";
@@ -114,9 +112,7 @@ public:
     }
 #endif
 
-
-    void setUp()
-    {
+    void setUp() {
 #if 0
         string bes_conf = (string) TEST_SRC_DIR + "/uncompressT_bes.keys";
         TheBESKeys::ConfigFile = bes_conf;
@@ -132,49 +128,44 @@ public:
         TheBESKeys::TheKeys()->set_key("BES.UncompressCache.size", "1");
     }
 
-    void tearDown()
-    {
-    }
+    void tearDown() {}
 
-    void test_disabled_uncompress_cache()
-    {
+    void test_disabled_uncompress_cache() {
         DBG(cerr << __func__ << "() - BEGIN" << endl);
         // Setting the cache_dir parameter to the empty string will disable the cache
         // and cause the get_instance method to return NULL>
         BESUncompressCache *cache = BESUncompressCache::get_instance();
-        DBG(cerr << __func__ << "() - cache: " << (void * )cache << endl);
+        DBG(cerr << __func__ << "() - cache: " << (void *)cache << endl);
 
-        CPPUNIT_ASSERT_MESSAGE( "Cache pointer should be null", !cache );
+        CPPUNIT_ASSERT_MESSAGE("Cache pointer should be null", !cache);
         DBG(cerr << __func__ << "() - END" << endl);
     }
 
-CPPUNIT_TEST_SUITE( uncompressT );
+    CPPUNIT_TEST_SUITE(uncompressT);
 
-    CPPUNIT_TEST( test_disabled_uncompress_cache );
+    CPPUNIT_TEST(test_disabled_uncompress_cache);
 
     CPPUNIT_TEST_SUITE_END();
-
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( uncompressT );
+CPPUNIT_TEST_SUITE_REGISTRATION(uncompressT);
 
-int main(int argc, char*argv[])
-{
+int main(int argc, char *argv[]) {
     int option_char;
     while ((option_char = getopt(argc, argv, "dbh")) != -1)
         switch (option_char) {
         case 'd':
-            debug = 1;  // debug is a static global
+            debug = true; // debug is a static global
             break;
         case 'b':
-            bes_debug = 1;  // debug is a static global
+            bes_debug = true; // debug is a static global
             break;
-        case 'h': {     // help - show test names
+        case 'h': { // help - show test names
             cerr << "Usage: uncompressT has the following tests:" << endl;
-            const std::vector<Test*> &tests = uncompressT::suite()->getTests();
+            const std::vector<Test *> &tests = uncompressT::suite()->getTests();
             unsigned int prefix_len = uncompressT::suite()->getName().append("::").size();
-            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            for (auto test : tests) {
+                cerr << test->getName().replace(0, prefix_len, "") << endl;
             }
             break;
         }
@@ -193,11 +184,11 @@ int main(int argc, char*argv[])
     if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
-    }
-    else {
+    } else {
         int i = 0;
         while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
+            if (debug)
+                cerr << "Running " << argv[i] << endl;
             test = uncompressT::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
@@ -205,4 +196,3 @@ int main(int argc, char*argv[])
 
     return wasSuccessful ? 0 : 1;
 }
-

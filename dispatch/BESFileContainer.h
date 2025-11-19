@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -53,43 +53,39 @@
  *
  * @see BESFileContainerStorage
  */
-class BESFileContainer: public BESContainer {
+class BESFileContainer : public BESContainer {
 private:
     bool _cached;
     std::string _target;
 
-    BESFileContainer() : BESContainer(), _cached(false), _target("")
-    {
-    }
+    BESFileContainer() : BESContainer(), _cached(false), _target("") {}
 
 protected:
     void _duplicate(BESContainer &copy_to) override;
 
 public:
-	static const std::string UNCOMPRESS_CACHE_DIR_KEY;
-	static const std::string UNCOMPRESS_CACHE_PREFIX_KEY;
-	static const std::string UNCOMPRESS_CACHE_SIZE_KEY;
+    static const std::string UNCOMPRESS_CACHE_DIR_KEY;
+    static const std::string UNCOMPRESS_CACHE_PREFIX_KEY;
+    static const std::string UNCOMPRESS_CACHE_SIZE_KEY;
 
-	BESFileContainer(const std::string &sym_name, const std::string &real_name, const std::string &type);
+    BESFileContainer(const std::string &sym_name, const std::string &real_name, const std::string &type);
 
     BESFileContainer(const BESFileContainer &copy_from);
 
     // TODO Make this destructor call the release() method? jhrg 7/25/18
-    virtual ~BESFileContainer()
-    {
-    }
+    ~BESFileContainer() override = default;
 
-    virtual BESContainer * ptr_duplicate();
+    BESContainer *ptr_duplicate() override;
 
-    virtual std::string access();
+    std::string access() override;
 
-    virtual bool release();
+    bool release() override;
 
     /** @brief Displays debug information about this object
      *
      * @param strm output stream to use to dump the contents of this object
      */
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // BESFileContainer_h_

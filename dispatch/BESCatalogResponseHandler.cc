@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -32,35 +32,29 @@
 
 #include "config.h"
 
-#include "BESCatalogResponseHandler.h"
-#include "BESInfoList.h"
-#include "BESInfo.h"
-#include "BESNames.h"
-#include "BESDataNames.h"
-#include "BESCatalogList.h"
 #include "BESCatalog.h"
 #include "BESCatalogEntry.h"
+#include "BESCatalogList.h"
+#include "BESCatalogResponseHandler.h"
 #include "BESCatalogUtils.h"
-#include "BESStopWatch.h"
-#include "BESNotFoundError.h"
+#include "BESDataNames.h"
 #include "BESDebug.h"
+#include "BESInfo.h"
+#include "BESInfoList.h"
+#include "BESNames.h"
+#include "BESNotFoundError.h"
+#include "BESStopWatch.h"
 
 using std::endl;
 using std::ostream;
 using std::string;
 
-const auto MODULE="BESCatalog";
+const auto MODULE = "BESCatalog";
 #define prolog std::string("BESCatalogResponseHandler::").append(__func__).append("() - ")
 
+BESCatalogResponseHandler::BESCatalogResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESCatalogResponseHandler::BESCatalogResponseHandler(const string &name) :
-    BESResponseHandler(name)
-{
-}
-
-BESCatalogResponseHandler::~BESCatalogResponseHandler()
-{
-}
+BESCatalogResponseHandler::~BESCatalogResponseHandler() = default;
 
 /** @brief Execute the showCatalog command.
  *
@@ -71,8 +65,7 @@ BESCatalogResponseHandler::~BESCatalogResponseHandler()
  * @see BESInfo
  * @see BESRequestHandlerList
  */
-void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi)
-{
+void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi) {
     BES_STOPWATCH_START_DHI(MODULE, prolog + "Timer", &dhi);
 
     BESInfo *info = BESInfoList::TheList()->build_info();
@@ -80,20 +73,20 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi)
 
     // Remove all of the leading slashes from the container (path) name
     string container = dhi.data[CONTAINER];
-    string::size_type notslash = container.find_first_not_of("/", 0);
+    string::size_type notslash = container.find_first_not_of('/', 0);
     if (notslash != string::npos) {
         container = container.substr(notslash);
     }
-    if (container.empty()) container = "/";
+    if (container.empty())
+        container = "/";
 
     BESCatalog *besCatalog = nullptr;
     string catalog = dhi.data[CATALOG];
-    if(catalog.empty()){
+    if (catalog.empty()) {
         // Use default catalog to service request
         besCatalog = BESCatalogList::TheCatalogList()->default_catalog();
         catalog = besCatalog->get_catalog_name();
-    }
-    else {
+    } else {
         // Use the specified catalog.
         besCatalog = BESCatalogList::TheCatalogList()->find_catalog(catalog);
         if (!besCatalog) {
@@ -145,11 +138,11 @@ void BESCatalogResponseHandler::execute(BESDataHandlerInterface &dhi)
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void BESCatalogResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
-{
+void BESCatalogResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) {
     if (d_response_object) {
         BESInfo *info = dynamic_cast<BESInfo *>(d_response_object);
-        if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
+        if (!info)
+            throw BESInternalError("cast error", __FILE__, __LINE__);
         info->transmit(transmitter, dhi);
     }
 }
@@ -160,17 +153,13 @@ void BESCatalogResponseHandler::transmit(BESTransmitter *transmitter, BESDataHan
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESCatalogResponseHandler::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESCatalogResponseHandler::dump - (" << (void *) this << ")" << endl;
+void BESCatalogResponseHandler::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESCatalogResponseHandler::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     BESResponseHandler::dump(strm);
     BESIndent::UnIndent();
 }
 
-BESResponseHandler *
-BESCatalogResponseHandler::CatalogResponseBuilder(const string &name)
-{
+BESResponseHandler *BESCatalogResponseHandler::CatalogResponseBuilder(const string &name) {
     return new BESCatalogResponseHandler(name);
 }
-

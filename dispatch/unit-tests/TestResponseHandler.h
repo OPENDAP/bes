@@ -35,7 +35,7 @@
 
 #include "BESResponseHandler.h"
 
-class TestResponseHandler: public BESResponseHandler {
+class TestResponseHandler : public BESResponseHandler {
 public:
     TestResponseHandler(const std::string &name);
     virtual ~TestResponseHandler();
@@ -50,4 +50,3 @@ public:
 };
 
 #endif
-

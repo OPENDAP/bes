@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -32,10 +32,10 @@
 
 #include "config.h"
 
-#include <iostream>
-#include <sstream>
 #include <algorithm>
 #include <iomanip>
+#include <iostream>
+#include <sstream>
 
 #include <ctime>
 #include <unistd.h>
@@ -54,11 +54,10 @@ BESDebug::DebugMap BESDebug::_debug_map;
  *
  * @return The debug log line prefix containing date&time, pid, and thread id.
  */
-string get_debug_log_line_prefix()
-{
+string get_debug_log_line_prefix() {
     // Given C++11, this could be done with std::put_time() and std::localtime().
     std::ostringstream oss;
-    
+
     // Time Field
     auto t = time(nullptr);
     struct tm stm{};
@@ -67,14 +66,13 @@ string get_debug_log_line_prefix()
     oss << std::put_time(&stm, "[%Z %c]");
 
     // PID field
-    oss << "[pid:" << getpid() <<"]";
+    oss << "[pid:" << getpid() << "]";
 
     // Thread field
-    oss << "[thread:" << pthread_self() <<"]";
+    oss << "[thread:" << pthread_self() << "]";
 
     return oss.str();
 }
-
 
 /** @brief Sets up debugging for the bes.
  *
@@ -88,8 +86,7 @@ string get_debug_log_line_prefix()
  *
  * @param values to be parsed and set for debugging, bes.debug,nc,hdf4,bes
  */
-void BESDebug::SetUp(const string &values)
-{
+void BESDebug::SetUp(const string &values) {
     if (values.empty()) {
         string err = "Empty debug options";
         throw BESInternalError(err, __FILE__, __LINE__);
@@ -100,20 +97,18 @@ void BESDebug::SetUp(const string &values)
         string err = "Missing comma in debug options: " + values;
         throw BESInternalError(err, __FILE__, __LINE__);
     }
-    ostream *strm = 0;
+    ostream *strm = nullptr;
     bool created = false;
     string s_strm = values.substr(0, comma);
     if (s_strm == "cerr") {
         strm = &cerr;
-    }
-    else if (s_strm == "LOG") {
+    } else if (s_strm == "LOG") {
         strm = BESLog::TheLog()->get_log_ostream();
-    }
-    else {
+    } else {
         strm = new ofstream(s_strm.c_str(), ios::out);
         if (strm && strm->fail()) {
             delete strm;
-            strm = 0;
+            strm = nullptr;
             string err = "Unable to open the debug file: " + s_strm;
             throw BESInternalError(err, __FILE__, __LINE__);
         }
@@ -128,8 +123,7 @@ void BESDebug::SetUp(const string &values)
         if (flagName[0] == '-') {
             string newflag = flagName.substr(1, flagName.size() - 1);
             BESDebug::Set(newflag, false);
-        }
-        else {
+        } else {
             BESDebug::Set(flagName, true);
         }
         comma = new_comma;
@@ -138,8 +132,7 @@ void BESDebug::SetUp(const string &values)
     if (flagName[0] == '-') {
         string newflag = flagName.substr(1, flagName.size() - 1);
         BESDebug::Set(newflag, false);
-    }
-    else {
+    } else {
         BESDebug::Set(flagName, true);
     }
 }
@@ -154,8 +147,7 @@ void BESDebug::SetUp(const string &values)
  * @param flagName debug context flag to set to the given value
  * @param value set the debug context to this value
  */
-void BESDebug::Set(const std::string &flagName, bool value)
-{
+void BESDebug::Set(const std::string &flagName, bool value) {
     if (value && flagName == "all") {
         std::for_each(_debug_map.begin(), _debug_map.end(), [](DebugMap::value_type &p) { p.second = true; });
     }
@@ -170,11 +162,13 @@ void BESDebug::Set(const std::string &flagName, bool value)
  *
  * @param strm output stream to write the help information to
  */
-void BESDebug::Help(ostream &strm)
-{
-    strm << "Debug help:" << endl << "  Set on the command line with " << "-d \"file_name|cerr,[-]context1,...,[-]context\"" << endl
-        << "  context with dash (-) in front will be turned off" << endl << "  context of all will turn on debugging for all contexts" << endl << endl
-        << "Possible context(s):" << endl;
+void BESDebug::Help(ostream &strm) {
+    strm << "Debug help:" << endl
+         << "  Set on the command line with " << "-d \"file_name|cerr,[-]context1,...,[-]context\"" << endl
+         << "  context with dash (-) in front will be turned off" << endl
+         << "  context of all will turn on debugging for all contexts" << endl
+         << endl
+         << "Possible context(s):" << endl;
 
     if (!_debug_map.empty()) {
         std::for_each(_debug_map.begin(), _debug_map.end(), [&strm](const auto &pair) {
@@ -184,16 +178,12 @@ void BESDebug::Help(ostream &strm)
             else
                 strm << "off" << endl;
         });
-    }
-    else {
+    } else {
         strm << "  none specified" << endl;
     }
 }
 
-bool BESDebug::IsContextName(const string &name)
-{
-    return _debug_map.count(name) > 0;
-}
+bool BESDebug::IsContextName(const string &name) { return _debug_map.count(name) > 0; }
 
 /** This method looks at the current setting of the BESDebug object and builds
  *  a string that, when passed to a beslistener as the argument of the -d
@@ -202,21 +192,19 @@ bool BESDebug::IsContextName(const string &name)
  *  to be sent to the beslisteners to be used. The new option string will be
  *  built and the beslisteners restarted using it.
  */
-string BESDebug::GetOptionsString()
-{
+string BESDebug::GetOptionsString() {
     ostringstream oss;
 
     if (!_debug_map.empty()) {
         std::for_each(_debug_map.begin(), _debug_map.end(), [&oss](const std::pair<std::string, bool> &p) {
-            if (!p.second) oss << "-";
+            if (!p.second)
+                oss << "-";
             oss << p.first << ",";
         });
 
         string retval = oss.str();
         return retval.erase(retval.size() - 1);
-    }
-    else {
+    } else {
         return {""};
     }
 }
-

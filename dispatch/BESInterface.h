@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -33,8 +33,8 @@
 #ifndef BESInterface_h_
 #define BESInterface_h_ 1
 
-#include <string>
 #include <ostream>
+#include <string>
 
 #include "BESObj.h"
 
@@ -115,14 +115,14 @@ class BESDataHandlerInterface;
  @see BESLog
  @see BESReporter
  */
-class BESInterface: public BESObj {
+class BESInterface : public BESObj {
 private:
-    std::ostream *d_strm {nullptr};
-    int d_bes_timeout {0}; ///< Command timeout; can be overridden using setContext
+    std::ostream *d_strm{nullptr};
+    int d_bes_timeout{0}; ///< Command timeout; can be overridden using setContext
 
 protected:
-    BESDataHandlerInterface *d_dhi_ptr {nullptr}; ///< Allocated by the child class
-    BESTransmitter *d_transmitter {nullptr};  ///< The Transmitter to use for the result
+    BESDataHandlerInterface *d_dhi_ptr{nullptr}; ///< Allocated by the child class
+    BESTransmitter *d_transmitter{nullptr};      ///< The Transmitter to use for the result
 
     virtual void end_request();
 
@@ -156,4 +156,3 @@ public:
 };
 
 #endif // BESInterface_h_
-

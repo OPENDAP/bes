@@ -2,7 +2,7 @@
 // Copyright (c) 2013 OPeNDAP, Inc. Author: James Gallagher
 // <jgallagher@opendap.org>, Patrick West <pwest@opendap.org>
 // Nathan Potter <npotter@opendap.org>
-//                                                                            
+//
 // modify it under the terms of the GNU Lesser General Public License
 // as published by the Free Software Foundation; either version 2.1 of
 // the License, or (at your option) any later version.

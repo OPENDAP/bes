@@ -31,23 +31,23 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
 
-#include <iostream>
-#include <fstream>
 #include <cstdlib>
-#include <string>
+#include <fstream>
+#include <iostream>
 #include <sstream>
+#include <string>
 
-#include "BESContainerStorageVolatile.h"
 #include "BESContainer.h"
-#include "TheBESKeys.h"
+#include "BESContainerStorageVolatile.h"
 #include "BESError.h"
 #include "BESTextInfo.h"
+#include "TheBESKeys.h"
 
-#include <unistd.h>
 #include <libdap/debug.h>
+#include <unistd.h>
 
 #include "test_config.h"
 
@@ -62,22 +62,29 @@ static bool debug_2 = false;
 const string cache_dir = "."; // "./cache";
 
 #undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
+#define DBG(x)                                                                                                         \
+    do {                                                                                                               \
+        if (debug)                                                                                                     \
+            (x);                                                                                                       \
+    } while (false);
 #undef DBG2
-#define DBG2(x) do { if (debug_2) (x); } while(false);
+#define DBG2(x)                                                                                                        \
+    do {                                                                                                               \
+        if (debug_2)                                                                                                   \
+            (x);                                                                                                       \
+    } while (false);
 
-class pvolT: public TestFixture {
+class pvolT : public TestFixture {
 private:
     BESContainerStorageVolatile *cpv;
 
     string real1, real2, real3, real4, real5;
 
 public:
-    pvolT() :
-        cpv(0), real1(cache_dir + "/real1"), real2(cache_dir + "/real2"), real3(cache_dir + "/real3"), real4(
-            cache_dir + "/real4"), real5(cache_dir + "/real5")
-    {
-        string bes_conf = (string) TEST_SRC_DIR + "/persistence_cgi_test.ini";
+    pvolT()
+        : cpv(nullptr), real1(cache_dir + "/real1"), real2(cache_dir + "/real2"), real3(cache_dir + "/real3"),
+          real4(cache_dir + "/real4"), real5(cache_dir + "/real5") {
+        string bes_conf = (string)TEST_SRC_DIR + "/persistence_cgi_test.ini";
         TheBESKeys::ConfigFile = bes_conf;
 
         // This cannot be constructed unless the Keys file can be read.
@@ -99,8 +106,7 @@ public:
         of5 << "real5" << endl;
     }
 
-    ~pvolT()
-    {
+    ~pvolT() {
         delete cpv;
 
         remove(real1.c_str());
@@ -110,13 +116,9 @@ public:
         remove(real5.c_str());
     }
 
-    void setUp()
-    {
-    }
+    void setUp() {}
 
-    void tearDown()
-    {
-    }
+    void tearDown() {}
 
     CPPUNIT_TEST_SUITE(pvolT);
 
@@ -132,8 +134,7 @@ public:
     //
     // NB: Each test appears to get it's own instance of pvolT (which is not
     // how I understood the cppunit tests to work... jhrg 3/27/17)
-    void add_container_test()
-    {
+    void add_container_test() {
         DBG(cerr << "add_container_test BEGIN" << endl);
 
         try {
@@ -142,8 +143,7 @@ public:
             cpv->add_container("sym3", "real3", "type3");
             cpv->add_container("sym4", "real4", "type4");
             cpv->add_container("sym5", "real5", "type5");
-        }
-        catch (BESError &e) {
+        } catch (BESError &e) {
             CPPUNIT_FAIL("Failed to add elements: " + e.get_message());
         }
 
@@ -152,8 +152,7 @@ public:
         DBG(cerr << "add_container_test END" << endl);
     }
 
-    void add_overlapping_container()
-    {
+    void add_overlapping_container() {
         add_container_test();
 
         DBG(cerr << "add_overlapping_container BEGIN" << endl);
@@ -161,8 +160,7 @@ public:
         try {
             cpv->add_container("sym1", "real1", "type1");
             CPPUNIT_FAIL("Successfully added sym1 again");
-        }
-        catch (BESError &e) {
+        } catch (BESError &e) {
             DBG(cerr << "Unable to add sym1 again, good: " << e.get_message() << endl);
             CPPUNIT_ASSERT("unable to add sym1 again, good");
         }
@@ -170,8 +168,7 @@ public:
         DBG(cerr << "add_overlapping_container END" << endl);
     }
 
-    void test_look_for_containers()
-    {
+    void test_look_for_containers() {
         add_container_test();
 
         DBG(cerr << "test_look_for_containers BEGIN" << endl);
@@ -195,8 +192,7 @@ public:
         DBG(cerr << "test_look_for_containers END" << endl);
     }
 
-    void test_del_container()
-    {
+    void test_del_container() {
         add_container_test();
 
         DBG(cerr << "test_del_container BEGIN" << endl);
@@ -242,23 +238,22 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(pvolT);
 
-int main(int argc, char*argv[])
-{
+int main(int argc, char *argv[]) {
     int option_char;
     while ((option_char = getopt(argc, argv, "dDh")) != -1)
         switch (option_char) {
         case 'd':
-            debug = 1;  // debug is a static global
+            debug = true; // debug is a static global
             break;
         case 'D':
-            debug_2 = 1;
+            debug_2 = true;
             break;
-        case 'h': {     // help - show test names
+        case 'h': { // help - show test names
             cerr << "Usage: pvolT has the following tests:" << endl;
-            const std::vector<Test*> &tests = pvolT::suite()->getTests();
+            const std::vector<Test *> &tests = pvolT::suite()->getTests();
             unsigned int prefix_len = pvolT::suite()->getName().append("::").size();
-            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            for (auto test : tests) {
+                cerr << test->getName().replace(0, prefix_len, "") << endl;
             }
             break;
         }
@@ -277,11 +272,11 @@ int main(int argc, char*argv[])
     if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
-    }
-    else {
+    } else {
         int i = 0;
         while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
+            if (debug)
+                cerr << "Running " << argv[i] << endl;
             test = pvolT::suite()->getName().append("::").append(argv[i++]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }

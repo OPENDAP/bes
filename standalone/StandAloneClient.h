@@ -81,11 +81,11 @@ private:
 public:
     StandAloneClient() : _strm(0), _strmCreated(false), _isInteractive(false) {}
 
-    ~StandAloneClient();
+    ~StandAloneClient() override;
 
     void setOutput(std::ostream *strm, bool created);
 
-    [[nodiscard]] std::ostream &getOutput() const { return *_strm; }
+    std::ostream &getOutput() const { return *_strm; }
 
     void executeClientCommand(const std::string &cmd);
 
@@ -95,7 +95,7 @@ public:
 
     void interact();
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // StandAloneClient_h

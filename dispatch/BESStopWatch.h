@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -34,8 +34,8 @@
 #ifndef I_BESStopWatch_h
 #define I_BESStopWatch_h 1
 
-#include <sys/time.h>
 #include <sys/resource.h>
+#include <sys/time.h>
 
 #if HAVE_UNISTD_H
 #include <unistd.h>
@@ -60,15 +60,15 @@ static const std::string MISSING_LOG_PARAM;
 // slower. jhrg 5/17/24
 #ifndef NDEBUG
 
-#define BES_STOPWATCH_START(module, message) \
-BESStopWatch besTimer; \
-if (BESISDEBUG((module)) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) \
+#define BES_STOPWATCH_START(module, message)                                                                           \
+    BESStopWatch besTimer;                                                                                             \
+    if (BESISDEBUG((module)) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose())                          \
     besTimer.start((message))
 
-#define BES_STOPWATCH_START_DHI(module, message, DHI) \
-BESStopWatch besTimer; \
-if (BESISDEBUG((module)) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose()) \
-besTimer.start((message), DHI)
+#define BES_STOPWATCH_START_DHI(module, message, DHI)                                                                  \
+    BESStopWatch besTimer;                                                                                             \
+    if (BESISDEBUG((module)) || BESISDEBUG(TIMING_LOG_KEY) || BESLog::TheLog()->is_verbose())                          \
+    besTimer.start((message), DHI)
 
 #else
 #define BES_STOPWATCH_START(module, msg)
@@ -79,11 +79,13 @@ besTimer.start((message), DHI)
 // on the code being built in developer mode. jhrg 11/24/24
 #ifdef COMMAND_TIMING
 
-#define BES_MODULE_TIMING(message) BESStopWatch commandTimer; \
+#define BES_MODULE_TIMING(message)                                                                                     \
+    BESStopWatch commandTimer;                                                                                         \
     commandTimer.start(string("Module timing: ") + (message))
 
 // Note the BES_COMMAND_TIMING macro assumes that the "message" string ends with white-space.
-#define BES_COMMAND_TIMING(message, DHI) BESStopWatch commandTimer; \
+#define BES_COMMAND_TIMING(message, DHI)                                                                               \
+    BESStopWatch commandTimer;                                                                                         \
     commandTimer.start(string("Command timing: ") + (message) + (DHI->data[LOG_INFO]), DHI)
 
 #else
@@ -92,7 +94,8 @@ besTimer.start((message), DHI)
 #endif
 
 #ifdef PROFILE_TIMING
-#define BES_PROFILE_TIMING(message) BESStopWatch profileTimer; \
+#define BES_PROFILE_TIMING(message)                                                                                    \
+    BESStopWatch profileTimer;                                                                                         \
     profileTimer.start(string("Profile timing: ") + (message))
 #else
 #define BES_PROFILE_TIMING(message)
@@ -103,7 +106,7 @@ class BESStopWatch;
 namespace bes_timing {
 extern BESStopWatch *elapsedTimeToReadStart;
 extern BESStopWatch *elapsedTimeToTransmitStart;
-}
+} // namespace bes_timing
 
 class BESStopWatch : public BESObj {
 private:
@@ -120,8 +123,7 @@ private:
     unsigned long int get_stop_us() const;
     static bool get_time_of_day(struct timeval &time_val);
 
- public:
-
+public:
     /// Makes a new BESStopWatch with a logName of TIMING_LOG_KEY
     BESStopWatch() = default;
     BESStopWatch(const BESStopWatch &copy_from) = default;
@@ -132,7 +134,7 @@ private:
      *
      * @param logName The name of the log to use in the logging output.
      */
-    explicit BESStopWatch(const std::string &logName)  : d_log_name(logName) { }
+    explicit BESStopWatch(const std::string &logName) : d_log_name(logName) {}
 
     /**
      * This destructor is "special" in that it's execution signals the
@@ -146,7 +148,7 @@ private:
     /**
      * Starts the timer. NB: This method will attempt to write logging
      * information to the BESDebug::GetStrm() stream. @param name The
-     * name of the timer. 
+     * name of the timer.
      *
      * @param name A name for the timer (often it's the value of the "prolog" macro)
      * @param reqID The client's request ID associated with this
@@ -154,19 +156,17 @@ private:
      */
     virtual bool start(const std::string &name, const std::string &reqID = {BESLog::TheLog()->get_request_id()});
 
-
     /**
-    * Starts the timer.
-    * NB: This method will attempt to write logging
-    * information to the BESDebug::GetStrm() stream.
-    * @param name The name of the timer.
-    * @param dhi The DataHandlerInterface object. Used to retrieve the request ID. If the dhi returns
-    * an empty string  for the request id then it's retrieved using BESLog::get_request_id().
-    */
+     * Starts the timer.
+     * NB: This method will attempt to write logging
+     * information to the BESDebug::GetStrm() stream.
+     * @param name The name of the timer.
+     * @param dhi The DataHandlerInterface object. Used to retrieve the request ID. If the dhi returns
+     * an empty string  for the request id then it's retrieved using BESLog::get_request_id().
+     */
     virtual bool start(const std::string &name, BESDataHandlerInterface *dhi);
 
     void dump(std::ostream &strm) const override;
 };
 
 #endif // I_BESStopWatch_h
-

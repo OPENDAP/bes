@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -34,39 +34,28 @@
 
 #include "BESResponseHandler.h"
 
-#include <utility>
-#include "BESResponseObject.h"
 #include "BESDataHandlerInterface.h"
+#include "BESResponseObject.h"
 #include "BESTransmitter.h"
+#include <utility>
 
 #include "TheBESKeys.h"
 
 using std::endl;
-using std::string;
 using std::ostream;
+using std::string;
 
 const string annotation_service_url = "BES.AnnotationServiceURL";
 
-BESResponseHandler::BESResponseHandler(string name) : d_response_name(std::move(name))
-{
+BESResponseHandler::BESResponseHandler(string name) : d_response_name(std::move(name)) {
     d_annotation_service_url = TheBESKeys::read_string_key(annotation_service_url, "");
 }
 
-BESResponseHandler::~BESResponseHandler()
-{
-    delete d_response_object;
-}
+BESResponseHandler::~BESResponseHandler() { delete d_response_object; }
 
+BESResponseObject *BESResponseHandler::get_response_object() { return d_response_object; }
 
-BESResponseObject *
-BESResponseHandler::get_response_object()
-{
-    return d_response_object;
-}
-
-BESResponseObject *
-BESResponseHandler::set_response_object(BESResponseObject *new_response)
-{
+BESResponseObject *BESResponseHandler::set_response_object(BESResponseObject *new_response) {
     BESResponseObject *curr_obj = d_response_object;
     d_response_object = new_response;
     return curr_obj;
@@ -79,9 +68,8 @@ BESResponseHandler::set_response_object(BESResponseObject *new_response)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESResponseHandler::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESResponseHandler::dump - (" << (void *) this << ")" << endl;
+void BESResponseHandler::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESResponseHandler::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     strm << BESIndent::LMarg << "response name: " << d_response_name << endl;
     if (d_response_object) {
@@ -89,10 +77,8 @@ void BESResponseHandler::dump(ostream &strm) const
         BESIndent::Indent();
         d_response_object->dump(strm);
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "response object: not set" << endl;
     }
     BESIndent::UnIndent();
 }
-

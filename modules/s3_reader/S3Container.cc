@@ -104,19 +104,6 @@ S3Container::ptr_duplicate()
     return container;
 }
 
-#if 0
-
-S3Container::~S3Container()
-{
-#if 0
-    if (d_dmrpp_rresource) {
-        release();
-    }
-#endif
-}
-
-#endif
-
 /**
  * @brief Filter the cached resource. Each key in content_filters is replaced with its associated map value.
  *

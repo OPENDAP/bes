@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -35,30 +35,25 @@
 #include "BESSetContainerResponseHandler.h"
 
 #include "BESCatalogList.h"
-#include "BESContainerStorageList.h"
 #include "BESContainerStorage.h"
-#include "BESDataNames.h"
-#include "BESSyntaxUserError.h"
-#include "BESResponseNames.h"
+#include "BESContainerStorageList.h"
 #include "BESDataHandlerInterface.h"
+#include "BESDataNames.h"
 #include "BESDebug.h"
+#include "BESResponseNames.h"
+#include "BESSyntaxUserError.h"
 #include "BESUtil.h"
 
 using std::endl;
-using std::string;
 using std::ostream;
+using std::string;
 
 #define MODULE "bes"
 #define prolog std::string("BESSetContainerResponseHandler::").append(__func__).append("() - ")
 
-BESSetContainerResponseHandler::BESSetContainerResponseHandler(const string &name) :
-    BESResponseHandler(name)
-{
-}
+BESSetContainerResponseHandler::BESSetContainerResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESSetContainerResponseHandler::~BESSetContainerResponseHandler()
-{
-}
+BESSetContainerResponseHandler::~BESSetContainerResponseHandler() = default;
 
 /** @brief executes the command to create a new container or replaces an
  * already existing container based on the provided symbolic name.
@@ -79,8 +74,7 @@ BESSetContainerResponseHandler::~BESSetContainerResponseHandler()
  * @see BESContainerStorage
  * @see BESContainer
  */
-void BESSetContainerResponseHandler::execute(BESDataHandlerInterface &dhi)
-{
+void BESSetContainerResponseHandler::execute(BESDataHandlerInterface &dhi) {
     BESDEBUG(MODULE, prolog << "store = " << dhi.data[STORE_NAME] << endl);
     BESDEBUG(MODULE, prolog << "symbolic = " << dhi.data[SYMBOLIC_NAME] << endl);
     BESDEBUG(MODULE, prolog << "real = " << dhi.data[REAL_NAME] << endl);
@@ -95,9 +89,9 @@ void BESSetContainerResponseHandler::execute(BESDataHandlerInterface &dhi)
         // to make the container. This will require re-design of the Catalog/Container/ContainerStorage
         // classes and maybe the handlers. jhrg 1/7/19
         cp->add_container(dhi.data[SYMBOLIC_NAME], dhi.data[REAL_NAME], dhi.data[CONTAINER_TYPE]);
-    }
-    else {
-        string ret = (string) "Unable to add container '" + dhi.data[SYMBOLIC_NAME] + "' to container storage '" + dhi.data[STORE_NAME] + "'. Store does not exist.";
+    } else {
+        string ret = (string) "Unable to add container '" + dhi.data[SYMBOLIC_NAME] + "' to container storage '" +
+                     dhi.data[STORE_NAME] + "'. Store does not exist.";
         throw BESSyntaxUserError(ret, __FILE__, __LINE__);
     }
 }
@@ -111,9 +105,7 @@ void BESSetContainerResponseHandler::execute(BESDataHandlerInterface &dhi)
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void BESSetContainerResponseHandler::transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/)
-{
-}
+void BESSetContainerResponseHandler::transmit(BESTransmitter * /*transmitter*/, BESDataHandlerInterface & /*dhi*/) {}
 
 /** @brief dumps information about this object
  *
@@ -121,17 +113,13 @@ void BESSetContainerResponseHandler::transmit(BESTransmitter */*transmitter*/, B
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESSetContainerResponseHandler::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESSetContainerResponseHandler::dump - (" << (void *) this << ")" << endl;
+void BESSetContainerResponseHandler::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESSetContainerResponseHandler::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     BESResponseHandler::dump(strm);
     BESIndent::UnIndent();
 }
 
-BESResponseHandler *
-BESSetContainerResponseHandler::SetContainerResponseBuilder(const string &name)
-{
+BESResponseHandler *BESSetContainerResponseHandler::SetContainerResponseBuilder(const string &name) {
     return new BESSetContainerResponseHandler(name);
 }
-

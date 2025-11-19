@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -30,11 +30,11 @@
 //      pwest       Patrick West <pwest@ucar.edu>
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
-#include <mutex>
 #include "config.h"
+#include <mutex>
 
 #ifdef HAVE_STDLIB_H
-#include <stdlib.h>
+#include <cstdlib>
 #endif
 
 #include "BESResponseHandlerList.h"
@@ -43,7 +43,7 @@ using std::endl;
 using std::ostream;
 using std::string;
 
-BESResponseHandlerList::BESResponseHandlerList() {}
+BESResponseHandlerList::BESResponseHandlerList() = default;
 
 /** @brief add a response handler to the list
  *
@@ -59,8 +59,7 @@ BESResponseHandlerList::BESResponseHandlerList() {}
  * @see BESResponseHandler
  * @see BESResponseObject
  */
-bool BESResponseHandlerList::add_handler(const string &handler_name, p_response_handler handler_method)
-{
+bool BESResponseHandlerList::add_handler(const string &handler_name, p_response_handler handler_method) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESResponseHandlerList::Handler_citer i = _handler_list.find(handler_name);
@@ -80,8 +79,7 @@ bool BESResponseHandlerList::add_handler(const string &handler_name, p_response_
  * @return true if successfully removed, false if it doesn't exist in the list
  * @see BESResponseHandler
  */
-bool BESResponseHandlerList::remove_handler(const string &handler_name)
-{
+bool BESResponseHandlerList::remove_handler(const string &handler_name) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESResponseHandlerList::Handler_iter i = _handler_list.find(handler_name);
@@ -104,9 +102,7 @@ bool BESResponseHandlerList::remove_handler(const string &handler_name)
  * it doesn't exist in the list.
  * @see BESResponseHandler
  */
-BESResponseHandler *
-BESResponseHandlerList::find_handler(const string &handler_name)
-{
+BESResponseHandler *BESResponseHandlerList::find_handler(const string &handler_name) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESResponseHandlerList::Handler_citer i = _handler_list.find(handler_name);
@@ -116,7 +112,7 @@ BESResponseHandlerList::find_handler(const string &handler_name)
             return p(handler_name);
         }
     }
-    return 0;
+    return nullptr;
 }
 
 /** @brief returns the comma separated list of all response handlers currently registered with this server.
@@ -126,15 +122,15 @@ BESResponseHandlerList::find_handler(const string &handler_name)
  *
  * @return comma separated list of response handler names
  */
-string BESResponseHandlerList::get_handler_names()
-{
+string BESResponseHandlerList::get_handler_names() {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     string ret = "";
     bool first_name = true;
     BESResponseHandlerList::Handler_citer i = _handler_list.begin();
     for (; i != _handler_list.end(); i++) {
-        if (!first_name) ret += ", ";
+        if (!first_name)
+            ret += ", ";
         ret += (*i).first;
         first_name = false;
     }
@@ -148,11 +144,10 @@ string BESResponseHandlerList::get_handler_names()
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESResponseHandlerList::dump(ostream &strm) const
-{
+void BESResponseHandlerList::dump(ostream &strm) const {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    strm << BESIndent::LMarg << "BESResponseHandlerList::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "BESResponseHandlerList::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     if (_handler_list.size()) {
         strm << BESIndent::LMarg << "registered response handlers:" << endl;
@@ -163,18 +158,13 @@ void BESResponseHandlerList::dump(ostream &strm) const
             strm << BESIndent::LMarg << (*i).first << endl;
         }
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "registered response handlers: none" << endl;
     }
     BESIndent::UnIndent();
 }
 
-BESResponseHandlerList *
-BESResponseHandlerList::TheList()
-{
+BESResponseHandlerList *BESResponseHandlerList::TheList() {
     static BESResponseHandlerList list;
     return &list;
 }
-
-
