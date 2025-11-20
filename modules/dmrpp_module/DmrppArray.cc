@@ -3568,16 +3568,23 @@ bool DmrppArray::use_buffer_chunk() {
     auto chunks = this->get_chunks();
 
     // For our use case, we only need to check if the first chunk and the second chunk are adjacent.
+    // Since we find quite a few cases that the chunks are not adjacent in the middle, this causes the expensive 
+    // cloud access several times even with super chunks. So we will try to use the buffer chunk for those cases too. KY 2025-11-20
     // To make the process clear and simple, we don't handle structure data.
     // Also when all the chunks are filled with the fill values, we should not use the buffer chunk.
     if (chunks.size() >1 && this->var()->type() !=dods_structure_c && this->get_var_chunks_storage_size()!=0){
-        unsigned long long first_chunk_offset = (chunks[0])->get_offset();
-        unsigned long long first_chunk_size = (chunks[0])->get_size();
-        unsigned long long second_chunk_offset = (chunks[1])->get_offset();
-        if ((first_chunk_offset + first_chunk_size) != second_chunk_offset)
-            ret_value = true;
+        for (unsigned i = 0; i < (chunks.size()-1); i++) {
+            unsigned long long chunk_offset = chunks[i]->get_offset();
+            unsigned long long chunk_size = chunks[i]->get_size();
+            unsigned long long next_chunk_offset = (chunks[i+1])->get_offset();
+            if ((chunk_offset + chunk_size) != next_chunk_offset) {
+                ret_value = true;
+                break;
+            }
+        }
     }
 
     return ret_value;
 }
+
 } // namespace dmrpp
