@@ -147,7 +147,10 @@ jobs:
         # - export RUNTESTFLAGS="-v"
         - autoreconf --force --install --verbose
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-        - make -j16 && make install && besctl start && make check -j16 && besctl stop && cat $prefix/../bes/aws/unit-tests/test-suite.log
+        - make -j16 && make install && besctl start && cd aws && make check -j16 && besctl stop
+      after_failure:
+        - cat $prefix/../bes/aws/unit-tests/test-suite.log
+
 
     # - stage: build-and-package
     #   name: "distcheck"
