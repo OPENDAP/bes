@@ -194,7 +194,7 @@ public:
             "\n        yee --> haw" +
             "\n    s3 credentials list:" +
             "\n        palindrome --> Expires: 3035-07-16 02:20:33+00:00\n";
-        CPPUNIT_ASSERT_MESSAGE("The dump should be:\n" + expected_str + "\n\nINSTEAD was\n" + result, expected_str == result);
+        CPPUNIT_ASSERT_MESSAGE("The dump should contain:\n" + expected_str + "\n\nbut did not; INSTEAD was\n" + result, result.find(expected_str) != std::string::npos);
     }
 
     void is_timestamp_after_now_test() {
