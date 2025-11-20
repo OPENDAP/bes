@@ -201,7 +201,7 @@ public:
         std::string str_old("1980-07-16 18:40:58+00:00");
         CPPUNIT_ASSERT_MESSAGE("Ancient timestamp is before now", !SignedUrlCache::is_timestamp_after_now(str_old));
 
-        std::string str_future("3035-07-16 02:20:33+00:00");
+        std::string str_future("2135-07-16 02:20:33+00:00");
         CPPUNIT_ASSERT_MESSAGE("Future timestamp is after now", SignedUrlCache::is_timestamp_after_now(str_future));
 
         std::string str_invalid("invalid timestamp woo hooray huzzah");
@@ -213,7 +213,7 @@ public:
         auto result_not_in_cache = SignedUrlCache::TheCache()->retrieve_cached_s3credentials(key);
         CPPUNIT_ASSERT_MESSAGE("Cache miss should return null", result_not_in_cache == nullptr);
 
-        auto value = make_shared<SignedUrlCache::S3AccessKeyTuple>("a man", "a plan", "a canal", "3035-07-16 02:20:33+00:00");
+        auto value = make_shared<SignedUrlCache::S3AccessKeyTuple>("a man", "a plan", "a canal", "2135-07-16 02:20:33+00:00");
         SignedUrlCache::TheCache()->d_s3credentials_cache.insert(pair<string, shared_ptr<SignedUrlCache::S3AccessKeyTuple>>(key, value));
         auto result_in_cache = SignedUrlCache::TheCache()->retrieve_cached_s3credentials(key);
         CPPUNIT_ASSERT_MESSAGE("Cache hit should successfully retrieve result", result_in_cache == value);
@@ -351,7 +351,7 @@ public:
         auto out3 = SignedUrlCache::num_seconds_until_expiration(expiration_time_past);
         CPPUNIT_ASSERT_MESSAGE("Expiration time in past should return 0s `" + to_string(out3) + "`", out3 == 0);
 
-        std::string expiration_time_future("3026-07-16 18:40:58+04:00");
+        std::string expiration_time_future("2126-07-16 18:40:58+04:00");
         auto out4 = SignedUrlCache::num_seconds_until_expiration(expiration_time_future);
         CPPUNIT_ASSERT_MESSAGE("Expiration time in future should be > 0s `" + to_string(out4) + "`", out4 > 0);
 
