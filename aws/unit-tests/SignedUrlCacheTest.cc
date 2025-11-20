@@ -370,14 +370,14 @@ CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
     CPPUNIT_TEST(set_skip_regex_test);
     CPPUNIT_TEST(dump_test);
 
-    // // Test behavior specific to SignedUrlCache:
-    // CPPUNIT_TEST(is_timestamp_after_now_test);
-    // CPPUNIT_TEST(retrieve_cached_s3credentials_test);
-    // CPPUNIT_TEST(retrieve_cached_s3credentials_expired_credentials_test);
-    // CPPUNIT_TEST(extract_s3_credentials_from_response_json_test);
-    // CPPUNIT_TEST(cache_signed_url_components_test);
-    // CPPUNIT_TEST(retrieve_cached_signed_url_components_test);
-    // CPPUNIT_TEST(get_s3credentials_from_endpoint_test);
+    // Test behavior specific to SignedUrlCache:
+    CPPUNIT_TEST(is_timestamp_after_now_test);
+    CPPUNIT_TEST(retrieve_cached_s3credentials_test);
+    CPPUNIT_TEST(retrieve_cached_s3credentials_expired_credentials_test);
+    CPPUNIT_TEST(extract_s3_credentials_from_response_json_test);
+    CPPUNIT_TEST(cache_signed_url_components_test);
+    CPPUNIT_TEST(retrieve_cached_signed_url_components_test);
+    CPPUNIT_TEST(get_s3credentials_from_endpoint_test);
 
     // // ...and, specifically, the signing itself: 
     // // TODO-future: will add/update these tests once signing behavior is implemented
