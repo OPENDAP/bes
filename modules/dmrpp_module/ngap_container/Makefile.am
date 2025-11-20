@@ -9,30 +9,15 @@ ACLOCAL_AMFLAGS = -I conf
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand \
 -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src -I$(top_srcdir)/aws $(DAP_CFLAGS)
 
-LIBADD = $(top_builddir)/aws/libbes_aws.la $(aws_libs)
-
 AM_CXXFLAGS=
-AM_LDFLAGS = -L$(aws_libdir)
+AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
-
-if DARWIN
-AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,@loader_path
-else
-AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,'$$ORIGIN'
-    ifeq ($(strip $(aws_libdir64)),)
-        $(info "aws_libdir64 not set, skipping")
-    else
-        AM_LDFLAGS += -L$(aws_libdir64)
-        AM_LDFLAGS += -Wl,-rpath,$(aws_libdir64)
-    endif
-endif
 
 SUBDIRS = . unit-tests
 
 noinst_LTLIBRARIES = libngap.la
 libngap_la_SOURCES = $(NGAP_SRC) $(NGAP_HDR)
 libngap_la_LDFLAGS =
-libngap_la_LIBADD = $(LIBADD)
 
 NGAP_SRC = NgapOwnedContainer.cc NgapOwnedContainerStorage.cc  NgapApi.cc
 

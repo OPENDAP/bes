@@ -60,7 +60,7 @@ HDR = build_dmrpp_util_h4.h ../Chunk.h ../DMRpp.h ../DMZ.h ../DmrppArray.h ../Dm
 build_dmrpp_h4_CPPFLAGS = $(AM_CPPFLAGS)
 
 #build_dmrpp_h4_LDFLAGS = $(HDFEOS2_LDFLAGS) $(HDFEOS2_LIBS) $(HDF4_LDFLAGS) $(BES_DAP_LIB_LDFLAGS)
-build_dmrpp_h4_LDFLAGS = $(HDFEOS2_LDFLAGS) $(HDF4_LDFLAGS) $(BES_DAP_LIB_LDFLAGS)
+build_dmrpp_h4_LDFLAGS = $(HDFEOS2_LDFLAGS) $(HDF4_LDFLAGS) $(BES_DAP_LIB_LDFLAGS) $(AM_LDFLAGS)
 
 # jhrg 12/18/23 $(top_builddir)/dap/.libs/libdap_module.a
 

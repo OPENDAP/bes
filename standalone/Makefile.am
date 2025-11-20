@@ -3,27 +3,16 @@
 
 AUTOMAKE_OPTIONS = foreign subdir-objects
 
-AM_CPPFLAGS = -I$(top_srcdir)/xmlcommand -I$(top_srcdir)/cmdln -I$(top_srcdir)/dispatch -I$(top_srcdir)/aws $(XML2_CFLAGS)
+AM_CPPFLAGS = -I$(top_srcdir)/xmlcommand -I$(top_srcdir)/cmdln -I$(top_srcdir)/dispatch $(XML2_CFLAGS)
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
 endif
 
 AM_CXXFLAGS=
-AM_LDFLAGS = -L$(aws_libdir)
+AM_LDFLAGS = 
 include $(top_srcdir)/coverage.mk
 
-if DARWIN
-AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,@loader_path
-else
-AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,'$$ORIGIN'
-    ifeq ($(strip $(aws_libdir64)),)
-        $(info "aws_libdir64 not set, skipping")
-    else
-        AM_LDFLAGS += -L$(aws_libdir64)
-        AM_LDFLAGS += -Wl,-rpath,$(aws_libdir64)
-    endif
-endif
 
 EXTRA_DIST = response-split.py
 
@@ -42,4 +31,4 @@ besstandalone_SOURCES = besstandalone.cc StandAloneApp.cc StandAloneClient.cc \
 # This depends on building in bes/cmdln first. It's not a good way to write
 # teh Makefile.am, but I cannot get distcheck to work otherwise. jhrg 9/8/23
 besstandalone_LDADD = $(top_builddir)/cmdln/CmdTranslation.o $(top_builddir)/dispatch/libbes_dispatch.la \
-    $(top_builddir)/xmlcommand/libbes_xml_command.la $(READLINE_LIBS) $(XML2_LIBS) $(top_builddir)/aws/libbes_aws.la $(aws_libs)
+    $(top_builddir)/xmlcommand/libbes_xml_command.la $(READLINE_LIBS) $(XML2_LIBS)
