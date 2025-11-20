@@ -29,7 +29,11 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-SUBDIRS = dispatch xmlcommand ppt server http cmdln aws standalone docs bin templates hello_world
+SUBDIRS = dispatch xmlcommand ppt server http cmdln standalone docs bin templates hello_world
+
+if USE_AWS_SDK
+SUBDIRS += aws
+endif
 
 if LIBDAP
 SUBDIRS += dap dapreader
