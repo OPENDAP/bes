@@ -365,10 +365,10 @@ public:
 CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
 
     // Test behavior analogous to that of the EffectiveUrlCache:
-    // CPPUNIT_TEST(get_cached_signed_url_test);
-    // CPPUNIT_TEST(is_cache_disabled_test);
-    // CPPUNIT_TEST(set_skip_regex_test);
-    // CPPUNIT_TEST(dump_test);
+    CPPUNIT_TEST(get_cached_signed_url_test);
+    CPPUNIT_TEST(is_cache_disabled_test);
+    CPPUNIT_TEST(set_skip_regex_test);
+    CPPUNIT_TEST(dump_test);
 
     // // Test behavior specific to SignedUrlCache:
     // CPPUNIT_TEST(is_timestamp_after_now_test);
@@ -384,9 +384,9 @@ CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
     // // - sign_url
     // // - get_signed_url
 
-    // // Last but not least, test those helper functions
-    // CPPUNIT_TEST(split_s3_url_test);
-    // CPPUNIT_TEST(num_seconds_until_expiration_test);
+    // Last but not least, test those helper functions
+    CPPUNIT_TEST(split_s3_url_test);
+    CPPUNIT_TEST(num_seconds_until_expiration_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
