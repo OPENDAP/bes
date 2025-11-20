@@ -50,19 +50,19 @@ AM_CXXFLAGS =
 # See above. jhrg 10/10/25 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-DISTCLEANFILES = test_config.h
+DISTCLEANFILES = bes.conf test_config.h
 
-CLEANFILES = *.dbg *.log
+CLEANFILES = bes.conf *.dbg *.log
 
-EXTRA_DIST = test_config.h.in
+EXTRA_DIST = test_config.h.in bes.conf.in
 
 check_PROGRAMS = $(UNIT_TESTS)
 
 TESTS = $(UNIT_TESTS)
 
-noinst_DATA =
+noinst_DATA = bes.conf
 
-BUILT_SOURCES = test_config.h
+BUILT_SOURCES = test_config.h bes.conf
 
 noinst_HEADERS = test_config.h
 
@@ -76,6 +76,8 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 	sed -e "s%[@]abs_srcdir[@]%$${mod_abs_srcdir}%" \
 	    -e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
+
+bes.conf: bes.conf.in $(top_srcdir)/configure.ac
 
 %.conf: %.conf.in
 	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
