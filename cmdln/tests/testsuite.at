@@ -101,6 +101,13 @@ _AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline, $2)
 AT_CLEANUP
 ])
 
+m4_define([AT_BESCMD_DMRPP_RESPONSE_TEST],
+[AT_SETUP([BESCMD $1])
+AT_KEYWORDS([dmrpp])
+_AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline, $2)
+AT_CLEANUP
+])
+
 m4_define([AT_BESCMD_ERROR_RESPONSE_TEST],
 [
     AT_SETUP([BESCMD $1])
@@ -233,3 +240,4 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([ssfunc/geogrid_func_wholearray.3.bescmd])
 #AT_BESCMD_SHOW_RESPONSE_TEST([show/show_02.bescmd], [xfail]) # Uses showInfo which was deprecated and dropped.
 AT_BESCMD_SHOW_RESPONSE_TEST([show/show_03.bescmd], [xfail])
 
+AT_BESCMD_DMRPP_RESPONSE_TEST([dmrpp/dmrpp-return-as-test-2.bescmd], [pass])
