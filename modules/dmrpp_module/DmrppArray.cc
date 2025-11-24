@@ -2755,21 +2755,31 @@ bool DmrppArray::read()
                 if (!array_to_read->is_projected()) {
                     BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
                     // KENT: Only here we need to consider the direct buffer IO.
-                    if (this->get_dio_flag())
+                    if (this->get_dio_flag()) {
+                        BESDEBUG(MODULE, prolog << "Using direct IO" << endl);
                         array_to_read->read_chunks_dio_unconstrained();
+                    }
                     // Also buffer chunks for the non-contiguous chunk case.
-                    else if(buffer_chunk_case) 
+                    else if(buffer_chunk_case) { 
+                        BESDEBUG(MODULE, prolog << "Using buffer chunk" << endl);
                         array_to_read->read_buffer_chunks_unconstrained();
-                    else
+                    }
+                    else {
+                        BESDEBUG(MODULE, prolog << "Using general approach" << endl);
                         array_to_read->read_chunks_unconstrained();
+                    }
                 } else {
-                    BESDEBUG(MODULE, prolog << "Reading data from chunks." << endl);
+                    BESDEBUG(MODULE, prolog << "Reading data from chunks, constrained." << endl);
 
                     // Also buffer chunks for the non-contiguous chunk case.
-                    if (buffer_chunk_case) 
+                    if (buffer_chunk_case)  {
+                        BESDEBUG(MODULE, prolog << "Using buffer chunk" << endl);
                         array_to_read->read_buffer_chunks();
-                    else 
+                    }
+                    else { 
+                        BESDEBUG(MODULE, prolog << "Using general approach" << endl);
                         array_to_read->read_chunks();
+                    }
                 }
             }
         }

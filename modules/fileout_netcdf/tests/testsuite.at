@@ -436,3 +436,9 @@ AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/t_int_dim.dmrpp.bescmd], [bes.nc4
 #multi-fillvalues
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/multi_fvalue.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED(bescmd/multi_fvalue_dap2_nc4.h5.bescmd)
+
+#odd chunk size
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_odd_chunk_size.h5.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_less_odd_chunk_size_comp.h5.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_odd_chunk_size_comp_constraint.h5.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_less_odd_chunk_size_constraint.h5.dmrpp.bescmd)
