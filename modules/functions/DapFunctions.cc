@@ -58,9 +58,7 @@
 #endif
 
 // Until we sort out the GDAL linking issue, do not include the gdal functions
-#define INC_GDAL 0
-
-#if INC_GDAL
+#if HAVE_GDAL
 #include "ScaleGrid.h"
 #endif
 
@@ -117,7 +115,7 @@ void DapFunctions::initialize(const string &modname)
     stare_sidecar_suffix = TheBESKeys::TheKeys()->read_string_key(STARE_SIDECAR_SUFFIX_KEY, stare_sidecar_suffix);
 #endif
 
-#if INC_GDAL
+#if HAVE_GDAL
     libdap::ServerFunctionsList::TheList()->add_function(new ScaleArray());
     libdap::ServerFunctionsList::TheList()->add_function(new ScaleGrid());
     libdap::ServerFunctionsList::TheList()->add_function(new Scale3DArray());

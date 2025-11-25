@@ -37,10 +37,13 @@ BES.Catalog.catalog.TypeMatch += dmrpp:.*.dmrpp$;
 
 # GDAL switches - this was going to be part of an optional GDAL feature,
 # but that did not materialize as a usable thing in the time allowed. jhrg 6/10/22
-
-BES.modules += gdal
-BES.module.gdal = @abs_top_builddir@/modules/gdal_module/.libs/libgdal_module.so
-BES.Catalog.catalog.TypeMatch += gdal:.*.tif(.bz2|.gz|.Z)?$;
+#
+# I removed this for now. I don't think we need to test against GeoTIFF
+# data here and there are issues with building GDAL. jhrg 11/25/25
+#
+# BES.modules += gdal
+# BES.module.gdal = @abs_top_builddir@/modules/gdal_module/.libs/libgdal_module.so
+# BES.Catalog.catalog.TypeMatch += gdal:.*.tif(.bz2|.gz|.Z)?$;
 
 #-----------------------------------------------------------------------#
 # Gateway module specific parameters
