@@ -597,9 +597,9 @@ AM_COND_IF([LOOK_FOR_AWS],
     AS_IF([$found_aws_h && $found_s3client_h],
         [aws_prefix=$ac_bes_dependencies_prefix
 
-         aws_libs=" -laws-c-common -laws-c-compression -laws-c-event-stream -laws-crt-cpp \
+         aws_libs=" -laws-c-compression -laws-c-event-stream -laws-c-common -laws-c-io -laws-c-http -laws-crt-cpp \
          -laws-cpp-sdk-core -laws-cpp-sdk-s3 \
-         -laws-c-http -laws-c-io -laws-c-auth -laws-c-cal \
+         -laws-c-auth -laws-c-cal \
          -laws-c-mqtt -laws-c-s3 -laws-c-sdkutils \
          -lxml2 -lz -lbz2 -lcurl -laws-checksums"
 
