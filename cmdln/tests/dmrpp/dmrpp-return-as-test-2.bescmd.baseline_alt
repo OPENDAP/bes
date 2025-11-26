@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+    <getDAP>
+        <BESError>
+            <Type>7</Type>
+            
+            <Administrator>support@opendap.org</Administrator>
+            <curl_code>0</curl_code>
+            <http_status>401</http_status>
+            <origin_url>https://data.ornldaac.earthdata.nasa.gov/protected/daymet/Daymet_Daily_V4R1/data/daymet_v4_daily_na_tmax_2010.nc.dmrpp</origin_url>
+            
+            <response_headers/>
+            <response_body/>
+            <Location>
+                <File>CurlUtils.cc</File>
+                <Line>856</Line>
+            </Location>
+        </BESError>
+    </getDAP>
+</response>

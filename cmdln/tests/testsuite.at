@@ -101,11 +101,34 @@ _AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline, $2)
 AT_CLEANUP
 ])
 
-m4_define([AT_BESCMD_DMRPP_RESPONSE_TEST],
+dnl Either match the expected dmrpp result (if EDL credentials present)
+dnl or match with the error type returned, without any urls
+dnl that could leak credentials or be unmatchable due to unique IDs
+m4_define([AT_BESCMD_DMRPP_RESPONSE_TEST],   
 [AT_SETUP([BESCMD $1])
 AT_KEYWORDS([dmrpp])
-_AT_BESCMD_TEST($abs_srcdir/$1, $abs_srcdir/$1.baseline, $2)
-AT_CLEANUP
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+    baseline_alt=$abs_srcdir/$1.baseline_alt
+    pass=$2
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+          [
+            AT_CHECK([bescmdln -i $input], [], [stdout])
+            AT_CHECK([mv stdout $baseline.tmp])
+          ],
+          [
+            AT_CHECK([bescmdln -i $input], [], [stdout])
+            AS_IF(diff -b -B $baseline stdout,
+                  [AT_CHECK([diff -b -B $baseline stdout])],
+                  [
+                    AT_CHECK([cat stdout | sed 's/<Message>.*//g' | sed 's/<redirect_url>.*//g' | sed 's/<response\ reqID.*//g'], [], [stdout])
+                    AT_CHECK([diff -b -B $baseline_alt stdout])
+                  ])
+          ])
+    AT_XFAIL_IF([test _$pass = _xfail])
+    AT_CLEANUP
 ])
 
 m4_define([AT_BESCMD_ERROR_RESPONSE_TEST],
