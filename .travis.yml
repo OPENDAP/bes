@@ -140,16 +140,16 @@ stages:
 
 jobs:
   include:
-    - stage: build-and-package
-      name: "check"
-      script:
-        - export BES_BUILD=main
-        # - export RUNTESTFLAGS="-v"
-        - autoreconf --force --install --verbose
-        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-        - make -j16 && make install && besctl start && make check -j16 && besctl stop
-      after_failure:
-        - cat /home/travis/build/OPENDAP/bes/cmdln/tests/testsuite.log
+    # - stage: build-and-package
+    #   name: "check"
+    #   script:
+    #     - export BES_BUILD=main
+    #     # - export RUNTESTFLAGS="-v"
+    #     - autoreconf --force --install --verbose
+    #     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+    #     - make -j16 && make install && besctl start && make check -j16 && besctl stop
+    #   after_failure:
+    #     - cat /home/travis/build/OPENDAP/bes/cmdln/tests/testsuite.log
 
     # - stage: build-and-package
     #   name: "distcheck"

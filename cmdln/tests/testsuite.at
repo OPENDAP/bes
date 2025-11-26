@@ -263,4 +263,4 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST([ssfunc/geogrid_func_wholearray.3.bescmd])
 #AT_BESCMD_SHOW_RESPONSE_TEST([show/show_02.bescmd], [xfail]) # Uses showInfo which was deprecated and dropped.
 AT_BESCMD_SHOW_RESPONSE_TEST([show/show_03.bescmd], [xfail])
 
-AT_BESCMD_DMRPP_RESPONSE_TEST([dmrpp/dmrpp-return-as-test-2.bescmd], [pass])
+AT_BESCMD_DMRPP_RESPONSE_TEST([dmrpp/dmrpp-return-as-test.bescmd], [pass])
