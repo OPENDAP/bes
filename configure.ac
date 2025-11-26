@@ -601,7 +601,7 @@ AM_COND_IF([LOOK_FOR_AWS],
          -laws-c-http -laws-c-compression -laws-c-event-stream \
          -laws-c-auth -laws-c-cal \
          -laws-c-mqtt -laws-c-s3 -laws-c-sdkutils -laws-c-common \
-         -lxml2 -lz -lbz2 -lcurl -laws-checksums -ls2n-tls -aws-lc"
+         -lxml2 -lz -lbz2 -lcurl -laws-checksums -ls2n-tls -laws-lc -lcrypto"
 
          dnl AC_CANONICAL_HOST is needed to access the 'host_os' variable
          AC_CANONICAL_HOST
