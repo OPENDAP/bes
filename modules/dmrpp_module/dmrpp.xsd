@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:dmrpp="http://opendap.org/ns/dmrpp/1.0#"
+           targetNamespace="http://opendap.org/ns/dmrpp/1.0#"
+           elementFormDefault="qualified"
+           attributeFormDefault="unqualified"
+           version="1.0">
+
+    <!-- Is this namespace OK: xmlns:dmrpp="http://opendap.org/ns/dmrpp/1.0#" -->
+
+    <!-- ==========
+         Simple types
+         ========== -->
+
+    <!-- Little / big endian byte order -->
+    <xs:simpleType name="ByteOrder">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="LE"/>
+            <xs:enumeration value="BE"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Unsigned 64-bit values (offsets, sizes) -->
+    <xs:simpleType name="UnsignedLong">
+        <xs:restriction base="xs:unsignedLong"/>
+    </xs:simpleType>
+
+    <!-- Space-separated list of non-negative indices (for dims, chunk positions, etc.) -->
+    <xs:simpleType name="IndexList">
+        <xs:list itemType="xs:unsignedLong"/>
+    </xs:simpleType>
+
+    <!-- Space-separated list of deflate levels -->
+    <xs:simpleType name="DeflateLevelList">
+        <xs:list itemType="xs:nonNegativeInteger"/>
+    </xs:simpleType>
+
+    <!-- Space-separated list of struct field offsets -->
+    <xs:simpleType name="StructOffsetList">
+        <xs:list itemType="xs:nonNegativeInteger"/>
+    </xs:simpleType>
+
+    <!-- How fixed-length strings are padded -->
+    <xs:simpleType name="PadKind">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="null"/>
+            <xs:enumeration value="space"/>
+            <xs:enumeration value="zero"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- ==========
+         Dataset-level attributes
+         ========== -->
+
+    <!-- To be used by the DMR Dataset element (dmrpp:href, dmrpp:trust, dmrpp:version) -->
+    <xs:attributeGroup name="DatasetExtensionAttributes">
+        <xs:attribute name="href" type="xs:anyURI" use="required"/>
+        <xs:attribute name="trust" type="xs:boolean" use="optional" default="false"/>
+        <xs:attribute name="version" type="xs:string" use="optional"/>
+    </xs:attributeGroup>
+
+    <!-- ==========
+         chunks / chunk / block
+         ========== -->
+
+    <xs:complexType name="ChunksType">
+        <xs:sequence>
+            <!-- There may be one or more chunkDimensionSizes elements, but the
+                 implementation uses the first. -->
+            <xs:element name="chunkDimensionSizes"
+                        type="dmrpp:IndexList"
+                        minOccurs="0"
+                        maxOccurs="unbounded"/>
+
+            <!-- Either chunks or blocks (or, in linked-block mode, blocks plus chunks
+                 that reference them). -->
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="chunk" type="dmrpp:ChunkType"/>
+                <xs:element name="block" type="dmrpp:BlockType"/>
+            </xs:choice>
+        </xs:sequence>
+
+        <xs:attribute name="compressionType" type="xs:string" use="optional"/>
+        <xs:attribute name="deflateLevel" type="dmrpp:DeflateLevelList" use="optional"/>
+        <xs:attribute name="fillValue" type="xs:string" use="optional"/>
+        <xs:attribute name="byteOrder" type="dmrpp:ByteOrder" use="optional"/>
+        <xs:attribute name="structOffset" type="dmrpp:StructOffsetList" use="optional"/>
+        <!-- HDF4 multi-linked-block layout flag -->
+        <xs:attribute name="LBChunk" type="xs:boolean" use="optional"/>
+        <!-- Direct I/O control; implementation looks for DIO="off" -->
+        <xs:attribute name="DIO" type="xs:string" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="ChunkType">
+        <xs:attribute name="offset" type="dmrpp:UnsignedLong" use="required"/>
+        <xs:attribute name="nBytes" type="dmrpp:UnsignedLong" use="required"/>
+        <!-- Position of this chunk in chunk-space, e.g., "0 0 3" -->
+        <xs:attribute name="chunkPositionInArray" type="dmrpp:IndexList" use="optional"/>
+        <!-- Filter mask for per-chunk filters -->
+        <xs:attribute name="fm" type="xs:unsignedInt" use="optional"/>
+        <!-- Optional override of dataset-level href -->
+        <xs:attribute name="href" type="xs:anyURI" use="optional"/>
+        <xs:attribute name="trust" type="xs:boolean" use="optional"/>
+        <!-- For multi-block chunks, index of this block in the linked-block chain -->
+        <xs:attribute name="LinkedBlockIndex" type="xs:unsignedInt" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="BlockType">
+        <xs:attribute name="offset" type="dmrpp:UnsignedLong" use="required"/>
+        <xs:attribute name="nBytes" type="dmrpp:UnsignedLong" use="required"/>
+        <xs:attribute name="href" type="xs:anyURI" use="optional"/>
+        <xs:attribute name="trust" type="xs:boolean" use="optional"/>
+    </xs:complexType>
+
+    <!-- ==========
+         Fixed-length string array marker
+         ========== -->
+
+    <xs:complexType name="FixedLengthStringArrayType">
+        <xs:attribute name="string_length" type="xs:positiveInteger" use="required"/>
+        <xs:attribute name="pad" type="dmrpp:PadKind" use="optional" default="null"/>
+    </xs:complexType>
+
+    <!-- ==========
+         Inline / compact data
+         ========== -->
+
+    <xs:simpleType name="CompactDataContents">
+        <xs:restriction base="xs:base64Binary"/>
+    </xs:simpleType>
+
+    <xs:complexType name="CompactType">
+        <xs:simpleContent>
+            <xs:extension base="dmrpp:CompactDataContents"/>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <!-- ==========
+         Missing-data payload
+         ========== -->
+
+    <xs:complexType name="MissingDataType">
+        <xs:simpleContent>
+            <xs:extension base="xs:base64Binary"/>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <!-- ==========
+         Special structure data payload
+         ========== -->
+
+    <xs:complexType name="SpecialStructureDataType">
+        <xs:simpleContent>
+            <xs:extension base="xs:base64Binary"/>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <!-- ==========
+         Variable-length string array marker/payload
+         (Rename 'vlenStringArray' to match DMRPP_VLSA_ELEMENT in your code.)
+         ========== -->
+
+    <xs:complexType name="VlenStringArrayType">
+        <!--
+            The implementation delegates parsing to vlsa::read(...),
+            so we leave the internal structure open here.
+        -->
+        <xs:sequence>
+            <xs:any minOccurs="0" maxOccurs="unbounded" processContents="lax"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- ==========
+         Global element declarations
+         ==========
+         These are provided so the main DMR schema can import and reference them
+         (e.g., via xs:any or explicit element refs).
+         ========== -->
+
+    <xs:element name="chunks" type="dmrpp:ChunksType"/>
+    <xs:element name="chunkDimensionSizes" type="dmrpp:IndexList"/>
+    <xs:element name="chunk" type="dmrpp:ChunkType"/>
+    <xs:element name="block" type="dmrpp:BlockType"/>
+
+    <xs:element name="FixedLengthStringArray"
+                type="dmrpp:FixedLengthStringArrayType"/>
+
+    <xs:element name="compact" type="dmrpp:CompactType"/>
+    <xs:element name="missingdata" type="dmrpp:MissingDataType"/>
+    <xs:element name="specialstructuredata"
+                type="dmrpp:SpecialStructureDataType"/>
+
+    <!-- Placeholder name; align with DMRPP_VLSA_ELEMENT -->
+    <xs:element name="vlenStringArray"
+                type="dmrpp:VlenStringArrayType"/>
+
+</xs:schema>
