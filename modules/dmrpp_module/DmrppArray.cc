@@ -2760,7 +2760,7 @@ bool DmrppArray::read()
                         array_to_read->read_chunks_dio_unconstrained();
                     }
                     // Also buffer chunks for the non-contiguous chunk case.
-                    else if(buffer_chunk_case) { 
+                    else if(buffer_chunk_case && DmrppRequestHandler::use_buffer_chunk) { 
                         BESDEBUG(MODULE, prolog << "Using buffer chunk" << endl);
                         array_to_read->read_buffer_chunks_unconstrained();
                     }
@@ -2772,7 +2772,7 @@ bool DmrppArray::read()
                     BESDEBUG(MODULE, prolog << "Reading data from chunks, constrained." << endl);
 
                     // Also buffer chunks for the non-contiguous chunk case.
-                    if (buffer_chunk_case)  {
+                    if (buffer_chunk_case && DmrppRequestHandler::use_buffer_chunk)  {
                         BESDEBUG(MODULE, prolog << "Using buffer chunk" << endl);
                         array_to_read->read_buffer_chunks();
                     }
