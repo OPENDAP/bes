@@ -168,6 +168,7 @@ jobs:
         - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
         - docker run --env prefix=/root/install --volume $prefix/rpmbuild:/root/rpmbuild 
             --volume $TRAVIS_BUILD_DIR:/root/travis
+            --env WITH_GDAL=$WITH_GDAL
             --env OS=rocky8
             --env DIST=el8
             --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
