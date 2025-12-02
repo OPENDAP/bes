@@ -546,7 +546,7 @@ void build_maps_from_gdal_dataset_3D(GDALDataset *dst, Array *t, Array *t_map, A
     GDALRasterBand *band = dst->GetRasterBand(1);
 
     // Build Time map
-    int t_size = t->size();
+    int t_size = t->length(); // was t->size(); jhrg 12/2/25
 
     if (name_maps) {
         t_map->append_dim(t_size, "Time");
@@ -1107,11 +1107,13 @@ unique_ptr<GDALDataset> build_src_dataset_3D(Array *data, Array *t, Array *x, Ar
         throw BESError(msg,BES_INTERNAL_ERROR,__FILE__,__LINE__);
     }
 
+    // Below Array::size() was used but that method was removed and replaced by length().
+    // jhrg 12/2/25
     SizeBox array_size = get_size_box(x, y);
-    int nBands = t->size();
+    int nBands = t->length();
     BESDEBUG(DEBUG_KEY, "nBands = " << nBands << endl);
     int nBytes = data->prototype()->width();
-    const int data_size = x->size() * y->size();
+    const int data_size = x->length() * y->length();
     unsigned int dsize = data_size * nBytes;
 
     unique_ptr<GDALDataset> ds(driver->Create("result", array_size.x_size, array_size.y_size, nBands, get_array_type(d),
@@ -1131,7 +1133,7 @@ unique_ptr<GDALDataset> build_src_dataset_3D(Array *data, Array *t, Array *x, Ar
         band->SetNoDataValue(no_data);
 
         #if !ADD_BAND
-        CPLErr error = band->RasterIO(GF_Write, 0, 0, x->size(), y->size(), data->get_buf() + dsize*(i-1), x->size(), y->size(), get_array_type(data), 0, 0);
+        CPLErr error = band->RasterIO(GF_Write, 0, 0, x->length(), y->length(), data->get_buf() + dsize*(i-1), x->length(), y->length(), get_array_type(data), 0, 0);
                             if (error != CPLE_None)
                                                     throw Error("Could not write data for band: " + long_to_string(i) + ": " + string(CPLGetLastErrorMsg()));
         #endif
