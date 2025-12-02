@@ -64,7 +64,7 @@ loggy "  PATH: $PATH"
 
 # Get the pre-built dependencies (all static libraries).
 loggy "Retrieving hyrax-dependencies for rocky9"
-aws s3 cp s3://opendap.travis.build/hyrax-dependencies-rocky9-static.tar.gz /tmp/
+aws s3 cp s3://opendap.travis.build/hyrax-dependencies-rocky9-static-671.tar.gz /tmp/
 
 # This dumps the dependencies in $HOME/install/deps/{lib,bin,...}
 # The Centos7 dependencies are tarred so they include /root for a reason
