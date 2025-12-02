@@ -62,6 +62,7 @@ loggy "  PATH: $PATH"
 #  yum install -y libpng-devel sqlite-devel
 #fi
 
+
 # Get the pre-built dependencies (all static libraries).
 loggy "Retrieving hyrax-dependencies for rocky9"
 aws s3 cp s3://opendap.travis.build/hyrax-dependencies-rocky9-static-671.tar.gz /tmp/
