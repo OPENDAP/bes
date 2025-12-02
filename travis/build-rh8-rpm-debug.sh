@@ -17,7 +17,7 @@
 #            --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
 #            --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
 #            --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-#            opendap/centos-stream8_hyrax_builder:1.1 /root/travis/travis/build-rpm.sh
+#            opendap/centos-stream8_hyrax_builder:1.1 /root/travis/travis/build-rh8-rpm.sh
 
 # I used the keys that are bound to the travis-bes user, but any keys that can
 # read from the opendap.travis.build S3 bucket should work.
@@ -43,5 +43,5 @@ docker run -it --volume $prefix/rpmbuild:/root/rpmbuild \
   --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER \
   --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
   --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
-  opendap/rocky8_hyrax_builder:latest /root/travis/travis/build-rpm.sh
+  opendap/rocky8_hyrax_builder:latest /root/travis/travis/build-rh8-rpm.sh
 
