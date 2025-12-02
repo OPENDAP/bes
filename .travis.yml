@@ -147,6 +147,7 @@ jobs:
         # - export RUNTESTFLAGS="-v"
         - autoreconf --force --install --verbose
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+        - export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
         - make -j16 && make install && besctl start && make check -j16 && besctl stop
 
     - stage: build-and-package
