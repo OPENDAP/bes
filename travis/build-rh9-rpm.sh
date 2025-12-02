@@ -62,16 +62,17 @@ loggy "  PATH: $PATH"
 #  yum install -y libpng-devel sqlite-devel
 #fi
 
+hyrax_deps_tarball="hyrax-dependencies-rocky9-static-671.tgz"
 
 # Get the pre-built dependencies (all static libraries).
 loggy "Retrieving hyrax-dependencies for rocky9"
-aws s3 cp s3://opendap.travis.build/hyrax-dependencies-rocky9-static-671.tar.gz /tmp/
+aws s3 cp "s3://opendap.travis.build/$hyrax_deps_tarball" /tmp/
 
 # This dumps the dependencies in $HOME/install/deps/{lib,bin,...}
 # The Centos7 dependencies are tarred so they include /root for a reason
 # that escapes me. For CentOS Stream8, we have to CD to /root before expanding
 # the tar ball to get the dependencies in /root/install. jhrg 2/11/22
-tar -C /$HOME -xzvf /tmp/hyrax-dependencies-rocky9-static.tar.gz
+tar -C /$HOME -xzvf "/tmp/$hyrax_deps_tarball"
 
 ls -lR $HOME/install/deps
 
