@@ -24,11 +24,11 @@
 #ifndef HYRAX_GIT_SUPERCHUNK_H
 #define HYRAX_GIT_SUPERCHUNK_H
 
-#include <vector>
 #include <memory>
-#include <thread>
 #include <queue>
 #include <sstream>
+#include <thread>
+#include <vector>
 
 #include "Chunk.h"
 
@@ -38,11 +38,12 @@ namespace dmrpp {
 class DmrppArray;
 
 /**
- * @brief A SuperChunk is a collection of contiguous Chunk objects along with optimized methods for data retrieval and inflation.
+ * @brief A SuperChunk is a collection of contiguous Chunk objects along with optimized methods for data retrieval and
+ * inflation.
  *
  */
 class SuperChunk {
-// private
+    // private
     friend class SuperChunkTest;
 
     std::string d_id;
@@ -66,13 +67,9 @@ class SuperChunk {
 
 public:
     // Make the sc_id an uint64 and not a string - the code uses sstream to make the value. jhrg 5/7/22
-    explicit SuperChunk(const std::string &sc_id, DmrppArray *parent = nullptr) :
-            d_id(sc_id), d_parent_array(parent)
-    {}
+    explicit SuperChunk(const std::string &sc_id, DmrppArray *parent = nullptr) : d_id(sc_id), d_parent_array(parent) {}
 
-    virtual ~SuperChunk(){
-        delete[] d_read_buffer;
-    }
+    virtual ~SuperChunk() { delete[] d_read_buffer; }
 
     virtual std::string id() const { return d_id; }
 
@@ -83,16 +80,11 @@ public:
     virtual unsigned long long get_offset() const { return d_offset; }
     virtual size_t get_chunk_count() const { return d_chunks.size(); }
 
-    virtual void read() {
-        process_child_chunks();
-    }
+    virtual void read() { process_child_chunks(); }
 
-    virtual void read_unconstrained() {
-        process_child_chunks_unconstrained();
-    }
+    virtual void read_unconstrained() { process_child_chunks_unconstrained(); }
 
-    virtual void read_unconstrained_dio(); 
-
+    virtual void read_unconstrained_dio();
 
     virtual void retrieve_data();
     virtual void retrieve_data_dio();
@@ -103,11 +95,11 @@ public:
     virtual bool empty() const { return d_chunks.empty(); }
 
     void set_non_contiguous_chunk_flag(bool flag) { non_contiguous_chunk = flag; }
-    bool get_non_contiguous_chunk_flag() const { return non_contiguous_chunk;}
+    bool get_non_contiguous_chunk_flag() const { return non_contiguous_chunk; }
     virtual bool add_chunk_non_contiguous(std::shared_ptr<Chunk> candidate_chunk, unsigned long long &end_pos);
 
     std::string to_string(bool verbose) const;
-    virtual void dump(std::ostream & strm) const;
+    virtual void dump(std::ostream &strm) const;
 };
 
 /**
@@ -121,8 +113,10 @@ struct one_chunk_args {
     DmrppArray *array;
     const vector<unsigned long long> &array_shape;
 
-    one_chunk_args(const std::string &sc_id, std::shared_ptr<Chunk> c, DmrppArray *a, const std::vector<unsigned long long> &a_s)
-            : parent_thread_id(std::this_thread::get_id()), parent_super_chunk_id(sc_id), chunk(std::move(c)), array(a), array_shape(a_s) {}
+    one_chunk_args(const std::string &sc_id, std::shared_ptr<Chunk> c, DmrppArray *a,
+                   const std::vector<unsigned long long> &a_s)
+        : parent_thread_id(std::this_thread::get_id()), parent_super_chunk_id(sc_id), chunk(std::move(c)), array(a),
+          array_shape(a_s) {}
 };
 
 /**
@@ -138,31 +132,23 @@ struct one_chunk_unconstrained_args {
     const vector<unsigned long long> &array_shape;
     const vector<unsigned long long> &chunk_shape;
 
-    one_chunk_unconstrained_args(const std::string &sc_id, std::shared_ptr<Chunk> c, DmrppArray *a, const std::vector<unsigned long long> &a_s,
-                                 const std::vector<unsigned long long> &c_s)
-            : parent_thread_id(std::this_thread::get_id()), parent_super_chunk_id(sc_id), chunk(std::move(c)),
-            array(a), array_shape(a_s), chunk_shape(c_s) {}
+    one_chunk_unconstrained_args(const std::string &sc_id, std::shared_ptr<Chunk> c, DmrppArray *a,
+                                 const std::vector<unsigned long long> &a_s, const std::vector<unsigned long long> &c_s)
+        : parent_thread_id(std::this_thread::get_id()), parent_super_chunk_id(sc_id), chunk(std::move(c)), array(a),
+          array_shape(a_s), chunk_shape(c_s) {}
 };
 
-void process_chunks_concurrent(
-        const string &super_chunk_id,
-        std::queue<shared_ptr<Chunk>> &chunks,
-        DmrppArray *array,
-        const std::vector<unsigned long long> &shape );
+void process_chunks_concurrent(const string &super_chunk_id, std::queue<shared_ptr<Chunk>> &chunks, DmrppArray *array,
+                               const std::vector<unsigned long long> &shape);
 
-void process_chunks_unconstrained_concurrent(
-        const string &super_chunk_id,
-        std::queue<std::shared_ptr<Chunk>> &chunks,
-        const std::vector<unsigned long long> &chunk_shape,
-        DmrppArray *array,
-        const std::vector<unsigned long long> &array_shape);
+void process_chunks_unconstrained_concurrent(const string &super_chunk_id, std::queue<std::shared_ptr<Chunk>> &chunks,
+                                             const std::vector<unsigned long long> &chunk_shape, DmrppArray *array,
+                                             const std::vector<unsigned long long> &array_shape);
 
-void process_chunks_unconstrained_concurrent_dio(
-        const string &super_chunk_id,
-        std::queue<std::shared_ptr<Chunk>> &chunks,
-        const std::vector<unsigned long long> &chunk_shape,
-        DmrppArray *array,
-        const std::vector<unsigned long long> &array_shape);
+void process_chunks_unconstrained_concurrent_dio(const string &super_chunk_id,
+                                                 std::queue<std::shared_ptr<Chunk>> &chunks,
+                                                 const std::vector<unsigned long long> &chunk_shape, DmrppArray *array,
+                                                 const std::vector<unsigned long long> &array_shape);
 
 } // namespace dmrpp
 
