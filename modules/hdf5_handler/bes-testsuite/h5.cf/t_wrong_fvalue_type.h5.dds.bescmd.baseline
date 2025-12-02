@@ -1,4 +1,0 @@
-Dataset {
-    UInt32 temp[2];
-    Float32 temp2[2];
-} t_wrong_fvalue_type.h5;

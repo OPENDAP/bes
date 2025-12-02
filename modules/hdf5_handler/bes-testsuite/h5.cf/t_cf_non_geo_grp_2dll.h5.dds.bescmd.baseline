@@ -1,5 +1,0 @@
-Dataset {
-    Float32 Data_temp[9][18];
-    Float32 FakeGeo_lat[9][18];
-    Float32 FakeGeo_lon[9][18];
-} t_cf_non_geo_grp_2dlatlon.h5;

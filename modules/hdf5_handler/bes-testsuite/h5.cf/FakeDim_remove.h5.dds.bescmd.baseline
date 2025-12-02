@@ -1,4 +1,0 @@
-Dataset {
-    Int16 atomic[dima = 4];
-    Int16 dima[dima = 4];
-} FakeDim_remove.h5;

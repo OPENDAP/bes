@@ -1,7 +1,0 @@
-Dataset {
-    Int32 _1dummy_extra[2];
-    Float32 ZA_Latitude[8];
-    Float32 ZA_Pressure[4];
-    Float32 ZA_Temperature[4][8];
-    String StructMetadata_0;
-} za_1_2d_yz_ef.h5;
