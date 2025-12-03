@@ -98,7 +98,7 @@ developing applications that use %{name}.
 chmod a-x dispatch/BESStreamResponseHandler*
 
 %build
-%configure --disable-dependency-tracking --with-dependencies=$prefix/deps --with-build=@PACKAGE_BUILD_NUMBER@
+%configure --disable-dependency-tracking --with-dependencies=$prefix/deps $WITH_GDAL --with-build=@PACKAGE_BUILD_NUMBER@
 # Try removing --disable-static from the above so that libdap_module.a is built.
 # The code links with this to avoid linking to a Shared Object library that is
 # really a run-time loaded module. jhrg 1/21/22
