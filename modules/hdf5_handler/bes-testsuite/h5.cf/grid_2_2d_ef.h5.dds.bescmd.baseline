@@ -1,0 +1,9 @@
+Dataset {
+    Int16 GeoGrid1_dummy1_mapping_info;
+    Float32 GeoGrid1_temperature[YDim = 4][XDim = 8];
+    Int16 GeoGrid2_dummy2_mapping_info;
+    Float32 GeoGrid2_temperature[YDim = 4][XDim = 8];
+    String StructMetadata_0;
+    Int32 XDim[XDim = 8];
+    Int32 YDim[YDim = 4];
+} grid_2_2d_ef.h5;

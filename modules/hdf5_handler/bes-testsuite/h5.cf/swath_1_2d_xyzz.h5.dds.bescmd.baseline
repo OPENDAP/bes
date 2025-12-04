@@ -1,0 +1,9 @@
+Dataset {
+    Float32 Temperature[ZDim = 4][Latitude = 8];
+    Float32 Level[ZDim = 4];
+    Float32 Longitude[Latitude = 8];
+    Float32 Pressure[ZDim = 4];
+    String StructMetadata_0;
+    Float32 Latitude[Latitude = 8];
+    Int32 ZDim[ZDim = 4];
+} swath_1_2d_xyzz.h5;

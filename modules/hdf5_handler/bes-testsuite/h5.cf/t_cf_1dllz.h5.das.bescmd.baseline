@@ -1,0 +1,31 @@
+Attributes {
+    temp {
+        String long_name "temperature";
+        String units "kelvin";
+        Float32 valid_min 0.000000000;
+        Float32 valid_max 400.0000000;
+        Float32 valid_range 275.0000000, 305.0000000;
+        Float32 _FillValue -999.0000000;
+        Float32 scale_factor 1.000000000;
+        Float32 add_offset 10.00000000;
+        String origname "temp";
+        String fullnamepath "/temp";
+    }
+    lat {
+        String long_name "latitude";
+        String units "degrees_north";
+        String standard_name "latitude";
+        String origname "lat";
+        String fullnamepath "/lat";
+    }
+    lon {
+        String long_name "longitude";
+        String units "degrees_east";
+        String standard_name "longitude";
+        String origname "lon";
+        String fullnamepath "/lon";
+    }
+    FakeDim2 {
+        String units "level";
+    }
+}

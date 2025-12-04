@@ -1,0 +1,35 @@
+Attributes {
+    Bounds {
+    }
+    Geo {
+    }
+    Geo_Vertical {
+    }
+    Bounds_lat_bounds {
+        String origname "lat_bounds";
+        String fullnamepath "/Bounds/lat_bounds";
+    }
+    Geo_Vertical_pre {
+        String origname "pre";
+        String fullnamepath "/Geo/Vertical/pre";
+        String bounds "pre_bounds";
+    }
+    Geo_lat {
+        String origname "lat";
+        String fullnamepath "/Geo/lat";
+        String bounds "Bounds_lat_bounds";
+    }
+    Geo_lon {
+        String origname "lon";
+        String fullnamepath "/Geo/lon";
+        String bounds "Geo_lon_bounds";
+    }
+    Geo_lon_bounds {
+        String origname "lon_bounds";
+        String fullnamepath "/Geo/lon_bounds";
+    }
+    pre_bounds {
+        String origname "pre_bounds";
+        String fullnamepath "/pre_bounds";
+    }
+}

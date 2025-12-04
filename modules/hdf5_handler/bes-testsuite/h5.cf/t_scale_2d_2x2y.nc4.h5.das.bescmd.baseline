@@ -1,0 +1,19 @@
+Attributes {
+    scale_yes {
+        String coordinates "lat lon";
+        Float64 scale_factor 10.000000000000000;
+        Float64 add_offset 1000.0000000000000;
+        String origname "scale_yes";
+        String fullnamepath "/scale_yes";
+    }
+    lat {
+        String units "degrees_north";
+        String origname "lat";
+        String fullnamepath "/lat";
+    }
+    lon {
+        String units "degrees_east";
+        String origname "lon";
+        String fullnamepath "/lon";
+    }
+}

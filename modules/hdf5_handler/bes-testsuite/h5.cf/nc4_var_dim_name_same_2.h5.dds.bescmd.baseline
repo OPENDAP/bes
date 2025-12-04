@@ -1,0 +1,5 @@
+Dataset {
+    Float32 pre[dim1_r = 2][pre = 3];
+    Float32 dim1[dim1_r = 2];
+    Float32 dim1_r[dim1_r = 2];
+} nc4_var_dim_name_same_2.h5;

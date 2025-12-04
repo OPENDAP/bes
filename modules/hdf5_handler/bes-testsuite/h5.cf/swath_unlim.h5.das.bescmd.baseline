@@ -1,0 +1,49 @@
+Attributes {
+    HDFEOS {
+    }
+    HDFEOS_ADDITIONAL {
+    }
+    HDFEOS_ADDITIONAL_FILE_ATTRIBUTES {
+    }
+    HDFEOS_SWATHS {
+    }
+    HDFEOS_SWATHS_Swath1 {
+    }
+    HDFEOS_SWATHS_Swath1_Data_Fields {
+    }
+    HDFEOS_SWATHS_Swath1_Geolocation_Fields {
+    }
+    HDFEOS_INFORMATION {
+        String HDFEOSVersion "HDFEOS_5.1.15";
+        String fullnamepath "/HDFEOS INFORMATION";
+    }
+    Spectra {
+        String origname "Spectra";
+        String fullnamepath "/HDFEOS/SWATHS/Swath1/Data Fields/Spectra";
+        String coordinates "Bands Res2tr Res2xtr";
+    }
+    StructMetadata_0 {
+        String origname "StructMetadata.0";
+        String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
+    }
+    Latitude {
+        String origname "Latitude";
+        String fullnamepath "/HDFEOS/SWATHS/Swath1/Geolocation Fields/Latitude";
+    }
+    Longitude {
+        String origname "Longitude";
+        String fullnamepath "/HDFEOS/SWATHS/Swath1/Geolocation Fields/Longitude";
+    }
+    Bands {
+        String units "level";
+    }
+    Res2tr {
+        String units "level";
+    }
+    Res2xtr {
+        String units "level";
+    }
+    DODS_EXTRA {
+        String Unlimited_Dimension "Bands", "Res2tr", "Res2xtr";
+    }
+}

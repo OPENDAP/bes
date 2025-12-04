@@ -1,0 +1,9 @@
+Dataset {
+    Float64 Spectra[Bands = 4][Res2tr = 3][Res2xtr = 4];
+    String StructMetadata_0;
+    Float32 Latitude[GeoTrack = 20][GeoXtrack = 10];
+    Float32 Longitude[GeoTrack = 20][GeoXtrack = 10];
+    Int32 Bands[Bands = 4];
+    Int32 Res2tr[Res2tr = 3];
+    Int32 Res2xtr[Res2xtr = 4];
+} swath_unlim.h5;

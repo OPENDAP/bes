@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="grid_1_2d.h5">
+    <Dimension name="lon" size="8"/>
+    <Dimension name="lat" size="4"/>
+    <Float32 name="lon">
+        <Dim name="/lon"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="lat">
+        <Dim name="/lat"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+    </Float32>
+    <Float32 name="temperature">
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="units" type="String">
+            <Value>K</Value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <Value>temperature</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS/GRIDS/GeoGrid/Data Fields/temperature</Value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <Value>YDim XDim</Value>
+        </Attribute>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+    </Float32>
+    <String name="StructMetadata_0">
+        <Attribute name="origname" type="String">
+            <Value>StructMetadata.0</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION/StructMetadata.0</Value>
+        </Attribute>
+    </String>
+    <Attribute name="HDFEOS" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_GeoGrid" type="Container"/>
+    <Attribute name="HDFEOS_GRIDS_GeoGrid_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_INFORMATION" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <Value>HDFEOS_5.1.13</Value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <Value>/HDFEOS INFORMATION</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

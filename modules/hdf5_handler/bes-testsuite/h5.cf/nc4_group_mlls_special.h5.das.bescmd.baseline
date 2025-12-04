@@ -1,0 +1,63 @@
+Attributes {
+    g1 {
+    }
+    g1_temp {
+        String units "K";
+        String origname "temp";
+        String fullnamepath "/g1/temp";
+        String coordinates "g1_Latitude g1_Longitude";
+    }
+    g1_fake_lat {
+        String units "degrees_north";
+        String origname "fake_lat";
+        String fullnamepath "/g1/fake_lat";
+    }
+    g1_pres {
+        String units "hPa";
+        String origname "pres";
+        String fullnamepath "/g1/pres";
+    }
+    g1_fake_lon {
+        String units "degrees_east";
+        String origname "fake_lon";
+        String fullnamepath "/g1/fake_lon";
+    }
+    g1_dim1 {
+        String origname "dim1";
+        String fullnamepath "/g1/dim1";
+    }
+    g1_dim2 {
+        String origname "dim2";
+        String fullnamepath "/g1/dim2";
+    }
+    XDIM {
+        String units "degrees_east";
+        String origname "XDIM";
+        String fullnamepath "/XDIM";
+    }
+    YDIM {
+        String units "degrees_north";
+        String origname "YDIM";
+        String fullnamepath "/YDIM";
+    }
+    g1_redund_lat {
+        String units "degrees_north";
+        String origname "redund_lat";
+        String fullnamepath "/g1/redund_lat";
+    }
+    g1_Latitude {
+        String units "degrees_north";
+        String origname "Latitude";
+        String fullnamepath "/g1/Latitude";
+    }
+    g1_Longitude {
+        String units "degrees_east";
+        String origname "Longitude";
+        String fullnamepath "/g1/Longitude";
+    }
+    g1_redund_lon {
+        String units "degrees_east";
+        String origname "redund_lon";
+        String fullnamepath "/g1/redund_lon";
+    }
+}

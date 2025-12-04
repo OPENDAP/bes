@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset name="za_1_2d_yz.h5" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xml.opendap.org/ns/DAP/3.2# http://xml.opendap.org/dap/dap3.2.xsd" xmlns:grddl="http://www.w3.org/2003/g/data-view#" grddl:transformation="http://xml.opendap.org/transforms/ddxToRdfTriples.xsl" xmlns="http://xml.opendap.org/ns/DAP/3.2#" xmlns:dap="http://xml.opendap.org/ns/DAP/3.2#" dapVersion="3.2">
+    <Attribute name="HDFEOS" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL" type="Container"/>
+    <Attribute name="HDFEOS_ADDITIONAL_FILE_ATTRIBUTES" type="Container"/>
+    <Attribute name="HDFEOS_ZAS" type="Container"/>
+    <Attribute name="HDFEOS_ZAS_ZA" type="Container"/>
+    <Attribute name="HDFEOS_ZAS_ZA_Data_Fields" type="Container"/>
+    <Attribute name="HDFEOS_INFORMATION" type="Container">
+        <Attribute name="HDFEOSVersion" type="String">
+            <value>HDFEOS_5.1.13</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS INFORMATION</value>
+        </Attribute>
+    </Attribute>
+    <Array name="Latitude">
+        <Attribute name="_FillValue" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>degrees_north</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Latitude</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/ZAS/ZA/Data Fields/Latitude</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>YDim</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="YDim" size="8"/>
+    </Array>
+    <Array name="Pressure">
+        <Attribute name="_FillValue" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>hPa</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Pressure</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/ZAS/ZA/Data Fields/Pressure</value>
+        </Attribute>
+        <Attribute name="orig_dimname" type="String">
+            <value>ZDim</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="ZDim" size="4"/>
+    </Array>
+    <Array name="Temperature">
+        <Attribute name="_FillValue" type="Float32">
+            <value>0.000000000</value>
+        </Attribute>
+        <Attribute name="units" type="String">
+            <value>K</value>
+        </Attribute>
+        <Attribute name="origname" type="String">
+            <value>Temperature</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS/ZAS/ZA/Data Fields/Temperature</value>
+        </Attribute>
+        <Attribute name="orig_dimname_list" type="String">
+            <value>ZDim YDim</value>
+        </Attribute>
+        <Float32/>
+        <dimension name="ZDim" size="4"/>
+        <dimension name="YDim" size="8"/>
+    </Array>
+    <String name="StructMetadata_0">
+        <Attribute name="origname" type="String">
+            <value>StructMetadata.0</value>
+        </Attribute>
+        <Attribute name="fullnamepath" type="String">
+            <value>/HDFEOS INFORMATION/StructMetadata.0</value>
+        </Attribute>
+    </String>
+    <blob href="cid:"/>
+</Dataset>

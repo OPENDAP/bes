@@ -1,0 +1,28 @@
+Attributes {
+    HDF5_GLOBAL {
+        String vl_string "Parting", "is such", "sweet", "sorrow";
+        String string "Parting is such sweet sorrow. ";
+        UInt16 uint16 65535;
+        UInt32 uint32 4294967295;
+        Float32 float -1.120000005;
+        Float64 double 44.549999999999997;
+        Int16 char 65;
+        Int16 signed_char -128;
+        Byte unsigned_char 127;
+        Int16 int16 32676;
+        Int32 int32 2147483647;
+    }
+    g {
+        String string "Parting is such sweet sorrow. ";
+        UInt16 uint16 65535;
+        UInt32 uint32 4294967295;
+        Float32 float -1.120000005;
+        Float64 double 44.549999999999997;
+        Int16 char 65;
+        Int16 signed_char -128;
+        Byte unsigned_char 127;
+        Int16 int16 32676;
+        Int32 int32 2147483647;
+        String fullnamepath "/g";
+    }
+}

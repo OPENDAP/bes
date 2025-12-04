@@ -1,0 +1,61 @@
+Attributes {
+    GeoData {
+    }
+    OtherData {
+    }
+    data {
+    }
+    GeoData_proftime {
+        String units "seconds since 2010-01-01";
+        String origname "proftime";
+        String fullnamepath "/GeoData/proftime";
+    }
+    GeoData_v2 {
+        String units "hpa";
+        String origname "v2";
+        String fullnamepath "/GeoData/v2";
+    }
+    OtherData_v3 {
+        String units "km";
+        String origname "v3";
+        String fullnamepath "/OtherData/v3";
+    }
+    data_temp {
+        String units "K";
+        String origname "temp";
+        String fullnamepath "/data/temp";
+        String coordinates "GeoData_lat GeoData_lon GeoData_proftime GeoData_v2";
+    }
+    data_temp2 {
+        String units "K";
+        String origname "temp2";
+        String fullnamepath "/data/temp2";
+        String coordinates "GeoData_lat GeoData_lon OtherData_v3";
+    }
+    dim1 {
+        String origname "dim1";
+        String fullnamepath "/dim1";
+    }
+    dim2 {
+        String origname "dim2";
+        String fullnamepath "/dim2";
+    }
+    dim3 {
+        String origname "dim3";
+        String fullnamepath "/dim3";
+    }
+    dim4 {
+        String origname "dim4";
+        String fullnamepath "/dim4";
+    }
+    GeoData_lat {
+        String units "degrees_north";
+        String origname "lat";
+        String fullnamepath "/GeoData/lat";
+    }
+    GeoData_lon {
+        String units "degrees_east";
+        String origname "lon";
+        String fullnamepath "/GeoData/lon";
+    }
+}

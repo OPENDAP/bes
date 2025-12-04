@@ -1,0 +1,5 @@
+Dataset {
+    Float32 Data_temp[FakeDim0 = 9][FakeDim1 = 18];
+    Float32 GeolocationData_lat[FakeDim0 = 9][FakeDim1 = 18];
+    Float32 GeolocationData_lon[FakeDim0 = 9][FakeDim1 = 18];
+} t_cf_geo2_grp_2dlatlon.h5;

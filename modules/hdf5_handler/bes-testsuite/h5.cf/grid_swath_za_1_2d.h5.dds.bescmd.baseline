@@ -1,0 +1,13 @@
+Dataset {
+    Float32 GRIDS_Temperature[GRIDS_lat = 4][GRIDS_lon = 8];
+    Float32 SWATHS_Temperature[SWATHS_Pressure = 4][SWATHS_Latitude = 8];
+    Float32 SWATHS_Longitude[SWATHS_Latitude = 8];
+    Float32 ZAS_Latitude[YDim = 8];
+    Float32 ZAS_Pressure[ZDim = 4];
+    Float32 ZAS_Temperature[ZDim = 4][YDim = 8];
+    String StructMetadata_0;
+    Float32 GRIDS_lon[GRIDS_lon = 8];
+    Float32 GRIDS_lat[GRIDS_lat = 4];
+    Float32 SWATHS_Latitude[SWATHS_Latitude = 8];
+    Float32 SWATHS_Pressure[SWATHS_Pressure = 4];
+} grid_swath_za_1_2d.h5;

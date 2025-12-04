@@ -1,0 +1,22 @@
+Attributes {
+    mydata {
+        String origname "mydata";
+        String fullnamepath "/mydata";
+        String coordinates "lat lon pre";
+    }
+    pre {
+        String units "hPa";
+        String origname "pre";
+        String fullnamepath "/pre";
+    }
+    lat {
+        String units "degrees_north";
+        String origname "lat";
+        String fullnamepath "/lat";
+    }
+    lon {
+        String units "degrees_east";
+        String origname "lon";
+        String fullnamepath "/lon";
+    }
+}

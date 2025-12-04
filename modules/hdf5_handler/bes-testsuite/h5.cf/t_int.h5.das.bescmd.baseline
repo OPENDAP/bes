@@ -1,0 +1,28 @@
+Attributes {
+    d16_1 {
+        Int16 minimum -32768;
+        Int16 maximum 32767;
+        String origname "d16_1";
+        String fullnamepath "/d16_1";
+    }
+    d16_2 {
+        Int16 minimum -32768;
+        Int16 maximum 32767;
+        Int16 value_1d -32768, 32767;
+        Int16 value_2d -32768, 1, 2, 32767;
+        String origname "d16_2";
+        String fullnamepath "/d16_2";
+    }
+    d32_1 {
+        Int32 minimum -2147483648;
+        Int32 maximum 2147483647;
+        String origname "d32_1";
+        String fullnamepath "/d32_1";
+    }
+    d32_2 {
+        Int32 minimum -2147483648;
+        Int32 maximum 2147483647;
+        String origname "d32_2";
+        String fullnamepath "/d32_2";
+    }
+}

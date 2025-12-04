@@ -1,0 +1,5 @@
+Dataset {
+    Float32 temp[FakeDim0 = 180][FakeDim1 = 360];
+    Float32 lat[FakeDim0 = 180][FakeDim1 = 360];
+    Float32 lon[FakeDim0 = 180][FakeDim1 = 360];
+} t_cf_2dll.h5;
