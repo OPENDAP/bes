@@ -78,8 +78,9 @@ fi
 
 autoreconf -fiv
 
+echo "WITH_GDAL: $WITH_GDAL"
 echo "BES_BUILD_NUMBER: $BES_BUILD_NUMBER"
-./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
+./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $WITH_GDAL --with-build=$BES_BUILD_NUMBER
 
 # set up the rpm tree in $HOME. We didn't need to do this for libdap because 
 # rpmbuild took care of it, but for the BES, the Makefile copies the source 
