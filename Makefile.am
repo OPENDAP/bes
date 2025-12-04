@@ -19,7 +19,7 @@ ACLOCAL_AMFLAGS = -I conf
 # Used in the CICD builds to control whether we build/link with GDAL.
 # This will override any of the other ways configure looks for the
 # GDAL library. jhrg 12/2/25
-AM_DISTCHECK_CONFIGURE_FLAGS=$$WITH_GDAL
+AM_DISTCHECK_CONFIGURE_FLAGS=$$GDAL_OPTION
 
 if WITH_DEPENDENCIES
 # With automake 1.14 setting AM_DISTCHECK... means that the user variable
