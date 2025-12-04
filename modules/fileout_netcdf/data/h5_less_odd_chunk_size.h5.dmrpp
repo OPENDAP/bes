@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="h5_less_odd_chunk_size.h5" dmrpp:href="data/h5_less_odd_chunk_size.h5" dmrpp:version="3.21.1">
+    <Int32 name="DS1">
+        <Dim size="6"/>
+        <Dim size="5"/>
+        <dmrpp:chunks fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>3 2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4040" nBytes="24" chunkPositionInArray="[0,0]"/>
+            <dmrpp:chunk offset="4064" nBytes="24" chunkPositionInArray="[0,2]"/>
+            <dmrpp:chunk offset="4016" nBytes="24" chunkPositionInArray="[0,4]"/>
+            <dmrpp:chunk offset="4088" nBytes="24" chunkPositionInArray="[3,0]"/>
+            <dmrpp:chunk offset="4112" nBytes="24" chunkPositionInArray="[3,2]"/>
+            <dmrpp:chunk offset="4136" nBytes="24" chunkPositionInArray="[3,4]"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2025-11-24T13:56:19Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/hyrax-1957/bes/modules/hdf5_handler/data/src/h5_less_odd_chunk_size.h5 -r h5_less_odd_chunk_size.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

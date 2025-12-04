@@ -138,6 +138,7 @@ bool DmrppRequestHandler::is_netcdf4_classic_response = false;
 // The direct IO feature is turned on by default.
 bool DmrppRequestHandler::disable_direct_io = false;
 
+bool DmrppRequestHandler::use_buffer_chunk = true;
 // There are methods in TheBESKeys that should be used instead of these.
 // jhrg 9/26/23
 static void read_key_value(const std::string &key_name, bool &key_value) {
@@ -230,6 +231,8 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
 
     // Whether the default direct IO feature is disabled. Read the key in.
     read_key_value(DMRPP_DISABLE_DIRECT_IO, disable_direct_io);
+
+    read_key_value(DMRPP_USE_BUFFER_CHUNK, use_buffer_chunk);
 
     // Check the value of FONc.ClassicModel to determine if this response is a netCDF-4 classic from fileout netCDF
     // This must be done here since direct IO flag for individual variables  should NOT be set for netCDF-4 classic response.
