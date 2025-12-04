@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -33,12 +33,12 @@
 #ifndef E_BESUtil_h
 #define E_BESUtil_h 1
 
-#include <string>
-#include <list>
-#include <iostream>
-#include <vector>
 #include <BESCatalog.h>
 #include <atomic>
+#include <iostream>
+#include <list>
+#include <string>
+#include <vector>
 
 class BESUtil {
 private:
@@ -67,7 +67,7 @@ public:
 
     /** This functions are used to unescape hex characters from strings **/
     static std::string www2id(const std::string &in, const std::string &escape = "%", const std::string &except = "");
-    static std::string unhexstring(const std::string& s);
+    static std::string unhexstring(const std::string &s);
 
     /** Convert a string to all lower case **/
     static std::string lowercase(const std::string &s);
@@ -79,8 +79,8 @@ public:
     static void check_path(const std::string &path, const std::string &root, bool follow_sym_links);
 
     /** convert pid and place in provided buffer **/
-    static char * fastpidconverter(char *buf, int base);
-    static char * fastpidconverter(long val, char *buf, int base);
+    static char *fastpidconverter(char *buf, int base);
+    static char *fastpidconverter(long val, char *buf, int base);
 
     /** remove leading and trailing blanks from a string **/
     static void removeLeadingAndTrailingBlanks(std::string &key);
@@ -98,9 +98,9 @@ public:
     static std::string implode(const std::list<std::string> &values, char delim);
 
     struct url {
-    	std::string protocol;
-    	std::string domain;
-    	std::string uname;
+        std::string protocol;
+        std::string domain;
+        std::string uname;
         std::string psswd;
         std::string port;
         std::string path;
@@ -109,8 +109,9 @@ public:
     static void url_explode(const std::string &url_str, BESUtil::url &url_parts);
     static std::string url_create(BESUtil::url &url_parts);
     // static string assemblePath(const string &firstPart, const string &secondPart, bool leadingSlash = false);
-    static std::string assemblePath(const std::string &firstPart, const std::string &secondPart, bool leadingSlash = false, bool trailingSlash = false);
-    static std::string pathConcat(const std::string &firstPart, const std::string &secondPart, char separator='/');
+    static std::string assemblePath(const std::string &firstPart, const std::string &secondPart,
+                                    bool leadingSlash = false, bool trailingSlash = false);
+    static std::string pathConcat(const std::string &firstPart, const std::string &secondPart, char separator = '/');
 
     static bool endsWith(std::string const &fullString, std::string const &ending);
     static void conditional_timeout_cancel();
@@ -118,15 +119,17 @@ public:
 
     /** Convert a string to all lower case **/
     static unsigned int replace_all(std::string &s, std::string find_this, std::string replace_with_this);
-    static std::string normalize_path(const std::string &path, bool leading_separator, bool trailing_separator, std::string separator = "/");
-    static void tokenize(const std::string& str, std::vector<std::string>& tokens, const std::string& delimiters = "/");
+    static std::string normalize_path(const std::string &path, bool leading_separator, bool trailing_separator,
+                                      std::string separator = "/");
+    static void tokenize(const std::string &str, std::vector<std::string> &tokens, const std::string &delimiters = "/");
     static std::string get_time(bool use_local_time = false);
     static std::string get_time(time_t the_time, bool use_local_time = false);
-    static std::vector<std::string> split(const std::string &s, char delim='/', bool skip_empty=true);
+    static std::vector<std::string> split(const std::string &s, char delim = '/', bool skip_empty = true);
 
     static BESCatalog *separateCatalogFromPath(std::string &path);
 
-    static uint64_t file_to_stream(const std::string &file_name, std::ostream &o_strm, uint64_t read_start_position=0);
+    static uint64_t file_to_stream(const std::string &file_name, std::ostream &o_strm,
+                                   uint64_t read_start_position = 0);
 
     static std::string get_dir_name(const std::string &p);
     static bool is_directory(const std::string &p);
@@ -139,7 +142,6 @@ public:
 
     static std::string &remove_crlf(std::string &str);
     static std::string uuid();
-
 };
 
 #endif // E_BESUtil_h

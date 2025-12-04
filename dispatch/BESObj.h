@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -50,8 +50,7 @@
  * methods for dumping the contents of the object.
  */
 
-class BESObj
-{
+class BESObj {
 public:
     /** @brief Default constructor
      *
@@ -76,8 +75,8 @@ public:
      *
      * @param strm C++ i/o stream to dump the object to
      */
-    virtual void dump( std::ostream &strm ) const = 0;
-} ;
+    virtual void dump(std::ostream &strm) const = 0;
+};
 
 /** @brief dump the contents of the specified object to the specified ostream
  *
@@ -97,12 +96,9 @@ public:
  * @param strm C++ i/o stream to dump the object to
  * @param obj The BESObj to dump
  */
-inline std::ostream &
-operator<<( std::ostream &strm, const BESObj &obj )
-{
-    obj.dump( strm ) ;
-    return strm ;
+inline std::ostream &operator<<(std::ostream &strm, const BESObj &obj) {
+    obj.dump(strm);
+    return strm;
 }
 
 #endif // A_BESObj_h
-

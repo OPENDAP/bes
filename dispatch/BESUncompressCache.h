@@ -21,13 +21,14 @@
 #ifndef DISPATCH_BESUNCOMPRESSCACHE_H_
 #define DISPATCH_BESUNCOMPRESSCACHE_H_
 
-#include <string>
 #include <mutex>
+#include <string>
 
 #include "BESFileLockingCache.h"
 
-class BESUncompressCache: public BESFileLockingCache {
+class BESUncompressCache : public BESFileLockingCache {
     friend class uncompressT;
+
 private:
     static bool d_enabled;
     static std::once_flag d_initialize;
@@ -58,14 +59,14 @@ public:
     static const std::string PREFIX_KEY;
     static const std::string SIZE_KEY;
 
-    BESUncompressCache(const BESUncompressCache&) = delete;
-    BESUncompressCache& operator=(const BESUncompressCache&) = delete;
+    BESUncompressCache(const BESUncompressCache &) = delete;
+    BESUncompressCache &operator=(const BESUncompressCache &) = delete;
 
     static BESUncompressCache *get_instance();
 
     std::string get_cache_file_name(const std::string &src, bool mangle = true) override;
 
-    virtual ~BESUncompressCache();
+    ~BESUncompressCache() override;
 };
 
 #endif /* DISPATCH_BESUNCOMPRESSCACHE_H_ */

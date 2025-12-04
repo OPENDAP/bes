@@ -33,17 +33,17 @@
 #include "config.h"
 
 #include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
 
 using namespace CppUnit;
 
-#include <unistd.h>  // for access
 #include <sys/time.h> // for gettimeofday
+#include <unistd.h>   // for access
 
+#include <cstdlib>
 #include <iostream>
 #include <sstream>
-#include <cstdlib>
 
 using std::cerr;
 using std::cout;
@@ -60,27 +60,25 @@ using std::string;
 string DebugArgs;
 static bool debug = false;
 
-class debugT: public TestFixture {
+class debugT : public TestFixture {
 
 public:
     debugT() = default;
     ~debugT() override = default;
 
-    void setUp() override
-    {
-        string bes_conf = (string) TEST_SRC_DIR + "/bes.conf";
+    void setUp() override {
+        string bes_conf = (string)TEST_SRC_DIR + "/bes.conf";
         TheBESKeys::ConfigFile = bes_conf;
     }
 
-    CPPUNIT_TEST_SUITE( debugT );
+    CPPUNIT_TEST_SUITE(debugT);
 
-        CPPUNIT_TEST(do_test);
-        // CPPUNIT_TEST(profile_is_set);
+    CPPUNIT_TEST(do_test);
+    // CPPUNIT_TEST(profile_is_set);
 
     CPPUNIT_TEST_SUITE_END();
 
-    void compare_debug(string result, string expected)
-    {
+    void compare_debug(string result, string expected) {
         if (!expected.empty()) {
             string::size_type lb = result.find("[");
             CPPUNIT_ASSERT(lb != string::npos);
@@ -103,11 +101,12 @@ public:
 
         cout << "start: " << start_usage.tv_sec << " " << start_usage.tv_usec << endl;
         cout << "end: " << end_usage.tv_sec << " " << end_usage.tv_usec << endl;
-        cout << "diff: " << (end_usage.tv_sec*1000000 + end_usage.tv_usec) - (start_usage.tv_sec*1000000 + start_usage.tv_usec) << "us" << endl;
+        cout << "diff: "
+             << (end_usage.tv_sec * 1000000 + end_usage.tv_usec) - (start_usage.tv_sec * 1000000 + start_usage.tv_usec)
+             << "us" << endl;
     }
 
-    void do_test()
-    {
+    void do_test() {
         cout << "*****************************************" << endl;
         cout << "Entered debugT::run" << endl;
 
@@ -119,20 +118,17 @@ public:
             cout << "trying " << DebugArgs << endl;
             try {
                 BESDebug::SetUp(DebugArgs);
-            }
-            catch (BESError &e) {
+            } catch (BESError &e) {
                 cerr << e.get_message() << endl;
                 CPPUNIT_ASSERT(!"Failed to set up Debug");
             }
-        }
-        else {
+        } else {
             try {
                 cout << "*****************************************" << endl;
                 cout << "Setting up with bad file name /bad/dir/debug" << endl;
                 BESDebug::SetUp("/bad/dir/debug,nc");
                 CPPUNIT_ASSERT(!"Successfully set up with bad file");
-            }
-            catch (BESError &e) {
+            } catch (BESError &e) {
                 cout << "Unable to set up debug ... good" << endl;
                 cout << e.get_message() << endl;
             }
@@ -147,11 +143,10 @@ public:
                 CPPUNIT_ASSERT(BESDebug::IsSet("cdf"));
                 CPPUNIT_ASSERT(BESDebug::IsSet("hdf4"));
 
-                BESDebug::SetStrm(0, false);
+                BESDebug::SetStrm(nullptr, false);
                 result = remove("myfile.debug");
                 CPPUNIT_ASSERT(result != -1);
-            }
-            catch (BESError &e) {
+            } catch (BESError &e) {
                 CPPUNIT_ASSERT(!"Unable to set up debug");
             }
 
@@ -161,8 +156,7 @@ public:
                 BESDebug::SetUp("cerr,ff,-cdf");
                 CPPUNIT_ASSERT(BESDebug::IsSet("ff"));
                 CPPUNIT_ASSERT(!BESDebug::IsSet("cdf"));
-            }
-            catch (BESError &e) {
+            } catch (BESError &e) {
                 CPPUNIT_ASSERT(!"Unable to set up debug");
             }
 
@@ -226,20 +220,19 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(debugT);
 
-int main(int argc, char*argv[])
-{
+int main(int argc, char *argv[]) {
     int option_char;
     while ((option_char = getopt(argc, argv, "dh")) != EOF)
         switch (option_char) {
         case 'd':
-            debug = 1;  // debug is a static global
+            debug = true; // debug is a static global
             break;
-        case 'h': {     // help - show test names
+        case 'h': { // help - show test names
             cerr << "Usage: debugT has the following tests:" << endl;
-            const std::vector<Test*> &tests = debugT::suite()->getTests();
+            const std::vector<Test *> &tests = debugT::suite()->getTests();
             unsigned int prefix_len = debugT::suite()->getName().append("::").size();
-            for (std::vector<Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
-                cerr << (*i)->getName().replace(0, prefix_len, "") << endl;
+            for (auto test : tests) {
+                cerr << test->getName().replace(0, prefix_len, "") << endl;
             }
             break;
         }
@@ -258,11 +251,11 @@ int main(int argc, char*argv[])
     if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
-    }
-    else {
+    } else {
         int i = 0;
         while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
+            if (debug)
+                cerr << "Running " << argv[i] << endl;
             test = debugT::suite()->getName().append("::").append(argv[i]);
             wasSuccessful = wasSuccessful && runner.run(test);
         }
@@ -270,4 +263,3 @@ int main(int argc, char*argv[])
 
     return wasSuccessful ? 0 : 1;
 }
-

@@ -1,4 +1,4 @@
-	// BESRequestHandlerList.h
+// BESRequestHandlerList.h
 
 // This file is part of bes, A C++ back-end server implementation framework
 // for the OPeNDAP Data Access Protocol.
@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -34,8 +34,8 @@
 #define I_BESRequestHandlerList_h 1
 
 #include <map>
-#include <string>
 #include <mutex>
+#include <string>
 
 #include "BESObj.h"
 #include "BESRequestHandler.h"
@@ -63,7 +63,7 @@ class BESDataHandlerInterface;
  * requests for DAP2 and DAP4 responses are registered along with the std::strings
  * that can be used to access the handlers using this class' `file_handler()` method.
  */
-class BESRequestHandlerList: public BESObj {
+class BESRequestHandlerList : public BESObj {
 private:
     mutable std::recursive_mutex d_cache_lock_mutex;
 
@@ -77,15 +77,15 @@ private:
 public:
     ~BESRequestHandlerList() override = default;
 
-    BESRequestHandlerList(const BESRequestHandlerList&) = delete;
-    BESRequestHandlerList& operator=(const BESRequestHandlerList&) = delete;
+    BESRequestHandlerList(const BESRequestHandlerList &) = delete;
+    BESRequestHandlerList &operator=(const BESRequestHandlerList &) = delete;
 
     using Handler_citer = std::map<std::string, BESRequestHandler *>::const_iterator;
     using Handler_iter = std::map<std::string, BESRequestHandler *>::iterator;
 
-    virtual bool add_handler(const std::string &handler_name, BESRequestHandler * handler);
-    virtual BESRequestHandler * remove_handler(const std::string &handler_name);
-    virtual BESRequestHandler * find_handler(const std::string &handler_name);
+    virtual bool add_handler(const std::string &handler_name, BESRequestHandler *handler);
+    virtual BESRequestHandler *remove_handler(const std::string &handler_name);
+    virtual BESRequestHandler *find_handler(const std::string &handler_name);
 
     virtual Handler_citer get_first_handler();
     virtual Handler_citer get_last_handler();
@@ -103,4 +103,3 @@ public:
 };
 
 #endif // I_BESRequestHandlerList_h
-

@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -33,10 +33,10 @@
 #include "config.h"
 #include <mutex>
 
-#include "BESLog.h"
-#include "BESRequestHandlerList.h"
-#include "BESRequestHandler.h"
 #include "BESInternalError.h"
+#include "BESLog.h"
+#include "BESRequestHandler.h"
+#include "BESRequestHandlerList.h"
 
 using std::endl;
 using std::ostream;
@@ -51,8 +51,7 @@ using std::string;
  * @return true if successfully added, false if already exists
  * @see BESRequestHandler
  */
-bool BESRequestHandlerList::add_handler(const string &handler_name, BESRequestHandler *handler_object)
-{
+bool BESRequestHandlerList::add_handler(const string &handler_name, BESRequestHandler *handler_object) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     if (find_handler(handler_name) == nullptr) {
@@ -74,9 +73,7 @@ bool BESRequestHandlerList::add_handler(const string &handler_name, BESRequestHa
  * @return returns the request handler if found, NULL otherwise
  * @see BESRequestHandler
  */
-BESRequestHandler *
-BESRequestHandlerList::remove_handler(const string &handler_name)
-{
+BESRequestHandler *BESRequestHandlerList::remove_handler(const string &handler_name) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     BESRequestHandler *ret = nullptr;
@@ -95,9 +92,7 @@ BESRequestHandlerList::remove_handler(const string &handler_name)
  * @return the request handler for the specified data type, NULL if not found
  * @see BESRequestHandler
  */
-BESRequestHandler *
-BESRequestHandlerList::find_handler(const string &handler_name)
-{
+BESRequestHandler *BESRequestHandlerList::find_handler(const string &handler_name) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     auto i = _handler_list.find(handler_name);
@@ -114,8 +109,7 @@ BESRequestHandlerList::find_handler(const string &handler_name)
  * list
  * @see BESRequestHandler
  */
-BESRequestHandlerList::Handler_citer BESRequestHandlerList::get_first_handler()
-{
+BESRequestHandlerList::Handler_citer BESRequestHandlerList::get_first_handler() {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     return _handler_list.begin();
@@ -126,8 +120,7 @@ BESRequestHandlerList::Handler_citer BESRequestHandlerList::get_first_handler()
  * @return a constant iterator pointing to the end of the list
  * @see BESRequestHandler
  */
-BESRequestHandlerList::Handler_citer BESRequestHandlerList::get_last_handler()
-{
+BESRequestHandlerList::Handler_citer BESRequestHandlerList::get_last_handler() {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     return _handler_list.end();
@@ -140,14 +133,14 @@ BESRequestHandlerList::Handler_citer BESRequestHandlerList::get_last_handler()
  * server.
  * @see BESRequestHandler
  */
-string BESRequestHandlerList::get_handler_names()
-{
+string BESRequestHandlerList::get_handler_names() {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     string ret;
     bool first_name = true;
-    for (const auto &handler_pair: _handler_list) {
-        if (!first_name) ret += ", ";
+    for (const auto &handler_pair : _handler_list) {
+        if (!first_name)
+            ret += ", ";
         ret += handler_pair.first;
         first_name = false;
     }
@@ -174,8 +167,7 @@ string BESRequestHandlerList::get_handler_names()
  * @see BESRequestHandler
  * @see BESResponseObject
  */
-void BESRequestHandlerList::execute_each(BESDataHandlerInterface &dhi)
-{
+void BESRequestHandlerList::execute_each(BESDataHandlerInterface &dhi) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     dhi.first_container();
@@ -203,11 +195,10 @@ void BESRequestHandlerList::execute_each(BESDataHandlerInterface &dhi)
  * @see BESRequestHandler
  * @see BESResponseObject
  */
-void BESRequestHandlerList::execute_all(BESDataHandlerInterface &dhi)
-{
+void BESRequestHandlerList::execute_all(BESDataHandlerInterface &dhi) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    for (const auto &handler_pair: _handler_list) {
+    for (const auto &handler_pair : _handler_list) {
         auto p = handler_pair.second->find_method(dhi.action);
         if (p)
             p(dhi);
@@ -233,8 +224,7 @@ void BESRequestHandlerList::execute_all(BESDataHandlerInterface &dhi)
  * @see BESContainer
  * @see BESResponseObject
  */
-void BESRequestHandlerList::execute_current(BESDataHandlerInterface &dhi)
-{
+void BESRequestHandlerList::execute_current(BESDataHandlerInterface &dhi) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     if (dhi.container) {
@@ -257,13 +247,15 @@ void BESRequestHandlerList::execute_current(BESDataHandlerInterface &dhi)
         // that can process the DHI's action.
         BESRequestHandler *rh = find_handler((dhi.container->get_container_type()));
         if (!rh)
-            throw BESInternalError(string("The data handler '") + dhi.container->get_container_type() + "' does not exist",
-                __FILE__, __LINE__);
+            throw BESInternalError(string("The data handler '") + dhi.container->get_container_type() +
+                                       "' does not exist",
+                                   __FILE__, __LINE__);
 
         p_request_handler_method request_handler_method = rh->find_method(dhi.action);
         if (!request_handler_method) {
-            throw BESInternalError(string("Request handler for '") + dhi.container->get_container_type()
-                + "' does not handle the response type '" + dhi.action + "'", __FILE__, __LINE__);
+            throw BESInternalError(string("Request handler for '") + dhi.container->get_container_type() +
+                                       "' does not handle the response type '" + dhi.action + "'",
+                                   __FILE__, __LINE__);
         }
 
         VERBOSE("Found handler '" + rh->get_name() + "' for item '" + dhi.container->get_symbolic_name() + "'.\n");
@@ -279,31 +271,25 @@ void BESRequestHandlerList::execute_current(BESDataHandlerInterface &dhi)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESRequestHandlerList::dump(ostream &strm) const
-{
+void BESRequestHandlerList::dump(ostream &strm) const {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    strm << BESIndent::LMarg << "BESRequestHandlerList::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "BESRequestHandlerList::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     if (!_handler_list.empty()) {
         strm << BESIndent::LMarg << "registered handlers:" << endl;
         BESIndent::Indent();
-        for (const auto &handler_pair: _handler_list) {
+        for (const auto &handler_pair : _handler_list) {
             handler_pair.second->dump(strm);
         }
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "registered handlers: none" << endl;
     }
     BESIndent::UnIndent();
 }
 
-BESRequestHandlerList *
-BESRequestHandlerList::TheList()
-{
+BESRequestHandlerList *BESRequestHandlerList::TheList() {
     static BESRequestHandlerList list;
     return &list;
 }
-
-

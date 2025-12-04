@@ -11,12 +11,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -35,9 +35,9 @@
 #ifndef plugin_factory_h
 #define plugin_factory_h
 
-#include <string>
 #include <map>
 #include <memory>
+#include <string>
 
 #include "BESPlugin.h"
 
@@ -52,9 +52,8 @@
  @see BESPlugin
  */
 
-template<typename C>
-class BESPluginFactory : public BESObj {
-    std::map<std::string, std::unique_ptr<BESPlugin<C>> > d_children;
+template <typename C> class BESPluginFactory : public BESObj {
+    std::map<std::string, std::unique_ptr<BESPlugin<C>>> d_children;
 
 public:
     BESPluginFactory() = default;
@@ -65,9 +64,7 @@ public:
      * @param library_name The name of the library which contains the child class implementation.
      * @see add_mapping.
      */
-    BESPluginFactory(const std::string &name, const std::string &library_name) {
-        add_mapping(name, library_name);
-    }
+    BESPluginFactory(const std::string &name, const std::string &library_name) { add_mapping(name, library_name); }
 
     BESPluginFactory(const BESPluginFactory &) = delete;
 
@@ -109,4 +106,4 @@ public:
     }
 };
 
-#endif //plugin_h
+#endif // plugin_h

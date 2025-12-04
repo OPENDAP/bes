@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -39,8 +39,7 @@ using std::ostream;
  *
  * @param copy_to The container to copy this instance into
  */
-void BESContainer::_duplicate(BESContainer &copy_to)
-{
+void BESContainer::_duplicate(BESContainer &copy_to) {
     copy_to.d_symbolic_name = d_symbolic_name;
     copy_to.d_real_name = d_real_name;
     copy_to.d_relative_name = d_relative_name;
@@ -58,9 +57,8 @@ void BESContainer::_duplicate(BESContainer &copy_to)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESContainer::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESContainer::dump - (" << (void *) this << ")" << endl;
+void BESContainer::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESContainer::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     strm << BESIndent::LMarg << "symbolic name: " << d_symbolic_name << endl;
     strm << BESIndent::LMarg << "real name: " << d_real_name << endl;
@@ -72,4 +70,3 @@ void BESContainer::dump(ostream &strm) const
     strm << BESIndent::LMarg << "attributes: " << d_attributes << endl;
     BESIndent::UnIndent();
 }
-

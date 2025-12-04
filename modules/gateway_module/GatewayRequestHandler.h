@@ -39,7 +39,7 @@ public:
     GatewayRequestHandler(const std::string &name);
     virtual ~GatewayRequestHandler(void);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
     static bool gateway_build_vers(BESDataHandlerInterface &dhi);
     static bool gateway_build_help(BESDataHandlerInterface &dhi);

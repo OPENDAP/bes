@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -40,16 +40,15 @@
 /** @brief exception thrown if an internal error is found and is fatal to
  * the BES
  */
-class BESInternalFatalError: public BESError {
+class BESInternalFatalError : public BESError {
 public:
-    BESInternalFatalError(std::string s, std::string file, unsigned int line) :
-        BESError(std::move(s), BES_INTERNAL_FATAL_ERROR, std::move(file), line) { }
+    BESInternalFatalError(std::string s, std::string file, unsigned int line)
+        : BESError(std::move(s), BES_INTERNAL_FATAL_ERROR, std::move(file), line) {}
 
     ~BESInternalFatalError() override = default;
 
-    void dump(std::ostream &strm) const override
-    {
-        strm << "BESInternalFatalError::dump - (" << (void *) this << ")" << std::endl;
+    void dump(std::ostream &strm) const override {
+        strm << "BESInternalFatalError::dump - (" << (void *)this << ")" << std::endl;
         BESIndent::Indent();
         BESError::dump(strm);
         BESIndent::UnIndent();
@@ -58,4 +57,3 @@ public:
 };
 
 #endif // BESInternalFatalError_h_
-

@@ -33,12 +33,12 @@
 
 #include <iostream>
 
-#include "BESModuleApp.h"
-#include "BESError.h"
-#include "BESPluginFactory.h"
 #include "BESAbstractModule.h"
-#include "TheBESKeys.h"
+#include "BESError.h"
+#include "BESModuleApp.h"
+#include "BESPluginFactory.h"
 #include "BESUtil.h"
+#include "TheBESKeys.h"
 
 using namespace std;
 
@@ -47,10 +47,7 @@ using namespace std;
  * Initialized the static _the Applicatioon to point to this application
  * object
  */
-BESModuleApp::BESModuleApp() :
-        BESApp()
-{
-}
+BESModuleApp::BESModuleApp() : BESApp() {}
 
 #if 0
 /** @brief Default destructor
@@ -69,19 +66,16 @@ BESModuleApp::~BESModuleApp()
  * @param argC argc value passed to the main function
  * @param argV argv value passed to the main function
  */
-int BESModuleApp::initialize(int argC, char **argV)
-{
+int BESModuleApp::initialize(int argC, char **argV) {
     int retVal = BESApp::initialize(argC, argV);
     if (!retVal) {
         try {
             retVal = loadModules();
-        }
-        catch( BESError &e ) {
+        } catch (BESError &e) {
             cerr << "Error during module initialization: " << e.get_message() << endl;
             retVal = 1;
-        }
-        catch( ... ) {
-            cerr << "Error during module initialization: Unknown exception"  << endl;
+        } catch (...) {
+            cerr << "Error during module initialization: Unknown exception" << endl;
             retVal = 1;
         }
     }
@@ -91,8 +85,7 @@ int BESModuleApp::initialize(int argC, char **argV)
 
 /** @brief load data handler modules using the initialization file
  */
-int BESModuleApp::loadModules()
-{
+int BESModuleApp::loadModules() {
     int retVal = 0;
 
     bool found = false;
@@ -103,7 +96,7 @@ int BESModuleApp::loadModules()
 
     // The following code was likely added before we had the 'Include'
     // directive. Now all modules have a line in their .conf file to
-	// Include dap.conf and that makes this redundant. However, what
+    // Include dap.conf and that makes this redundant. However, what
     // was happening was a module named XdapX would match the find()
     // call below and would wind up being loaded _before_ the dap module.
     // That led to all sorts of runtime problems. See ticket 2258. Since
@@ -141,8 +134,7 @@ int BESModuleApp::loadModules()
                 string so;
                 try {
                     TheBESKeys::TheKeys()->get_value(key, so, found);
-                }
-                catch( BESError &e ) {
+                } catch (BESError &e) {
                     cerr << e.get_message() << endl;
                     return 1;
                 }
@@ -172,14 +164,12 @@ int BESModuleApp::loadModules()
             BESAbstractModule *o = _moduleFactory.get(modname);
             o->initialize(modname);
             delete o;
-        }
-        catch( BESError &e ) {
+        } catch (BESError &e) {
             cerr << "Caught plugin exception during initialization of " << curr_mod._module_name << " module:" << endl
-                    << "    " << e.get_message() << endl;
+                 << "    " << e.get_message() << endl;
             retVal = 1;
             break;
-        }
-        catch( ... ) {
+        } catch (...) {
             cerr << "Caught unknown exception during initialization of " << curr_mod._module_name << " module" << endl;
             retVal = 1;
             break;
@@ -197,8 +187,7 @@ int BESModuleApp::loadModules()
  * @param sig if the application is terminating due to a signal, otherwise 0
  * is passed.
  */
-int BESModuleApp::terminate(int sig)
-{
+int BESModuleApp::terminate(int sig) {
     list<bes_module>::iterator i = _module_list.begin();
     list<bes_module>::iterator e = _module_list.end();
     bool done = false;
@@ -219,11 +208,9 @@ int BESModuleApp::terminate(int sig)
                 }
             }
         }
-    }
-    catch( BESError &e ) {
+    } catch (BESError &e) {
         cerr << "Caught exception during module termination: " << e.get_message() << endl;
-    }
-    catch( ... ) {
+    } catch (...) {
         cerr << "Caught unknown exception during terminate" << endl;
     }
 
@@ -238,9 +225,8 @@ int BESModuleApp::terminate(int sig)
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESModuleApp::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESModuleApp::dump - (" << (void *) this << ")" << endl;
+void BESModuleApp::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESModuleApp::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     if (_module_list.size()) {
         strm << BESIndent::LMarg << "loaded modules:" << endl;
@@ -252,10 +238,8 @@ void BESModuleApp::dump(ostream &strm) const
             strm << BESIndent::LMarg << curr_mod._module_name << ": " << curr_mod._module_library << endl;
         }
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "loaded modules: none" << endl;
     }
     BESIndent::UnIndent();
 }
-

@@ -84,7 +84,7 @@ public:
 
     virtual std::string path_to_access_url(const std::string &path) const;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 } // namespace httpd_catalog

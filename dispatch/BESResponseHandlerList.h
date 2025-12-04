@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -34,14 +34,14 @@
 #define I_BESResponseHandlerList_h 1
 
 #include <map>
-#include <string>
 #include <mutex>
+#include <string>
 
 #include "BESObj.h"
 
 class BESResponseHandler;
 
-typedef BESResponseHandler * (*p_response_handler)(const std::string &name);
+typedef BESResponseHandler *(*p_response_handler)(const std::string &name);
 
 /** @brief List of all registered response handlers for this server
  *
@@ -57,7 +57,7 @@ typedef BESResponseHandler * (*p_response_handler)(const std::string &name);
  * @see BESResponseHandler
  * @see BESResponseObject
  */
-class BESResponseHandlerList: public BESObj {
+class BESResponseHandlerList : public BESObj {
 private:
     mutable std::recursive_mutex d_cache_lock_mutex;
 
@@ -73,22 +73,21 @@ private:
 public:
     ~BESResponseHandlerList() override = default;
 
-    BESResponseHandlerList(const BESResponseHandlerList&) = delete;
-    BESResponseHandlerList& operator=(const BESResponseHandlerList&) = delete;
+    BESResponseHandlerList(const BESResponseHandlerList &) = delete;
+    BESResponseHandlerList &operator=(const BESResponseHandlerList &) = delete;
 
     typedef std::map<std::string, p_response_handler>::const_iterator Handler_citer;
     typedef std::map<std::string, p_response_handler>::iterator Handler_iter;
 
     virtual bool add_handler(const std::string &handler, p_response_handler handler_method);
     virtual bool remove_handler(const std::string &handler);
-    virtual BESResponseHandler * find_handler(const std::string &handler);
+    virtual BESResponseHandler *find_handler(const std::string &handler);
 
     virtual std::string get_handler_names();
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 
-    static BESResponseHandlerList * TheList();
+    static BESResponseHandlerList *TheList();
 };
 
 #endif // I_BESResponseHandlerList_h
-

@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -63,18 +63,18 @@
  *
  * @see BESContainerStorage
  */
-class BESContainer: public BESObj {
+class BESContainer : public BESObj {
 
-    std::string d_symbolic_name;     ///< The name of the container
-    std::string d_real_name;         ///< The full name of the thing (filename, database table name, ...)
-    std::string d_relative_name;     ///< The name relative to the Data Root dir
-    std::string d_container_type;    ///< The handler that can read this kind of data (e.g., HDF5)
+    std::string d_symbolic_name;  ///< The name of the container
+    std::string d_real_name;      ///< The full name of the thing (filename, database table name, ...)
+    std::string d_relative_name;  ///< The name relative to the Data Root dir
+    std::string d_container_type; ///< The handler that can read this kind of data (e.g., HDF5)
 
     std::string d_constraint;
     std::string d_dap4_constraint;
     std::string d_dap4_function;
 
-    std::string d_attributes;     ///< See DefinitionStorageList, XMLDefineCommand
+    std::string d_attributes; ///< See DefinitionStorageList, XMLDefineCommand
 
 protected:
     // This is an odd bit of code. The argument is copied, which is the reverse
@@ -85,8 +85,8 @@ public:
     BESContainer() = default;
     BESContainer(const BESContainer &) = default;
     BESContainer(BESContainer &&) = default;
-    BESContainer& operator=(const BESContainer&) = default;
-    BESContainer& operator=(BESContainer&&) = default;
+    BESContainer &operator=(const BESContainer &) = default;
+    BESContainer &operator=(BESContainer &&) = default;
 
     ~BESContainer() override = default;
 
@@ -101,127 +101,88 @@ public:
      * @param real_name real name of the container, such as a file name
      * @param type type of data represented by this container, such as netcdf
      */
-    BESContainer(std::string sym_name, std::string real_name, std::string type) :
-        d_symbolic_name(std::move(sym_name)), d_real_name(std::move(real_name)), d_container_type(std::move(type))
-    {
-    }
+    BESContainer(std::string sym_name, std::string real_name, std::string type)
+        : d_symbolic_name(std::move(sym_name)), d_real_name(std::move(real_name)), d_container_type(std::move(type)) {}
 
     /**
      * @brief pure abstract method to duplicate this instances of BESContainer
      */
-    virtual BESContainer * ptr_duplicate() = 0;
+    virtual BESContainer *ptr_duplicate() = 0;
 
     /**
      * @brief set the constraint for this container
      * @param s constraint
      */
-    void set_constraint(const std::string &s)
-    {
-        d_constraint = s;
-    }
+    void set_constraint(const std::string &s) { d_constraint = s; }
 
     /** @brief set the constraint for this container
      *
      * @param s constraint
      */
-    void set_dap4_constraint(const std::string &s)
-    {
-        d_dap4_constraint = s;
-    }
+    void set_dap4_constraint(const std::string &s) { d_dap4_constraint = s; }
 
     /** @brief set the constraint for this container
      *
      * @param s constraint
      */
-    void set_dap4_function(const std::string &s)
-    {
-        d_dap4_function = s;
-    }
+    void set_dap4_function(const std::string &s) { d_dap4_function = s; }
 
     /** @brief set the real name for this container, such as a file name
      * if reading a data file.
      *
      * @param real_name real name, such as the file name
      */
-    void set_real_name(const std::string &real_name)
-    {
-        d_real_name = real_name;
-    }
+    void set_real_name(const std::string &real_name) { d_real_name = real_name; }
 
     /// @brief Set the relative name of the object in this container
-    void set_relative_name(const std::string &relative) {
-        d_relative_name = relative;
-    }
+    void set_relative_name(const std::string &relative) { d_relative_name = relative; }
 
     /** @brief set the type of data that this container represents, such
      * as cedar or netcdf.
      *
      * @param type type of data, such as cedar or netcdf
      */
-    void set_container_type(const std::string &type)
-    {
-        d_container_type = type;
-    }
+    void set_container_type(const std::string &type) { d_container_type = type; }
 
     /** @brief set desired attributes for this container
      *
      * @param attrs attributes desired to access for this container
      */
-    void set_attributes(const std::string &attrs)
-    {
-        d_attributes = attrs;
-    }
+    void set_attributes(const std::string &attrs) { d_attributes = attrs; }
 
     /** @brief retrieve the real name for this container, such as a
      * file name.
      *
      * @return real name, such as file name
      */
-    std::string get_real_name() const
-    {
-        return d_real_name;
-    }
+    std::string get_real_name() const { return d_real_name; }
 
     /// @brief Get the relative name of the object in this container
-    std::string get_relative_name() const {
-        return d_relative_name;
-    }
+    std::string get_relative_name() const { return d_relative_name; }
 
     /** @brief retrieve the constraint expression for this container
      *
      * @return constraint expression for this execution for the symbolic name
      */
-    std::string get_constraint() const
-    {
-        return d_constraint;
-    }
+    std::string get_constraint() const { return d_constraint; }
 
     /** @brief retrieve the constraint expression for this container
      *
      * @return constraint expression for this execution for the symbolic name
      */
-    std::string get_dap4_constraint() const
-    {
-        return d_dap4_constraint;
-    }
+    std::string get_dap4_constraint() const { return d_dap4_constraint; }
 
     /** @brief retrieve the constraint expression for this container
      *
      * @return constraint expression for this execution for the symbolic name
      */
-    std::string get_dap4_function() const
-    {
-        return d_dap4_function;
-    }
+    std::string get_dap4_function() const { return d_dap4_function; }
 
     /** @brief retrieve the symbolic name for this container
      *
      * @return symbolic name for this container
      */
-    std::string get_symbolic_name() const
-    {
-        return d_symbolic_name;
-    }
+    std::string get_symbolic_name() const { return d_symbolic_name; }
 
     /** @brief retrieve the type of data this container holds, such as
      * cedar or netcdf.
@@ -229,20 +190,13 @@ public:
      * @return type of data this container represents, such as cedar or
      * netcdf
      */
-    std::string get_container_type() const
-    {
-        return d_container_type;
-    }
-
+    std::string get_container_type() const { return d_container_type; }
 
     /** @brief retrieve the attributes desired from this container
      *
      * @return attributes desired from this container
      */
-    std::string get_attributes() const
-    {
-        return d_attributes;
-    }
+    std::string get_attributes() const { return d_attributes; }
 
     /**
      * @brief returns the name of the resource encapsulated by this container.
@@ -256,7 +210,7 @@ public:
      *
      * @return name of the file to access
      */
-    virtual std::string  access() = 0;
+    virtual std::string access() = 0;
 
     /**
      * @brief Release the resource encapsulated by the container.

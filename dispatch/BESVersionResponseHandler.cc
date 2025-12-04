@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -32,30 +32,25 @@
 
 #include "config.h"
 
-#include <vector>
 #include <string>
+#include <vector>
 
-using std::vector;
-using std::string;
 using std::ostream;
+using std::string;
+using std::vector;
 
-#include "BESVersionResponseHandler.h"
-#include "BESVersionInfo.h"
 #include "BESRequestHandlerList.h"
 #include "BESResponseNames.h"
+#include "BESVersionInfo.h"
+#include "BESVersionResponseHandler.h"
 #include "ServerAdministrator.h"
 #include "TheBESKeys.h"
 
 #define DEFAULT_ADMINISTRATOR "support@opendap.org"
 
-BESVersionResponseHandler::BESVersionResponseHandler(const string &name) :
-    BESResponseHandler(name)
-{
-}
+BESVersionResponseHandler::BESVersionResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESVersionResponseHandler::~BESVersionResponseHandler()
-{
-}
+BESVersionResponseHandler::~BESVersionResponseHandler() = default;
 
 /** @brief executes the command 'show version;' by returning the version of
  * the BES and the version of all registered data request
@@ -71,19 +66,17 @@ BESVersionResponseHandler::~BESVersionResponseHandler()
  * @see BESVersionInfo
  * @see BESRequestHandlerList
  */
-void BESVersionResponseHandler::execute(BESDataHandlerInterface &dhi)
-{
+void BESVersionResponseHandler::execute(BESDataHandlerInterface &dhi) {
     BESVersionInfo *info = new BESVersionInfo();
     d_response_object = info;
     dhi.action_name = VERS_RESPONSE_STR;
-    info->begin_response( VERS_RESPONSE_STR, dhi);
+    info->begin_response(VERS_RESPONSE_STR, dhi);
 
     string admin_email = "";
     try {
         bes::ServerAdministrator sd;
         admin_email = sd.get_email();
-    }
-    catch (...) {
+    } catch (...) {
         admin_email = DEFAULT_ADMINISTRATOR;
     }
     if (admin_email.empty()) {
@@ -91,7 +84,7 @@ void BESVersionResponseHandler::execute(BESDataHandlerInterface &dhi)
     }
     info->add_tag("Administrator", admin_email);
 
-    info->add_library( PACKAGE_NAME, CVER);
+    info->add_library(PACKAGE_NAME, CVER);
 
     BESRequestHandlerList::TheList()->execute_all(dhi);
 
@@ -110,11 +103,11 @@ void BESVersionResponseHandler::execute(BESDataHandlerInterface &dhi)
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void BESVersionResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
-{
+void BESVersionResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) {
     if (d_response_object) {
         BESVersionInfo *info = dynamic_cast<BESVersionInfo *>(d_response_object);
-        if (!info) throw BESInternalError("cast error", __FILE__, __LINE__);
+        if (!info)
+            throw BESInternalError("cast error", __FILE__, __LINE__);
         info->transmit(transmitter, dhi);
     }
 }
@@ -125,17 +118,13 @@ void BESVersionResponseHandler::transmit(BESTransmitter *transmitter, BESDataHan
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESVersionResponseHandler::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESVersionResponseHandler::dump - (" << (void *) this << ")" << std::endl;
+void BESVersionResponseHandler::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESVersionResponseHandler::dump - (" << (void *)this << ")" << std::endl;
     BESIndent::Indent();
     BESResponseHandler::dump(strm);
     BESIndent::UnIndent();
 }
 
-BESResponseHandler *
-BESVersionResponseHandler::VersionResponseBuilder(const string &name)
-{
+BESResponseHandler *BESVersionResponseHandler::VersionResponseBuilder(const string &name) {
     return new BESVersionResponseHandler(name);
 }
-

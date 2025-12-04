@@ -32,19 +32,19 @@
 
 #include <unistd.h>
 
-#include <iostream>
 #include <cstdlib>
 #include <cstring>
 #include <fcntl.h>
+#include <iostream>
 #include <list>
 
 #include <cppunit/TextTestRunner.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/extensions/TestFactoryRegistry.h>
 
-#include "BESUtil.h"
 #include "BESError.h"
 #include "BESInternalError.h"
+#include "BESUtil.h"
 #include "TheBESKeys.h"
 #include "test_config.h"
 
@@ -55,29 +55,34 @@ static bool debug = false;
 static bool Debug = false;
 
 #undef DBG
-#define DBG(x) do { if (debug) (x); } while(false);
+#define DBG(x)                                                                                                         \
+    do {                                                                                                               \
+        if (debug)                                                                                                     \
+            (x);                                                                                                       \
+    } while (false);
 #define prolog std::string("utilT::").append(__func__).append("() - ")
 
 class utilT : public TestFixture {
 private:
-
 public:
     utilT() = default;
 
-    ~utilT() = default;
+    ~utilT() override = default;
 
-    void setUp() {
-        if (debug) cerr << endl;
-        string bes_conf = (string) TEST_SRC_DIR + "/bes.conf";
+    void setUp() override {
+        if (debug)
+            cerr << endl;
+        string bes_conf = (string)TEST_SRC_DIR + "/bes.conf";
         TheBESKeys::ConfigFile = bes_conf;
     }
 
-    void display_values(const list <string> &values) {
-        for (auto &s: values)
+    void display_values(const list<string> &values) {
+        for (auto &s : values)
             cerr << "  " << s << endl;
     }
 
-    // string BESUtil::assemblePath(const string &firstPart, const string &secondPart, bool leadingSlash, bool trailingSlash)
+    // string BESUtil::assemblePath(const string &firstPart, const string &secondPart, bool leadingSlash, bool
+    // trailingSlash)
     void test_assemblePath_1() {
         string path = BESUtil::assemblePath("/first_part", "/second_part", true, true);
         CPPUNIT_ASSERT(path == "/first_part/second_part/");
@@ -203,7 +208,7 @@ public:
     }
 
     void test_explode_1() {
-        list <string> values;
+        list<string> values;
         string value = "val1,val2,val3,val4";
         DBG(cerr << value << endl);
         BESUtil::explode(',', value, values);
@@ -218,7 +223,7 @@ public:
     }
 
     void test_explode_2() {
-        list <string> values;
+        list<string> values;
         string value = "val1,val2,val3,val4,";
         DBG(cerr << value << endl);
         BESUtil::explode(',', value, values);
@@ -234,7 +239,7 @@ public:
     }
 
     void test_explode_3() {
-        list <string> values;
+        list<string> values;
         string value = "val1;\"val2 with quotes\";val3;\"val4 with quotes\"";
         DBG(cerr << value << endl);
         BESUtil::explode(';', value, values);
@@ -249,7 +254,7 @@ public:
     }
 
     void test_explode_4() {
-        list <string> values;
+        list<string> values;
         string value = "val1;\"val2 with \\\"embedded quotes\\\"\";val3;\"val4 with quotes\";";
         DBG(cerr << value << endl);
         BESUtil::explode(';', value, values);
@@ -265,29 +270,30 @@ public:
     }
 
     void test_implode_1() {
-        list <string> values;
-        values.push_back("a");
-        values.push_back("b");
-        values.push_back("c");
-        values.push_back("d");
+        list<string> values;
+        values.emplace_back("a");
+        values.emplace_back("b");
+        values.emplace_back("c");
+        values.emplace_back("d");
         CPPUNIT_ASSERT(BESUtil::implode(values, ',') == "a,b,c,d");
     }
 
     void test_implode_2() {
-        list <string> values;
-        values.push_back("a");
-        values.push_back("b");
-        values.push_back("c");
-        values.push_back("d");
-        values.push_back("a,b");
-        CPPUNIT_ASSERT_THROW_MESSAGE("imploding of value with comma should throw BESError", BESUtil::implode(values, ','), BESError);
+        list<string> values;
+        values.emplace_back("a");
+        values.emplace_back("b");
+        values.emplace_back("c");
+        values.emplace_back("d");
+        values.emplace_back("a,b");
+        CPPUNIT_ASSERT_THROW_MESSAGE("imploding of value with comma should throw BESError",
+                                     BESUtil::implode(values, ','), BESError);
     }
 
     void test_implode_3() {
-        list <string> values;
-        values.push_back("a");
-        values.push_back("\"a,b\"");
-        values.push_back("b");
+        list<string> values;
+        values.emplace_back("a");
+        values.emplace_back("\"a,b\"");
+        values.emplace_back("b");
         CPPUNIT_ASSERT(BESUtil::implode(values, ',') == "a,\"a,b\",b");
     }
 
@@ -351,18 +357,18 @@ public:
         CPPUNIT_ASSERT(s == "test");
     }
 
-    void replace_all_worker(
-            const string &id,
-            string &source_str,
-            const string &template_str,
-            const string &replace_str,
-            const string &baseline_str) {
+    void replace_all_worker(const string &id, string &source_str, const string &template_str, const string &replace_str,
+                            const string &baseline_str) {
 
         try {
-            if (debug) cerr << id << "(" << prolog << ") " << "  Source String: '" << source_str << "'" << endl;
-            if (debug) cerr << id << "(" << prolog << ") " << "Template String: '" << template_str << "'" << endl;
-            if (debug) cerr << id << "(" << prolog << ") " << " Replace String: '" << replace_str << "'" << endl;
-            if (debug) cerr << id << "(" << prolog << ") " << "       Expected: '" << baseline_str << "'" << endl;
+            if (debug)
+                cerr << id << "(" << prolog << ") " << "  Source String: '" << source_str << "'" << endl;
+            if (debug)
+                cerr << id << "(" << prolog << ") " << "Template String: '" << template_str << "'" << endl;
+            if (debug)
+                cerr << id << "(" << prolog << ") " << " Replace String: '" << replace_str << "'" << endl;
+            if (debug)
+                cerr << id << "(" << prolog << ") " << "       Expected: '" << baseline_str << "'" << endl;
 
             unsigned int replace_count = BESUtil::replace_all(source_str, template_str, replace_str);
             bool result_matched = source_str == baseline_str;
@@ -372,17 +378,17 @@ public:
 
             std::stringstream info_msg;
             info_msg << id << "(" << prolog << ") " << "The filtered string "
-                     << (result_matched ? "MATCHED " : "DID NOT MATCH ")
-                     << "the baseline: " << endl;
-            if (debug) cerr << info_msg.str();
+                     << (result_matched ? "MATCHED " : "DID NOT MATCH ") << "the baseline: " << endl;
+            if (debug)
+                cerr << info_msg.str();
             CPPUNIT_ASSERT_MESSAGE(info_msg.str(), result_matched);
 
-        }
-        catch (BESError &be) {
+        } catch (BESError &be) {
             std::stringstream msg;
             msg << prolog << "Caught BESError. Message: " << be.get_verbose_message() << " ";
             msg << be.get_file() << " " << be.get_line();
-            if (debug) cerr << msg.str() << endl;
+            if (debug)
+                cerr << msg.str() << endl;
             CPPUNIT_FAIL(msg.str());
         }
     }
@@ -391,31 +397,39 @@ public:
      * Test replace_all() string function
      */
     void replace_all_test_01() {
-        if (debug) cerr << prolog << "BEGIN" << endl;
-        string source_str = "aabaabaabbbbaaaaaabbabbbaaabbbaaaaabbabaabbabbaaabbaabbaaabejklgvaxxxaccaxxxacccaccaaacaabo";
+        if (debug)
+            cerr << prolog << "BEGIN" << endl;
+        string source_str =
+            "aabaabaabbbbaaaaaabbabbbaaabbbaaaaabbabaabbabbaaabbaabbaaabejklgvaxxxaccaxxxacccaccaaacaabo";
         string template_str = "aab";
         string replace_str = "###";
-        string baseline_str = "#########bbbaaaa###babbba###bbaaa###bab###babba###b###ba###ejklgvaxxxaccaxxxacccaccaaac###o";
+        string baseline_str =
+            "#########bbbaaaa###babbba###bbaaa###bab###babba###b###ba###ejklgvaxxxaccaxxxacccaccaaac###o";
 
         replace_all_worker(prolog, source_str, template_str, replace_str, baseline_str);
 
-        if (debug) cerr << prolog << "END" << endl;
+        if (debug)
+            cerr << prolog << "END" << endl;
     }
 
     void replace_all_test_02() {
-        if (debug) cerr << prolog << "BEGIN" << endl;
-        string source_str = "#########bbbaaaa###babbba###bbaaa###bab###babba###b###ba###ejklgvaxxxaccaxxxacccaccaaac###o";
+        if (debug)
+            cerr << prolog << "BEGIN" << endl;
+        string source_str =
+            "#########bbbaaaa###babbba###bbaaa###bab###babba###b###ba###ejklgvaxxxaccaxxxacccaccaaac###o";
         string template_str = "#";
         string replace_str = "";
         string baseline_str = "bbbaaaababbbabbaaababbabbabbaejklgvaxxxaccaxxxacccaccaaaco";
 
         replace_all_worker(prolog, source_str, template_str, replace_str, baseline_str);
 
-        if (debug) cerr << prolog << "END" << endl;
+        if (debug)
+            cerr << prolog << "END" << endl;
     }
 
     void replace_all_test_03() {
-        if (debug) cerr << prolog << "BEGIN" << endl;
+        if (debug)
+            cerr << prolog << "BEGIN" << endl;
         string source_str = "The quick brown fox jumped over the lazy dog.";
         string template_str = "quick brown fox";
         string replace_str = "grasshopper";
@@ -423,11 +437,13 @@ public:
 
         replace_all_worker(prolog, source_str, template_str, replace_str, baseline_str);
 
-        if (debug) cerr << prolog << "END" << endl;
+        if (debug)
+            cerr << prolog << "END" << endl;
     }
 
     void replace_all_test_04() {
-        if (debug) cerr << prolog << "BEGIN" << endl;
+        if (debug)
+            cerr << prolog << "BEGIN" << endl;
         string source_str = "The quick brown fox jumped over the lazy dog.";
         string template_str = "quick brown fox";
         string replace_str = "reckless skateboarder";
@@ -435,7 +451,8 @@ public:
 
         replace_all_worker(prolog, source_str, template_str, replace_str, baseline_str);
 
-        if (debug) cerr << prolog << "END" << endl;
+        if (debug)
+            cerr << prolog << "END" << endl;
     }
 
     // string_to_file(const string &filename, const string &content)
@@ -443,15 +460,17 @@ public:
         BESUtil::string_to_file("test.txt", "This is a test");
         string info = BESUtil::file_to_string("test.txt");
         CPPUNIT_ASSERT(info == "This is a test");
-        system("rm test.txt");  // cleanup
+        system("rm test.txt"); // cleanup
     }
 
     void string_to_file_test_empty_name() {
-        CPPUNIT_ASSERT_THROW_MESSAGE("Expected an exception", BESUtil::string_to_file("", "This is a test"), BESInternalError);
+        CPPUNIT_ASSERT_THROW_MESSAGE("Expected an exception", BESUtil::string_to_file("", "This is a test"),
+                                     BESInternalError);
     }
 
     void string_to_file_test_not_allowed() {
-        CPPUNIT_ASSERT_THROW_MESSAGE("Expected an exception", BESUtil::string_to_file("/", "This is a test"), BESInternalError);
+        CPPUNIT_ASSERT_THROW_MESSAGE("Expected an exception", BESUtil::string_to_file("/", "This is a test"),
+                                     BESInternalError);
     }
 
     void file_to_string_test_empty_name() {
@@ -459,7 +478,8 @@ public:
     }
 
     void file_to_string_test_not_allowed() {
-        CPPUNIT_ASSERT_THROW_MESSAGE("Expected an exception", BESUtil::file_to_string("/tmp/no_such_file"), BESInternalError);
+        CPPUNIT_ASSERT_THROW_MESSAGE("Expected an exception", BESUtil::file_to_string("/tmp/no_such_file"),
+                                     BESInternalError);
     }
 
     // BESUtil::make_temp_file(const string &temp_file_dir, string &temp_file_name)
@@ -470,7 +490,7 @@ public:
         CPPUNIT_ASSERT(temp_file_name.find("bes_util_") == 5);
         CPPUNIT_ASSERT(temp_file_name.length() == 20);
         CPPUNIT_ASSERT_MESSAGE("Temporary file should exist", access(temp_file_name.c_str(), F_OK) != -1);
-        system(("rm " + temp_file_name).c_str());  // cleanup
+        system(("rm " + temp_file_name).c_str()); // cleanup
     }
 
     // Test that when the temp file is written to, the int file descriptor is still valid and
@@ -483,7 +503,7 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Temporary file should exist", fcntl(fd, F_GETFD) != -1);
         unsigned long pos = lseek(fd, 0, SEEK_CUR);
         CPPUNIT_ASSERT_MESSAGE("The fd should be at the start of the file", pos == 0);
-        system(("rm " + temp_file_name).c_str());  // cleanup
+        system(("rm " + temp_file_name).c_str()); // cleanup
     }
 
     // Test that we can write and then read. jhrg 3/9/23
@@ -501,7 +521,7 @@ public:
         read(fd, buf, data.length());
         string read_data = buf;
         CPPUNIT_ASSERT(read_data == data);
-        system(("rm " + temp_file_name).c_str());  // cleanup
+        system(("rm " + temp_file_name).c_str()); // cleanup
     }
 
     void make_temp_file_write_data_with_truncate_test() {
@@ -520,7 +540,7 @@ public:
 
         // And the new info should be in the file
         CPPUNIT_ASSERT(new_data == BESUtil::file_to_string(temp_file_name));
-        system(("rm " + temp_file_name).c_str());  // cleanup
+        system(("rm " + temp_file_name).c_str()); // cleanup
     }
 
     void mkdir_p_simple_test() {
@@ -529,18 +549,17 @@ public:
         CPPUNIT_ASSERT_MESSAGE("bes_util_test should not exist", access(dir.c_str(), F_OK) == -1);
         BESUtil::mkdir_p(dir, 0775);
         CPPUNIT_ASSERT_MESSAGE("Directory should exist", access(dir.c_str(), F_OK) != -1);
-        system(("rm -rf " + dir).c_str());  // cleanup
+        system(("rm -rf " + dir).c_str()); // cleanup
     }
 
     void mkdir_p_w_missing_parent_test() {
         string dir = "/tmp/bes_util_test/parent";
         // initial condition: neither bes_util_test nor parent exists
         CPPUNIT_ASSERT_MESSAGE("Neither bes_util_test nor parent should exist",
-                               access("/tmp/bes_util_test", F_OK) == -1
-                               && access(dir.c_str(), F_OK) == -1);
+                               access("/tmp/bes_util_test", F_OK) == -1 && access(dir.c_str(), F_OK) == -1);
         BESUtil::mkdir_p(dir, 0775);
         CPPUNIT_ASSERT_MESSAGE("Directory should exist", access(dir.c_str(), F_OK) != -1);
-        system("rm -rf /tmp/bes_util_test");  // cleanup
+        system("rm -rf /tmp/bes_util_test"); // cleanup
     }
 
     void mkdir_p_exists_test() {
@@ -561,11 +580,10 @@ public:
         string dir = "/tmp/bes_util_test/parent/";
         // initial condition: neither bes_util_test nor parent exists
         CPPUNIT_ASSERT_MESSAGE("Neither bes_util_test nor parent should exist",
-                               access("/tmp/bes_util_test", F_OK) == -1
-                               && access(dir.c_str(), F_OK) == -1);
+                               access("/tmp/bes_util_test", F_OK) == -1 && access(dir.c_str(), F_OK) == -1);
         BESUtil::mkdir_p(dir, 0775);
         CPPUNIT_ASSERT_MESSAGE("Directory should exist", access(dir.c_str(), F_OK) != -1);
-        system("rm -rf /tmp/bes_util_test");  // cleanup
+        system("rm -rf /tmp/bes_util_test"); // cleanup
     }
 
     void mkdir_p_not_allowed_test() {
@@ -587,105 +605,104 @@ public:
         CPPUNIT_ASSERT_MESSAGE("An empty path will succeed", status == 0);
     }
 
+    CPPUNIT_TEST_SUITE(utilT);
 
-CPPUNIT_TEST_SUITE( utilT );
+    CPPUNIT_TEST(mkdir_p_simple_test);
+    CPPUNIT_TEST(mkdir_p_w_missing_parent_test);
+    CPPUNIT_TEST(mkdir_p_exists_test);
+    CPPUNIT_TEST(mkdir_p_exists_trailing_slash_test);
+    CPPUNIT_TEST(mkdir_p_w_missing_parent_trailing_slash_test);
+    CPPUNIT_TEST(mkdir_p_not_allowed_test);
+    CPPUNIT_TEST(mkdir_p_empty_path_test);
 
-        CPPUNIT_TEST( mkdir_p_simple_test );
-        CPPUNIT_TEST( mkdir_p_w_missing_parent_test );
-        CPPUNIT_TEST( mkdir_p_exists_test );
-        CPPUNIT_TEST( mkdir_p_exists_trailing_slash_test );
-        CPPUNIT_TEST( mkdir_p_w_missing_parent_trailing_slash_test );
-        CPPUNIT_TEST( mkdir_p_not_allowed_test );
-        CPPUNIT_TEST( mkdir_p_empty_path_test );
+    CPPUNIT_TEST(make_temp_file_test);
+    CPPUNIT_TEST(make_temp_file_write_data_test);
+    CPPUNIT_TEST(make_temp_file_read_data_test);
+    CPPUNIT_TEST(make_temp_file_write_data_with_truncate_test);
 
-        CPPUNIT_TEST( make_temp_file_test );
-        CPPUNIT_TEST( make_temp_file_write_data_test );
-        CPPUNIT_TEST( make_temp_file_read_data_test );
-        CPPUNIT_TEST( make_temp_file_write_data_with_truncate_test );
+    CPPUNIT_TEST(string_to_file_and_file_to_string_test);
+    CPPUNIT_TEST(string_to_file_test_empty_name);
+    CPPUNIT_TEST(string_to_file_test_not_allowed);
+    CPPUNIT_TEST(file_to_string_test_empty_name);
+    CPPUNIT_TEST(file_to_string_test_not_allowed);
 
-        CPPUNIT_TEST( string_to_file_and_file_to_string_test );
-        CPPUNIT_TEST( string_to_file_test_empty_name );
-        CPPUNIT_TEST( string_to_file_test_not_allowed );
-        CPPUNIT_TEST( file_to_string_test_empty_name );
-        CPPUNIT_TEST( file_to_string_test_not_allowed );
+    CPPUNIT_TEST(test_assemblePath_1);
+    CPPUNIT_TEST(test_assemblePath_2);
+    CPPUNIT_TEST(test_assemblePath_3);
+    CPPUNIT_TEST(test_assemblePath_4);
+    CPPUNIT_TEST(test_assemblePath_5);
+    CPPUNIT_TEST(test_assemblePath_6);
+    CPPUNIT_TEST_FAIL(test_assemblePath_7);
+    CPPUNIT_TEST(test_assemblePath_8);
+    CPPUNIT_TEST(test_assemblePath_9);
+    CPPUNIT_TEST(test_assemblePath_10);
 
-        CPPUNIT_TEST( test_assemblePath_1 );
-        CPPUNIT_TEST( test_assemblePath_2 );
-        CPPUNIT_TEST( test_assemblePath_3 );
-        CPPUNIT_TEST( test_assemblePath_4 );
-        CPPUNIT_TEST( test_assemblePath_5 );
-        CPPUNIT_TEST( test_assemblePath_6 );
-        CPPUNIT_TEST_FAIL( test_assemblePath_7 );
-        CPPUNIT_TEST( test_assemblePath_8 );
-        CPPUNIT_TEST( test_assemblePath_9 );
-        CPPUNIT_TEST( test_assemblePath_10 );
+    CPPUNIT_TEST(test_unescape);
 
-        CPPUNIT_TEST( test_unescape );
+    CPPUNIT_TEST(test_removeLeadingAndTrailingBlanks_1);
+    CPPUNIT_TEST(test_removeLeadingAndTrailingBlanks_2);
+    CPPUNIT_TEST(test_removeLeadingAndTrailingBlanks_3);
+    CPPUNIT_TEST(test_removeLeadingAndTrailingBlanks_4);
+    CPPUNIT_TEST(test_removeLeadingAndTrailingBlanks_5);
+    CPPUNIT_TEST(test_removeLeadingAndTrailingBlanks_6);
+    CPPUNIT_TEST(test_removeLeadingAndTrailingBlanks_7);
+    CPPUNIT_TEST(test_removeLeadingAndTrailingBlanks_8);
+    CPPUNIT_TEST(test_removeLeadingAndTrailingBlanks_9);
+    CPPUNIT_TEST(test_removeLeadingAndTrailingBlanks_10);
+    CPPUNIT_TEST(test_removeLeadingAndTrailingBlanks_11);
 
-        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_1 );
-        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_2 );
-        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_3 );
-        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_4 );
-        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_5 );
-        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_6 );
-        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_7 );
-        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_8 );
-        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_9 );
-        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_10 );
-        CPPUNIT_TEST( test_removeLeadingAndTrailingBlanks_11 );
+    CPPUNIT_TEST(test_explode_1);
+    CPPUNIT_TEST(test_explode_2);
+    CPPUNIT_TEST(test_explode_3);
+    CPPUNIT_TEST(test_explode_4);
 
-        CPPUNIT_TEST( test_explode_1 );
-        CPPUNIT_TEST( test_explode_2 );
-        CPPUNIT_TEST( test_explode_3 );
-        CPPUNIT_TEST( test_explode_4 );
+    CPPUNIT_TEST(test_implode_1);
+    CPPUNIT_TEST(test_implode_2);
+    CPPUNIT_TEST(test_implode_3);
 
-        CPPUNIT_TEST( test_implode_1 );
-        CPPUNIT_TEST( test_implode_2 );
-        CPPUNIT_TEST( test_implode_3 );
+    CPPUNIT_TEST(test_trim_if_trailing_slash_1);
+    CPPUNIT_TEST(test_trim_if_trailing_slash_2);
+    CPPUNIT_TEST(test_trim_if_trailing_slash_3);
+    CPPUNIT_TEST(test_trim_if_trailing_slash_4);
+    CPPUNIT_TEST(test_trim_if_trailing_slash_5);
 
-        CPPUNIT_TEST( test_trim_if_trailing_slash_1 );
-        CPPUNIT_TEST( test_trim_if_trailing_slash_2 );
-        CPPUNIT_TEST( test_trim_if_trailing_slash_3 );
-        CPPUNIT_TEST( test_trim_if_trailing_slash_4 );
-        CPPUNIT_TEST( test_trim_if_trailing_slash_5 );
+    CPPUNIT_TEST(test_trim_if_surrounding_quotes_1);
+    CPPUNIT_TEST(test_trim_if_surrounding_quotes_2);
+    CPPUNIT_TEST(test_trim_if_surrounding_quotes_3);
+    CPPUNIT_TEST(test_trim_if_surrounding_quotes_4);
+    CPPUNIT_TEST(test_trim_if_surrounding_quotes_5);
 
-        CPPUNIT_TEST( test_trim_if_surrounding_quotes_1 );
-        CPPUNIT_TEST( test_trim_if_surrounding_quotes_2 );
-        CPPUNIT_TEST( test_trim_if_surrounding_quotes_3 );
-        CPPUNIT_TEST( test_trim_if_surrounding_quotes_4 );
-        CPPUNIT_TEST( test_trim_if_surrounding_quotes_5 );
-
-        CPPUNIT_TEST( replace_all_test_01 );
-        CPPUNIT_TEST( replace_all_test_02 );
-        CPPUNIT_TEST( replace_all_test_03 );
-        CPPUNIT_TEST( replace_all_test_04 );
+    CPPUNIT_TEST(replace_all_test_01);
+    CPPUNIT_TEST(replace_all_test_02);
+    CPPUNIT_TEST(replace_all_test_03);
+    CPPUNIT_TEST(replace_all_test_04);
 
     CPPUNIT_TEST_SUITE_END();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( utilT );
+CPPUNIT_TEST_SUITE_REGISTRATION(utilT);
 
 int main(int argc, char *argv[]) {
     int option_char;
     while ((option_char = getopt(argc, argv, "dDh")) != EOF)
         switch (option_char) {
-            case 'd':
-                debug = true;  // debug is a static global
-                break;
-            case 'D':
-                Debug = true;  // debug is a static global
-                break;
-            case 'h': {     // help - show test names
-                cerr << "Usage: utilT has the following tests:" << endl;
-                const std::vector<Test *> &tests = utilT::suite()->getTests();
-                unsigned long prefix_len = utilT::suite()->getName().append("::").size();
-                for (auto &test: tests) {
-                    cerr << test->getName().replace(0, prefix_len, "") << endl;
-                }
-                break;
+        case 'd':
+            debug = true; // debug is a static global
+            break;
+        case 'D':
+            Debug = true; // debug is a static global
+            break;
+        case 'h': { // help - show test names
+            cerr << "Usage: utilT has the following tests:" << endl;
+            const std::vector<Test *> &tests = utilT::suite()->getTests();
+            unsigned long prefix_len = utilT::suite()->getName().append("::").size();
+            for (auto &test : tests) {
+                cerr << test->getName().replace(0, prefix_len, "") << endl;
             }
-            default:
-                break;
+            break;
+        }
+        default:
+            break;
         }
 
     argc -= optind;
@@ -698,11 +715,11 @@ int main(int argc, char *argv[]) {
     if (0 == argc) {
         // run them all
         wasSuccessful = runner.run("");
-    }
-    else {
+    } else {
         int i = 0;
         while (i < argc) {
-            if (debug) cerr << "Running " << argv[i] << endl;
+            if (debug)
+                cerr << "Running " << argv[i] << endl;
             wasSuccessful = wasSuccessful && runner.run(utilT::suite()->getName().append("::").append(argv[i]));
             ++i;
         }
@@ -710,4 +727,3 @@ int main(int argc, char *argv[]) {
 
     return wasSuccessful ? 0 : 1;
 }
-

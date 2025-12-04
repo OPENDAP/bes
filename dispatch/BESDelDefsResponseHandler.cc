@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -36,29 +36,24 @@
 #include "BESSilentInfo.h"
 #endif
 
-#include "BESDefinitionStorageList.h"
-#include "BESDefinitionStorage.h"
-#include "BESDefine.h"
-#include "BESContainerStorageList.h"
-#include "BESContainerStorage.h"
 #include "BESContainer.h"
-#include "BESDataNames.h"
-#include "BESSyntaxUserError.h"
-#include "BESResponseNames.h"
+#include "BESContainerStorage.h"
+#include "BESContainerStorageList.h"
 #include "BESDataHandlerInterface.h"
+#include "BESDataNames.h"
+#include "BESDefine.h"
+#include "BESDefinitionStorage.h"
+#include "BESDefinitionStorageList.h"
+#include "BESResponseNames.h"
+#include "BESSyntaxUserError.h"
 
 using std::endl;
 using std::ostream;
 using std::string;
 
-BESDelDefsResponseHandler::BESDelDefsResponseHandler(const string &name) :
-    BESResponseHandler(name)
-{
-}
+BESDelDefsResponseHandler::BESDelDefsResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESDelDefsResponseHandler::~BESDelDefsResponseHandler()
-{
-}
+BESDelDefsResponseHandler::~BESDelDefsResponseHandler() = default;
 
 /** @brief executes the command to delete a container, a definition, or all
  * definitions.
@@ -80,8 +75,7 @@ BESDelDefsResponseHandler::~BESDelDefsResponseHandler()
  * @see BESDefinitionStorage
  * @see BESDefinitionStorageList
  */
-void BESDelDefsResponseHandler::execute(BESDataHandlerInterface &dhi)
-{
+void BESDelDefsResponseHandler::execute(BESDataHandlerInterface &dhi) {
 #if 0
     dhi.action_name = DELETE_DEFINITIONS_STR;
     BESInfo *info = new BESSilentInfo();
@@ -89,7 +83,8 @@ void BESDelDefsResponseHandler::execute(BESDataHandlerInterface &dhi)
 #endif
 
     string store_name = dhi.data[STORE_NAME];
-    if (store_name == "") store_name = DEFAULT;
+    if (store_name == "")
+        store_name = DEFAULT;
     BESDefinitionStorage *store = BESDefinitionStorageList::TheList()->find_persistence(store_name);
     if (store) {
         bool deleted = store->del_definitions();
@@ -97,8 +92,7 @@ void BESDelDefsResponseHandler::execute(BESDataHandlerInterface &dhi)
             string line = (string) "Unable to delete all definitions " + "from definition store \"" + store_name + "\"";
             throw BESSyntaxUserError(line, __FILE__, __LINE__);
         }
-    }
-    else {
+    } else {
         string line = (string) "Definition store \"" + store_name + "\" does not exist.  Unable to delete.";
         throw BESSyntaxUserError(line, __FILE__, __LINE__);
     }
@@ -116,8 +110,7 @@ void BESDelDefsResponseHandler::execute(BESDataHandlerInterface &dhi)
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void BESDelDefsResponseHandler::transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/)
-{
+void BESDelDefsResponseHandler::transmit(BESTransmitter * /*transmitter*/, BESDataHandlerInterface & /*dhi*/) {
 #if 0
     if( d_response_object )
     {
@@ -135,17 +128,13 @@ void BESDelDefsResponseHandler::transmit(BESTransmitter */*transmitter*/, BESDat
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESDelDefsResponseHandler::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESDelDefsResponseHandler::dump - (" << (void *) this << ")" << endl;
+void BESDelDefsResponseHandler::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESDelDefsResponseHandler::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     BESResponseHandler::dump(strm);
     BESIndent::UnIndent();
 }
 
-BESResponseHandler *
-BESDelDefsResponseHandler::DelDefsResponseBuilder(const string &name)
-{
+BESResponseHandler *BESDelDefsResponseHandler::DelDefsResponseBuilder(const string &name) {
     return new BESDelDefsResponseHandler(name);
 }
-

@@ -51,6 +51,10 @@ git:
 
 env:
   global:
+    # Should the BES build with GDAL? This is here to round up build errors. Set this
+    # to the 'configure' script option to use (--with-gdal) or not use (--without-gdal).
+    # jhrg 12/2/25
+    - GDAL_OPTION=--without-gdal
     # NB: This value of $prefix must be shared between the hyrax-deps, libdap and bes builds.
     - prefix=$HOME/install
     - PATH=$prefix/bin:$prefix/deps/bin:$PATH
@@ -146,7 +150,7 @@ jobs:
         - export BES_BUILD=main
         # - export RUNTESTFLAGS="-v"
         - autoreconf --force --install --verbose
-        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --enable-developer
         - export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
         - echo "LD_LIBRARY_PATH - $LD_LIBRARY_PATH" >&2
         - make -j16 && make install && besctl start && make check -j16 && besctl stop
@@ -157,7 +161,7 @@ jobs:
       script:
         - export BES_BUILD=distcheck
         - autoreconf --force --install --verbose
-        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION--enable-developer
         - make distcheck -j16 GZIP_ENV=--fast
 
     - stage: build-and-package
@@ -168,6 +172,7 @@ jobs:
         - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
         - docker run --env prefix=/root/install --volume $prefix/rpmbuild:/root/rpmbuild
           --volume $TRAVIS_BUILD_DIR:/root/travis
+          --env GDAL_OPTION=$GDAL_OPTION
           --env OS=rocky8
           --env DIST=el8
           --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
@@ -197,7 +202,7 @@ jobs:
       script:
         - export BES_BUILD=srcdist
         - autoreconf --force --install --verbose
-        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --with-build=$BES_BUILD_NUMBER
         - make dist -j7
         # Make both a bes-<version>-<build num> and bes-snapshot tar.gz. This will simplify
         # other operations that use the bes source code. Note that the VERSION file holds a

@@ -111,7 +111,7 @@ void CmrContainer::_duplicate(CmrContainer &copy_to) {
 
 BESContainer *
 CmrContainer::ptr_duplicate() {
-    CmrContainer *container = new CmrContainer;
+    auto *container = new CmrContainer;
     _duplicate(*container);
     return container;
 }

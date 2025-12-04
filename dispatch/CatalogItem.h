@@ -24,8 +24,8 @@
 #ifndef I_CatalogItem_h
 #define I_CatalogItem_h 1
 
-#include <string>
 #include <ostream>
+#include <string>
 #include <utility>
 
 #include "BESObj.h"
@@ -70,9 +70,9 @@ Class Node {
  * @see CatalogNode
  * @see BESCatalog
  */
-class CatalogItem: public BESObj {
+class CatalogItem : public BESObj {
 public:
-    enum item_type {unknown, node, leaf};
+    enum item_type { unknown, node, leaf };
 
 private:
     std::string d_name;
@@ -83,12 +83,12 @@ private:
     std::string d_description;
     std::string d_dap_service_url;
 
-    CatalogItem(const CatalogItem &rhs);
-    CatalogItem &operator=(const CatalogItem &rhs);
+    CatalogItem(const CatalogItem &rhs) = delete;
+    CatalogItem &operator=(const CatalogItem &rhs) = delete;
 
 public:
     /// @brief Make an empty instance.
-    CatalogItem() : d_type(unknown) { }
+    CatalogItem() : d_type(unknown) {}
 
     /**
      * @brief Hold information about an item in a BES Catalog
@@ -105,7 +105,7 @@ public:
      * @param type
      */
     CatalogItem(const std::string &name, size_t size, const std::string &lmt, item_type type)
-        : d_name(name), d_size(size), d_lmt(lmt), d_type(type) { }
+        : d_name(name), d_size(size), d_lmt(lmt), d_type(type) {}
 
     /**
      * @brief Hold information about an item in a BES Catalog
@@ -124,12 +124,12 @@ public:
      * @param type
      */
     CatalogItem(const std::string &name, size_t size, const std::string &lmt, bool is_data, item_type type)
-        : d_name(name), d_size(size), d_lmt(lmt), d_is_data(is_data), d_type(type) { }
+        : d_name(name), d_size(size), d_lmt(lmt), d_is_data(is_data), d_type(type) {}
 
-    virtual ~CatalogItem() { }
+    ~CatalogItem() override = default;
 
     struct CatalogItemAscending {
-      bool operator() (CatalogItem *i,CatalogItem *j) { return (i->d_name < j->d_name); }
+        bool operator()(CatalogItem *i, CatalogItem *j) { return (i->d_name < j->d_name); }
     };
 
     /// @brief The name of this item in the node
@@ -160,7 +160,7 @@ public:
     /// @brief The DAP Dataset URL for an external DAP service.
     std::string get_dap_service_url() const { return d_dap_service_url; }
     /// @brief Is this item data that the BES should interpret?
-    void set_dap_service_url( const std::string &url) { d_dap_service_url = url; }
+    void set_dap_service_url(const std::string &url) { d_dap_service_url = url; }
 
     /// @brief Get the type of this item (unknown, node or leaf)
     item_type get_type() const { return d_type; }
@@ -169,7 +169,7 @@ public:
 
     void encode_item(BESInfo *info) const;
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 } // namespace bes
