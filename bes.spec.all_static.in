@@ -38,7 +38,7 @@ Requires:       openssl
 # Build and run against a static hdf4/hdfeos2 library because hdfeos2
 # is not part of the RPM ecosystem. jhrg 3/24/15
 # Requires:	hdf >= 4.2
-# gdal >= 1.10
+# gdal >= 3.2.1
 # gridfields >= ?
 # fits >= ?
 
@@ -98,7 +98,7 @@ developing applications that use %{name}.
 chmod a-x dispatch/BESStreamResponseHandler*
 
 %build
-%configure --disable-dependency-tracking --with-dependencies=$prefix/deps --with-build=@PACKAGE_BUILD_NUMBER@
+%configure --disable-dependency-tracking --with-dependencies=$prefix/deps $GDAL_OPTION --with-build=@PACKAGE_BUILD_NUMBER@
 # Try removing --disable-static from the above so that libdap_module.a is built.
 # The code links with this to avoid linking to a Shared Object library that is
 # really a run-time loaded module. jhrg 1/21/22

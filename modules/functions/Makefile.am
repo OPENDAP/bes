@@ -46,10 +46,11 @@ endif
 
 # For now, do not include GDAL. Once the GDAL linking issues on RHEL8 are understood/solved
 # add this back into the code. See also DapFunctions.cc. jhrg 6/11/22
-# if BUILD_GDAL
-# AM_CPPFLAGS +=  $(GDAL_CFLAGS)
-# LIBADD +=  $(GDAL_LDFLAGS)
-# endif
+# It's back in. jhrg 12/2/25
+if BUILD_GDAL
+AM_CPPFLAGS +=  $(GDAL_CFLAGS)
+LIBADD +=  $(GDAL_LDFLAGS)
+endif
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libfunctions_module.la
@@ -81,11 +82,11 @@ SRCS += stare/StareFunctions.cc stare/GeoFile.cc
 HDRS += stare/StareFunctions.h stare/GeoFile.h
 endif
 
-# See above. jhrg 6/11/22
-# if BUILD_GDAL
-# SRCS += scale_util.cc ScaleGrid.cc
-# HDRS += ScaleGrid.h
-# endif
+# See above. jhrg 6/11/22, jhrg 12/2/25
+if BUILD_GDAL
+SRCS += scale_util.cc ScaleGrid.cc
+HDRS += ScaleGrid.h
+endif
 
 libfunctions_module_la_SOURCES = $(SRCS) $(HDRS)
 libfunctions_module_la_LDFLAGS = -avoid-version -module
