@@ -47,6 +47,8 @@ carry:
     * a list of `dmrpp:block` elements (linked-block storage), or
     * a “multi linked-block chunk” arrangement where `dmrpp:chunk` elements refer to multiple underlying blocks.
 
+
+
 The parser uses this to build the internal `Chunk` objects and, if there are missing chunks, to synthesize “fill value
 chunks.”
 
@@ -69,7 +71,8 @@ storage.
 Each `dmrpp:chunk` describes a single data chunk (or a multi-block chunk) via attributes:
 
 * `offset` and `nBytes`: byte offset and length in the underlying data resource (HDF5 file, etc.).
-* `chunkPositionInArray`: space-separated integer indices of the chunk in chunk-space (e.g., `"0 1 3"`).
+* `chunkPositionInArray`: space-separated integer indices of the chunk in chunk-space (e.g., `"[0,1,3]"`).
+* `byteOrder`: optional byte order information; one of `LE` or `BE` (little- or big-endian). Defaults to `BE`
 * `fm`: optional “filter mask” for per-chunk filter flags.
 * `href` and `trust`/`dmrpp:trust`: optional overriding data URL and whether it’s trusted.
 * `LinkedBlockIndex`: when using multi-block chunks, groups several linked blocks into one logical chunk.

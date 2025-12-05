@@ -2028,6 +2028,7 @@ bool DMZ::process_chunks(BaseType *btp, const xml_node &var_node) const {
             else
                 add_fill_value_information(dc(btp), attr.value(), btp->type());
         }
+        // TODO I think byteOrder is a required attribute for all but teh DIO case. Not sure. jhrg 12/4/25
         else if (is_eq(attr.name(), "byteOrder"))
             dc(btp)->ingest_byte_order(attr.value());
 

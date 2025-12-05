@@ -68,13 +68,17 @@
         <xs:sequence>
             <!-- There may be one or more chunkDimensionSizes elements, but the
                  implementation uses the first. -->
+            <!-- Typical element value looks like: 10 10 10 10 -->
+            <!-- TODO This is a bug. There should be exactly one chunkDimensionSizes element.
+                 The DMZ should flag this. jhrg 12/4/25 -->
             <xs:element name="chunkDimensionSizes"
                         type="dmrpp:IndexList"
-                        minOccurs="0"
+                        minOccurs="1"
                         maxOccurs="unbounded"/>
 
             <!-- Either chunks or blocks (or, in linked-block mode, blocks plus chunks
-                 that reference them). -->
+                 that reference them). Note that there can be zero chunks if the entire
+                 array is fill values. -->
             <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:element name="chunk" type="dmrpp:ChunkType"/>
                 <xs:element name="block" type="dmrpp:BlockType"/>
@@ -84,9 +88,12 @@
         <xs:attribute name="compressionType" type="xs:string" use="optional"/>
         <xs:attribute name="deflateLevel" type="dmrpp:DeflateLevelList" use="optional"/>
         <xs:attribute name="fillValue" type="xs:string" use="optional"/>
+        <!-- By default, byte order is assumed to be little-endian, but there may be code in the
+         DIO case where it defaults big-endian -->
+        <!-- TODO It may be a bug in our compiler to have this as BE by default for DIO case. jhrg 12/4/25 -->
         <xs:attribute name="byteOrder" type="dmrpp:ByteOrder" use="optional"/>
         <xs:attribute name="structOffset" type="dmrpp:StructOffsetList" use="optional"/>
-        <!-- HDF4 multi-linked-block layout flag -->
+        <!-- HDF4 multi-linked-block layout flag. Is this a 'linked block' chunk? -->
         <xs:attribute name="LBChunk" type="xs:boolean" use="optional"/>
         <!-- Direct I/O control; implementation looks for DIO="off" -->
         <xs:attribute name="DIO" type="xs:string" use="optional"/>
@@ -95,8 +102,9 @@
     <xs:complexType name="ChunkType">
         <xs:attribute name="offset" type="dmrpp:UnsignedLong" use="required"/>
         <xs:attribute name="nBytes" type="dmrpp:UnsignedLong" use="required"/>
-        <!-- Position of this chunk in chunk-space, e.g., "0 0 3" -->
-        <xs:attribute name="chunkPositionInArray" type="dmrpp:IndexList" use="optional"/>
+        <!-- Position of this chunk in chunk-space, e.g., "[0,0,0]" -->
+        <!-- TODO Our DMZ parser may not enforce this as a required attribute jhrg 12/4/25 -->
+        <xs:attribute name="chunkPositionInArray" type="dmrpp:IndexList" use="required"/>
         <!-- Filter mask for per-chunk filters -->
         <xs:attribute name="fm" type="xs:unsignedInt" use="optional"/>
         <!-- Optional override of dataset-level href -->
@@ -191,8 +199,7 @@
     <xs:element name="specialstructuredata"
                 type="dmrpp:SpecialStructureDataType"/>
 
-    <!-- Placeholder name; align with DMRPP_VLSA_ELEMENT -->
-    <xs:element name="vlenStringArray"
+    <xs:element name="vlsa"
                 type="dmrpp:VlenStringArrayType"/>
 
 </xs:schema>
