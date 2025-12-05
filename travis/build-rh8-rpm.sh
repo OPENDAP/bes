@@ -51,9 +51,9 @@ loggy "Dependencies: "
 # the tar ball to get the dependencies in /root/install. jhrg 2/11/22
 if test -n $OS -a $OS = rocky8 -o $OS = centos-stream8
 then
-  tar -C /$HOME -xzvf "$DEPENDENCIES_BUNDLE"
+  tar -C /$HOME -xzvf "/tmp/$DEPENDENCIES_BUNDLE"
 else
-  tar -xzvf /tmp/"$DEPENDENCIES_BUNDLE"
+  tar -xzvf "/tmp/$DEPENDENCIES_BUNDLE"
 fi
 
 loggy "Dependencies Inventory:"
