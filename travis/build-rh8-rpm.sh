@@ -16,44 +16,48 @@
 # u: treat unset env vars in substitutions as an error
 set -eux
 
+# Formatted output shenanigans...
+HR="#########################################################################"
+###########################################################################
+# loggy()
+function loggy(){
+    echo  "$@" | awk '{ print "# "$0;}'  >&2
+}
+
 yum update -y
 
 # This script will start with /root as the CWD since that's how the
 # centos6/7 hyrax build containers are configured. The PATH will be 
 # set to include $prefix/bin and $prefix/deps/bin; $prefix will be
 # $HOME/install. $HOME is /root for the build container.
+loggy "$HR"
+loggy "$0 BEGIN"
+loggy "Inside the docker container"
+loggy "prefix: $prefix"
+loggy "HOME: $HOME"
+loggy "PATH: $PATH"
+loggy "$OS: $OS"
+loggy "GDAL_OPTION: $GDAL_OPTION"
+loggy "BES_BUILD_NUMBER: $BES_BUILD_NUMBER"
 
-echo "Inside the docker container, prefix HOME PATH:"
-printenv prefix HOME PATH
+DEPENDENCIES_BUNDLE="hyrax-dependencies-$OS-static.tar.gz"
 
-# CentOS7 may not need libpng with the new hyrax-dependencies, but I'm not sure
-# if the current dependency binaries are built with the latest source and build
-# scripts. jhrg 1/19/22
-#
-# Hopefully the CentOS Stream8 docker image we use to build the RPMs has all we need.
-# jhrg 2/11/22
-if test -n $OS -a $OS = centos7
-then
-  yum install -y libpng-devel sqlite-devel
-fi
+aws s3 cp "s3://opendap.travis.build/$DEPENDENCIES_BUNDLE" /tmp/
 
-# Get the pre-built dependencies (all static libraries). $OS is 'centos6' or 'centos7'
-# aws s3 cp s3://opendap.travis.build/
-
-aws s3 cp s3://opendap.travis.build/hyrax-dependencies-$OS-static.tar.gz /tmp/
-
+loggy "Dependencies: "
 # This dumps the dependencies in $HOME/install/deps/{lib,bin,...}
 # The Centos7 dependencies are tarred so they include /root for a reason
 # that escapes me. For CentOS Stream8, we have to CD to /root before expanding
 # the tar ball to get the dependencies in /root/install. jhrg 2/11/22
 if test -n $OS -a $OS = rocky8 -o $OS = centos-stream8
 then
-  tar -C /$HOME -xzvf /tmp/hyrax-dependencies-$OS-static.tar.gz
+  tar -C /$HOME -xzvf "$DEPENDENCIES_BUNDLE"
 else
-  tar -xzvf /tmp/hyrax-dependencies-$OS-static.tar.gz
+  tar -xzvf /tmp/"$DEPENDENCIES_BUNDLE"
 fi
 
-ls -lR $HOME/install/deps
+loggy "Dependencies Inventory:"
+loggy "$(ls -lR $HOME/install/deps)"
 
 # Then get the libdap RPMs packages
 # libdap-3.20.0-1.el6.x86_64.rpm libdap-devel-3.20.0-1.el6.x86_64.rpm
@@ -78,8 +82,6 @@ fi
 
 autoreconf -fiv
 
-echo "GDAL_OPTION: $GDAL_OPTION"
-echo "BES_BUILD_NUMBER: $BES_BUILD_NUMBER"
 ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --with-build=$BES_BUILD_NUMBER
 
 # set up the rpm tree in $HOME. We didn't need to do this for libdap because 
@@ -92,4 +94,5 @@ mkdir -pv $HOME/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 make -j16 all-static-rpm
 
 # Just a little reassurance... jhrg 3/23/21
-ls -l $HOME/rpmbuild/RPMS/x86_64/
+loggy "RPM Inventory:"
+loggy "$(ls -l $HOME/rpmbuild/RPMS/x86_64/)"
