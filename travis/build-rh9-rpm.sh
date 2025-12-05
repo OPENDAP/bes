@@ -86,7 +86,7 @@ yum install -y /tmp/*.rpm
 
 # cd to the $TRAVIS_BUILD_DIR directory. Note that we make $HOME/travis
 # using the docker run --volume option and set it to $TRAVIS_BUILD_DIR.
-cd $HOME/travis
+cd $HOME/bes
 
 # The build needs these environment variables because RHEL9.
 # Those were added to the docker image via the tirpc package.
