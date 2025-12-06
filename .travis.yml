@@ -278,4 +278,4 @@ deploy:
     local_dir: $TRAVIS_BUILD_DIR/package
     on:
       all_branches: true
-      condition: $BES_BUILD =~ ^rocky8|srcdist$
+      condition: $BES_BUILD =~ ^rocky8|rocky9|srcdist$
