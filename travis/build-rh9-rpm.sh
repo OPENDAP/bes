@@ -1,7 +1,7 @@
 #!/bin/sh
 #
-# This is part of the Travis build CD process. It is intended to be
-# run from within the Travis build process and depends on the settings
+# This is part of the Hyrax TravisCI/CD build process. It is intended to be
+# run from within the TravisCI build process and depends on the settings
 # in the BES's .travis.yml file. However, it is run _inside a Docker
 # container_ using values passed in by the .travis.yml file
 #
