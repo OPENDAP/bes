@@ -51,6 +51,10 @@ git:
 
 env:
   global:
+    # Should the BES build with GDAL? This is here to round up build errors. Set this
+    # to the 'configure' script option to use (--with-gdal) or not use (--without-gdal).
+    # jhrg 12/2/25
+    - GDAL_OPTION=--without-gdal
     # NB: This value of $prefix must be shared between the hyrax-deps, libdap and bes builds.
     - prefix=$HOME/install
     - PATH=$prefix/bin:$prefix/deps/bin:$PATH
@@ -140,24 +144,22 @@ stages:
 
 jobs:
   include:
-    # - stage: build-and-package
-    #   name: "check"
-    #   script:
-    #     - export BES_BUILD=main
-    #     # - export RUNTESTFLAGS="-v"
-    #     - autoreconf --force --install --verbose
-    #     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    #     - make -j16 && make install && besctl start && make check -j16 && besctl stop
-    #   after_failure:
-    #     - cat /home/travis/build/OPENDAP/bes/cmdln/tests/testsuite.log
+    - stage: build-and-package
+      name: "check"
+      script:
+        - export BES_BUILD=main
+        # - export RUNTESTFLAGS="-v"
+        - autoreconf --force --install --verbose
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --enable-developer
+        - make -j16 && make install && besctl start && make check -j16 && besctl stop
 
-    # - stage: build-and-package
-    #   name: "distcheck"
-    #   script:
-    #     - export BES_BUILD=distcheck
-    #     - autoreconf --force --install --verbose
-    #     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    #     - make distcheck -j16 GZIP_ENV=--fast
+    - stage: build-and-package
+      name: "distcheck"
+      script:
+        - export BES_BUILD=distcheck
+        - autoreconf --force --install --verbose
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION--enable-developer
+        - make distcheck -j16 GZIP_ENV=--fast
 
     - stage: build-and-package
       name: "Enterprise Linux 8 RPMs (via Rocky8)"
@@ -167,6 +169,7 @@ jobs:
         - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
         - docker run --env prefix=/root/install --volume $prefix/rpmbuild:/root/rpmbuild 
             --volume $TRAVIS_BUILD_DIR:/root/travis
+            --env GDAL_OPTION=$GDAL_OPTION
             --env OS=rocky8
             --env DIST=el8
             --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
@@ -175,20 +178,20 @@ jobs:
             --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
             opendap/rocky8_hyrax_builder:latest /root/travis/travis/build-rpm.sh
 
-#     - stage: build-and-package
-#       name: "dist"
-#       script:
-#         - export BES_BUILD=srcdist
-#         - autoreconf --force --install --verbose
-#         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
-#         - make dist -j7
-#         # Make both a bes-<version>-<build num> and bes-snapshot tar.gz. This will simplify
-#         # other operations that use the bes source code. Note that the VERSION file holds a
-#         # string that is the version number that is set by the configure script and the build
-#         # number passed into configure when it is run. jhrg 3/23/21
-#         - SOURCE_VERSION=$(cat bes_VERSION)
-#         - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
-#         - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
+    - stage: build-and-package
+      name: "dist"
+      script:
+        - export BES_BUILD=srcdist
+        - autoreconf --force --install --verbose
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --with-build=$BES_BUILD_NUMBER
+        - make dist -j7
+        # Make both a bes-<version>-<build num> and bes-snapshot tar.gz. This will simplify
+        # other operations that use the bes source code. Note that the VERSION file holds a
+        # string that is the version number that is set by the configure script and the build
+        # number passed into configure when it is run. jhrg 3/23/21
+        - SOURCE_VERSION=$(cat bes_VERSION)
+        - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
+        - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
 
 #     - stage: scan
 #       name: "scan bes"
