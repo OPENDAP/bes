@@ -32,13 +32,15 @@ yum update -y
 # $HOME/install. $HOME is /root for the build container.
 loggy "$HR"
 loggy "$0 BEGIN"
-loggy "Inside the docker container"
-loggy "prefix: $prefix"
-loggy "HOME: $HOME"
-loggy "PATH: $PATH"
-loggy "$OS: $OS"
-loggy "GDAL_OPTION: $GDAL_OPTION"
-loggy "BES_BUILD_NUMBER: $BES_BUILD_NUMBER"
+loggy "Running inside the docker container"
+loggy "    redhat-release: \"$(cat /etc/redhat-release)\""
+loggy "            prefix: $prefix"
+loggy "              HOME: $HOME"
+loggy "              PATH: $PATH"
+loggy "                OS: $OS"
+loggy "       GDAL_OPTION: $GDAL_OPTION"
+loggy "  BES_BUILD_NUMBER: $BES_BUILD_NUMBER"
+loggy "LIBDAP_RPM_VERSION: $LIBDAP_RPM_VERSION"
 
 DEPENDENCIES_BUNDLE="hyrax-dependencies-$OS-static.tar.gz"
 

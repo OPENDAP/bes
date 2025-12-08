@@ -5,15 +5,22 @@
 # in the BES's .travis.yml file. However, it is run _inside a Docker
 # container_ using values passed in by the .travis.yml file
 #
-# The env vars $HOME, $OS, $DIST AND $LIBDAP_RPM_VERSION must be set.
+# Thesae environment variables must be set:
+#   - prefix
+#   - HOME
+#   - PATH
+#   - OS
+#   - DIST
+#   - GDAL_OPTION
+#   - BES_BUILD_NUMBER
+#   - LIBDAP_RPM_VERSION
 #
 # run the script like this:
 # docker run --env prefix=/root/install --volume $prefix/rpmbuild:/root/rpmbuild
 #   --volume $TRAVIS_BUILD_DIR:/root/bes
-#   --env OS=rocky9
-#   --env DIST=el9
 #   --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
 #   --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
+#   --env GDAL_OPTION=$GDAL_OPTION
 #   --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
 #   --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 #   opendap/rocky9_hyrax_builder:latest /root/bes/travis/build-rh9-rpm.sh
@@ -30,14 +37,31 @@ HR="#########################################################################"
 function loggy(){
     echo  "$@" | awk '{ print "# "$0;}'  >&2
 }
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# Defaults
+
+OS="${OS:-"rocky9"}"
+
+DIST="${DIST:-"el9"}"
+
+GDAL_OPTION="${GDAL_OPTION:-"--with-gdal"}"
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 loggy "$HR"
-loggy "BEGIN $0"
-loggy " Running in docker image."
-loggy "        prefix: $prefix"
-loggy "redhat-release: \"$(cat /etc/redhat-release)\""
+loggy "$0 BEGIN"
+loggy "Running inside the docker container"
+loggy "    redhat-release: \"$(cat /etc/redhat-release)\""
+loggy "            prefix: $prefix"
+loggy "              HOME: $HOME"
+loggy "              PATH: $PATH"
+loggy "                OS: $OS"
+loggy "              DIST: $DIST"
+loggy "       GDAL_OPTION: $GDAL_OPTION"
+loggy "  BES_BUILD_NUMBER: $BES_BUILD_NUMBER"
 loggy "LIBDAP_RPM_VERSION: $LIBDAP_RPM_VERSION"
-loggy "BES_BUILD_NUMBER: BES_BUILD_NUMBER"
+
+
 
 loggy "Updating..."
 yum update -y
@@ -50,17 +74,6 @@ yum update -y
 loggy "prefix: prefix"
 loggy "  HOME: $HOME"
 loggy "  PATH: $PATH"
-
-# CentOS7 may not need libpng with the new hyrax-dependencies, but I'm not sure
-# if the current dependency binaries are built with the latest source and build
-# scripts. jhrg 1/19/22
-#
-# Hopefully the CentOS Stream8 docker image we use to build the RPMs has all we need.
-# jhrg 2/11/22
-#if test -n $OS -a $OS = centos7
-#then
-#  yum install -y libpng-devel sqlite-devel
-#fi
 
 hyrax_deps_tarball="hyrax-dependencies-rocky9-static-671.tgz"
 
