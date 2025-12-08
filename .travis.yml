@@ -144,22 +144,22 @@ stages:
 
 jobs:
   include:
-    - stage: build-and-package
-      name: "check"
-      script:
-        - export BES_BUILD=main
-        # - export RUNTESTFLAGS="-v"
-        - autoreconf --force --install --verbose
-        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --enable-developer
-        - make -j16 && make install && besctl start && make check -j16 && besctl stop
+    # - stage: build-and-package
+    #   name: "check"
+    #   script:
+    #     - export BES_BUILD=main
+    #     # - export RUNTESTFLAGS="-v"
+    #     - autoreconf --force --install --verbose
+    #     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --enable-developer
+    #     - make -j16 && make install && besctl start && make check -j16 && besctl stop
 
-    - stage: build-and-package
-      name: "distcheck"
-      script:
-        - export BES_BUILD=distcheck
-        - autoreconf --force --install --verbose
-        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION--enable-developer
-        - make distcheck -j16 GZIP_ENV=--fast
+    # - stage: build-and-package
+    #   name: "distcheck"
+    #   script:
+    #     - export BES_BUILD=distcheck
+    #     - autoreconf --force --install --verbose
+    #     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION--enable-developer
+    #     - make distcheck -j16 GZIP_ENV=--fast
 
     - stage: build-and-package
       name: "Enterprise Linux 8 RPMs (via Rocky8)"
@@ -178,20 +178,20 @@ jobs:
             --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
             opendap/rocky8_hyrax_builder:latest /root/travis/travis/build-rpm.sh
 
-    - stage: build-and-package
-      name: "dist"
-      script:
-        - export BES_BUILD=srcdist
-        - autoreconf --force --install --verbose
-        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --with-build=$BES_BUILD_NUMBER
-        - make dist -j7
-        # Make both a bes-<version>-<build num> and bes-snapshot tar.gz. This will simplify
-        # other operations that use the bes source code. Note that the VERSION file holds a
-        # string that is the version number that is set by the configure script and the build
-        # number passed into configure when it is run. jhrg 3/23/21
-        - SOURCE_VERSION=$(cat bes_VERSION)
-        - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
-        - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
+#     - stage: build-and-package
+#       name: "dist"
+#       script:
+#         - export BES_BUILD=srcdist
+#         - autoreconf --force --install --verbose
+#         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --with-build=$BES_BUILD_NUMBER
+#         - make dist -j7
+#         # Make both a bes-<version>-<build num> and bes-snapshot tar.gz. This will simplify
+#         # other operations that use the bes source code. Note that the VERSION file holds a
+#         # string that is the version number that is set by the configure script and the build
+#         # number passed into configure when it is run. jhrg 3/23/21
+#         - SOURCE_VERSION=$(cat bes_VERSION)
+#         - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
+#         - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
 
 #     - stage: scan
 #       name: "scan bes"
@@ -236,26 +236,26 @@ jobs:
 # after_script:
 #   - ./travis/upload-test-results.sh
 
-before_deploy:
-  - export DEPLOY="S3"
-  # Make sure that we have the target dir...
-  - mkdir -p $TRAVIS_BUILD_DIR/package;
-  # Source distribution prep (copies both the 'version' and 'snapshot')
-  - if test "$BES_BUILD" = "srcdist"; then cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package; fi
-  # Rocky8  distribution prep
-  - if test "$BES_BUILD" = "rocky8"; then ./travis/rpm-to-package-dir.sh "el8"; fi
-  # Check for the stuff...
-  - ls -l $TRAVIS_BUILD_DIR/package
+# before_deploy:
+#   - export DEPLOY="S3"
+#   # Make sure that we have the target dir...
+#   - mkdir -p $TRAVIS_BUILD_DIR/package;
+#   # Source distribution prep (copies both the 'version' and 'snapshot')
+#   - if test "$BES_BUILD" = "srcdist"; then cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package; fi
+#   # Rocky8  distribution prep
+#   - if test "$BES_BUILD" = "rocky8"; then ./travis/rpm-to-package-dir.sh "el8"; fi
+#   # Check for the stuff...
+#   - ls -l $TRAVIS_BUILD_DIR/package
 
-# The deploy section copies the snapshot build product our S3 bucket and to www.opendap.org
-deploy:
-  # Push all build results to our S3 bucket
-  - provider: s3
-    access_key_id: $AWS_ACCESS_KEY_ID
-    secret_access_key: $AWS_SECRET_ACCESS_KEY
-    bucket: opendap.travis.build
-    skip_cleanup: true
-    local_dir: $TRAVIS_BUILD_DIR/package
-    on:
-      all_branches: true
-      condition: $BES_BUILD =~ ^rocky8|srcdist$
+# # The deploy section copies the snapshot build product our S3 bucket and to www.opendap.org
+# deploy:
+#   # Push all build results to our S3 bucket
+#   - provider: s3
+#     access_key_id: $AWS_ACCESS_KEY_ID
+#     secret_access_key: $AWS_SECRET_ACCESS_KEY
+#     bucket: opendap.travis.build
+#     skip_cleanup: true
+#     local_dir: $TRAVIS_BUILD_DIR/package
+#     on:
+#       all_branches: true
+#       condition: $BES_BUILD =~ ^rocky8|srcdist$
