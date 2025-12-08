@@ -149,8 +149,11 @@ private:
     void read_chunks_with_linked_blocks();
     void read_chunks_with_linked_blocks_constrained();
 
+    
+    bool use_buffer_chunk();
     void read_buffer_chunks();
     void read_buffer_chunks_unconstrained();
+    unsigned long long get_maximum_constrained_buffer_nelmts();
     
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim);
 
@@ -166,8 +169,6 @@ private:
     bool check_struct_handling();
 
     bool use_direct_io_opt();
-
-    bool use_buffer_chunk();
 
     unsigned long long inflate_simple(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len);
 

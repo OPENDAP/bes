@@ -697,6 +697,19 @@ unsigned long long DmrppArray::get_size(bool constrained)
     return asize;
 }
 
+unsigned long long DmrppArray::get_maximum_constrained_buffer_nelmts()
+{
+    // The stride here doesn't matter since we need to obtain the maximum contrained buffer. KY 2025-12-08
+    unsigned long long asize = 1;
+    for (Dim_iter dim = dim_begin(), end = dim_end(); dim != end; dim++) {
+        int64_t start = dimension_start_ll(dim,true);
+        int64_t stop = dimension_stop_ll(dim,true);
+        asize *= stop-start+1;
+    }
+    return asize;
+
+}
+
 /**
  * @brief Get the array shape
  *
@@ -2054,6 +2067,7 @@ void DmrppArray::read_buffer_chunks()
     if (get_chunk_count() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
+#if 0
     // Prepare buffer size.
     unsigned long long max_buffer_end_position = 0;
 
@@ -2092,12 +2106,82 @@ void DmrppArray::read_buffer_chunks()
     // So just choose the the whole array size first.
     unsigned long long buffer_size = bytes_per_element * this->get_size(false);
 
+    //unsigned long long max_buffer_size = bytes_per_element * this->get_maximum_constrained_buffer_nelmts();
+    //BESDEBUG(MODULE, prolog <<  "max_buffer_size:  " << max_buffer_size << endl);
+    
+
      // Make sure buffer_size at least can hold one chunk.
     if (buffer_size < first_needed_chunk_size)
         buffer_size = first_needed_chunk_size;
 
+
     // The end position of the buffer should not exceed the max_buffer_end_position.
     unsigned long long buffer_end_position = min((buffer_size + first_needed_chunk_offset),max_buffer_end_position);
+#endif
+
+    // We need to pre-calculate the buffer_end_position for each buffer chunk to reduce the buffer eize to improve the performance.
+
+    unsigned buffer_offset = 0;
+    unsigned long long buffer_size = bytes_per_element * this->get_maximum_constrained_buffer_nelmts(false);
+    bool first_non_filled_chunk = true;
+    vector<bool> chunks_needed;
+
+    // 1. We have to start somewhere, so we will search the first buffer offset.
+    //    We also obtain the needed chunks info. 
+    for (const auto &chunk: get_immutable_chunks()) {
+        vector<unsigned long long> target_element_address = chunk->get_position_in_array();
+        auto needed = find_needed_chunks(0 /* dimension */, &target_element_address, chunk);
+        chunks_needed.push_back(needed);
+        if (needed && first_non_filled_chunk){
+            if (chunk->get_offset()!=0) {
+                buffer_offset =  chunk->get_offset();
+                first_non_filled_chunk = false;
+            }
+        }
+    }
+
+    
+    vector<unsigned long long> buf_end_pos_vec;
+ 
+    unsigned long long chunk_counter = 0;
+    auto chunks = this->get_chunks();
+
+    for (unsigned i = 0; i < (chunks.size()-1); i++) {
+        unsigned long long chunk_offset = chunks[i]->get_offset();
+        unsigned long long chunk_size = chunks[i]->get_size();
+        unsigned long long next_chunk_offset = (chunks[i+1])->get_offset();
+        if ((chunk_offset + chunk_size) != next_chunk_offset) {
+            ret_value = true;
+            break;
+        }
+    }
+
+    // loop through the needed chunks to figure out the buffer size.
+    for (unsigned i = 0; i < (chunks.size()-1); i++) {
+        if (chunks_needed[chunk_counter]){
+            // We may encounter the filled chunks. those chunks will be handled separately.
+            // when considering max_buffer_end_position, we should not consider them since
+            // the chunk size may be so big that it may  make the buffer exceed the file size.
+            // The offset of filled chunk is 0.
+            if (chunks[i]->get_offset()!=0) {
+
+                unsigned long long chunk_offset = chunks[i]->get_offset();
+                unsigned long long chunk_size = chunks[i]->get_size();
+                unsigned long long next_chunk_offset = (chunks[i+1])->get_offset();
+                unsigned long long chunk_gap = next_chunk_offset -(chunk_offset + chunk_size);
+
+                //STOP: 
+                if (chunk_gap !=0) {
+
+
+                }
+      
+            }
+            else 
+                buf_end_pos_vec.push_back(0);
+        }
+        chunk_counter++;
+    }
 
     unsigned long long sc_count=0;
     stringstream sc_id;
