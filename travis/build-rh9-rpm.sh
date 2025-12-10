@@ -75,7 +75,7 @@ loggy "prefix: prefix"
 loggy "  HOME: $HOME"
 loggy "  PATH: $PATH"
 
-hyrax_deps_tarball="hyrax-dependencies-rocky9-static-671.tgz"
+hyrax_deps_tarball="hyrax-dependencies-rocky9-static.tgz"
 
 # Get the pre-built dependencies (all static libraries).
 loggy "Retrieving hyrax-dependencies for rocky9"
