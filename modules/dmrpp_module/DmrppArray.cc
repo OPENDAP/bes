@@ -2124,6 +2124,10 @@ void DmrppArray::read_buffer_chunks()
 
     // The maximum buffer size is limited to the current constrained domain.
     unsigned long long max_buffer_size = bytes_per_element * this->get_maximum_constrained_buffer_nelmts();
+
+    // Sometimes the constraint size is too small and the constraint is across quite a few chunks. We may need
+    // to enlarge the max_buffer_size to 4K or even 1M. 
+
     vector<unsigned long long> buf_end_pos_vec;
     bool find_first_non_filled_chunk = true;
     vector<bool> chunks_needed;
@@ -2160,6 +2164,7 @@ BESDEBUG(MODULE, prolog <<" NEW BUFFER needed chunk offset: "<<needed->get_offse
 BESDEBUG(MODULE, prolog <<" NEW BUFFER maximum buffer size: "<<max_buffer_size<<endl);
 BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
     // Loop through the needed chunks to figure out the end position of a buffer. 
+#if 0
     bool last_unfilled_chunk = false;
     for (unsigned i = 0; i < (chunks.size()-1); i++) {
 
@@ -2210,8 +2215,98 @@ BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
                 if (next_chunk_offset_index  == last_unfilled_chunk_index) {
                     last_unfilled_chunk = true;
                     //buf_end_pos_vec.push_back(chunk_offset+chunk_size);
-                    buf_end_pos_vec.push_back(next_chunk_offset + chunks[last_unfilled_chunk_index]->get_size());
 BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_end_position: "<<next_chunk_offset + chunks[last_unfilled_chunk_index]->get_size()<<endl);
+                }
+                if (last_unfilled_chunk 
+                    buf_end_pos_vec.push_back(chunks[last_unfilled_chunk_index + chunks[last_unfilled_chunk_index]->get_size());
+            }
+            else 
+                buf_end_pos_vec.push_back(0);
+        }
+    }
+#endif
+
+    vector <unsigned long long> temp_buffer_pos_vec;
+    for (unsigned long long i = 0; i < chunks.size(); i++) {
+
+        if (chunks_needed[i]){
+
+            // We may encounter the filled chunks. those chunks will be handled separately.
+            // The offset of a filled chunk is 0.
+            // So the buffer end position doesn't matter. We currently also set the buffer end postion of a filled chunk to 0.
+
+            unsigned long long chunk_offset = chunks[i]->get_offset();
+
+            if (chunk_offset != 0) {
+
+                unsigned long long chunk_size = chunks[i]->get_size();
+
+                if (i == last_unfilled_chunk_index) {
+                    unsigned long long buffer_end_pos =  obtain_buffer_end_pos(temp_buffer_pos_vec,chunk_offset+chunk_size);
+                    buf_end_pos_vec.push_back(buffer_end_pos);
+    BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_end_pos: "<<buffer_end_pos<<endl);
+                }
+                else {
+
+                    // Note: the next chunk may not be the adjacent chunk. It should be the next needed non-filled chunks.
+                    //       So we need to calculate. 
+                    //       Although we need to have a nested for-loop, for most cases the next one is the adjacent one. So we are OK.
+                    unsigned long long next_chunk_offset = (chunks[i+1])->get_offset();
+                    if (!chunks_needed[i+1] || chunks[i+1]->get_offset()==0)  {
+                        for (unsigned j = i+1; j<(chunks.size()-1);j++) {
+                            if(chunks_needed[j] && chunks[j]->get_offset()!=0) {
+                                next_chunk_offset = (chunks[j])->get_offset();
+                                break;
+                            }
+                        }
+                    }
+
+                    long long chunk_gap = next_chunk_offset -(chunk_offset + chunk_size);
+
+BESDEBUG(MODULE, prolog <<" NEW BUFFER next_chunk_offset: "<<next_chunk_offset<<endl);
+BESDEBUG(MODULE, prolog <<" NEW BUFFER chunk_gap: "<<chunk_gap<<endl);
+
+                    //This is not a contiguous super chunk any more.
+                    if (chunk_gap != 0) {
+
+                        // Whenever we have a gap, we need to recalculate the buffer size.
+                        if (chunk_gap > 0) {
+
+                            // If the non-contiguous chunk is going forward; check if it exceeds the maximum buffer boundary.
+                            if (next_chunk_offset >(max_buffer_size + buffer_offset)) {
+                                unsigned long long buffer_end_pos = obtain_buffer_end_pos(temp_buffer_pos_vec,chunk_offset+chunk_size);
+                                temp_buffer_pos_vec.clear();
+    
+                                // The current buffer end position
+                                buf_end_pos_vec.push_back(buffer_end_pos);
+
+    BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_end_pos: "<<buffer_end_pos<<endl);
+                                // Set the new buffer offset
+                                buffer_offset = next_chunk_offset;
+    BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
+                            }
+                        }
+                        else {
+
+                            // If the non-contiguous chunk is going backward, check if it is beyond the first chunk of this buffer.
+                            if (next_chunk_offset < buffer_offset) {
+                                unsigned long long buffer_end_pos = obtain_buffer_end_pos(temp_buffer_pos_vec,chunk_offset+chunk_size);
+                                temp_buffer_pos_vec.clear();
+    
+                                // The current buffer end position
+                                buf_end_pos_vec.push_back(buffer_end_pos);
+
+    BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_end_pos: "<<buffer_end_pos<<endl);
+                                // Set the new buffer offset
+                                buffer_offset = next_chunk_offset;
+    BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
+                            }
+                            else 
+                                // When going backward, we need to store the possible buffer end pos.
+                                temp_buffer_pos_vec.push_back(chunk_offset+chunk_size);
+    
+                        }
+                    }
                 }
             }
             else 
@@ -3769,6 +3864,16 @@ bool DmrppArray::use_buffer_chunk() {
     }
 
     return ret_value;
+}
+
+unsigned long long DmrppArray::obtain_buffer_end_pos(const vector<unsigned long long>& t_buf_end_pos_vec, unsigned long long cur_buf_end_pos) {
+
+    for (const auto &t_buf_end_pos:t_buf_end_pos_vec) {
+        if (cur_buf_end_pos <t_buf_end_pos)
+            cur_buf_end_pos = t_buf_end_pos;
+    }
+    return cur_buf_end_pos;
+
 }
 
 } // namespace dmrpp
