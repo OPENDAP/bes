@@ -7,11 +7,15 @@
 #
 # The env vars $HOME, $OS, $DIST AND $LIBDAP_RPM_VERSION must be set.
 #
-# run the script like (with the obvious changes for CentOS7):
-# docker run -e OS=centos6 -e DIST=el6 -e LIBDAP_RPM_VERSION='3.20.0-1'
-# -v $prefix/centos6/rpmbuild:/root/rpmbuild -v `pwd`:/root/travis 
-# opendap/rocky8_hyrax_builder:1.1 /root/travis/travis/build-rh8-rpm.sh
-
+# run the script like this:
+# docker run
+#     -e OS=rocky8
+#     -e DIST=el8
+#     -e LIBDAP_RPM_VERSION='3.20.0-1'
+#     -v $prefix/el8/rpmbuild:/root/rpmbuild
+#     -v `pwd`:/root/travis
+#     opendap/rocky8_hyrax_builder:latest /root/travis/travis/build-rh8-rpm.sh
+#
 # e: exit immediately on non-zero exit value from a command
 # u: treat unset env vars in substitutions as an error
 set -eux
@@ -33,16 +37,17 @@ yum update -y
 loggy "$HR"
 loggy "$0 BEGIN"
 loggy "Running inside the docker container"
-loggy "    redhat-release: \"$(cat /etc/redhat-release)\""
-loggy "            prefix: $prefix"
-loggy "              HOME: $HOME"
-loggy "              PATH: $PATH"
-loggy "                OS: $OS"
-loggy "       GDAL_OPTION: $GDAL_OPTION"
-loggy "  BES_BUILD_NUMBER: $BES_BUILD_NUMBER"
-loggy "LIBDAP_RPM_VERSION: $LIBDAP_RPM_VERSION"
+loggy "     redhat-release: \"$(cat /etc/redhat-release)\""
+loggy "             prefix: '$prefix'"
+loggy "               HOME: '$HOME'"
+loggy "               PATH: '$PATH'"
+loggy "                 OS: '$OS'"
+loggy "        GDAL_OPTION: '$GDAL_OPTION'"
+loggy "   BES_BUILD_NUMBER: '$BES_BUILD_NUMBER'"
+loggy " LIBDAP_RPM_VERSION: '$LIBDAP_RPM_VERSION'"
 
 DEPENDENCIES_BUNDLE="hyrax-dependencies-$OS-static.tar.gz"
+loggy "DEPENDENCIES_BUNDLE: '$DEPENDENCIES_BUNDLE'"
 
 aws s3 cp "s3://opendap.travis.build/$DEPENDENCIES_BUNDLE" /tmp/
 
