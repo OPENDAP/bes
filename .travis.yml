@@ -200,6 +200,25 @@ jobs:
     #       --env AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
     #       opendap/rocky9_hyrax_builder:latest /root/bes/travis/build-rh9-rpm.sh
 
+    - stage: build-and-package
+      name: "Enterprise Linux 8 docker image (via Rocky8)"
+      script:
+        - export BES_BUILD=rocky8
+        - mkdir -p $prefix/rpmbuild
+        - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+        - docker run 
+          --env prefix=/root/install 
+          --volume $prefix/rpmbuild:/root/rpmbuild
+          --volume $TRAVIS_BUILD_DIR:/root/travis
+          --env GDAL_OPTION="$GDAL_OPTION"
+          --env OS=rocky8
+          --env DIST=el8
+          --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+          --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
+          --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+          --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+          opendap/rocky8_hyrax_builder:latest /root/travis/travis/build-rh8-docker.sh
+
     # - stage: build-and-package
     #   name: "dist"
     #   script:
