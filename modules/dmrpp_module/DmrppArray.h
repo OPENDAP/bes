@@ -154,7 +154,7 @@ private:
     void read_buffer_chunks();
     void read_buffer_chunks_unconstrained();
     unsigned long long get_maximum_constrained_buffer_nelmts();
-    unsigned long long obtain_buffer_end_pos(const vector<unsigned long long>& t_buf_end_pos_vec, unsigned long long cur_buf_end_pos);
+    unsigned long long obtain_buffer_end_pos(const vector<unsigned long long>& t_buf_end_pos_vec, unsigned long long cur_buf_end_pos) const;
     
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim);
 
