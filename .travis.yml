@@ -47,7 +47,7 @@ addons:
       - openjdk-17-jdk-headless
 
 git:
-  depth: false
+  depth: 1
 
 env:
   global:
@@ -201,23 +201,35 @@ jobs:
     #       opendap/rocky9_hyrax_builder:latest /root/bes/travis/build-rh9-rpm.sh
 
     - stage: build-and-package
-      name: "Enterprise Linux 8 docker image (via Rocky8)"
+      name: "Build bes docker image (Rocky8)"
       script:
-        - export BES_BUILD=rocky8
-        - mkdir -p $prefix/rpmbuild
+        - export BES_BUILD=docker-rocky8
         - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
-        - docker run 
-          --env prefix=/root/install 
-          --volume $prefix/rpmbuild:/root/rpmbuild
-          --volume $TRAVIS_BUILD_DIR:/root/travis
-          --env GDAL_OPTION="$GDAL_OPTION"
-          --env OS=rocky8
-          --env DIST=el8
-          --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
-          --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
-          --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-          --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-          opendap/rocky8_hyrax_builder:latest /root/travis/travis/build-rh8-docker.sh
+        - export DOCKER_NAME="bes-rocky8"
+        - export DIST=el8
+        - export OS=rocky8
+        - export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot"
+        - export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}"
+        - export DEPS_DOWNLOAD_DIR=$TRAVIS_BUILD_DIR/dependency_download_dir
+        - export HYRAX_DEPENDENCIES_TARBALL="hyrax-dependencies-${OS}.tgz"
+        - export LIBDAP_RPM_FILENAME="libdap-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
+        - docker image pull opendap/rocky8_hyrax_builder:latest
+        - aws s3 cp "s3://opendap.travis.build/$HYRAX_DEPENDENCIES_TARBALL" $DEPS_DOWNLOAD_DIR
+        - aws s3 cp s3://opendap.travis.build/$LIBDAP_RPM_FILENAME $DEPS_DOWNLOAD_DIR
+        - docker build \
+          --build-arg LIBDAP_RPM_FILENAME=$LIBDAP_RPM_FILENAME \
+          --build-arg HYRAX_DEPENDENCIES_TARBALL=$HYRAX_DEPENDENCIES_TARBALL \
+          --build-arg CPPFLAGS=-I/usr/include/tirpc \
+          --build-arg LDFLAGS=-ltirpc \
+          --build-arg GDAL_OPTION="$GDAL_OPTION" \
+          --build-arg BES_BUILD_NUMBER=$BES_BUILD_NUMBER \
+          --build-arg prefix=/root/install \
+          --tag "${SNAPSHOT_IMAGE_TAG}" \
+          --tag "${BUILD_VERSION_TAG}" \
+          --build-context dependencies=$DEPS_DOWNLOAD_DIR/ \
+          --progress=plain \
+          .
+        - docker image ls -a
 
     # - stage: build-and-package
     #   name: "dist"
