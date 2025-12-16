@@ -35,10 +35,10 @@ RUN --mount=from=dependencies,target=/tmp \
 ARG LIBDAP_RPM_FILENAME
 ARG LIBDAP_DEVEL_RPM_FILENAME
 RUN --mount=from=dependencies,target=/tmp \
-    echo "Installing libdap snapshot rpms: ${LIBDAP_RPM_FILENAME}, ${LIBDAP_DEVEL_RPM_FILENAME}" \
+    echo "Installing libdap snapshot rpms: $LIBDAP_RPM_FILENAME, $LIBDAP_DEVEL_RPM_FILENAME" \
     && dnf -y install "/tmp/$LIBDAP_RPM_FILENAME" \
     && dnf -y install "/tmp/$LIBDAP_DEVEL_RPM_FILENAME"
-    
+
 # To debug what has been installed, use    
 # rpm -ql "$PREFIX/rpmbuild/${LIBDAP_RPM_FILENAME}"
 
