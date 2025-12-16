@@ -307,14 +307,15 @@ void process_chunks_concurrent(
                 bool thread_started = true;
                 while(thread_started && !chunks.empty()) {
                     auto chunk = chunks.front();
-                    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Starting thread for " << chunk->to_string() << endl);
+                    // chunk->to_string causes segmentation fault when the chunk is a filled chunk. So comment out.
+                    // BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Starting thread for " << chunk->to_string() << endl);
 
                     auto args = unique_ptr<one_chunk_args>(new one_chunk_args(super_chunk_id, chunk, array, constrained_array_shape));
                     thread_started = start_one_chunk_compute_thread(futures, std::move(args));
 
                     if (thread_started) {
                         chunks.pop();
-                        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "STARTED thread for " << chunk->to_string() << endl);
+                        // BESDEBUG(SUPER_CHUNK_MODULE, prolog << "STARTED thread for " << chunk->to_string() << endl);
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
                         BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Thread not started. args deleted, Chunk remains in queue.) " <<

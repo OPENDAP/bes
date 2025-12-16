@@ -1854,7 +1854,8 @@ DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned long long> *tar
 
     unsigned int last_dim = chunk_shape.size() - 1;
     if (dim == last_dim) {
-        BESDEBUG(dmrpp_3, prolog << " END, This is the last_dim. chunk: " << chunk->to_string() << endl);
+        // The last chunk may be a filled chunk, chunk->to_string() has an issue to  print the chunk info. So comment it out.
+        //BESDEBUG(dmrpp_3, prolog << " END, This is the last_dim. chunk: " << chunk->to_string() << endl);
         return chunk;
     }
     else {
@@ -2086,7 +2087,6 @@ void DmrppArray::read_buffer_chunks()
         vector<unsigned long long> target_element_address = chunk->get_position_in_array();
         auto needed = find_needed_chunks(0 /* dimension */, &target_element_address, chunk);
         if (needed) {
-BESDEBUG(MODULE, prolog <<" NEW BUFFER needed chunk offset: "<<needed->get_offset()<<endl);
             chunks_needed.push_back(true);
         }
         else
@@ -2109,8 +2109,8 @@ BESDEBUG(MODULE, prolog <<" NEW BUFFER needed chunk offset: "<<needed->get_offse
             break;
         }
     }
-BESDEBUG(MODULE, prolog <<" NEW BUFFER maximum buffer size: "<<max_buffer_size<<endl);
-BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
+    BESDEBUG(MODULE, prolog <<" NEW BUFFER maximum buffer size: "<<max_buffer_size<<endl);
+    BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
 
     // Loop through the needed chunks to figure out the end position of a buffer. 
     vector <unsigned long long> temp_buffer_pos_vec;
@@ -2133,7 +2133,8 @@ BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
                     // We encounter the last non-filled chunk, so this is the last buffer. We mark the end buffer position.
                     unsigned long long buffer_end_pos =  obtain_buffer_end_pos(temp_buffer_pos_vec,chunk_offset+chunk_size);
                     buf_end_pos_vec.push_back(buffer_end_pos);
-BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_end_pos: "<<buffer_end_pos<<endl);
+                    BESDEBUG(MODULE, prolog <<" last_unfilled_chunk index: "<<i<<endl);
+                    BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_end_pos: "<<buffer_end_pos<<endl);
                 }
                 else {
 
@@ -2152,8 +2153,8 @@ BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_end_pos: "<<buffer_end_pos<<endl);
 
                     long long chunk_gap = next_chunk_offset -(chunk_offset + chunk_size);
 
-BESDEBUG(MODULE, prolog <<" NEW BUFFER next_chunk_offset: "<<next_chunk_offset<<endl);
-BESDEBUG(MODULE, prolog <<" NEW BUFFER chunk_gap: "<<chunk_gap<<endl);
+                    BESDEBUG(MODULE, prolog <<" NEW BUFFER next_chunk_offset: "<<next_chunk_offset<<endl);
+                    BESDEBUG(MODULE, prolog <<" NEW BUFFER chunk_gap: "<<chunk_gap<<endl);
 
                     //This is not a contiguous super chunk any more.
                     if (chunk_gap != 0) {
@@ -2169,10 +2170,10 @@ BESDEBUG(MODULE, prolog <<" NEW BUFFER chunk_gap: "<<chunk_gap<<endl);
                                 // The current buffer end position
                                 buf_end_pos_vec.push_back(buffer_end_pos);
 
-    BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_end_pos: "<<buffer_end_pos<<endl);
+                                BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_end_pos: "<<buffer_end_pos<<endl);
                                 // Set the new buffer offset
                                 buffer_offset = next_chunk_offset;
-    BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
+                                BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
                             }
                         }
                         else {
@@ -2185,10 +2186,10 @@ BESDEBUG(MODULE, prolog <<" NEW BUFFER chunk_gap: "<<chunk_gap<<endl);
                                 // The current buffer end position
                                 buf_end_pos_vec.push_back(buffer_end_pos);
 
-    BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_end_pos: "<<buffer_end_pos<<endl);
+                                BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_end_pos: "<<buffer_end_pos<<endl);
                                 // Set the new buffer offset
                                 buffer_offset = next_chunk_offset;
-    BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
+                                BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
                             }
                             else 
                                 // When going backward, we need to store the possible buffer end pos.
