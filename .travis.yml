@@ -213,17 +213,22 @@ jobs:
         - export DEPS_DOWNLOAD_DIR=$TRAVIS_BUILD_DIR/dependency_download_dir
         - export HYRAX_DEPENDENCIES_TARBALL="hyrax-dependencies-${OS}.tgz"
         - export LIBDAP_TARBALL="libdap-build.tar.gz"
+        - export LIBDAP_RPM_FILENAME="libdap-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
+        - export LIBDAP_DEVEL_RPM_FILENAME="libdap-devel-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
         - docker image pull opendap/rocky8_hyrax_builder:latest
         - aws s3 cp "s3://opendap.travis.build/$HYRAX_DEPENDENCIES_TARBALL" $DEPS_DOWNLOAD_DIR
-        - aws s3 cp s3://opendap.travis.build/$LIBDAP_TARBALL $DEPS_DOWNLOAD_DIR
+        - aws s3 cp "s3://opendap.travis.build/$LIBDAP_RPM_FILENAME" "$DEPS_DOWNLOAD_DIR"
+        - aws s3 cp "s3://opendap.travis.build/$LIBDAP_DEVEL_RPM_FILENAME" "$DEPS_DOWNLOAD_DIR"
         - docker build \
           --build-arg LIBDAP_TARBALL=$LIBDAP_TARBALL \
+          --build-arg LIBDAP_RPM_FILENAME=$LIBDAP_RPM_FILENAME \
+          --build-arg LIBDAP_DEVEL_RPM_FILENAME=$LIBDAP_DEVEL_RPM_FILENAME \
           --build-arg HYRAX_DEPENDENCIES_TARBALL=$HYRAX_DEPENDENCIES_TARBALL \
           --build-arg CPPFLAGS=-I/usr/include/tirpc \
           --build-arg LDFLAGS=-ltirpc \
           --build-arg GDAL_OPTION="$GDAL_OPTION" \
           --build-arg BES_BUILD_NUMBER=$BES_BUILD_NUMBER \
-          --build-arg prefix=/root/install \
+          --build-arg PREFIX=/root/install \
           --tag "${SNAPSHOT_IMAGE_TAG}" \
           --tag "${BUILD_VERSION_TAG}" \
           --build-context dependencies=$DEPS_DOWNLOAD_DIR/ \
