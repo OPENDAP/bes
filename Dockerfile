@@ -1,21 +1,8 @@
-###############################################################################################
-#
-# Dockerfile for bes image
-#
-#
-# Some shell state reference:
-# set -f # "set -o noglob"  Disable file name generation using metacharacters (globbing).
-# set -v # "set -o verbose" Prints shell input lines as they are read.
-# set -x # "set -o xtrace"  Print command traces before executing command.
-# set -e #  Exit on error.
-#
-# In general use "set -e" when running commands that matter and don't use
-# it for debugging stuff.
-#
+# Dockerfile for bes-rocky8 image
 
-#####
-##### Stage 1. All dependencies
-#####
+###############################################################
+##### Stage 1. Install libdap and dependencies
+###############################################################
 FROM opendap/rocky8_hyrax_builder:latest AS deps-base
 RUN yum update -y
 
@@ -24,14 +11,12 @@ ENV PREFIX="${PREFIX:-"/root/install"}"
 
 ENV PATH="$PREFIX/bin:$PREFIX/deps/bin:$PATH"
 
-# ###############################################################
-# # Install the latest hyrax dependencies
+# Install the latest hyrax dependencies
 ARG HYRAX_DEPENDENCIES_TARBALL
 RUN --mount=from=aws_downloads,target=/tmp \
     tar -C "$HOME" -xzvf "/tmp/$HYRAX_DEPENDENCIES_TARBALL"
 
-# ###############################################################
-# # Install the libdap rpms
+# Install the libdap rpms
 ARG LIBDAP_RPM_FILENAME
 ARG LIBDAP_DEVEL_RPM_FILENAME
 RUN --mount=from=aws_downloads,target=/tmp \
@@ -42,10 +27,10 @@ RUN --mount=from=aws_downloads,target=/tmp \
 # To debug what has been installed, use    
 # rpm -ql "$PREFIX/rpmbuild/${LIBDAP_RPM_FILENAME}"
 
-#####
+################################################################
 ##### Stage 2. Make and install the bes
-#####
-# FROM deps-base AS bes-builder
+################################################################
+FROM deps-base AS bes-builder
 
 COPY . bes/
 WORKDIR /bes
@@ -61,19 +46,21 @@ RUN ./configure --disable-dependency-tracking --prefix=${PREFIX} \
     $GDAL_OPTION \
     --with-build=$BES_BUILD_NUMBER
 
-RUN make -j16
+ARG NJOBS
+ENV NJOBS_OPTION="-j${NJOBS:-1}"
+RUN make $NJOBS_OPTION
 
-RUN make install --dry-run
+RUN make install
 
+RUN echo "besdaemon is here: "`which besdaemon`
 
+################################################################
+##### Stage 3: Copy the built bes onto the dependencies image
+################################################################
+FROM deps-base
+COPY --from=bes-builder ${PREFIX} ${PREFIX}
 
-# #####
-# ##### Stage 3: Only keep the built dependencies
-# #####
-# FROM deps-base
-# COPY --from=bes-builder ${PREFIX} ${PREFIX}
+RUN echo "besdaemon is here: "`which besdaemon`
 
-# RUN echo "besdaemon is here: "`which besdaemon`
-
-# CMD ["-"]
+CMD ["-"]
 

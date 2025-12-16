@@ -228,6 +228,7 @@ jobs:
           --build-arg HYRAX_DEPENDENCIES_TARBALL="$HYRAX_DEPENDENCIES_TARBALL"
           --build-arg CPPFLAGS=-I/usr/include/tirpc
           --build-arg LDFLAGS=-ltirpc
+          --build-arg NJOBS=16
           --build-arg GDAL_OPTION="$GDAL_OPTION"
           --build-arg BES_BUILD_NUMBER="$BES_BUILD_NUMBER"
           --build-arg PREFIX=/root/install
