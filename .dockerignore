@@ -181,7 +181,10 @@ timing/*/*.dtps
 .vscode
 
 # Specifically for docker:
+Dockerfile
 retired/
+dapreader/.deps
+dapreader/.libs
 
 !bes-config-pkgconfig
 !bes-config.in
@@ -189,3 +192,6 @@ retired/
 
 !docs/*.doc
 !docs/Makefile.am
+
+# TODO: remove
+x_*

@@ -1,5 +1,5 @@
 ###############################################################################################
-# 
+#
 # Dockerfile for bes image
 #
 #
@@ -11,7 +11,7 @@
 #
 # In general use "set -e" when running commands that matter and don't use
 # it for debugging stuff.
-# 
+#
 
 #####
 ##### Stage 1. All dependencies
@@ -19,38 +19,52 @@
 FROM opendap/rocky8_hyrax_builder:latest AS deps-base
 RUN yum update -y
 
+ARG prefix
+ENV prefix=${prefix}
+
+ENV PATH=${prefix}/bin:${prefix}/deps/bin:$PATH
+
 # ###############################################################
 # # Install the latest hyrax dependencies
 ARG HYRAX_DEPENDENCIES_TARBALL
 RUN --mount=from=dependencies,target=/tmp \
-    tar -xzvf /tmp/${HYRAX_DEPENDENCIES_TARBALL}
+    tar -C /$HOME -xzvf /tmp/${HYRAX_DEPENDENCIES_TARBALL}
 
 # ###############################################################
 # # Install the libdap rpm
-ARG LIBDAP_RPM_FILENAME 
+ARG LIBDAP_TARBALL
 RUN --mount=from=dependencies,target=/tmp \
-    echo "Installing libdap snapshot rpm. ${LIBDAP_RPM_FILENAME}" \
-    && dnf -y install /tmp/${LIBDAP_RPM_FILENAME}
+    tar -C /$HOME -xzvf /tmp/${LIBDAP_TARBALL}
 
 #####
-##### Stage 2. Install the bes
+##### Stage 2. Make and install the bes
 #####
 FROM deps-base AS bes-builder
 
+COPY . bes/
+WORKDIR /bes
+
 ARG CPPFLAGS
 ARG LDFLAGS
-ARG prefix 
-
-# RUN autoreconf -fiv
-COPY . bes/
-WORKDIR /bes 
-
 RUN autoreconf -fiv
 
-# TODO: configure 
-# TODO: make install
+ARG GDAL_OPTION
+ARG BES_BUILD_NUMBER
+RUN ./configure --disable-dependency-tracking --prefix=$prefix \
+    --with-dependencies=$prefix/deps \
+    $GDAL_OPTION \
+    --with-build=$BES_BUILD_NUMBER
+
+# RUN make -j16
+# RUN make install
+
+# #####
+# ##### Stage 3: Only keep the built dependencies
+# #####
+# FROM deps-base
+# COPY --from=bes-builder $prefix $prefix
 
 # RUN echo "besdaemon is here: "`which besdaemon`
 
-CMD ["-"]
+# CMD ["-"]
 
