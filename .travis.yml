@@ -210,7 +210,8 @@ jobs:
         - export DIST=el8
         - export OS=rocky8
         - export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot"
-        - export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}"
+        - export SOURCE_VERSION=$(cat bes_VERSION)
+        - export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${SOURCE_VERSION}-${BES_BUILD_NUMBER}"
         - export DEPS_DOWNLOAD_DIR="$TRAVIS_BUILD_DIR/dependency_download_dir"
         - export HYRAX_DEPENDENCIES_TARBALL="hyrax-dependencies-${OS}.tgz"
         - export LIBDAP_RPM_FILENAME="libdap-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
