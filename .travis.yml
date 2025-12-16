@@ -25,6 +25,9 @@ branches:
   - main
   - /^(.*-test-deploy)$/
 
+services:
+  - docker
+
 # This cache is used to speed up sonar scan runs. See https://docs.travis-ci.com/user/caching.
 # Each branch gets its own cache. The three different sonar scan runs each use their own cache
 # directory set in the three sonar-bes-*.properties files. jhrg 1/13/22
