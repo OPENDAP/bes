@@ -25,9 +25,6 @@ branches:
   - main
   - /^(.*-test-deploy)$/
 
-services:
-  - docker
-
 # This cache is used to speed up sonar scan runs. See https://docs.travis-ci.com/user/caching.
 # Each branch gets its own cache. The three different sonar scan runs each use their own cache
 # directory set in the three sonar-bes-*.properties files. jhrg 1/13/22
@@ -224,19 +221,20 @@ jobs:
         - aws s3 cp "s3://opendap.travis.build/$LIBDAP_RPM_FILENAME" "$DEPS_DOWNLOAD_DIR"
         - aws s3 cp "s3://opendap.travis.build/$LIBDAP_DEVEL_RPM_FILENAME" "$DEPS_DOWNLOAD_DIR"
         # Build the image
-        - docker build \
-          --build-arg LIBDAP_RPM_FILENAME="$LIBDAP_RPM_FILENAME" \
-          --build-arg LIBDAP_DEVEL_RPM_FILENAME="$LIBDAP_DEVEL_RPM_FILENAME" \
-          --build-arg HYRAX_DEPENDENCIES_TARBALL="$HYRAX_DEPENDENCIES_TARBALL" \
-          --build-arg CPPFLAGS=-I/usr/include/tirpc \
-          --build-arg LDFLAGS=-ltirpc \
-          --build-arg GDAL_OPTION="$GDAL_OPTION" \
-          --build-arg BES_BUILD_NUMBER="$BES_BUILD_NUMBER" \
-          --build-arg PREFIX=/root/install \
-          --tag "${SNAPSHOT_IMAGE_TAG}" \
-          --tag "${BUILD_VERSION_TAG}" \
-          --build-context dependencies="$DEPS_DOWNLOAD_DIR/" \
-          --progress=plain .
+        - docker build
+          --build-arg LIBDAP_RPM_FILENAME="$LIBDAP_RPM_FILENAME"
+          --build-arg LIBDAP_DEVEL_RPM_FILENAME="$LIBDAP_DEVEL_RPM_FILENAME"
+          --build-arg HYRAX_DEPENDENCIES_TARBALL="$HYRAX_DEPENDENCIES_TARBALL"
+          --build-arg CPPFLAGS=-I/usr/include/tirpc
+          --build-arg LDFLAGS=-ltirpc
+          --build-arg GDAL_OPTION="$GDAL_OPTION"
+          --build-arg BES_BUILD_NUMBER="$BES_BUILD_NUMBER"
+          --build-arg PREFIX=/root/install
+          --tag "${SNAPSHOT_IMAGE_TAG}"
+          --tag "${BUILD_VERSION_TAG}"
+          --build-context dependencies="$DEPS_DOWNLOAD_DIR/"
+          --progress=plain
+          .
         - docker image ls -a
 
     # - stage: build-and-package
