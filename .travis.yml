@@ -205,35 +205,35 @@ jobs:
       script:
         - export BES_BUILD=docker-rocky8
         - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+        # Set up the build environment vars
         - export DOCKER_NAME="bes-rocky8"
         - export DIST=el8
         - export OS=rocky8
         - export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot"
         - export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}"
-        - export DEPS_DOWNLOAD_DIR=$TRAVIS_BUILD_DIR/dependency_download_dir
+        - export DEPS_DOWNLOAD_DIR="$TRAVIS_BUILD_DIR/dependency_download_dir"
         - export HYRAX_DEPENDENCIES_TARBALL="hyrax-dependencies-${OS}.tgz"
-        - export LIBDAP_TARBALL="libdap-build.tar.gz"
         - export LIBDAP_RPM_FILENAME="libdap-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
         - export LIBDAP_DEVEL_RPM_FILENAME="libdap-devel-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
+        # Download the build dependencies
         - docker image pull opendap/rocky8_hyrax_builder:latest
         - aws s3 cp "s3://opendap.travis.build/$HYRAX_DEPENDENCIES_TARBALL" $DEPS_DOWNLOAD_DIR
         - aws s3 cp "s3://opendap.travis.build/$LIBDAP_RPM_FILENAME" "$DEPS_DOWNLOAD_DIR"
         - aws s3 cp "s3://opendap.travis.build/$LIBDAP_DEVEL_RPM_FILENAME" "$DEPS_DOWNLOAD_DIR"
+        # Build the image
         - docker build \
-          --build-arg LIBDAP_TARBALL=$LIBDAP_TARBALL \
-          --build-arg LIBDAP_RPM_FILENAME=$LIBDAP_RPM_FILENAME \
-          --build-arg LIBDAP_DEVEL_RPM_FILENAME=$LIBDAP_DEVEL_RPM_FILENAME \
-          --build-arg HYRAX_DEPENDENCIES_TARBALL=$HYRAX_DEPENDENCIES_TARBALL \
+          --build-arg LIBDAP_RPM_FILENAME="$LIBDAP_RPM_FILENAME" \
+          --build-arg LIBDAP_DEVEL_RPM_FILENAME="$LIBDAP_DEVEL_RPM_FILENAME" \
+          --build-arg HYRAX_DEPENDENCIES_TARBALL="$HYRAX_DEPENDENCIES_TARBALL" \
           --build-arg CPPFLAGS=-I/usr/include/tirpc \
           --build-arg LDFLAGS=-ltirpc \
           --build-arg GDAL_OPTION="$GDAL_OPTION" \
-          --build-arg BES_BUILD_NUMBER=$BES_BUILD_NUMBER \
+          --build-arg BES_BUILD_NUMBER="$BES_BUILD_NUMBER" \
           --build-arg PREFIX=/root/install \
           --tag "${SNAPSHOT_IMAGE_TAG}" \
           --tag "${BUILD_VERSION_TAG}" \
-          --build-context dependencies=$DEPS_DOWNLOAD_DIR/ \
-          --progress=plain \
-          .
+          --build-context dependencies="$DEPS_DOWNLOAD_DIR/" \
+          --progress=plain .
         - docker image ls -a
 
     # - stage: build-and-package
