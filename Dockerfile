@@ -27,14 +27,14 @@ ENV PATH="$PREFIX/bin:$PREFIX/deps/bin:$PATH"
 # ###############################################################
 # # Install the latest hyrax dependencies
 ARG HYRAX_DEPENDENCIES_TARBALL
-RUN --mount=from=dependencies,target=/tmp \
+RUN --mount=from=aws_downloads,target=/tmp \
     tar -C "$HOME" -xzvf "/tmp/$HYRAX_DEPENDENCIES_TARBALL"
 
 # ###############################################################
 # # Install the libdap rpms
 ARG LIBDAP_RPM_FILENAME
 ARG LIBDAP_DEVEL_RPM_FILENAME
-RUN --mount=from=dependencies,target=/tmp \
+RUN --mount=from=aws_downloads,target=/tmp \
     echo "Installing libdap snapshot rpms: $LIBDAP_RPM_FILENAME, $LIBDAP_DEVEL_RPM_FILENAME" \
     && dnf -y install "/tmp/$LIBDAP_RPM_FILENAME" \
     && dnf -y install "/tmp/$LIBDAP_DEVEL_RPM_FILENAME"

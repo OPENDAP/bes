@@ -211,16 +211,16 @@ jobs:
         - export OS=rocky8
         - export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot"
         - export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_BUILD_NUMBER}"
-        - export DEPS_DOWNLOAD_DIR="$TRAVIS_BUILD_DIR/dependency_download_dir"
+        - export AWS_DOWNLOADS_DIR="dependency_downloads"
+        - mkdir $AWS_DOWNLOADS_DIR
         - export HYRAX_DEPENDENCIES_TARBALL="hyrax-dependencies-${OS}.tgz"
         - export LIBDAP_RPM_FILENAME="libdap-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
         - export LIBDAP_DEVEL_RPM_FILENAME="libdap-devel-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
         # Download the build dependencies
         - docker image pull opendap/rocky8_hyrax_builder:latest
-        - mkdir -p "$dependency_download_dir"
-        - aws s3 cp "s3://opendap.travis.build/$HYRAX_DEPENDENCIES_TARBALL" $DEPS_DOWNLOAD_DIR
-        - aws s3 cp "s3://opendap.travis.build/$LIBDAP_RPM_FILENAME" "$DEPS_DOWNLOAD_DIR"
-        - aws s3 cp "s3://opendap.travis.build/$LIBDAP_DEVEL_RPM_FILENAME" "$DEPS_DOWNLOAD_DIR"
+        - aws s3 cp "s3://opendap.travis.build/$HYRAX_DEPENDENCIES_TARBALL" $AWS_DOWNLOADS_DIR
+        - aws s3 cp "s3://opendap.travis.build/$LIBDAP_RPM_FILENAME" "$AWS_DOWNLOADS_DIR"
+        - aws s3 cp "s3://opendap.travis.build/$LIBDAP_DEVEL_RPM_FILENAME" "$AWS_DOWNLOADS_DIR"
         # Build the image
         - docker build
           --build-arg LIBDAP_RPM_FILENAME="$LIBDAP_RPM_FILENAME"
@@ -233,7 +233,7 @@ jobs:
           --build-arg PREFIX=/root/install
           --tag "${SNAPSHOT_IMAGE_TAG}"
           --tag "${BUILD_VERSION_TAG}"
-          --build-context dependencies="$DEPS_DOWNLOAD_DIR/"
+          --build-context aws_downloads="$AWS_DOWNLOADS_DIR/"
           --progress=plain
           .
         - docker image ls -a

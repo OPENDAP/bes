@@ -185,6 +185,7 @@ Dockerfile
 retired/
 dapreader/.deps
 dapreader/.libs
+configured_features.txt
 
 !bes-config-pkgconfig
 !bes-config.in
