@@ -58,7 +58,7 @@ docker build \
     --tag "${SNAPSHOT_IMAGE_TAG}" \
     --tag "${BUILD_VERSION_TAG}" \
     --build-context aws_downloads="$AWS_DOWNLOADS_DIR/" \
-    --progress=plain ${DOCKER_DEV_FLAGS:-""} \
+    --progress=plain ${DOCKER_DEV_FLAGS:-" "} \
     -f ${BES_REPO_DIR}/Dockerfile ${BES_REPO_DIR}
 
 docker image ls -a
