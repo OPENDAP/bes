@@ -201,43 +201,17 @@ jobs:
     #       opendap/rocky9_hyrax_builder:latest /root/bes/travis/build-rh9-rpm.sh
 
     - stage: build-and-package
-      name: "Build bes docker image (Rocky8)"
+      name: "Build bes docker image (RHEL8)"
       script:
-        - export BES_BUILD=docker-rocky8
+        - export BES_BUILD=docker-rhel8
         - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
-        # Set up the build environment vars
         - export DOCKER_NAME="bes-rocky8"
         - export DIST=el8
         - export OS=rocky8
-        - export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot"
-        - export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_BUILD_NUMBER}"
-        - export AWS_DOWNLOADS_DIR="dependency_downloads"
-        - mkdir $AWS_DOWNLOADS_DIR
-        - export HYRAX_DEPENDENCIES_TARBALL="hyrax-dependencies-${OS}.tgz"
-        - export LIBDAP_RPM_FILENAME="libdap-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
-        - export LIBDAP_DEVEL_RPM_FILENAME="libdap-devel-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
-        # Download the build dependencies
-        - docker image pull opendap/rocky8_hyrax_builder:latest
-        - aws s3 cp "s3://opendap.travis.build/$HYRAX_DEPENDENCIES_TARBALL" $AWS_DOWNLOADS_DIR
-        - aws s3 cp "s3://opendap.travis.build/$LIBDAP_RPM_FILENAME" "$AWS_DOWNLOADS_DIR"
-        - aws s3 cp "s3://opendap.travis.build/$LIBDAP_DEVEL_RPM_FILENAME" "$AWS_DOWNLOADS_DIR"
-        # Build the image
-        - docker build
-          --build-arg LIBDAP_RPM_FILENAME="$LIBDAP_RPM_FILENAME"
-          --build-arg LIBDAP_DEVEL_RPM_FILENAME="$LIBDAP_DEVEL_RPM_FILENAME"
-          --build-arg HYRAX_DEPENDENCIES_TARBALL="$HYRAX_DEPENDENCIES_TARBALL"
-          --build-arg CPPFLAGS=-I/usr/include/tirpc
-          --build-arg LDFLAGS=-ltirpc
-          --build-arg NJOBS=16
-          --build-arg GDAL_OPTION="$GDAL_OPTION"
-          --build-arg BES_BUILD_NUMBER="$BES_BUILD_NUMBER"
-          --build-arg PREFIX=/root/install
-          --tag "${SNAPSHOT_IMAGE_TAG}"
-          --tag "${BUILD_VERSION_TAG}"
-          --build-context aws_downloads="$AWS_DOWNLOADS_DIR/"
-          --progress=plain
-          .
-        - docker image ls -a
+        - export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
+        - bash ${TRAVIS_BUILD_DIR}/travis/build-rhel-docker.sh
+        # TODO: remove this before merging! Using for debugging
+        - bash ${TRAVIS_BUILD_DIR}/travis/deploy-to-docker-hub.sh
 
     # - stage: build-and-package
     #   name: "dist"
@@ -310,8 +284,8 @@ before_deploy:
 
 # The deploy section copies the snapshot build product our S3 bucket and to www.opendap.org
 deploy:
-  # Push all build results to our S3 bucket
-  - provider: s3
+  - name: Push build results to S3 bucket
+    provider: s3
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     bucket: opendap.travis.build
@@ -320,3 +294,9 @@ deploy:
     on:
       all_branches: true
       condition: $BES_BUILD =~ ^rocky8|rocky9|srcdist$
+  - name: Push docker images to dockerhub
+    provider: script
+    script: bash ${TRAVIS_BUILD_DIR}/travis/deploy-to-docker-hub.sh
+    on:
+      all_branches: true
+      condition: $BES_BUILD =~ ^docker$

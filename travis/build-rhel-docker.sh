@@ -1,0 +1,58 @@
+#!/bin/sh
+#
+# This is part of the Travis build CD process. It is intended to be
+# run from within the Travis build process and depends on env variables
+# set in the BES's .travis.yml file.
+#
+# It can be run locally, as long as the env vars $BES_REPO_DIR, $DOCKER_NAME,
+# $DIST, $OS, $BES_BUILD_NUMBER, and $LIBDAP_RPM_VERSION are set.
+# When running locally, AWS credentials for OPeNDAP AWS must also be set, e.g.,
+# $AWS_ACCESS_KEY_ID and $AWS_SECRET_ACCESS_KEY (or set via aws configuration)
+#
+# Run the script like this:
+# bash build-rhel-docker.sh \
+#     -e DOCKER_NAME="bes-rocky8" \
+#     -e DIST=rocky8 \
+#     -e OS=rocky8 \
+#     -e BES_BUILD_NUMBER=12345 \
+#     -e LIBDAP_RPM_VERSION='3.20.0-332'
+#
+# e: exit immediately on non-zero exit value from a command
+# u: treat unset env vars in substitutions as an error
+set -eux
+
+# Set up the build environment vars
+export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot"
+export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_BUILD_NUMBER}"
+
+# Download the build dependencies
+export AWS_DOWNLOADS_DIR="/tmp/dependency_downloads"
+mkdir $AWS_DOWNLOADS_DIR
+
+export HYRAX_DEPENDENCIES_TARBALL="hyrax-dependencies-${OS}.tgz"
+export LIBDAP_RPM_FILENAME="libdap-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
+export LIBDAP_DEVEL_RPM_FILENAME="libdap-devel-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
+
+aws s3 cp "s3://opendap.travis.build/$HYRAX_DEPENDENCIES_TARBALL" $AWS_DOWNLOADS_DIR
+aws s3 cp "s3://opendap.travis.build/$LIBDAP_RPM_FILENAME" "$AWS_DOWNLOADS_DIR"
+aws s3 cp "s3://opendap.travis.build/$LIBDAP_DEVEL_RPM_FILENAME" "$AWS_DOWNLOADS_DIR"
+
+# Build the image
+docker image pull opendap/rocky8_hyrax_builder:latest
+docker build \
+    --build-arg LIBDAP_RPM_FILENAME="$LIBDAP_RPM_FILENAME" \
+    --build-arg LIBDAP_DEVEL_RPM_FILENAME="$LIBDAP_DEVEL_RPM_FILENAME" \
+    --build-arg HYRAX_DEPENDENCIES_TARBALL="$HYRAX_DEPENDENCIES_TARBALL" \
+    --build-arg CPPFLAGS=-I/usr/include/tirpc \
+    --build-arg LDFLAGS=-ltirpc \
+    --build-arg NJOBS_OPTION="-j16" \
+    --build-arg GDAL_OPTION="$GDAL_OPTION" \
+    --build-arg BES_BUILD_NUMBER="$BES_BUILD_NUMBER" \
+    --build-arg PREFIX=/root/install \
+    --tag "${SNAPSHOT_IMAGE_TAG}" \
+    --tag "${BUILD_VERSION_TAG}" \
+    --build-context aws_downloads="$AWS_DOWNLOADS_DIR/" \
+    --progress=plain \
+    -f ${BES_REPO_DIR}/Dockerfile ${BES_REPO_DIR}
+
+docker image ls -a
