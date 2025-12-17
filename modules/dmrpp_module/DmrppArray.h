@@ -144,6 +144,7 @@ private:
     void read_chunks();
     void read_chunks_unconstrained();
     void read_chunks_dio_unconstrained();
+    void read_buffer_chunks_dio_unconstrained();
     void read_linked_blocks();
     void read_linked_blocks_constrained();
     void read_chunks_with_linked_blocks();

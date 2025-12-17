@@ -782,7 +782,11 @@ void SuperChunk::retrieve_data_dio() {
     // Massage the chunks so that their read/receive/intern data buffer
     // points to the correct section of the d_read_buffer memory.
     // "Slice it up!"
-    map_chunks_to_buffer();
+    if (non_contiguous_chunk)
+        map_non_contiguous_chunks_to_buffer();
+    else
+        map_chunks_to_buffer();
+    //map_chunks_to_buffer();
 
     // Read the bytes from the target URL. (pthreads, maybe depends on size...)
     // Use one (or possibly more) thread(s) depending on d_size
