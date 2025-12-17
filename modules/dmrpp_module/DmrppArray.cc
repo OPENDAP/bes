@@ -2112,7 +2112,7 @@ void DmrppArray::read_buffer_chunks()
     BESDEBUG(MODULE, prolog <<" NEW BUFFER maximum buffer size: "<<max_buffer_size<<endl);
     BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
 
-    obtain_buf_end_position(chunks_needed,max_buffer_size, buffer_offset, last_unfilled_chunk_index, buf_end_pos_vec);
+    obtain_buffer_end_pos_vec(chunks_needed,max_buffer_size, buffer_offset, last_unfilled_chunk_index, buf_end_pos_vec);
 // KENT: BUFFER POSITION 
 #if 0
     // Loop through the needed chunks to figure out the end position of a buffer. 
@@ -3689,7 +3689,7 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
 
     vector<bool> subset_chunks_needed;
 
-    obtain_buf_end_position(subset_chunks_needed,max_buffer_size, buffer_offset, last_unfilled_chunk_index, buf_end_pos_vec);
+    obtain_buffer_end_pos_vec(subset_chunks_needed,max_buffer_size, buffer_offset, last_unfilled_chunk_index, buf_end_pos_vec);
 
     // Kent: Old code
     // Follow the general superchunk way.
@@ -3761,9 +3761,11 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
 #endif 
 
     unsigned long long buf_end_pos_counter = 0;
-    for (unsigned long long i = 0; i < chunks.size(); i++) {
+    for (const auto & chunk:chunks) {
+    // for (unsigned long long i = 0; i < chunks.size(); i++) {
         //if (chunks_needed[i]){
-            bool added = current_super_chunk->add_chunk_non_contiguous(chunks[i],buf_end_pos_vec[buf_end_pos_counter]);
+            //bool added = current_super_chunk->add_chunk_non_contiguous(chunks[i],buf_end_pos_vec[buf_end_pos_counter]);
+            bool added = current_super_chunk->add_chunk_non_contiguous(chunk,buf_end_pos_vec[buf_end_pos_counter]);
             if(!added){
                 sc_id.str(std::string()); // clears stringstream.
                 sc_count++;
@@ -3775,9 +3777,11 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
                 super_chunks.push(current_super_chunk);
 
                 buf_end_pos_counter++;
-                if(!current_super_chunk->add_chunk_non_contiguous(chunks[i],buf_end_pos_vec[buf_end_pos_counter])){
+                //if(!current_super_chunk->add_chunk_non_contiguous(chunks[i],buf_end_pos_vec[buf_end_pos_counter])){
+                if(!current_super_chunk->add_chunk_non_contiguous(chunk, buf_end_pos_vec[buf_end_pos_counter])){
                     stringstream msg ;
-                    msg << prolog << "Failed to add chunk to new superchunk. chunk: " << (chunks[i])->to_string();
+                    //msg << prolog << "Failed to add chunk to new superchunk. chunk: " << (chunks[i])->to_string();
+                    msg << prolog << "Failed to add chunk to new superchunk. chunk: " << chunk->to_string();
                     throw BESInternalError(msg.str(), __FILE__, __LINE__);
 
                 }
@@ -3822,8 +3826,8 @@ bool DmrppArray::use_buffer_chunk() {
     return ret_value;
 }
 
-void DmrppArray::obtain_buf_end_position(const vector<bool>& subset_chunks_needed, unsigned long long max_buffer_size, unsigned long long buffer_offset,
-                                         unsigned long long last_unfilled_chunk_index, vector<unsigned long long> & buf_end_pos_vec) {
+void DmrppArray::obtain_buffer_end_pos_vec(const vector<bool>& subset_chunks_needed, unsigned long long max_buffer_size, unsigned long long buffer_offset,
+                                           unsigned long long last_unfilled_chunk_index, vector<unsigned long long> & buf_end_pos_vec) const {
 
     bool select_whole_array = false;
     if (subset_chunks_needed.empty())
@@ -3835,7 +3839,7 @@ void DmrppArray::obtain_buf_end_position(const vector<bool>& subset_chunks_neede
     vector <unsigned long long> temp_buffer_pos_vec;
     for (unsigned long long i = 0; i < chunks.size(); i++) {
 
-        bool chunks_needed = (select_whole_array)?true:subset_chunks_needed[i];
+        bool chunks_needed = select_whole_array?true:subset_chunks_needed[i];
         if (chunks_needed){
 
             // We may encounter the filled chunks. those chunks will be handled separately.
@@ -3863,7 +3867,7 @@ void DmrppArray::obtain_buf_end_position(const vector<bool>& subset_chunks_neede
                     //       Although we need to have a nested for-loop, for most cases the next one is the adjacent one. So we are OK.
                     unsigned long long next_chunk_offset = (chunks[i+1])->get_offset();
 
-                    bool next_chunk_needed = (select_whole_array)?true:subset_chunks_needed[i+1];
+                    bool next_chunk_needed = select_whole_array?true:subset_chunks_needed[i+1];
                     if (!next_chunk_needed || chunks[i+1]->get_offset()==0)  {
                     //if (!chunks_needed[i+1] || chunks[i+1]->get_offset()==0)  {
                         for (unsigned j = i+2; j<chunks.size();j++) {

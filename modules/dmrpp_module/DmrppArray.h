@@ -153,11 +153,12 @@ private:
     bool use_buffer_chunk();
     void read_buffer_chunks();
     void read_buffer_chunks_unconstrained();
-    void obtain_buf_end_position(const vector<bool>& subset_chunks_needed, unsigned long long last_unfilled_chunk_index, 
-                                 unsigned long long buffer_offset, unsigned long long max_buffer_size, vector<unsigned long long> & buf_end_pos_vec);
+
     unsigned long long get_maximum_constrained_buffer_nelmts();
     unsigned long long obtain_buffer_end_pos(const vector<unsigned long long>& t_buf_end_pos_vec, unsigned long long cur_buf_end_pos) const;
-    
+    void obtain_buffer_end_pos_vec(const vector<bool>& subset_chunks_needed, unsigned long long max_buffer_size, unsigned long long buffer_offset,
+                                 unsigned long long last_unfilled_chunk_index, vector<unsigned long long> & buf_end_pos_vec) const;
+
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim);
 
     std::shared_ptr<Chunk> find_needed_chunks(unsigned int dim, std::vector<unsigned long long> *target_element_address, std::shared_ptr<Chunk> chunk);
