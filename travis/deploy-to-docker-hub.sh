@@ -6,7 +6,7 @@
 set -e
 
 echo "Logging into Docker Hub"
-echo $DOCKER_HUB_PSWD | docker login -u $DOCKER_HUB_UID --password-stdin
+echo $DOCKER_HUB_PWSD | docker login -u $DOCKER_HUB_UID --password-stdin
 
 echo "Deploying ${SNAPSHOT_IMAGE_TAG} to Docker Hub"
 docker push ${SNAPSHOT_IMAGE_TAG}

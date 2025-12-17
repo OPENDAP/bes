@@ -6,16 +6,24 @@
 #
 # It can be run locally, as long as the env vars $BES_REPO_DIR, $DOCKER_NAME,
 # $DIST, $OS, $BES_BUILD_NUMBER, and $LIBDAP_RPM_VERSION are set.
+#
+# Optional env vars are $GDAL_OPTION and $DOCKER_DEV_FLAGS.
+#
 # When running locally, AWS credentials for OPeNDAP AWS must also be set, e.g.,
 # $AWS_ACCESS_KEY_ID and $AWS_SECRET_ACCESS_KEY (or set via aws configuration)
 #
 # Run the script like this:
-# bash build-rhel-docker.sh \
-#     -e DOCKER_NAME="bes-rocky8" \
-#     -e DIST=rocky8 \
-#     -e OS=rocky8 \
-#     -e BES_BUILD_NUMBER=12345 \
-#     -e LIBDAP_RPM_VERSION='3.20.0-332'
+#    BES_REPO_DIR="." \
+#    DOCKER_NAME="bes-rocky8" \
+#    DIST=el8 \
+#    OS=rocky8 \
+#    BES_BUILD_NUMBER=12345 \
+#    LIBDAP_RPM_VERSION='3.21.1-332' \
+#    bash build-rhel-docker.sh
+#
+# If building locally, add extra docker build flags through the ENV var
+# `DOCKER_DEV_FLAGS`, e.g.,
+# export DOCKER_DEV_FLAGS="--platform linux/amd64 --no-cache"
 #
 # e: exit immediately on non-zero exit value from a command
 # u: treat unset env vars in substitutions as an error
@@ -27,7 +35,7 @@ export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_BUILD_NUMBER}"
 
 # Download the build dependencies
 export AWS_DOWNLOADS_DIR="/tmp/dependency_downloads"
-mkdir $AWS_DOWNLOADS_DIR
+mkdir -p $AWS_DOWNLOADS_DIR
 
 export HYRAX_DEPENDENCIES_TARBALL="hyrax-dependencies-${OS}.tgz"
 export LIBDAP_RPM_FILENAME="libdap-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
@@ -46,13 +54,13 @@ docker build \
     --build-arg CPPFLAGS=-I/usr/include/tirpc \
     --build-arg LDFLAGS=-ltirpc \
     --build-arg NJOBS_OPTION="-j16" \
-    --build-arg GDAL_OPTION="$GDAL_OPTION" \
+    --build-arg GDAL_OPTION="${GDAL_OPTION:-"--without-gdal"}" \
     --build-arg BES_BUILD_NUMBER="$BES_BUILD_NUMBER" \
     --build-arg PREFIX=/root/install \
     --tag "${SNAPSHOT_IMAGE_TAG}" \
     --tag "${BUILD_VERSION_TAG}" \
     --build-context aws_downloads="$AWS_DOWNLOADS_DIR/" \
-    --progress=plain \
+    --progress=plain ${DOCKER_DEV_FLAGS:-""} \
     -f ${BES_REPO_DIR}/Dockerfile ${BES_REPO_DIR}
 
 docker image ls -a
