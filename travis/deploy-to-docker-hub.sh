@@ -3,7 +3,7 @@
 # Called from the travis.yml. This depends on env vars set by the 
 # travis yaml (snapshot image tags) and the Travis repo settings
 # (docker hub credentials).
-set -e
+set -eux
 
 echo "Logging into Docker Hub"
 echo $DOCKER_HUB_PWSD | docker login -u $DOCKER_HUB_UID --password-stdin

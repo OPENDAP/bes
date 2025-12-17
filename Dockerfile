@@ -50,19 +50,19 @@ ARG NJOBS_OPTION
 ENV NJOBS_OPTION="${NJOBS_OPTION:-""}"
 RUN echo "NJOBS_OPTION is '$NJOBS_OPTION'"
 
-# RUN make $NJOBS_OPTION
+RUN make $NJOBS_OPTION
 
-# RUN make install
+RUN make install
 
-# RUN echo "besdaemon is here: "`which besdaemon`
+RUN echo "besdaemon is here: "`which besdaemon`
 
-# ################################################################
-# ##### Stage 3: Copy the built bes onto the dependencies image
-# ################################################################
-# FROM deps-base
-# COPY --from=builder ${PREFIX} ${PREFIX}
+################################################################
+##### Stage 3: Copy the built bes onto the dependencies image
+################################################################
+FROM deps-base
+COPY --from=builder ${PREFIX} ${PREFIX}
 
-# RUN echo "besdaemon is here: "`which besdaemon`
+RUN echo "besdaemon is here: "`which besdaemon`
 
-# CMD ["-"]
+CMD ["-"]
 
