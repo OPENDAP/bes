@@ -43,6 +43,8 @@ aws s3 cp "s3://opendap.travis.build/$HYRAX_DEPENDENCIES_TARBALL" $AWS_DOWNLOADS
 aws s3 cp "s3://opendap.travis.build/$LIBDAP_RPM_FILENAME" "$AWS_DOWNLOADS_DIR"
 aws s3 cp "s3://opendap.travis.build/$LIBDAP_DEVEL_RPM_FILENAME" "$AWS_DOWNLOADS_DIR"
 
+DOCKER_DEV_FLAGS=${DOCKER_DEV_FLAGS:-""}
+
 # Build the image
 docker image pull opendap/rocky8_hyrax_builder:latest
 docker build \
@@ -58,7 +60,7 @@ docker build \
     --tag "${SNAPSHOT_IMAGE_TAG}" \
     --tag "${BUILD_VERSION_TAG}" \
     --build-context aws_downloads="$AWS_DOWNLOADS_DIR/" \
-    --progress=plain ${DOCKER_DEV_FLAGS:-" "} \
+    --progress=plain $DOCKER_DEV_FLAGS \
     -f ${BES_REPO_DIR}/Dockerfile ${BES_REPO_DIR}
 
 docker image ls -a
