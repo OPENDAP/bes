@@ -1279,7 +1279,7 @@ void DmrppArray::read_chunks_dio_unconstrained()
 }
 
 //The direct chunk IO routine of read chunks with the buffer chunk, mostly copy from the general IO handling routines.
-void DmrppArray::read_buffer_chunks_dio_unconstrained()
+void DmrppArray::read_buffer_chunks_unconstrained_dio()
 {
 
     if (get_chunk_count() < 2)
@@ -1396,35 +1396,13 @@ void DmrppArray::read_buffer_chunks_dio_unconstrained()
     //Change to the total storage buffer size to just the compressed buffer size. 
     reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
 
-    // The size in element of each of the array's dimensions
-    const vector<unsigned long long> array_shape = get_shape(true);
-    // The size, in elements, of each of the chunk's dimensions
-    const vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
-
-    BESDEBUG(dmrpp_3, prolog << "d_use_transfer_threads: " << (DmrppRequestHandler::d_use_transfer_threads ? "true" : "false") << endl);
-    BESDEBUG(dmrpp_3, prolog << "d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl);
-
-    if (!DmrppRequestHandler::d_use_transfer_threads) {  // Serial transfers
-#if DMRPP_ENABLE_THREAD_TIMERS
-        BES_STOPWATCH_START(dmrpp_3, prolog + "Serial SuperChunk Processing.");
-#endif
-        while(!super_chunks.empty()) {
-            auto super_chunk = super_chunks.front();
-            super_chunks.pop();
-            BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl );
-
-            // Call direct IO routine 
-            super_chunk->read_unconstrained_dio();
-        }
+    while(!super_chunks.empty()) {
+        auto super_chunk = super_chunks.front();
+        super_chunks.pop();
+        super_chunk->read_unconstrained_dio();
     }
-    else {      // Parallel transfers
-#if DMRPP_ENABLE_THREAD_TIMERS
-        string timer_name = prolog + "Concurrent SuperChunk Processing. d_max_transfer_threads: " + to_string( DmrppRequestHandler::d_max_transfer_threads);
-        BES_STOPWATCH_START(dmrpp_3, timer_name);
-#endif
-        // Call direct IO routine for parallel transfers
-        read_super_chunks_unconstrained_concurrent_dio(super_chunks, this);
-    }
+
+
     set_read_p(true);
 }
 
