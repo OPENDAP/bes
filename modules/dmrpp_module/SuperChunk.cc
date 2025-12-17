@@ -779,6 +779,8 @@ void SuperChunk::retrieve_data_dio() {
         d_read_buffer = new char[d_size];
     }
 
+BESDEBUG("dmrpp", "SuperChunk dio read buffer offset: " << d_offset <<" buffer size: " << d_size <<  "." << endl);
+
     // Massage the chunks so that their read/receive/intern data buffer
     // points to the correct section of the d_read_buffer memory.
     // "Slice it up!"

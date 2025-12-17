@@ -1279,7 +1279,7 @@ void DmrppArray::read_chunks_dio_unconstrained()
 }
 
 //The direct chunk IO routine of read chunks with the buffer chunk, mostly copy from the general IO handling routines.
-void DmrppArray::read_buffer_chunks_unconstrained_dio()
+void DmrppArray::read_buffer_chunks_dio_unconstrained()
 {
 
     if (get_chunk_count() < 2)
@@ -3046,7 +3046,10 @@ bool DmrppArray::read()
                     // KENT: Only here we need to consider the direct buffer IO.
                     if (this->get_dio_flag()) {
                         BESDEBUG(MODULE, prolog << "Using direct IO" << endl);
-                        array_to_read->read_chunks_dio_unconstrained();
+                        if (buffer_chunk_case && DmrppRequestHandler::use_buffer_chunk) 
+                            array_to_read->read_buffer_chunks_dio_unconstrained();
+                        else 
+                            array_to_read->read_chunks_dio_unconstrained();
                     }
                     // Also buffer chunks for the non-contiguous chunk case.
                     else if(buffer_chunk_case && DmrppRequestHandler::use_buffer_chunk) { 
