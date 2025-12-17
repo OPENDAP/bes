@@ -1,4 +1,4 @@
-# Dockerfile for bes-rocky8 image
+# Dockerfile for bes-rhel8 image
 
 ###############################################################
 ##### Stage 1. Install libdap and dependencies

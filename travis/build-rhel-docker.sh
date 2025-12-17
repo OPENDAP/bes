@@ -4,8 +4,9 @@
 # run from within the Travis build process and depends on env variables
 # set in the BES's .travis.yml file.
 #
-# It can be run locally, as long as the env vars $BES_REPO_DIR, $DOCKER_NAME,
-# $DIST, $OS, $BES_BUILD_NUMBER, and $LIBDAP_RPM_VERSION are set.
+# It can be run locally, as long as the env vars $BES_REPO_DIR,
+# $SNAPSHOT_IMAGE_TAG, $BUILD_VERSION_TAG, $DIST, $OS, $BES_BUILD_NUMBER,
+# and $LIBDAP_RPM_VERSION are set.
 #
 # Optional env vars are $GDAL_OPTION and $DOCKER_DEV_FLAGS.
 #
@@ -14,7 +15,8 @@
 #
 # Run the script like this:
 #    BES_REPO_DIR="." \
-#    DOCKER_NAME="bes-rocky8" \
+#    SNAPSHOT_IMAGE_TAG="opendap/bes-rocky8:snapshot" \
+#    BUILD_VERSION_TAG="opendap/bes-rocky8:12345" \
 #    DIST=el8 \
 #    OS=rocky8 \
 #    BES_BUILD_NUMBER=12345 \
@@ -28,10 +30,6 @@
 # e: exit immediately on non-zero exit value from a command
 # u: treat unset env vars in substitutions as an error
 set -eux
-
-# Set up the build environment vars
-export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot"
-export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_BUILD_NUMBER}"
 
 # Download the build dependencies
 export AWS_DOWNLOADS_DIR="/tmp/dependency_downloads"

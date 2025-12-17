@@ -210,6 +210,8 @@ jobs:
         - export DIST=el8
         - export OS=rocky8
         - export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
+        - export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot"
+        - export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_BUILD_NUMBER}"
         - bash ${TRAVIS_BUILD_DIR}/travis/build-rhel-docker.sh
         # TODO: remove this before merging! Using for debugging
         - bash ${TRAVIS_BUILD_DIR}/travis/deploy-to-docker-hub.sh
