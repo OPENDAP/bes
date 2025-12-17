@@ -30,7 +30,7 @@ RUN --mount=from=aws_downloads,target=/tmp \
 ################################################################
 ##### Stage 2. Make and install the bes
 ################################################################
-FROM deps-base AS bes-builder
+FROM deps-base AS builder
 
 COPY . bes/
 WORKDIR /bes
@@ -46,8 +46,10 @@ RUN ./configure --disable-dependency-tracking --prefix=${PREFIX} \
     $GDAL_OPTION \
     --with-build=$BES_BUILD_NUMBER
 
-ARG NJOBS
-ENV NJOBS_OPTION="-j${NJOBS:-1}"
+ARG NJOBS_OPTION
+ENV NJOBS_OPTION="${NJOBS_OPTION:-""}"
+RUN echo "NJOBS_OPTION is '$NJOBS_OPTION'"
+
 RUN make $NJOBS_OPTION
 
 RUN make install
@@ -58,7 +60,7 @@ RUN echo "besdaemon is here: "`which besdaemon`
 ##### Stage 3: Copy the built bes onto the dependencies image
 ################################################################
 FROM deps-base
-COPY --from=bes-builder ${PREFIX} ${PREFIX}
+COPY --from=builder ${PREFIX} ${PREFIX}
 
 RUN echo "besdaemon is here: "`which besdaemon`
 
