@@ -3870,8 +3870,8 @@ void DmrppArray::obtain_buffer_end_pos_vec(const vector<bool>& subset_chunks_nee
                     bool next_chunk_needed = select_whole_array?true:subset_chunks_needed[i+1];
                     if (!next_chunk_needed || chunks[i+1]->get_offset()==0)  {
                     //if (!chunks_needed[i+1] || chunks[i+1]->get_offset()==0)  {
-                        for (unsigned j = i+2; j<chunks.size();j++) {
-                            bool temp_chunk_needed = (select_whole_array)?true:subset_chunks_needed[j];
+                        for (unsigned long long j = i+2; j<chunks.size();j++) {
+                            bool temp_chunk_needed = select_whole_array?true:subset_chunks_needed[j];
                             //if(chunks_needed[j] && chunks[j]->get_offset()!=0) {
                             if(temp_chunk_needed  && chunks[j]->get_offset()!=0) {
                                 next_chunk_offset = (chunks[j])->get_offset();
