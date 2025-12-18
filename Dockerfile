@@ -1,4 +1,4 @@
-# Dockerfile for bes-rhel8 image
+# Dockerfile for bes_rhel8 image
 
 ###############################################################
 ##### Stage 1. Install libdap and dependencies
@@ -65,4 +65,3 @@ COPY --from=builder ${PREFIX} ${PREFIX}
 RUN echo "besdaemon is here: "`which besdaemon`
 
 CMD ["-"]
-
