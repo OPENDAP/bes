@@ -15,8 +15,8 @@
 #
 # Run the script like this:
 #    BES_REPO_DIR="." \
-#    SNAPSHOT_IMAGE_TAG="opendap/bes-rocky8:snapshot" \
-#    BUILD_VERSION_TAG="opendap/bes-rocky8:12345" \
+#    SNAPSHOT_IMAGE_TAG="opendap/bes_rhel8:snapshot" \
+#    BUILD_VERSION_TAG="opendap/bes_rhel8:12345" \
 #    DIST=el8 \
 #    OS=rocky8 \
 #    BES_BUILD_NUMBER=12345 \

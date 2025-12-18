@@ -206,7 +206,7 @@ jobs:
         - echo $DOCKER_HUB_PWSD | docker login -u $DOCKER_HUB_UID --password-stdin
         - export BES_BUILD=docker-rhel8
         - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
-        - export DOCKER_NAME="bes-rocky8"
+        - export DOCKER_NAME="bes_rhel8"
         - export DIST=el8
         - export OS=rocky8
         - export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
