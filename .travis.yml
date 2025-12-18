@@ -77,10 +77,6 @@ env:
     - secure: "eUL/RY4kJD9sb3q98Xbfbcdhs6eyFWkfWNb0tvRzksBi/+tYiuojsek0qoBFZnRnO0wwyDAaDrZgu2yoLQTBxGSTqCsYaoDiFtw2m8aW3r+FdjpfmyVR52U9vMoZtpiPGYYM9utlyQ6YRNhzq+XzDJ4juygoIlzbp7qXTALqIL8="
     # GIT_PSWD for travis-ci-opendap
     - secure: "dlULHE4qbXKEgqJZ0hiL7PcUqEcFaHzHE5GQbZ1v6wCyFujEvq34ayChOHuxZvrfNo64lCKjpHYs1Znq0m69dpkdSP3m0fv2rgLaqqTxD+ewgsYzmlKRA8jWuDx0WvV5IltS9KNdBj2Aj6wSsw5cqPkuRbYQlQCYj7GdqhAPlP8="
-    # DOCKER_HUB_UID for travis
-    # - secure: "b0/W8+DA35StZB5BKRDn0yLxGE6n/Hc4vXRUBX2bylsSyw1IVplrl4PgKbafE0CT5PfFssOUH1cMlYcSOXgV3EWOeNWquIhwq1cASUJClTf55Y4kr1XPr6bNtdbPJ7UAKw1EG2TyZx0vy7A6TrKwgb9Al24ABm0ev4aFWUk+Sks="
-    # DOCKER_HUB_PSWD for travis
-    # - secure: "Z+M0JHT3szHclksjh8ettN9OoDjX0+lgOaORnSH8H/xvaQp1YCYzmEajnknGGCop6arM+PaiArZEZl7e8X1kBqReitSISLCwbS6XU/juRi1OBqfkk1YzSOgU03jLXe3MG2CmfQRLdExjdHCsphHEXthU2Z0tY++Tq31IfFPy1JQ="
     - CMAC_ID="${AWS_ACCESS_KEY_ID}"
     - CMAC_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
     - CMAC_URL="https://s3.amazonaws.com/cloudydap/"
@@ -144,61 +140,61 @@ stages:
 
 jobs:
   include:
-    # - stage: build-and-package
-    #   name: "check"
-    #   script:
-    #     - export BES_BUILD=main
-    #     # - export RUNTESTFLAGS="-v"
-    #     - autoreconf --force --install --verbose
-    #     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --enable-developer
-    #     - export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
-    #     - echo "LD_LIBRARY_PATH - $LD_LIBRARY_PATH" >&2
-    #     - make -j16 && make install && besctl start && make check -j16 && besctl stop
+    - stage: build-and-package
+      name: "check"
+      script:
+        - export BES_BUILD=main
+        # - export RUNTESTFLAGS="-v"
+        - autoreconf --force --install --verbose
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --enable-developer
+        - export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
+        - echo "LD_LIBRARY_PATH - $LD_LIBRARY_PATH" >&2
+        - make -j16 && make install && besctl start && make check -j16 && besctl stop
 
-    # - stage: build-and-package
-    #   name: "distcheck"
-    #   script:
-    #     - export BES_BUILD=distcheck
-    #     - autoreconf --force --install --verbose
-    #     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION--enable-developer
-    #     - make distcheck -j16 GZIP_ENV=--fast
+    - stage: build-and-package
+      name: "distcheck"
+      script:
+        - export BES_BUILD=distcheck
+        - autoreconf --force --install --verbose
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION--enable-developer
+        - make distcheck -j16 GZIP_ENV=--fast
 
-    # - stage: build-and-package
-    #   name: "Enterprise Linux 8 RPMs (via Rocky8)"
-    #   script:
-    #     - export BES_BUILD=rocky8
-    #     - mkdir -p $prefix/rpmbuild
-    #     - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
-    #     - docker run 
-    #       --env prefix=/root/install 
-    #       --volume $prefix/rpmbuild:/root/rpmbuild
-    #       --volume $TRAVIS_BUILD_DIR:/root/travis
-    #       --env GDAL_OPTION="$GDAL_OPTION"
-    #       --env OS=rocky8
-    #       --env DIST=el8
-    #       --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
-    #       --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
-    #       --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-    #       --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-    #       opendap/rocky8_hyrax_builder:latest /root/travis/travis/build-rh8-rpm.sh
+    - stage: build-and-package
+      name: "Enterprise Linux 8 RPMs (via Rocky8)"
+      script:
+        - export BES_BUILD=rocky8
+        - mkdir -p $prefix/rpmbuild
+        - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+        - docker run
+          --env prefix=/root/install
+          --volume $prefix/rpmbuild:/root/rpmbuild
+          --volume $TRAVIS_BUILD_DIR:/root/travis
+          --env GDAL_OPTION="$GDAL_OPTION"
+          --env OS=rocky8
+          --env DIST=el8
+          --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+          --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
+          --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+          --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+          opendap/rocky8_hyrax_builder:latest /root/travis/travis/build-rh8-rpm.sh
 
-    # - stage: build-and-package
-    #   name: "Enterprise Linux 9 RPMs (via Rocky9)"
-    #   script:
-    #     - export BES_BUILD=rocky9
-    #     - mkdir -p $prefix/rpmbuild
-    #     - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
-    #     - docker run 
-    #       --env prefix=/root/install 
-    #       --volume $prefix/rpmbuild:/root/rpmbuild
-    #       --volume $TRAVIS_BUILD_DIR:/root/bes
-    #       --env GDAL_OPTION="$GDAL_OPTION"
-    #       --env DIST="el9"
-    #       --env LIBDAP_RPM_VERSION="$LIBDAP_RPM_VERSION"
-    #       --env BES_BUILD_NUMBER="$BES_BUILD_NUMBER"
-    #       --env AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
-    #       --env AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
-    #       opendap/rocky9_hyrax_builder:latest /root/bes/travis/build-rh9-rpm.sh
+    - stage: build-and-package
+      name: "Enterprise Linux 9 RPMs (via Rocky9)"
+      script:
+        - export BES_BUILD=rocky9
+        - mkdir -p $prefix/rpmbuild
+        - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+        - docker run 
+          --env prefix=/root/install 
+          --volume $prefix/rpmbuild:/root/rpmbuild
+          --volume $TRAVIS_BUILD_DIR:/root/bes
+          --env GDAL_OPTION="$GDAL_OPTION"
+          --env DIST="el9"
+          --env LIBDAP_RPM_VERSION="$LIBDAP_RPM_VERSION"
+          --env BES_BUILD_NUMBER="$BES_BUILD_NUMBER"
+          --env AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
+          --env AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
+          opendap/rocky9_hyrax_builder:latest /root/bes/travis/build-rh9-rpm.sh
 
     - stage: build-and-package
       name: "Build bes docker image (RHEL8)"
@@ -215,60 +211,60 @@ jobs:
         # TODO: remove this before merging! Using for debugging
         - bash ${TRAVIS_BUILD_DIR}/travis/deploy-to-docker-hub.sh
 
-    # - stage: build-and-package
-    #   name: "dist"
-    #   script:
-    #     - export BES_BUILD=srcdist
-    #     - autoreconf --force --install --verbose
-    #     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --with-build=$BES_BUILD_NUMBER
-    #     - make dist -j7
-    #     # Make both a bes-<version>-<build num> and bes-snapshot tar.gz. This will simplify
-    #     # other operations that use the bes source code. Note that the VERSION file holds a
-    #     # string that is the version number that is set by the configure script and the build
-    #     # number passed into configure when it is run. jhrg 3/23/21
-    #     - SOURCE_VERSION=$(cat bes_VERSION)
-    #     - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
-    #     - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
+    - stage: build-and-package
+      name: "dist"
+      script:
+        - export BES_BUILD=srcdist
+        - autoreconf --force --install --verbose
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --with-build=$BES_BUILD_NUMBER
+        - make dist -j7
+        # Make both a bes-<version>-<build num> and bes-snapshot tar.gz. This will simplify
+        # other operations that use the bes source code. Note that the VERSION file holds a
+        # string that is the version number that is set by the configure script and the build
+        # number passed into configure when it is run. jhrg 3/23/21
+        - SOURCE_VERSION=$(cat bes_VERSION)
+        - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
+        - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
 
-    # - stage: scan
-    #   name: "scan bes"
-    #   script:
-    #   - export BES_BUILD=sonar-bes-framework
-    #   - autoreconf --force --install --verbose
-    #   - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer --enable-coverage
-    #   - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
-    #   - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
-    #   - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "QUALITY GATE PASS"
+    - stage: scan
+      name: "scan bes"
+      script:
+      - export BES_BUILD=sonar-bes-framework
+      - autoreconf --force --install --verbose
+      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer --enable-coverage
+      - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
+      - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
+      - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "QUALITY GATE PASS"
 
-    # - stage: scan
-    #   name: "scan bes-modules-1"
-    #   script:
-    #     - export BES_BUILD=sonar-bes-modules
-    #     - autoreconf --force --install --verbose
-    #     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
-    #     - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
-    #     - sonar-scanner -Dproject.settings=sonar-bes-modules-1.properties -Dsonar.login=$SONAR_MODULES_LOGIN
-    #     - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
+    - stage: scan
+      name: "scan bes-modules-1"
+      script:
+        - export BES_BUILD=sonar-bes-modules
+        - autoreconf --force --install --verbose
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
+        - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
+        - sonar-scanner -Dproject.settings=sonar-bes-modules-1.properties -Dsonar.login=$SONAR_MODULES_LOGIN
+        - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
 
-    # - stage: scan
-    #   name: "scan bes-hdf-handlers"
-    #   script:
-    #     - export BES_BUILD=sonar-bes-hdf-handlers
-    #     - autoreconf --force --install --verbose
-    #     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
-    #     - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
-    #     - sonar-scanner -Dproject.settings=sonar-bes-hdf-handlers.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
-    #     # We call the hdf4/5 handlers scan opendap-bes-submodules for historical reasons. jhrg 1/13/22
-    #     - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-submodules | grep "QUALITY GATE PASS"
+    - stage: scan
+      name: "scan bes-hdf-handlers"
+      script:
+        - export BES_BUILD=sonar-bes-hdf-handlers
+        - autoreconf --force --install --verbose
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
+        - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
+        - sonar-scanner -Dproject.settings=sonar-bes-hdf-handlers.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
+        # We call the hdf4/5 handlers scan opendap-bes-submodules for historical reasons. jhrg 1/13/22
+        - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-submodules | grep "QUALITY GATE PASS"
 
-    # - stage: hyrax-olfs-trigger
-    #   name: "Hyrax OLFS Trigger"
-    #   script:
-    #     - export STAGE=hyrax-olfs
-    #     - echo $STAGE
-    #     - autoreconf --force --install --verbose
-    #     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
-    #     - ./travis/trigger-olfs-build.sh
+    - stage: hyrax-olfs-trigger
+      name: "Hyrax OLFS Trigger"
+      script:
+        - export STAGE=hyrax-olfs
+        - echo $STAGE
+        - autoreconf --force --install --verbose
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
+        - ./travis/trigger-olfs-build.sh
 
 after_script:
   - ./travis/upload-test-results.sh

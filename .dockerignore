@@ -198,6 +198,3 @@ configured_features.txt
 
 */.deps 
 */.libs
-
-# TODO: remove
-x_*
