@@ -109,7 +109,9 @@ install:
 
 before_script:
   - source travis/travis_bes_build_offset.sh
+  - $TRAVIS_BRANCH"
   - export BES_BUILD_NUMBER=$(expr $TRAVIS_BUILD_NUMBER - $BES_TRAVIS_BUILD_OFFSET)
+  - if [[ "$TRAVIS_BRANCH" == *"-test-deploy" ]]; then BES_BUILD_NUMBER="$BES_BUILD_NUMBER-test-deploy" ;fi
   - echo "BES_BUILD_NUMBER is ${BES_BUILD_NUMBER} = ${TRAVIS_BUILD_NUMBER} - ${BES_TRAVIS_BUILD_OFFSET}"
   - export LIBDAP_RPM_VERSION=$(grep "libdap4-" libdap4-snapshot | awk '{print $1;}' - | sed "s/libdap4-//g")
   - echo "Travis default env:"
