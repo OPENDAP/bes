@@ -721,7 +721,14 @@ AS_IF([test -n "$with_gdal_prefix" -a $with_gdal_prefix = no],
     [test -n "$with_gdal_prefix" -a -x $with_gdal_prefix/bin/gdal-config],
     dnl then
     [AC_MSG_NOTICE([Using $with_gdal_prefix as the GDAL prefix directory.])
-    GDAL_LDFLAGS="`$with_gdal_prefix/bin/gdal-config --libs` `$with_gdal_prefix/bin/gdal-config --dep-libs`"
+
+    dnl This fix is for OSX with shared libs. Seems to not be needed on Linux.
+    dnl jhrg 11/07/25
+    gdal_shared_lib=
+    gdal_shared_lib += -Wl,-rpath,$(prefix)/deps/lib -Wl,-rpath,$(prefix)/deps/proj/lib
+    gdal_shared_lib += -Wl,-rpath,@loader_path
+
+    GDAL_LDFLAGS="$gdal_shared_lib `$with_gdal_prefix/bin/gdal-config --libs` `$with_gdal_prefix/bin/gdal-config --dep-libs`"
     GDAL_CFLAGS="`$with_gdal_prefix/bin/gdal-config --cflags`"
     GDAL_FOUND=1
     AC_DEFINE([HAVE_GDAL], [1], [The GDAL Library is present])
