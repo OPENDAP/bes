@@ -35,19 +35,18 @@
 
 #include "BESReporter.h"
 
-class TestReporter : public BESReporter
-{
+class TestReporter : public BESReporter {
 private:
-	std::string		_name ;
+    std::string _name;
+
 public:
-			TestReporter( std::string name ) ;
-    virtual		~TestReporter() ;
+    TestReporter(std::string name);
+    virtual ~TestReporter();
 
-    virtual void	report( BESDataHandlerInterface &dhi ) ;
-    virtual std::string	get_name() { return _name ; }
+    virtual void report(BESDataHandlerInterface &dhi);
+    virtual std::string get_name() { return _name; }
 
-    virtual void	dump( std::ostream &strm ) const { }
-} ;
+    virtual void dump(std::ostream &strm) const {}
+};
 
 #endif // A_TestReporter_h
-

@@ -25,13 +25,13 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 #include "config.h"
 
-#include <string>
 #include <iostream>
 #include <mutex>
 #include <sstream>
+#include <string>
 
-#include "BESLog.h"
 #include "BESDebug.h"
+#include "BESLog.h"
 #include "BESTimeoutError.h"
 #include "RequestServiceTimer.h"
 
@@ -39,9 +39,9 @@
 #include <unistd.h>
 #endif
 
-using std::string;
 using std::endl;
 using std::ostream;
+using std::string;
 
 using namespace std::chrono;
 
@@ -52,9 +52,7 @@ using namespace std::chrono;
  * it will create and initialize one.  The initialization sets the start_time to now and
  * time_out disabled.
  */
-RequestServiceTimer *
-RequestServiceTimer::TheTimer()
-{
+RequestServiceTimer *RequestServiceTimer::TheTimer() {
     static RequestServiceTimer timer;
     return &timer;
 }
@@ -67,14 +65,13 @@ RequestServiceTimer::TheTimer()
  * The RequestServiceTimer is a per request timer, the start method should
  * be called prior to executing each request.
  */
-void RequestServiceTimer::start(milliseconds timeout_ms){
+void RequestServiceTimer::start(milliseconds timeout_ms) {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
 
-    if(timeout_ms > milliseconds{0}){
+    if (timeout_ms > milliseconds{0}) {
         timeout_enabled = true;
         d_bes_timeout = timeout_ms;
-    }
-    else {
+    } else {
         timeout_enabled = false;
         d_bes_timeout = milliseconds{0};
     }
@@ -84,7 +81,7 @@ void RequestServiceTimer::start(milliseconds timeout_ms){
 /**
  * @brief Return the time duration in milliseconds since the timer was started.
  *
-*/
+ */
 milliseconds RequestServiceTimer::elapsed() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
     return duration_cast<milliseconds>(steady_clock::now() - start_time);
@@ -100,12 +97,11 @@ milliseconds RequestServiceTimer::elapsed() const {
 milliseconds RequestServiceTimer::remaining() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
     milliseconds remaining{0};
-    BESDEBUG(MODULE, prolog << "init remaining: " << remaining.count() <<  endl);
+    BESDEBUG(MODULE, prolog << "init remaining: " << remaining.count() << endl);
     if (timeout_enabled) {
         BESDEBUG(MODULE, prolog << "timeout enabled" << endl);
         remaining = d_bes_timeout - elapsed();
-    }
-    else {
+    } else {
         BESDEBUG(MODULE, prolog << "timeout disabled" << endl);
     }
     return remaining;
@@ -115,39 +111,57 @@ milliseconds RequestServiceTimer::remaining() const {
  *
  * If the time_out is enabled return false if there is time remaining
  * else return true; the time_out has expired.
-*/
+ */
 bool RequestServiceTimer::is_expired() const {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
     auto dt = remaining();
     BESDEBUG(MODULE, prolog + "remaining: " + std::to_string(dt.count()) + " ms\n");
-    return timeout_enabled && (dt <= milliseconds {0});
+    return timeout_enabled && (dt <= milliseconds{0});
 }
 
 /** @brief Set the time_out is disabled.
  *
-*/
-void RequestServiceTimer::disable_timeout(){
+ */
+void RequestServiceTimer::disable_timeout() {
     std::lock_guard<std::recursive_mutex> lock_me(d_rst_lock_mutex);
     timeout_enabled = false;
 }
 
 string RequestServiceTimer::dump(bool pretty) const {
     std::stringstream ss;
-    if(!pretty){ ss<<"["; }
+    if (!pretty) {
+        ss << "[";
+    }
     ss << "RequestServiceTimer(" << (void *)this << ") - ";
-    if(pretty){ ss << endl << "  "; }
+    if (pretty) {
+        ss << endl << "  ";
+    }
     ss << "bes_timeout: " << d_bes_timeout.count() << "ms ";
-    if(pretty){ ss << endl << "  "; }
+    if (pretty) {
+        ss << endl << "  ";
+    }
     ss << "start_time: " << duration_cast<seconds>(start_time.time_since_epoch()).count() << "s ";
-    if(pretty){ ss << endl << "  "; }
-    ss << "is_timeout_enabled(): " << (is_timeout_enabled() ?"true ":"false ");
-    if(pretty){ ss << endl << "  "; }
+    if (pretty) {
+        ss << endl << "  ";
+    }
+    ss << "is_timeout_enabled(): " << (is_timeout_enabled() ? "true " : "false ");
+    if (pretty) {
+        ss << endl << "  ";
+    }
     ss << "elapsed(): " << elapsed().count() << "ms ";
-    if(pretty){ ss << endl << "  "; }
+    if (pretty) {
+        ss << endl << "  ";
+    }
     ss << "remaining(): " << remaining().count() << "ms ";
-    if(pretty){ ss << endl << "  "; }
-    ss << "is_expired(): " <<  (is_expired()?"true":"false");
-    if(pretty){ ss << endl; }else{ ss << "]"; }
+    if (pretty) {
+        ss << endl << "  ";
+    }
+    ss << "is_expired(): " << (is_expired() ? "true" : "false");
+    if (pretty) {
+        ss << endl;
+    } else {
+        ss << "]";
+    }
     return ss.str();
 }
 
@@ -157,11 +171,7 @@ string RequestServiceTimer::dump(bool pretty) const {
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void RequestServiceTimer::dump( ostream &strm ) const
-{
-    strm << dump() << endl;
-}
-
+void RequestServiceTimer::dump(ostream &strm) const { strm << dump() << endl; }
 
 /** @brief Checks the RequestServiceTimer to determine if the
  * time spent servicing the request at this point has exceeded the
@@ -171,18 +181,15 @@ void RequestServiceTimer::dump( ostream &strm ) const
  * @param message to be delivered in error response.
  * @param file The file (__FILE__) that called this method
  * @param line The line (__LINE__) in the file that made the call to this method.
-*/
-void RequestServiceTimer::throw_if_timeout_expired(const string &message, const string &file, const int line)
-{
+ */
+void RequestServiceTimer::throw_if_timeout_expired(const string &message, const string &file, const int line) {
     bool expired = is_expired();
 
     if (expired) {
-        auto time_out_seconds = std::to_string(((double)d_bes_timeout.count())/1000.00);
-        auto elapsed_time_seconds =  std::to_string(((double)elapsed().count())/1000.00);
-        ERROR_LOG(prolog + "ERROR: Time to transmit timeout expired. "+
-                            "Elapsed Time: " + elapsed_time_seconds + " " +
-                            "max_time_to_transmit: " +  time_out_seconds +
-                            "\n");
+        auto time_out_seconds = std::to_string(((double)d_bes_timeout.count()) / 1000.00);
+        auto elapsed_time_seconds = std::to_string(((double)elapsed().count()) / 1000.00);
+        ERROR_LOG(prolog + "ERROR: Time to transmit timeout expired. " + "Elapsed Time: " + elapsed_time_seconds + " " +
+                  "max_time_to_transmit: " + time_out_seconds + "\n");
 
         std::stringstream errMsg;
         errMsg << "The request that you submitted timed out. The server was unable to begin transmitting" << endl;
@@ -195,7 +202,7 @@ void RequestServiceTimer::throw_if_timeout_expired(const string &message, const 
         errMsg << "of data requested. You can also try requesting a different encoding for the response." << endl;
         errMsg << "If you asked for the response to be encoded as a NetCDF-3 or NetCDF-4 file be aware" << endl;
         errMsg << "that these response encodings are not streamable. In order to build these responses" << endl;
-        errMsg << "the server must write the entire response to a temporary file before it can begin to"<< endl;
+        errMsg << "the server must write the entire response to a temporary file before it can begin to" << endl;
         errMsg << "send the response to the requesting client. Changing to a different encoding, such" << endl;
         errMsg << "as DAP4 data, may allow the server to successfully respond to your request." << endl;
         errMsg << "The service component that ran out of time said: " << endl;

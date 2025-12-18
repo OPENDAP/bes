@@ -34,11 +34,11 @@
 #define TheBESKeys_h_ 1
 
 #include <fstream>
-#include <unordered_map>
-#include <set>
-#include <vector>
-#include <string>
 #include <memory>
+#include <set>
+#include <string>
+#include <unordered_map>
+#include <vector>
 
 #include "BESObj.h"
 
@@ -47,10 +47,6 @@ constexpr auto DC_REGEX_KEY = "regex";
 constexpr auto DC_CONFIG_KEY = "config";
 
 #define DYNAMIC_CONFIG_ENABLED 0
-
-namespace http {
-class HttpCacheTest;
-}
 
 /** @brief mapping of key/value pairs defining different behaviors of an
  * application.
@@ -88,14 +84,13 @@ class HttpCacheTest;
  * BES provides a single object for access to a single BESKeys object,
  * TheBESKeys.
  */
-class TheBESKeys: public BESObj {
+class TheBESKeys : public BESObj {
 
     friend class keysT;
-    friend class http::HttpCacheTest;
 
     std::string d_keys_file_name;
 
-    std::unordered_map< std::string, std::vector<std::string> > d_the_keys;
+    std::unordered_map<std::string, std::vector<std::string>> d_the_keys;
 
 #if DYNAMIC_CONFIG_ENABLED
     std::unique_ptr<keys_kvp> d_the_original_keys{new keys_kvp()};
@@ -109,7 +104,7 @@ class TheBESKeys: public BESObj {
     // Only called by the static TheBESKeys::TheKeys() method.
     explicit TheBESKeys(std::string keys_file_name);
 
-    TheBESKeys();
+    TheBESKeys() = delete;
 
 public:
     /**
@@ -128,9 +123,7 @@ public:
     /// Access to the singleton.
     static TheBESKeys *TheKeys();
 
-    std::string keys_file_name() const {
-        return d_keys_file_name;
-    }
+    std::string keys_file_name() const { return d_keys_file_name; }
 
     void reload_keys();
     void reload_keys(const std::string &keys_file_name);
@@ -153,8 +146,8 @@ public:
     void get_values(const std::string &, std::unordered_map<std::string, std::string> &map_values,
                     bool case_insensitive_map_keys, bool &found);
 
-    void get_values(const std::string &, std::unordered_map<std::string,
-                    std::unordered_map<std::string, std::vector<std::string> > > &map,
+    void get_values(const std::string &,
+                    std::unordered_map<std::string, std::unordered_map<std::string, std::vector<std::string>>> &map,
                     bool case_insensitive_map_keys, bool &found);
 
     static bool read_bool_key(const std::string &key, bool default_value);
@@ -167,25 +160,20 @@ public:
 
     static uint64_t read_uint64_key(const std::string &key, uint64_t default_value);
 
-    std::unordered_map<std::string, std::vector<std::string> >::const_iterator keys_begin() {
+    std::unordered_map<std::string, std::vector<std::string>>::const_iterator keys_begin() {
         return d_the_keys.begin();
     }
 
-    std::unordered_map<std::string, std::vector<std::string> >::const_iterator keys_end() {
-        return d_the_keys.end();
-    }
+    std::unordered_map<std::string, std::vector<std::string>>::const_iterator keys_end() { return d_the_keys.end(); }
 
     std::string get_as_config() const;
 
     void load_dynamic_config(const std::string &name);
 
-    bool using_dynamic_config() const {
-        return d_dynamic_config_in_use;
-    }
+    bool using_dynamic_config() const { return d_dynamic_config_in_use; }
 
     void dump(std::ostream &strm) const override;
     virtual std::string dump() const;
 };
 
 #endif // TheBESKeys_h_
-

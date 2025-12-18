@@ -23,13 +23,13 @@
 
 #include "config.h"
 
-#include <string>
 #include <ostream>
 #include <sstream>
+#include <string>
 
 #include "BESDebug.h"
-#include "BESInfo.h"
 #include "BESIndent.h"
+#include "BESInfo.h"
 
 #include "CatalogItem.h"
 
@@ -62,12 +62,11 @@ using namespace std;
  * @param info Add information to this instance of BESInfo.
  * @see CatalogItem::encode_item()
  */
-void CatalogItem::encode_item(BESInfo *info) const
-{
+void CatalogItem::encode_item(BESInfo *info) const {
     map<string, string, std::less<>> props;
 
     props[CATALOG_NAME_KEY] = get_name();
-    props[CATALOG_TYPE_KEY] = get_type() == leaf ? "leaf": "node";
+    props[CATALOG_TYPE_KEY] = get_type() == leaf ? "leaf" : "node";
     props[CATALOG_LMT_KEY] = get_lmt();
     if (get_type() == leaf) {
         ostringstream oss;
@@ -75,15 +74,15 @@ void CatalogItem::encode_item(BESInfo *info) const
         props[CATALOG_SIZE_KEY] = oss.str();
         props[CATALOG_IS_DATA_KEY] = is_data() ? "true" : "false";
         string dap_service_url = get_dap_service_url();
-        BESDEBUG(MODULE,prolog << "dap_service_url: " << dap_service_url << endl );
-        if(!dap_service_url.empty()){
+        BESDEBUG(MODULE, prolog << "dap_service_url: " << dap_service_url << endl);
+        if (!dap_service_url.empty()) {
             props[CATALOG_DAP_URL_KEY] = dap_service_url;
         }
     }
 
     info->begin_tag(CATALOG_ITEM_TAG, &props);
     string description = get_description();
-    if(!description.empty()){
+    if (!description.empty()) {
         map<string, string, std::less<>> description_props;
         info->begin_tag(CATALOG_DESCRIPTION_KEY, &description_props);
         info->add_data(description);
@@ -103,17 +102,14 @@ void CatalogItem::encode_item(BESInfo *info) const
         }
     }
 #endif
-
 }
-
 
 /**
  * Dump out information about this object
  * @param strm Write to this stream
  */
-void CatalogItem::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "CatalogItem::dump - (" << (void *) this << ")" << endl;
+void CatalogItem::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "CatalogItem::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
 
     strm << BESIndent::LMarg << "name: " << d_name << endl;

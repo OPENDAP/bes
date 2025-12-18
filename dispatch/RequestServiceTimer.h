@@ -26,13 +26,12 @@
 #ifndef I_RequestServiceTimer_h
 #define I_RequestServiceTimer_h 1
 
-#include <map>
-#include <string>
-#include <mutex>
 #include <chrono>
+#include <map>
+#include <mutex>
+#include <string>
 
-
-//#include "BESObj.h"
+// #include "BESObj.h"
 
 /** @brief The master request service timer for this server; a singleton
  *
@@ -49,11 +48,10 @@ private:
     RequestServiceTimer() = default;
 
 public:
-
     ~RequestServiceTimer() = default;
 
-    RequestServiceTimer(const RequestServiceTimer&) = delete;
-    RequestServiceTimer& operator=(const RequestServiceTimer&) = delete;
+    RequestServiceTimer(const RequestServiceTimer &) = delete;
+    RequestServiceTimer &operator=(const RequestServiceTimer &) = delete;
 
     static RequestServiceTimer *TheTimer();
 
@@ -71,13 +69,11 @@ public:
 
     void disable_timeout();
 
-    std::string dump(bool pretty=false) const ;
+    std::string dump(bool pretty = false) const;
 
-    void dump( std::ostream &strm ) const ;
+    void dump(std::ostream &strm) const;
 
     void throw_if_timeout_expired(const std::string &message, const std::string &file, const int line);
-
 };
 
 #endif // I_RequestServiceTimer_h
-

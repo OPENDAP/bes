@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -36,25 +36,19 @@
 #include "BESSilentInfo.h"
 #endif
 
-
 #include "BESContextManager.h"
-#include "BESDataNames.h"
-#include "BESSyntaxUserError.h"
-#include "BESResponseNames.h"
 #include "BESDataHandlerInterface.h"
+#include "BESDataNames.h"
+#include "BESResponseNames.h"
+#include "BESSyntaxUserError.h"
 
 using std::endl;
-using std::string;
 using std::ostream;
+using std::string;
 
-BESSetContextResponseHandler::BESSetContextResponseHandler(const string &name) :
-    BESResponseHandler(name)
-{
-}
+BESSetContextResponseHandler::BESSetContextResponseHandler(const string &name) : BESResponseHandler(name) {}
 
-BESSetContextResponseHandler::~BESSetContextResponseHandler()
-{
-}
+BESSetContextResponseHandler::~BESSetContextResponseHandler() = default;
 
 /** @brief executes the command to set context within the BES
  *
@@ -71,8 +65,7 @@ BESSetContextResponseHandler::~BESSetContextResponseHandler()
  * @see BESInfo
  * @see BESContextManager
  */
-void BESSetContextResponseHandler::execute(BESDataHandlerInterface &dhi)
-{
+void BESSetContextResponseHandler::execute(BESDataHandlerInterface &dhi) {
 #if 0
     dhi.action_name = SET_CONTEXT_STR;
     BESInfo *info = new BESSilentInfo();
@@ -104,8 +97,7 @@ void BESSetContextResponseHandler::execute(BESDataHandlerInterface &dhi)
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void BESSetContextResponseHandler::transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/)
-{
+void BESSetContextResponseHandler::transmit(BESTransmitter * /*transmitter*/, BESDataHandlerInterface & /*dhi*/) {
 #if 0
     if (d_response_object) {
         BESInfo *info = dynamic_cast<BESInfo *>(d_response_object);
@@ -121,17 +113,13 @@ void BESSetContextResponseHandler::transmit(BESTransmitter */*transmitter*/, BES
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void BESSetContextResponseHandler::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESSetContextResponseHandler::dump - (" << (void *) this << ")" << endl;
+void BESSetContextResponseHandler::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESSetContextResponseHandler::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     BESResponseHandler::dump(strm);
     BESIndent::UnIndent();
 }
 
-BESResponseHandler *
-BESSetContextResponseHandler::SetContextResponseBuilder(const string &name)
-{
+BESResponseHandler *BESSetContextResponseHandler::SetContextResponseBuilder(const string &name) {
     return new BESSetContextResponseHandler(name);
 }
-

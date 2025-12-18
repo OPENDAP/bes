@@ -33,8 +33,8 @@
 #ifndef A_BESTransmitter_h
 #define A_BESTransmitter_h 1
 
-#include <string>
 #include <map>
+#include <string>
 
 #include "BESObj.h"
 

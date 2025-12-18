@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -32,70 +32,58 @@
 
 #include <mutex>
 
-#include "BESReporterList.h"
 #include "BESReporter.h"
+#include "BESReporterList.h"
 
 using std::endl;
 using std::ostream;
 using std::string;
 
-BESReporterList::BESReporterList() {}
+BESReporterList::BESReporterList() = default;
 
-bool
-BESReporterList::add_reporter( string reporter_name,
-			       BESReporter *reporter_object )
-{
+bool BESReporterList::add_reporter(string reporter_name, BESReporter *reporter_object) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    if( find_reporter( reporter_name ) == 0 )
-    {
-	_reporter_list[reporter_name] = reporter_object ;
-	return true ;
+    if (find_reporter(reporter_name) == nullptr) {
+        _reporter_list[reporter_name] = reporter_object;
+        return true;
     }
-    return false ;
+    return false;
 }
 
-BESReporter *
-BESReporterList::remove_reporter( string reporter_name )
-{
+BESReporter *BESReporterList::remove_reporter(string reporter_name) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    BESReporter *ret = 0 ;
-    BESReporterList::Reporter_iter i ;
-    i = _reporter_list.find( reporter_name ) ;
-    if( i != _reporter_list.end() )
-    {
-	ret = (*i).second;
-	_reporter_list.erase( i ) ;
+    BESReporter *ret = nullptr;
+    BESReporterList::Reporter_iter i;
+    i = _reporter_list.find(reporter_name);
+    if (i != _reporter_list.end()) {
+        ret = (*i).second;
+        _reporter_list.erase(i);
     }
-    return ret ;
+    return ret;
 }
 
-BESReporter *
-BESReporterList::find_reporter( string reporter_name )
-{
+BESReporter *BESReporterList::find_reporter(string reporter_name) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    BESReporterList::Reporter_citer i ;
-    i = _reporter_list.find( reporter_name ) ;
-    if( i != _reporter_list.end() )
-    {
-	return (*i).second;
+    BESReporterList::Reporter_citer i;
+    i = _reporter_list.find(reporter_name);
+    if (i != _reporter_list.end()) {
+        return (*i).second;
     }
-    return 0 ;
+    return nullptr;
 }
 
-void
-BESReporterList::report( BESDataHandlerInterface &dhi )
-{
+void BESReporterList::report(BESDataHandlerInterface &dhi) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    BESReporter *reporter = 0 ;
-    BESReporterList::Reporter_iter i = _reporter_list.begin() ;
-    for( ; i != _reporter_list.end(); i++ )
-    {
-	reporter = (*i).second ;
-	if( reporter ) reporter->report( dhi ) ;
+    BESReporter *reporter = nullptr;
+    BESReporterList::Reporter_iter i = _reporter_list.begin();
+    for (; i != _reporter_list.end(); i++) {
+        reporter = (*i).second;
+        if (reporter)
+            reporter->report(dhi);
     }
 }
 
@@ -106,41 +94,31 @@ BESReporterList::report( BESDataHandlerInterface &dhi )
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESReporterList::dump( ostream &strm ) const
-{
+void BESReporterList::dump(ostream &strm) const {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    strm << BESIndent::LMarg << "BESReporterList::dump - ("
-			     << (void *)this << ")" << endl ;
-    BESIndent::Indent() ;
-    if( _reporter_list.size() )
-    {
-	strm << BESIndent::LMarg << "registered reporters:" << endl ;
-	BESIndent::Indent() ;
-	BESReporterList::Reporter_citer i = _reporter_list.begin() ;
-	BESReporterList::Reporter_citer ie = _reporter_list.end() ;
-	for( ; i != ie; i++ )
-	{
-	    strm << BESIndent::LMarg << "reporter: " << (*i).first << endl ;
-	    BESIndent::Indent() ;
-	    BESReporter *reporter = (*i).second ;
-	    reporter->dump( strm ) ;
-	    BESIndent::UnIndent() ;
-	}
-	BESIndent::UnIndent() ;
+    strm << BESIndent::LMarg << "BESReporterList::dump - (" << (void *)this << ")" << endl;
+    BESIndent::Indent();
+    if (_reporter_list.size()) {
+        strm << BESIndent::LMarg << "registered reporters:" << endl;
+        BESIndent::Indent();
+        BESReporterList::Reporter_citer i = _reporter_list.begin();
+        BESReporterList::Reporter_citer ie = _reporter_list.end();
+        for (; i != ie; i++) {
+            strm << BESIndent::LMarg << "reporter: " << (*i).first << endl;
+            BESIndent::Indent();
+            BESReporter *reporter = (*i).second;
+            reporter->dump(strm);
+            BESIndent::UnIndent();
+        }
+        BESIndent::UnIndent();
+    } else {
+        strm << BESIndent::LMarg << "registered reporters: none" << endl;
     }
-    else
-    {
-	strm << BESIndent::LMarg << "registered reporters: none" << endl ;
-    }
-    BESIndent::UnIndent() ;
+    BESIndent::UnIndent();
 }
 
-BESReporterList *
-BESReporterList::TheList()
-{
+BESReporterList *BESReporterList::TheList() {
     static BESReporterList list;
     return &list;
 }
-

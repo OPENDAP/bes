@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -36,8 +36,8 @@
 #include <map>
 #include <string>
 
-#include "BESObj.h"
 #include "BESDataHandlerInterface.h"
+#include "BESObj.h"
 
 class BESCatalog;
 class BESCatalogEntry;
@@ -55,7 +55,6 @@ class BESCatalogEntry;
 // looking odd would be to make a single BESCatalog instance that is
 // the default catalog and have that be separate from the list of added
 // catalogs. jhrg 2.25.18
-
 
 /** @brief List of all registered catalogs
  *
@@ -81,7 +80,7 @@ class BESCatalogEntry;
  *
  * @see BESCatalog
  */
-class BESCatalogList: public BESObj {
+class BESCatalogList : public BESObj {
 private:
     std::map<std::string, BESCatalog *> d_catalogs;
 
@@ -91,11 +90,11 @@ private:
     std::string d_default_catalog_name;
     BESCatalog *d_default_catalog;
 
-    static BESCatalogList * d_instance;
-
+    static BESCatalogList *d_instance;
+#if 0
     static void initialize_instance();  // originally used with pthread_once(). jhrg 7/22/18
     static void delete_instance();
-
+#endif
     friend class BESCatalogListTest;
 
     BESCatalogList();
@@ -104,40 +103,39 @@ public:
     using catalog_iter = std::map<std::string, BESCatalog *>::iterator;
     using catalog_citer = std::map<std::string, BESCatalog *>::const_iterator;
 
-    BESCatalogList(const BESCatalogList&) = delete;
-    BESCatalogList& operator=(const BESCatalogList&) = delete;
+    BESCatalogList(const BESCatalogList &) = delete;
+    BESCatalogList &operator=(const BESCatalogList &) = delete;
 
-    static BESCatalogList * TheCatalogList();
+    static BESCatalogList *TheCatalogList();
 
     ~BESCatalogList() override = default;
 
     /// @brief The number of non-default catalogs
     /// @todo Change this to include the default!
-    virtual int num_catalogs() const { return d_catalogs.size();  }
-    virtual int empty() const { return d_catalogs.empty();  }
+    virtual int num_catalogs() const { return d_catalogs.size(); }
+    virtual int empty() const { return d_catalogs.empty(); }
 
     /// @brief The name of the default catalog
     virtual std::string default_catalog_name() const { return d_default_catalog_name; }
-    /// @brief The  the default catalog
+    /// @brief The default catalog
     virtual BESCatalog *default_catalog() const { return d_default_catalog; }
 
     virtual bool add_catalog(BESCatalog *catalog);
     virtual bool ref_catalog(const std::string &catalog_name);
     virtual bool deref_catalog(const std::string &catalog_name);
 
-    virtual BESCatalog * find_catalog(const std::string &catalog_name) const;
+    virtual BESCatalog *find_catalog(const std::string &catalog_name) const;
 
     // TODO Remove this ASAP. jhrg 7/22/18
-    virtual BESCatalogEntry * show_catalogs(BESCatalogEntry *entry, bool show_default = true);
+    virtual BESCatalogEntry *show_catalogs(BESCatalogEntry *entry, bool show_default = true);
 
     /// @brief Iterator to the first catalog
     virtual catalog_citer first_catalog() const { return d_catalogs.begin(); }
 
     /// @brief Iterator to the last catalog
-    virtual catalog_citer end_catalog() const { return d_catalogs.end();  }
+    virtual catalog_citer end_catalog() const { return d_catalogs.end(); }
 
     void dump(std::ostream &strm) const override;
 };
 
 #endif // BESCatalogList_h_
-

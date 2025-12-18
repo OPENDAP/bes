@@ -40,7 +40,7 @@ public:
 	FitsRequestHandler(const std::string &name);
 	virtual ~FitsRequestHandler(void);
 
-	virtual void dump(std::ostream &strm) const;
+	void dump(std::ostream &strm) const override;
 
 	static bool fits_build_das(BESDataHandlerInterface &dhi);
 	static bool fits_build_dds(BESDataHandlerInterface &dhi);

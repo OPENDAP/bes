@@ -87,6 +87,9 @@ public:
         // happen even if exceptions are thrown by the add_edl...() test.
         BESContextManager::TheManager()->unset_context(EDL_UID_KEY);
         BESContextManager::TheManager()->unset_context(EDL_AUTH_TOKEN_KEY);
+        BESContextManager::TheManager()->unset_context(CMR_CLIENT_ID_CONTEXT_KEY);
+        // TODO Remove this and all instances of EDL_ECHO_TOKEN_KEY in this test suite.
+        //  See HYRAX-1036. jhrg 11/13/25
         BESContextManager::TheManager()->unset_context(EDL_ECHO_TOKEN_KEY);
 
         // We have to remove the cookie file between test invocations.
@@ -302,10 +305,13 @@ public:
         DBG(cerr << prolog << "BEGIN\n");
         curl_slist *hdrs = nullptr;
         curl_slist *sl_iter;
-        string tokens[] = {"big_bucky_ball", "itsa_authy_token_time", "echo_my_smo:kin_token"};
+        string tokens[] = {"big_bucky_ball", "itsa_authy_token_time", "its_not_shrew"};
         BESContextManager::TheManager()->set_context(EDL_UID_KEY, tokens[0]);
         BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, tokens[1]);
+#if 0
         BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, tokens[2]);
+#endif
+        BESContextManager::TheManager()->set_context(CMR_CLIENT_ID_CONTEXT_KEY, tokens[2]);
 
         try {
             hdrs = curl::add_edl_auth_headers(hdrs);

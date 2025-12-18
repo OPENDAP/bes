@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -33,9 +33,9 @@
 #ifndef I_BESContextManager_h
 #define I_BESContextManager_h 1
 
-#include <unordered_map>
-#include <string>
 #include <mutex>
+#include <string>
+#include <unordered_map>
 
 #include "BESObj.h"
 
@@ -48,9 +48,9 @@ class BESInfo;
  * how to fill in specific response objects, such as DAS, DDS, help, version,
  * etc... The request handlers are registered with this request handler list.
  */
-class BESContextManager: public BESObj {
+class BESContextManager : public BESObj {
 private:
-    static BESContextManager * d_instance;
+    static BESContextManager *d_instance;
     mutable std::recursive_mutex d_cache_lock_mutex;
 
     static void initialize_instance();
@@ -60,8 +60,8 @@ private:
     BESContextManager();
 
 public:
-    BESContextManager(const BESContextManager&) = delete;
-    BESContextManager& operator=(const BESContextManager&) = delete;
+    BESContextManager(const BESContextManager &) = delete;
+    BESContextManager &operator=(const BESContextManager &) = delete;
 
     ~BESContextManager() override = default;
 
@@ -75,8 +75,7 @@ public:
 
     void dump(std::ostream &strm) const override;
 
-    static BESContextManager * TheManager();
+    static BESContextManager *TheManager();
 };
 
 #endif // I_BESContextManager_h
-

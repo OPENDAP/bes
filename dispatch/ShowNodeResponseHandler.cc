@@ -27,20 +27,20 @@
 #include <memory>
 #include <string>
 
-#include "BESInfoList.h"
-#include "BESInfo.h"
-#include "BESCatalogList.h"
 #include "BESCatalog.h"
+#include "BESCatalogList.h"
+#include "BESInfo.h"
+#include "BESInfoList.h"
 
-#include "BESNames.h"
 #include "BESDataNames.h"
+#include "BESNames.h"
 
 #include "BESDebug.h"
-#include "BESUtil.h"
 #include "BESStopWatch.h"
+#include "BESUtil.h"
 
-#include "CatalogNode.h"
 #include "CatalogItem.h"
+#include "CatalogNode.h"
 #include "ShowNodeResponseHandler.h"
 
 using namespace bes;
@@ -58,8 +58,7 @@ using namespace std;
  * @see BESInfo
  * @see BESRequestHandlerList
  */
-void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
-{
+void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi) {
     BES_STOPWATCH_START_DHI(MODULE, prolog + "Timing", &dhi);
 
     // Get the container. By convention, the path can start with a slash,
@@ -94,10 +93,11 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
     // use the default catalog.
     if (!catalog) {
         catalog = BESCatalogList::TheCatalogList()->default_catalog();
-        if (!catalog) throw BESInternalError(string("Could not find the default catalog."), __FILE__, __LINE__);
+        if (!catalog)
+            throw BESInternalError(string("Could not find the default catalog."), __FILE__, __LINE__);
     }
 
-    BESDEBUG(MODULE, prolog << "Using the '" << catalog->get_catalog_name() << "' catalog."<< endl);
+    BESDEBUG(MODULE, prolog << "Using the '" << catalog->get_catalog_name() << "' catalog." << endl);
     BESDEBUG(MODULE, prolog << "use_container: " << container << endl);
 
     // Get the node info from the catalog.
@@ -117,7 +117,7 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
             string catalog_name = i->first;
             BESCatalog *cat = i->second;
 
-            BESDEBUG(MODULE, prolog << "Checking catalog '" << catalog_name << "' ptr: " << (void *) cat << endl);
+            BESDEBUG(MODULE, prolog << "Checking catalog '" << catalog_name << "' ptr: " << (void *)cat << endl);
 
             if (cat != BESCatalogList::TheCatalogList()->default_catalog()) {
                 auto *collection = new CatalogItem(catalog_name, 0, BESUtil::get_time(), false, CatalogItem::node);
@@ -154,11 +154,11 @@ void ShowNodeResponseHandler::execute(BESDataHandlerInterface &dhi)
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void ShowNodeResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi)
-{
+void ShowNodeResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) {
     if (d_response_object) {
         BESInfo *info = dynamic_cast<BESInfo *>(d_response_object);
-        if (!info) throw BESInternalError("Expected the Response Object to be a BESInfo instance.", __FILE__, __LINE__);
+        if (!info)
+            throw BESInternalError("Expected the Response Object to be a BESInfo instance.", __FILE__, __LINE__);
         info->transmit(transmitter, dhi);
     }
 }
@@ -169,17 +169,13 @@ void ShowNodeResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandl
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void ShowNodeResponseHandler::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "ShowNodeResponseHandler::dump - (" << (void *) this << ")" << endl;
+void ShowNodeResponseHandler::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "ShowNodeResponseHandler::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     BESResponseHandler::dump(strm);
     BESIndent::UnIndent();
 }
 
-BESResponseHandler *
-ShowNodeResponseHandler::ShowNodeResponseBuilder(const string &name)
-{
+BESResponseHandler *ShowNodeResponseHandler::ShowNodeResponseBuilder(const string &name) {
     return new ShowNodeResponseHandler(name);
 }
-

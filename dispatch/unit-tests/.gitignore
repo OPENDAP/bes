@@ -2,6 +2,7 @@ cacheT
 containerT
 lockT
 uncompressT
+cache
 
 /RemoteAccessTest
 /AllowedHostsTest

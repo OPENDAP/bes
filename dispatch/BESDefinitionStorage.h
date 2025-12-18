@@ -10,19 +10,19 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 //
 // You can contact University Corporation for Atmospheric Research at
 // 3080 Center Green Drive, Boulder, CO 80301
- 
+
 // (c) COPYRIGHT University Corporation for Atmospheric Research 2004-2005
 // Please read the full copyright statement in the file COPYRIGHT_UCAR.
 //
@@ -37,8 +37,8 @@
 
 #include "BESObj.h"
 
-class BESDefine ;
-class BESInfo ;
+class BESDefine;
+class BESInfo;
 
 /** @brief provides persistent storage for a specific view of different
  * containers including contraints and aggregation.
@@ -55,14 +55,13 @@ class BESInfo ;
  * If the user wishes to remove one of these persistence stores they would
  * request that a named BESDefinitionStorage object be removed from the
  * list.
- * 
+ *
  * @see BESDefine
  * @see BESDefinitionStorageList
  */
-class BESDefinitionStorage : public BESObj
-{
+class BESDefinitionStorage : public BESObj {
 protected:
-	std::string		_my_name ;
+    std::string _my_name;
 
 public:
     /** @brief create an instance of BESDefinitionStorage with the give
@@ -70,16 +69,15 @@ public:
      *
      * @param name name of this persistence store
      */
-    				BESDefinitionStorage( const std::string &name )
-				    : _my_name( name ) {} ;
+    BESDefinitionStorage(const std::string &name) : _my_name(name) {};
 
-    virtual 			~BESDefinitionStorage() {} ;
+    ~BESDefinitionStorage() override = default;
 
     /** @brief retrieve the name of this persistent store
      *
      * @return name of this persistent store.
      */
-    virtual const std::string &	get_name() const { return _my_name ; }
+    virtual const std::string &get_name() const { return _my_name; }
 
     /** @brief looks for a definition in this persistent store with the
      * given name
@@ -87,7 +85,7 @@ public:
      * @param def_name name of the definition to look for
      * @return definition with the given name, NULL if not found
      */
-    virtual BESDefine * 	look_for( const std::string &def_name ) = 0 ;
+    virtual BESDefine *look_for(const std::string &def_name) = 0;
 
     /** @brief adds a given definition to this storage
      *
@@ -99,8 +97,7 @@ public:
      * @param d definition to add
      * @return true if successfully added, false if already exists
      */
-    virtual bool		add_definition( const std::string &def_name,
-                                                BESDefine *d ) = 0 ;
+    virtual bool add_definition(const std::string &def_name, BESDefine *d) = 0;
 
     /** @brief deletes a defintion with the given name
      *
@@ -110,13 +107,13 @@ public:
      * @param def_name name of the defintion to delete
      * @return true if successfully deleted and false otherwise
      */
-    virtual bool		del_definition( const std::string &def_name ) = 0 ;
+    virtual bool del_definition(const std::string &def_name) = 0;
 
     /** @brief deletes all defintions from the definition store
      *
      * @return true if successfully deleted and false otherwise
      */
-    virtual bool		del_definitions( ) = 0 ;
+    virtual bool del_definitions() = 0;
 
     /** @brief show the defintions stored in this store
      *
@@ -128,14 +125,13 @@ public:
      *
      * @param info information response object to store the information in
      */
-    virtual void		show_definitions( BESInfo &info ) = 0 ;
+    virtual void show_definitions(BESInfo &info) = 0;
 
     /** @brief Displays debug information about this object
      *
      * @param strm output stream to use to dump the contents of this object
      */
-    virtual void		dump( std::ostream &strm ) const = 0 ;
+    void dump(std::ostream &strm) const override = 0;
 };
 
 #endif // BESDefinitionStorage_h_
-

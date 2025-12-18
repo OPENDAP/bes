@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -31,10 +31,10 @@
 //      jgarcia     Jose Garcia <jgarcia@ucar.edu>
 
 #include "BESStatusResponseHandler.h"
-#include "BESInfoList.h"
 #include "BESInfo.h"
-#include "BESStatus.h"
+#include "BESInfoList.h"
 #include "BESResponseNames.h"
+#include "BESStatus.h"
 
 using std::endl;
 using std::ostream;
@@ -52,8 +52,7 @@ using std::string;
  * @see BESInfo
  * @see BESStatus
  */
-void
-BESStatusResponseHandler::execute(BESDataHandlerInterface &dhi) {
+void BESStatusResponseHandler::execute(BESDataHandlerInterface &dhi) {
     BESInfo *info = BESInfoList::TheList()->build_info();
     d_response_object = info;
     BESStatus s;
@@ -75,8 +74,7 @@ BESStatusResponseHandler::execute(BESDataHandlerInterface &dhi) {
  * @see BESTransmitter
  * @see BESDataHandlerInterface
  */
-void
-BESStatusResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) {
+void BESStatusResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) {
     if (d_response_object) {
         auto info = dynamic_cast<BESInfo *>(d_response_object);
         if (!info)
@@ -91,9 +89,8 @@ BESStatusResponseHandler::transmit(BESTransmitter *transmitter, BESDataHandlerIn
  *
  * @param strm C++ i/o stream to dump the information to
  */
-void
-BESStatusResponseHandler::dump(ostream &strm) const {
-    strm << BESIndent::LMarg << "BESStatusResponseHandler::dump - (" << (void *) this << ")" << endl;
+void BESStatusResponseHandler::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESStatusResponseHandler::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     BESResponseHandler::dump(strm);
     BESIndent::UnIndent();

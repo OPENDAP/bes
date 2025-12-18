@@ -25,40 +25,40 @@
 
 #include <cassert>
 
-#include <string>
 #include <ostream>
 #include <sstream>
+#include <string>
 
 #include "BESIndent.h"
 #include "BESUtil.h"
 
 #include "BESCatalogList.h"
 #include "BESInfo.h"
-#include "CatalogNode.h"
 #include "CatalogItem.h"
+#include "CatalogNode.h"
 
 using namespace bes;
 using namespace std;
 
-CatalogNode::~CatalogNode()
-{
+CatalogNode::~CatalogNode() {
 #if ITEMS
-    for (std::vector<CatalogItem*>::iterator i = d_items.begin(), e = d_items.end(); i != e; ++i)
+    for (std::vector<CatalogItem *>::iterator i = d_items.begin(), e = d_items.end(); i != e; ++i)
         delete *i;
     d_items.clear();
 #endif
 
 #if NODES_AND_LEAVES
-    for (std::vector<CatalogItem*>::iterator i = d_nodes.begin(), e = d_nodes.end(); i != e; ++i)
-        delete *i;
+    for (auto & d_node : d_nodes)
+        delete d_node;
     d_nodes.clear();
 
-    for (std::vector<CatalogItem*>::iterator i = d_leaves.begin(), e = d_leaves.end(); i != e; ++i)
-        delete *i;
+    for (auto & d_leave : d_leaves)
+        delete d_leave;
     d_leaves.clear();
 #endif
     delete d_no_really_im_a_leaf;
-    d_no_really_im_a_leaf = 0;;
+    d_no_really_im_a_leaf = nullptr;
+    ;
 }
 
 /**
@@ -75,18 +75,15 @@ CatalogNode::~CatalogNode()
  * @param info Add information to this instance of BESInfo.
  * @see CatalogItem::encode_item()
  */
-void
-CatalogNode::encode_node(BESInfo *info)
-{
+void CatalogNode::encode_node(BESInfo *info) {
     map<string, string, std::less<>> props;
 
     // The node may actually be a leaf. Check and act accordingly.
     CatalogItem *im_a_leaf = get_leaf();
-    if(im_a_leaf){
+    if (im_a_leaf) {
         im_a_leaf->encode_item(info);
-    }
-    else { // It's a node. Do the node dance...
-        if(get_catalog_name() != BESCatalogList::TheCatalogList()->default_catalog_name())
+    } else { // It's a node. Do the node dance...
+        if (get_catalog_name() != BESCatalogList::TheCatalogList()->default_catalog_name())
             props["name"] = BESUtil::assemblePath(get_catalog_name(), get_name(), true);
         else
             props["name"] = get_name();
@@ -115,29 +112,25 @@ CatalogNode::encode_node(BESInfo *info)
     }
 }
 
-
 /**
  * Dump out information about this object
  * @param strm Write to this stream
  */
-void CatalogNode::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "CatalogNode::dump - (" << (void *) this << ")" << endl;
+void CatalogNode::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "CatalogNode::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
 
     strm << BESIndent::LMarg << "name: " << d_name << endl;
     strm << BESIndent::LMarg << "catalog_name: " << d_catalog_name << endl;
-    strm << BESIndent::LMarg << "last modified time: " << d_lmt<< endl;
+    strm << BESIndent::LMarg << "last modified time: " << d_lmt << endl;
 
-
-    if(d_no_really_im_a_leaf){
+    if (d_no_really_im_a_leaf) {
         d_no_really_im_a_leaf->dump(strm);
-    }
-    else {
+    } else {
 
-    #if ITEMS
+#if ITEMS
         strm << BESIndent::LMarg << "item count: " << d_items.size() << endl;
-    #endif
+#endif
 
 #if NODES_AND_LEAVES
         strm << BESIndent::LMarg << "item count: " << d_nodes.size() + d_leaves.size() << endl;
@@ -148,15 +141,15 @@ void CatalogNode::dump(ostream &strm) const
             strm << endl;
             BESIndent::Indent();
 #if ITEMS
-            vector<CatalogItem*>::const_iterator i = d_items.begin();
-            vector<CatalogItem*>::const_iterator e = d_items.end();
+            vector<CatalogItem *>::const_iterator i = d_items.begin();
+            vector<CatalogItem *>::const_iterator e = d_items.end();
             for (; i != e; ++i) {
                 strm << BESIndent::LMarg << (*i) << endl;
             }
 #endif
 #if NODES_AND_LEAVES
-            vector<CatalogItem*>::const_iterator i = d_nodes.begin();
-            vector<CatalogItem*>::const_iterator e = d_nodes.end();
+            vector<CatalogItem *>::const_iterator i = d_nodes.begin();
+            vector<CatalogItem *>::const_iterator e = d_nodes.end();
             for (; i != e; ++i) {
                 strm << BESIndent::LMarg << (*i) << endl;
             }

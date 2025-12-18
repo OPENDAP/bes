@@ -38,8 +38,7 @@ using std::endl;
 using std::ostream;
 using std::string;
 
-BESReturnManager *
-BESReturnManager::TheManager() {
+BESReturnManager *BESReturnManager::TheManager() {
     static BESReturnManager the_manager;
     return &the_manager;
 }
@@ -69,8 +68,7 @@ bool BESReturnManager::del_transmitter(const string &name) {
     return ret;
 }
 
-BESTransmitter *
-BESReturnManager::find_transmitter(const string &name) {
+BESTransmitter *BESReturnManager::find_transmitter(const string &name) {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
     auto i = transmitter_list_.find(name);
@@ -90,20 +88,19 @@ BESReturnManager::find_transmitter(const string &name) {
 void BESReturnManager::dump(ostream &strm) const {
     std::lock_guard<std::recursive_mutex> lock_me(d_cache_lock_mutex);
 
-    strm << BESIndent::LMarg << "BESReturnManager::dump - (" << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << "BESReturnManager::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
     if (!transmitter_list_.empty()) {
         strm << BESIndent::LMarg << "registered transmitters:" << endl;
         BESIndent::Indent();
-        for (const auto& i: transmitter_list_) {
+        for (const auto &i : transmitter_list_) {
             strm << BESIndent::LMarg << i.first << endl;
             BESIndent::Indent();
             i.second->dump(strm);
             BESIndent::UnIndent();
         }
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "registered transmitters: none" << endl;
     }
     BESIndent::UnIndent();

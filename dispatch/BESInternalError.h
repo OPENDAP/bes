@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -33,29 +33,28 @@
 #ifndef BESInternalError_h_
 #define BESInternalError_h_ 1
 
-#include <string>
 #include <ostream>
+#include <string>
 
 #include "BESError.h"
 
 /** @brief exception thrown if internal error encountered
  */
-class BESInternalError: public BESError {
+class BESInternalError : public BESError {
 public:
-	BESInternalError(std::string msg, std::string file, unsigned int line) :
-			BESError(std::move(msg), BES_INTERNAL_ERROR, std::move(file), line) { }
+    BESInternalError(std::string msg, std::string file, unsigned int line)
+        : BESError(std::move(msg), BES_INTERNAL_ERROR, std::move(file), line) {}
 
-	~BESInternalError() override = default;
+    ~BESInternalError() override = default;
 
-	void dump(std::ostream &strm) const override
-	{
-		strm << "BESInternalError::dump - (" << (void *) this << ")" << std::endl;
-		BESIndent::Indent();
-		BESError::dump(strm);
-		BESIndent::UnIndent();
-	}
+    void dump(std::ostream &strm) const override {
+        strm << "BESInternalError::dump - (" << (void *)this << ")" << std::endl;
+        BESIndent::Indent();
+        BESError::dump(strm);
+        BESIndent::UnIndent();
+    }
 
-	std::string error_name() const override { return "BESInternalError"; }
+    std::string error_name() const override { return "BESInternalError"; }
 };
 
 #endif // BESInternalError_h_

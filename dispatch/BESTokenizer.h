@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -33,8 +33,8 @@
 #ifndef BESTokenizer_h_
 #define BESTokenizer_h_ 1
 
-#include <vector>
 #include <string>
+#include <vector>
 
 #include "BESObj.h"
 
@@ -64,9 +64,9 @@
  If the user of the tokenizer attempts to access more tokens than were
  read in, an exception is thrown.
  */
-class BESTokenizer: public BESObj {
+class BESTokenizer : public BESObj {
 private:
-	std::vector<std::string> tokens;
+    std::vector<std::string> tokens;
     typedef std::vector<std::string>::iterator tokens_iterator;
     typedef std::vector<std::string>::const_iterator tokens_citerator;
     int _counter;
@@ -74,20 +74,19 @@ private:
 
 public:
     BESTokenizer();
-    ~BESTokenizer();
+    ~BESTokenizer() override;
 
     void tokenize(const char *p);
-    std::string & get_first_token();
-    std::string & get_current_token();
-    std::string & get_next_token();
+    std::string &get_first_token();
+    std::string &get_current_token();
+    std::string &get_next_token();
     void parse_error(const std::string &s = "");
     std::string parse_container_name(const std::string &s, unsigned int &type);
     std::string remove_quotes(const std::string &s);
 
     void dump_tokens();
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // BESTokenizer_h_
-

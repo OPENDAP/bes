@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -36,8 +36,8 @@
 #include <map>
 #include <string>
 
-#include "BESObj.h"
 #include "BESDataHandlerInterface.h"
+#include "BESObj.h"
 
 /**
  * A pointer to a static method defined by an instance of RequestHandler
@@ -71,35 +71,26 @@ typedef bool (*p_request_handler_method)(BESDataHandlerInterface &);
  * the request handler can fill in. This method is looked up and is passed the
  * information to fill in the response object.
  */
-class BESRequestHandler: public BESObj {
+class BESRequestHandler : public BESObj {
 private:
-	std::map<std::string, p_request_handler_method> _handler_list;
-	std::string _name;
+    std::map<std::string, p_request_handler_method> _handler_list;
+    std::string _name;
 
 public:
-    BESRequestHandler(const std::string &name) :
-        _name(name)
-    {
-    }
+    BESRequestHandler(const std::string &name) : _name(name) {}
 
-    virtual ~BESRequestHandler(void)
-    {
-    }
+    ~BESRequestHandler() override = default;
 
     typedef std::map<std::string, p_request_handler_method>::const_iterator Handler_citer;
     typedef std::map<std::string, p_request_handler_method>::iterator Handler_iter;
 
-    virtual const std::string & get_name() const
-    {
-        return _name;
-    }
+    virtual const std::string &get_name() const { return _name; }
 
     virtual bool add_method(const std::string &name, p_request_handler_method method);
 
     /// @brief Backward compatibility with the older version of this class.
     /// @deprecated
-    virtual bool add_handler(const std::string &name, p_request_handler_method method)
-    {
+    virtual bool add_handler(const std::string &name, p_request_handler_method method) {
         return add_method(name, method);
     }
 
@@ -109,10 +100,10 @@ public:
     virtual std::string get_method_names();
     virtual time_t get_lmt(const std::string &name);
 
-    //virtual void add_attributes(BESDataHandlerInterface &bhdi);
+    // virtual void add_attributes(BESDataHandlerInterface &bhdi);
     virtual void add_attributes(BESDataHandlerInterface &);
 
-    virtual void dump(std::ostream &strm) const;
+    void dump(std::ostream &strm) const override;
 };
 
 #endif // I_BESRequestHandler_h

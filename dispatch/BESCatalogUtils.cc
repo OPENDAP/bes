@@ -10,12 +10,12 @@
 // modify it under the terms of the GNU Lesser General Public
 // License as published by the Free Software Foundation; either
 // version 2.1 of the License, or (at your option) any later version.
-// 
+//
 // This library is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 // Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
@@ -32,28 +32,28 @@
 
 #include "config.h"
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <dirent.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #include <cerrno>
-#include <iostream>
-#include <sstream>
-#include <list>
 #include <cstring>
+#include <iostream>
+#include <list>
+#include <sstream>
 
-#include "BESCatalogUtils.h"
+#include "BESCatalogEntry.h"
 #include "BESCatalogList.h"
-#include "TheBESKeys.h"
+#include "BESCatalogUtils.h"
+#include "BESContainerStorage.h"
+#include "BESContainerStorageList.h"
+#include "BESInfo.h"
 #include "BESInternalError.h"
-#include "BESSyntaxUserError.h"
 #include "BESNotFoundError.h"
 #include "BESRegex.h"
+#include "BESSyntaxUserError.h"
 #include "BESUtil.h"
-#include "BESInfo.h"
-#include "BESContainerStorageList.h"
-#include "BESContainerStorage.h"
-#include "BESCatalogEntry.h"
+#include "TheBESKeys.h"
 
 using namespace std;
 
@@ -80,9 +80,7 @@ using namespace std;
  * must be defined; false causes this constructor to supply placeholder values.
  * This feature was added for tests that run without the bes.conf file.
  */
-BESCatalogUtils::BESCatalogUtils(const string &n, bool strict) :
-    d_name(n), d_follow_syms(false)
-{
+BESCatalogUtils::BESCatalogUtils(const string &n, bool strict) : d_name(n), d_follow_syms(false) {
     string key = "BES.Catalog." + n + ".RootDirectory";
     bool found = false;
     TheBESKeys::TheKeys()->get_value(key, d_root_dir, found);
@@ -91,10 +89,10 @@ BESCatalogUtils::BESCatalogUtils(const string &n, bool strict) :
         throw BESSyntaxUserError(s, __FILE__, __LINE__);
     }
 
-    if(d_root_dir != "UNUSED"){
+    if (d_root_dir != "UNUSED") {
         // TODO access() or stat() would test for existence faster. jhrg 2.25.18
         DIR *dip = opendir(d_root_dir.c_str());
-        if (dip == NULL) {
+        if (dip == nullptr) {
             string serr = "BESCatalogDirectory - root directory " + d_root_dir + " does not exist";
             throw BESNotFoundError(serr, __FILE__, __LINE__);
         }
@@ -109,7 +107,8 @@ BESCatalogUtils::BESCatalogUtils(const string &n, bool strict) :
     vector<string>::iterator ee = vals.end();
     for (; ei != ee; ei++) {
         string e_str = (*ei);
-        if (!e_str.empty() && e_str != ";") BESUtil::explode(';', e_str, d_exclude);
+        if (!e_str.empty() && e_str != ";")
+            BESUtil::explode(';', e_str, d_exclude);
     }
 
     key = (string) "BES.Catalog." + n + ".Include";
@@ -119,7 +118,8 @@ BESCatalogUtils::BESCatalogUtils(const string &n, bool strict) :
     vector<string>::iterator ie = vals.end();
     for (; ii != ie; ii++) {
         string i_str = (*ii);
-        if (!i_str.empty() && i_str != ";") BESUtil::explode(';', i_str, d_include);
+        if (!i_str.empty() && i_str != ";")
+            BESUtil::explode(';', i_str, d_include);
     }
 
     key = "BES.Catalog." + n + ".TypeMatch";
@@ -175,8 +175,7 @@ BESCatalogUtils::BESCatalogUtils(const string &n, bool strict) :
  * @param inQuestion File or directory in question
  * @return True if it should be included, false if not.
  */
-bool BESCatalogUtils::include(const string &inQuestion) const
-{
+bool BESCatalogUtils::include(const string &inQuestion) const {
     bool toInclude = false;
 
     // First check the file against the include list. If the file should be
@@ -184,8 +183,7 @@ bool BESCatalogUtils::include(const string &inQuestion) const
     // to the include list.
     if (d_include.size() == 0) {
         toInclude = true;
-    }
-    else {
+    } else {
         list<string>::const_iterator i_iter = d_include.begin();
         list<string>::const_iterator i_end = d_include.end();
         for (; i_iter != i_end; i_iter++) {
@@ -195,15 +193,13 @@ bool BESCatalogUtils::include(const string &inQuestion) const
                     // must match exactly, meaning result is = to length of string
                     // in question
                     BESRegex reg_expr(reg.c_str());
-                    if (reg_expr.match(inQuestion.c_str(), inQuestion.size())
-                        == static_cast<int>(inQuestion.size())) {
+                    if (reg_expr.match(inQuestion.c_str(), inQuestion.size()) == static_cast<int>(inQuestion.size())) {
                         toInclude = true;
                     }
-                }
-                catch (BESError &e) {
-                    string serr = (string) "Unable to get catalog information, "
-                        + "malformed Catalog Include parameter " + "in bes configuration file around " + reg + ": "
-                        + e.get_message();
+                } catch (BESError &e) {
+                    string serr = (string) "Unable to get catalog information, " +
+                                  "malformed Catalog Include parameter " + "in bes configuration file around " + reg +
+                                  ": " + e.get_message();
                     throw BESInternalError(serr, __FILE__, __LINE__);
                 }
             }
@@ -226,8 +222,7 @@ bool BESCatalogUtils::include(const string &inQuestion) const
  * @param inQuestion The file or directory name in question
  * @return True if the file/directory should be excluded, false if not.
  */
-bool BESCatalogUtils::exclude(const string &inQuestion) const
-{
+bool BESCatalogUtils::exclude(const string &inQuestion) const {
     list<string>::const_iterator e_iter = d_exclude.begin();
     list<string>::const_iterator e_end = d_exclude.end();
     for (; e_iter != e_end; e_iter++) {
@@ -238,10 +233,9 @@ bool BESCatalogUtils::exclude(const string &inQuestion) const
                 if (reg_expr.match(inQuestion.c_str(), inQuestion.size()) == static_cast<int>(inQuestion.size())) {
                     return true;
                 }
-            }
-            catch (BESError &e) {
-                string serr = (string) "Unable to get catalog information, " + "malformed Catalog Exclude parameter "
-                    + "in bes configuration file around " + reg + ": " + e.get_message();
+            } catch (BESError &e) {
+                string serr = (string) "Unable to get catalog information, " + "malformed Catalog Exclude parameter " +
+                              "in bes configuration file around " + reg + ": " + e.get_message();
                 throw BESInternalError(serr, __FILE__, __LINE__);
             }
         }
@@ -254,20 +248,14 @@ bool BESCatalogUtils::exclude(const string &inQuestion) const
  *
  * @return The beginning of the handler match regex list.
  */
-BESCatalogUtils::match_citer BESCatalogUtils::match_list_begin() const
-{
-    return d_match_list.begin();
-}
+BESCatalogUtils::match_citer BESCatalogUtils::match_list_begin() const { return d_match_list.begin(); }
 
 /**
  * @note Look at using get_handler_name() or is_data() instead
  *
  * @return The end of the handler match regex list.
  */
-BESCatalogUtils::match_citer BESCatalogUtils::match_list_end() const
-{
-    return d_match_list.end();
-}
+BESCatalogUtils::match_citer BESCatalogUtils::match_list_end() const { return d_match_list.end(); }
 
 /**
  *
@@ -280,8 +268,7 @@ BESCatalogUtils::match_citer BESCatalogUtils::match_list_end() const
  * @return
  */
 unsigned int BESCatalogUtils::get_entries(DIR *dip, const string &fullnode, const string &use_node,
-    BESCatalogEntry *entry, bool dirs_only)
-{
+                                          BESCatalogEntry *entry, bool dirs_only) {
     unsigned int cnt = 0;
 
     struct stat cbuf;
@@ -290,18 +277,18 @@ unsigned int BESCatalogUtils::get_entries(DIR *dip, const string &fullnode, cons
         if (errno == ENOENT) { // ENOENT means that the path or part of the path does not exist
             char *s_err = strerror(errno);
             throw BESNotFoundError((s_err) ? string(s_err) : string("Node ") + use_node + " does not exist", __FILE__,
-                __LINE__);
+                                   __LINE__);
         }
         // any other error means that access is denied for some reason
         else {
             char *s_err = strerror(errno);
             throw BESNotFoundError((s_err) ? string(s_err) : string("Access denied for node ") + use_node, __FILE__,
-                __LINE__);
+                                   __LINE__);
         }
     }
 
     struct dirent *dit;
-    while ((dit = readdir(dip)) != NULL) {
+    while ((dit = readdir(dip)) != nullptr) {
         string dirEntry = dit->d_name;
         if (dirEntry == "." || dirEntry == "..") {
             continue;
@@ -310,12 +297,12 @@ unsigned int BESCatalogUtils::get_entries(DIR *dip, const string &fullnode, cons
         string fullPath = fullnode + "/" + dirEntry;
 
         // Skip this dir entry if it is a sym link and follow links is false
-         if (follow_sym_links() == false) {
+        if (follow_sym_links() == false) {
             struct stat lbuf;
-            (void) lstat(fullPath.c_str(), &lbuf);
+            (void)lstat(fullPath.c_str(), &lbuf);
             if (S_ISLNK(lbuf.st_mode))
-                 continue;
-         }
+                continue;
+        }
 
         // look at the mode and determine if this is a
         // directory or a regular file. If it is not
@@ -337,8 +324,7 @@ unsigned int BESCatalogUtils::get_entries(DIR *dip, const string &fullnode, cons
                 BESCatalogEntry *blank_entry = new BESCatalogEntry(".blank", entry->get_catalog());
                 curr_entry->add_entry(blank_entry);
             }
-        }
-        else if (statret == 0 && S_ISREG(buf.st_mode)) {
+        } else if (statret == 0 && S_ISREG(buf.st_mode)) {
             if (!dirs_only && include(dirEntry)) {
                 BESCatalogEntry *curr_entry = new BESCatalogEntry(dirEntry, entry->get_catalog());
                 bes_add_stat_info(curr_entry, buf);
@@ -359,16 +345,14 @@ unsigned int BESCatalogUtils::get_entries(DIR *dip, const string &fullnode, cons
     return cnt;
 }
 
-void BESCatalogUtils::display_entry(BESCatalogEntry *entry, BESInfo *info)
-{
+void BESCatalogUtils::display_entry(BESCatalogEntry *entry, BESInfo *info) {
     string defcatname = BESCatalogList::TheCatalogList()->default_catalog_name();
 
     // start with the external entry
     map<string, string, std::less<>> props;
     if (entry->get_catalog() == defcatname) {
         props["name"] = entry->get_name();
-    }
-    else {
+    } else {
         string name = entry->get_catalog() + "/";
         if (entry->get_name() != "/") {
             name = name + entry->get_name();
@@ -383,8 +367,7 @@ void BESCatalogUtils::display_entry(BESCatalogEntry *entry, BESInfo *info)
         ostringstream strm;
         strm << entry->get_count();
         props["count"] = strm.str();
-    }
-    else {
+    } else {
         props["node"] = "false";
     }
     info->begin_tag("dataset", &props);
@@ -413,9 +396,7 @@ void BESCatalogUtils::display_entry(BESCatalogEntry *entry, BESInfo *info)
  * @return The handler name. The empty string if the item cannot be
  * processed by any handler.
  */
-std::string
-BESCatalogUtils::get_handler_name(const std::string &item) const
-{
+std::string BESCatalogUtils::get_handler_name(const std::string &item) const {
     for (auto i = match_list_begin(), e = match_list_end(); i != e; ++i) {
         BESRegex expr((*i).regex.c_str());
         if (expr.match(item.c_str(), item.size()) == (int)item.size()) {
@@ -438,9 +419,7 @@ BESCatalogUtils::get_handler_name(const std::string &item) const
  * processed by any handler.
  * @see get_handler_name()
  */
-bool
-BESCatalogUtils::is_data(const std::string &item) const
-{
+bool BESCatalogUtils::is_data(const std::string &item) const {
     for (auto i = match_list_begin(), e = match_list_end(); i != e; ++i) {
         BESRegex expr((*i).regex.c_str());
         if (expr.match(item.c_str(), item.size()) == (int)item.size()) {
@@ -457,8 +436,7 @@ BESCatalogUtils::is_data(const std::string &item) const
  * @param entry The BESCatalogEntry object to modify
  * @param fullnode
  */
-void BESCatalogUtils::bes_add_stat_info(BESCatalogEntry *entry, const string &fullnode)
-{
+void BESCatalogUtils::bes_add_stat_info(BESCatalogEntry *entry, const string &fullnode) {
     struct stat cbuf;
     int statret = stat(fullnode.c_str(), &cbuf);
     if (statret == 0) {
@@ -466,8 +444,7 @@ void BESCatalogUtils::bes_add_stat_info(BESCatalogEntry *entry, const string &fu
     }
 }
 
-void BESCatalogUtils::bes_add_stat_info(BESCatalogEntry *entry, struct stat &buf)
-{
+void BESCatalogUtils::bes_add_stat_info(BESCatalogEntry *entry, struct stat &buf) {
     off_t sz = buf.st_size;
     entry->set_size(sz);
 
@@ -490,17 +467,16 @@ void BESCatalogUtils::bes_add_stat_info(BESCatalogEntry *entry, struct stat &buf
     entry->set_mod_time(stt.str());
 }
 
-bool BESCatalogUtils::isData(const string &inQuestion, const string &catalog, list<string> &services)
-{
+bool BESCatalogUtils::isData(const string &inQuestion, const string &catalog, list<string> &services) {
     BESContainerStorage *store = BESContainerStorageList::TheList()->find_persistence(catalog);
-    if (!store) return false;
+    if (!store)
+        return false;
 
     return store->isData(inQuestion, services);
 }
 
-void BESCatalogUtils::dump(ostream &strm) const
-{
-    strm << BESIndent::LMarg << "BESCatalogUtils::dump - (" << (void *) this << ")" << endl;
+void BESCatalogUtils::dump(ostream &strm) const {
+    strm << BESIndent::LMarg << "BESCatalogUtils::dump - (" << (void *)this << ")" << endl;
     BESIndent::Indent();
 
     strm << BESIndent::LMarg << "root directory: " << d_root_dir << endl;
@@ -516,8 +492,7 @@ void BESCatalogUtils::dump(ostream &strm) const
             }
         }
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "include list: empty" << endl;
     }
 
@@ -532,8 +507,7 @@ void BESCatalogUtils::dump(ostream &strm) const
             }
         }
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "exclude list: empty" << endl;
     }
 
@@ -547,15 +521,13 @@ void BESCatalogUtils::dump(ostream &strm) const
             strm << BESIndent::LMarg << match.handler << " : " << match.regex << endl;
         }
         BESIndent::UnIndent();
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "    type matches: empty" << endl;
     }
 
     if (d_follow_syms) {
         strm << BESIndent::LMarg << "    follow symbolic links: on" << endl;
-    }
-    else {
+    } else {
         strm << BESIndent::LMarg << "    follow symbolic links: off" << endl;
     }
 
@@ -575,7 +547,6 @@ BESCatalogUtils::Utils(const string &cat_name)
 }
 #endif
 
-
 #if 0
 // Added 12/24/12
 void BESCatalogUtils::delete_all_catalogs()
@@ -588,4 +559,3 @@ void BESCatalogUtils::delete_all_catalogs()
 }
 
 #endif
-
