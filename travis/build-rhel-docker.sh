@@ -16,7 +16,6 @@
 # Run the script like this:
 #    BES_REPO_DIR="." \
 #    SNAPSHOT_IMAGE_TAG="opendap/bes_rhel8:snapshot" \
-#    BUILD_VERSION_TAG="opendap/bes_rhel8:12345" \
 #    DIST=el8 \
 #    OS=rocky8 \
 #    BES_BUILD_NUMBER=12345 \
@@ -49,7 +48,6 @@ loggy ""
 loggy "Input variables:"
 loggy "       BES_REPO_DIR: '$BES_REPO_DIR'"
 loggy " SNAPSHOT_IMAGE_TAG: '$SNAPSHOT_IMAGE_TAG'"
-loggy "  BUILD_VERSION_TAG: '$BUILD_VERSION_TAG'"
 loggy "               DIST: '$DIST'"
 loggy "                 OS: '$OS'"
 loggy "   BES_BUILD_NUMBER: '$BES_BUILD_NUMBER'"
@@ -85,7 +83,6 @@ docker build \
     --build-arg BES_BUILD_NUMBER="$BES_BUILD_NUMBER" \
     --build-arg PREFIX=/root/install \
     --tag "${SNAPSHOT_IMAGE_TAG}" \
-    --tag "${BUILD_VERSION_TAG}" \
     --build-context aws_downloads="$AWS_DOWNLOADS_DIR/" \
     --progress=plain $DOCKER_DEV_FLAGS \
     -f ${BES_REPO_DIR}/Dockerfile ${BES_REPO_DIR}

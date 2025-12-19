@@ -206,8 +206,10 @@ jobs:
         - export OS=rocky8
         - export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
         - export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot"
-        - export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_BUILD_NUMBER}"
         - bash ${TRAVIS_BUILD_DIR}/travis/build-rhel-docker.sh
+        - export BES_VERSION=$(docker exec ${SNAPSHOT_IMAGE_TAG} bash -c 'echo "$BES_VERSION"')
+        - export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}-${BES_BUILD_NUMBER}"
+        - docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
         # TODO: remove this before merging! Using for debugging
         - bash ${TRAVIS_BUILD_DIR}/travis/deploy-to-docker-hub.sh
 
@@ -292,7 +294,7 @@ deploy:
     on:
       all_branches: true
       condition: $BES_BUILD =~ ^rocky8|rocky9|srcdist$
-  - name: Push docker images to dockerhub
+  - name: Push docker images to Docker Hub
     provider: script
     script: bash ${TRAVIS_BUILD_DIR}/travis/deploy-to-docker-hub.sh
     on:

@@ -1,9 +1,6 @@
 # Dockerfile for bes_rhel8 image
 
-###############################################################
-##### Stage 1. Install libdap and dependencies
-###############################################################
-FROM opendap/rocky8_hyrax_builder:latest AS deps-base
+FROM opendap/rocky8_hyrax_builder:latest
 RUN yum update -y
 
 ARG PREFIX
@@ -27,11 +24,6 @@ RUN --mount=from=aws_downloads,target=/tmp \
 # To debug what has been installed, use    
 # rpm -ql "$PREFIX/rpmbuild/${LIBDAP_RPM_FILENAME}"
 
-################################################################
-##### Stage 2. Make and install the bes
-################################################################
-FROM deps-base AS builder
-
 COPY . bes/
 WORKDIR /bes
 
@@ -53,15 +45,16 @@ RUN echo "NJOBS_OPTION is '$NJOBS_OPTION'"
 RUN make $NJOBS_OPTION
 
 RUN make install
-
 RUN echo "besdaemon is here: "`which besdaemon`
 
-################################################################
-##### Stage 3: Copy the built bes onto the dependencies image
-################################################################
-FROM deps-base
-COPY --from=builder ${PREFIX} ${PREFIX}
+ENV BES_VERSION=$(cat bes_VERSION)
+RUN echo "BES_VERSION is ${BES_VERSION}"
 
+# Clean up
+WORKDIR $HOME
+RUN rm -rf bes
+
+# Sanity check....
 RUN echo "besdaemon is here: "`which besdaemon`
 
 CMD ["-"]
