@@ -210,7 +210,6 @@ jobs:
         - docker pull ${SNAPSHOT_IMAGE_TAG}
         - export OLD_BES_VERSION="$(docker run --rm ${SNAPSHOT_IMAGE_TAG} -c 'echo "$BES_VERSION"')"
         - echo "OLD_BES_VERSION is ${OLD_BES_VERSION}"
-
         # - bash ${TRAVIS_BUILD_DIR}/travis/build-rhel-docker.sh
         # - export BES_VERSION="$(docker run --rm ${SNAPSHOT_IMAGE_TAG} -c 'echo "$BES_VERSION"')"
         # - echo "BES_VERSION is ${BES_VERSION}"
