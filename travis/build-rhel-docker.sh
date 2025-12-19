@@ -87,6 +87,5 @@ docker build \
     --progress=plain $DOCKER_DEV_FLAGS \
     -f ${BES_REPO_DIR}/Dockerfile ${BES_REPO_DIR}
 
-
 echo "Docker build complete!"
 docker image ls -a
