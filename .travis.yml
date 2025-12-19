@@ -207,7 +207,7 @@ jobs:
         - export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
         - export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot"
         - bash ${TRAVIS_BUILD_DIR}/travis/build-rhel-docker.sh
-        - export BES_VERSION=$(docker exec ${SNAPSHOT_IMAGE_TAG} bash -c 'echo "$BES_VERSION"')
+        - export BES_VERSION="$(docker run --rm ${SNAPSHOT_IMAGE_TAG} -c 'echo "$BES_VERSION"')"
         - export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}-${BES_BUILD_NUMBER}"
         - docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
         # TODO: remove this before merging! Using for debugging
