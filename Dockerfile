@@ -47,7 +47,8 @@ RUN make $NJOBS_OPTION
 RUN make install
 RUN echo "besdaemon is here: "`which besdaemon`
 
-ENV BES_VERSION=$(cat bes_VERSION)
+RUN echo `ls`
+ENV BES_VERSION="$(cat bes_VERSION)"
 RUN echo "BES_VERSION is ${BES_VERSION}"
 
 # Clean up
