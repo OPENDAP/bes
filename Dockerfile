@@ -52,7 +52,7 @@ ENV BES_VERSION="$(cat bes_VERSION)"
 RUN echo "BES_VERSION is ${BES_VERSION}"
 
 # Clean up
-WORKDIR $HOME
+WORKDIR ".."
 RUN rm -rf bes
 
 # Sanity check....
