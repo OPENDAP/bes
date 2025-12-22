@@ -49,10 +49,11 @@ RUN echo "besdaemon is here: "`which besdaemon`
 
 # Clean up
 WORKDIR ".."
+RUN cp bes/bes_VERSION bes_VERSION
 RUN rm -rf bes
 
 # Sanity check....
 RUN echo "besdaemon is here: "`which besdaemon`
-RUN echo "BES_VERSION (from bes_VERSION) is $(cat bes/bes_VERSION)"
+RUN echo "BES_VERSION (from bes_VERSION) is $(cat bes_VERSION)"
 
 CMD ["-"]

@@ -208,7 +208,7 @@ jobs:
         - export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot"
         - docker pull ${SNAPSHOT_IMAGE_TAG}
         - bash ${TRAVIS_BUILD_DIR}/travis/build-rhel-docker.sh
-        - export BES_VERSION="$(docker run --rm ${SNAPSHOT_IMAGE_TAG} -c 'cat bes/bes_VERSION')"
+        - export BES_VERSION="$(docker run --rm ${SNAPSHOT_IMAGE_TAG} -c 'cat bes_VERSION')"
         - echo "BES_VERSION is ${BES_VERSION}"
         - export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}-${BES_BUILD_NUMBER}"
         - echo "BUILD_VERSION_TAG is ${BUILD_VERSION_TAG}"
