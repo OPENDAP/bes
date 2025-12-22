@@ -4,7 +4,7 @@
 # run from within the Travis build process and depends on env variables
 # set in the BES's .travis.yml file.
 #
-# It can be run locally, as long as the env vars $BES_REPO_DIR,
+# It can be run locally, as long as the env vars $BASE_IMAGE, $BES_REPO_DIR,
 # $SNAPSHOT_IMAGE_TAG, $BUILD_VERSION_TAG, $DIST, $OS, $BES_BUILD_NUMBER,
 # and $LIBDAP_RPM_VERSION are set.
 #
@@ -15,6 +15,7 @@
 #
 # Run the script like this:
 #    BES_REPO_DIR="." \
+#    BASE_IMAGE="opendap/rocky8_hyrax_builder:latest" \
 #    SNAPSHOT_IMAGE_TAG="opendap/bes_rhel8:snapshot" \
 #    DIST=el8 \
 #    OS=rocky8 \
