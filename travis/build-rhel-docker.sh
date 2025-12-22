@@ -71,8 +71,9 @@ mkdir -p $AWS_DOWNLOADS_DIR
 [[ -e "$AWS_DOWNLOADS_DIR/$LIBDAP_DEVEL_RPM_FILENAME" ]] || aws s3 cp "s3://opendap.travis.build/$LIBDAP_DEVEL_RPM_FILENAME" "$AWS_DOWNLOADS_DIR"
 
 # Building the docker image...
-docker image pull opendap/rocky8_hyrax_builder:latest
+docker image pull "${BASE_IMAGE}"
 docker build \
+    --build-arg BASE_IMAGE="$BASE_IMAGE" \
     --build-arg LIBDAP_RPM_FILENAME="$LIBDAP_RPM_FILENAME" \
     --build-arg LIBDAP_DEVEL_RPM_FILENAME="$LIBDAP_DEVEL_RPM_FILENAME" \
     --build-arg HYRAX_DEPENDENCIES_TARBALL="$HYRAX_DEPENDENCIES_TARBALL" \
