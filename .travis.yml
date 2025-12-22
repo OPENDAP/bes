@@ -202,15 +202,15 @@ jobs:
         - export BES_BUILD=docker-rhel8
         - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
         - export DOCKER_NAME="bes_rhel8"
+        - export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot"
+        - export BASE_IMAGE=opendap/rocky8_hyrax_builder:latest
         - export DIST=el8
         - export OS=rocky8
         - export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
-        - export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot"
-        - docker pull ${SNAPSHOT_IMAGE_TAG}
         - bash ${TRAVIS_BUILD_DIR}/travis/build-rhel-docker.sh
         - export BES_VERSION="$(docker run --rm ${SNAPSHOT_IMAGE_TAG} -c 'cat bes_VERSION')"
         - echo "BES_VERSION is ${BES_VERSION}"
-        - export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}-${BES_BUILD_NUMBER}"
+        - export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}"
         - echo "BUILD_VERSION_TAG is ${BUILD_VERSION_TAG}"
         - docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
         # TODO: remove this before merging! Using for debugging

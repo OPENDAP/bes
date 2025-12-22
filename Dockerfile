@@ -1,6 +1,7 @@
-# Dockerfile for bes_rhel8 image
+# Dockerfile for bes_rhel images
 
-FROM opendap/rocky8_hyrax_builder:latest
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
 RUN yum update -y
 
 ARG PREFIX
