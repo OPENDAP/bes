@@ -9,7 +9,7 @@ CLEANFILES = bes.conf bes.log bes_serial.conf bes-return-as-dmrpp.conf
 
 # Parallel make clean fail. jhrg 4/13/22 $(TESTSUITE) $(TESTSUITE_S3) $(srcdir)/package.m4
 
-EXTRA_DIST = contiguous chunked compact new_types s3 fill_value deflate_twice string_arrays hdf4 hdf4_build_dmrpp \
+EXTRA_DIST = contiguous chunked compact new_types s3 fill_value deflate_twice string_arrays buffer_chunk hdf4 hdf4_build_dmrpp \
     check_dmrpp merge_dmrpp return_as_dmrpp $(TESTSUITE) $(TESTSUITE).at $(TESTSUITE_S3) $(TESTSUITE_S3).at \
     $(TESTSUITE_DMRPP_BUILDER) $(TESTSUITE_DMRPP_BUILDER).at $(TESTSUITE_DMRPP_BUILDER_H4) \
     $(TESTSUITE_DMRPP_BUILDER_H4).at $(TESTSUITE_CHECK_DMRPP)  $(TESTSUITE_CHECK_DMRPP).at \

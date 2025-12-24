@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="lnumbers.bin" dmrpp:href="data/lnumbers.bin" dmrpp:version="3.21.1">
+    <Byte name="num">
+        <Dim size="48"/>
+        <dmrpp:chunks fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="6" nBytes="2" chunkPositionInArray="[0]"/>
+            <dmrpp:chunk offset="12" nBytes="2" chunkPositionInArray="[2]"/>
+            <dmrpp:chunk offset="42" nBytes="2" chunkPositionInArray="[4]"/>
+            <dmrpp:chunk offset="46" nBytes="2" chunkPositionInArray="[6]"/>
+            <dmrpp:chunk offset="4" nBytes="2" chunkPositionInArray="[8]"/>
+            <dmrpp:chunk offset="8" nBytes="2" chunkPositionInArray="[10]"/>
+            <dmrpp:chunk offset="2" nBytes="2" chunkPositionInArray="[12]"/>
+            <dmrpp:chunk offset="20" nBytes="2" chunkPositionInArray="[14]"/>
+            <dmrpp:chunk offset="10" nBytes="2" chunkPositionInArray="[16]"/>
+            <dmrpp:chunk offset="24" nBytes="2" chunkPositionInArray="[18]"/>
+            <dmrpp:chunk offset="34" nBytes="2" chunkPositionInArray="[20]"/>
+            <dmrpp:chunk offset="40" nBytes="2" chunkPositionInArray="[22]"/>
+            <dmrpp:chunk offset="16" nBytes="2" chunkPositionInArray="[26]"/>
+        </dmrpp:chunks>
+    </Byte>
+</Dataset>

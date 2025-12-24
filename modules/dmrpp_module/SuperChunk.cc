@@ -312,7 +312,8 @@ void process_chunks_concurrent(const string &super_chunk_id, queue<shared_ptr<Ch
                 bool thread_started = true;
                 while (thread_started && !chunks.empty()) {
                     auto chunk = chunks.front();
-                    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Starting thread for " << chunk->to_string() << endl);
+                    // chunk->to_string causes segmentation fault when the chunk is a filled chunk. So comment out.
+                    // BESDEBUG(SUPER_CHUNK_MODULE, prolog << "Starting thread for " << chunk->to_string() << endl);
 
                     auto args = unique_ptr<one_chunk_args>(
                         new one_chunk_args(super_chunk_id, chunk, array, constrained_array_shape));
@@ -320,7 +321,7 @@ void process_chunks_concurrent(const string &super_chunk_id, queue<shared_ptr<Ch
 
                     if (thread_started) {
                         chunks.pop();
-                        BESDEBUG(SUPER_CHUNK_MODULE, prolog << "STARTED thread for " << chunk->to_string() << endl);
+                        // BESDEBUG(SUPER_CHUNK_MODULE, prolog << "STARTED thread for " << chunk->to_string() << endl);
                     } else {
                         // Thread did not start, ownership of the arguments was not passed to the thread.
                         BESDEBUG(SUPER_CHUNK_MODULE,
@@ -728,6 +729,7 @@ void SuperChunk::retrieve_data() {
         // release memory in destructor.
         d_read_buffer = new char[d_size];
     }
+BESDEBUG("dmrpp", "SuperChunk read buffer offset: " << d_offset <<" buffer size: " << d_size <<  "." << endl);
 
     // Massage the chunks so that their read/receive/intern data buffer
     // points to the correct section of the d_read_buffer memory.
@@ -781,10 +783,16 @@ void SuperChunk::retrieve_data_dio() {
         d_read_buffer = new char[d_size];
     }
 
+    BESDEBUG("dmrpp", "SuperChunk dio read buffer offset: " << d_offset <<" buffer size: " << d_size <<  "." << endl);
+
     // Massage the chunks so that their read/receive/intern data buffer
     // points to the correct section of the d_read_buffer memory.
     // "Slice it up!"
-    map_chunks_to_buffer();
+    if (non_contiguous_chunk)
+        map_non_contiguous_chunks_to_buffer();
+    else
+        map_chunks_to_buffer();
+    //map_chunks_to_buffer();
 
     // Read the bytes from the target URL. (pthreads, maybe depends on size...)
     // Use one (or possibly more) thread(s) depending on d_size
