@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="snumbers.bin">
+    <Byte name="num">
+        <Dim size="16"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </Byte>
+</Dataset>
+
+The data:
+Byte num[16] = {2, 3, 12, 13, 4, 5, 14, 15, 6, 7, 0, 0, 8, 9, 0, 0};
+
