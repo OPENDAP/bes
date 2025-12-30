@@ -208,11 +208,6 @@ jobs:
         - export OS=rocky8
         - export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
         - bash ${TRAVIS_BUILD_DIR}/travis/build-rhel-docker.sh
-        - export BES_VERSION="$(docker run --rm ${SNAPSHOT_IMAGE_TAG} -c 'cat bes_VERSION')"
-        - echo "BES_VERSION is ${BES_VERSION}"
-        - export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}"
-        - echo "BUILD_VERSION_TAG is ${BUILD_VERSION_TAG}"
-        - docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
         # TODO: remove this before merging! Using for debugging
         - bash ${TRAVIS_BUILD_DIR}/travis/deploy-to-docker-hub.sh
 

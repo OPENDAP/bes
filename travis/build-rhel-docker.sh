@@ -55,6 +55,7 @@ loggy "   BES_BUILD_NUMBER: '$BES_BUILD_NUMBER'"
 loggy " LIBDAP_RPM_VERSION: '$LIBDAP_RPM_VERSION'"
 loggy "        GDAL_OPTION: '$GDAL_OPTION'"
 loggy "   DOCKER_DEV_FLAGS: '$DOCKER_DEV_FLAGS'"
+loggy "        DOCKER_NAME: '$DOCKER_NAME'"
 loggy ""
 loggy "Artifact info:"
 loggy "       HYRAX_DEPENDENCIES_TARBALL: '$HYRAX_DEPENDENCIES_TARBALL'"
@@ -91,3 +92,10 @@ docker build \
 
 echo "Docker build complete!"
 docker image ls -a
+
+# Tagging the image with its version number...
+export BES_VERSION="$(docker run --rm ${SNAPSHOT_IMAGE_TAG} -c 'cat bes_VERSION')"
+echo "BES_VERSION is ${BES_VERSION}"
+export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}"
+echo "BUILD_VERSION_TAG is ${BUILD_VERSION_TAG}"
+docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}

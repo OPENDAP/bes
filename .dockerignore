@@ -196,5 +196,7 @@ configured_features.txt
 !docs/*.doc
 !docs/Makefile.am
 
+.git
+
 */.deps 
 */.libs
