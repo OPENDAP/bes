@@ -103,6 +103,7 @@ public:
     static bool is_netcdf4_enhanced_response;
     static bool is_netcdf4_classic_response;
     static bool disable_direct_io;
+    static bool use_buffer_chunk;
 
 	static bool dap_build_dmr(BESDataHandlerInterface &dhi);
 	static bool dap_build_dap4data(BESDataHandlerInterface &dhi);

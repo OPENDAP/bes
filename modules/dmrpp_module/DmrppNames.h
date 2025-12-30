@@ -49,6 +49,7 @@
 
 #define DMRPP_USE_CLASSIC_IN_FILEOUT_NETCDF "FONc.ClassicModel"
 #define DMRPP_DISABLE_DIRECT_IO "DMRPP.DisableDirectIO"
+#define DMRPP_USE_BUFFER_CHUNK "DMRPP.UseBufferChunk"
 
 #define DMRPP_WAIT_FOR_FUTURE_MS 1
 
