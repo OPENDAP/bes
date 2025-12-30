@@ -471,3 +471,16 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([hdf4/sinusoid_ll_constraint_var.hdf.dap])
 
 # non-contiguous chunk constraint check
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([fill_value/fvalue_chunks_fill_notdefined_constraint.dap])
+
+# buffer chunk tests
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(buffer_chunk/numbers.bin.dap)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(buffer_chunk/snumbers.bin.dap)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(buffer_chunk/snumbers.bin.simple_constraint.dap)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(buffer_chunk/snumbers.bin.simple_filled_constraint.dap)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(buffer_chunk/snumbers.bin.simple_offset_move_front_constraint.dap)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(buffer_chunk/snumbers.bin.complex_filled_constraint.dap)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(buffer_chunk/numbers.bin.simple_exceed_buffer_size_constraint.dap)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(buffer_chunk/numbers.bin.simple_exceed_buffer_size_filled_constraint.dap)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(buffer_chunk/numbers.bin.simple_exceed_buffer_size_filled_move_front_constraint.dap)
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST(buffer_chunk/lnumbers.bin.comprehensive_constraint.dap)
+

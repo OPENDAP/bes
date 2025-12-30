@@ -35,7 +35,6 @@ echo "time_now: ${time_now}" >&2
 BES_SNAPSHOT="bes-${bes_version} ${time_now}"
 echo "BES_SNAPSHOT: ${BES_SNAPSHOT}" >&2
 
-
 echo "Tagging bes with version: ${bes_version}"
 git tag -m "bes-${bes_version}" -a "${bes_version}"
 git push "https://${GIT_UID}:${GIT_PSWD}@github.com/OPENDAP/bes.git" "${bes_version}"
@@ -48,8 +47,14 @@ git checkout master
 # Add the libdap4 snapshot line to the bes-snapshot file.
 echo "${LIBDAP4_SNAPSHOT}" > bes-snapshot
 
+test_deploy=""
+if [[ "$TRAVIS_BRANCH" == *"-test-deploy" ]]
+then
+  test_deploy=" test-deploy"
+fi
+
 # Append the BES snapshot record to the bes-snapshot file.
-echo "${BES_SNAPSHOT}" >> bes-snapshot
+echo "${BES_SNAPSHOT}$test_deploy" >> bes-snapshot
 
 cat bes-snapshot >&2
 
