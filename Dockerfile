@@ -34,7 +34,7 @@ RUN autoreconf -fiv
 
 ARG GDAL_OPTION
 ARG BES_BUILD_NUMBER
-RUN ./configure --disable-dependency-tracking --prefix=${PREFIX} \
+RUN ./configure --disable-dependency-tracking \
     --with-dependencies=${PREFIX}/deps \
     $GDAL_OPTION \
     --with-build=$BES_BUILD_NUMBER
@@ -46,11 +46,13 @@ RUN echo "NJOBS_OPTION is '$NJOBS_OPTION'"
 RUN make $NJOBS_OPTION
 
 RUN make install
+
 RUN echo "besdaemon is here: "`which besdaemon`
 
 # Clean up
 WORKDIR ".."
-RUN cp bes/bes_VERSION bes_VERSION
+RUN cp bes/bes_VERSION bes_VERSION \
+    && rm -rf bes
 
 # Sanity check....
 RUN echo "besdaemon is here: "`which besdaemon`
