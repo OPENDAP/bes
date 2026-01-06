@@ -2,12 +2,10 @@
 
 ARG BASE_IMAGE
 # TODO-check/fail if no base_image provided
-FROM ${BASE_IMAGE-"rockylinux:8"}
+FROM ${BASE_IMAGE:-"rockylinux:8"}
 RUN yum update -y
 
-ARG PREFIX
-ENV PREFIX="${PREFIX:-"/root/install"}"
-
+ENV PREFIX="/root/install"
 ENV PATH="$PREFIX/bin:$PREFIX/deps/bin:$PATH"
 
 # Install the latest hyrax dependencies
@@ -39,8 +37,8 @@ ARG BES_BUILD_NUMBER
 # so when it comes to the installation step we'll be using
 # the default system-based installation sites
 RUN ./configure --disable-dependency-tracking \
-    --with-dependencies=${PREFIX}/deps \
-    --prefix="/" \
+    --with-dependencies="${PREFIX}/deps" \
+    --prefix="${PREFIX}" \
     $GDAL_OPTION \
     --with-build=$BES_BUILD_NUMBER
 
@@ -61,11 +59,11 @@ ENV bescachedir="/var/cache/bes"
 ENV bespkidir="/etc/pki/bes"
 ENV beslogdir="/var/log/bes"
 ENV bespiddir="/var/run"
-ENV _bindir="/usr/bin"
+ENV _bindir="$PREFIX/bin"
 ENV _tmpfilesdir="/usr/lib/tmpfiles.d"
-ENV _systconfdir="/etc"
+ENV _systconfdir="$PREFIX/etc"
 ENV _datadir="/usr/share"
-ENV _libdir="/usr/lib"
+ENV _libdir="$PREFIX/lib"
 ENV beslibdir="${_libdir}/bes"
 
 # 1. %build: Update the default macros: https://docs.fedoraproject.org/en-US/packaging-guidelines/RPMMacros/
@@ -80,7 +78,7 @@ RUN sed -i.dist -e 's:=/tmp:='"$bescachedir"':' \
     -e 's:=/full/path/to/clientside/key/file.pem:='"$bespkidir"'/public/file.pem:' \
     -e 's:=user_name:=bes:' \
     -e 's:=group_name:=bes:' \
-    /etc/bes/bes.conf
+    "${PREFIX}/etc/bes/bes.conf"
 
 # 2. "%pre"-install: Add bes group and user
 RUN getent group bes >/dev/null || groupadd -r bes
@@ -97,16 +95,19 @@ RUN mkdir -p ${bescachedir} \
     && chmod g+w ${bespiddir} \
     && mv ${_bindir}/bes-config-pkgconfig ${_bindir}/bes-config \
     && mkdir -p ${_tmpfilesdir} \
-    && mv ${_bindir}/bes-tmpfiles-conf ${_tmpfilesdir}/bes.conf 
+    && mv ${_bindir}/bes-tmpfiles-conf ${_tmpfilesdir}/bes.conf \
+    && echo "ok"
 
-# 4. "%files" installed: Add and update owndership for files handled differently in rpm install than make install
+# # 4. "%files" installed: Add and update owndership for files handled differently in rpm install than make install
 RUN mkdir "${_datadir}/hyrax/" "${_datadir}/mds/" \
-    && chown -R bes:bes ${beslogdir} ${bescachedir} "${_datadir}/mds/" "/etc/bes"
+    && chown -R bes:bes ${beslogdir} ${bescachedir} "${_datadir}/mds/" "${PREFIX}/etc/bes" ${beslibdir} ${_bindir}
 
-ENV LD_LIBRARY_PATH="${PREFIX}/deps/lib"
+# ENV LD_LIBRARY_PATH="${PREFIX}/deps/lib"
 
 # 5. Add besd service to start at boot
-RUN chkconfig --add besd \
+
+RUN cp ${PREFIX}/etc/rc.d/init.d/besd /etc/rc.d/init.d/besd \
+    && chkconfig --add besd \
     && ldconfig
 
 # # Clean up
