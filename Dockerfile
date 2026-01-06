@@ -103,6 +103,8 @@ RUN mkdir -p ${bescachedir} \
 RUN mkdir "${_datadir}/hyrax/" "${_datadir}/mds/" \
     && chown -R bes:bes ${beslogdir} ${bescachedir} "${_datadir}/mds/" "/etc/bes"
 
+ENV LD_LIBRARY_PATH="${PREFIX}/deps/lib"
+
 # 5. Add besd service to start at boot
 RUN chkconfig --add besd \
     && ldconfig
