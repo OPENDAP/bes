@@ -409,7 +409,7 @@ public:
         try {
             init_dds_and_mds();
 
-            // Store it - this will work if the the code is cleaning the cache.
+            // Store it - this will work if the code is cleaning the cache.
             GlobalMetadataStore::StreamDMR write_the_dmr_response(d_test_dds);
             bool stored = d_mds->store_dap_response(write_the_dmr_response,
                 d_test_dds->get_dataset_name() + ".dmr_r", d_test_dds->get_dataset_name(), "DMR");
