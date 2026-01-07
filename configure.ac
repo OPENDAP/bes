@@ -461,6 +461,7 @@ AC_ARG_WITH([dependencies],
             AC_MSG_RESULT([Using ${ac_bes_dependencies_prefix} as the dependencies prefix])])],
            [AM_CONDITIONAL([WITH_DEPENDENCIES], [false])])
 
+
 BES_DISPATCH_LIB="-L\$(top_builddir)/dispatch -lbes_dispatch"
 AC_SUBST(BES_DISPATCH_LIB)
 BES_XML_CMD_LIB="-L\$(top_builddir)/xmlcommand -lbes_xml_command"
