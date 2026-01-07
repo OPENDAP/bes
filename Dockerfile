@@ -54,7 +54,7 @@ RUN echo "besdaemon is here: "`which besdaemon`
 
 # Mimick RPM install configuration, adapted from bes/spec.all_static.in:
 
-# 0. Define rpm macro variables 
+# # 0. Define rpm macro variables 
 ENV bescachedir="/var/cache/bes"
 ENV bespkidir="/etc/pki/bes"
 ENV beslogdir="/var/log/bes"
@@ -85,30 +85,30 @@ RUN getent group bes >/dev/null || groupadd -r bes
 RUN getent passwd bes >/dev/null || \
     useradd -r -g bes -d ${beslogdir} -s /sbin/nologin -c "BES daemon" bes
 
-# 3. Create directories (from "%install" section)
+# # 3. Create directories (from "%install" section)
 RUN mkdir -p ${bescachedir} \
     && chmod g+w ${bescachedir} \
-    && mkdir -p ${bespkidir}/{cacerts,public} \
+#     && mkdir -p ${bespkidir}/{cacerts,public} \
     && mkdir -p ${beslogdir} \
     && chmod g+w ${beslogdir} \
-    && mkdir -p ${bespiddir} \
-    && chmod g+w ${bespiddir} \
-    && mv ${_bindir}/bes-config-pkgconfig ${_bindir}/bes-config \
-    && mkdir -p ${_tmpfilesdir} \
-    && mv ${_bindir}/bes-tmpfiles-conf ${_tmpfilesdir}/bes.conf \
+#     && mkdir -p ${bespiddir} \
+#     && chmod g+w ${bespiddir} \
+#     && mv ${_bindir}/bes-config-pkgconfig ${_bindir}/bes-config \
+#     && mkdir -p ${_tmpfilesdir} \
+#     && mv ${_bindir}/bes-tmpfiles-conf ${_tmpfilesdir}/bes.conf \
     && echo "ok"
 
-# # 4. "%files" installed: Add and update owndership for files handled differently in rpm install than make install
+# 4. "%files" installed: Add and update owndership for files handled differently in rpm install than make install
 RUN mkdir "${_datadir}/hyrax/" "${_datadir}/mds/" \
     && chown -R bes:bes ${beslogdir} ${bescachedir} "${_datadir}/mds/" "${PREFIX}/etc/bes" ${beslibdir} ${_bindir}
 
-# ENV LD_LIBRARY_PATH="${PREFIX}/deps/lib"
+# # ENV LD_LIBRARY_PATH="${PREFIX}/deps/lib"
 
-# 5. Add besd service to start at boot
+# # 5. Add besd service to start at boot
 
-RUN cp ${PREFIX}/etc/rc.d/init.d/besd /etc/rc.d/init.d/besd \
-    && chkconfig --add besd \
-    && ldconfig
+# RUN cp ${PREFIX}/etc/rc.d/init.d/besd /etc/rc.d/init.d/besd \
+#     && chkconfig --add besd \
+#     && ldconfig
 
 # # Clean up
 # WORKDIR ".."

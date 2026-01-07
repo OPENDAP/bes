@@ -84,7 +84,6 @@ docker build \
     --build-arg GDAL_OPTION="$GDAL_OPTION" \
     --build-arg NJOBS_OPTION="-j16" \
     --build-arg BES_BUILD_NUMBER="$BES_BUILD_NUMBER" \
-    --build-arg PREFIX=/root/install \
     --tag "${SNAPSHOT_IMAGE_TAG}" \
     --build-context aws_downloads="$AWS_DOWNLOADS_DIR/" \
     --progress=plain $DOCKER_DEV_FLAGS \
