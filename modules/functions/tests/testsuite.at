@@ -139,16 +139,16 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/bind_shape_test_7.dods.bescmd)
 
 # These gdal tests fail now because we are not able to link two shared
 # object modules to the static gdal library. jhrg 6/10/22
-AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_array.dods.bescmd, xfail, gdal)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_array.dods.bescmd, pass, gdal)
 AT_BESCMD_RESPONSE_PATTERN_TEST(bescmd/scale_array.dods2.bescmd)
-AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_array.dods3.bescmd, xfail, gdal)
-AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_array.dods4.bescmd, xfail, gdal)
-AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_array.dods5.bescmd, xfail, gdal)
-AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_array.dods6.bescmd, xfail, gdal)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_array.dods3.bescmd, pass, gdal)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_array.dods4.bescmd, pass, gdal)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_array.dods5.bescmd, pass, gdal)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_array.dods6.bescmd, pass, gdal)
 
-AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_grid.dods.bescmd, xfail, gdal)
-AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_grid.dods2.bescmd, xfail, gdal)
-AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_grid.dods3.bescmd, xfail, gdal)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_grid.dods.bescmd, pass, gdal)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_grid.dods2.bescmd, v, gdal)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_grid.dods3.bescmd, v, gdal)
 # The following test returns an error. vsk 9/2/17
 AT_BESCMD_RESPONSE_PATTERN_TEST(bescmd/scale_grid_xy.dods2.bescmd)
 
