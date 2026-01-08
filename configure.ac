@@ -450,6 +450,7 @@ dnl These are tests that only apply if the modules are being built too.
 AM_COND_IF([DAP_BUILTIN_MODULES], [
 
 ac_bes_dependencies_prefix=
+AC_MSG_CHECKING([if the dependencies prefix has been set])
 AC_ARG_WITH([dependencies],
 	[AS_HELP_STRING([--with-dependencies],[The prefix for the dependencies])],
     [AS_IF([test -n "$with_dependencies"], 
@@ -458,8 +459,50 @@ AC_ARG_WITH([dependencies],
             dnl top level makefile. jhrg 3/18/15
             AM_CONDITIONAL([WITH_DEPENDENCIES], [true])
             AC_SUBST([ac_bes_dependencies_prefix])
-            AC_MSG_RESULT([Using ${ac_bes_dependencies_prefix} as the dependencies prefix])])],
+            AC_MSG_RESULT([yes ($ac_bes_dependencies_prefix)])])],
            [AM_CONDITIONAL([WITH_DEPENDENCIES], [false])])
+
+## FIXME Kludge replace aws_libdir with something real. jhrg 1/6/26
+
+# Help the link step find libs at build time too (not just run time)
+deps_libdir=
+deps_libdir64=
+AS_IF([test -n "$ac_bes_dependencies_prefix"],
+    [deps_libdir=$ac_bes_dependencies_prefix/lib
+     AC_SUBST([deps_libdir])
+     AS_IF([test -d "${deps_libdir}64"],
+        [deps_libdir64=${deps_libdir}64
+         AC_SUBST([deps_libdir64])])])
+
+# If deps_libdir is set above to a special dependencies dir, then do the following
+# to support dynamic linking with the dependencies given that they are not installed
+# in a 'standard' location. jhrg 1/7/26
+
+# NB: '${LDFLAGS}${LDFLAGS:+ }' is a tricky but portable way to optionally append
+# to a shell var. Only if LDFLAGS has a value is a space added before '-L...'
+# jhrg 1/7/26
+
+# AS_IF([test -n "$deps_libdir"],
+#    [LDFLAGS="$LDFLAGS -L$deps_libdir"
+#     echo "LDFLAGS is $LDFLAGS"
+#     AS_IF([test -n "$deps_libdir64"],[LDFLAGS="$LDFLAGS -L$deps_libdir64"])
+#     AC_SUBST([LDFLAGS])])
+
+AS_IF([test -n "$deps_libdir"],
+   [AM_LDFLAGS="$LDFLAGS -L$deps_libdir"
+    echo "LDFLAGS is $LDFLAGS"
+    AS_IF([test -n "$deps_libdir64"],[LDFLAGS="$LDFLAGS -L$deps_libdir64"])
+        AM_CONDITIONAL([DARWIN],
+         [LDFLAGS="-Wl,-rpath -Wl,${deps_libdir} -Wl,-rpath -Wl,@loader_path $LDFLAGS "
+          echo "LDFLAGS is $LDFLAGS"],
+         [LDFLAGS="$LDFLAGS -Wl,-rpath,$deps_libdir -Wl,-rpath,'$ORIGIN'"
+          AS_IF([test -n "$deps_libdir64"], [LDFLAGS="$LDFLAGS -Wl,-rpath,$deps_libdir64"])])
+    AC_SUBST([LDFLAGS])])
+
+AC_MSG_CHECKING([LDFLAGS after dependencies prefix test])
+AC_MSG_RESULT([LDFLAGS = $LDFLAGS])
+
+## END FIXME jhrg 1/6/26
 
 BES_DISPATCH_LIB="-L\$(top_builddir)/dispatch -lbes_dispatch"
 AC_SUBST(BES_DISPATCH_LIB)
@@ -608,15 +651,15 @@ AM_COND_IF([LOOK_FOR_AWS],
          AS_IF(
             dnl OSX test
             [echo ${host} | grep -q 'darwin.*'],
-            [aws_libdir=$aws_prefix/lib; AC_MSG_NOTICE([    OSX Arch Found: $host])],
+            [aws_libdir=$aws_prefix/lib; AC_MSG_NOTICE([OSX Arch Found: $host])],
             dnl else
             [
                 ARCH=""
                 AS_CASE([$host_cpu],
                     [x86_64|aarch64*|mips64*|ppc64*|sparc64*],
-                    [ARCH="64"; AC_MSG_NOTICE([    64x Arch Found: $host_cpu])],
+                    [ARCH="64"; AC_MSG_NOTICE([64x Arch Found: $host_cpu])],
                     [i?86|arm*|mips*|ppc*|sparc],
-                    [ARCH="32"; AC_MSG_NOTICE([    32x Arch Found: $host_cpu])])
+                    [ARCH="32"; AC_MSG_NOTICE([32x Arch Found: $host_cpu])])
 
                 AS_IF(
                     dnl 64-bit system
