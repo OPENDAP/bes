@@ -491,7 +491,6 @@ AS_IF([test -n "$deps_libdir"],
 AC_MSG_CHECKING([LDFLAGS after dependencies prefix test])
 AC_MSG_RESULT([LDFLAGS = $LDFLAGS])
 
-## END FIXME jhrg 1/6/26
 
 BES_DISPATCH_LIB="-L\$(top_builddir)/dispatch -lbes_dispatch"
 AC_SUBST(BES_DISPATCH_LIB)
