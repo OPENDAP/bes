@@ -27,15 +27,15 @@ WORKDIR /bes
 
 ARG CPPFLAGS
 ARG LDFLAGS
-RUN autoreconf -fiv
+ENV LD_LIBRARY_PATH="${PREFIX}/deps/lib"
 
 ARG GDAL_OPTION
 ARG BES_BUILD_NUMBER
-ENV LD_LIBRARY_PATH="${PREFIX}/deps/lib"
-
 ARG NJOBS_OPTION
 ENV NJOBS_OPTION="${NJOBS_OPTION:-""}"
 RUN echo "NJOBS_OPTION is '$NJOBS_OPTION'"
+
+RUN autoreconf -fiv
 
 RUN ./configure --disable-dependency-tracking \
     --with-dependencies="${PREFIX}/deps" \
@@ -45,7 +45,12 @@ RUN ./configure --disable-dependency-tracking \
     --enable-developer
 RUN make $NJOBS_OPTION
 
-RUN make install
+# RUN make install
+
+# RUN set -e \
+#     && make check $NJOBS_OPTION
+
+# RUN besctl start && make check -j16 && besctl stop
 
 # # 5. Add besd service to start at boot
 # RUN cp ${PREFIX}/etc/rc.d/init.d/besd /etc/rc.d/init.d/besd \
