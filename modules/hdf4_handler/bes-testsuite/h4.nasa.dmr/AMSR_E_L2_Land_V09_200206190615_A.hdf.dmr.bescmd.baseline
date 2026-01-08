@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="AMSR_E_L2_Land_V09_200206190615_A.hdf">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="2.0" name="AMSR_E_L2_Land_V09_200206190615_A.hdf">
     <Attribute name="HDFEOSVersion" type="String">
         <Value>HDFEOS_V2.14</Value>
     </Attribute>
