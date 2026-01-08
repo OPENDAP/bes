@@ -9,8 +9,13 @@ if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
 endif
 
+# AM_LDFLAGS is set to an initial value in configure.ac that will enable linking to
+# the hyrax-dependencies when they are built as shared/dynamic libraries. To retain
+# those linker flags, AM_LDFLAGS should only be _appended_ to. A straight assignment
+# will override the values set by configure. In many cases, that's what you want, but
+# here we want besstandalone to link up with the shared dependencies. jhrg 1/8/26
+
 AM_CXXFLAGS=
-AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
 EXTRA_DIST = response-split.py
@@ -28,6 +33,6 @@ besstandalone_SOURCES = besstandalone.cc StandAloneApp.cc StandAloneClient.cc \
     StandAloneApp.h StandAloneClient.h
 
 # This depends on building in bes/cmdln first. It's not a good way to write
-# teh Makefile.am, but I cannot get distcheck to work otherwise. jhrg 9/8/23
+# the Makefile.am, but I cannot get distcheck to work otherwise. jhrg 9/8/23
 besstandalone_LDADD = $(top_builddir)/cmdln/CmdTranslation.o $(top_builddir)/dispatch/libbes_dispatch.la \
     $(top_builddir)/xmlcommand/libbes_xml_command.la $(READLINE_LIBS) $(XML2_LIBS)
