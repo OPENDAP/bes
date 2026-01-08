@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="S5PNRTIL2NO220180422T00470920180422T005209027060100110820180422T022729.nc.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="2.0" name="S5PNRTIL2NO220180422T00470920180422T005209027060100110820180422T022729.nc.h5">
     <Dimension name="METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_histogram_axis" size="100"/>
     <Dimension name="METADATA_QA_STATISTICS_nitrogendioxide_stratospheric_column_pdf_axis" size="400"/>
     <Dimension name="METADATA_QA_STATISTICS_nitrogendioxide_total_column_histogram_axis" size="100"/>

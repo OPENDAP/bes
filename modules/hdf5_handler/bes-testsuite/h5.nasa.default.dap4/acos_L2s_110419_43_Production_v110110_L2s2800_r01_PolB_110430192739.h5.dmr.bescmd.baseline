@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="acos_L2s_110419_43_Production_v110110_L2s2800_r01_PolB_110430192739.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="2.0" name="acos_L2s_110419_43_Production_v110110_L2s2800_r01_PolB_110430192739.h5">
     <Group name="Dimensions">
         <Group name="Aerosol">
             <Attribute name="Size" type="UInt32">

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="vfd_swmr_group_compact_to_dense.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="2.0" name="vfd_swmr_group_compact_to_dense.h5">
     <Attribute name="group_0" type="Container">
         <Attribute name="attr_0_7" type="UInt32">
             <Value>7</Value>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="CLARREO_CERES_NPP_L4.SIM_b001.20170101.091658.PT04M54S.20230307154549.nc.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="2.0" name="CLARREO_CERES_NPP_L4.SIM_b001.20170101.091658.PT04M54S.20230307154549.nc.h5">
     <Dimension name="wavelength" size="640"/>
     <Dimension name="intercal_samples" size="485"/>
     <Attribute name="NextflowCommand" type="String">
