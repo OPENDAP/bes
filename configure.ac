@@ -460,7 +460,8 @@ AC_ARG_WITH([dependencies],
             AM_CONDITIONAL([WITH_DEPENDENCIES], [true])
             AC_SUBST([ac_bes_dependencies_prefix])
             AC_MSG_RESULT([yes ($ac_bes_dependencies_prefix)])])],
-           [AM_CONDITIONAL([WITH_DEPENDENCIES], [false])])
+           [AM_CONDITIONAL([WITH_DEPENDENCIES], [false])
+            AC_MSG_RESULT([no])])
 
 
 # Help the link step find libs at build time too (not just run time)
@@ -487,11 +488,6 @@ AS_IF([test -n "$deps_libdir"],
          [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,$deps_libdir -Wl,-rpath,''$ORIGIN''"
           AS_IF([test -n "$deps_libdir64"], [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,$deps_libdir64"])])
     AC_SUBST([AM_LDFLAGS])])
-
-AC_MSG_CHECKING([LDFLAGS after dependencies prefix test])
-AC_MSG_RESULT([LDFLAGS = $LDFLAGS])
-
-## END FIXME jhrg 1/6/26
 
 BES_DISPATCH_LIB="-L\$(top_builddir)/dispatch -lbes_dispatch"
 AC_SUBST(BES_DISPATCH_LIB)
