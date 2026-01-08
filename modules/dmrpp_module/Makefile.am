@@ -27,7 +27,7 @@ AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\"  -DMODULE_VERSION=\"$(M_VER)\"
 # the --disable-shared is not required, but it seems to help with debuggers.
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align 
 
-AM_LDFLAGS = 
+AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
 SUBDIRS = ngap_container dmrpp_transmitter build_dmrpp_h4 . unit-tests tests data tests_build_dmrpp get_dmrpp
