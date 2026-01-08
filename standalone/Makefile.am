@@ -10,6 +10,10 @@ AM_CPPFLAGS += -DBES_DEVELOPER
 endif
 
 AM_CXXFLAGS=
+# AM_LDFLAGS is set to an initial value in configure.ac. Initializing it in a
+# Makefile.am will override that value. The initial value configure the compiler
+# and linker to look in the dependencies/lib dir for libraries and to use that
+# path as a value to -rpath (for dynamic libraries). jhrg 1/7/26
 # AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
@@ -30,7 +34,7 @@ include $(top_srcdir)/coverage.mk
 #         AM_LDFLAGS += -Wl,-rpath,$(deps_libdir64)
 #     endif
 # endif
-$(info "AM_LDFLAGS: $(AM_LDFLAGS)")
+# $(info "AM_LDFLAGS: $(AM_LDFLAGS)")
 
 EXTRA_DIST = response-split.py
 
@@ -47,6 +51,6 @@ besstandalone_SOURCES = besstandalone.cc StandAloneApp.cc StandAloneClient.cc \
     StandAloneApp.h StandAloneClient.h
 
 # This depends on building in bes/cmdln first. It's not a good way to write
-# teh Makefile.am, but I cannot get distcheck to work otherwise. jhrg 9/8/23
+# the Makefile.am, but I cannot get distcheck to work otherwise. jhrg 9/8/23
 besstandalone_LDADD = $(top_builddir)/cmdln/CmdTranslation.o $(top_builddir)/dispatch/libbes_dispatch.la \
     $(top_builddir)/xmlcommand/libbes_xml_command.la $(READLINE_LIBS) $(XML2_LIBS)
