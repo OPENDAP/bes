@@ -462,7 +462,6 @@ AC_ARG_WITH([dependencies],
             AC_MSG_RESULT([yes ($ac_bes_dependencies_prefix)])])],
            [AM_CONDITIONAL([WITH_DEPENDENCIES], [false])])
 
-## FIXME Kludge replace aws_libdir with something real. jhrg 1/6/26
 
 # Help the link step find libs at build time too (not just run time)
 deps_libdir=
@@ -477,16 +476,6 @@ AS_IF([test -n "$ac_bes_dependencies_prefix"],
 # If deps_libdir is set above to a special dependencies dir, then do the following
 # to support dynamic linking with the dependencies given that they are not installed
 # in a 'standard' location. jhrg 1/7/26
-
-# NB: '${LDFLAGS}${LDFLAGS:+ }' is a tricky but portable way to optionally append
-# to a shell var. Only if LDFLAGS has a value is a space added before '-L...'
-# jhrg 1/7/26
-
-# AS_IF([test -n "$deps_libdir"],
-#    [LDFLAGS="$LDFLAGS -L$deps_libdir"
-#     echo "LDFLAGS is $LDFLAGS"
-#     AS_IF([test -n "$deps_libdir64"],[LDFLAGS="$LDFLAGS -L$deps_libdir64"])
-#     AC_SUBST([LDFLAGS])])
 
 AS_IF([test -n "$deps_libdir"],
    [AM_LDFLAGS="$AM_LDFLAGS -L$deps_libdir"

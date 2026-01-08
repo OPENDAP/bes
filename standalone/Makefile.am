@@ -9,32 +9,13 @@ if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
 endif
 
-AM_CXXFLAGS=
 # AM_LDFLAGS is set to an initial value in configure.ac. Initializing it in a
 # Makefile.am will override that value. The initial value configure the compiler
 # and linker to look in the dependencies/lib dir for libraries and to use that
 # path as a value to -rpath (for dynamic libraries). jhrg 1/7/26
 # AM_LDFLAGS =
+AM_CXXFLAGS=
 include $(top_srcdir)/coverage.mk
-
-# Help the link step find libs at build time too (not just run time)
-# AM_LDFLAGS += -L$(deps_libdir)
-
-# deps_libdir is set in configure.ac. jhrg 1/7/26
-# deps_libdir64 is also set in configure.ac jhrg 1/7/26
-
-# if DARWIN
-# AM_LDFLAGS += -Wl,-rpath,$(deps_libdir) -Wl,-rpath,@loader_path
-# else
-# AM_LDFLAGS += -Wl,-rpath,$(deps_libdir) -Wl,-rpath,'$$ORIGIN'
-#     ifeq ($(strip $(deps_libdir64)),)
-#         $(info "deps_libdir64 not set, skipping")
-#     else
-#         AM_LDFLAGS += -L$(deps_libdir64)
-#         AM_LDFLAGS += -Wl,-rpath,$(deps_libdir64)
-#     endif
-# endif
-# $(info "AM_LDFLAGS: $(AM_LDFLAGS)")
 
 EXTRA_DIST = response-split.py
 
