@@ -489,15 +489,15 @@ AS_IF([test -n "$ac_bes_dependencies_prefix"],
 #     AC_SUBST([LDFLAGS])])
 
 AS_IF([test -n "$deps_libdir"],
-   [AM_LDFLAGS="$LDFLAGS -L$deps_libdir"
-    echo "LDFLAGS is $LDFLAGS"
-    AS_IF([test -n "$deps_libdir64"],[LDFLAGS="$LDFLAGS -L$deps_libdir64"])
+   [AM_LDFLAGS="$AM_LDFLAGS -L$deps_libdir"
+    echo "AM_LDFLAGS is $AM_LDFLAGS"
+    AS_IF([test -n "$deps_libdir64"],[AM_LDFLAGS="$AM_LDFLAGS -L$deps_libdir64"])
         AM_CONDITIONAL([DARWIN],
-         [LDFLAGS="-Wl,-rpath -Wl,${deps_libdir} -Wl,-rpath -Wl,@loader_path $LDFLAGS "
-          echo "LDFLAGS is $LDFLAGS"],
-         [LDFLAGS="$LDFLAGS -Wl,-rpath,$deps_libdir -Wl,-rpath,'$ORIGIN'"
-          AS_IF([test -n "$deps_libdir64"], [LDFLAGS="$LDFLAGS -Wl,-rpath,$deps_libdir64"])])
-    AC_SUBST([LDFLAGS])])
+         [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,${deps_libdir} -Wl,-rpath,@loader_path"
+          echo "AM_LDFLAGS is $AM_LDFLAGS"],
+         [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,$deps_libdir -Wl,-rpath,''$ORIGIN''"
+          AS_IF([test -n "$deps_libdir64"], [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,$deps_libdir64"])])
+    AC_SUBST([AM_LDFLAGS])])
 
 AC_MSG_CHECKING([LDFLAGS after dependencies prefix test])
 AC_MSG_RESULT([LDFLAGS = $LDFLAGS])
