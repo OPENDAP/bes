@@ -147,8 +147,8 @@ AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_array.dods5.bescmd, pass, gdal)
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_array.dods6.bescmd, pass, gdal)
 
 AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_grid.dods.bescmd, pass, gdal)
-AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_grid.dods2.bescmd, v, gdal)
-AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_grid.dods3.bescmd, v, gdal)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_grid.dods2.bescmd, pass, gdal)
+AT_BESCMD_BINARYDATA_RESPONSE_TEST(bescmd/scale_grid.dods3.bescmd, pass, gdal)
 # The following test returns an error. vsk 9/2/17
 AT_BESCMD_RESPONSE_PATTERN_TEST(bescmd/scale_grid_xy.dods2.bescmd)
 
