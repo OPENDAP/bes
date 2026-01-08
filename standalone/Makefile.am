@@ -9,12 +9,11 @@ if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
 endif
 
-# AM_LDFLAGS is set to an initial value in configure.ac that will enable linking to
-# the hyrax-dependencies when they are built as shared/dynamic libraries. To retain
-# those linker flags, AM_LDFLAGS should only be _appended_ to. A straight assignment
-# will override the values set by configure. In many cases, that's what you want, but
-# here we want besstandalone to link up with the shared dependencies. jhrg 1/8/26
-
+# AM_LDFLAGS is set to an initial value in configure.ac. Initializing it in a
+# Makefile.am will override that value. The initial value configure the compiler
+# and linker to look in the dependencies/lib dir for libraries and to use that
+# path as a value to -rpath (for dynamic libraries). jhrg 1/7/26
+# AM_LDFLAGS =
 AM_CXXFLAGS=
 include $(top_srcdir)/coverage.mk
 

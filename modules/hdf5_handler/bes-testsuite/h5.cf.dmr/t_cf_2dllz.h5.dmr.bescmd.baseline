@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="2.0" name="t_cf_2dllz.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="t_cf_2dllz.h5">
     <Dimension name="FakeDim0" size="180"/>
     <Dimension name="FakeDim1" size="360"/>
     <Dimension name="FakeDim2" size="2"/>
