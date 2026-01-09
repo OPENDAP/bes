@@ -143,10 +143,19 @@ dnl Note that the macro depends on the baseline being a file.
 dnl
 dnl jhrg 12/29/21
 
-m4_define([REMOVE_VERSIONS], [dnl
+m4_define([REMOVE_VERSIONS_OLD], [dnl
       sed -e 's@<Value>[[0-9]]*\.[[0-9]]*\.[[0-9]]*</Value>@<Value>removed version</Value>@g' \
       -e 's@<Value>[[A-z_.]]*-[[0-9]]*\.[[0-9]]*\.[[0-9]]*(-[[0-9]]*)?<\/Value>@<Value>removed version<\/Value>@g' \
       -e 's@dmrpp:version="[[0-9]]*\.[[0-9]]*\.[[0-9]]*"@removed dmrpp:version@g' \
+      < $1 > $1.sed
+      mv $1.sed $1
+  ])
+
+m4_define([REMOVE_VERSIONS], [dnl
+      sed -E \
+      -e 's@<Value>[0-9]+\.[0-9]+\.[0-9]+</Value>@<Value>removed version</Value>@g' \
+      -e 's@<Value>[a-zA-Z._]+-[0-9]+\.[0-9]+\.[0-9]+(-[0-9]+)?</Value>@<Value>removed version</Value>@g' \
+      -e 's@dmrpp:version="[0-9]+\.[0-9]+\.[0-9]+"@removed dmrpp:version@g' \
       < $1 > $1.sed
       mv $1.sed $1
   ])
