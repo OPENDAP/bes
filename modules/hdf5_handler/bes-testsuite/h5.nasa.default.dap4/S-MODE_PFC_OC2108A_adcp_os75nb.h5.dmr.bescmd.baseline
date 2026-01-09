@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="S-MODE_PFC_OC2108A_adcp_os75nb.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="2.0" name="S-MODE_PFC_OC2108A_adcp_os75nb.h5">
     <Dimension name="time" size="4564"/>
     <Dimension name="depth" size="60"/>
     <Dimension name="trajectory" size="1"/>

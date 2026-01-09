@@ -489,6 +489,7 @@ AS_IF([test -n "$deps_libdir"],
           AS_IF([test -n "$deps_libdir64"], [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,$deps_libdir64"])])
     AC_SUBST([AM_LDFLAGS])])
 
+
 BES_DISPATCH_LIB="-L\$(top_builddir)/dispatch -lbes_dispatch"
 AC_SUBST(BES_DISPATCH_LIB)
 BES_XML_CMD_LIB="-L\$(top_builddir)/xmlcommand -lbes_xml_command"
@@ -625,10 +626,8 @@ AM_COND_IF([LOOK_FOR_AWS],
     AS_IF([$found_aws_h && $found_s3client_h],
         [aws_prefix=$ac_bes_dependencies_prefix
 
-         aws_libs="-laws-crt-cpp -laws-cpp-sdk-s3 -laws-cpp-sdk-core \
-                  -laws-c-http -laws-c-io -laws-c-auth -laws-c-cal -laws-c-compression \
-                  -laws-c-event-stream -laws-c-mqtt -laws-c-s3 -laws-c-sdkutils -laws-c-common \
-                  -lxml2 -lz -lbz2 -lcurl"
+         aws_libs="-laws-crt-cpp -laws-cpp-sdk-s3 -laws-cpp-sdk-core -laws-c-http -laws-c-io -laws-c-auth -laws-c-cal \
+-laws-c-compression -laws-c-event-stream -laws-c-mqtt -laws-c-s3 -laws-c-sdkutils -laws-c-common -lxml2 -lz -lbz2 -lcurl"
 
          dnl AC_CANONICAL_HOST is needed to access the 'host_os' variable
          AC_CANONICAL_HOST
