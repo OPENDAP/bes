@@ -72,10 +72,12 @@ class TestSample(unittest.TestCase):
         
         # Since we also add the dmrpp metadata generation informatio for the HDF4 files,
         # we need to ignore those information when doing comparision.
+        # We also ignore the first two lines so as to avoid false failure due to different
+        # dmrpp versions
         with open('grid_1_2d.h5.dmrpp') as f:
-            dmrpp_minus_18_lines = f.readlines()[:-18]
+            dmrpp_minus_18_lines = f.readlines()[2:-18]
         with open('grid_1_2d.h5.dmrpp.baseline') as f1:
-            baseline_minus_18_lines = f1.readlines()[:-18]
+            baseline_minus_18_lines = f1.readlines()[2:-18]
         self.assertEqual(dmrpp_minus_18_lines ,baseline_minus_18_lines)
  
 if __name__ == '__main__':
