@@ -144,12 +144,14 @@ dnl
 dnl jhrg 12/29/21
 
 m4_define([REMOVE_VERSIONS], [dnl
-      sed -e 's@<Value>[[0-9]]*\.[[0-9]]*\.[[0-9]]*</Value>@<Value>removed version</Value>@g' \
-      -e 's@<Value>[[A-z_.]]*-[[0-9]]*\.[[0-9]]*\.[[0-9]]*</Value>@<Value>removed version</Value>@g' \
-      -e 's@dmrpp:version="[[0-9]]*\.[[0-9]]*\.[[0-9]]*"@removed dmrpp:version@g' \
-      < $1 > $1.sed
-      mv $1.sed $1
-  ])
+  awk '{
+    gsub(/<Value>[[0-9]+].[[0-9]+].[[0-9]+](-[[0-9]+])?<\/Value>/, "<Value>removed version</Value>");
+    gsub(/<Value>[[a-zA-Z._]+]-[[0-9]+].[[0-9]+].[[0-9]+](-[[0-9]+])?<\/Value>/, "<Value>removed version</Value>");
+    gsub(/dmrpp:version="[[0-9]+].[[0-9]+].[[0-9]+](-[[0-9]+])?"/, "removed dmrpp:version");
+    print
+  }' < $1 > $1.awk
+  mv $1.awk $1
+])
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 #

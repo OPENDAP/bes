@@ -45,10 +45,9 @@ RUN ./configure --disable-dependency-tracking \
     --enable-developer
 RUN make $NJOBS_OPTION
 
-# RUN make install
+RUN set -e && make install
 
-# RUN set -e \
-#     && make check $NJOBS_OPTION
+RUN export prefix=$PREFIX && ./mkchk $NJOBS_OPTION
 
 # RUN besctl start && make check -j16 && besctl stop
 
