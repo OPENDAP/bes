@@ -80,6 +80,7 @@ using namespace bes;
 using namespace http;
 using namespace libdap;
 using namespace std;
+using namespace ngap;
 
 // These should be set in the Makefile.am. jhrg 11/23/24
 #ifndef MODULE_NAME
@@ -323,6 +324,7 @@ catch (...) {
  */
 void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *container, DMR *dmr) {
     try {
+        auto ngo_cont = dynamic_cast<ngap::NgapOwnedContainer*>(container);
         // If the container is an NGAP container (or maybe other types in the future),
         // the DMR++ itself might be returned as a string by access(). If the container
         // did not come from the NGAP handler, the return value might be a string that
@@ -339,7 +341,7 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
             DmrppTypeFactory factory(dmz);
             dmr->set_factory(&factory);
 
-            string dmrpp_content = container->access();
+            string dmrpp_content = ngo_cont->alt_access();
 
             dmz->parse_xml_string(dmrpp_content);
 
