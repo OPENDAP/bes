@@ -139,15 +139,17 @@ dnl obvious issue of baselines being broken when versions of the software are ch
 dnl
 dnl Added support for 'dmrpp:version="3.20.9"' in the root node of the dmrpp.
 dnl
+dnl Supports versions with build number suffix, e.g., both 3.20.8 and 3.20.8-123
+dnl
 dnl Note that the macro depends on the baseline being a file.
 dnl
 dnl jhrg 12/29/21
 
 m4_define([REMOVE_VERSIONS], [dnl
   awk '{
-    gsub(/<Value>[[0-9]+].[[0-9]+].[[0-9]+]<\/Value>/, "<Value>removed version</Value>");
-    gsub(/<Value>[[a-zA-Z._]+]-[[0-9]+].[[0-9]+].[[0-9]+]<\/Value>/, "<Value>removed version</Value>");
-    gsub(/dmrpp:version="[[0-9]+].[[0-9]+].[[0-9]+]"/, "removed dmrpp:version");
+    gsub(/<Value>[[0-9]+].[[0-9]+].[[0-9]+](-[[0-9]+])?<\/Value>/, "<Value>removed version</Value>");
+    gsub(/<Value>[[a-zA-Z._]+]-[[0-9]+].[[0-9]+].[[0-9]+](-[[0-9]+])?<\/Value>/, "<Value>removed version</Value>");
+    gsub(/dmrpp:version="[[0-9]+].[[0-9]+].[[0-9]+](-[[0-9]+])?"/, "removed dmrpp:version");
     print
   }' < $1 > $1.awk
   mv $1.awk $1
