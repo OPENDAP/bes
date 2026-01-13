@@ -93,6 +93,8 @@ using namespace std;
 #define prolog std::string("DmrppRequestHandler::").append(__func__).append("() - ")
 #define dmrpp_cache "dmrpp:cache"
 
+const int test_variable_sleep_interval = 0;
+
 namespace dmrpp {
 
 unique_ptr<ObjMemCache> DmrppRequestHandler::das_cache{nullptr};
