@@ -73,7 +73,7 @@ m4_define([_AT_BESCMD_TEST],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK lines to generate baseline file.
-AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 > $2|| true], [], [stdout], [stderr])
+#AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 > $2|| true], [], [stdout], [stderr])
 
 # This looks like a copy of the older logic we used and it will pass a test
 # if the baseline is empty and the test wrote nothing to stderr. It's better
