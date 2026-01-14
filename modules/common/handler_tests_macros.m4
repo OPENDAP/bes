@@ -51,10 +51,12 @@ m4_define([AT_BESCMD_RESPONSE_TEST], [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
         AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         ])
 
@@ -772,17 +774,22 @@ dnl obvious issue of baselines being broken when versions of the software are ch
 dnl
 dnl Added support for 'dmrpp:version="3.20.9"' in the root node of the dmrpp.
 dnl
+dnl Added support for 'dmr:version="1.2"'.
+dnl
 dnl Note that the macro depends on the baseline being a file.
 dnl
 dnl jhrg 12/29/21
 
 m4_define([REMOVE_VERSIONS], [dnl
-    sed -r -e 's@<Value>[[0-9]]*\.[[0-9]]*\.[[0-9]]*</Value>@<Value>removed-version</Value>@g' \
-    -e 's@<Value>[[A-z_.]]*-[[0-9]]*\.[[0-9]]*\.[[0-9]]*</Value>@<Value>removed-version</Value>@g' \
-    -e 's@dmrpp:version="[[0-9]]*\.[[0-9]]*\.[[0-9]]*"@removed-dmrpp:version@g' \
-    -e 's@[[0-9]]+\.[[0-9]]+\.[[0-9]]+(-[[0-9]]+)?@removed-version@g' \
-    < $1 > $1.sed
-    mv $1.sed $1
+  awk '{
+    gsub(/<Value>[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?<\/Value>/, "<Value>removed version</Value>");
+    gsub(/<Value>[[a-zA-Z._]+]-[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?<\/Value>/, "<Value>removed version</Value>");
+    gsub(/dmrpp:version="[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?"/, "dmrpp:version=\"removed\"");
+    gsub(/[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?/, "removed-version"); \
+    gsub(/dmrVersion="[[0-9]+]\.[[0-9]+]"/, "dmrVersion=\"removed\"");
+    print
+  }' < $1 > $1.awk
+  mv $1.awk $1
 ])
 
 dnl Given a filename, remove the <Value> element of a DAP4 data response as
