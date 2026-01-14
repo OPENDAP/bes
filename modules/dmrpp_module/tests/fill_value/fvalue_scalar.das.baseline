@@ -4,9 +4,9 @@ Attributes {
         String fullnamepath "/cont_scalar_fill";
     }
     build_dmrpp_metadata {
-        String build_dmrpp "3.20.13";
-        String bes "3.20.13";
-        String libdap "libdap-3.20.10";
+        String build_dmrpp "removed version";
+        String bes "removed version";
+        String libdap "libdap-removed version";
         String invocation "/Users/myang6/work/opendap/hyrax-792/bes/modules/dmrpp_module/.libs/build_dmrpp -f FValue_scalar_cont.h5 -r FValue_scalar_cont.h5.dmr -M";
     }
 }

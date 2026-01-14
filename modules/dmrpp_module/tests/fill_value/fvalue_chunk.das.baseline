@@ -1,8 +1,8 @@
 Attributes {
     build_dmrpp_metadata {
-        String build_dmrpp "3.20.10";
-        String bes "3.20.10";
-        String libdap "libdap-3.20.9";
+        String build_dmrpp "removed version";
+        String bes "removed version";
+        String libdap "libdap-removed version";
         String configuration "
 # TheBESKeys::get_as_config()
 AllowedHosts=^https?:\\/\\/

@@ -1011,10 +1011,10 @@
     </Attribute>
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="build_dmrpp" type="String">
-            <Value>3.20.13</Value>
+            <Value>removed version</Value>
         </Attribute>
         <Attribute name="bes" type="String">
-            <Value>3.20.13</Value>
+            <Value>removed version</Value>
         </Attribute>
         <Attribute name="libdap" type="String">
             <Value>libdap-removed version</Value>
