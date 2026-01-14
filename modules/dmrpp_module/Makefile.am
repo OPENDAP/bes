@@ -73,10 +73,10 @@ h5common.h: Makefile
 build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
 build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) DmrppRequestHandler.cc DmrppRequestHandler.h \
     build_dmrpp.cc build_dmrpp_util.cc build_dmrpp_util.h h5common.cc h5common.h
-build_dmrpp_LDFLAGS = $(top_builddir)/dap/.libs/libdap_module.a
-build_dmrpp_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(H5_LDFLAGS) \
-    $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
-    $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
+build_dmrpp_LDFLAGS =
+build_dmrpp_LDADD = $(top_builddir)/dap/.libs/libdap_module.a -L$(builddir)/ngap_container -lngap \
+$(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(H5_LDFLAGS)  $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
+$(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
 
 # jhrg 6/2/23 $(BES_EXTRA_LIBS)
 

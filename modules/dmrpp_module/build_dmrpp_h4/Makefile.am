@@ -50,8 +50,9 @@ build_dmrpp_h4_LDFLAGS = $(HDFEOS2_LDFLAGS) $(HDF4_LDFLAGS) $(BES_DAP_LIB_LDFLAG
 
 # jhrg 12/18/23 $(top_builddir)/dap/.libs/libdap_module.a
 
-build_dmrpp_h4_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
-    $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) $(HDFEOS2_LIBS) $(HDF4_LIBS)
+build_dmrpp_h4_LDADD = -L$(builddir)/../ngap_container -lngap $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) \
+$(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) \
+$(HDFEOS2_LIBS) $(HDF4_LIBS)
 
 lib_besdir=$(libdir)/bes
 
