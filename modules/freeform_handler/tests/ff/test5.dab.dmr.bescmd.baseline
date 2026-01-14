@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="test5.dab">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="test5.dab">
     <Sequence name="ISEE3_data">
         <Float64 name="t"/>
         <Float64 name="Bx"/>
@@ -9,7 +9,7 @@
     </Sequence>
     <Attribute name="FF_GLOBAL" type="Container">
         <Attribute name="Server" type="String">
-            <Value>DODS FreeFrom based on FFND release 4.2.3</Value>
+            <Value>DODS FreeFrom based on FFND release removed-version</Value>
         </Attribute>
         <Attribute name="iyr" type="Int16">
             <Value>79</Value>

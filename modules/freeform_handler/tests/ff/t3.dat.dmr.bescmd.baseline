@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="t3.dat">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="t3.dat">
     <Dimension name="j" size="5"/>
     <Dimension name="i" size="4"/>
     <Int32 name="inger1">
@@ -17,7 +17,7 @@
     </Int32>
     <Attribute name="FF_GLOBAL" type="Container">
         <Attribute name="Server" type="String">
-            <Value>DODS FreeFrom based on FFND release 4.2.3</Value>
+            <Value>DODS FreeFrom based on FFND release removed-version</Value>
         </Attribute>
     </Attribute>
 </Dataset>
