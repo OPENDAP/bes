@@ -435,9 +435,6 @@ void DMZ::process_dim(DMR *dmr, D4Group *grp, Array *array, const xml_node &dim_
 
 void DMZ::process_map(DMR *dmr, D4Group *grp, Array *array, const xml_node &map_node) {
     string name_value;
-#if 0
-    string size_value;
-#endif
     for (xml_attribute attr = map_node.first_attribute(); attr; attr = attr.next_attribute()) {
         if (is_eq(attr.name(), "name")) {
             name_value = attr.value();
@@ -1010,11 +1007,6 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
 
     if (dc(btp)->is_disable_dio())
         return;
-#if 0
-    // If the datatype is integer and this is not little-endian, cannot do the direct IO. return.
-    if (!is_le && is_integer_type(t_a->var()->type()))
-        return;
-#endif
 
     // Now we need to read the first child of dmrpp:chunks to obtain the chunk sizes.
     vector<unsigned long long> chunk_dim_sizes;
@@ -1632,10 +1624,6 @@ DMZ::process_missing_data(BaseType *btp, const xml_node &missing_data) {
 bool
 DMZ::supported_special_structure_type_internal(Constructor *var_ctor) {
     bool ret_value = true;
-#if 0
-    Constructor::Vars_iter vi = var_ctor->var_begin();
-    Constructor::Vars_iter ve = var_ctor->var_end();
-#endif
     for (auto vi = var_ctor->var_begin(), ve = var_ctor->var_end(); vi != ve; ++vi) {
         BaseType *bt = *vi;
         Type t_bt = bt->type();
@@ -1853,9 +1841,6 @@ void DMZ::process_special_structure_data_internal(DmrppStructure *dmrpp_s, std::
  */
 void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const {
     string href;
-#if 0
-    string trust;
-#endif
     string offset;
     string size;
     string chunk_position_in_array;
@@ -1909,11 +1894,6 @@ void DMZ::process_block(DmrppCommon *dc, const xml_node &chunk, unsigned int blo
     string href;
     string offset;
     string size;
-#if 0
-    string trust;
-    string chunk_position_in_array;
-    string filter_mask;
-#endif
     bool href_trusted = false;
 
     for (xml_attribute attr = chunk.first_attribute(); attr; attr = attr.next_attribute()) {
@@ -2015,11 +1995,6 @@ static void add_fill_value_information(DmrppCommon *dc, const string &value_stri
                  || btp->type() == dods_sequence_c || btp->type() == dods_grid_c)
                  throw BESInternalError("Fill Value chunks are unsupported for URL, sequence and grid types.", __FILE__,
                                         __LINE__);
-#if 0
-             if (btp->type() == dods_structure_c) {
-                 string fvalue_str = attr.value();
-             }
-#endif
              if (btp->type() == dods_array_c) {
                  auto array = dynamic_cast<libdap::Array *>(btp);
                  add_fill_value_information(dc(btp), attr.value(), array->var()->type());
