@@ -1,12 +1,13 @@
 Attributes {
     build_dmrpp_metadata {
-        String build_dmrpp "3.20.13";
-        String bes "3.20.13";
-        String libdap "libdap-3.20.11";
+        String build_dmrpp "removed version";
+        String bes "removed version";
+        String libdap "libdap-removed version";
         String invocation "/Users/myang6/work/opendap/hyrax-732/bes/modules/dmrpp_module/.libs/build_dmrpp -f t_special_char_attr.h5 -r t_special_char_attr.h5.dmr.bescmd.baseline -M";
     }
     DAP4_GLOBAL {
         String special_char_attr "~`!@#%^&*()-_+={}[]|\\:;\"'?,<>/\\013
-	";
+
+	";
     }
 }

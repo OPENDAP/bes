@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="One_chunk_s_c.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="One_chunk_s_c.h5">
     <Int32 name="chunk_normal">
         <Dim size="4"/>
         <Dim size="4"/>
@@ -9,13 +9,13 @@
     </Int32>
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="build_dmrpp" type="String">
-            <Value>removed-version</Value>
+            <Value>removed version</Value>
         </Attribute>
         <Attribute name="bes" type="String">
-            <Value>removed-version</Value>
+            <Value>removed version</Value>
         </Attribute>
         <Attribute name="libdap" type="String">
-            <Value>removed-version</Value>
+            <Value>removed version</Value>
         </Attribute>
         <Attribute name="invocation" type="String">
             <Value>/Users/myang6/work/opendap/hyrax-792/bes/modules/dmrpp_module/.libs/build_dmrpp -f One_chunk_s_c.h5 -r One_chunk_s_c.dmr -M</Value>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="d_size64_be.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="d_size64_be.h5">
     <Int64 name="i64_be">
         <Dim size="2"/>
         <Dim size="3"/>
@@ -9,13 +9,13 @@
     </Int64>
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="build_dmrpp" type="String">
-            <Value>removed-version</Value>
+            <Value>removed version</Value>
         </Attribute>
         <Attribute name="bes" type="String">
-            <Value>removed-version</Value>
+            <Value>removed version</Value>
         </Attribute>
         <Attribute name="libdap" type="String">
-            <Value>removed-version</Value>
+            <Value>removed version</Value>
         </Attribute>
         <Attribute name="invocation" type="String">
             <Value>/Users/myang6/work/opendap/hyrax-955/bes/modules/dmrpp_module/.libs/build_dmrpp -f d_size64_be.h5 -r d_size64_be.h5.dmr -M</Value>
