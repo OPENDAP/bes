@@ -22,11 +22,6 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-# SUBDIRS = . unit-tests tests
-
-# These tests will fail if the DmrApiTest also fails: tests jhrg 6/29/23
-
-#noinst_PROGRAMS = build_dmrpp_h4
 bin_PROGRAMS = build_dmrpp_h4
 
 build_dmrpp_h4_SOURCES = $(SRC) $(HDR)
@@ -48,20 +43,11 @@ build_dmrpp_h4_CPPFLAGS = $(AM_CPPFLAGS)
 #build_dmrpp_h4_LDFLAGS = $(HDFEOS2_LDFLAGS) $(HDFEOS2_LIBS) $(HDF4_LDFLAGS) $(BES_DAP_LIB_LDFLAGS)
 build_dmrpp_h4_LDFLAGS = $(HDFEOS2_LDFLAGS) $(HDF4_LDFLAGS) $(BES_DAP_LIB_LDFLAGS)
 
-# jhrg 12/18/23 $(top_builddir)/dap/.libs/libdap_module.a
-
 build_dmrpp_h4_LDADD = -L$(builddir)/../ngap_container -lngap $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) \
 $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) \
 $(HDFEOS2_LIBS) $(HDF4_LIBS)
 
 lib_besdir=$(libdir)/bes
-
-# lib_bes_LTLIBRARIES = libcmr_module.la
-
-# libcmr_module_la_SOURCES = $(CMR_SRC) $(CMR_HDR)
-# libcmr_module_la_LDFLAGS = -avoid-version -module
-# libcmr_module_la_LIBADD = $(LIBADD)
-
 
 EXTRA_DIST = get_dmrpp_h4
 
