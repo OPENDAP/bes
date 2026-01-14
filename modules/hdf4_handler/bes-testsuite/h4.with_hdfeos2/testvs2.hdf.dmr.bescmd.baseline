@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="testvs2.hdf">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="2.0" name="testvs2.hdf">
     <Int32 name="Vdata_DFNT_INT32_Field_DFNT_INT32">
         <Dim size="1"/>
         <Dim size="5"/>
