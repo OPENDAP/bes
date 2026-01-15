@@ -519,12 +519,14 @@ m4_define([AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST], [dnl
         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [], [stdout])
         PRINT_DAP4_DATA_RESPONSE([stdout])
         REMOVE_DAP4_CHECKSUM([stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [], [stdout])
         PRINT_DAP4_DATA_RESPONSE([stdout])
         REMOVE_DAP4_CHECKSUM([stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         ])
 
@@ -603,10 +605,12 @@ m4_define([AT_BUILD_DMRPP_H4_TEST], [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
             AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $input2], [], [stdout])
+            REMOVE_VERSIONS([stdout])
             AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
             AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $input2], [], [stdout])
+            REMOVE_VERSIONS([stdout])
             AT_CHECK([diff -b -B $baseline stdout])
         ])
 
@@ -626,10 +630,12 @@ m4_define([AT_BUILD_DMRPP_H4_TEST_NO_MISSING_DATA], [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
             AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $input2 -D], [], [stdout])
+            REMOVE_VERSIONS([stdout])
             AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
             AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $input2 -D], [], [stdout])
+            REMOVE_VERSIONS([stdout])
             AT_CHECK([diff -b -B $baseline stdout])
         ])
 
@@ -649,10 +655,12 @@ m4_define([AT_BUILD_DMRPP_H4_TEST_U], [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
             AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $input2 -u $input3], [], [stdout])
+            REMOVE_VERSIONS([stdout])
             AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
             AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $input2 -u $input3], [], [stdout])
+            REMOVE_VERSIONS([stdout])
             AT_CHECK([diff -b -B $baseline stdout])
         ])
 
@@ -716,12 +724,14 @@ m4_define([AT_MERGE_DMRPP_TEST], [dnl
             AT_CHECK([cp -f $orig_dmrpp tmp],[],[stdout])
             AT_CHECK([chmod u+w tmp],[],[stdout])
             AT_CHECK([$abs_builddir/../merge_dmrpp $mvs_dmrpp tmp $file_path $mvs_list], [], [stdout])
+            REMOVE_VERSIONS([tmp])
             AT_CHECK([mv tmp $baseline.tmp])
         ],
         [
             AT_CHECK([cp -f $orig_dmrpp tmp],[],[stdout])
             AT_CHECK([chmod u+w tmp],[],[stdout])
             AT_CHECK([$abs_builddir/../merge_dmrpp $mvs_dmrpp tmp $file_path $mvs_list], [], [stdout])
+            REMOVE_VERSIONS([tmp])
             AT_CHECK([diff -b -B $baseline tmp])
         ])
 
