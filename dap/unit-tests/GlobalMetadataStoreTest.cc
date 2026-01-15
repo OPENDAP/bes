@@ -2039,8 +2039,8 @@ public:
 
          string insert_xml_base_baseline = read_test_baseline(baseline_name);
 
-         std::regex pattern("(dmrVersion=\"[[0-9]+]\.[[0-9]+]\")");
-         auto stripped_baseline = std::regex_replace(insert_xml_base_baseline, pattern, "dmrVersion=\"removed\"");
+         std::regex version_to_strip("(dmrVersion=\"[[0-9]+]\.[[0-9]+]\")");
+         auto stripped_baseline = std::regex_replace(insert_xml_base_baseline, version_to_strip, "dmrVersion=\"removed\"");
          CPPUNIT_ASSERT(insert_xml_base_baseline == oss.str());
      }
 
