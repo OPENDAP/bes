@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="removed" name="t_enum_grp.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/removed version#" dapVersion="4.0" dmrVersion="removed" name="t_enum_grp.h5">
     <Group name="g1">
         <Enumeration name="NoNameEnum0" basetype="Int8">
             <EnumConst name="FALSE" value="0"/>

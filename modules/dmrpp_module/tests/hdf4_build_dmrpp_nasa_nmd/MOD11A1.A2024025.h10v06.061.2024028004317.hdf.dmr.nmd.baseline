@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="removed" name="MOD11A1.A2024025.h10v06.061.2024028004317.hdf">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/removed version#" dapVersion="4.0" dmrVersion="removed" name="MOD11A1.A2024025.h10v06.061.2024028004317.hdf">
     <Dimension name="YDim_MODIS_Grid_Daily_1km_LST" size="1200"/>
     <Dimension name="XDim_MODIS_Grid_Daily_1km_LST" size="1200"/>
     <Attribute name="HDFEOSVersion" type="String">

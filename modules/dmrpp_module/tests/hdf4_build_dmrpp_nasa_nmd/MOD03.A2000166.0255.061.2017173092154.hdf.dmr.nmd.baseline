@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="removed" name="MOD03.A2000166.0255.061.2017173092154.hdf">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/removed version#" dapVersion="4.0" dmrVersion="removed" name="MOD03.A2000166.0255.061.2017173092154.hdf">
     <Dimension name="nscans_10_MODIS_Swath_Type_GEO" size="2030"/>
     <Dimension name="mframes_MODIS_Swath_Type_GEO" size="1354"/>
     <Dimension name="nscans_20_MODIS_Swath_Type_GEO" size="4060"/>
