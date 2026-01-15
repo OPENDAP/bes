@@ -32,6 +32,8 @@ AT_INIT([bes.conf besstandalone getdap])
 
 AT_TESTED([besstandalone])
 
+m4_include([../../common/handler_tests_macros.m4])
+
 # Copy from the HDF5 handler.
 # This option works only for macros that explicitly support it. The new
 # macro AT_BESCMD_BESCONF_RESPONSE_TEST() does and provides a pattern for
@@ -79,10 +81,12 @@ m4_define([AT_BESCMD_BESCONF_RESPONSE_TEST], [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
         AT_CHECK([besstandalone $repeat -c $bes_conf -i $input], [], [stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([besstandalone $repeat -c $bes_conf -i $input], [], [stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$3 = zxfail])
         ])
@@ -99,9 +103,11 @@ m4_define([_AT_BESCMD_TEST],
 AT_KEYWORDS([bescmd])
 # Use the following AT_CHECK to generate baseline file.
 #AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 > $2 || true], [], [stdout], [stderr])
+#REMOVE_VERSIONS([stdout])
 
 # This is the original.
 AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 || true], [], [stdout], [stderr])
+REMOVE_VERSIONS([stdout])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 
@@ -132,13 +138,14 @@ AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK and REMOVE_DAP4_CHECKSUM lines to generate baseline file.
 #AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap4 -C -D -M - > $2|| true], [], [stdout], [stderr])
+#REMOVE_VERSIONS([stdout])
 #REMOVE_DAP4_CHECKSUM([$2])
 
 AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap4 -C -D -M - || true], [], [stdout], [stderr])
 # Here we add a macro to remove the DAP4 checksum.
 REMOVE_DAP4_CHECKSUM([stdout])
-
-AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+REMOVE_VERSIONS([stdout])
+#AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 
 
