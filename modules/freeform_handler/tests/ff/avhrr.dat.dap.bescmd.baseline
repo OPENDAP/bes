@@ -14,7 +14,7 @@
     </Sequence>
     <Attribute name="FF_GLOBAL" type="Container">
         <Attribute name="Server" type="String">
-            <Value>DODS FreeFrom based on FFND release removed-version</Value>
+            <Value>DODS FreeFrom based on FFND release removed version</Value>
         </Attribute>
     </Attribute>
     <Attribute name="DODS_Global" type="Container">

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="1A.GPM.GMI.COUNT2014v3.20140305-S061920-E075148.000087.V03A.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="1A.GPM.GMI.COUNT2014v3.20140305-S061920-E075148.000087.V03A.h5">
     <Dimension name="nscan2" size="2959"/>
     <Dimension name="npixelev" size="221"/>
     <Dimension name="npixelfr" size="500"/>

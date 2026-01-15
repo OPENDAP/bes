@@ -15,7 +15,7 @@
     <Attribute name="HDFEOS_ZAS_ZA_Data_Fields" type="Container"/>
     <Attribute name="HDFEOS_INFORMATION" type="Container">
         <Attribute name="HDFEOSVersion" type="String">
-            <value>HDFEOS_5.1.13</value>
+            <value>HDFEOS_removed version</value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/HDFEOS INFORMATION</value>

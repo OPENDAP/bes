@@ -14,7 +14,7 @@ Attributes {
     HDFEOS_SWATHS_Swath1_Geolocation_Fields {
     }
     HDFEOS_INFORMATION {
-        String HDFEOSVersion "HDFEOS_5.1.15";
+        String HDFEOSVersion "HDFEOS_removed version";
         String fullnamepath "/HDFEOS INFORMATION";
     }
     Spectra {

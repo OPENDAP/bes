@@ -26,7 +26,7 @@ Attributes {
     HDFEOS_ZAS_ZA_Data_Fields {
     }
     HDFEOS_INFORMATION {
-        String HDFEOSVersion "HDFEOS_5.1.13";
+        String HDFEOSVersion "HDFEOS_removed version";
         String fullnamepath "/HDFEOS INFORMATION";
     }
     GRIDS_Temperature {

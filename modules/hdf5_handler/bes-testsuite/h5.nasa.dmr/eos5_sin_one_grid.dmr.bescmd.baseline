@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="VNP09A1.A2015257.h29v11.001.2016221164845.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="VNP09A1.A2015257.h29v11.001.2016221164845.h5">
     <Dimension name="YDim" size="1200"/>
     <Dimension name="XDim" size="1200"/>
     <Float64 name="lon">
@@ -944,7 +944,7 @@
     <Attribute name="HDFEOS_GRIDS_VNP_Grid_1km_L3_2d_Data_Fields" type="Container"/>
     <Attribute name="HDFEOS_INFORMATION" type="Container">
         <Attribute name="HDFEOSVersion" type="String">
-            <Value>HDFEOS_5.1.13</Value>
+            <Value>HDFEOS_removed version</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/HDFEOS INFORMATION</Value>

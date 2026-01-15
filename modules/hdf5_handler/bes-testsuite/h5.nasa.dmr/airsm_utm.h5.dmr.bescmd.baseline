@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="AirMSPI_ER2_GRP_ELLIPSOID_20161006_181726Z_CA-NewberrySprings_SWPF_F01_V006.he5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="AirMSPI_ER2_GRP_ELLIPSOID_20161006_181726Z_CA-NewberrySprings_SWPF_F01_V006.he5">
     <Dimension name="Channel_Information_Channel_number" size="14"/>
     <Dimension name="_380nm_band_XDim" size="4608"/>
     <Dimension name="_380nm_band_YDim" size="1536"/>
@@ -3625,7 +3625,7 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
     <Attribute name="HDFEOS_GRIDS_Ancillary_Data_Fields" type="Container"/>
     <Attribute name="HDFEOS_INFORMATION" type="Container">
         <Attribute name="HDFEOSVersion" type="String">
-            <Value>HDFEOS_5.1.15</Value>
+            <Value>HDFEOS_removed version</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/HDFEOS INFORMATION</Value>

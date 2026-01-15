@@ -28,9 +28,9 @@ Attributes {
     NC_GLOBAL {
         String base_time "88- 10-00:00:00";
         String title " FNOC UV wind components from 1988- 10 to 1988- 13.";
-        String history "removed date-timehyrax-removed-version http://test.opendap.org/opendap/data/nc/fnoc1.nc.nc
+        String history "removed date-timehyrax-removed version http://test.opendap.org/opendap/data/nc/fnoc1.nc.nc
 ";
-        String history_json "[{\"$schema\":\"https:\\/\\/harmony.earthdata.nasa.gov\\/schemas\\/history\\/removed-version\\/history-removed-version.json\",\"date_time\":\"removed date-time+0000\",\"program\":\"hyrax\",\"version\":\"removed-version\",\"parameters\":[{\"request_url\":\"http:\\/\\/test.opendap.org\\/opendap\\/data\\/nc\\/fnoc1.nc.nc\"}]}]";
+        String history_json "[{\"$schema\":\"https:\\/\\/harmony.earthdata.nasa.gov\\/schemas\\/history\\/removed version\\/history-removed version.json\",\"date_time\":\"removed date-time+0000\",\"program\":\"hyrax\",\"version\":\"removed version\",\"parameters\":[{\"request_url\":\"http:\\/\\/test.opendap.org\\/opendap\\/data\\/nc\\/fnoc1.nc.nc\"}]}]";
         String DODS_EXTRA.Unlimited_Dimension "time_a";
     }
 }

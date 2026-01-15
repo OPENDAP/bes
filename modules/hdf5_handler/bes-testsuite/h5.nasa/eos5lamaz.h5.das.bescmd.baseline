@@ -19,7 +19,7 @@ Attributes {
     HDFEOS_GRIDS_Southern_Hemisphere_Data_Fields {
     }
     HDFEOS_INFORMATION {
-        String HDFEOSVersion "HDFEOS_5.1.15";
+        String HDFEOSVersion "HDFEOS_removed version";
         String fullnamepath "/HDFEOS INFORMATION";
     }
     Northern_Hemisphere_Flags_NorthernDaily {
