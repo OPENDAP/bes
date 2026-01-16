@@ -145,7 +145,7 @@ AT_CHECK([besstandalone -c $abs_builddir/bes.with_hdfeos2.conf -i $1 | getdap4 -
 # Here we add a macro to remove the DAP4 checksum.
 REMOVE_DAP4_CHECKSUM([stdout])
 REMOVE_VERSIONS([stdout])
-#AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
+AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 
 
