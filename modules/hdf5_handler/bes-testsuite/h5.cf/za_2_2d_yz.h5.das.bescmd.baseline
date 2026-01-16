@@ -16,7 +16,7 @@ Attributes {
     HDFEOS_ZAS_ZA2_Data_Fields {
     }
     HDFEOS_INFORMATION {
-        String HDFEOSVersion "HDFEOS_removed version";
+        String HDFEOSVersion "HDFEOS_removed_version";
         String fullnamepath "/HDFEOS INFORMATION";
     }
     ZA1_Latitude {

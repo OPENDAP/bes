@@ -21,7 +21,7 @@ Attributes {
     HDFEOS_ZAS_HIRDLS_Data_Fields {
     }
     HDFEOS_INFORMATION {
-        String HDFEOSVersion "HDFEOS_removed version";
+        String HDFEOSVersion "HDFEOS_removed_version";
         String fullnamepath "/HDFEOS INFORMATION";
     }
     Day {

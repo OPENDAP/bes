@@ -24,7 +24,7 @@ Attributes {
     HDFEOS_GRIDS_GeoGrid4_Data_Fields {
     }
     HDFEOS_INFORMATION {
-        String HDFEOSVersion "HDFEOS_removed version";
+        String HDFEOSVersion "HDFEOS_removed_version";
         String fullnamepath "/HDFEOS INFORMATION";
     }
     GeoGrid1_temperature {

@@ -22,6 +22,6 @@ Attributes {
         }
     }
     HDFEOS%20INFORMATION {
-        String HDFEOSVersion "HDFEOS_removed version";
+        String HDFEOSVersion "HDFEOS_removed_version";
     }
 }

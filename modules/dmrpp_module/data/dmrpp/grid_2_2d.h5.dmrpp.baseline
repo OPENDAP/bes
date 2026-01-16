@@ -42,7 +42,7 @@
             </dmrpp:chunks>
         </String>
         <Attribute name="HDFEOSVersion" type="String">
-            <Value>HDFEOS_removed version</Value>
+            <Value>HDFEOS_removed_version</Value>
         </Attribute>
     </Group>
 </Dataset>

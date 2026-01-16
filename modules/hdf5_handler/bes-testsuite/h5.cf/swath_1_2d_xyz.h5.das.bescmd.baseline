@@ -14,7 +14,7 @@ Attributes {
     HDFEOS_SWATHS_Swath_Geolocation_Fields {
     }
     HDFEOS_INFORMATION {
-        String HDFEOSVersion "HDFEOS_removed version";
+        String HDFEOSVersion "HDFEOS_removed_version";
         String fullnamepath "/HDFEOS INFORMATION";
     }
     Temperature {

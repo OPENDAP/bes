@@ -9,7 +9,7 @@
     <Attribute name="HDFEOS_SWATHS_Swath_Geolocation_Fields" type="Container"/>
     <Attribute name="HDFEOS_INFORMATION" type="Container">
         <Attribute name="HDFEOSVersion" type="String">
-            <value>HDFEOS_removed version</value>
+            <value>HDFEOS_removed_version</value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <value>/HDFEOS INFORMATION</value>

@@ -3625,7 +3625,7 @@ Last Changed Date: 2017-04-20 12:48:45 -0700 (Thu, 20 Apr 2017)
     <Attribute name="HDFEOS_GRIDS_Ancillary_Data_Fields" type="Container"/>
     <Attribute name="HDFEOS_INFORMATION" type="Container">
         <Attribute name="HDFEOSVersion" type="String">
-            <Value>HDFEOS_removed version</Value>
+            <Value>HDFEOS_removed_version</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/HDFEOS INFORMATION</Value>
