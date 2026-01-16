@@ -56,4 +56,3 @@ Structure {
     Int16 b_name;
     Float32 c_name[2];
 } comp_array[2] = {{ 0, 2, {3, 4} }, { 3, 5, {6, 7} }};
-

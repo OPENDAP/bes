@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/removed_version#" dapVersion="4.0" dmrVersion="removed" name="daymet_v4_daily_na_tmax_2010.nc" dmrpp:href="https://data.ornldaac.earthdata.nasa.gov/protected/daymet/Daymet_Daily_V4R1/data/daymet_v4_daily_na_tmax_2010.nc" dmrpp:trust="true" dmrpp:version="3.21.1-202">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="removed" name="daymet_v4_daily_na_tmax_2010.nc" dmrpp:href="https://data.ornldaac.earthdata.nasa.gov/protected/daymet/Daymet_Daily_V4R1/data/daymet_v4_daily_na_tmax_2010.nc" dmrpp:trust="true" dmrpp:version="3.21.1-202">
     <Dimension name="y" size="8075"/>
     <Dimension name="x" size="7814"/>
     <Dimension name="time" size="365"/>

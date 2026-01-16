@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/removed_version#" dapVersion="4.0" dmrVersion="removed" name="grid_2_2d_sin.h5" dmrpp:href="OPeNDAP_DMRpp_DATA_ACCESS_URL" dmrpp:version="removed">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="removed" name="grid_2_2d_sin.h5" dmrpp:href="OPeNDAP_DMRpp_DATA_ACCESS_URL" dmrpp:version="removed">
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="created" type="String">
             <Value>removed date string</Value>
@@ -258,7 +258,7 @@ H5.EnableCheckNameClashing=true
             </dmrpp:chunks>
         </String>
         <Attribute name="HDFEOSVersion" type="String">
-            <Value>HDFEOS_removed_version</Value>
+            <Value>HDFEOS_5.1.17</Value>
         </Attribute>
     </Group>
 </Dataset>

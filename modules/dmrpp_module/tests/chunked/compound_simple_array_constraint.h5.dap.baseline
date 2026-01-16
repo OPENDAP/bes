@@ -57,4 +57,3 @@ Structure {
     Int32 Orbit;
     Float32 Temperature[2];
 } DSC_memb_array[1] = {{ 1184, {55.12, 55.95} }};
-

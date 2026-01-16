@@ -46,7 +46,7 @@
     <Attribute name="HDFEOS_GRIDS_GeoGrid_Data_Fields" type="Container"/>
     <Attribute name="HDFEOS_INFORMATION" type="Container">
         <Attribute name="HDFEOSVersion" type="String">
-            <Value>HDFEOS_removed_version</Value>
+            <Value>HDFEOS_5.1.13</Value>
         </Attribute>
         <Attribute name="fullnamepath" type="String">
             <Value>/HDFEOS INFORMATION</Value>

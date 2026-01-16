@@ -53,4 +53,3 @@ Structure {
     Int32 b_name;
     Float32 c_name;
 } comp_scalar = { 1.1, 1, -2.2 };
-

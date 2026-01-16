@@ -6,13 +6,13 @@
     </Attribute>
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="build_dmrpp" type="String">
-            <value>removed_version</value>
+            <value>3.20.13</value>
         </Attribute>
         <Attribute name="bes" type="String">
-            <value>removed_version</value>
+            <value>3.20.13</value>
         </Attribute>
         <Attribute name="libdap" type="String">
-            <value>libdap-removed_version</value>
+            <value>libdap-3.20.11</value>
         </Attribute>
         <Attribute name="invocation" type="String">
             <value>/Users/myang6/work/opendap/hyrax-732/bes/modules/dmrpp_module/.libs/build_dmrpp -f t_special_char_attr.h5 -r t_special_char_attr.h5.dmr.bescmd.baseline -M</value>

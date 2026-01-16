@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/removed_version#" dapVersion="4.0" dmrVersion="removed" name="AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="removed" name="AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf">
     <Dimension name="YDim_ascending" size="180"/>
     <Dimension name="XDim_ascending" size="360"/>
     <Dimension name="EmisFreqIR_ascending" size="4"/>

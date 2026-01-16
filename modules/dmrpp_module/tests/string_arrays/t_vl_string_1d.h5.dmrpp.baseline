@@ -50,4 +50,3 @@ H5.EnableCheckNameClashing=true
 
 The data:
 String array_1d[4] = {"Parting", "is su", "swe", ""};
-

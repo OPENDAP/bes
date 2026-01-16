@@ -23,4 +23,3 @@
 
 The data:
 String var_str_sca = "An HDF5 scalar string";
-

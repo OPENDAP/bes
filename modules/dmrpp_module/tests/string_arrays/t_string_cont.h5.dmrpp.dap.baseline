@@ -90,4 +90,3 @@ String array_1d[4] = {"Parting", "is so", "swe", ""};
 String array_2d[2][2] = {{"Parting", "is so"},{"swe", ""}};
 String array_special_case[1][1] = {{"A"}};
 String scalar = "Parting is such sweet sorrow.";
-

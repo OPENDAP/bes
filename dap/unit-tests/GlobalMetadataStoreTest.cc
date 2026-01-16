@@ -2037,15 +2037,12 @@ public:
          DBG(cerr << "Reading baseline: " << baseline_name << endl);
          CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
 
-         // Strip versions
-         std::regex regex1("dmrVersion=\"[0-9]+\.[0-9]+\"");
-         auto stripped_input = std::regex_replace(oss.str(), regex1, "dmrVersion=\"removed\"");
-
-         std::regex regex2("dmrpp/[0-9]+\.[0-9]+\.[0-9]+");
-         auto stripped_input2 = std::regex_replace(stripped_input, regex2, "dmrpp/removed_version");
+         // Strip out dmr version
+         std::regex dmr_version_regex("dmrVersion=\"[0-9]+\.[0-9]+\"");
+         auto stripped_input = std::regex_replace(oss.str(), dmr_version_regex, "dmrVersion=\"removed\"");
 
          string insert_xml_base_baseline = read_test_baseline(baseline_name);
-         CPPUNIT_ASSERT_MESSAGE("The baseline " + insert_xml_base_baseline + " did not match the value " + stripped_input2, insert_xml_base_baseline == stripped_input2);
+         CPPUNIT_ASSERT_MESSAGE("The baseline " + insert_xml_base_baseline + " did not match the value " + stripped_input, insert_xml_base_baseline == stripped_input2);
      }
 
     void insert_xml_base_test_error() {

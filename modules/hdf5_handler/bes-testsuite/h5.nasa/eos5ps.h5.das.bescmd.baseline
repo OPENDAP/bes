@@ -19,7 +19,7 @@ Attributes {
     HDFEOS_GRIDS_SpPolarGrid12km_Data_Fields {
     }
     HDFEOS_INFORMATION {
-        String HDFEOSVersion "HDFEOS_removed_version";
+        String HDFEOSVersion "HDFEOS_5.1.13";
         String fullnamepath "/HDFEOS INFORMATION";
     }
     NpPolarGrid12km_SI_12km_NH_18H_ASC {

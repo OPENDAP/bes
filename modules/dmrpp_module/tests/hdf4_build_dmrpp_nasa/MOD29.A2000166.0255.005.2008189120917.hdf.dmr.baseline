@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/removed_version#" dapVersion="4.0" dmrVersion="removed" name="MOD29.A2000166.0255.005.2008189120917.hdf">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="removed" name="MOD29.A2000166.0255.005.2008189120917.hdf">
     <Dimension name="Coarse_swath_lines_5km_MOD_Swath_Sea_Ice" size="406"/>
     <Dimension name="Coarse_swath_pixels_5km_MOD_Swath_Sea_Ice" size="271"/>
     <Dimension name="Along_swath_lines_1km_MOD_Swath_Sea_Ice" size="2030"/>

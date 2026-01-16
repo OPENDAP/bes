@@ -30,4 +30,3 @@ Structure {
     Float32 Temperature;
     String year;
 } DSC_scalar = { 1153, 53.23, "2023" };
-

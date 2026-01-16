@@ -101,7 +101,7 @@
             </Attribute>
         </String>
         <Attribute name="HDFEOSVersion" type="String">
-            <Value>HDFEOS_removed_version</Value>
+            <Value>HDFEOS_5.1.13</Value>
         </Attribute>
     </Group>
 </Dataset>

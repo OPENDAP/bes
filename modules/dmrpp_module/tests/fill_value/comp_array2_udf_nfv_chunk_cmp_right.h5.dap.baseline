@@ -54,4 +54,3 @@ Structure {
     Int32 b_name;
     Float32 c_name;
 } comp_array[2] = {{ 1.1, 1, -2.2 }, { 11.1, 11, 7.8 }};
-

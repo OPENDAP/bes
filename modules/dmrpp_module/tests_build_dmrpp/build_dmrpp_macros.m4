@@ -150,7 +150,6 @@ m4_define([REMOVE_VERSIONS], [dnl
     gsub(/<Value>[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?<\/Value>/, "<Value>removed_version</Value>");
     gsub(/<Value>[[a-zA-Z._]+]-[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?<\/Value>/, "<Value>removed_version</Value>");
     gsub(/dmrpp:version="[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?"/, "dmrpp:version=\"removed\"");
-    gsub(/[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?/, "removed_version"); \
     gsub(/dmrVersion="[[0-9]+]\.[[0-9]+]"/, "dmrVersion=\"removed\"");
     print
   }' < $1 > $1.awk

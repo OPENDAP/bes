@@ -23,4 +23,3 @@
 
 The data:
 String vl_scalar = "An HDF5 vlen scalar string.";
-
