@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="UTM2GTIF.TIF">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="UTM2GTIF.TIF">
     <Dimension name="northing" size="929"/>
     <Dimension name="easting" size="699"/>
     <Float64 name="northing">

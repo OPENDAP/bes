@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="cmprss_big_2.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="cmprss_big_2.h5">
     <Int32 name="Compressed_Data">
         <Dim size="10"/>
         <Dim size="10"/>
@@ -9,13 +9,13 @@
     </Int32>
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="build_dmrpp" type="String">
-            <Value>removed-version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="bes" type="String">
-            <Value>removed-version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="libdap" type="String">
-            <Value>removed-version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="configuration" type="String">
             <Value>
@@ -47,4 +47,3 @@ H5.EnableCheckNameClashing=true
 
 The data:
 Int32 Compressed_Data[10][10] = {{6, 7, 6, 7, 6, 7, 6, 7, 6, 7},{7, 8, 7, 8, 7, 8, 7, 8, 7, 8},{8, 9, 8, 9, 8, 9, 8, 9, 8, 9},{9, 10, 9, 10, 9, 10, 9, 10, 9, 10},{0, 1, 0, 1, 0, 1, 0, 1, 0, 1},{1, 2, 1, 2, 1, 2, 1, 2, 1, 2},{2, 3, 2, 3, 2, 3, 2, 3, 2, 3},{3, 4, 3, 4, 3, 4, 3, 4, 3, 4},{4, 5, 4, 5, 4, 5, 4, 5, 4, 5},{5, 6, 5, 6, 5, 6, 5, 6, 5, 6}};
-

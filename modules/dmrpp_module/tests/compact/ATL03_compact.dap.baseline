@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="ATL03_20181228015957_13810110_003_01.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="ATL03_20181228015957_13810110_003_01.h5">
     <Dimension name="ancillary_data_calibrations_ds_channel" size="20"/>
     <Int64 name="ancillary_data_calibrations_low_link_impulse_response_gt1r_total_events">
         <Dim name="/ancillary_data_calibrations_ds_channel"/>

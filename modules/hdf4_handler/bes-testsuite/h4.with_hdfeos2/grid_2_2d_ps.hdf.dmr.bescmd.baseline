@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="grid_2_2d_ps.hdf">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="grid_2_2d_ps.hdf">
     <Dimension name="YDim_NPGrid" size="5"/>
     <Dimension name="XDim_NPGrid" size="4"/>
     <Dimension name="YDim_SPGrid" size="4"/>

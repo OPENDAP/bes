@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="daymet_v4_daily_na_prcp_2010.nc.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="daymet_v4_daily_na_prcp_2010.nc.h5">
     <Dimension name="nv" size="2"/>
     <Dimension name="time" size="365"/>
     <Dimension name="y" size="8075"/>

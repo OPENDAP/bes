@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="SDS_empty.hdf">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="SDS_empty.hdf">
     <Dimension name="fakeDim0" size="2"/>
     <Dimension name="fakeDim1" size="2"/>
     <Dimension name="fakeDim2" size="2"/>

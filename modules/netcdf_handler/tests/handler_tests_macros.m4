@@ -10,6 +10,8 @@
 
 AT_TESTED([besstandalone])
 
+m4_include([../../common/handler_tests_macros.m4])
+
 AT_ARG_OPTION_ARG([baselines],
     [--baselines=yes|no   Build the baseline file for parser test 'arg'],
     [echo "baselines set to $at_arg_baselines";
@@ -32,9 +34,11 @@ m4_define([_AT_BESCMD_TEST], [dnl
         [
         AT_CHECK([besstandalone $cached -c $abs_builddir/bes.conf -i $input], [], [stdout])
         AT_CHECK([mv stdout $baseline.tmp])
+        REMOVE_VERSIONS([stdout])
         ],
         [
         AT_CHECK([besstandalone $cached -c $abs_builddir/bes.conf -i $input], [], [stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$pass = zxfail])
         ])
@@ -76,10 +80,12 @@ m4_define([_AT_BESCMD_DAP4_BINARYDATA_TEST],  [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
         AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input | getdap4 -D -M -s -], [], [stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test "$3" = "xfail"])
         ])

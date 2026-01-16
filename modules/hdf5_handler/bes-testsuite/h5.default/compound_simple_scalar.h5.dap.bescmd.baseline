@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="compound_simple_scalar.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="compound_simple_scalar.h5">
     <Structure name="DSC_scalar">
         <Int32 name="Orbit"/>
         <Float32 name="Temperature"/>

@@ -31,6 +31,7 @@ get_dmrpp/unit-tests/grid_2_2d_ps.hdf.dmr
 get_dmrpp/unit-tests/grid_2_2d_ps.hdf.dmr.bescmd
 get_dmrpp/unit-tests/grid_2_2d_sin.h5.dmr
 get_dmrpp/unit-tests/grid_2_2d_sin.h5.dmr.bescmd
+get_dmrpp/unit-tests/grid_1_2d.h5_mvs.h5
 
 /tests_build_dmrpp/testsuite_dmrpp_tests
 /tests_build_dmrpp/test_bes.conf

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="GLAH06_634_2113_002_0152_2_01_0001.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="GLAH06_634_2113_002_0152_2_01_0001.h5">
     <Attribute name="featureType" type="String">
         <Value>timeSeries</Value>
     </Attribute>

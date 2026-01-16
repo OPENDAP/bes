@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="HIRDLS-Aura_L3SCOL_v06-00-00-c02_2005d022-2008d077.he5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="HIRDLS-Aura_L3SCOL_v06-00-00-c02_2005d022-2008d077.he5">
     <Group name="HDFEOS">
         <Group name="ADDITIONAL">
             <Group name="FILE_ATTRIBUTES">

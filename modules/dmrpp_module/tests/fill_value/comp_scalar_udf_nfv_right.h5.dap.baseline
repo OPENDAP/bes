@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="comp_scalar_udf_nfv_right.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="comp_scalar_udf_nfv_right.h5">
     <Structure name="comp_scalar">
         <Float64 name="a_name"/>
         <Int32 name="b_name"/>

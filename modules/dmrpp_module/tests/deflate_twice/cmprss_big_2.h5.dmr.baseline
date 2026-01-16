@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="cmprss_big_2.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="cmprss_big_2.h5">
     <Int32 name="Compressed_Data">
         <Dim size="1000"/>
         <Dim size="200"/>
     </Int32>
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="build_dmrpp" type="String">
-            <Value>3.20.10</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="bes" type="String">
-            <Value>3.20.10</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="libdap" type="String">
-            <Value>libdap-3.20.9</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="configuration" type="String">
             <Value>

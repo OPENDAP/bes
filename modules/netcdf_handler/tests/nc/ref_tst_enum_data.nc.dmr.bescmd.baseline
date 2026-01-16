@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="ref_tst_enum_data.nc">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="ref_tst_enum_data.nc">
     <Dimension name="station" size="5"/>
     <Byte name="primary_cloud">
         <Dim name="/station"/>

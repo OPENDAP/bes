@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="t_enum2_mt_array.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="t_enum2_mt_array.h5">
     <Enumeration name="NoNameEnum0" basetype="UInt64">
         <EnumConst name="RED" value="0"/>
         <EnumConst name="GREEN" value="1"/>

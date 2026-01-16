@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="20060308.172859.mk4.rpb.fts">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="20060308.172859.mk4.rpb.fts">
     <Dimension name="NAXIS0" size="960"/>
     <Dimension name="NAXIS1" size="960"/>
     <Dimension name="NAXIS0_HDU_2_IMAGE" size="1024"/>

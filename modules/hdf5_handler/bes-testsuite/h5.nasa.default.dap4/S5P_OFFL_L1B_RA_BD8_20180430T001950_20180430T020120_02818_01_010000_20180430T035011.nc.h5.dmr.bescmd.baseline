@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="S5P_OFFL_L1B_RA_BD8_20180430T001950_20180430T020120_02818_01_010000_20180430T035011.nc.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="S5P_OFFL_L1B_RA_BD8_20180430T001950_20180430T020120_02818_01_010000_20180430T035011.nc.h5">
     <Attribute name="Conventions" type="String">
         <Value>CF-1.6</Value>
     </Attribute>

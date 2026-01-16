@@ -9,6 +9,8 @@
 
 AT_TESTED([besstandalone])
 
+m4_include([../../modules/common/handler_tests_macros.m4])
+
 AT_ARG_OPTION_ARG([baselines],
     [--baselines=yes|no   Build the baseline file for parser test 'arg'],
     [echo "baselines set to $at_arg_baselines";
@@ -38,10 +40,12 @@ m4_define([_AT_BESCMD_TEST], [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
         AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test "z$pass" = "zxfail"])
         ])

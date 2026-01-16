@@ -32,6 +32,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <unistd.h>
+#include <regex>
 
 #include <libdap/Array.h>
 #include <libdap/Byte.h>
@@ -2036,9 +2037,12 @@ public:
          DBG(cerr << "Reading baseline: " << baseline_name << endl);
          CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
 
-         string insert_xml_base_baseline = read_test_baseline(baseline_name);
+         // Strip out dmr version
+         std::regex dmr_version_regex("dmrVersion=\"[0-9]+\.[0-9]+\"");
+         auto stripped_input = std::regex_replace(oss.str(), dmr_version_regex, "dmrVersion=\"removed\"");
 
-         CPPUNIT_ASSERT(insert_xml_base_baseline == oss.str());
+         string insert_xml_base_baseline = read_test_baseline(baseline_name);
+         CPPUNIT_ASSERT_MESSAGE("The baseline " + insert_xml_base_baseline + " did not match the value " + stripped_input, insert_xml_base_baseline == stripped_input);
      }
 
     void insert_xml_base_test_error() {

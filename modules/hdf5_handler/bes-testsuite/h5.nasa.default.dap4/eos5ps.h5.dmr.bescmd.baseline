@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="AMSR_2_L3_SeaIce12km_P00_20160831.he5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="AMSR_2_L3_SeaIce12km_P00_20160831.he5">
     <Group name="HDFEOS">
         <Group name="ADDITIONAL">
             <Group name="FILE_ATTRIBUTES"/>
@@ -945,7 +945,7 @@
             </Attribute>
         </String>
         <Attribute name="HDFEOSVersion" type="String">
-            <Value>HDFEOS_5.1.15</Value>
+            <Value>HDFEOS_5.1.13</Value>
         </Attribute>
     </Group>
 </Dataset>

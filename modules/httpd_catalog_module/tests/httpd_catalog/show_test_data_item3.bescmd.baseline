@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="httpd_cat_c1e5402d85b35a5a9d8a648b81919933dfbf8904d13096ac17a3d122390b7cc9">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="httpd_cat_c1e5402d85b35a5a9d8a648b81919933dfbf8904d13096ac17a3d122390b7cc9">
     <Float32 name="d_4_chunks">
         <Dim size="100"/>
         <Dim size="100"/>

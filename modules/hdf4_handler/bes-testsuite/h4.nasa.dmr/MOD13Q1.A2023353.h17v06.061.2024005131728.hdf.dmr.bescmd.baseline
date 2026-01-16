@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="MOD13Q1.A2023353.h17v06.061.2024005131728.hdf">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="MOD13Q1.A2023353.h17v06.061.2024005131728.hdf">
     <Dimension name="YDim_MODIS_Grid_16DAY_250m_500m_VI" size="4800"/>
     <Dimension name="XDim_MODIS_Grid_16DAY_250m_500m_VI" size="4800"/>
     <Attribute name="HDFEOSVersion" type="String">

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="A20030602003090.L3m_MO_AT108_CHL_chlor_a_4km.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="A20030602003090.L3m_MO_AT108_CHL_chlor_a_4km.h5">
     <Dimension name="columns" size="8640"/>
     <Dimension name="eightbitcolor" size="256"/>
     <Dimension name="rgb" size="3"/>

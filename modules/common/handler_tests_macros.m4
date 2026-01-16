@@ -51,10 +51,12 @@ m4_define([AT_BESCMD_RESPONSE_TEST], [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
         AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([besstandalone $repeat -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         ])
 
@@ -517,12 +519,14 @@ m4_define([AT_BESCMD_DAP_FUNCTION_RESPONSE_TEST], [dnl
         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [], [stdout])
         PRINT_DAP4_DATA_RESPONSE([stdout])
         REMOVE_DAP4_CHECKSUM([stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [], [stdout])
         PRINT_DAP4_DATA_RESPONSE([stdout])
         REMOVE_DAP4_CHECKSUM([stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         ])
 
@@ -601,10 +605,12 @@ m4_define([AT_BUILD_DMRPP_H4_TEST], [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
             AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $input2], [], [stdout])
+            REMOVE_VERSIONS([stdout])
             AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
             AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $input2], [], [stdout])
+            REMOVE_VERSIONS([stdout])
             AT_CHECK([diff -b -B $baseline stdout])
         ])
 
@@ -624,10 +630,12 @@ m4_define([AT_BUILD_DMRPP_H4_TEST_NO_MISSING_DATA], [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
             AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $input2 -D], [], [stdout])
+            REMOVE_VERSIONS([stdout])
             AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
             AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $input2 -D], [], [stdout])
+            REMOVE_VERSIONS([stdout])
             AT_CHECK([diff -b -B $baseline stdout])
         ])
 
@@ -647,10 +655,12 @@ m4_define([AT_BUILD_DMRPP_H4_TEST_U], [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
             AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $input2 -u $input3], [], [stdout])
+            REMOVE_VERSIONS([stdout])
             AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
             AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $input2 -u $input3], [], [stdout])
+            REMOVE_VERSIONS([stdout])
             AT_CHECK([diff -b -B $baseline stdout])
         ])
 
@@ -714,12 +724,14 @@ m4_define([AT_MERGE_DMRPP_TEST], [dnl
             AT_CHECK([cp -f $orig_dmrpp tmp],[],[stdout])
             AT_CHECK([chmod u+w tmp],[],[stdout])
             AT_CHECK([$abs_builddir/../merge_dmrpp $mvs_dmrpp tmp $file_path $mvs_list], [], [stdout])
+            REMOVE_VERSIONS([tmp])
             AT_CHECK([mv tmp $baseline.tmp])
         ],
         [
             AT_CHECK([cp -f $orig_dmrpp tmp],[],[stdout])
             AT_CHECK([chmod u+w tmp],[],[stdout])
             AT_CHECK([$abs_builddir/../merge_dmrpp $mvs_dmrpp tmp $file_path $mvs_list], [], [stdout])
+            REMOVE_VERSIONS([tmp])
             AT_CHECK([diff -b -B $baseline tmp])
         ])
 
@@ -766,24 +778,29 @@ m4_define([REMOVE_DATE_TIME], [dnl
 ])
 
 dnl Given a filename, remove any version string of the form <Value>3.20.9</Value>
-dnl or <Value>libdap-3.20.8</Value> in that file and put "removed version" in its
+dnl or <Value>libdap-3.20.8</Value> in that file and put "removed_version" in its
 dnl place. This hack keeps the baselines more or less true to form without the
 dnl obvious issue of baselines being broken when versions of the software are changed.
 dnl
 dnl Added support for 'dmrpp:version="3.20.9"' in the root node of the dmrpp.
+dnl
+dnl Added support for 'dmr:version="1.2"'.
 dnl
 dnl Note that the macro depends on the baseline being a file.
 dnl
 dnl jhrg 12/29/21
 
 m4_define([REMOVE_VERSIONS], [dnl
-    sed -r -e 's@<Value>[[0-9]]*\.[[0-9]]*\.[[0-9]]*</Value>@<Value>removed-version</Value>@g' \
-    -e 's@<Value>[[A-z_.]]*-[[0-9]]*\.[[0-9]]*\.[[0-9]]*</Value>@<Value>removed-version</Value>@g' \
-    -e 's@dmrpp:version="[[0-9]]*\.[[0-9]]*\.[[0-9]]*"@removed-dmrpp:version@g' \
-    -e 's@[[0-9]]+\.[[0-9]]+\.[[0-9]]+(-[[0-9]]+)?@removed-version@g' \
-    < $1 > $1.sed
-    mv $1.sed $1
+  awk '{
+    gsub(/<Value>[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?<\/Value>/, "<Value>removed_version</Value>");
+    gsub(/<Value>[[a-zA-Z._]+]-[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?<\/Value>/, "<Value>removed_version</Value>");
+    gsub(/dmrpp:version="[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?"/, "dmrpp:version=\"removed\"");
+    gsub(/dmrVersion="[[0-9]+]\.[[0-9]+]"/, "dmrVersion=\"removed\"");
+    print
+  }' < $1 > $1.awk
+  mv $1.awk $1
 ])
+
 
 dnl Given a filename, remove the <Value> element of a DAP4 data response as
 dnl printed by getdap4 so that we dont have issues with comparing data values

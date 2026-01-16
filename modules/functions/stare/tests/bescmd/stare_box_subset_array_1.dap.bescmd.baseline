@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="function_results">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="function_results">
     <Dimension name="Cell_Along_Swath_5km" size="406"/>
     <Dimension name="Cell_Across_Swath_5km" size="270"/>
     <Float32 name="Solar_Zenith">

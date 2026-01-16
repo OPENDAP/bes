@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xml:base="file:dap4/test_array_6.xml" dapVersion="4.0" dmrVersion="1.0" name="test_array_6">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xml:base="file:dap4/test_array_6.xml" dapVersion="4.0" dmrVersion="removed" name="test_array_6">
     <Dimension name="row" size="3"/>
     <Dimension name="col" size="4"/>
     <Structure name="a">
