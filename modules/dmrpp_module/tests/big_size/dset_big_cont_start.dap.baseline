@@ -8,13 +8,13 @@
     </Byte>
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="build_dmrpp" type="String">
-            <Value>removed version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="bes" type="String">
-            <Value>removed version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="libdap" type="String">
-            <Value>removed version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="invocation" type="String">
             <Value>/scr/kent/opendap/hyrax-dev/hyrax/bes/modules/dmrpp_module/.libs/build_dmrpp -f d_dset_big_1d_cont.h5 -r d_dset_big_1d_cont.h5.dmr -M</Value>

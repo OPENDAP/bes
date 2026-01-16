@@ -15,7 +15,7 @@
     </Sequence>
     <Attribute name="FF_GLOBAL" type="Container">
         <Attribute name="Server" type="String">
-            <Value>DODS FreeFrom based on FFND release removed version</Value>
+            <Value>DODS FreeFrom based on FFND release removed_version</Value>
         </Attribute>
         <Attribute name="count" type="Int16">
             <Value>13</Value>

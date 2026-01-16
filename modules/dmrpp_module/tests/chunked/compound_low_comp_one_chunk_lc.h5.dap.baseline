@@ -16,13 +16,13 @@
             <Value>removed date-time</Value>
         </Attribute>
         <Attribute name="build_dmrpp" type="String">
-            <Value>removed version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="bes" type="String">
-            <Value>removed version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="libdap" type="String">
-            <Value>removed version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="configuration" type="String">
             <Value>

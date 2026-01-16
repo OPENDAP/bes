@@ -172,13 +172,13 @@
     </Attribute>
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="build_dmrpp" type="String">
-            <Value>removed version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="bes" type="String">
-            <Value>removed version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="libdap" type="String">
-            <Value>removed version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="invocation" type="String">
             <Value>/Users/myang6/work/opendap/hyrax-955/bes/modules/dmrpp_module/.libs/build_dmrpp -f OMG_Bathy_SBES_L2_20150804000000.h5 -r OMG_Bathy_SBES_L2_20150804000000.h5.dmr.bescmd.baseline -M</Value>

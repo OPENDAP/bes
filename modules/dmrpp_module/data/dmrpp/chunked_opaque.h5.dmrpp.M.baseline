@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/removed version#" dapVersion="4.0" dmrVersion="removed" name="chunked_opaque.h5" dmrpp:version="removed">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/removed_version#" dapVersion="4.0" dmrVersion="removed" name="chunked_opaque.h5" dmrpp:version="removed">
     <Int64 name="DSO">
         <Attribute name="ATT" type="null">
             <Value>UNKNOWN</Value>
@@ -16,13 +16,13 @@
             <Value>removed date string</Value>
         </Attribute>
         <Attribute name="build_dmrpp" type="String">
-            <Value>removed version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="bes" type="String">
-            <Value>removed version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="libdap" type="String">
-            <Value>removed version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="invocation" type="String">
             <Value>build_dmrpp -M -f /path_removed/data/dmrpp/chunked_opaque.h5 -r /path_removed/data/dmrpp/chunked_opaque.h5.dmr</Value>

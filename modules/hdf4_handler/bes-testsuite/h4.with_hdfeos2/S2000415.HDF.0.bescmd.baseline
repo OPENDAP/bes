@@ -5,7 +5,7 @@ Attributes {
         String Sensor_Name "NSCAT";
         String Project_ID "NSCAT";
         String SIS_ID "597-512-24/1996-07-01";
-        String Build_ID "removed version/1996-11-05";
+        String Build_ID "removed_version/1996-11-05";
         String ADEOS_Data_Package_ID "S2";
         String ADEOS_Data_Package_Type "S";
         String Product_Creation_Time "1996-318T01:35:16.000";

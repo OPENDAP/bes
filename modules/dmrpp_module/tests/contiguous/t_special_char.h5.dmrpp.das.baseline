@@ -1,8 +1,8 @@
 Attributes {
     build_dmrpp_metadata {
-        String build_dmrpp "removed version";
-        String bes "removed version";
-        String libdap "libdap-removed version";
+        String build_dmrpp "removed_version";
+        String bes "removed_version";
+        String libdap "libdap-removed_version";
         String invocation "/Users/myang6/work/opendap/hyrax-732/bes/modules/dmrpp_module/.libs/build_dmrpp -f t_special_char_attr.h5 -r t_special_char_attr.h5.dmr.bescmd.baseline -M";
     }
     DAP4_GLOBAL {

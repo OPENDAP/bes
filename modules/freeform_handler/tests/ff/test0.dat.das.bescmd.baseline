@@ -1,6 +1,6 @@
 Attributes {
     FF_GLOBAL {
-        String Server "DODS FreeFrom based on FFND release removed version";
+        String Server "DODS FreeFrom based on FFND release removed_version";
         Int16 count 13;
         String description "This is a file header";
     }

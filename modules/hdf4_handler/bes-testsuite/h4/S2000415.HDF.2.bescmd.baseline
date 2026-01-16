@@ -17,7 +17,7 @@
             <value>597-512-24/1996-07-01</value>
         </Attribute>
         <Attribute name="Build_ID" type="String">
-            <value>removed version/1996-11-05</value>
+            <value>removed_version/1996-11-05</value>
         </Attribute>
         <Attribute name="ADEOS_Data_Package_ID" type="String">
             <value>S2</value>
