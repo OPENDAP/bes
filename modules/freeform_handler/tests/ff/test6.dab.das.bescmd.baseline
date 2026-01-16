@@ -1,6 +1,6 @@
 Attributes {
     FF_GLOBAL {
-        String Server "DODS FreeFrom based on FFND release removed_version";
+        String Server "DODS FreeFrom based on FFND release 4.2.3";
     }
     t {
     }

@@ -39,7 +39,7 @@
     </Int32>
     <Attribute name="FF_GLOBAL" type="Container">
         <Attribute name="Server" type="String">
-            <Value>DODS FreeFrom based on FFND release removed_version</Value>
+            <Value>DODS FreeFrom based on FFND release 4.2.3</Value>
         </Attribute>
     </Attribute>
 </Dataset>
