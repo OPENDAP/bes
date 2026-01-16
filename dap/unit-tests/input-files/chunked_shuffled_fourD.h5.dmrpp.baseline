@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <Dataset 
     xmlns="http://xml.opendap.org/ns/DAP/4.0#" 
-    xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#"
+    xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/removed_version#"
     dapVersion="4.0" 
-    dmrVersion="removed"
+    dmrVersion="removed" 
     name="chunked_shuffled_fourD.h5"
     dmrpp:href="data/dmrpp/chunked_shuffled_fourD.h5" xml:base="URI-3">
     
