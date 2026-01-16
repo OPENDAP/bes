@@ -123,6 +123,7 @@ AT_KEYWORDS([bescmd])
 #AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 > $2|| true], [], [stdout], [stderr])
 
 AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 || true], [], [stdout], [stderr])
+REMOVE_VERSIONS([stdout])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [],[],[])
 AT_XFAIL_IF([grep -q "darwin" <<< AT_PACKAGE_HOST])
 AT_CLEANUP])
