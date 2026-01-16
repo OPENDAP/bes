@@ -5,7 +5,7 @@
 <table>
 
 <tr><td align=right valign=top><b>Server</b>:</td>
-<td align=left>DODS FreeFrom based on FFND release removed_version<br></td></tr>
+<td align=left>DODS FreeFrom based on FFND release 4.2.3<br></td></tr>
 
 <tr><td align=right valign=top><b>text</b>:</td>
 <td align=left>Time    Dep     Temp    Sal     DO%     pH      Turb    AirT    WndSpd  WndDir  Baro    Solar<br></td></tr>

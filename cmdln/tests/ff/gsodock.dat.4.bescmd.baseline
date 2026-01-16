@@ -338,7 +338,7 @@ DODS_URL = new dods_url("http://localhost:8080/opendap/data/ff/gsodock.dat");
 <td align="right" valign="top"><h3>
 <a href="opendap_form_help.html#global_attr" target="help">Global Attributes:</a></h3>
 <td><textarea name="global_attr" rows="5" cols="70">
-FF_GLOBAL.Server: DODS FreeFrom based on FFND release removed_version
+FF_GLOBAL.Server: DODS FreeFrom based on FFND release 4.2.3
 FF_GLOBAL.text: Time    Dep     Temp    Sal     DO     pH      Turb    AirT    WndSpd  WndDir  Baro    Solar
 </textarea><p>
 
