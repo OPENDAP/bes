@@ -2042,7 +2042,7 @@ public:
          auto stripped_input = std::regex_replace(oss.str(), dmr_version_regex, "dmrVersion=\"removed\"");
 
          string insert_xml_base_baseline = read_test_baseline(baseline_name);
-         CPPUNIT_ASSERT_MESSAGE("The baseline " + insert_xml_base_baseline + " did not match the value " + stripped_input, insert_xml_base_baseline == stripped_input2);
+         CPPUNIT_ASSERT_MESSAGE("The baseline " + insert_xml_base_baseline + " did not match the value " + stripped_input, insert_xml_base_baseline == stripped_input);
      }
 
     void insert_xml_base_test_error() {
