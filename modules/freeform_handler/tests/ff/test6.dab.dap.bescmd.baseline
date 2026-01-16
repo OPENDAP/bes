@@ -12,7 +12,7 @@
     </Sequence>
     <Attribute name="FF_GLOBAL" type="Container">
         <Attribute name="Server" type="String">
-            <Value>DODS FreeFrom based on FFND release removed_version</Value>
+            <value>DODS FreeFrom based on FFND release 4.2.3</value>
         </Attribute>
     </Attribute>
 </Dataset>
@@ -45,4 +45,3 @@ Sequence {
 17: { 59972.4, 4.83039, 0.402431, 1.82957, 23.3454 }, 
 18: { 59972.4, 4.92885, 0.19408, 1.50658, 24.3171 }, 
 19: { 59972.4, 5.0177, 0.36466, 1.0775, 25.1883 } };
-

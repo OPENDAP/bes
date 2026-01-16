@@ -11,7 +11,7 @@
     </Sequence>
     <Attribute name="FF_GLOBAL" type="Container">
         <Attribute name="Server" type="String">
-            <Value>DODS FreeFrom based on FFND release removed_version</Value>
+            <value>DODS FreeFrom based on FFND release 4.2.3</value>
         </Attribute>
     </Attribute>
 </Dataset>
@@ -742,4 +742,3 @@ Sequence {
 716: { 1985, 364, "d", "http://podaac.jpl.nasa.gov/dods-hdf/nph-hdf/dods/pathfinder/data_v4/best_sst/daily/descending/09km/1985/1985364h09dd-gdm.hdf.Z" }, 
 717: { 1985, 365, "a", "http://podaac.jpl.nasa.gov/dods-hdf/nph-hdf/dods/pathfinder/data_v4/best_sst/daily/ascending/09km/1985/1985365h09da-gdm.hdf.Z" }, 
 718: { 1985, 365, "d", "http://podaac.jpl.nasa.gov/dods-hdf/nph-hdf/dods/pathfinder/data_v4/best_sst/daily/descending/09km/1985/1985365h09dd-gdm.hdf.Z" } };
-
