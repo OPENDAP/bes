@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="compound_low_comp_two_chunks_naligned_lc.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="compound_low_comp_two_chunks_naligned_lc.h5">
     <Structure name="comp_array">
         <Float64 name="a_name"/>
         <Int16 name="b_name"/>
@@ -16,13 +16,13 @@
             <Value>removed date-time</Value>
         </Attribute>
         <Attribute name="build_dmrpp" type="String">
-            <Value>removed-version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="bes" type="String">
-            <Value>removed-version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="libdap" type="String">
-            <Value>removed-version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="configuration" type="String">
             <Value>
@@ -56,4 +56,3 @@ Structure {
     Int16 b_name;
     Float32 c_name[2];
 } comp_array[2] = {{ 0.11, 2, {2.77, 3.77} }, { 1.11, 3, {3.77, 4.77} }};
-
