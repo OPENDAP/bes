@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="MCD43D40.A2025257.061.2025267034627.hdf">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="MCD43D40.A2025257.061.2025267034627.hdf">
     <Dimension name="YDim_Grid_Parameter" size="21600"/>
     <Dimension name="XDim_Grid_Parameter" size="43200"/>
     <Attribute name="HDFEOSVersion" type="String">

@@ -7,6 +7,8 @@ AT_INIT([bescmdln])
 
 AT_TESTED([bescmdln])
 
+m4_include([../../modules/common/handler_tests_macros.m4])
+
 AT_ARG_OPTION_ARG([baselines],
     [--baselines=yes|no   Build the baseline file for parser test 'arg'],
     [echo "baselines set to $at_arg_baselines";
@@ -23,10 +25,12 @@ m4_define([_AT_BESCMD_TEST],
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
     [
     AT_CHECK([bescmdln -i $input], [], [stdout])
+    REMOVE_VERSIONS([stdout])
     AT_CHECK([mv stdout $baseline.tmp])
     ],
     [
     AT_CHECK([bescmdln -i $input], [], [stdout])
+    REMOVE_VERSIONS([stdout])
     AT_CHECK([diff -b -B $baseline stdout])
     AT_XFAIL_IF([test _$pass = _xfail])
     ])

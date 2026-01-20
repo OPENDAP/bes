@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="MOD021KM.A2024024.0000.061.2024024014421.NRT.hdf">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="MOD021KM.A2024024.0000.061.2024024014421.NRT.hdf">
     <Dimension name="_2_nscans_MODIS_SWATH_Type_L1B" size="408"/>
     <Dimension name="_1KM_geo_dim_MODIS_SWATH_Type_L1B" size="271"/>
     <Dimension name="Band_1KM_RefSB_MODIS_SWATH_Type_L1B" size="15"/>

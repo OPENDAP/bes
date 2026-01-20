@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="test8.dat">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="test8.dat">
     <Sequence name="pathfinder">
         <Int32 name="year"/>
         <Int32 name="day"/>
@@ -11,7 +11,7 @@
     </Sequence>
     <Attribute name="FF_GLOBAL" type="Container">
         <Attribute name="Server" type="String">
-            <Value>DODS FreeFrom based on FFND release removed-version</Value>
+            <Value>DODS FreeFrom based on FFND release 4.2.3</Value>
         </Attribute>
     </Attribute>
 </Dataset>
@@ -28,4 +28,3 @@ Sequence {
 2: { 1985, 5, "a", "http://pofdgfst" }, 
 3: { 1995, 5, "d", "poddwr" }, 
 4: { 1988, 6, "a", "http://podzw4" } };
-

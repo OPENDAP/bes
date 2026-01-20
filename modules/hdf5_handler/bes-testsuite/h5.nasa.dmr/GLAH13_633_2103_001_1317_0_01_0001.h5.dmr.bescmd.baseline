@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="GLAH13_633_2103_001_1317_0_01_0001.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="GLAH13_633_2103_001_1317_0_01_0001.h5">
     <Dimension name="Data_1HZ_DS_UTCTime_1" size="11242"/>
     <Dimension name="Data_1HZ_Time_d_UTCTime_1" size="11242"/>
     <Dimension name="Data_40HZ_DS_DEMhiresArElv" size="9"/>

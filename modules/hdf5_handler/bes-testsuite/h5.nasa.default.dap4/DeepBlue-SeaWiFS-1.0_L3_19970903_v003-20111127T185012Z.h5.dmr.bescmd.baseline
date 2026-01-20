@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="DeepBlue-SeaWiFS-1.0_L3_19970903_v003-20111127T185012Z.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="DeepBlue-SeaWiFS-1.0_L3_19970903_v003-20111127T185012Z.h5">
     <Dimension name="latitude" size="180"/>
     <Dimension name="longitude" size="360"/>
     <Dimension name="land_bands" size="3"/>
