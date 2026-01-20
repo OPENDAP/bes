@@ -87,16 +87,8 @@ UNIT_TESTS = AWS_SDK_Test
 
 check-local:
 	@echo ""
-	@if [ -n "$${CMAC_ID}" ] \
-		&& [ -n "$${CMAC_ACCESS_KEY}" ] \
-		&& [ -n "$${CMAC_REGION}" -a $${CMAC_REGION} = $(s3_reader_region) ]  \
-		&& [ -n "$${CMAC_URL}" -a $${CMAC_URL} = $(s3_reader_url) ] ; then \
-		echo "--------- S3 Auth Tests ---------"; \
-		echo "        CMAC_ID: <Has Been Set>"; \
-		echo "CMAC_ACCESS_KEY: <Has Been Set>"; \
-		echo "    CMAC_REGION: ${CMAC_REGION}"; \
-		echo "       CMAC_URL: ${CMAC_URL}"; \
-	else \
+	@if [ -z "$${CMAC_ID}" ] \
+		|| [ -z "$${CMAC_ACCESS_KEY}" ] ; then \
 		echo "**********************************************************"; \
 		echo "No AWS access credentials available, some tests skipped"; \
 		echo "**********************************************************"; \
