@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xml:base="file:dap4/test_simple_8.xml" dapVersion="4.0" dmrVersion="1.0" name="test_simple_8">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xml:base="file:dap4/test_simple_8.xml" dapVersion="4.0" dmrVersion="removed" name="test_simple_8">
     <Structure name="outer">
         <Sequence name="s">
             <Int32 name="i1"/>

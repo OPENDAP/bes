@@ -8,6 +8,8 @@ AT_INIT([bes.cfdmr.conf bes.default.conf besstandalone getdap getdap4])
 
 AT_TESTED([besstandalone])
 
+m4_include([../../common/handler_tests_macros.m4])
+
 # This option works only for macros that explicitly support it. The new
 # macro AT_BESCMD_BESCONF_RESPONSE_TEST() does and provides a pattern for
 # other macros, although we might be able to use the macros in the
@@ -54,10 +56,12 @@ m4_define([AT_BESCMD_BESCONF_RESPONSE_TEST], [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
         AT_CHECK([besstandalone $repeat -c $bes_conf -i $input], [], [stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
         AT_CHECK([besstandalone $repeat -c $bes_conf -i $input], [], [stdout])
+        REMOVE_VERSIONS([stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         AT_XFAIL_IF([test z$3 = zxfail])
         ])
@@ -73,12 +77,14 @@ m4_define([_AT_BESCMD_TEST],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK lines to generate baseline file.
-AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 > $2|| true], [], [stdout], [stderr])
+#AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 > $2|| true], [], [stdout], [stderr])
+#REMOVE_VERSIONS([stdout])
 
 # This looks like a copy of the older logic we used and it will pass a test
 # if the baseline is empty and the test wrote nothing to stderr. It's better
 # to make a separate macro for errors. jhrg 3/11/22
 AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 || true], [], [stdout], [stderr])
+REMOVE_VERSIONS([stdout])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 
@@ -99,8 +105,10 @@ AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline files.
 #AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 | getdap4 -C -D -M - > $2|| true], [], [stdout], [stderr])
+#REMOVE_VERSIONS([stdout])
 
 AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 | getdap4 -C -D -M - || true], [], [stdout], [stderr])
+REMOVE_VERSIONS([stdout])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 
@@ -115,6 +123,7 @@ AT_KEYWORDS([bescmd])
 #AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 > $2|| true], [], [stdout], [stderr])
 
 AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 || true], [], [stdout], [stderr])
+REMOVE_VERSIONS([stdout])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [],[],[])
 AT_XFAIL_IF([grep -q "darwin" <<< AT_PACKAGE_HOST])
 AT_CLEANUP])
@@ -152,8 +161,10 @@ AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline files.
 #AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 > $2|| true], [], [stdout], [stderr])
+#REMOVE_VERSIONS([stdout])
 
 AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 || true], [], [stdout], [stderr])
+REMOVE_VERSIONS([stdout])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 
@@ -174,8 +185,10 @@ AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
 #AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap4 -C -D -M - > $2|| true], [], [stdout], [stderr])
+#REMOVE_VERSIONS([stdout])
 
 AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap4 -C -D -M - || true], [], [stdout], [stderr])
+REMOVE_VERSIONS([stdout])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 

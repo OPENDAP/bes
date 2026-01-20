@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="GOZ-Source-MLP_HCl_ev1-00_2005.nc4.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="GOZ-Source-MLP_HCl_ev1-00_2005.nc4.h5">
     <Dimension name="ACE_FTS_dayInBin" size="31"/>
     <Dimension name="ACE_FTS_lat" size="18"/>
     <Dimension name="ACE_FTS_lev" size="25"/>

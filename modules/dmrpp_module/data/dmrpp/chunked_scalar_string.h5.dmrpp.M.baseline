@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="chunked_scalar_string.h5" removed dmrpp:version>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="removed" name="chunked_scalar_string.h5" dmrpp:version="removed">
     <String name="scalar_big_string">
         <Attribute name="origname" type="String">
             <Value>scalar_big_string</Value>
@@ -13,13 +13,13 @@
     </String>
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="build_dmrpp" type="String">
-            <Value>removed version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="bes" type="String">
-            <Value>removed version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="libdap" type="String">
-            <Value>removed version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="invocation" type="String">
             <Value>build_dmrpp -M -f /path_removed/data/dmrpp/chunked_scalar_string.h5 -r /path_removed/data/dmrpp/chunked_scalar_string.h5.dmr</Value>

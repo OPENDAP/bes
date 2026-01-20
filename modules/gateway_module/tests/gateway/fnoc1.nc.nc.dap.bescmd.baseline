@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="fnoc1.nc.nc">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="fnoc1.nc.nc">
     <Dimension name="time_a" size="16"/>
     <Dimension name="lat" size="17"/>
     <Dimension name="lon" size="21"/>
@@ -94,11 +94,11 @@
             <Value> FNOC UV wind components from 1988- 10 to 1988- 13.</Value>
         </Attribute>
         <Attribute name="history" type="String">
-            <Value>removed date-timehyrax-removed-version http://test.opendap.org/opendap/data/nc/fnoc1.nc.nc
+            <Value>removed date-timehyrax-1.17.1-584 http://test.opendap.org/opendap/data/nc/fnoc1.nc.nc
 </Value>
         </Attribute>
         <Attribute name="history_json" type="String">
-            <Value>[{&quot;$schema&quot;:&quot;https:\/\/harmony.earthdata.nasa.gov\/schemas\/history\/removed-version\/history-removed-version.json&quot;,&quot;date_time&quot;:&quot;removed date-time+0000&quot;,&quot;program&quot;:&quot;hyrax&quot;,&quot;version&quot;:&quot;removed-version&quot;,&quot;parameters&quot;:[{&quot;request_url&quot;:&quot;http:\/\/test.opendap.org\/opendap\/data\/nc\/fnoc1.nc.nc&quot;}]}]</Value>
+            <Value>[{&quot;$schema&quot;:&quot;https:\/\/harmony.earthdata.nasa.gov\/schemas\/history\/0.1.0\/history-0.1.0.json&quot;,&quot;date_time&quot;:&quot;removed date-time+0000&quot;,&quot;program&quot;:&quot;hyrax&quot;,&quot;version&quot;:&quot;1.17.1-584&quot;,&quot;parameters&quot;:[{&quot;request_url&quot;:&quot;http:\/\/test.opendap.org\/opendap\/data\/nc\/fnoc1.nc.nc&quot;}]}]</Value>
         </Attribute>
         <Attribute name="DODS_EXTRA.Unlimited_Dimension" type="String">
             <Value>time_a</Value>

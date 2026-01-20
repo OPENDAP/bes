@@ -4,7 +4,11 @@ AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/aws -I$(top_srcdir)/dispatch
 
-# Help the link step find libs at build time too (not just run time)
+# Help the link step find libs at build time too (not just run time).
+# NB: We could use the default value of AM_LDFLAGS for the AWS libs if we wanted
+# to, but before we had configure.ac set to include the the deps lib dir
+# we used special code just for the AWS library. I'll keep that for now.
+# jhrg 1/7/26
 AM_LDFLAGS = -L$(aws_libdir)
 
 # This should be 'AM_LDADD' but for some reason the check_PROGRAMS variable doesn't work
@@ -27,15 +31,6 @@ AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,'$$ORIGIN'
         AM_LDFLAGS += -Wl,-rpath,$(aws_libdir64)
     endif
 endif
-# $(info "AM_LDFLAGS: $(AM_LDFLAGS)")
-
-# This will help make 'make check' predictable with varying build environments.
-# jhrg 10/15/25
-#if DARWIN
-#TESTS_ENVIRONMENT = DYLD_LIBRARY_PATH=$(aws_libdir):$$DYLD_LIBRARY_PATH
-#else
-#TESTS_ENVIRONMENT = LD_LIBRARY_PATH=$(aws_libdir):$$LD_LIBRARY_PATH
-#endif
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS) -Wno-deprecated-declarations

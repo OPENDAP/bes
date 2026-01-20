@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="oco2_L2StdND_03945a_150330_B6000_150331024816.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="oco2_L2StdND_03945a_150330_B6000_150331024816.h5">
     <Int64 name="L1bScSoundingReference_sounding_id_l1b">
         <Dim size="3"/>
         <Dim size="2"/>
