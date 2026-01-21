@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="LPRM-AMSR2_L3_A_SOILM3_V001_20121216010911.nc4.h5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="LPRM-AMSR2_L3_A_SOILM3_V001_20121216010911.nc4.h5">
     <Dimension name="Longitude" size="1440"/>
     <Dimension name="Latitude" size="720"/>
     <Float32 name="Longitude">

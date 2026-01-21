@@ -133,11 +133,13 @@ m4_define([NORMALIZE_EXEC_NAME], [dnl
 ])
 
 dnl Given a filename, remove any version string of the form <Value>3.20.9</Value>
-dnl or <Value>libdap-3.20.8</Value> in that file and put "removed version" in its
+dnl or <Value>libdap-3.20.8</Value> in that file and put "removed_version" in its
 dnl place. This hack keeps the baselines more or less true to form without the
 dnl obvious issue of baselines being broken when versions of the software are changed.
 dnl
 dnl Added support for 'dmrpp:version="3.20.9"' in the root node of the dmrpp.
+dnl
+dnl Supports versions with build number suffix, e.g., both 3.20.8 and 3.20.8-123
 dnl
 dnl Note that the macro depends on the baseline being a file.
 dnl
@@ -145,9 +147,10 @@ dnl jhrg 12/29/21
 
 m4_define([REMOVE_VERSIONS], [dnl
   awk '{
-    gsub(/<Value>[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?<\/Value>/, "<Value>removed version</Value>");
-    gsub(/<Value>[[a-zA-Z._]+]-[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?<\/Value>/, "<Value>removed version</Value>");
-    gsub(/dmrpp:version="[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?"/, "removed dmrpp:version");
+    gsub(/<Value>[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?<\/Value>/, "<Value>removed_version</Value>");
+    gsub(/<Value>[[a-zA-Z._]+]-[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?<\/Value>/, "<Value>removed_version</Value>");
+    gsub(/dmrpp:version="[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?"/, "dmrpp:version=\"removed\"");
+    gsub(/dmrVersion="[[0-9]+]\.[[0-9]+]"/, "dmrVersion=\"removed\"");
     print
   }' < $1 > $1.awk
   mv $1.awk $1

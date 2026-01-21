@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="3B-HHR.MS.MRG.3IMERG.20200101-S000000-E002959.0000.V06B.HDF5">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="3B-HHR.MS.MRG.3IMERG.20200101-S000000-E002959.0000.V06B.HDF5">
     <Attribute name="FileHeader" type="String">
         <Value>DOI=10.5067/GPM/IMERG/3B-HH/06;
 DOIauthority=http://dx.doi.org/;
