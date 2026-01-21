@@ -184,8 +184,8 @@ jobs:
     #     - export BES_BUILD=rocky9
     #     - mkdir -p $prefix/rpmbuild
     #     - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
-    #     - docker run 
-    #       --env prefix=/root/install 
+    #     - docker run
+    #       --env prefix=/root/install
     #       --volume $prefix/rpmbuild:/root/rpmbuild
     #       --volume $TRAVIS_BUILD_DIR:/root/bes
     #       --env GDAL_OPTION="$GDAL_OPTION"
@@ -207,7 +207,11 @@ jobs:
         - export DIST=el8
         - export OS=rocky8
         - export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
-        - bash ${TRAVIS_BUILD_DIR}/travis/build-rhel-docker.sh
+        # Note: We use `source` instead of `bash` here so that we
+        # have downstream access to the environment variable
+        # `BUILD_VERSION_TAG` that must be exported AFTER the image
+        # is built:
+        - source ${TRAVIS_BUILD_DIR}/travis/build-rhel-docker.sh
         # TODO: remove this before merging! Using for debugging
         - bash ${TRAVIS_BUILD_DIR}/travis/deploy-to-docker-hub.sh
 
@@ -280,21 +284,21 @@ jobs:
 #   # Check for the stuff...
 #   - ls -l $TRAVIS_BUILD_DIR/package
 
-# # The deploy section copies the snapshot build product our S3 bucket and to www.opendap.org
-# deploy:
-#   - name: Push build results to S3 bucket
-#     provider: s3
-#     access_key_id: $AWS_ACCESS_KEY_ID
-#     secret_access_key: $AWS_SECRET_ACCESS_KEY
-#     bucket: opendap.travis.build
-#     skip_cleanup: true
-#     local_dir: $TRAVIS_BUILD_DIR/package
-#     on:
-#       all_branches: true
-#       condition: $BES_BUILD =~ ^rocky8|rocky9|srcdist$
-#   - name: Push docker images to Docker Hub
-#     provider: script
-#     script: bash ${TRAVIS_BUILD_DIR}/travis/deploy-to-docker-hub.sh
-#     on:
-#       all_branches: true
-#       condition: $BES_BUILD =~ ^docker$
+# The deploy section copies the snapshot build product our S3 bucket and to www.opendap.org
+deploy:
+  - name: Push build results to S3 bucket
+    provider: s3
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    bucket: opendap.travis.build
+    skip_cleanup: true
+    local_dir: $TRAVIS_BUILD_DIR/package
+    on:
+      all_branches: true
+      condition: $BES_BUILD =~ ^rocky8|rocky9|srcdist$
+  - name: Push docker images to Docker Hub
+    provider: script
+    script: bash ${TRAVIS_BUILD_DIR}/travis/deploy-to-docker-hub.sh
+    on:
+      all_branches: true
+      condition: $BES_BUILD =~ ^docker$
