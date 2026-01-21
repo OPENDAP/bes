@@ -3072,13 +3072,17 @@ bool obtain_compress_encode_data(size_t num_elms, string &encoded_str, const Byt
         encoded_str = base64::Base64::encode(source_data, (int)source_data_size);
     } else {
         auto ssize = (uLong)source_data_size;
-        //auto csize = (uLongf)ssize * 2;
         uLong compress_bound = compressBound(ssize);
         auto csize = (uLongf)compress_bound;
         vector<Bytef> compressed_src;
         compressed_src.resize(compress_bound);
 
-        //int retval = compress2(compressed_src.data(), &csize, source_data, ssize, Z_DEFAULT_COMPRESSION);
+
+#if 0
+        // TODO: somehow using compress2 causes some existing tests failed. We need to
+        //       investigate how to compress a >4GB buffer with compress2. KY 2026-01-21
+        int retval = compress2(compressed_src.data(), &csize, source_data, ssize, Z_DEFAULT_COMPRESSION);
+#endif
         int retval = compress(compressed_src.data(), &csize, source_data, ssize);
         if (retval != 0) {
             err_msg = "Fail to compress the data";
