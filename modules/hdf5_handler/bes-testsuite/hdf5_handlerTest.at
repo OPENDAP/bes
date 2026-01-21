@@ -939,4 +939,7 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([vlen_dim.h5.dap_ce.bescmd])
 # AT_BESCMD_BESCONF_RESPONSE_TEST([h5.cf/utf8_attr.h5.ddx.bescmd], [bes.e_utf8_false.conf], [xfail])
 # AT_BESCMD_BESCONF_RESPONSE_TEST([h5.default/utf8_attr.h5.ddx.bescmd], [bes.e_utf8_false.default.conf], [xfail])
 AT_BESCMD_BESCONF_RESPONSE_TEST([h5.default/swath_wrong_dim_rp.h5.dmr.bescmd], [bes.default.conf], [xfail])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_atomic_puredim_2d_unlimited.h5.dmr.bescmd])
+#AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([nc4_group_atomic_puredim_2d_unlimited.h5.dap.bescmd])
+
 

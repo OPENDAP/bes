@@ -1530,6 +1530,9 @@ bool HDF5RequestHandler::hdf5_build_dmr_from_file(BESDataHandlerInterface & dhi,
         if (is_eos5 == false)
             add_dap4_coverage_default(root_grp,handled_coord_names);
 
+        // This rarely happens but we have to handle. KY 2026-01-16
+        if (_add_unlimited_dimension_dap4 == false)
+            remove_unlimited_dimension_info(root_grp);
         // Leave the following block until the HDF-EOS5 is fully supported.
 #if 0
         BESDEBUG("h5", "build_dmr - before obtain dimensions"<< endl);

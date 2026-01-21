@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="nscat" space="catalog">/data/nc4_group_atomic_puredim_2d_unlimited.h5  </setContainer>
+    <define name="d">
+	<container name="nscat" />
+    </define>
+    <get type="dap" definition="d" />
+</request>
