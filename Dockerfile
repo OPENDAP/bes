@@ -9,18 +9,12 @@ ENV USER="bes_user"
 ENV USER_ID=101
 
 RUN useradd \
-    # --system \
     --user-group \
-    # --shell /sbin/nologin \
     --comment "BES daemon" \
     --uid ${USER_ID} \
-    # --home-dir /var/log/bes \
     $USER \
     && echo $USER ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USER
 USER $USER
-
-# Temporary home for pulling in the bes repo; we'll be
-# deleting it at the end, so it doesn't really matter where we are
 WORKDIR "/home/$USER"
 
 # Start bes build process
@@ -45,46 +39,35 @@ RUN --mount=from=aws_downloads,target=/tmp \
     echo "Installing libdap snapshot rpms: $LIBDAP_RPM_FILENAME, $LIBDAP_DEVEL_RPM_FILENAME" \
     && sudo dnf -y install "/tmp/$LIBDAP_RPM_FILENAME" \
     && sudo dnf -y install "/tmp/$LIBDAP_DEVEL_RPM_FILENAME"
-# To debug what has been installed, use    
+# To debug what has been installed, use
 # rpm -ql "$PREFIX/rpmbuild/${LIBDAP_RPM_FILENAME}"
 
+# Build the BES
 COPY . ./bes
 RUN sudo chown -R $USER:$USER bes $PREFIX \
     && sudo chmod o+x /root
 WORKDIR bes
 
-RUN pwd && ls
-
 RUN autoreconf -fiv
-
-RUN ./configure --disable-dependency-tracking \
+RUN echo "Sanity check: CPPFLAGS=$CPPFLAGS LDFLAGS=$LDFLAGS prefix=$PREFIX" \
+    && ./configure --disable-dependency-tracking \
     --with-dependencies="${PREFIX}/deps" \
     --prefix="${PREFIX}" \
     $GDAL_OPTION \
     --with-build=$BES_BUILD_NUMBER \
     --enable-developer
-RUN make -j16
+RUN make install -j16
 
-RUN make install
+# Test the BES
+RUN besctl start && make check -j16 && besctl stop
 
-# # TODO: move into own layer
-RUN make check -j16
+# Post-build clean-up
+WORKDIR "/home/$USER"
+RUN cp bes/bes_VERSION bes_VERSION \
+    && rm -rf bes
 
-# RUN besctl start && make check -j16 && besctl stop
+# Sanity check....
+RUN echo "besdaemon is here: "`which besdaemon`
+RUN echo "BES_VERSION (from bes_VERSION) is $(cat bes_VERSION)"
 
-# # 5. Add besd service to start at boot
-# RUN cp ${PREFIX}/etc/rc.d/init.d/besd /etc/rc.d/init.d/besd \
-#     && chkconfig --add besd \
-#     && ldconfig
-
-# # Clean up
-# WORKDIR ".."
-# RUN cp bes/bes_VERSION bes_VERSION 
-#     # && rm -rf bes
-
-# # Sanity check....
-# RUN echo "besdaemon is here: "`which besdaemon`
-# RUN echo "BES_VERSION (from bes_VERSION) is $(cat bes_VERSION)"
-
-# CMD ["-"]
-# ENTRYPOINT besctl start
+CMD ["-"]

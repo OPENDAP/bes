@@ -23,7 +23,7 @@
 #    LIBDAP_RPM_VERSION='3.21.1-332' \
 #    bash build-rhel-docker.sh
 #
-# If building locally, add extra docker build flags through the ENV var
+# If building locally, add any extra docker build flags through the ENV var
 # `DOCKER_DEV_FLAGS`, e.g.,
 # export DOCKER_DEV_FLAGS="--platform linux/amd64 --no-cache"
 #
@@ -66,13 +66,13 @@ loggy ""
 
 set -eux
 
-# Downloading AWS dependencies...
+loggy "Downloading AWS dependencies..."
 mkdir -p $AWS_DOWNLOADS_DIR
 [[ -e "$AWS_DOWNLOADS_DIR/$HYRAX_DEPENDENCIES_TARBALL" ]] || aws s3 cp "s3://opendap.travis.build/$HYRAX_DEPENDENCIES_TARBALL" $AWS_DOWNLOADS_DIR
 [[ -e "$AWS_DOWNLOADS_DIR/$LIBDAP_RPM_FILENAME" ]] || aws s3 cp "s3://opendap.travis.build/$LIBDAP_RPM_FILENAME" "$AWS_DOWNLOADS_DIR"
 [[ -e "$AWS_DOWNLOADS_DIR/$LIBDAP_DEVEL_RPM_FILENAME" ]] || aws s3 cp "s3://opendap.travis.build/$LIBDAP_DEVEL_RPM_FILENAME" "$AWS_DOWNLOADS_DIR"
 
-# Building the docker image...
+loggy "Building the docker image..."
 docker image pull "${BASE_IMAGE}"
 docker build \
     --build-arg BASE_IMAGE="$BASE_IMAGE" \
@@ -89,9 +89,11 @@ docker build \
 echo "Docker build complete!"
 docker image ls -a
 
-# Tagging the image with its version number...
+loggy "Tagging the image with its version number..."
 export BES_VERSION="$(docker run --rm ${SNAPSHOT_IMAGE_TAG} -c 'cat bes_VERSION')"
 echo "BES_VERSION is ${BES_VERSION}"
 export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}"
 echo "BUILD_VERSION_TAG is ${BUILD_VERSION_TAG}"
 docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
+
+loggy "Complete!"
