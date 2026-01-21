@@ -814,5 +814,8 @@ AT_BESCMD_RESPONSE_TEST_DEFAULT([vlen.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([vlen_dim.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([vlen.h5.dap.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([vlen_dim.h5.dap_ce.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_atomic_puredim_2d_unlimited.h5.dmr.bescmd])
+#AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([nc4_group_atomic_puredim_2d_unlimited.h5.dap.bescmd])
+
 
 
