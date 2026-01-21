@@ -3078,8 +3078,8 @@ bool obtain_compress_encode_data(size_t num_elms, string &encoded_str, const Byt
         vector<Bytef> compressed_src;
         compressed_src.resize(compress_bound);
 
-        int retval = compress2(compressed_src.data(), &csize, source_data, ssize, Z_DEFAULT_COMPRESSION);
-        //int retval = compress(compressed_src.data(), &csize, source_data, ssize);
+        //int retval = compress2(compressed_src.data(), &csize, source_data, ssize, Z_DEFAULT_COMPRESSION);
+        int retval = compress(compressed_src.data(), &csize, source_data, ssize);
         if (retval != 0) {
             err_msg = "Fail to compress the data";
             return false;
