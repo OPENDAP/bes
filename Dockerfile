@@ -1,18 +1,17 @@
 # Dockerfile for bes_rhel images
-
 ARG BASE_IMAGE
-FROM ${BASE_IMAGE}
-RUN yum update -y \
-   && dnf install sudo -y
+FROM ${BASE_IMAGE} AS base
 
 ENV USER="bes_user"
 ENV USER_ID=101
 
-RUN useradd \
-    --user-group \
-    --comment "BES daemon" \
-    --uid ${USER_ID} \
-    $USER \
+RUN yum update -y \
+    && dnf install sudo -y \
+    && useradd \
+        --user-group \
+        --comment "BES daemon" \
+        --uid ${USER_ID} \
+        $USER \
     && echo $USER ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USER
 USER $USER
 WORKDIR "/home/$USER"
@@ -42,10 +41,17 @@ RUN --mount=from=aws_downloads,target=/tmp \
 # To debug what has been installed, use
 # rpm -ql "$PREFIX/rpmbuild/${LIBDAP_RPM_FILENAME}"
 
+RUN sudo chown -R $USER:$USER $PREFIX \
+    && sudo chmod o+x /root
+
+#####
+##### Build layer: Includes large bes repo that we don't want in final image
+#####
+FROM base AS builder
+
 # Build the BES
 COPY . ./bes
-RUN sudo chown -R $USER:$USER bes $PREFIX \
-    && sudo chmod o+x /root
+RUN sudo chown -R $USER:$USER bes
 WORKDIR bes
 
 RUN autoreconf -fiv
@@ -61,13 +67,20 @@ RUN make install -j16
 # Test the BES
 RUN besctl start && make check -j16 && besctl stop
 
-# Post-build clean-up
-WORKDIR "/home/$USER"
-RUN cp bes/bes_VERSION bes_VERSION \
-    && rm -rf bes
+RUN pwd
+
+#####
+##### Final layer: Base + installed bes components
+#####
+FROM base
+
+COPY --from=builder /home/${USER}/bes/bes_VERSION bes_VERSION
+COPY --from=builder $PREFIX $PREFIX
 
 # Sanity check....
-RUN echo "besdaemon is here: "`which besdaemon`
-RUN echo "BES_VERSION (from bes_VERSION) is $(cat bes_VERSION)"
+RUN echo "besdaemon is here: "`which besdaemon` \
+    && echo "BES_VERSION (from bes_VERSION) is $(cat bes_VERSION)" \
+    && besctl start \
+    && besctl stop
 
 CMD ["-"]
