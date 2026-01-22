@@ -100,4 +100,4 @@ loggy "Complete!"
 
 # Because this script is often sourced (at least by travis),
 # unset these commands to prevent spurious downstream failures
-set +eu
+set +eux
