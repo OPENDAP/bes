@@ -85,6 +85,17 @@ if CPPUNIT
 
 UNIT_TESTS = AWS_SDK_Test
 
+check-local:
+	@echo ""
+	@if [ -z "$${CMAC_ID}" ] \
+		|| [ -z "$${CMAC_ACCESS_KEY}" ] ; then \
+		echo "**********************************************************"; \
+		echo "No AWS access credentials available, some tests skipped"; \
+		echo "**********************************************************"; \
+		true;\
+	fi
+	@echo ""
+
 else
 
 UNIT_TESTS =
