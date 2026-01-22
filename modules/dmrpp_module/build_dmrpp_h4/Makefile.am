@@ -39,7 +39,8 @@ build_dmrpp_h4_LDFLAGS = $(HDFEOS2_LDFLAGS) $(HDF4_LDFLAGS) $(BES_DAP_LIB_LDFLAG
 # DmrppRequestHandler and DmrppModule to make the module so file. That convenience library
 # should then be used here to make build_dmrpp_h4 (and likely to make other programs). jhrg 1/13/26
 
-build_dmrpp_h4_LDADD = $(builddir)/../.libs/libdmrpp_module.a -L$(builddir)/../ngap_container -lngap \
+build_dmrpp_h4_LDADD = $(top_builddir)/modules/dmrpp_module/.libs/libdmrpp_module.a \
+-L$(top_builddir)/modules/dmrpp_module/ngap_container -lngap \
 $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
 $(XML2_LIBS) $(BYTESWAP_LIBS) $(HDFEOS2_LIBS) $(HDF4_LIBS)
 
