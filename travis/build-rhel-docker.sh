@@ -97,3 +97,7 @@ echo "BUILD_VERSION_TAG is ${BUILD_VERSION_TAG}"
 docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
 
 loggy "Complete!"
+
+# Because this script is often sourced (at least by travis),
+# unset these commands to prevent spurious downstream failures
+set +eu
