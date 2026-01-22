@@ -403,6 +403,12 @@ public:
         DBG(cerr << __func__ << " - END" << endl);
     }
 
+    void removeDMRVersion(string& str)
+    {
+        std::regex dmr_version_regex("dmrVersion=\"[0-9]+\.[0-9]+\"");
+        str = std::regex_replace(str, dmr_version_regex, "dmrVersion=\"removed\"");
+    }
+
     void cache_a_dmr_response()
     {
         DBG(cerr << __func__ << " - BEGIN" << endl);
@@ -423,12 +429,14 @@ public:
             CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
 
             string test_05_dmr_baseline = read_test_baseline(baseline_name);
+            removeDMRVersion(test_05_dmr_baseline);
 
             string response_name = d_mds_dir + "/" + c_mds_prefix + "SimpleTypes.dmr_r";
             DBG(cerr << "Reading response: " << response_name << endl);
             CPPUNIT_ASSERT(access(response_name.c_str(), R_OK) == 0);
 
             string stored_response = read_test_baseline(response_name);
+            removeDMRVersion(stored_response);
 
             CPPUNIT_ASSERT(stored_response == test_05_dmr_baseline);
         }
