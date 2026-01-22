@@ -294,9 +294,9 @@ deploy:
     on:
       all_branches: true
       condition: $BES_BUILD =~ ^rocky8|rocky9|srcdist$
-  # - name: Push docker images to Docker Hub
-  #   provider: script
-  #   script: bash ${TRAVIS_BUILD_DIR}/travis/deploy-to-docker-hub.sh
-  #   on:
-  #     all_branches: true
-  #     condition: $BES_BUILD =~ ^docker$
+  - name: Push docker images to Docker Hub
+    provider: script
+    script: bash ${TRAVIS_BUILD_DIR}/travis/deploy-to-docker-hub.sh
+    on:
+      all_branches: true
+      condition: $BES_BUILD =~ ^docker$
