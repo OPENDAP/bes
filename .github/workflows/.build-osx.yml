@@ -39,7 +39,7 @@ jobs:
         runs-on:
           # See https://github.com/actions/runner-images/blob/main/images/macos/macos-13-Readme.md for pre-installed software
           - macos-15
-          - macos-15-intel
+          # - macos-15-intel
     steps:
       - uses: actions/checkout@v4
         with:
