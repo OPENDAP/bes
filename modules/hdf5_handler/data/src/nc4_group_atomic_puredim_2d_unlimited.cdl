@@ -1,0 +1,17 @@
+netcdf t_group_atomic {
+dimensions:
+        dim1 = unlimited;
+variables:
+        float d1(dim1);
+data:
+        d1   = 2.0,4.0;
+group: g1 {
+ dimensions:
+       dim2 = unlimited;
+ variables:
+   float d2(dim1,dim2);
+ data:
+       d2 = {10.0,20.0,30.0},{40.0,50.0,60.0};
+ }
+
+}

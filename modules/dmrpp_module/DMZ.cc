@@ -1599,6 +1599,12 @@ DMZ::process_missing_data(BaseType *btp, const xml_node &missing_data) {
     if (da->get_size(false) == 1)
         memcpy(result_bytes.data(), decoded.data(), result_size);
     else {
+#if 0
+        // TODO: somehow using uncompress2 causes some existing tests failed. We need to
+        //       investigate how to compress/decompress a >4GB buffer with compress2/uncompress2. KY 2026-01-21
+        auto sourceLenP = (uLong*)(decoded.size());
+        int retval = uncompress2(result_bytes.data(), &result_size, decoded.data(), sourceLenP);
+#endif 
         int retval = uncompress(result_bytes.data(), &result_size, decoded.data(), decoded.size());
         if (retval != 0)
             throw BESInternalError("The dmrpp::missing_data - fail to uncompress the mssing data.", __FILE__, __LINE__);
