@@ -1,0 +1,77 @@
+
+# Build the bes for the same architecture as OPeNDAP developer
+# machines, to ensure code changes won't break local development
+
+on:
+  # For now, run only on manually triggered builds (workflow_dispatch).
+  # Uncomment the "push" and "pull_request" to build on all non-draft PRs
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - main
+      - /^(.*-test-deploy)$/
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+concurrency:
+  # Cancel intermediate builds only on pull requests
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+
+jobs:
+  build:
+    # Run on pushes or non-draft PRs
+    if: (github.event_name == 'push') || (github.event.pull_request.draft == false) || (github.event_name == 'workflow_dispatch')
+    name: Build on ${{ matrix.runs-on }}
+    runs-on: ${{ matrix.runs-on }}
+    env:
+      GDAL_OPTION: "--without-gdal"
+      prefix: "$HOME/install"
+      PATH: "$prefix/bin:$prefix/deps/bin:$PATH"
+      CMAC_ID: "${ secrets.AWS_ID }"
+      CMAC_ACCESS_KEY: "${ secrets.AWS_SECRET_KEY }"
+      CMAC_URL: "https://s3.amazonaws.com/cloudydap/"
+      CMAC_REGION: "us-east-1"
+      CMAC_ON: "yes"
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on:
+          # See https://github.com/actions/runner-images/blob/main/images/macos/macos-13-Readme.md for pre-installed software
+          - macos-15
+          - macos-15-intel
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # - name: Install dependencies
+      #   run: |
+      #     brew install bison \
+      #                  openssl \
+      #                  jpeg \
+      #                  cppunit \
+      #                  autoconf \
+      #                  automake \
+      #                  libgeotiff
+        # shell: bash
+      - name: Install dependencies
+        run: |
+          aws s3 cp "s3://opendap.travis.build/hyrax-dependencies-build.tgz" tmp/
+          tar -C $HOME -xzvf tmp/hyrax-dependencies-build.tgz
+          aws s3 cp "s3://opendap.travis.build/libdap-build.tar.gz" tmp/
+          tar -C $HOME -xzvf "tmp/libdap-build.tar.gz"
+        shell: bash
+      - name: Configure build
+        run: |
+          autoreconf --force --install --verbose
+          ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --enable-developer
+        shell: bash
+      - name: Build and test 
+        run: |
+          export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
+          make -j16
+          make install
+          besctl start
+          make check -j16
+          besctl stop
+        shell: bash
