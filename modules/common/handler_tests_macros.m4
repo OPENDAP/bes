@@ -365,7 +365,7 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],  [dnl
                     AS_IF([test -z "$at_verbose"], [echo "diff -b -B \$baseline.m_proc stdout"]) 
                 ],
                 [
-                    AT_CHECK([diff -b -B $baseline stdout])
+                    AT_CHECK([diff -b -B $baseline.m_proc stdout])
                 ])
             ],
             [
