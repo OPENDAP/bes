@@ -56,6 +56,9 @@ jobs:
         run: |
           aws s3 cp "s3://opendap.travis.build/hyrax-dependencies-${{ matrix.runs-on }}.tgz" $HOME
           tar -C $HOME -xzvf $HOME/hyrax-dependencies-build.tgz
+        env:
+          access_key_id: ${{ secrets.AWS_ID }}
+          secret_access_key: ${{ secrets.AWS_SECRET_KEY }}
       - name: Build, check, and install libdap
         run: |
           # In the future, consider moving this to the libdap repo...
