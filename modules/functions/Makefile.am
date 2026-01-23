@@ -23,7 +23,7 @@ CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Wno-deprecated
 
 AM_CXXFLAGS =
 # Removed jhrg 5/31/22 -Wno-c++14-extensions
-AM_LDFLAGS =
+# AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
 if BES_DEVELOPER
@@ -89,7 +89,7 @@ HDRS += ScaleGrid.h
 endif
 
 libfunctions_module_la_SOURCES = $(SRCS) $(HDRS)
-libfunctions_module_la_LDFLAGS = -avoid-version -module
+libfunctions_module_la_LDFLAGS = $(AM_LDFLAGS) -avoid-version -module
 libfunctions_module_la_LIBADD = $(LIBADD)
 
 # Don't install the headers for this kind of module.
