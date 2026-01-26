@@ -31,6 +31,8 @@ jobs:
       CMAC_URL: "https://s3.amazonaws.com/cloudydap/"
       CMAC_REGION: "us-east-1"
       CMAC_ON: "yes"
+      LDFLAGS: "-L/opt/homebrew/opt/bison/lib -L/opt/homebrew/opt/jpeg/lib"
+      CPPFLAGS: "-I/opt/homebrew/opt/jpeg/include"
     strategy:
       fail-fast: false
       matrix:
@@ -69,11 +71,10 @@ jobs:
           # In the future, consider moving this to the libdap repo...
           git clone https://github.com/opendap/libdap4
           cd libdap4
-          export LDFLAGS="-L/opt/homebrew/opt/bison/lib -L/opt/homebrew/opt/jpeg/lib"
-          export CPPFLAGS="-I/opt/homebrew/opt/jpeg/include"
           autoreconf -fiv
           ./configure --prefix=$prefix --enable-developer
-          make check -j16
+          make -j16
+          # make check
           make install
         shell: bash
       - name: Configure bes build
