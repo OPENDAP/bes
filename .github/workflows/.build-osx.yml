@@ -25,7 +25,6 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     env:
       GDAL_OPTION: "--without-gdal"
-      prefix: "$HOME/install"
       CMAC_ID: "${ secrets.AWS_ID }"
       CMAC_ACCESS_KEY: "${ secrets.AWS_SECRET_KEY }"
       CMAC_URL: "https://s3.amazonaws.com/cloudydap/"
@@ -66,6 +65,8 @@ jobs:
         run: |
           echo -e "$prefix/bin:$prefix/deps/bin:/opt/homebrew/opt/bison/bin:/opt/homebrew/opt/jpeg/bin:$(cat $GITHUB_PATH)" > $GITHUB_PATH
         shell: bash
+        env:
+          prefix: "$HOME/install"
       - name: Build, check, and install libdap
         run: |
           # In the future, consider moving this to the libdap repo...
@@ -77,18 +78,24 @@ jobs:
           # make check
           make install
         shell: bash
+        env:
+          prefix: "$HOME/install"
       - name: Configure bes build
         run: |
           pwd
           autoreconf --force --install --verbose
           ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --enable-developer
         shell: bash
+        env:
+          prefix: "$HOME/install"
       - name: Build and test bes
         run: |
-          export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
+          export LD_LIBRARY_PATH="$prefix/deps/lib:$LD_LIBRARY_PATH"
           make -j16
           make install
           besctl start
           make check -j16
           besctl stop
         shell: bash
+        env:
+          prefix: "$HOME/install"
