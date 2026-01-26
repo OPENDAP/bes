@@ -1036,71 +1036,56 @@ void DmrppArray::read_one_bigger_chunk() {
     }
     // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
     if (!is_projected()) { // if there is no projection constraint
-        reserve_value_capacity_ll(get_size(false));
-        char *dest_buf = this->get_buf();
         vector<unsigned long long> constrained_array_shape = this->get_shape(false);
         vector<unsigned long long> target_element_address = the_one_chunk->get_position_in_array();
         vector<unsigned long long> chunk_source_address(this->dimensions(), 0);
 
         // We need to handle the structure data differently.
-        if (this->var()->type() != dods_structure_c)
+        if (this->var()->type() != dods_structure_c) {
+            reserve_value_capacity_ll(get_size(false));
+            char *dest_buf = this->get_buf();
             insert_chunk(0, &target_element_address, &chunk_source_address, the_one_chunk, constrained_array_shape, dest_buf);
-        // STOP
+        }
         else {                                  // Structure
-#if 0
             // Check if we can handle this case.
             // Currently we only handle one-layer simple int/float types.
             if (is_readable_struct) {
-                // Only "one chunk", we can simply obtain the buf_value.
-                char *buf_value = the_one_chunk->get_rbuf();
 
                 unsigned long long value_size = this->length_ll() * bytes_per_element;
-                vector<char> values(buf_value, buf_value + value_size);
+                vector<char> values;
+                values.resize(value_size);
+                
+                // Retrive the correct value.
+                insert_chunk(0, &target_element_address, &chunk_source_address, the_one_chunk, constrained_array_shape, values.data());
                 read_array_of_structure(values);
+
             } else
                 throw InternalErr(
                     __FILE__, __LINE__,
                     "Only handle integer and float base types. Cannot handle the array of complex structure yet.");
-#endif
         }
     } else { // apply the constraint
+
+        vector<unsigned long long> constrained_array_shape = this->get_shape(true);
+        vector<unsigned long long> target_element_address = the_one_chunk->get_position_in_array();
+        vector<unsigned long long> chunk_source_address(this->dimensions(), 0);
+ 
         if (this->var()->type() != dods_structure_c) {
             reserve_value_capacity_ll(get_size(true));
             char *dest_buf = this->get_buf();
-            vector<unsigned long long> constrained_array_shape = this->get_shape(true);
-            vector<unsigned long long> target_element_address = the_one_chunk->get_position_in_array();
-            vector<unsigned long long> chunk_source_address(this->dimensions(), 0);
             insert_chunk(0, &target_element_address, &chunk_source_address, the_one_chunk, constrained_array_shape, dest_buf);
-
-#if 0
-            vector<unsigned long long> array_shape = get_shape(false);
-            unsigned long target_index = 0;
-            vector<unsigned long long> subset;
-
-            // Reserve space in this array for the constrained size of the data request
-            reserve_value_capacity_ll(get_size(true));
-            char *dest_buf = get_buf();
-            insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape, the_one_chunk->get_rbuf(),
-                                          dest_buf);
-#endif
         } else {
-#if 0
             // Currently we only handle one-layer simple int/float types.
             if (is_readable_struct) {
                 unsigned long long value_size = get_size(true) * bytes_per_element;
                 vector<char> values;
                 values.resize(value_size);
-                vector<unsigned long long> array_shape = get_shape(false);
-                unsigned long target_index = 0;
-                vector<unsigned long long> subset;
-                insert_constrained_contiguous(dim_begin(), &target_index, subset, array_shape,
-                                              the_one_chunk->get_rbuf(), values.data());
+                insert_chunk(0, &target_element_address, &chunk_source_address, the_one_chunk, constrained_array_shape, values.data());
                 read_array_of_structure(values);
             } else
                 throw InternalErr(
                     __FILE__, __LINE__,
                     "Only handle integer and float base types. Cannot handle the array of complex structure yet.");
-#endif
         }
     }
 

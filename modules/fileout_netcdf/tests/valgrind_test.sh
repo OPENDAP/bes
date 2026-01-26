@@ -331,6 +331,7 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_less_odd_chu
 
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/lnumbers.bin.comprehensive_constraint.dmrpp.bescmd
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_one_bigger_chunk_size.h5.dmrpp.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple_bigger_chunk.h5.dmrpp.bescmd
 rm -rf test.nc
 rm -rf gr.nc4
 rm -rf gr_d4.nc4
