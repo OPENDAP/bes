@@ -444,3 +444,5 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_odd_chunk_size_comp_co
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_less_odd_chunk_size_constraint.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/lnumbers.bin.comprehensive_constraint.dmrpp.bescmd)
 
+# One chunk, chunk size is bigger than the array size
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_one_bigger_chunk_size.h5.dmrpp.bescmd)
