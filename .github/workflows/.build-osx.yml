@@ -62,13 +62,15 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
       - name: Update PATH
         run: |
-          echo -e "$prefix/bin:$prefix/deps/bin:/opt/homebrew/opt/bison/bin:$(cat $GITHUB_PATH)" > $GITHUB_PATH
+          echo -e "$prefix/bin:$prefix/deps/bin:/opt/homebrew/opt/bison/bin:/opt/homebrew/opt/jpeg/bin:$(cat $GITHUB_PATH)" > $GITHUB_PATH
         shell: bash
       - name: Build, check, and install libdap
         run: |
           # In the future, consider moving this to the libdap repo...
           git clone https://github.com/opendap/libdap4
           cd libdap4
+          export LDFLAGS="-L/opt/homebrew/opt/bison/lib -L/opt/homebrew/opt/jpeg/lib"
+          export CPPFLAGS="-I/opt/homebrew/opt/jpeg/include"
           autoreconf -fiv
           ./configure --prefix=$prefix --enable-developer
           make check -j16
