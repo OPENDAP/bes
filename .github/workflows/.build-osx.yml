@@ -50,7 +50,8 @@ jobs:
                        autoconf \
                        automake \
                        libgeotiff \
-                       libtool
+                       libtool \
+                       groff
         shell: bash
       - name: Install hyrax-dependencies
         run: |
@@ -75,6 +76,7 @@ jobs:
         shell: bash
       - name: Configure bes build
         run: |
+          pwd
           autoreconf --force --install --verbose
           ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --enable-developer
         shell: bash
