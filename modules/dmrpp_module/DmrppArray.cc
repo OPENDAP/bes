@@ -1026,24 +1026,27 @@ void DmrppArray::read_one_bigger_chunk() {
     // This is the original chunk.
     auto the_one_chunk = get_immutable_chunks()[0];
 
-    // This is a really rare case; we don't use the parallel transfer.
+    // This is a really rare case; so we don't use the parallel transfer.
     the_one_chunk->read_chunk();
 
-
-    // Now that the_one_chunk has been read, we do what is necessary...
-    if (!is_filters_empty() && !get_one_chunk_fill_value()) {
+    // If having filters, retrieve the data by applying the filters.
+    if (!is_filters_empty() && !get_one_chunk_fill_value()) 
         the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), bytes_per_element);
-    }
+
     // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
     if (!is_projected()) { // if there is no projection constraint
+
         vector<unsigned long long> constrained_array_shape = this->get_shape(false);
         vector<unsigned long long> target_element_address = the_one_chunk->get_position_in_array();
         vector<unsigned long long> chunk_source_address(this->dimensions(), 0);
 
         // We need to handle the structure data differently.
         if (this->var()->type() != dods_structure_c) {
+
             reserve_value_capacity_ll(get_size(false));
             char *dest_buf = this->get_buf();
+
+            // Use the insert_chunk method to find the correct data values for the array.
             insert_chunk(0, &target_element_address, &chunk_source_address, the_one_chunk, constrained_array_shape, dest_buf);
         }
         else {                                  // Structure
@@ -1051,6 +1054,7 @@ void DmrppArray::read_one_bigger_chunk() {
             // Currently we only handle one-layer simple int/float types.
             if (is_readable_struct) {
 
+                // Allocate the array buffer
                 unsigned long long value_size = this->length_ll() * bytes_per_element;
                 vector<char> values;
                 values.resize(value_size);
