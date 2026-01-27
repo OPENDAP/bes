@@ -214,6 +214,23 @@ jobs:
         - source ${TRAVIS_BUILD_DIR}/travis/build-rhel-docker.sh
 
     - stage: build-and-package
+      name: "Build bes docker image (RHEL9)"
+      script:
+        - export BES_BUILD=docker-rhel9
+        - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+        - export DOCKER_NAME="bes_rhel9"
+        - export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot"
+        - export BASE_IMAGE="opendap/rocky9_hyrax_builder:latest"
+        - export DIST=el9
+        - export OS=rocky9
+        - export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
+        # Note: We use `source` instead of `bash` here so that we
+        # have downstream access to the environment variable
+        # `BUILD_VERSION_TAG` that must be exported AFTER the image
+        # is built:
+        - source ${TRAVIS_BUILD_DIR}/travis/build-rhel-docker.sh
+
+    - stage: build-and-package
       name: "dist"
       script:
         - export BES_BUILD=srcdist
