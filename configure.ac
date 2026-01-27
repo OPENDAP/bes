@@ -759,8 +759,8 @@ AS_IF([test -n "$with_gdal_prefix" -a $with_gdal_prefix = no],
     dnl This fix is for OSX with shared libs. Seems to not be needed on Linux.
     dnl jhrg 11/07/25
     gdal_shared_lib=
-    gdal_shared_lib += -Wl,-rpath,$(prefix)/deps/lib -Wl,-rpath,$(prefix)/deps/proj/lib
-    gdal_shared_lib += -Wl,-rpath,@loader_path
+    gdal_shared_lib="-Wl,-rpath,$prefix/deps/lib -Wl,-rpath,$prefix/deps/proj/lib"
+    gdal_shared_lib="$gdal_shred_lib -Wl,-rpath,@loader_path"
 
     GDAL_LDFLAGS="$gdal_shared_lib `$with_gdal_prefix/bin/gdal-config --libs` `$with_gdal_prefix/bin/gdal-config --dep-libs`"
     GDAL_CFLAGS="`$with_gdal_prefix/bin/gdal-config --cflags`"
