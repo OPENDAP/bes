@@ -467,9 +467,15 @@ AC_ARG_WITH([dependencies],
 # Help the link step find libs at build time too (not just run time)
 deps_libdir=
 deps_libdir64=
+deps_proj_libdir=
+
 AS_IF([test -n "$ac_bes_dependencies_prefix"],
     [deps_libdir=$ac_bes_dependencies_prefix/lib
      AC_SUBST([deps_libdir])
+     deps_proj_libdir=$ac_bes_dependencies_prefix/proj/lib
+     AC_SUBST([deps_proj_libdir])
+     # Hmmmm Do we need a 'lib64' dir for proj? I'm going to hold off on adding that
+     # because it'll add complexity and I'm not sure we do need it. jhrg 1/23/26
      AS_IF([test -d "${deps_libdir}64"],
         [deps_libdir64=${deps_libdir}64
          AC_SUBST([deps_libdir64])])])
@@ -479,13 +485,13 @@ AS_IF([test -n "$ac_bes_dependencies_prefix"],
 # in a 'standard' location. jhrg 1/7/26
 
 AS_IF([test -n "$deps_libdir"],
-   [AM_LDFLAGS="$AM_LDFLAGS -L$deps_libdir"
+   [AM_LDFLAGS="$AM_LDFLAGS -L$deps_libdir -L$deps_proj_libdir"
     echo "AM_LDFLAGS is $AM_LDFLAGS"
     AS_IF([test -n "$deps_libdir64"],[AM_LDFLAGS="$AM_LDFLAGS -L$deps_libdir64"])
         AM_CONDITIONAL([DARWIN],
-         [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,${deps_libdir} -Wl,-rpath,@loader_path"
+         [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,${deps_libdir} -Wl,-rpath,${deps_proj_libdir} -Wl,-rpath,@loader_path"
           echo "AM_LDFLAGS is $AM_LDFLAGS"],
-         [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,$deps_libdir -Wl,-rpath,''$ORIGIN''"
+         [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,$deps_libdir -Wl,-rpath,$deps_proj_libdir -Wl,-rpath,''$ORIGIN''"
           AS_IF([test -n "$deps_libdir64"], [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,$deps_libdir64"])])
     AC_SUBST([AM_LDFLAGS])])
 

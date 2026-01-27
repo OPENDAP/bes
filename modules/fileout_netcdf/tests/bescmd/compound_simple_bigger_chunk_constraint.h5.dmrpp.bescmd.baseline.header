@@ -1,0 +1,14 @@
+netcdf test {
+dimensions:
+	sdim1 = 1 ;
+	sdim2 = 2 ;
+	sdim3 = 1 ;
+	sdim4 = 2 ;
+variables:
+	int DSC.Orbit(sdim1, sdim2) ;
+	float DSC.Temperature(sdim3, sdim4) ;
+
+// global attributes:
+		:history = "removed date-timex compound_simple_bigger_chunk.h5\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"compound_simple_bigger_chunk.h5\"}]}]" ;
+}
