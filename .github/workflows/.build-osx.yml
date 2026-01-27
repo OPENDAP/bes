@@ -25,7 +25,6 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     env:
       GDAL_OPTION: "--without-gdal"
-      prefix: "${HOME}/install"
       CMAC_ID: "${ secrets.AWS_ID }"
       CMAC_ACCESS_KEY: "${ secrets.AWS_SECRET_KEY }"
       CMAC_URL: "https://s3.amazonaws.com/cloudydap/"
@@ -64,15 +63,17 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
       - name: Update PATH
         run: |
+          export prefix="$HOME/install"
           echo -e "$prefix/bin:$prefix/deps/bin:/opt/homebrew/opt/bison/bin:/opt/homebrew/opt/jpeg/bin:$(cat $GITHUB_PATH)" > $GITHUB_PATH
-          echo "PREFIX: $prefix"
+          echo "prefix: $prefix"
           echo "PATH: $(cat $GITHUB_PATH)"
-          ls $PREFIX
+          ls $prefix
         shell: bash
       - name: Build, check, and install libdap
         run: |
           # In the future, consider moving this to the libdap repo...
           set -x
+          export prefix="$HOME/install"
           git clone https://github.com/opendap/libdap4
           cd libdap4
           autoreconf -fiv
@@ -80,11 +81,12 @@ jobs:
           make -j16
           make check
           make install
-          ls $PREFIX
+          ls $prefix
         shell: bash
       - name: Configure bes build
         run: |
           set -x
+          export prefix="$HOME/install"
           pwd
           autoreconf --force --install --verbose
           ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --enable-developer
@@ -93,6 +95,7 @@ jobs:
       - name: Build and test bes
         run: |
           set -x
+          export prefix="$HOME/install"
           export LD_LIBRARY_PATH="$prefix/deps/lib:$LD_LIBRARY_PATH"
           make -j16
           make install
