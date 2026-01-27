@@ -25,7 +25,7 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     env:
       GDAL_OPTION: "--without-gdal"
-      prefix: "${{ env.HOME }}/install"
+      prefix: "${{ GITHUB_WORKSPACE }}/install"
       CMAC_ID: "${ secrets.AWS_ID }"
       CMAC_ACCESS_KEY: "${ secrets.AWS_SECRET_KEY }"
       CMAC_URL: "https://s3.amazonaws.com/cloudydap/"
