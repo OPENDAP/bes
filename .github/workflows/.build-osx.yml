@@ -85,7 +85,7 @@ jobs:
         shell: bash
       - name: Build and test bes
         run: |
-          export LD_LIBRARY_PATH="${{ prefix }}/deps/lib:$LD_LIBRARY_PATH"
+          export LD_LIBRARY_PATH="$prefix/deps/lib:$LD_LIBRARY_PATH"
           make -j16
           make install
           besctl start
