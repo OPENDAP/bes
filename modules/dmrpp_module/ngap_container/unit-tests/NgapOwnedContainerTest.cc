@@ -305,6 +305,26 @@ public:
         container.set_data_source_location(TEST_DATA_LOCATION);
 
         string dmrpp = container.access();
+        // .access() changed to only set the container type, SBL 1.23.26
+        // DBG2(cerr << "DMR++: " << dmrpp << '\n');
+        // CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the string", !dmrpp.empty());
+
+        // string attrs = container.get_attributes();
+        // CPPUNIT_ASSERT_MESSAGE("The container attributes should be 'as-string'", attrs == "as-string");
+
+        CPPUNIT_ASSERT_MESSAGE("The container type should be 'dmrpp'", container.get_container_type() == "dmrpp");
+    }
+
+    void test_alt_access() {
+        TEST_NAME;
+
+        NgapOwnedContainer container;
+        // The REST path will become data/d_int.h5
+        container.set_real_name("collections/data/granules/d_int.h5");
+        // Set the location of the data as a file:// URL for this test.
+        container.set_data_source_location(TEST_DATA_LOCATION);
+
+        string dmrpp = container.alt_access();
         DBG2(cerr << "DMR++: " << dmrpp << '\n');
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the string", !dmrpp.empty());
 
@@ -423,6 +443,7 @@ public:
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_test_cache_use);
 
     CPPUNIT_TEST(test_access);
+    CPPUNIT_TEST(test_alt_access);
     CPPUNIT_TEST(test_access_s3);
 
     CPPUNIT_TEST(test_filter_response_injects_s3_data_urls);
