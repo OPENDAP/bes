@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="h5_one_bigger_chunk_size_comp.h5" dmrpp:href="data/h5_one_bigger_chunk_size_comp.h5" dmrpp:version="3.21.1">
+    <Byte name="DS1">
+        <Dim size="2"/>
+        <Dim size="2"/>
+        <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2 4</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4016" nBytes="16" chunkPositionInArray="[0,0]"/>
+        </dmrpp:chunks>
+    </Byte>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2026-01-27T15:10:56Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/hyrax-1999/bes/modules/fileout_netcdf/data/h5_one_bigger_chunk_size_comp.h5 -r h5_one_bigger_chunk_size_comp.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

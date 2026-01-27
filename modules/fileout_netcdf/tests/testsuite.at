@@ -450,3 +450,8 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_one_bigger_chunk_size_
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_simple_bigger_chunk.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_simple_bigger_chunk_constraint.h5.dmrpp.bescmd)
 
+
+# One chunk, chunk size is bigger than the array size, data is compressed.
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_one_bigger_chunk_size_comp.h5.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_group_atomic_puredim_2d_unlimited_comp.nc.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_unlimited_1_big_comp.nc.dmrpp.bescmd)
