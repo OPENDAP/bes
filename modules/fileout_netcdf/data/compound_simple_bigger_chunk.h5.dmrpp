@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="compound_simple_bigger_chunk.h5" dmrpp:href="data/compound_simple_bigger_chunk.h5" dmrpp:version="3.21.1">
+    <Structure name="DSC">
+        <Int32 name="Orbit"/>
+        <Float32 name="Temperature"/>
+        <Dim size="2"/>
+        <Dim size="2"/>
+        <dmrpp:chunks fillValue="0" byteOrder="LE" structOffset="4 8">
+            <dmrpp:chunkDimensionSizes>2 4</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4016" nBytes="64" chunkPositionInArray="[0,0]"/>
+        </dmrpp:chunks>
+    </Structure>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2026-01-26T18:45:44Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/hyrax-1995/bes/modules/fileout_netcdf/data/compound_simple_bigger_chunk.h5 -r compound_simple_bigger_chunk.h5.dmr -u data/compound_simple_bigger_chunk.h5 -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
