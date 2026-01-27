@@ -51,6 +51,7 @@ std::string FONcRequestHandler::temp_dir;
 bool FONcRequestHandler::byte_to_short;
 bool FONcRequestHandler::use_compression;
 bool FONcRequestHandler::use_shuffle;
+bool FONcRequestHandler::no_use_compression_for_float;
 unsigned long long  FONcRequestHandler::chunk_size;
 bool FONcRequestHandler::classic_model;
 bool FONcRequestHandler::reduce_dim;
@@ -158,6 +159,8 @@ FONcRequestHandler::FONcRequestHandler( const string &name )
     read_key_value(FONC_USE_COMP_KEY, FONcRequestHandler::use_compression, FONC_USE_COMP);
 
     read_key_value(FONC_USE_SHUFFLE_KEY, FONcRequestHandler::use_shuffle, FONC_USE_SHUFFLE);
+
+    read_key_value(FONC_NO_COMPRESSION_FLOAT_KEY, FONcRequestHandler::no_use_compression_for_float, FONC_NO_COMPRESSION_FLOAT);
 
     read_key_value(FONC_CHUNK_SIZE_KEY, FONcRequestHandler::chunk_size, FONC_CHUNK_SIZE);
 
