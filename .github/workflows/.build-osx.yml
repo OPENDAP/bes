@@ -105,3 +105,8 @@ jobs:
           besctl stop
           set +x
         shell: bash
+        continue-on-error: true
+      - name: Show log for failing test 
+        run: |
+          cat "$GITHUB_WORKSPACE/http/unit-tests/test-suite.log"
+        shell: bash
