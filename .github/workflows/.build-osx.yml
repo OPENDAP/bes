@@ -30,8 +30,8 @@ jobs:
       CMAC_URL: "https://s3.amazonaws.com/cloudydap/"
       CMAC_REGION: "us-east-1"
       CMAC_ON: "yes"
-      LDFLAGS: "-L/opt/homebrew/opt/bison/lib -L/opt/homebrew/opt/jpeg/lib"
-      CPPFLAGS: "-I/opt/homebrew/opt/jpeg/include"
+      LDFLAGS: "-L/opt/homebrew/opt/bison/lib -L/opt/homebrew/opt/jpeg/lib -L/opt/homebrew/opt/openssl/lib"
+      CPPFLAGS: "-I/opt/homebrew/opt/jpeg/include -I/opt/homebrew/opt/openssl/include"
     strategy:
       fail-fast: false
       matrix:
@@ -52,7 +52,8 @@ jobs:
                        automake \
                        libgeotiff \
                        libtool \
-                       groff
+                       groff \
+                       openssl
         shell: bash
       - name: Install hyrax-dependencies
         run: |
