@@ -94,11 +94,11 @@
             <Value> FNOC UV wind components from 1988- 10 to 1988- 13.</Value>
         </Attribute>
         <Attribute name="history" type="String">
-            <Value>removed date-timehyrax-1.17.1-584 http://test.opendap.org/opendap/data/nc/fnoc1.nc.nc
+            <Value>removed date-timehyrax-removed_version http://test.opendap.org/opendap/data/nc/fnoc1.nc.nc
 </Value>
         </Attribute>
         <Attribute name="history_json" type="String">
-            <Value>[{&quot;$schema&quot;:&quot;https:\/\/harmony.earthdata.nasa.gov\/schemas\/history\/0.1.0\/history-0.1.0.json&quot;,&quot;date_time&quot;:&quot;removed date-time+0000&quot;,&quot;program&quot;:&quot;hyrax&quot;,&quot;version&quot;:&quot;1.17.1-584&quot;,&quot;parameters&quot;:[{&quot;request_url&quot;:&quot;http:\/\/test.opendap.org\/opendap\/data\/nc\/fnoc1.nc.nc&quot;}]}]</Value>
+            <Value>[{&quot;$schema&quot;:&quot;https:\/\/harmony.earthdata.nasa.gov\/schemas\/history\/0.1.0\/history-0.1.0.json&quot;,&quot;date_time&quot;:&quot;removed date-time+0000&quot;,&quot;program&quot;:&quot;hyrax&quot;,&quot;version&quot;:&quot;removed_version&quot;,&quot;parameters&quot;:[{&quot;request_url&quot;:&quot;http:\/\/test.opendap.org\/opendap\/data\/nc\/fnoc1.nc.nc&quot;}]}]</Value>
         </Attribute>
         <Attribute name="DODS_EXTRA.Unlimited_Dimension" type="String">
             <Value>time_a</Value>

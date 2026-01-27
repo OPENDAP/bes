@@ -106,6 +106,7 @@ private:
                                        const std::vector<unsigned long long> &array_shape, char *data, char *dest_buf);
 
     void read_contiguous();
+    void read_one_bigger_chunk();
     void read_one_chunk_dio();
     void read_contiguous_string();
 

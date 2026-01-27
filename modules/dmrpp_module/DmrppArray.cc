@@ -1015,6 +1015,89 @@ void DmrppArray::read_contiguous() {
 
     BESDEBUG(dmrpp_3, prolog << " NOT using direct IO : end of this method." << endl);
 }
+void DmrppArray::read_one_bigger_chunk() {
+
+    BESDEBUG(dmrpp_3, prolog << "NOT using direct IO for read_one_bigger_chunk" << endl);
+
+    // Get the single chunk. 
+    if (get_chunk_count() != 1)
+        throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
+
+    // This is the original chunk.
+    auto the_one_chunk = get_immutable_chunks()[0];
+
+    // This is a really rare case; so we don't use the parallel transfer.
+    the_one_chunk->read_chunk();
+
+    // If having filters, retrieve the data by applying the filters.
+    if (!is_filters_empty() && !get_one_chunk_fill_value()) 
+        the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), bytes_per_element);
+
+    // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
+    if (!is_projected()) { // if there is no projection constraint
+
+        vector<unsigned long long> constrained_array_shape = this->get_shape(false);
+        vector<unsigned long long> target_element_address = the_one_chunk->get_position_in_array();
+        vector<unsigned long long> chunk_source_address(this->dimensions(), 0);
+
+        // We need to handle the structure data differently.
+        if (this->var()->type() != dods_structure_c) {
+
+            reserve_value_capacity_ll(get_size(false));
+            char *dest_buf = this->get_buf();
+
+            // Use the insert_chunk method to find the correct data values for the array.
+            insert_chunk(0, &target_element_address, &chunk_source_address, the_one_chunk, constrained_array_shape, dest_buf);
+        }
+        else {                                  // Structure
+            // Check if we can handle this case.
+            // Currently we only handle one-layer simple int/float types.
+            if (is_readable_struct) {
+
+                // Allocate the array buffer
+                unsigned long long value_size = this->length_ll() * bytes_per_element;
+                vector<char> values;
+                values.resize(value_size);
+                
+                // Retrive the correct value.
+                insert_chunk(0, &target_element_address, &chunk_source_address, the_one_chunk, constrained_array_shape, values.data());
+                read_array_of_structure(values);
+
+            } else
+                throw InternalErr(
+                    __FILE__, __LINE__,
+                    "Only handle integer and float base types. Cannot handle the array of complex structure yet.");
+        }
+    } else { // apply the constraint
+
+        vector<unsigned long long> constrained_array_shape = this->get_shape(true);
+        vector<unsigned long long> target_element_address = the_one_chunk->get_position_in_array();
+        vector<unsigned long long> chunk_source_address(this->dimensions(), 0);
+ 
+        if (this->var()->type() != dods_structure_c) {
+            reserve_value_capacity_ll(get_size(true));
+            char *dest_buf = this->get_buf();
+            insert_chunk(0, &target_element_address, &chunk_source_address, the_one_chunk, constrained_array_shape, dest_buf);
+        } else {
+            // Currently we only handle one-layer simple int/float types.
+            if (is_readable_struct) {
+                unsigned long long value_size = get_size(true) * bytes_per_element;
+                vector<char> values;
+                values.resize(value_size);
+                insert_chunk(0, &target_element_address, &chunk_source_address, the_one_chunk, constrained_array_shape, values.data());
+                read_array_of_structure(values);
+            } else
+                throw InternalErr(
+                    __FILE__, __LINE__,
+                    "Only handle integer and float base types. Cannot handle the array of complex structure yet.");
+        }
+    }
+
+    set_read_p(true);
+
+    BESDEBUG(dmrpp_3, prolog << " NOT using direct IO : end of this method." << endl);
+}
+
 
 void DmrppArray::read_one_chunk_dio() {
 
@@ -2737,8 +2820,13 @@ bool DmrppArray::read() {
             // KENT: here we need to add the handling of direct chunk IO for one chunk.
             if (this->get_dio_flag())
                 array_to_read->read_one_chunk_dio();
-            else
-                array_to_read->read_contiguous(); // Throws on various errors
+            else {
+                //Check if the chunk size is greater than the array size.
+                if (array_to_read->get_chunk_size_in_elements()>array_to_read->get_size(false))
+                    array_to_read->read_one_bigger_chunk();
+                else 
+                    array_to_read->read_contiguous(); // Throws on various errors
+            }
         } else {                                  // Handle the more complex case where the data is chunked.
             if (get_using_linked_block()) {
                 BESDEBUG(MODULE, prolog << "Reading data linked blocks" << endl);

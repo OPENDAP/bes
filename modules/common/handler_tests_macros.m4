@@ -365,7 +365,7 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],  [dnl
                     AS_IF([test -z "$at_verbose"], [echo "diff -b -B \$baseline.m_proc stdout"]) 
                 ],
                 [
-                    AT_CHECK([diff -b -B $baseline stdout])
+                    AT_CHECK([diff -b -B $baseline.m_proc stdout])
                 ])
             ],
             [
@@ -794,6 +794,7 @@ m4_define([REMOVE_VERSIONS], [dnl
   awk '{
     gsub(/<Value>[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?<\/Value>/, "<Value>removed_version</Value>");
     gsub(/<Value>[[a-zA-Z._]+]-[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?<\/Value>/, "<Value>removed_version</Value>");
+    gsub(/[[0-9]+]\.[[0-9]+]\.[[0-9]+]-[[0-9]+]/, "removed_version");
     gsub(/dmrpp:version="[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?"/, "dmrpp:version=\"removed\"");
     gsub(/dmrVersion="[[0-9]+]\.[[0-9]+]"/, "dmrVersion=\"removed\"");
     print
