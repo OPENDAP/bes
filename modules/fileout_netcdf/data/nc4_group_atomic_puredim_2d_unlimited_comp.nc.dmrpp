@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="nc4_group_atomic_puredim_2d_unlimited_comp.nc" dmrpp:href="data/nc4_group_atomic_puredim_2d_unlimited_comp.nc" dmrpp:version="3.21.1">
+    <Dimension name="dim1" size="2"/>
+    <Byte name="d1">
+        <Dim name="/dim1"/>
+        <dmrpp:chunks fillValue="255" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>4096</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="24998" nBytes="4096" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+    </Byte>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2026-01-27T15:55:47Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/hyrax-1999/bes/modules/hdf5_handler/data/src/nc4_group_atomic_puredim_2d_unlimited_comp.nc -r nc4_group_atomic_puredim_2d_unlimited_comp.nc.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+        </Attribute>
+    </Attribute>
+    <Group name="g1">
+        <Dimension name="dim2" size="3"/>
+        <Byte name="d2">
+            <Dim name="/dim1"/>
+            <Dim name="/g1/dim2"/>
+            <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="255" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>2048 2048</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="3805" nBytes="18326" chunkPositionInArray="[0,0]"/>
+            </dmrpp:chunks>
+        </Byte>
+    </Group>
+</Dataset>
