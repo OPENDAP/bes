@@ -25,8 +25,8 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     env:
       GDAL_OPTION: "--without-gdal"
-      CMAC_ID: "${ secrets.AWS_ID }"
-      CMAC_ACCESS_KEY: "${ secrets.AWS_SECRET_KEY }"
+      CMAC_ID: "${ secrets.AWS_GHA_BES_ID }"
+      CMAC_ACCESS_KEY: "${ secrets.AWS_GHA_BES_SECRET_KEY }"
       CMAC_URL: "https://s3.amazonaws.com/cloudydap/"
       CMAC_REGION: "us-east-1"
       CMAC_ON: "yes"
@@ -60,8 +60,8 @@ jobs:
           aws s3 cp "s3://opendap.github.actions.build/hyrax-dependencies-${{ matrix.runs-on }}.tgz" $HOME
           tar -C $HOME -xzvf $HOME/hyrax-dependencies-${{ matrix.runs-on }}.tgz
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_GHA_BES_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_GHA_BES_SECRET_KEY }}
       - name: Update PATH
         run: |
           export prefix="$HOME/install"
