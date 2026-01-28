@@ -284,8 +284,8 @@ before_deploy:
 
 # The deploy section copies the snapshot build product our S3 bucket and to www.opendap.org
 deploy:
-  - name: Push build results to S3 bucket
-    provider: s3
+  # Push build results to S3 bucket
+  - provider: s3
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     bucket: opendap.travis.build
@@ -294,8 +294,8 @@ deploy:
     on:
       all_branches: true
       condition: $BES_BUILD =~ ^rocky8|rocky9|srcdist$
-  - name: Push docker images to Docker Hub
-    provider: script
+  # Push docker images to Docker Hub
+  - provider: script
     script: bash ${TRAVIS_BUILD_DIR}/travis/deploy-to-docker-hub.sh
     on:
       all_branches: true
