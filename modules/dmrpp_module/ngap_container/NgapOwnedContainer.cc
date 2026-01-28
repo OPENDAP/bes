@@ -570,7 +570,9 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
  * @throws BESError if there is a problem making the remote request
  */
 string NgapOwnedContainer::access() {
-
+#if 0
+    // changed function to only set the container type, SBL 1.13.26
+    // ticket: https://bugs.earthdata.nasa.gov/browse/HYRAX-1670
     string dmrpp_string;
 
     // Get the DMR++ from the S3 bucket or the cache.
@@ -579,12 +581,39 @@ string NgapOwnedContainer::access() {
     get_dmrpp_from_cache_or_remote_source(dmrpp_string);
 
     set_attributes("as-string");    // This means access() returns a string. jhrg 10/19/23
+#endif
     // Originally, this was either hard-coded (as it is now) or was set using the 'extension'
     // on the URL. But it's always a DMR++. jhrg 11/16/23
     set_container_type("dmrpp");
 
-    return dmrpp_string;
+    return "";
 }
+
+/**
+ * @brief alternate version of ::access() that get the DMR++
+ *
+ * @note alternate version of ::access() that retrieve the dmrpp data,
+ * used in the RequestHandler
+ *
+ * @return The DMR++ as a string.
+ * @throws BESError if there is a problem making the remote request
+ */
+string NgapOwnedContainer::alt_access() {
+        string dmrpp_string;
+
+        // Get the DMR++ from the S3 bucket or the cache.
+        // get_dmrpp...() returns false for various caching errors, but throws if it cannot
+        // get the remote DMR++. jhrg 4/29/24
+        get_dmrpp_from_cache_or_remote_source(dmrpp_string);
+
+        set_attributes("as-string");    // This means access() returns a string. jhrg 10/19/23
+
+        // Originally, this was either hard-coded (as it is now) or was set using the 'extension'
+        // on the URL. But it's always a DMR++. jhrg 11/16/23
+        set_container_type("dmrpp");
+
+        return dmrpp_string;
+    }
 
 /** @brief dumps information about this object
  *
