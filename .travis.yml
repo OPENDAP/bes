@@ -279,6 +279,8 @@ before_deploy:
   - if test "$BES_BUILD" = "srcdist"; then cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package; fi
   # Rocky8  distribution prep
   - if test "$BES_BUILD" = "rocky8"; then ./travis/rpm-to-package-dir.sh "el8"; fi
+  # Rocky9  distribution prep
+  - if test "$BES_BUILD" = "rocky9"; then ./travis/rpm-to-package-dir.sh "el9"; fi
   # Check for the stuff...
   - ls -l $TRAVIS_BUILD_DIR/package
 
