@@ -176,7 +176,7 @@ jobs:
           --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
           --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
           --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-          opendap/rocky8_hyrax_builder:latest /root/travis/travis/build-rh8-rpm.sh
+          opendap/rocky8_hyrax_builder:snappah /root/travis/travis/build-rh8-rpm.sh
 
     - stage: build-and-package
       name: "Enterprise Linux 9 RPMs (via Rocky9)"
