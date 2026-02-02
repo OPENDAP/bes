@@ -34,10 +34,9 @@ build_dmrpp_h4_CPPFLAGS = $(AM_CPPFLAGS)
 
 build_dmrpp_h4_LDFLAGS = $(HDFEOS2_LDFLAGS) $(HDF4_LDFLAGS) $(BES_DAP_LIB_LDFLAGS)
 
-# TODO Fix this kludge: $(builddir)/../.libs/libdmrpp_module.a. The code above in dmrpp_module
-# should build the various type classes into a convenience library and then link that with
-# DmrppRequestHandler and DmrppModule to make the module so file. That convenience library
-# should then be used here to make build_dmrpp_h4 (and likely to make other programs). jhrg 1/13/26
+# The code in dmrpp_module now builds a convenience library that is then linked
+# with the DmrppRequestHandler and DmrppModule classes to make the module. That convenience library
+# is also used to make standalone programs like build_dmrpp_h4. SBL & JHRG 2.2.26
 
 build_dmrpp_h4_LDADD = $(top_builddir)/modules/dmrpp_module/.libs/libdmrpp_module.a \
 -L$(top_builddir)/modules/dmrpp_module/ngap_container -lngap \
