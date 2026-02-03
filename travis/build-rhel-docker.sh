@@ -89,15 +89,4 @@ docker build \
 echo "Docker build complete!"
 docker image ls -a
 
-loggy "Tagging the image with its version number..."
-export BES_VERSION="$(docker run --rm ${SNAPSHOT_IMAGE_TAG} -c 'cat bes_VERSION')"
-echo "BES_VERSION is ${BES_VERSION}"
-export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}"
-echo "BUILD_VERSION_TAG is ${BUILD_VERSION_TAG}"
-docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
-
 loggy "Complete!"
-
-# Because this script is often sourced (at least by travis),
-# unset these commands to prevent spurious downstream failures
-set +eux
