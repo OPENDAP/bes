@@ -3,8 +3,9 @@
 # Upload the results of tests after running a build on Travis
 
 LOG_FILE_TGZ=bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz
-if test "$BES_BUILD" = main -o "$BES_BUILD" = distcheck -o "$BES_BUILD" = "docker-rhel8" -o "$BES_BUILD" = "docker-rhel9"
+if test "$BES_BUILD" = main -o "$BES_BUILD" = distcheck -o "$BES_BUILD" = "docker-rhel8"
 then
+	echo "Packaging log files for '$BES_BUILD'"
 	tar -czf /tmp/${LOG_FILE_TGZ} `find . -name timing -prune -o -name '*.log' -print -o -name '*site_map.txt' -print`
 
 	# using: 'test -z "$AWS_ACCESS_KEY_ID" || ...' keeps after_script from running
