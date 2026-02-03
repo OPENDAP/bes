@@ -1036,8 +1036,6 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
 
     // Now we need to check the special case if the chunk size is greater than the dimension size for any dimension.
     // If this is the case, we will not use the direct chunk IO since netCDF-4 doesn't allow this.
-    // TODO later, if the dimension is unlimited, this restriction can be lifted. Current dmrpp doesn't store the
-    // unlimited dimension information.
     vector<unsigned long long> dim_sizes;
     auto p = t_a->dim_begin();
     while (p != t_a->dim_end()) {
