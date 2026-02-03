@@ -211,7 +211,12 @@ jobs:
         # have downstream access to the environment variable
         # `BUILD_VERSION_TAG` that must be exported AFTER the image
         # is built:
-        - source ${TRAVIS_BUILD_DIR}/travis/build-rhel-docker.sh
+        - ${TRAVIS_BUILD_DIR}/travis/build-rhel-docker.sh
+        - |
+          export BES_VERSION="$(docker run --rm ${SNAPSHOT_IMAGE_TAG} -c 'cat bes_VERSION')"
+          export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}"
+          echo "Tagging image with BES version: ${BUILD_VERSION_TAG}"
+          docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
 
     - stage: build-and-package
       name: "Build bes docker image (RHEL9)"
