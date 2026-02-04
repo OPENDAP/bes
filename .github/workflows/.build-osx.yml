@@ -1,6 +1,6 @@
 # Build the bes for the same architecture as OPeNDAP developer
 # machines, to ensure code changes won't break local development
-
+name: OSX CI
 on:
   # For now, run only on manually triggered builds (workflow_dispatch).
   # Uncomment the "push" and "pull_request" to build on all non-draft PRs
