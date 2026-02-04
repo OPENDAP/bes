@@ -54,7 +54,8 @@ env:
     # Should the BES build with GDAL? This is here to round up build errors. Set this
     # to the 'configure' script option to use (--with-gdal) or not use (--without-gdal).
     # jhrg 12/2/25
-    - GDAL_OPTION=--without-gdal
+    # Turn this off - build and test GDAL-related modules again. jhrg 2/4/26
+    # GDAL_OPTION=--without-gdal
     # NB: This value of $prefix must be shared between the hyrax-deps, libdap and bes builds.
     - prefix=$HOME/install
     - PATH=$prefix/bin:$prefix/deps/bin:$PATH
