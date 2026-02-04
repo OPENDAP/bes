@@ -359,7 +359,8 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],  [dnl
 
         # if the tests are running on Apple silicon, use the *.mproc baseline,
         # otherwise use the plain baseline. jhrg 2/3/26
-        AS_IF([ test "x$(uname -m)" = "xarm64" ],
+        echo "uname -m: $(uname -m)"
+        AS_IF([ test "x$(uname -m)" = "xarm64" -a -f $baseline.m_proc],
             [ AT_CHECK([diff -b -B $baseline.m_proc stdout]) ],
             [ AT_CHECK([diff -b -B $baseline stdout]) ])
     ])
