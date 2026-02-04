@@ -94,6 +94,7 @@ jobs:
           set +x
         shell: bash
       - name: Build and test bes
+        id: build-and-test
         run: |
           set -x
           export prefix="$HOME/install"
@@ -105,13 +106,16 @@ jobs:
           besctl stop
           set +x
         shell: bash
-      # Are the tests failing for some reason that is not locally reproducible?
-      # Uncomment the following lines and replace the *.log file with the file of interest.
-      # Don't forget to uncomment it again when you're done, or the job will always
-      # fail!
-      #   continue-on-error: true
-      # - name: Show log for failing test
-      #   run: |
-      #     cat "$GITHUB_WORKSPACE/http/unit-tests/test-suite.log"
-      #     exit 1
-      #   shell: bash
+        continue-on-error: true
+      - name: Post failure logs to aws
+        if: steps.build-and-test.outcome == 'failure'
+        run: |
+          ./travis/upload-test-results.sh
+          # Because previous job failed, we need to re-throw failure
+          # now that logs are uploaded
+          exit 1
+        shell: bash
+        env:
+          TRAVIS_JOB_NUMBER: gha-${{ github.run_id }}-${{ github.job }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_GHA_BES_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_GHA_BES_SECRET_KEY }}
