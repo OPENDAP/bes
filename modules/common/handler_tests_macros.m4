@@ -300,21 +300,10 @@ m4_define([AT_BESCMD_BINARY_DAP2_RESPONSE_TEST],  [dnl
         [
         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap -Ms -], [0], [stdout])
 
-        AS_IF([[ test -f $baseline && test -f $baseline.m_proc ]],
-            [
-                # If both baselines exist, hold off on printing any diffs until knowing that neither is a match
-                AS_IF([[ diff -b -B $baseline.m_proc stdout > /dev/null ]],
-                    [
-                        AS_IF([test -z "$at_verbose"], [echo "diff -b -B \$baseline.m_proc stdout"]) 
-                    ],
-                    [
-                        AT_CHECK([diff -b -B $baseline stdout], [0], [ignore])
-                    ])
-            ],
-            [
-                AT_CHECK([diff -b -B $baseline stdout], [0], [ignore])
-            ])
-        ])
+        AS_IF([ test "x$(uname -m)" = "xarm64" -a -f $baseline.m_proc],
+            [ AT_CHECK([diff -b -B $baseline.m_proc stdout]) ],
+            [ AT_CHECK([diff -b -B $baseline stdout]) ])
+    ])
 
     AT_CLEANUP
 ])
@@ -357,9 +346,8 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],  [dnl
         REMOVE_DATE_TIME([stdout])
         REMOVE_VERSIONS([stdout])
 
-        # if the tests are running on Apple silicon, use the *.mproc baseline,
-        # otherwise use the plain baseline. jhrg 2/3/26
-        echo "uname -m: $(uname -m)"
+        # if the tests are running on Apple silicon and there exists a .m_proc baseline,
+        # use the *.mproc baseline. Otherwise use the plain baseline. jhrg 2/3/26
         AS_IF([ test "x$(uname -m)" = "xarm64" -a -f $baseline.m_proc],
             [ AT_CHECK([diff -b -B $baseline.m_proc stdout]) ],
             [ AT_CHECK([diff -b -B $baseline stdout]) ])
