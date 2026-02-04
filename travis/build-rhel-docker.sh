@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # This is part of the Travis build CD process. It is intended to be
 # run from within the Travis build process and depends on env variables
