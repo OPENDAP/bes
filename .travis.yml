@@ -207,7 +207,7 @@ jobs:
         - export DIST=el8
         - export OS=rocky8
         - export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
-        - ${TRAVIS_BUILD_DIR}/travis/build-rhel-docker.sh
+        - ./${TRAVIS_BUILD_DIR}/travis/build-rhel-docker.sh
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
         # is built:
