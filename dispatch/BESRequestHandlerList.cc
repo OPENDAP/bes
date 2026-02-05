@@ -240,6 +240,9 @@ void BESRequestHandlerList::execute_current(BESDataHandlerInterface &dhi) {
         //  expensive, even when the container is intelligently written (DMR++ documents
         //  can be many megabytes in size). Fix this mess so that get_container_type()
         //  works without all of the handlers calling access() twice. jhrg 2/18/25
+        //  SBL 1.31.26 - Update: NgapOwnedContainer::access() now just sets the container type
+        //  and does not return the dmrpp string, which is handled in NgapOwnedContainer::alt_access()
+        //  all other container access fcts remain the same
         dhi.container->access();
 
         // Given the kind of thing in the DHI's container (netcdf file, ...) find the
