@@ -44,7 +44,7 @@
 #define FONC_NC3_CLASSIC_FORMAT_KEY "FONc.NC3ClassicFormat"
 
 #define FONC_NO_COMPRESSION_FLOAT false
-#define FONC_NO_COMPRESSION_FLOAT_KEY "FONc.NoCompressionForFloat"
+#define FONC_NO_COMPRESSION_FLOAT_KEY "FONc.EnableNoCompressionForFloat"
 
 #define FONC_RETURN_AS_NETCDF3 "netcdf"
 #define FONC_RETURN_AS_NETCDF4 "netcdf-4"

@@ -80,6 +80,7 @@ FONc.Tempdir=@abs_top_builddir@/modules/fileout_netcdf/tests/
 FONc.UseCompression=true
 FONc.ChunkSize=4096
 FONc.ClassicModel=false
+FONc.EnableNoCompressionForFloat=true
 # Uncomment the following line to suppress the output of global attributes.
 #FONc.NoGlobalAttrs=true
 

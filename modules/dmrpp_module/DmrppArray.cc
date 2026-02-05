@@ -70,6 +70,10 @@ using namespace libdap;
 using namespace std;
 
 #define MB (1024 * 1024)
+// BIG SIZE  128MB
+#define BGSIZE 134217728
+// BIGGER SIZE 1.5GB 1610612736
+#define BGGSIZE 1610612736
 #define prolog std::string("DmrppArray::").append(__func__).append("() - ")
 
 namespace dmrpp {
@@ -2866,6 +2870,33 @@ bool DmrppArray::read() {
                 } else {
                     BESDEBUG(MODULE, prolog << "Reading data from chunks, constrained." << endl);
 
+                    // We will calculate the storage_size_ratio to see if we cannot use compression 
+                    // in the fileout netCDF module. Only apply to the float and only apply to the big array.
+                    if (this->var()->type()==dods_float32_c || this->var()->type()==dods_float64_c) {
+                        unsigned long long subset_size_in_bytes = get_size(true) * bytes_per_element;   
+                    BESDEBUG(MODULE, prolog << "subset_size_in_bytes" << subset_size_in_bytes<<endl);
+                        
+                        if (subset_size_in_bytes > BGSIZE && subset_size_in_bytes <BGGSIZE) {
+                            unsigned long long subset_storage_size_in_bytes = 0;
+                            for (const auto &chunk : get_immutable_chunks()) {
+                                vector<unsigned long long> chunk_element_address = chunk->get_position_in_array();
+                                auto needed = find_needed_chunks(0 /* dimension */, &chunk_element_address, chunk);
+                                if (needed) 
+                                    subset_storage_size_in_bytes +=chunk->get_size();
+                            }
+                            BESDEBUG(MODULE, prolog << "subset_storage_size_in_bytes" << subset_storage_size_in_bytes<<endl);
+                            // Yes, here we don't consider the partial chunk selection case. 
+                            // We only bother to update the storage_size_ratio when the compression is not great.
+                            // We choose to use the compression ratio =2 as a mark.
+			    if ((subset_storage_size_in_bytes *2 + subset_storage_size_in_bytes/4)> subset_size_in_bytes) {
+                            BESDEBUG(MODULE, prolog << "coming to calculate storage_size ratio" <<endl);
+                            BESDEBUG(MODULE, prolog << "ratio:" << ((float)subset_size_in_bytes)/subset_storage_size_in_bytes <<endl);
+                                set_storage_size_ratio(((float)subset_size_in_bytes)/subset_storage_size_in_bytes);
+                            BESDEBUG(MODULE, prolog << "array ratio:" << get_storage_size_ratio() <<endl);
+                            
+                            }
+                        }
+                    } 
                     // Also buffer chunks for the non-contiguous chunk case.
                     if (buffer_chunk_case && DmrppRequestHandler::use_buffer_chunk)  {
                         BESDEBUG(MODULE, prolog << "Using buffer chunk" << endl);

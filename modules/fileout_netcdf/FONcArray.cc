@@ -699,10 +699,19 @@ void FONcArray::define(int ncid) {
                         FONcRequestHandler::use_shuffle)                
                         shuffle = 1;
                     
-                    if (NC_SHORT == d_array_type || NC_USHORT == d_array_type || NC_INT == d_array_type ||
-                        NC_UINT == d_array_type || NC_INT64 == d_array_type || NC_UINT64 == d_array_type ||
-                        FONcRequestHandler::no_use_compression_for_float == false) {               
+                    // STOP: see if we should turn off the compression for floating-point. 
+                    bool final_use_compression = true;
+                    // Change no_use_compression_for_float to enable_no_use_compression_for_float later.
+                    if (FONcRequestHandler::no_use_compression_for_float == true && 
+                        (NC_FLOAT == d_array_type || NC_DOUBLE == d_array_type)) {
+
+                    BESDEBUG("fonc", "FONcArray::define() - name: " << d_a->name()<<endl);
+                    BESDEBUG("fonc", "FONcArray::define() - storage_size_ratio " << d_a->get_storage_size_ratio()<<endl);
+                        if (d_a->get_storage_size_ratio() >1.001)    
+                            final_use_compression = false;
+                    }
                     
+                    if (final_use_compression) {
                     int deflate = 1;
                     int deflate_level = 4;
                     stax = nc_def_var_deflate(ncid, d_varid, shuffle, deflate, deflate_level);
@@ -779,7 +788,7 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
         d_a->intern_data();
     else
         d_a->intern_data(*get_eval(), *get_dds());
-
+BESDEBUG("fonc", "FONcArray::write_nc_variable() - storage_size_ratio " << d_a->get_storage_size_ratio()<<endl);
     // Check if we can use direct IO.
     bool d_io_flag = d_a->get_dio_flag();
 

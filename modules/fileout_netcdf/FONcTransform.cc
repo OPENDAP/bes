@@ -808,6 +808,8 @@ void FONcTransform::transform_dap4_no_group() {
                 BaseType *v = *vi;
     
                 BESDEBUG(MODULE, prolog << "Converting variable '" << v->name() << "'" << endl);
+                Array *t_a = dynamic_cast<Array *>(v);
+                 BESDEBUG(MODULE, prolog << "FONC_array ratio:" << t_a->get_storage_size_ratio() <<endl);
     
                 // This is a factory class call, and 'fg' is specialized for 'v'
                 FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model, GFQN_to_en_typeid_vec,root_no_grp_unlimited_dimnames);
@@ -825,7 +827,9 @@ void FONcTransform::transform_dap4_no_group() {
             if ((*vi)->send_p()) {
                 BaseType *v = *vi;
     
-                BESDEBUG(MODULE, prolog << "Direct IO is off, Converting variable '" << v->name() << "'" << endl);
+                BESDEBUG(MODULE, prolog << "Direct IO is on, Converting variable '" << v->name() << "'" << endl);
+                 Array *t_a = dynamic_cast<Array *>(v);
+                 BESDEBUG(MODULE, prolog << "FONC_array ratio:" << t_a->get_storage_size_ratio() <<endl);
     
                 if (v->type() == dods_array_c) {
                     auto t_a = dynamic_cast<Array *>(v);
