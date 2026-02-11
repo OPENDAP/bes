@@ -2845,8 +2845,10 @@ bool DmrppArray::read() {
                 bool buffer_chunk_case = array_to_read->use_buffer_chunk();
 
                 if (!array_to_read->is_projected()) {
+
                     BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
-                    // KENT: Only here we need to consider the direct buffer IO.
+
+                    // Here we need to consider the direct chunk IO.
                     if (this->get_dio_flag()) {
                         BESDEBUG(MODULE, prolog << "Using direct IO" << endl);
                         if (buffer_chunk_case && DmrppRequestHandler::use_buffer_chunk) 
@@ -2865,6 +2867,8 @@ bool DmrppArray::read() {
                     }
                 } else {
                     BESDEBUG(MODULE, prolog << "Reading data from chunks, constrained." << endl);
+                    // We need to check if this is a good subset case that the direct chunk IO can handle.
+                    bool direct_io_subset = check_dio_subset();
 
                     // Also buffer chunks for the non-contiguous chunk case.
                     if (buffer_chunk_case && DmrppRequestHandler::use_buffer_chunk)  {
@@ -3775,6 +3779,74 @@ unsigned long long DmrppArray::obtain_buffer_end_pos(const vector<unsigned long 
             cur_buf_end_pos = t_buf_end_pos;
     }
     return cur_buf_end_pos;
+
+}
+
+bool DmrppArray::check_dio_subset() {
+
+    BESDEBUG(PARSER, prolog << "Coming to check_dio_subset() " << endl);
+    if (!get_dio_flag()) 
+        return false;
+
+    bool no_dio = false;
+
+    // If the stride is not 1,no direct chunk IO.
+    auto di = dim_begin();
+    auto de = dim_end();
+    for (; di != de; di++) {
+        if (dimension_stride_ll (di, true) != 1) {
+            BESDEBUG(PARSER, prolog << "The stride of a dimension is: " <<dimension_stride_ll(di,true)  << endl);
+            BESDEBUG(PARSER, prolog << "Cannot do direct IO subset: the variable name is: " <<this->var()->name() << endl);
+            no_dio = true;
+            break;
+        }
+    }
+    if (no_dio)
+        return false;
+
+    // Obtain the chunk dimension sizes 
+    const vector<unsigned long long> &chunk_dim_sizes = get_chunk_dimension_sizes();
+
+    // If the subset size is smaller than a chunk size, no direct chunk IO.
+    di = dim_begin();
+    int dim_rank_count = 0;
+    for (; di != de; di++) {
+        int64_t start = dimension_start_ll (di, true);
+        int64_t stop = dimension_stop_ll (di, true);
+        if ((start+chunk_dim_sizes[dim_rank_count])>stop) {
+            BESDEBUG(PARSER, prolog << "start of this dimension: " <<start << endl);
+            BESDEBUG(PARSER, prolog << "stop of this dimension: " <<stop << endl);
+            BESDEBUG(PARSER, prolog << "chunk_dim_size of this dimension: " <<chunk_dim_sizes[dim_rank_count] << endl);
+            BESDEBUG(PARSER, prolog << "The subset size of this dimension is smaller than the corresponding chunk size. " << endl);
+            BESDEBUG(PARSER, prolog << "Cannot do direct IO subset: the variable name is: " <<this->var()->name() << endl);
+            no_dio = true;
+            break;
+        }
+        dim_rank_count++;
+    }
+    if (no_dio)
+        return false;
+
+    // If the starting point of the subset is not the starting point of a chunk,no direct chunk IO.
+    di = dim_begin();
+    dim_rank_count = 0;
+    for (; di != de; di++) {
+        int64_t start = dimension_start_ll (di, true);
+        if ((start%chunk_dim_sizes[dim_rank_count])!=0) {
+            BESDEBUG(PARSER, prolog << "start of this dimension: " <<start<<" is not the starting point of a chunk." << endl);
+            BESDEBUG(PARSER, prolog << "chunk_dim_size of this dimension: " <<chunk_dim_sizes[dim_rank_count] << endl);
+            BESDEBUG(PARSER, prolog << "Cannot do direct IO subset: the variable name is: " <<this->var()->name() << endl);
+            no_dio = true;
+            break;
+        }
+        dim_rank_count++;
+    }
+    if (no_dio)
+        return false;
+
+    BESDEBUG(PARSER, prolog << "Can do direct IO subset: the variable name is: " <<this->var()->name() << endl);
+
+    return true;
 
 }
 

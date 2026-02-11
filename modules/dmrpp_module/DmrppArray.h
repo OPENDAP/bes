@@ -172,6 +172,8 @@ private:
 
     bool use_direct_io_opt();
 
+    bool check_dio_subset();
+
     unsigned long long inflate_simple(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len);
 
 public:
