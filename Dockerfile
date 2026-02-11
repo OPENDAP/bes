@@ -1,6 +1,7 @@
 # Dockerfile for bes_rhel images
-ARG BASE_IMAGE
-FROM ${BASE_IMAGE} AS base
+ARG BUILDER_BASE_IMAGE
+ARG FINAL_BASE_IMAGE
+FROM ${BUILDER_BASE_IMAGE} AS builder
 
 ENV USER="bes_user"
 ENV USER_ID=101
@@ -46,11 +47,6 @@ RUN --mount=from=aws_downloads,target=/tmp_mounted \
 RUN sudo chown -R $USER:$USER $PREFIX \
     && sudo chmod o+x /root
 
-#####
-##### Build layer: Includes large bes repo that we don't want in final image
-#####
-FROM base AS builder
-
 # Build the BES
 COPY . ./bes
 RUN sudo chown -R $USER:$USER bes
@@ -70,11 +66,11 @@ RUN make install -j$(nproc --ignore=1)
 RUN besctl start && make check -j$(nproc --ignore=1) && besctl stop
 
 #####
-##### Final layer: Base + installed bes components
+##### Final layer: libdap + hyrax-dependencies + bes
 #####
-FROM rockylinux:8 AS final
+FROM ${FINAL_BASE_IMAGE} AS bes_image
 
-# Duplicated from installation above, this time on the slimmer base image...
+# Duplicated from installation above, this time on a slimmer base image...
 # Install the libdap rpms
 ARG LIBDAP_RPM_FILENAME
 ARG LIBDAP_DEVEL_RPM_FILENAME
@@ -83,7 +79,6 @@ RUN --mount=from=aws_downloads,target=/tmp_mounted \
     && dnf install sudo which bc procps libicu-devel -y \
     && echo "Installing libdap snapshot rpms: $LIBDAP_RPM_FILENAME, $LIBDAP_DEVEL_RPM_FILENAME" \
     && dnf -y install "/tmp_mounted/$LIBDAP_RPM_FILENAME" \
-    && dnf -y install "/tmp_mounted/$LIBDAP_DEVEL_RPM_FILENAME" \
     && dnf clean all
 
 ENV USER="bes_user"
