@@ -64,10 +64,10 @@ RUN echo "Sanity check: CPPFLAGS=$CPPFLAGS LDFLAGS=$LDFLAGS prefix=$PREFIX" \
     $GDAL_OPTION \
     --with-build=$BES_BUILD_NUMBER \
     --enable-developer
-RUN make install -j16
+RUN make install -j$(nproc --ignore=1)
 
 # Test the BES
-RUN besctl start && make check -j16 && besctl stop
+RUN besctl start && make check -j$(nproc --ignore=1) && besctl stop
 
 #####
 ##### Final layer: Base + installed bes components
