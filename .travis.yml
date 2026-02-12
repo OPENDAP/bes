@@ -203,7 +203,8 @@ jobs:
         - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
         - export DOCKER_NAME="bes_rhel8"
         - export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot"
-        - export BASE_IMAGE="opendap/rocky8_hyrax_builder:latest"
+        - export BUILDER_BASE_IMAGE="opendap/rocky8_hyrax_builder:latest"
+        - export FINAL_BASE_IMAGE="rockylinux:8"
         - export DIST=el8
         - export OS=rocky8
         - export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
