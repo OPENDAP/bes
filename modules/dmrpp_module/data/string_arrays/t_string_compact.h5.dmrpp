@@ -52,13 +52,13 @@
     </String>
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="build_dmrpp" type="String">
-            <Value>removed version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="bes" type="String">
-            <Value>removed version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="libdap" type="String">
-            <Value>removed version</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="invocation" type="String">
             <Value>build_dmrpp -M -f /path_removed/data/string_arrays/t_string_compact.h5 -r /path_removed/data/string_arrays/t_string_compact.h5.dmr</Value>

@@ -339,19 +339,24 @@ public:
 
         CPPUNIT_TEST(test_throw_if_s3_client_uninitialized);
 
-        CPPUNIT_TEST(test_s3_get_as_string);
-        CPPUNIT_TEST(test_s3_get_as_string_not_there);
-        CPPUNIT_TEST(test_s3_get_as_string_bad_creds);
-        CPPUNIT_TEST(test_s3_get_as_file);
+        // All tests that require aws credentials belong here, so that
+        // if the tests are run without credentials a warning will be
+        // thrown at the `make check` level but the test itself won't fail
+        if (getenv("CMAC_ID") != nullptr && getenv("CMAC_ID")!= nullptr ) {
+            CPPUNIT_TEST(test_s3_get_as_string);
+            CPPUNIT_TEST(test_s3_get_as_string_not_there);
+            CPPUNIT_TEST(test_s3_get_as_string_bad_creds);
+            CPPUNIT_TEST(test_s3_get_as_file);
 
-        CPPUNIT_TEST(test_s3_head_exists_yes);
-        CPPUNIT_TEST(test_s3_head_exists_no);
-        CPPUNIT_TEST(test_s3_head_exists_bad_creds);
+            CPPUNIT_TEST(test_s3_head_exists_yes);
+            CPPUNIT_TEST(test_s3_head_exists_no);
+            CPPUNIT_TEST(test_s3_head_exists_bad_creds);
 
-        CPPUNIT_TEST(test_s3_generate_presigned_object_url);
-        CPPUNIT_TEST(test_s3_generate_presigned_object_url_not_there);
-        CPPUNIT_TEST(test_s3_generate_presigned_object_url_bad_creds);
-        CPPUNIT_TEST(test_s3_generate_presigned_object_url_expiration);
+            CPPUNIT_TEST(test_s3_generate_presigned_object_url);
+            CPPUNIT_TEST(test_s3_generate_presigned_object_url_not_there);
+            CPPUNIT_TEST(test_s3_generate_presigned_object_url_bad_creds);
+            CPPUNIT_TEST(test_s3_generate_presigned_object_url_expiration);
+        }
 
     CPPUNIT_TEST_SUITE_END();
 };

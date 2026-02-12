@@ -47,7 +47,7 @@ addons:
       - openjdk-17-jdk-headless
 
 git:
-  depth: false
+  depth: 1
 
 env:
   global:
@@ -77,10 +77,6 @@ env:
     - secure: "eUL/RY4kJD9sb3q98Xbfbcdhs6eyFWkfWNb0tvRzksBi/+tYiuojsek0qoBFZnRnO0wwyDAaDrZgu2yoLQTBxGSTqCsYaoDiFtw2m8aW3r+FdjpfmyVR52U9vMoZtpiPGYYM9utlyQ6YRNhzq+XzDJ4juygoIlzbp7qXTALqIL8="
     # GIT_PSWD for travis-ci-opendap
     - secure: "dlULHE4qbXKEgqJZ0hiL7PcUqEcFaHzHE5GQbZ1v6wCyFujEvq34ayChOHuxZvrfNo64lCKjpHYs1Znq0m69dpkdSP3m0fv2rgLaqqTxD+ewgsYzmlKRA8jWuDx0WvV5IltS9KNdBj2Aj6wSsw5cqPkuRbYQlQCYj7GdqhAPlP8="
-    # DOCKER_HUB_UID for travis
-    # - secure: "b0/W8+DA35StZB5BKRDn0yLxGE6n/Hc4vXRUBX2bylsSyw1IVplrl4PgKbafE0CT5PfFssOUH1cMlYcSOXgV3EWOeNWquIhwq1cASUJClTf55Y4kr1XPr6bNtdbPJ7UAKw1EG2TyZx0vy7A6TrKwgb9Al24ABm0ev4aFWUk+Sks="
-    # DOCKER_HUB_PSWD for travis
-    # - secure: "Z+M0JHT3szHclksjh8ettN9OoDjX0+lgOaORnSH8H/xvaQp1YCYzmEajnknGGCop6arM+PaiArZEZl7e8X1kBqReitSISLCwbS6XU/juRi1OBqfkk1YzSOgU03jLXe3MG2CmfQRLdExjdHCsphHEXthU2Z0tY++Tq31IfFPy1JQ="
     - CMAC_ID="${AWS_ACCESS_KEY_ID}"
     - CMAC_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
     - CMAC_URL="https://s3.amazonaws.com/cloudydap/"
@@ -102,8 +98,8 @@ before_install:
 
 # hyrax-dependencies-build.tar.gz includes/makes the build directory
 install:
-  - aws s3 cp s3://opendap.travis.build/hyrax-dependencies-build.tar.gz $TRAVIS_BUILD_DIR
-  - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/hyrax-dependencies-build.tar.gz
+  - aws s3 cp s3://opendap.travis.build/hyrax-dependencies-build.tgz $TRAVIS_BUILD_DIR
+  - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/hyrax-dependencies-build.tgz
   - aws s3 cp s3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
   - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/libdap-build.tar.gz
 
@@ -151,6 +147,8 @@ jobs:
     #     # - export RUNTESTFLAGS="-v"
     #     - autoreconf --force --install --verbose
     #     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --enable-developer
+    #     - export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
+    #     - echo "LD_LIBRARY_PATH - $LD_LIBRARY_PATH" >&2
     #     - make -j16 && make install && besctl start && make check -j16 && besctl stop
 
     # - stage: build-and-package
@@ -167,16 +165,57 @@ jobs:
         - export BES_BUILD=rocky8
         - mkdir -p $prefix/rpmbuild
         - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
-        - docker run --env prefix=/root/install --volume $prefix/rpmbuild:/root/rpmbuild 
-            --volume $TRAVIS_BUILD_DIR:/root/travis
-            --env GDAL_OPTION=$GDAL_OPTION
-            --env OS=rocky8
-            --env DIST=el8
-            --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
-            --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
-            --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-            --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-            opendap/rocky8_hyrax_builder:latest /root/travis/travis/build-rpm.sh
+        - docker run
+          --env prefix=/root/install
+          --volume $prefix/rpmbuild:/root/rpmbuild
+          --volume $TRAVIS_BUILD_DIR:/root/travis
+          --env GDAL_OPTION="$GDAL_OPTION"
+          --env OS=rocky8
+          --env DIST=el8
+          --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+          --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
+          --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+          --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+          opendap/rocky8_hyrax_builder:latest /root/travis/travis/build-rh8-rpm.sh
+
+    - stage: build-and-package
+      name: "Enterprise Linux 9 RPMs (via Rocky9)"
+      script:
+        - export BES_BUILD=rocky9
+        - mkdir -p $prefix/rpmbuild
+        - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+        - docker run
+          --env prefix=/root/install
+          --volume $prefix/rpmbuild:/root/rpmbuild
+          --volume $TRAVIS_BUILD_DIR:/root/bes
+          --env GDAL_OPTION="$GDAL_OPTION"
+          --env DIST="el9"
+          --env LIBDAP_RPM_VERSION="$LIBDAP_RPM_VERSION"
+          --env BES_BUILD_NUMBER="$BES_BUILD_NUMBER"
+          --env AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
+          --env AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
+          opendap/rocky9_hyrax_builder:latest /root/bes/travis/build-rh9-rpm.sh
+
+    - stage: build-and-package
+      name: "Build bes docker image (RHEL8)"
+      script:
+        - export BES_BUILD=docker-rhel8
+        - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+        - export DOCKER_NAME="bes_rhel8"
+        - export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot"
+        - export BASE_IMAGE="opendap/rocky8_hyrax_builder:latest"
+        - export DIST=el8
+        - export OS=rocky8
+        - export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
+        - ./travis/build-rhel-docker.sh
+        # Note: We need downstream access to the environment variable
+        # `BUILD_VERSION_TAG` that can only be determined AFTER the image
+        # is built:
+        - |
+          export BES_VERSION="$(docker run --rm ${SNAPSHOT_IMAGE_TAG} -c 'cat bes_VERSION')"
+          export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}"
+          echo "Tagging image with BES version: ${BUILD_VERSION_TAG}"
+          docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
 
 #     - stage: build-and-package
 #       name: "dist"
@@ -236,26 +275,34 @@ jobs:
 # after_script:
 #   - ./travis/upload-test-results.sh
 
-# before_deploy:
-#   - export DEPLOY="S3"
-#   # Make sure that we have the target dir...
-#   - mkdir -p $TRAVIS_BUILD_DIR/package;
-#   # Source distribution prep (copies both the 'version' and 'snapshot')
-#   - if test "$BES_BUILD" = "srcdist"; then cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package; fi
-#   # Rocky8  distribution prep
-#   - if test "$BES_BUILD" = "rocky8"; then ./travis/rpm-to-package-dir.sh "el8"; fi
-#   # Check for the stuff...
-#   - ls -l $TRAVIS_BUILD_DIR/package
+before_deploy:
+  - export DEPLOY="S3"
+  # Make sure that we have the target dir...
+  - mkdir -p $TRAVIS_BUILD_DIR/package;
+  # Source distribution prep (copies both the 'version' and 'snapshot')
+  - if test "$BES_BUILD" = "srcdist"; then cp bes-*.tar.gz $TRAVIS_BUILD_DIR/package; fi
+  # Rocky8  distribution prep
+  - if test "$BES_BUILD" = "rocky8"; then ./travis/rpm-to-package-dir.sh "el8"; fi
+  # Rocky9  distribution prep
+  - if test "$BES_BUILD" = "rocky9"; then ./travis/rpm-to-package-dir.sh "el9"; fi
+  # Check for the stuff...
+  - ls -l $TRAVIS_BUILD_DIR/package
 
-# # The deploy section copies the snapshot build product our S3 bucket and to www.opendap.org
-# deploy:
-#   # Push all build results to our S3 bucket
-#   - provider: s3
-#     access_key_id: $AWS_ACCESS_KEY_ID
-#     secret_access_key: $AWS_SECRET_ACCESS_KEY
-#     bucket: opendap.travis.build
-#     skip_cleanup: true
-#     local_dir: $TRAVIS_BUILD_DIR/package
-#     on:
-#       all_branches: true
-#       condition: $BES_BUILD =~ ^rocky8|srcdist$
+# The deploy section copies the snapshot build product our S3 bucket and to www.opendap.org
+deploy:
+  # Push build results to S3 bucket
+  - provider: s3
+    access_key_id: $AWS_ACCESS_KEY_ID
+    secret_access_key: $AWS_SECRET_ACCESS_KEY
+    bucket: opendap.travis.build
+    skip_cleanup: true
+    local_dir: $TRAVIS_BUILD_DIR/package
+    on:
+      all_branches: true
+      condition: $BES_BUILD =~ ^rocky8|rocky9|srcdist$
+  # Push docker images to Docker Hub
+  - provider: script
+    script: bash ${TRAVIS_BUILD_DIR}/travis/deploy-to-docker-hub.sh
+    on:
+      all_branches: true
+      condition: $BES_BUILD =~ ^docker$

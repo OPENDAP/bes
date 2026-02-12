@@ -2088,11 +2088,15 @@ hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, 
                 num_unlimited_dims++;
             }
         }
+        if (num_unlimited_dims >1) 
+             HDF5RequestHandler::set_default_add_unlimited_dimension_dap4(false);
+#if 0
         if (num_unlimited_dims >1) {
             string msg = "This variable has more than 1 unlimited pure dimension. This is not supported.";
             msg += "The variable name is: " + dname + ".";
             throw InternalErr(__FILE__,__LINE__, msg);
         }
+#endif
         
         ret_value = cur_unlimited_dim_size;
 
@@ -3720,3 +3724,17 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
 
 }
         
+void remove_unlimited_dimension_info(libdap::D4Group *d4_grp) {
+
+    auto dods_extra_container = d4_grp->attributes()->find("DODS_EXTRA");   
+    if (dods_extra_container && dods_extra_container->type() == attr_container_c 
+        && dods_extra_container->attributes()->find("Unlimited_Dimension")!=nullptr) {
+        dods_extra_container->attributes()->erase_named_attribute("Unlimited_Dimension");
+        if (dods_extra_container->attributes()->empty())
+            d4_grp->attributes()->erase_named_attribute("DODS_EXTRA");
+    }
+        
+    for (auto &grp:d4_grp->groups())
+            remove_unlimited_dimension_info(grp);
+        
+}

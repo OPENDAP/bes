@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xml:base="file:dap4/test_big_array.xml" dapVersion="4.0" dmrVersion="1.0" name="test_big_array">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xml:base="file:dap4/test_big_array.xml" dapVersion="4.0" dmrVersion="removed" name="test_big_array">
     <UInt8 name="x">
         <Dim size="4"/>
         <Attribute name="DAP4_Checksum_CRC32" type="String">

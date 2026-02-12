@@ -32,6 +32,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <unistd.h>
+#include <regex>
 
 #include <libdap/Array.h>
 #include <libdap/Byte.h>
@@ -402,6 +403,12 @@ public:
         DBG(cerr << __func__ << " - END" << endl);
     }
 
+    void removeDMRVersion(string& str)
+    {
+        std::regex dmr_version_regex("dmrVersion=\"[0-9]+\.[0-9]+\"");
+        str = std::regex_replace(str, dmr_version_regex, "dmrVersion=\"removed\"");
+    }
+
     void cache_a_dmr_response()
     {
         DBG(cerr << __func__ << " - BEGIN" << endl);
@@ -422,12 +429,14 @@ public:
             CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
 
             string test_05_dmr_baseline = read_test_baseline(baseline_name);
+            removeDMRVersion(test_05_dmr_baseline);
 
             string response_name = d_mds_dir + "/" + c_mds_prefix + "SimpleTypes.dmr_r";
             DBG(cerr << "Reading response: " << response_name << endl);
             CPPUNIT_ASSERT(access(response_name.c_str(), R_OK) == 0);
 
             string stored_response = read_test_baseline(response_name);
+            removeDMRVersion(stored_response);
 
             CPPUNIT_ASSERT(stored_response == test_05_dmr_baseline);
         }
@@ -2036,9 +2045,12 @@ public:
          DBG(cerr << "Reading baseline: " << baseline_name << endl);
          CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
 
-         string insert_xml_base_baseline = read_test_baseline(baseline_name);
+         // Strip out dmr version
+         std::regex dmr_version_regex("dmrVersion=\"[0-9]+\.[0-9]+\"");
+         auto stripped_input = std::regex_replace(oss.str(), dmr_version_regex, "dmrVersion=\"removed\"");
 
-         CPPUNIT_ASSERT(insert_xml_base_baseline == oss.str());
+         string insert_xml_base_baseline = read_test_baseline(baseline_name);
+         CPPUNIT_ASSERT_MESSAGE("The baseline " + insert_xml_base_baseline + " did not match the value " + stripped_input, insert_xml_base_baseline == stripped_input);
      }
 
     void insert_xml_base_test_error() {

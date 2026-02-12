@@ -1,0 +1,31 @@
+netcdf test {
+dimensions:
+	dim1 = 12 ;
+	dim2 = 12 ;
+variables:
+	ubyte DS1(dim1, dim2) ;
+
+// global attributes:
+		:build_dmrpp_metadata.created = "removed date-time" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.21.1" ;
+		:build_dmrpp_metadata.bes = "3.21.1" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -f /Users/myang6/work/opendap/hyrax-2013/h5_six_big_chunks_comp.h5 -r h5_six_big_chunks_comp.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M" ;
+		:history = "removed date-timex h5_six_big_chunks_comp.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"h5_six_big_chunks_comp.h5.dmrpp\"}]}]" ;
+data:
+
+ DS1 =
+  1, 5, 9, 13, 17, 21, 25, 29, 33, 37, 41, 45,
+  2, 6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46,
+  3, 7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47,
+  4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48,
+  5, 9, 13, 17, 21, 25, 29, 33, 37, 41, 45, 49,
+  6, 10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50,
+  7, 11, 15, 19, 23, 27, 31, 35, 39, 43, 47, 51,
+  8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52,
+  9, 13, 17, 21, 25, 29, 33, 37, 41, 45, 49, 53,
+  10, 14, 18, 22, 26, 30, 34, 38, 42, 46, 50, 54,
+  11, 15, 19, 23, 27, 31, 35, 39, 43, 47, 51, 55,
+  12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56 ;
+}

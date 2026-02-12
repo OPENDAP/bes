@@ -24,14 +24,14 @@
 #ifndef _dmrpp_array_h
 #define _dmrpp_array_h 1
 
-#include <string>
-#include <utility>
-#include <vector>
-#include <thread>
-#include <memory>
-#include <queue>
 #include <future>
 #include <list>
+#include <memory>
+#include <queue>
+#include <string>
+#include <thread>
+#include <utility>
+#include <vector>
 
 #include <libdap/Array.h>
 
@@ -53,7 +53,7 @@ class XMLWriter;
 
 namespace dmrpp {
 
-    class SuperChunk;
+class SuperChunk;
 
 enum string_pad_type { not_set, null_term, null_pad, space_pad };
 
@@ -77,7 +77,7 @@ struct ons {
 class DmrppArray : public libdap::Array, public dmrpp::DmrppCommon {
 
 private:
-    //void _duplicate(const DmrppArray &ts);
+    // void _duplicate(const DmrppArray &ts);
 
     // In the dmr++ XML:
     //   <dmrpp:vStringArray>0:1084,1025:653,65523:8746,9750:100,84660:122, ... ,98466:12</dmrpp:vStringArray>
@@ -85,7 +85,6 @@ private:
     std::string d_vlen_ons_str;
     bool is_variable_length_string_array = false;
     bool is_fixed_length_string_array = false;
-
 
     // In the dmr++ XML:
     //     <dmrpp:fStringArray string_length="##" pad="null_pad | null_term | space_pad" />
@@ -99,7 +98,7 @@ private:
 
     vector<char> d_structure_array_str_buf;
     bool is_special_structure = false;
- 
+
     DmrppArray::dimension get_dimension(unsigned int dim_num);
 
     void insert_constrained_contiguous(Dim_iter dim_iter, unsigned long *target_index,
@@ -107,87 +106,86 @@ private:
                                        const std::vector<unsigned long long> &array_shape, char *data, char *dest_buf);
 
     void read_contiguous();
+    void read_one_bigger_chunk();
     void read_one_chunk_dio();
     void read_contiguous_string();
 
 #ifdef USE_READ_SERIAL
     virtual void insert_chunk_serial(unsigned int dim, std::vector<unsigned long long> *target_element_address,
-        std::vector<unsigned long long> *chunk_source_address, Chunk *chunk);
+                                     std::vector<unsigned long long> *chunk_source_address, Chunk *chunk);
     virtual void read_chunks_serial();
 #endif
 
     friend class DmrppArrayTest;
     // Called from read_chunks_unconstrained() and also using pthreads
-    friend void
-    process_one_chunk_unconstrained(std::shared_ptr<Chunk> chunk, const vector<unsigned long long> &chunk_shape,
-            DmrppArray *array, const vector<unsigned long long> &array_shape);
+    friend void process_one_chunk_unconstrained(std::shared_ptr<Chunk> chunk,
+                                                const vector<unsigned long long> &chunk_shape, DmrppArray *array,
+                                                const vector<unsigned long long> &array_shape);
 
     // Change this for direct chunk IO.
-    friend void
-    process_one_chunk_unconstrained_dio(std::shared_ptr<Chunk> chunk, const vector<unsigned long long> &chunk_shape,
-            DmrppArray *array, const vector<unsigned long long> &array_shape);
-
+    friend void process_one_chunk_unconstrained_dio(std::shared_ptr<Chunk> chunk,
+                                                    const vector<unsigned long long> &chunk_shape, DmrppArray *array,
+                                                    const vector<unsigned long long> &array_shape);
 
     // Called from read_chunks()
-    friend void
-    process_one_chunk(std::shared_ptr<Chunk> chunk, DmrppArray *array, const vector<unsigned long long> &constrained_array_shape);
-
-
+    friend void process_one_chunk(std::shared_ptr<Chunk> chunk, DmrppArray *array,
+                                  const vector<unsigned long long> &constrained_array_shape);
 
     virtual void insert_chunk_unconstrained(std::shared_ptr<Chunk> chunk, unsigned int dim,
-                                    unsigned long long array_offset, const std::vector<unsigned long long> &array_shape,
-                                    unsigned long long chunk_offset, const std::vector<unsigned long long> &chunk_shape,
-                                    const std::vector<unsigned long long> &chunk_origin);
+                                            unsigned long long array_offset,
+                                            const std::vector<unsigned long long> &array_shape,
+                                            unsigned long long chunk_offset,
+                                            const std::vector<unsigned long long> &chunk_shape,
+                                            const std::vector<unsigned long long> &chunk_origin);
 
     virtual void insert_chunk_unconstrained_dio(std::shared_ptr<Chunk> chunk);
-   
+
     void read_chunks();
     void read_chunks_unconstrained();
     void read_chunks_dio_unconstrained();
+    void read_buffer_chunks_dio_unconstrained();
     void read_linked_blocks();
     void read_linked_blocks_constrained();
     void read_chunks_with_linked_blocks();
     void read_chunks_with_linked_blocks_constrained();
 
+    
+    bool use_buffer_chunk();
     void read_buffer_chunks();
     void read_buffer_chunks_unconstrained();
-    
+
+    unsigned long long get_maximum_constrained_buffer_nelmts();
+    unsigned long long obtain_buffer_end_pos(const vector<unsigned long long>& t_buf_end_pos_vec, unsigned long long cur_buf_end_pos) const;
+    void obtain_buffer_end_pos_vec(const vector<bool>& subset_chunks_needed, unsigned long long max_buffer_size, unsigned long long buffer_offset,
+                                 unsigned long long last_unfilled_chunk_index, vector<unsigned long long> & buf_end_pos_vec) const;
+
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim);
 
-    std::shared_ptr<Chunk> find_needed_chunks(unsigned int dim, std::vector<unsigned long long> *target_element_address, std::shared_ptr<Chunk> chunk);
+    std::shared_ptr<Chunk> find_needed_chunks(unsigned int dim, std::vector<unsigned long long> *target_element_address,
+                                              std::shared_ptr<Chunk> chunk);
 
-    virtual void insert_chunk(
-            unsigned int dim,
-            std::vector<unsigned long long> *target_element_address,
-            std::vector<unsigned long long> *chunk_element_address,
-            std::shared_ptr<Chunk> chunk,
-            const vector<unsigned long long> &constrained_array_shape,char *target_buf);
+    virtual void insert_chunk(unsigned int dim, std::vector<unsigned long long> *target_element_address,
+                              std::vector<unsigned long long> *chunk_element_address, std::shared_ptr<Chunk> chunk,
+                              const vector<unsigned long long> &constrained_array_shape, char *target_buf);
     void read_array_of_structure(vector<char> &values);
     bool check_struct_handling();
 
     bool use_direct_io_opt();
 
-    bool use_buffer_chunk();
+    bool check_dio_subset();
 
     unsigned long long inflate_simple(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len);
 
 public:
- 
-    DmrppArray(const std::string &n, libdap::BaseType *v) :
-            libdap::Array(n, v, true /*is dap4*/), DmrppCommon()
-            { }
+    DmrppArray(const std::string &n, libdap::BaseType *v) : libdap::Array(n, v, true /*is dap4*/), DmrppCommon() {}
 
-    DmrppArray(const std::string &n, const std::string &d, libdap::BaseType *v) :
-            libdap::Array(n, d, v, true), DmrppCommon()
-            { }
+    DmrppArray(const std::string &n, const std::string &d, libdap::BaseType *v)
+        : libdap::Array(n, d, v, true), DmrppCommon() {}
 
-    DmrppArray(const string &n, BaseType *v, shared_ptr<DMZ> dmz) :
-            libdap::Array(n, v, true), DmrppCommon(dmz)
-            { }
+    DmrppArray(const string &n, BaseType *v, shared_ptr<DMZ> dmz) : libdap::Array(n, v, true), DmrppCommon(dmz) {}
 
-    DmrppArray(const string &n, const string &d, BaseType *v, shared_ptr<DMZ> dmz) :
-            libdap::Array(n, d, v, true), DmrppCommon(dmz)
-            { }
+    DmrppArray(const string &n, const string &d, BaseType *v, shared_ptr<DMZ> dmz)
+        : libdap::Array(n, d, v, true), DmrppCommon(dmz) {}
 
     DmrppArray(const DmrppArray &) = default;
 
@@ -212,46 +210,41 @@ public:
      * @brief Marks the array as a Fixed length string array, or not, depending on state
      * @param state
      */
-    void set_is_flsa(bool state){
-        is_fixed_length_string_array = state;
-    };
-    bool is_flsa() const{ return is_fixed_length_string_array; }
+    void set_is_flsa(bool state) { is_fixed_length_string_array = state; };
+    bool is_flsa() const { return is_fixed_length_string_array; }
 
-    void set_is_vlsa(bool state){
-        is_variable_length_string_array = state;
-    };
-    bool is_vlsa() const{ return is_variable_length_string_array; }
+    void set_is_vlsa(bool state) { is_variable_length_string_array = state; };
+    bool is_vlsa() const { return is_variable_length_string_array; }
 
-    void set_fixed_string_length(const unsigned long long length){ d_fixed_str_length = length; }
+    void set_fixed_string_length(const unsigned long long length) { d_fixed_str_length = length; }
     unsigned long long set_fixed_string_length(const string &length_str);
     unsigned long long get_fixed_string_length() const { return d_fixed_str_length; }
 
-    void set_fixed_length_string_pad(const string_pad_type pad){ d_fixed_length_string_pad_type = pad; }
+    void set_fixed_length_string_pad(const string_pad_type pad) { d_fixed_length_string_pad_type = pad; }
     string_pad_type set_fixed_length_string_pad_type(const std::string &pad_str);
     string_pad_type get_fixed_length_string_pad() const { return d_fixed_length_string_pad_type; }
     std::string get_fixed_length_string_pad_str() const { return pad_type_to_str(d_fixed_length_string_pad_type); }
 
     void set_ons_string(const std::string &ons_str);
     void set_ons_string(const vector<ons> &ons_pairs);
-    std::string get_ons_string(){ return d_vlen_ons_str; };
+    std::string get_ons_string() { return d_vlen_ons_str; };
     void get_ons_objs(vector<ons> &ons_list);
 
     static std::string pad_type_to_str(string_pad_type pad_type);
-    static string ingest_fixed_length_string(const char *buf, unsigned long long fixed_str_len, string_pad_type pad_type);
-
+    static string ingest_fixed_length_string(const char *buf, unsigned long long fixed_str_len,
+                                             string_pad_type pad_type);
 
     unsigned int buf2val(void **val) override;
-    vector<u_int8_t> &compact_str_buffer(){ return d_compact_str_buf; }
+    vector<u_int8_t> &compact_str_buffer() { return d_compact_str_buf; }
 
-    vector<char> & get_structure_array_str_buffer() { return d_structure_array_str_buf;}
-    char * get_structure_array_buf_ptr() { return d_structure_array_buf.data(); }
+    vector<char> &get_structure_array_str_buffer() { return d_structure_array_str_buf; }
+    char *get_structure_array_buf_ptr() { return d_structure_array_buf.data(); }
 
-    unsigned long long get_bytes_per_element() const { return bytes_per_element;}
-    void set_bytes_per_element(unsigned long long bpe) { bytes_per_element = bpe;}
-    void set_special_structure_flag(bool is_special_struct) {is_special_structure = is_special_struct;}
-    bool get_special_structure_flag() { return is_special_structure;} 
+    unsigned long long get_bytes_per_element() const { return bytes_per_element; }
+    void set_bytes_per_element(unsigned long long bpe) { bytes_per_element = bpe; }
+    void set_special_structure_flag(bool is_special_struct) { is_special_structure = is_special_struct; }
+    bool get_special_structure_flag() { return is_special_structure; }
     bool is_projected();
- 
 };
 
 /**
@@ -263,44 +256,42 @@ struct one_super_chunk_args {
     DmrppArray *array;
 
     one_super_chunk_args(std::shared_ptr<SuperChunk> sc, DmrppArray *a)
-            : parent_thread_id(std::this_thread::get_id()), super_chunk(std::move(sc)), array(a) {}
+        : parent_thread_id(std::this_thread::get_id()), super_chunk(std::move(sc)), array(a) {}
 };
-
 
 /**
  * Chunk data insert args for use with pthreads. Used for reading contiguous data
  * in parallel.
  */
 struct one_child_chunk_args {
-    int *fds;               // pipe back to parent
-    unsigned char tid;      // thread id as a byte
-    std::shared_ptr<Chunk> child_chunk;     // this chunk reads data; temporary allocation
-    std::shared_ptr<Chunk> master_chunk;    // this chunk gets the data; shared memory, managed by DmrppArray
+    int *fds;                            // pipe back to parent
+    unsigned char tid;                   // thread id as a byte
+    std::shared_ptr<Chunk> child_chunk;  // this chunk reads data; temporary allocation
+    std::shared_ptr<Chunk> master_chunk; // this chunk gets the data; shared memory, managed by DmrppArray
 
     one_child_chunk_args(int *pipe, unsigned char id, std::shared_ptr<Chunk> c_c, std::shared_ptr<Chunk> m_c)
-            : fds(pipe), tid(id), child_chunk(c_c), master_chunk(m_c) {}
+        : fds(pipe), tid(id), child_chunk(c_c), master_chunk(m_c) {}
 
-    ~one_child_chunk_args() { }
+    ~one_child_chunk_args() {}
 };
-
 
 /**
  * Chunk data insert args for use with pthreads. Used for reading contiguous data
  * in parallel.
  */
 struct one_child_chunk_args_new {
-    std::shared_ptr<Chunk> child_chunk;     // this chunk reads data; temporary allocation
-    std::shared_ptr<Chunk> the_one_chunk;    // this chunk gets the data; shared memory, managed by DmrppArray
+    std::shared_ptr<Chunk> child_chunk;   // this chunk reads data; temporary allocation
+    std::shared_ptr<Chunk> the_one_chunk; // this chunk gets the data; shared memory, managed by DmrppArray
 
-    one_child_chunk_args_new(std::shared_ptr<Chunk> c_c, std::shared_ptr<Chunk> m_c) : child_chunk(c_c), the_one_chunk(m_c) {}
+    one_child_chunk_args_new(std::shared_ptr<Chunk> c_c, std::shared_ptr<Chunk> m_c)
+        : child_chunk(c_c), the_one_chunk(m_c) {}
 
-    ~one_child_chunk_args_new() { }
+    ~one_child_chunk_args_new() {}
 };
 
-
-bool get_next_future(list< std::future<bool> > &futures, atomic_uint &thread_counter, unsigned long timeout, string debug_prefix);
+bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_counter, unsigned long timeout,
+                     string debug_prefix);
 
 } // namespace dmrpp
 
 #endif // _dmrpp_array_h
-

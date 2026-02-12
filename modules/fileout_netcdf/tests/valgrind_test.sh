@@ -321,6 +321,17 @@ valgrind besstandalone -c tests/bes.nc4.grp.disable_dio.conf -i tests/bescmd/One
 #multi-fillvalues
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/multi_fvalue.h5.dmrpp.bescmd
 valgrind besstandalone -c tests/bes.nc4.conf -i tests/bescmd/multi_fvalue_dap2_nc4.h5.escmd
+
+#odd-chunk-sizes
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_odd_chunk_size.h5.dmrpp.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_less_odd_chunk_size_comp.h5.dmrpp.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_odd_chunk_size_comp_constraint.h5.dmrpp.bescmd
+
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_less_odd_chunk_size_constraint.h5.dmrpp.bescmd
+
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/lnumbers.bin.comprehensive_constraint.dmrpp.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_one_bigger_chunk_size.h5.dmrpp.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple_bigger_chunk.h5.dmrpp.bescmd
 rm -rf test.nc
 rm -rf gr.nc4
 rm -rf gr_d4.nc4

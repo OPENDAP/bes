@@ -1,0 +1,19 @@
+netcdf test {
+dimensions:
+	sdim1 = 2 ;
+	sdim2 = 2 ;
+	sdim3 = 2 ;
+	sdim4 = 2 ;
+variables:
+	int DSC.Orbit(sdim1, sdim2) ;
+	float DSC.Temperature(sdim3, sdim4) ;
+
+// global attributes:
+		:build_dmrpp_metadata.created = "removed date-time" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.21.1" ;
+		:build_dmrpp_metadata.bes = "3.21.1" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -f /Users/myang6/work/opendap/hyrax-1995/bes/modules/fileout_netcdf/data/compound_simple_bigger_chunk.h5 -r compound_simple_bigger_chunk.h5.dmr -u data/compound_simple_bigger_chunk.h5 -M" ;
+		:history = "removed date-timex compound_simple_bigger_chunk.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"compound_simple_bigger_chunk.h5.dmrpp\"}]}]" ;
+}

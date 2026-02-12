@@ -206,7 +206,6 @@ void handle_absolute_path_cv(const libdap::D4Group*, std::string &coord_name);
 void handle_relative_path_cv(const libdap::D4Group*, std::string &coord_name);
 void handle_relative_path_cvname_internal(const libdap::D4Group *d4_grp, std::string &coord_name,
                                           unsigned short sep_count);
-
 void remove_empty_coord_names(std::vector<std::string>&);
 void obtain_handled_dim_names(libdap::Array*, std::unordered_set<std::string> & handled_dim_names);
 void add_coord_maps(libdap::D4Group*, libdap::Array*, std::vector<std::string> &coord_name,
@@ -272,4 +271,6 @@ void make_attributes_to_cf(libdap::BaseType *, const eos5_dim_info_t &eos5_dim_i
 // Handle unlimited dimension
 void add_unlimited_dimension_info(libdap::D4Group *d4_grp);
 
+/// Remove unlimited dimensions if the key is set to false
+void remove_unlimited_dimension_info(libdap::D4Group *d4_grp);
 #endif

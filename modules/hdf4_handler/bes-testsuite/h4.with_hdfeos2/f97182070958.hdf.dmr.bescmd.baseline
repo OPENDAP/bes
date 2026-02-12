@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="f97182070958.hdf">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="f97182070958.hdf">
     <Dimension name="lat" size="1024"/>
     <Dimension name="lon" size="1024"/>
     <UInt32 name="dsp_band_1">

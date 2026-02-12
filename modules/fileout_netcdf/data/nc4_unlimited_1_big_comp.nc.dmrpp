@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="nc4_unlimited_1_big_comp.nc" dmrpp:href="data/nc4_unlimited_1_big_comp.nc" dmrpp:version="3.21.1">
+    <Dimension name="lon" size="2"/>
+    <Dimension name="time" size="3"/>
+    <Dimension name="lat" size="3"/>
+    <Int32 name="lon">
+        <Dim name="/lon"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_east</Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="-2147483647" byteOrder="LE">
+            <dmrpp:chunk offset="2060" nBytes="8"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Int32 name="time">
+        <Dim name="/time"/>
+        <Attribute name="units" type="String">
+            <Value>seconds</Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="-2147483647" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>1024</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="6192" nBytes="4096" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Int32 name="lat">
+        <Dim name="/lat"/>
+        <Attribute name="units" type="String">
+            <Value>degrees_north</Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="-2147483647" byteOrder="LE">
+            <dmrpp:chunk offset="2048" nBytes="12"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Int32 name="rh">
+        <Dim name="/time"/>
+        <Dim name="/lat"/>
+        <Dim name="/lon"/>
+        <Attribute name="_FillValue" type="Int32">
+            <Value>-1</Value>
+        </Attribute>
+        <Map name="/time"/>
+        <Map name="/lat"/>
+        <Map name="/lon"/>
+        <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="-1" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>4 3 2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="2068" nBytes="55" chunkPositionInArray="[0,0,0]"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>time</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2026-01-27T16:23:24Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/hyrax-1999/bes/modules/hdf5_handler/data/src/nc4_unlimited_1_big_comp.nc -r nc4_unlimited_1_big_comp.nc.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

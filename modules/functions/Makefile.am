@@ -7,10 +7,7 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
-# Removed jhrg 6/9/22 $(NC_CPPFLAGS)  $(GDAL_CFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
-# $(DAP_LIBS)  $(NC_LDFLAGS) $(NC_LIBS) $(GDAL_LDFLAGS)
-# Removed jhrg 6/9/22
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
@@ -21,9 +18,9 @@ LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 # Added -Wno-deprecated to quite warings about auto_ptr<>. jhrg 11/6/19
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Wno-deprecated
 
+# Do not initialize AM_LDFLAGS here so that this code builds using the 
+# -rpath linker options set by configure. jhrg 1/23/26
 AM_CXXFLAGS =
-# Removed jhrg 5/31/22 -Wno-c++14-extensions
-AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
 if BES_DEVELOPER
@@ -89,7 +86,9 @@ HDRS += ScaleGrid.h
 endif
 
 libfunctions_module_la_SOURCES = $(SRCS) $(HDRS)
-libfunctions_module_la_LDFLAGS = -avoid-version -module
+# NB: Defining *_LDFLAGS will override using AM_LDFLAGS by default. 
+# Include it explicitly. jhrg 1/23/26
+libfunctions_module_la_LDFLAGS = $(AM_LDFLAGS) -avoid-version -module
 libfunctions_module_la_LIBADD = $(LIBADD)
 
 # Don't install the headers for this kind of module.
