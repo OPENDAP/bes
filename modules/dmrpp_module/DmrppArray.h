@@ -99,6 +99,8 @@ private:
     vector<char> d_structure_array_str_buf;
     bool is_special_structure = false;
 
+    vector<bool> dio_subset_chunks_needed;
+
     DmrppArray::dimension get_dimension(unsigned int dim_num);
 
     void insert_constrained_contiguous(Dim_iter dim_iter, unsigned long *target_index,
@@ -172,7 +174,10 @@ private:
 
     bool use_direct_io_opt();
 
-    bool check_dio_subset();
+    //bool check_dio_subset();
+    void add_dio_var_storage_info_constrained();
+    void add_dio_var_storage_info_unconstrained();
+
 
     unsigned long long inflate_simple(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len);
 

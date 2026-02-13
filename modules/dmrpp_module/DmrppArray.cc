@@ -1482,7 +1482,7 @@ void DmrppArray::read_linked_blocks() {
             chunk->read_chunk();
             BESDEBUG(dmrpp_3, prolog << "linked_block_index: " << chunk->get_linked_block_index() << endl);
             BESDEBUG(dmrpp_3,
-                     prolog << "accumlated_length: " << accumulated_lengths[chunk->get_linked_block_index()] << endl);
+                     prolog << "accumulated_length: " << accumulated_lengths[chunk->get_linked_block_index()] << endl);
             const char *source_buffer = chunk->get_rbuf();
             memcpy(target_buffer + accumulated_lengths[chunk->get_linked_block_index()], source_buffer,
                    chunk->get_size());
@@ -1500,7 +1500,7 @@ void DmrppArray::read_linked_blocks() {
             chunk->read_chunk();
             BESDEBUG(dmrpp_3, prolog << "linked_block_index: " << chunk->get_linked_block_index() << endl);
             BESDEBUG(dmrpp_3,
-                     prolog << "accumlated_length: " << accumulated_lengths[chunk->get_linked_block_index()] << endl);
+                     prolog << "accumulated_length: " << accumulated_lengths[chunk->get_linked_block_index()] << endl);
             const char *source_buffer = chunk->get_rbuf();
             memcpy(target_buffer + accumulated_lengths[chunk->get_linked_block_index()], source_buffer,
                    chunk->get_size());
@@ -1606,7 +1606,7 @@ void DmrppArray::read_linked_blocks_constrained() {
         chunk->read_chunk();
         BESDEBUG(dmrpp_3, prolog << "linked_block_index: " << chunk->get_linked_block_index() << endl);
         BESDEBUG(dmrpp_3,
-                 prolog << "accumlated_length: " << accumulated_lengths[chunk->get_linked_block_index()] << endl);
+                 prolog << "accumulated_length: " << accumulated_lengths[chunk->get_linked_block_index()] << endl);
         const char *source_buffer = chunk->get_rbuf();
         memcpy(target_buffer + accumulated_lengths[chunk->get_linked_block_index()], source_buffer, chunk->get_size());
     }
@@ -2764,6 +2764,12 @@ bool DmrppArray::read() {
     if (this->get_dio_flag()) {
         BESDEBUG(MODULE, prolog << "dio is turned  on" << endl);
 
+        if (is_projected()) 
+            add_dio_var_storage_info_constrained();
+        else 
+            add_dio_var_storage_info_unconstrained();
+        
+#if 0
         Array::var_storage_info dmrpp_vs_info = this->get_var_storage_info();
 
         auto chunks = this->get_chunks();
@@ -2789,6 +2795,7 @@ bool DmrppArray::read() {
             dmrpp_vs_info.var_chunk_info.push_back(vci_t);
         }
         this->set_var_storage_info(dmrpp_vs_info);
+#endif
         bytes_per_element = this->var()->width_ll();
     } else {
         is_readable_struct = check_struct_handling();
@@ -2868,7 +2875,7 @@ bool DmrppArray::read() {
                 } else {
                     BESDEBUG(MODULE, prolog << "Reading data from chunks, constrained." << endl);
                     // We need to check if this is a good subset case that the direct chunk IO can handle.
-                    bool direct_io_subset = check_dio_subset();
+                    //bool direct_io_subset = check_dio_subset();
 
                     // Also buffer chunks for the non-contiguous chunk case.
                     if (buffer_chunk_case && DmrppRequestHandler::use_buffer_chunk)  {
@@ -3782,6 +3789,7 @@ unsigned long long DmrppArray::obtain_buffer_end_pos(const vector<unsigned long 
 
 }
 
+#if 0
 bool DmrppArray::check_dio_subset() {
 
     BESDEBUG(PARSER, prolog << "Coming to check_dio_subset() " << endl);
@@ -3849,5 +3857,73 @@ bool DmrppArray::check_dio_subset() {
     return true;
 
 }
+#endif
 
+void DmrppArray::add_dio_var_storage_info_constrained() {
+
+    Array::var_storage_info dmrpp_vs_info = this->get_var_storage_info();
+
+    auto chunks = this->get_chunks();
+    for (const auto &chunk:chunks) {
+        vector<unsigned long long> target_element_address = chunk->get_position_in_array();
+        auto needed = find_needed_chunks(0 /* dimension */, &target_element_address, chunk);
+        if (needed) 
+            dio_subset_chunks_needed.push_back(true);
+        else
+            dio_subset_chunks_needed.push_back(false);
+    }
+
+    unsigned long long temp_subset_direct_io_offset = 0;
+    
+    // reset the variable storage size and then re-calculate for the subset case.
+    set_var_chunks_storage_size(0);
+    for (unsigned long long i = 0; i < chunks.size(); i++) {
+
+        // Fill in the storage info for this needed chunk.
+        if (dio_subset_chunks_needed[i]){ 
+
+            Array::var_chunk_info_t vci_t;
+            vci_t.filter_mask = (chunks[i])->get_filter_mask();
+            vci_t.chunk_direct_io_offset = temp_subset_direct_io_offset;
+            vci_t.chunk_buffer_size = (chunks[i])->get_size();
+            temp_subset_direct_io_offset += vci_t.chunk_buffer_size;
+            for (const auto &chunk_coord : (chunks[i])->get_position_in_array())
+                vci_t.chunk_coords.push_back(chunk_coord);
+            dmrpp_vs_info.var_chunk_info.push_back(vci_t);
+            accumulate_storage_size(vci_t.chunk_buffer_size);
+
+        }
+    }
+    this->set_var_storage_info(dmrpp_vs_info);
+}
+
+void DmrppArray::add_dio_var_storage_info_unconstrained() {
+
+    Array::var_storage_info dmrpp_vs_info = this->get_var_storage_info();
+
+    auto chunks = this->get_chunks();
+
+    // Need to provide the offset of a chunk in the final data buffer.
+    for (unsigned int i = 0; i < chunks.size(); i++) {
+        if (i > 0)
+            chunks[i]->set_direct_io_offset(chunks[i - 1]->get_direct_io_offset() + chunks[i - 1]->get_size());
+        BESDEBUG(MODULE, prolog << "direct_io_offset is: " << chunks[i]->get_direct_io_offset() << endl);
+    }
+
+    // Fill in the chunk information so that the fileout netcdf can retrieve.
+    // Provide chunk offset/length etc.
+    auto im_chunks = this->get_immutable_chunks();
+    for (const auto &chunk : im_chunks) {
+        Array::var_chunk_info_t vci_t;
+        vci_t.filter_mask = chunk->get_filter_mask();
+        vci_t.chunk_direct_io_offset = chunk->get_direct_io_offset();
+        vci_t.chunk_buffer_size = chunk->get_size();
+
+        for (const auto &chunk_coord : chunk->get_position_in_array())
+            vci_t.chunk_coords.push_back(chunk_coord);
+        dmrpp_vs_info.var_chunk_info.push_back(vci_t);
+    }
+    this->set_var_storage_info(dmrpp_vs_info);
+
+}
 } // namespace dmrpp
