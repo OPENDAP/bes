@@ -118,11 +118,11 @@ private:
     void write_string_array(int ncid);
     void write_enum_array(int ncid);
 
-    void define_dio_filters(int ncid, int d_varid);
+    void define_dio_filters(int ncid);
     void obtain_dio_filters_order(const string&,bool &,bool &, bool &, bool &, bool &) const;
     void allocate_dio_nc4_def_filters(int, int, bool ,bool , bool , bool , bool, const vector<unsigned int> &) const; 
-    void write_direct_io_data(int, int);
-    void write_direct_subset_io_data(int, int);
+    void write_direct_io_data(int ncid);
+    void write_direct_subset_io_data(int ncid);
 
     bool is_unlimited_dim(const string &dim_name) const;
     FONcArray() = default;      // Used in some unit tests

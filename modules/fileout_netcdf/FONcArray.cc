@@ -672,7 +672,7 @@ void FONcArray::define(int ncid) {
 
             if (d_io_flag) {
                 // Use the direct chunk IO settings.
-                define_dio_filters(ncid, d_varid);     
+                define_dio_filters(ncid);     
             }
             else {
                 if (FONcRequestHandler::chunk_size == 0)
@@ -791,9 +791,9 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
             }
         }   
         if (partial_subset_array == true)
-            write_direct_subset_io_data(ncid,d_varid);
+            write_direct_subset_io_data(ncid);
         else 
-            write_direct_io_data(ncid,d_varid);
+            write_direct_io_data(ncid);
         d_a->clear_local_data();
         return;
     }
@@ -1159,7 +1159,7 @@ void FONcArray::write_for_nc4_types(int ncid) {
 }
 
 // Method to define filters of direct IO.
-void FONcArray::define_dio_filters(int ncid, int d_varid) {
+void FONcArray::define_dio_filters(int ncid) {
 
     Array::var_storage_info dmrpp_vs_info = d_a->get_var_storage_info();
 
@@ -1282,7 +1282,7 @@ void FONcArray::allocate_dio_nc4_def_filters(int ncid, int d_varid, bool has_fle
 }
 
 // Write data for the direct IO case. This is for the whole variable.
-void FONcArray::write_direct_io_data(int ncid, int d_varid) {
+void FONcArray::write_direct_io_data(int ncid) {
 
     char dummy_buffer[1];
     vector<size_t> var_count(d_ndims);
@@ -1319,7 +1319,7 @@ void FONcArray::write_direct_io_data(int ncid, int d_varid) {
  
 }
 
-void FONcArray::write_direct_subset_io_data(int ncid, int d_varid) {
+void FONcArray::write_direct_subset_io_data(int ncid) {
 
     vector<size_t> orig_var_start;
     auto di = d_a->dim_begin();
