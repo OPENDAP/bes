@@ -143,6 +143,8 @@ private:
     virtual void insert_chunk_unconstrained_dio(std::shared_ptr<Chunk> chunk);
 
     void read_chunks();
+    void read_chunks_dio_constrained();
+    void read_buffer_chunks_dio_constrained();
     void read_chunks_unconstrained();
     void read_chunks_dio_unconstrained();
     void read_buffer_chunks_dio_unconstrained();

@@ -122,6 +122,7 @@ private:
     void obtain_dio_filters_order(const string&,bool &,bool &, bool &, bool &, bool &) const;
     void allocate_dio_nc4_def_filters(int, int, bool ,bool , bool , bool , bool, const vector<unsigned int> &) const; 
     void write_direct_io_data(int, int);
+    void write_direct_subset_io_data(int, int);
 
     bool is_unlimited_dim(const string &dim_name) const;
     FONcArray() = default;      // Used in some unit tests
