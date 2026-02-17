@@ -4070,10 +4070,14 @@ void DmrppArray::add_dio_var_storage_info_constrained() {
     for (const auto &chunk:chunks) {
         vector<unsigned long long> target_element_address = chunk->get_position_in_array();
         auto needed = find_needed_chunks(0 /* dimension */, &target_element_address, chunk);
-        if (needed) 
+        if (needed) {
+            BESDEBUG(dmrpp_3, prolog<<"this chunk is needed. chunk offset is: "<<chunk->get_offset()<<endl);
             dio_subset_chunks_needed.push_back(true);
-        else
+        }
+        else {
+            BESDEBUG(dmrpp_3, prolog<<"this chunk is NOT needed. chunk offset is: "<<chunk->get_offset()<<endl);
             dio_subset_chunks_needed.push_back(false);
+        }
     }
 
     unsigned long long temp_subset_direct_io_offset = 0;
