@@ -1443,7 +1443,7 @@ void FONcTransform::set_constraint_var_dio_flag(libdap::Array* t_a) const {
  
         
         // WARNING: JUST for DEBUGGING,temporarily turn off the dio flag for ALL subset cases.
-        t_a->set_dio_flag(false);
+        //t_a->set_dio_flag(false);
 
         BESDEBUG(MODULE, prolog << "Can do direct IO subset: the variable name is: " <<t_a->var()->name() << endl);
     }

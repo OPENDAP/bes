@@ -1333,7 +1333,7 @@ void FONcArray::write_direct_subset_io_data(int ncid) {
     for (int dim = 0; dim < d_ndims; dim++)
         var_count[dim] = d_dim_sizes[dim];
 
-    BESDEBUG("fonc", "FONcArray() - direct IO write " << endl);
+    BESDEBUG("fonc", "FONcArray() - direct IO subset write " << endl);
     // The following call doesn't write any data but set up the necessary operations for sending data directly.
     int stax = nc_put_vara(ncid, d_varid, var_start.data(),var_count.data(),dummy_buffer);
     if (stax != NC_NOERR) {
@@ -1343,15 +1343,23 @@ void FONcArray::write_direct_subset_io_data(int ncid) {
 
     Array::var_storage_info dmrpp_vs_info = d_a->get_var_storage_info();
 
+//#if 0
     for (const auto & var_chunk_info:dmrpp_vs_info.var_chunk_info) {
 
         Array::var_chunk_info_t vci = var_chunk_info;
         // May use the vector to replace new[] later. 
         auto chunk_buf = new char[vci.chunk_buffer_size];
         memcpy (chunk_buf,d_a->get_buf()+vci.chunk_direct_io_offset,vci.chunk_buffer_size);
+    BESDEBUG("fonc", "FONcArray() - chunk_buffer_size: "<< vci.chunk_buffer_size <<endl);
+    BESDEBUG("fonc", "FONcArray() - chunk_direct_io_offset: "<< vci.chunk_direct_io_offset <<endl);
+    BESDEBUG("fonc", "FONcArray() - chunk_coords size: "<< vci.chunk_coords.size() <<endl);
         vector<size_t> new_chunk_coords(d_ndims);   
-        for (unsigned int i = 0; i<d_ndims;i++)
+        for (unsigned int i = 0; i<d_ndims;i++) {
             new_chunk_coords[i] = vci.chunk_coords[i] - orig_var_start[i];
+    BESDEBUG("fonc", "FONcArray() - chunk_coords[" << i <<"]="<< vci.chunk_coords[i] <<endl);
+    BESDEBUG("fonc", "FONcArray() - orig_var_start[" << i <<"]="<< orig_var_start[i] <<endl);
+    BESDEBUG("fonc", "FONcArray() - new_chunk_coords[" << i <<"]="<< new_chunk_coords[i] <<endl);
+        }
 
         stax = nc4_write_chunk(ncid, d_varid, vci.filter_mask, vci.chunk_coords.size(), (const size_t *)(new_chunk_coords.data()),vci.chunk_buffer_size, chunk_buf);
         if (stax != NC_NOERR) {
@@ -1362,6 +1370,7 @@ void FONcArray::write_direct_subset_io_data(int ncid) {
 
         delete[] chunk_buf;
     }
+//#endif
  
 }
 

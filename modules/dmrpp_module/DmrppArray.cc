@@ -1191,6 +1191,8 @@ void DmrppArray::insert_chunk_unconstrained_dio(shared_ptr<Chunk> chunk) {
     char *target_buffer = get_buf();
 
     // copy the chunk buffer to the variable buffer at the right location.
+BESDEBUG(dmrpp_3, prolog << "final direct_io_offset:  " << chunk->get_direct_io_offset() << endl);
+BESDEBUG(dmrpp_3, prolog << "final chunk_size:  " << chunk->get_size() << endl);
     memcpy(target_buffer + chunk->get_direct_io_offset(), source_buffer, chunk->get_size());
 }
 
@@ -1979,8 +1981,15 @@ shared_ptr<Chunk> DmrppArray::find_needed_chunks(unsigned int dim, vector<unsign
 
     dimension thisDim = this->get_dimension(dim);
 
+    BESDEBUG(dmrpp_3, prolog << " chunk_origin["<<dim<<"]: " << chunk_origin[dim] << endl);
+    BESDEBUG(dmrpp_3, prolog << " chunk_shape["<<dim<<"]: " << chunk_shape[dim] << endl);
+    BESDEBUG(dmrpp_3, prolog << " thisDim.start: "  << thisDim.start << endl);
+    BESDEBUG(dmrpp_3, prolog << " thisDim.stop: "  << thisDim.stop << endl);
     // Do we even want this chunk?
-    if ((unsigned long long)thisDim.start > (chunk_origin[dim] + chunk_shape[dim]) ||
+    // original code has the off by 1 bug. start,stop are the index number.. 
+    //if ((unsigned long long)thisDim.start > (chunk_origin[dim] + chunk_shape[dim]) ||
+    
+    if ((unsigned long long)thisDim.start >= (chunk_origin[dim] + chunk_shape[dim]) ||
         (unsigned long long)thisDim.stop < chunk_origin[dim]) {
         return nullptr; // No. No, we do not. Skip this chunk.
     }
@@ -2269,6 +2278,7 @@ void DmrppArray::read_chunks_dio_constrained() {
     }
 #endif
 
+     BESDEBUG(dmrpp_3, prolog <<"subset dio chunk storage size: "<<get_var_chunks_storage_size()<<endl);
     reserve_value_capacity_ll(get_var_chunks_storage_size());
 
     if (!DmrppRequestHandler::d_use_transfer_threads) {
@@ -2416,7 +2426,6 @@ void DmrppArray::read_buffer_chunks_dio_constrained() {
     unsigned long long chunk_counter = 0;
 
     // 1. We have to start somewhere, so we will search the first non_filled buffer offset.
-    //    We also obtain the needed chunks info. 
     for (const auto &chunk: get_immutable_chunks()) {
         if (dio_subset_chunks_needed[chunk_counter] && find_first_non_filled_chunk){
             if (chunk->get_offset()!=0) {
@@ -4054,6 +4063,7 @@ bool DmrppArray::check_dio_subset() {
 
 void DmrppArray::add_dio_var_storage_info_constrained() {
 
+    BESDEBUG(PARSER, prolog << " begins." << endl);
     Array::var_storage_info dmrpp_vs_info = this->get_var_storage_info();
 
     auto chunks = this->get_chunks();
@@ -4075,9 +4085,11 @@ void DmrppArray::add_dio_var_storage_info_constrained() {
         // Fill in the storage info for this needed chunk.
         if (dio_subset_chunks_needed[i]){ 
 
+    BESDEBUG(PARSER, prolog << " chunk selected index: " << i <<endl);
             Array::var_chunk_info_t vci_t;
             vci_t.filter_mask = (chunks[i])->get_filter_mask();
             vci_t.chunk_direct_io_offset = temp_subset_direct_io_offset;
+            chunks[i]->set_direct_io_offset(temp_subset_direct_io_offset);
             vci_t.chunk_buffer_size = (chunks[i])->get_size();
             temp_subset_direct_io_offset += vci_t.chunk_buffer_size;
             for (const auto &chunk_coord : (chunks[i])->get_position_in_array())
