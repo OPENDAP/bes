@@ -5,7 +5,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/http
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
@@ -14,6 +14,8 @@ endif
 AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
+
+LDADD = $(BES_HTTP_LIB)
 
 SUBDIRS = . unit-tests
 
@@ -47,5 +49,7 @@ cccc:
 	-mkdir $(C4_DIR)
 	cccc --outdir=$(C4_DIR) $(SRCS) $(HDRS)
 
-SRCS = AWS_SDK.cc
-HDRS = AWS_SDK.h IAWS_SDK.h
+SRCS = AWS_SDK.cc \
+       SignedUrlCache.cc
+HDRS = AWS_SDK.h IAWS_SDK.h \
+       SignedUrlCache.h

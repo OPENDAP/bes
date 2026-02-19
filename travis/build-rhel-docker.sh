@@ -17,7 +17,7 @@
 #    BES_REPO_DIR="." \
 #    BUILDER_BASE_IMAGE="opendap/rocky8_hyrax_builder:latest" \
 #    FINAL_BASE_IMAGE="rockylinux:8" \
-#    SNAPSHOT_IMAGE_TAG="opendap/bes_rhel8:snapshot" \
+#    SNAPSHOT_IMAGE_TAG="opendap/bes_core:snapshot-el8" \
 #    DIST=el8 \
 #    OS=rocky8 \
 #    BES_BUILD_NUMBER=12345 \

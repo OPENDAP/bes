@@ -1,4 +1,4 @@
-# Dockerfile for bes_rhel images
+# Dockerfile for bes_core images
 ARG BUILDER_BASE_IMAGE
 ARG FINAL_BASE_IMAGE
 FROM ${BUILDER_BASE_IMAGE} AS builder
