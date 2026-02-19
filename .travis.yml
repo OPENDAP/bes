@@ -218,7 +218,7 @@ jobs:
           echo "Tagging image with BES version: ${BUILD_VERSION_TAG}"
           docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
         # Temporarily *always* push to docker hub, rather than waiting for a deploy after merge to main
-        - ./travis/deploy-to-docker-hub.sh
+        - bash ./travis/deploy-to-docker-hub.sh
 
     - stage: build-and-package
       name: "dist"
