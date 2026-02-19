@@ -159,42 +159,42 @@ jobs:
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION--enable-developer
         - make distcheck -j16 GZIP_ENV=--fast
 
-    - stage: build-and-package
-      name: "Enterprise Linux 8 RPMs (via Rocky8)"
-      script:
-        - export BES_BUILD=rocky8
-        - mkdir -p $prefix/rpmbuild
-        - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
-        - docker run
-          --env prefix=/root/install
-          --volume $prefix/rpmbuild:/root/rpmbuild
-          --volume $TRAVIS_BUILD_DIR:/root/travis
-          --env GDAL_OPTION="$GDAL_OPTION"
-          --env OS=rocky8
-          --env DIST=el8
-          --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
-          --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
-          --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-          --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-          opendap/rocky8_hyrax_builder:latest /root/travis/travis/build-rh8-rpm.sh
+    # - stage: build-and-package
+    #   name: "Enterprise Linux 8 RPMs (via Rocky8)"
+    #   script:
+    #     - export BES_BUILD=rocky8
+    #     - mkdir -p $prefix/rpmbuild
+    #     - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+    #     - docker run
+    #       --env prefix=/root/install
+    #       --volume $prefix/rpmbuild:/root/rpmbuild
+    #       --volume $TRAVIS_BUILD_DIR:/root/travis
+    #       --env GDAL_OPTION="$GDAL_OPTION"
+    #       --env OS=rocky8
+    #       --env DIST=el8
+    #       --env LIBDAP_RPM_VERSION=$LIBDAP_RPM_VERSION
+    #       --env BES_BUILD_NUMBER=$BES_BUILD_NUMBER
+    #       --env AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+    #       --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+    #       opendap/rocky8_hyrax_builder:latest /root/travis/travis/build-rh8-rpm.sh
 
-    - stage: build-and-package
-      name: "Enterprise Linux 9 RPMs (via Rocky9)"
-      script:
-        - export BES_BUILD=rocky9
-        - mkdir -p $prefix/rpmbuild
-        - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
-        - docker run
-          --env prefix=/root/install
-          --volume $prefix/rpmbuild:/root/rpmbuild
-          --volume $TRAVIS_BUILD_DIR:/root/bes
-          --env GDAL_OPTION="$GDAL_OPTION"
-          --env DIST="el9"
-          --env LIBDAP_RPM_VERSION="$LIBDAP_RPM_VERSION"
-          --env BES_BUILD_NUMBER="$BES_BUILD_NUMBER"
-          --env AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
-          --env AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
-          opendap/rocky9_hyrax_builder:latest /root/bes/travis/build-rh9-rpm.sh
+    # - stage: build-and-package
+    #   name: "Enterprise Linux 9 RPMs (via Rocky9)"
+    #   script:
+    #     - export BES_BUILD=rocky9
+    #     - mkdir -p $prefix/rpmbuild
+    #     - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+    #     - docker run
+    #       --env prefix=/root/install
+    #       --volume $prefix/rpmbuild:/root/rpmbuild
+    #       --volume $TRAVIS_BUILD_DIR:/root/bes
+    #       --env GDAL_OPTION="$GDAL_OPTION"
+    #       --env DIST="el9"
+    #       --env LIBDAP_RPM_VERSION="$LIBDAP_RPM_VERSION"
+    #       --env BES_BUILD_NUMBER="$BES_BUILD_NUMBER"
+    #       --env AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
+    #       --env AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
+    #       opendap/rocky9_hyrax_builder:latest /root/bes/travis/build-rh9-rpm.sh
 
     - stage: build-and-package
       name: "Build bes docker image (RHEL8)"
@@ -217,6 +217,8 @@ jobs:
           export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}-${DIST}"
           echo "Tagging image with BES version: ${BUILD_VERSION_TAG}"
           docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
+        # Temporarily *always* push to docker hub, rather than waiting for a deploy after merge to main
+        - ./travis/deploy-to-docker-hub.sh
 
     - stage: build-and-package
       name: "dist"
