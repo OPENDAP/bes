@@ -1406,7 +1406,7 @@ void FONcTransform::set_constraint_var_dio_flag(libdap::Array* t_a) const {
         for (; di != de; di++) {
             int64_t start = t_a->dimension_start_ll (di, true);
             int64_t stop = t_a->dimension_stop_ll (di, true);
-            if ((start+chunk_dim_sizes[dim_rank_count])>stop) {
+            if ((start+chunk_dim_sizes[dim_rank_count])>(stop+1)) {
                 BESDEBUG(MODULE, prolog << "start of this dimension: " <<start << endl);
                 BESDEBUG(MODULE, prolog << "stop of this dimension: " <<stop << endl);
                 BESDEBUG(MODULE, prolog << "chunk_dim_size of this dimension: " <<chunk_dim_sizes[dim_rank_count] << endl);
