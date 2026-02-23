@@ -1365,7 +1365,7 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp) {
 void FONcTransform::set_constraint_var_dio_flag(libdap::Array* t_a) const {
 
     // The last check to see if the direct io can be done is to check if
-    // this array is a good subset. If yes, we cannot use direct IO.
+    // this array is a good subset. If no, we cannot use direct IO.
 
     bool partial_subset_array = false;
     Array::Dim_iter di = t_a->dim_begin();
@@ -1398,7 +1398,6 @@ void FONcTransform::set_constraint_var_dio_flag(libdap::Array* t_a) const {
         // Obtain the chunk dimension sizes 
         Array::var_storage_info dmrpp_vs_info = t_a->get_var_storage_info();
         vector<size_t> chunk_dim_sizes = dmrpp_vs_info.chunk_dims;
-        //const vector<unsigned long long> &chunk_dim_sizes = get_chunk_dimension_sizes();
     
         // If the subset size is smaller than a chunk size, no direct chunk IO.
         di = t_a->dim_begin();
@@ -1440,10 +1439,6 @@ void FONcTransform::set_constraint_var_dio_flag(libdap::Array* t_a) const {
             t_a->set_dio_flag(false);   
             return;
         }
- 
-        
-        // WARNING: JUST for DEBUGGING,temporarily turn off the dio flag for ALL subset cases.
-        //t_a->set_dio_flag(false);
 
         BESDEBUG(MODULE, prolog << "Can do direct IO subset: the variable name is: " <<t_a->var()->name() << endl);
     }

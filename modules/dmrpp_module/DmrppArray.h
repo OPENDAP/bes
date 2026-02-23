@@ -176,7 +176,6 @@ private:
 
     bool use_direct_io_opt();
 
-    //bool check_dio_subset();
     void add_dio_var_storage_info_constrained();
     void add_dio_var_storage_info_unconstrained();
 

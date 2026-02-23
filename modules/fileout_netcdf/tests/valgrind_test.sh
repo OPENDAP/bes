@@ -332,6 +332,24 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_less_odd_chu
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/lnumbers.bin.comprehensive_constraint.dmrpp.bescmd
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_one_bigger_chunk_size.h5.dmrpp.bescmd
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple_bigger_chunk.h5.dmrpp.bescmd
+
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_one_bigger_chunk_size_constraint.h5.dmrpp.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple_bigger_chunk_constraint.h5.dmrpp.bescmd
+
+# One chunk, chunk size is bigger than the array size, data is compressed.
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_one_bigger_chunk_size_comp.h5.dmrpp.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_group_atomic_puredim_2d_unlimited_comp.nc.dmrpp.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_unlimited_1_big_comp.nc.dmrpp.bescmd
+
+# Direct chunk IO for the subset cases.
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_2.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_3.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_4.bescmd
+
+# Direct chunk IO for the buffer chunk subset cases.
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_odd_chunk_size_comp_dio_constraint.h5.dmrpp.bescmd
+
 rm -rf test.nc
 rm -rf gr.nc4
 rm -rf gr_d4.nc4
