@@ -276,6 +276,7 @@ jobs:
         - ./travis/trigger-olfs-build.sh
 
 after_script:
+  - if test "$BES_BUILD" = "main"; then cat cmdln/tests/testsuite.log; fi
   - ./travis/upload-test-results.sh
 
 before_deploy:
