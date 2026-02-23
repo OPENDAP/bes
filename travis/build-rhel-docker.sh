@@ -4,8 +4,8 @@
 # run from within the Travis build process and depends on env variables
 # set in the BES's .travis.yml file.
 #
-# It can be run locally, as long as the env vars $BASE_IMAGE, $BES_REPO_DIR,
-# $SNAPSHOT_IMAGE_TAG, $BUILD_VERSION_TAG, $DIST, $OS, $BES_BUILD_NUMBER,
+# It can be run locally, as long as the env vars $BUILDER_BASE_IMAGE, $FINAL_BASE_IMAGE,
+# $BES_REPO_DIR, $SNAPSHOT_IMAGE_TAG, $BUILD_VERSION_TAG, $DIST, $OS, $BES_BUILD_NUMBER,
 # and $LIBDAP_RPM_VERSION are set.
 #
 # Optional env vars are $GDAL_OPTION and $DOCKER_DEV_FLAGS.
@@ -15,8 +15,9 @@
 #
 # Run the script like this:
 #    BES_REPO_DIR="." \
-#    BASE_IMAGE="opendap/rocky8_hyrax_builder:latest" \
-#    SNAPSHOT_IMAGE_TAG="opendap/bes_rhel8:snapshot" \
+#    BUILDER_BASE_IMAGE="opendap/rocky8_hyrax_builder:latest" \
+#    FINAL_BASE_IMAGE="rockylinux:8" \
+#    SNAPSHOT_IMAGE_TAG="opendap/bes_core:snapshot-el8" \
 #    DIST=el8 \
 #    OS=rocky8 \
 #    BES_BUILD_NUMBER=12345 \
@@ -47,6 +48,8 @@ loggy "$0 BEGIN"
 loggy "Preparing to build docker image."
 loggy ""
 loggy "Input variables:"
+loggy " BUILDER_BASE_IMAGE: '$BUILDER_BASE_IMAGE'"
+loggy "   FINAL_BASE_IMAGE: '$FINAL_BASE_IMAGE'"
 loggy "       BES_REPO_DIR: '$BES_REPO_DIR'"
 loggy " SNAPSHOT_IMAGE_TAG: '$SNAPSHOT_IMAGE_TAG'"
 loggy "               DIST: '$DIST'"
@@ -73,9 +76,10 @@ mkdir -p $AWS_DOWNLOADS_DIR
 [[ -e "$AWS_DOWNLOADS_DIR/$LIBDAP_DEVEL_RPM_FILENAME" ]] || aws s3 cp "s3://opendap.travis.build/$LIBDAP_DEVEL_RPM_FILENAME" "$AWS_DOWNLOADS_DIR"
 
 loggy "Building the docker image..."
-docker image pull "${BASE_IMAGE}"
+docker image pull "${BUILDER_BASE_IMAGE}"
 docker build \
-    --build-arg BASE_IMAGE="$BASE_IMAGE" \
+    --build-arg BUILDER_BASE_IMAGE="$BUILDER_BASE_IMAGE" \
+    --build-arg FINAL_BASE_IMAGE="$FINAL_BASE_IMAGE" \
     --build-arg LIBDAP_RPM_FILENAME="$LIBDAP_RPM_FILENAME" \
     --build-arg LIBDAP_DEVEL_RPM_FILENAME="$LIBDAP_DEVEL_RPM_FILENAME" \
     --build-arg HYRAX_DEPENDENCIES_TARBALL="$HYRAX_DEPENDENCIES_TARBALL" \
