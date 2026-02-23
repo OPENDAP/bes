@@ -308,4 +308,4 @@ deploy:
     script: bash ${TRAVIS_BUILD_DIR}/travis/deploy-to-docker-hub.sh
     on:
       all_branches: true
-      condition: $BES_BUILD =~ ^docker$
+      condition: $BES_BUILD =~ ^docker
