@@ -1365,7 +1365,7 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp) {
 void FONcTransform::set_constraint_var_dio_flag(libdap::Array* t_a) const {
 
     // The last check to see if the direct io can be done is to check if
-    // this array is subset. If yes, we cannot use direct IO.
+    // this array is a good subset. If no, we cannot use direct IO.
 
     bool partial_subset_array = false;
     Array::Dim_iter di = t_a->dim_begin();
@@ -1376,8 +1376,72 @@ void FONcTransform::set_constraint_var_dio_flag(libdap::Array* t_a) const {
             break;
         }
     }
-    if (partial_subset_array)
-        t_a->set_dio_flag(false);
+
+    if (partial_subset_array) {
+
+        bool no_dio = false;
+        // If the stride is not 1,no direct chunk IO.
+        di = t_a->dim_begin();
+        for (; di != de; di++) {
+            if (t_a->dimension_stride_ll (di, true) != 1) {
+                BESDEBUG(MODULE, prolog << "The stride of a dimension is: " <<t_a->dimension_stride_ll(di,true)  << endl);
+                BESDEBUG(MODULE, prolog << "Cannot do direct IO subset: the variable name is: " <<t_a->var()->name() << endl);
+                no_dio = true;
+                break;
+            }
+        }
+        if (no_dio) {
+            t_a->set_dio_flag(false);   
+            return;
+        }
+    
+        // Obtain the chunk dimension sizes 
+        Array::var_storage_info dmrpp_vs_info = t_a->get_var_storage_info();
+        vector<size_t> chunk_dim_sizes = dmrpp_vs_info.chunk_dims;
+    
+        // If the subset size is smaller than a chunk size, no direct chunk IO.
+        di = t_a->dim_begin();
+        int dim_rank_count = 0;
+        for (; di != de; di++) {
+            int64_t start = t_a->dimension_start_ll (di, true);
+            int64_t stop = t_a->dimension_stop_ll (di, true);
+            if ((start+chunk_dim_sizes[dim_rank_count])>(stop+1)) {
+                BESDEBUG(MODULE, prolog << "start of this dimension: " <<start << endl);
+                BESDEBUG(MODULE, prolog << "stop of this dimension: " <<stop << endl);
+                BESDEBUG(MODULE, prolog << "chunk_dim_size of this dimension: " <<chunk_dim_sizes[dim_rank_count] << endl);
+                BESDEBUG(MODULE, prolog << "The subset size of this dimension is smaller than the corresponding chunk size. " << endl);
+                BESDEBUG(MODULE, prolog << "Cannot do direct IO subset: the variable name is: " <<t_a->var()->name() << endl);
+                no_dio = true;
+                break;
+            }
+            dim_rank_count++;
+        }
+        if (no_dio) {
+            t_a->set_dio_flag(false);   
+            return;
+        }
+    
+        // If the starting point of the subset is not the starting point of a chunk,no direct chunk IO.
+        di = t_a->dim_begin();
+        dim_rank_count = 0;
+        for (; di != de; di++) {
+            int64_t start = t_a->dimension_start_ll (di, true);
+            if ((start%chunk_dim_sizes[dim_rank_count])!=0) {
+                BESDEBUG(MODULE, prolog << "start of this dimension: " <<start<<" is not the starting point of a chunk." << endl);
+                BESDEBUG(MODULE, prolog << "chunk_dim_size of this dimension: " <<chunk_dim_sizes[dim_rank_count] << endl);
+                BESDEBUG(MODULE, prolog << "Cannot do direct IO subset: the variable name is: " <<t_a->var()->name() << endl);
+                no_dio = true;
+                break;
+            }
+            dim_rank_count++;
+        }
+        if (no_dio) {
+            t_a->set_dio_flag(false);   
+            return;
+        }
+
+        BESDEBUG(MODULE, prolog << "Can do direct IO subset: the variable name is: " <<t_a->var()->name() << endl);
+    }
 
 }
 
