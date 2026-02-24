@@ -164,6 +164,8 @@ private:
     std::shared_ptr<Chunk> find_needed_chunks(unsigned int dim, std::vector<unsigned long long> *target_element_address,
                                               std::shared_ptr<Chunk> chunk);
 
+    bool find_needed_chunks_simple(std::shared_ptr<Chunk> chunk);
+
     virtual void insert_chunk(unsigned int dim, std::vector<unsigned long long> *target_element_address,
                               std::vector<unsigned long long> *chunk_element_address, std::shared_ptr<Chunk> chunk,
                               const vector<unsigned long long> &constrained_array_shape, char *target_buf);

@@ -2024,6 +2024,97 @@ shared_ptr<Chunk> DmrppArray::find_needed_chunks(unsigned int dim, vector<unsign
     return nullptr;
 }
 
+bool DmrppArray::find_needed_chunks_simple(std::shared_ptr<Chunk> chunk) {
+
+    bool needed_chunk = true;
+    BESDEBUG(dmrpp_3, prolog << " BEGIN " << endl);
+
+    // The size, in elements, of each of the chunk's dimensions.
+    const vector<unsigned long long> &chunk_shape = get_chunk_dimension_sizes();
+
+    // The chunk's origin point a.k.a. its "position in array".
+    const vector<unsigned long long> &chunk_origin = chunk->get_position_in_array();
+
+    bool is_contiguous_subset = true; 
+
+    Array::Dim_iter di = dim_begin();
+    Array::Dim_iter de = dim_end();
+    vector<dimension> non_contiguous_dims;
+    vector<int> non_contiguous_dim_index;
+    
+    int dim_num = 0; 
+    // We will check if the chunk has any interaction with the subset
+    for (; di != de; di++) {
+
+        auto start = (unsigned long long)(dimension_start_ll (di, true));
+        auto stride = (unsigned long long)(dimension_stride_ll (di, true));
+        auto stop = (unsigned long long)(dimension_stop_ll (di, true));
+
+        // Note: start is the index number of the subset, so the >=; otherwise, off by 1.
+        if(start >=(chunk_origin[dim_num] + chunk_shape[dim_num])) {
+            needed_chunk = false;
+            break;
+        }
+        else if (stop < chunk_origin[dim_num]) {
+            needed_chunk = false;
+            break;
+        }
+        else if (stride != 1) { // We need to further check if stride is not 1.
+            non_contiguous_dims.push_back(this->get_dimension(dim_num));
+            non_contiguous_dim_index.push_back(dim_num);
+            if (is_contiguous_subset)
+                is_contiguous_subset = false;
+        }
+        dim_num++;
+    }
+
+    // Note: we already filtered out the chunks outside the start-stop domain. However, we still need to check again the case
+    // when the stride is not 1 for any dimension and see if the chunk has interaction with the subset.
+    if (needed_chunk && !is_contiguous_subset) {
+
+        // For dimensions that have the stride >1 only. 
+        for (unsigned int i = 0; i <non_contiguous_dims.size(); i++) {
+
+            auto stride = (unsigned long long)((non_contiguous_dims[i]).stride);
+
+            // non_contiguous_dim_index stores the dimension index of the dimensions that the stride >1   
+            // Obtain the corresponding chunk_size of this dimension.
+            auto chunk_size = chunk_shape[non_contiguous_dim_index[i]];
+
+            // If the chunk_size is >= stride, the chunk along this dimension is big enough to cover at least 1 subset point.
+            // We just go to the next non-contiguous dimension.
+            if (chunk_size >=stride) 
+                continue;
+            else  {
+                auto start = (unsigned long long)((non_contiguous_dims[i]).start);
+                auto stop = (unsigned long long)((non_contiguous_dims[i]).stop);
+                auto chunk_start_pos = chunk_origin[non_contiguous_dim_index[i]];
+                unsigned long long chunk_end_pos = chunk_start_pos + chunk_size -1;
+                // If we find an edge chunk(the chunk across start or stop), it covers an element
+                // go to the next non-contiguous dimension.
+                if (chunk_start_pos <= start || chunk_end_pos >=stop)
+                    continue;
+                else { // Now we need to see if the chunk in this dimension covers an element inside the subset domain
+                    unsigned long long chunk_rel_pos = chunk_start_pos - start;
+                    unsigned long long chunk_rel_end = chunk_rel_pos + chunk_size - 1;
+     
+                    if (chunk_rel_pos%stride == 0 )// The chunk start just covers an element
+                        continue;
+                    else if (chunk_rel_end/stride != chunk_rel_pos/stride)// Either chunk covers an element or chunk stop is an element
+                        continue;
+                    else {
+                        // This chunk doesn't select any element in this dimension. Not needed.
+                        needed_chunk = false;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    return needed_chunk;
+}
+
+ 
 /**
  * @brief Insert a chunk into this array
  *
