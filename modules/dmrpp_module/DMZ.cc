@@ -1891,7 +1891,7 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const {
                           chunk_position_in_array);
     }
 
-    dc->accumlate_storage_size(stoull(size));
+    dc->accumulate_storage_size(stoull(size));
 }
 
 void DMZ::process_block(DmrppCommon *dc, const xml_node &chunk, unsigned int block_count) const {
@@ -1925,7 +1925,7 @@ void DMZ::process_block(DmrppCommon *dc, const xml_node &chunk, unsigned int blo
         dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), stoull(size), stoull(offset), true, block_count);
 
 
-    dc->accumlate_storage_size(stoull(size));
+    dc->accumulate_storage_size(stoull(size));
 }
 
 /**
@@ -2671,7 +2671,7 @@ void DMZ::process_multi_blocks_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_nod
     }
 
 
-    dc->accumlate_storage_size(stoull(size));
+    dc->accumulate_storage_size(stoull(size));
 }
 
 // Return the index of the pos in nD array to the equivalent pos in 1D array
