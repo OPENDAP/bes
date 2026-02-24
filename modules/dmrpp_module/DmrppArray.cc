@@ -1740,8 +1740,7 @@ void DmrppArray::read_chunks_with_linked_blocks_constrained() {
     char *dest_buf = this->get_buf();
     vector<unsigned long long> constrained_array_shape = this->get_shape(true);
     for (const auto &chunk : get_immutable_chunks()) {
-        vector<unsigned long long> chunk_element_address = chunk->get_position_in_array();
-        auto needed = find_needed_chunks(0 /* dimension */, &chunk_element_address, chunk);
+        bool needed = find_needed_chunks_simple(chunk);
         if (needed) {
             if (chunk->get_multi_linked_blocks()) {
                 vector<std::pair<unsigned long long, unsigned long long>> cur_chunk_lb_offset_lengths;
@@ -2054,11 +2053,7 @@ bool DmrppArray::find_needed_chunks_simple(std::shared_ptr<Chunk> chunk) {
         auto stop = (unsigned long long)(dimension_stop_ll (di, true));
 
         // Note: start is the index number of the subset, so the >=; otherwise, off by 1.
-        if(start >=(chunk_origin[dim_num] + chunk_shape[dim_num])) {
-            needed_chunk = false;
-            break;
-        }
-        else if (stop < chunk_origin[dim_num]) {
+        if((start >=(chunk_origin[dim_num] + chunk_shape[dim_num])) || (stop < chunk_origin[dim_num])) {
             needed_chunk = false;
             break;
         }
@@ -2071,7 +2066,7 @@ bool DmrppArray::find_needed_chunks_simple(std::shared_ptr<Chunk> chunk) {
         dim_num++;
     }
 
-    // Note: we already filtered out the chunks outside the start-stop domain. However, we still need to check again the case
+    // Note: we already filtered out the chunks outside the start-stop domain. However, we still need to check the case
     // when the stride is not 1 for any dimension and see if the chunk has interaction with the subset.
     if (needed_chunk && !is_contiguous_subset) {
 
@@ -2239,8 +2234,7 @@ void DmrppArray::read_chunks() {
     // Find the required Chunks and put them into SuperChunks.
     bool found_needed_chunks = false;
     for (const auto &chunk : get_immutable_chunks()) {
-        vector<unsigned long long> target_element_address = chunk->get_position_in_array();
-        auto needed = find_needed_chunks(0 /* dimension */, &target_element_address, chunk);
+        bool needed = find_needed_chunks_simple(chunk);
         if (needed) {
             found_needed_chunks = true;
             bool added = current_super_chunk->add_chunk(chunk);
@@ -2388,8 +2382,7 @@ void DmrppArray::read_buffer_chunks() {
     // 1. We have to start somewhere, so we will search the first non_filled buffer offset.
     //    We also obtain the needed chunks info. 
     for (const auto &chunk: get_immutable_chunks()) {
-        vector<unsigned long long> target_element_address = chunk->get_position_in_array();
-        auto needed = find_needed_chunks(0 /* dimension */, &target_element_address, chunk);
+        bool needed = find_needed_chunks_simple(chunk);
         if (needed) {
             chunks_needed.push_back(true);
         }
@@ -4026,8 +4019,7 @@ void DmrppArray::add_dio_var_storage_info_constrained() {
 
     auto chunks = this->get_chunks();
     for (const auto &chunk:chunks) {
-        vector<unsigned long long> target_element_address = chunk->get_position_in_array();
-        auto needed = find_needed_chunks(0 /* dimension */, &target_element_address, chunk);
+        bool needed = find_needed_chunks_simple(chunk);
         if (needed) {
             BESDEBUG(dmrpp_3, prolog<<"this chunk is needed. chunk offset is: "<<chunk->get_offset()<<endl);
             dio_subset_chunks_needed.push_back(true);
