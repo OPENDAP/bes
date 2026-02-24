@@ -129,7 +129,9 @@ before_script:
 # stages can be simplified. jhrg 3/2/22
 
 stages:
-  - name: build-and-package
+  - name: build-and-test
+  - name: build-rpms
+  - name: build-docker
   - name: scan
     if:  branch = master
   - name: hyrax-olfs-trigger
@@ -140,7 +142,7 @@ stages:
 
 jobs:
   include:
-    - stage: build-and-package
+    - stage: build-and-test
       name: "check"
       script:
         - export BES_BUILD=main
@@ -151,7 +153,7 @@ jobs:
         - echo "LD_LIBRARY_PATH - $LD_LIBRARY_PATH" >&2
         - make -j16 && make install && besctl start && make check -j16 && besctl stop
 
-    - stage: build-and-package
+    - stage: build-and-test
       name: "distcheck"
       script:
         - export BES_BUILD=distcheck
@@ -159,7 +161,22 @@ jobs:
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION--enable-developer
         - make distcheck -j16 GZIP_ENV=--fast
 
-    - stage: build-and-package
+    - stage: build-and-test
+      name: "dist"
+      script:
+        - export BES_BUILD=srcdist
+        - autoreconf --force --install --verbose
+        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --with-build=$BES_BUILD_NUMBER
+        - make dist -j7
+        # Make both a bes-<version>-<build num> and bes-snapshot tar.gz. This will simplify
+        # other operations that use the bes source code. Note that the VERSION file holds a
+        # string that is the version number that is set by the configure script and the build
+        # number passed into configure when it is run. jhrg 3/23/21
+        - SOURCE_VERSION=$(cat bes_VERSION)
+        - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
+        - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
+
+    - stage: build-rpms
       name: "Enterprise Linux 8 RPMs (via Rocky8)"
       script:
         - export BES_BUILD=rocky8
@@ -178,7 +195,7 @@ jobs:
           --env AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
           opendap/rocky8_hyrax_builder:latest /root/travis/travis/build-rh8-rpm.sh
 
-    - stage: build-and-package
+    - stage: build-rpms
       name: "Enterprise Linux 9 RPMs (via Rocky9)"
       script:
         - export BES_BUILD=rocky9
@@ -196,7 +213,7 @@ jobs:
           --env AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
           opendap/rocky9_hyrax_builder:latest /root/bes/travis/build-rh9-rpm.sh
 
-    - stage: build-and-package
+    - stage: build-docker
       name: "Build bes docker image (RHEL8)"
       script:
         - export BES_BUILD=docker-rhel8
@@ -218,7 +235,7 @@ jobs:
           echo "Tagging image with BES version: ${BUILD_VERSION_TAG}"
           docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
 
-    - stage: build-and-package
+    - stage: build-docker
       name: "Build bes docker image (RHEL9)"
       script:
         - export BES_BUILD=docker-rhel9
@@ -239,21 +256,6 @@ jobs:
           export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}-${DIST}"
           echo "Tagging image with BES version: ${BUILD_VERSION_TAG}"
           docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
-
-    - stage: build-and-package
-      name: "dist"
-      script:
-        - export BES_BUILD=srcdist
-        - autoreconf --force --install --verbose
-        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --with-build=$BES_BUILD_NUMBER
-        - make dist -j7
-        # Make both a bes-<version>-<build num> and bes-snapshot tar.gz. This will simplify
-        # other operations that use the bes source code. Note that the VERSION file holds a
-        # string that is the version number that is set by the configure script and the build
-        # number passed into configure when it is run. jhrg 3/23/21
-        - SOURCE_VERSION=$(cat bes_VERSION)
-        - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
-        - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
 
     - stage: scan
       name: "scan bes"
