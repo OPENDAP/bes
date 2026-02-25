@@ -2070,6 +2070,7 @@ bool DmrppArray::find_needed_chunks_simple(std::shared_ptr<Chunk> chunk) {
     // when the stride is not 1 for any dimension and see if the chunk has interaction with the subset.
     if (needed_chunk && !is_contiguous_subset) {
 
+        BESDEBUG(dmrpp_3, prolog << "Need to further check the stride >1 case. "  << endl);
         // For dimensions that have the stride >1 only. 
         for (unsigned int i = 0; i <non_contiguous_dims.size(); i++) {
 
@@ -2109,6 +2110,7 @@ bool DmrppArray::find_needed_chunks_simple(std::shared_ptr<Chunk> chunk) {
             }
         }
     }
+    BESDEBUG(dmrpp_3, prolog << "needed_chunk: " << (needed_chunk ? "true" : "false") << endl);
     return needed_chunk;
 }
 

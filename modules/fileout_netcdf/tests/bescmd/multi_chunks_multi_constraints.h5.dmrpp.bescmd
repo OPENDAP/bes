@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="data" space="catalog">/data/multi_chunks.h5.dmrpp</setContainer>
+    <define name="d">
+	<container name="data">
+           <dap4constraint>var1[4:1:7][4:1:7][4:1:7];var2[2:1:8][2:1:8][2:1:8];var3[0:5:9][0:4:9][0:3:9];var4[2:4:9][2:4:9][2:4:9];var5[3:4:9][3:4:9][3:4:9]</dap4constraint>
+        </container>
+    </define>
+    <get type="dap" definition="d" returnAs="netcdf-4"/>
+</request>
