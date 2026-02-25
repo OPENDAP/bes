@@ -215,7 +215,7 @@ jobs:
           --env AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
           opendap/rocky9_hyrax_builder:latest /root/bes/travis/build-rh9-rpm.sh
 
-    - stage: build-docker
+    - stage: build-rpms
       name: "Build bes docker image (RHEL8)"
       script:
         - export BES_BUILD=docker-rhel8
