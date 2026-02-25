@@ -130,7 +130,9 @@ before_script:
 
 stages:
   - name: build-and-test
+    if: false
   - name: build-rpms
+    if: false
   - name: build-docker
   - name: scan
     if:  branch = master
@@ -213,7 +215,7 @@ jobs:
           --env AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
           opendap/rocky9_hyrax_builder:latest /root/bes/travis/build-rh9-rpm.sh
 
-    - stage: build-docker
+    - stage: build-rpms
       name: "Build bes docker image (RHEL8)"
       script:
         - export BES_BUILD=docker-rhel8
@@ -223,6 +225,28 @@ jobs:
         - export FINAL_BASE_IMAGE="rockylinux:8"
         - export DIST=el8
         - export OS=rocky8
+        - export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
+        - export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
+        - ./travis/build-rhel-docker.sh
+        # Note: We need downstream access to the environment variable
+        # `BUILD_VERSION_TAG` that can only be determined AFTER the image
+        # is built:
+        - |
+          export BES_VERSION="$(docker run --rm ${SNAPSHOT_IMAGE_TAG} -c 'cat bes_VERSION')"
+          export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}-${DIST}"
+          echo "Tagging image with BES version: ${BUILD_VERSION_TAG}"
+          docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
+
+    - stage: build-docker
+      name: "Build bes docker image (RHEL9)"
+      script:
+        - export BES_BUILD=docker-rhel9
+        - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+        - export DOCKER_NAME="bes_core"
+        - export BUILDER_BASE_IMAGE="opendap/rocky9_hyrax_builder:latest"
+        - export FINAL_BASE_IMAGE="rockylinux:9"
+        - export DIST=el9
+        - export OS=rocky9
         - export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
         - export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
         - ./travis/build-rhel-docker.sh
