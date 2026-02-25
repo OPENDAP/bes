@@ -63,7 +63,19 @@ RUN echo "Sanity check: CPPFLAGS=$CPPFLAGS LDFLAGS=$LDFLAGS prefix=$PREFIX" \
 RUN make install -j$(nproc --ignore=1)
 
 # Test the BES
-RUN besctl start && make check -j$(nproc --ignore=1) && besctl stop
+RUN set +e \
+    && besctl start \
+    && make check -j$(nproc --ignore=1) \
+    && status=$? \
+    && if test $status -ne 0 ; then \
+        cat modules/ncml_module/tests/testsuite.log; \
+        echo "********"; \
+        cat modules/ncml_module/tests/testsuite.dir/*/*; \
+        exit $status; \
+    fi \
+    && set -e \
+    && besctl stop
+
 
 RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
 
