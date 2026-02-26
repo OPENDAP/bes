@@ -53,6 +53,7 @@ public:
     static bool byte_to_short;
     static bool use_compression;
     static bool use_shuffle;
+    static bool no_use_compression_for_float;
     static unsigned long long chunk_size;
     static bool classic_model;
     static bool reduce_dim;
