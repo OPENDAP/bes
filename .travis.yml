@@ -130,7 +130,9 @@ before_script:
 
 stages:
   - name: build-and-test
+    if: branch = never
   - name: build-rpms
+    if: branch = never
   - name: build-docker
   - name: scan
     if:  branch = master
@@ -234,6 +236,8 @@ jobs:
           export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}-${DIST}"
           echo "Tagging image with BES version: ${BUILD_VERSION_TAG}"
           docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
+        # Temporarily *always* push to docker hub, rather than waiting for a deploy after merge to main
+        - bash ./travis/deploy-to-docker-hub.sh
 
     - stage: scan
       name: "scan bes"
@@ -276,6 +280,7 @@ jobs:
         - ./travis/trigger-olfs-build.sh
 
 after_script:
+  - if test "$BES_BUILD" = "main"; then cat cmdln/tests/testsuite.log; fi
   - ./travis/upload-test-results.sh
 
 before_deploy:

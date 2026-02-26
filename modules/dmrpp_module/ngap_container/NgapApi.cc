@@ -507,7 +507,7 @@ NgapApi::DataAccessUrls NgapApi::convert_ngap_resty_path_to_data_access_urls(con
     if (data_s3_url.empty() || s3credentials_url.empty()) {
         // Eventually we'll be removing the non-s3 access; we need to know about any unsupported cases before that happens.
         // Add a log warning that can be searched.
-        BES_PROFILE_TIMING(string("PRE-DEPRECATION WARNING - Data s3 url or s3credentials not found - ") + cmr_query_url);
+        INFO_LOG(prolog + string("PRE-DEPRECATION WARNING - Data s3 url or s3credentials not found - ") + cmr_query_url);
     }
 
     // Check for existing .dmrpp and remove it if found at the end of the url. - kln 6/6/25

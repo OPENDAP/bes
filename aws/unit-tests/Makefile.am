@@ -2,7 +2,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/aws -I$(top_srcdir)/dispatch
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/aws -I$(top_srcdir)/dispatch -I$(top_srcdir)/http
 
 # Help the link step find libs at build time too (not just run time).
 # NB: We could use the default value of AM_LDFLAGS for the AWS libs if we wanted
@@ -15,7 +15,7 @@ AM_LDFLAGS = -L$(aws_libdir)
 # like bin_PROGRAMS.
 # NB: aws_libs is set in configure.ac. jhrg 10/16/25
 
-LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/aws/libbes_aws.la $(aws_libs)
+LDADD = $(top_builddir)/dispatch/libbes_dispatch.la $(top_builddir)/aws/libbes_aws.la $(aws_libs) $(BES_HTTP_LIB)
 
 # aws_libdir is set in configure.ac. jhrg 10/16/25
 # aws_libdir64 is also set in configure.ac sbl 11/14/25
@@ -45,19 +45,19 @@ AM_CXXFLAGS =
 # See above. jhrg 10/10/25 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-DISTCLEANFILES = test_config.h
+DISTCLEANFILES = bes.conf test_config.h
 
-CLEANFILES = *.dbg *.log
+CLEANFILES = bes.conf *.dbg *.log
 
-EXTRA_DIST = test_config.h.in
+EXTRA_DIST = test_config.h.in bes.conf.in
 
 check_PROGRAMS = $(UNIT_TESTS)
 
 TESTS = $(UNIT_TESTS)
 
-noinst_DATA =
+noinst_DATA = bes.conf
 
-BUILT_SOURCES = test_config.h
+BUILT_SOURCES = test_config.h bes.conf
 
 noinst_HEADERS = test_config.h
 
@@ -72,6 +72,8 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 	    -e "s%[@]abs_top_srcdir[@]%$${mod_abs_top_srcdir}%" \
 	    -e "s%[@]abs_builddir[@]%$${mod_abs_builddir}%" $< > test_config.h
 
+bes.conf: bes.conf.in $(top_srcdir)/configure.ac
+
 %.conf: %.conf.in
 	@clean_abs_top_srcdir=`${PYTHON} -c "import os.path; print(os.path.abspath('${abs_top_srcdir}'))"`; \
 	sed -e "s%[@]abs_top_srcdir[@]%$$clean_abs_top_srcdir%" \
@@ -83,7 +85,7 @@ test_config.h: $(srcdir)/test_config.h.in Makefile
 
 if CPPUNIT
 
-UNIT_TESTS = AWS_SDK_Test
+UNIT_TESTS = AWS_SDK_Test SignedUrlCacheTest
 
 check-local:
 	@echo ""
@@ -116,3 +118,6 @@ clean-local:
 
 AWS_SDK_Test_SOURCES = AWS_SDK_Test.cc
 AWS_SDK_Test_LDADD = $(LDADD)
+
+SignedUrlCacheTest_SOURCES = SignedUrlCacheTest.cc
+SignedUrlCacheTest_LDADD = $(LDADD)

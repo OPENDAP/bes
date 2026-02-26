@@ -87,6 +87,7 @@ class NgapOwnedContainer: public BESContainer {
     static FileCache d_dmrpp_file_cache;
 
     bool get_dmrpp_from_cache_or_remote_source(std::string &dmrpp_string) const;
+    static NgapApi::DataAccessUrls extract_s3_data_urls_from_dmrpp(const std::string &dmrpp_string);
 
     // I made these statics so that they will be in the class' namespace but still
     // easy to test in the unit tests. jhrg 4/29/24
