@@ -24,7 +24,7 @@ jobs:
     name: Build on ${{ matrix.runs-on }}
     runs-on: ${{ matrix.runs-on }}
     env:
-      GDAL_OPTION: "--without-gdal"
+      GDAL_OPTION: ""
       CMAC_ID: "${{ secrets.AWS_GHA_BES_ID }}"
       CMAC_ACCESS_KEY: "${{ secrets.AWS_GHA_BES_SECRET_KEY }}"
       CMAC_URL: "https://s3.amazonaws.com/cloudydap/"
