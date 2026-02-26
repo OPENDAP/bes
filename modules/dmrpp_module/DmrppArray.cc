@@ -1739,8 +1739,14 @@ void DmrppArray::read_chunks_with_linked_blocks_constrained() {
     reserve_value_capacity_ll(get_size(true));
     char *dest_buf = this->get_buf();
     vector<unsigned long long> constrained_array_shape = this->get_shape(true);
+    vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
+    vector<unsigned long long> var_start;
+    vector<unsigned long long> var_stop;
+    vector<unsigned long long> var_stride;
+    int num_dims = obtain_subset_dims(var_start,var_stop,var_stride);
     for (const auto &chunk : get_immutable_chunks()) {
-        bool needed = find_needed_chunks_simple(chunk);
+        const vector<unsigned long long> &chunk_shape = get_chunk_dimension_sizes();
+        bool needed = find_needed_chunks_simple(chunk,chunk_shape,var_start,var_stride,var_stop,num_dims);
         if (needed) {
             if (chunk->get_multi_linked_blocks()) {
                 vector<std::pair<unsigned long long, unsigned long long>> cur_chunk_lb_offset_lengths;
@@ -2026,13 +2032,12 @@ shared_ptr<Chunk> DmrppArray::find_needed_chunks(unsigned int dim, vector<unsign
     return nullptr;
 }
 
-bool DmrppArray::find_needed_chunks_simple(std::shared_ptr<Chunk> chunk) {
+bool DmrppArray::find_needed_chunks_simple(std::shared_ptr<Chunk> chunk, const std::vector<unsigned long long> & chunk_shape, 
+                                   const std::vector<unsigned long long> & start, const std::vector<unsigned long long> & stride,
+                                   std::vector<unsigned long long> & stop, int num_dims) {
 
     bool needed_chunk = true;
     BESDEBUG(dmrpp_3, prolog << " BEGIN " << endl);
-
-    // The size, in elements, of each of the chunk's dimensions.
-    const vector<unsigned long long> &chunk_shape = get_chunk_dimension_sizes();
 
     // The chunk's origin point a.k.a. its "position in array".
     const vector<unsigned long long> &chunk_origin = chunk->get_position_in_array();
@@ -2041,79 +2046,62 @@ bool DmrppArray::find_needed_chunks_simple(std::shared_ptr<Chunk> chunk) {
     // the stop to the actual last selected point array index.
     // For example, a[0:4:7] The actual selected points are 0 and 4. So we
     // can reduce our search domain to [0:4:4]. 
-    vector<unsigned long long>stop(dimensions());
-    bool is_contiguous_subset = true; 
-
-    Array::Dim_iter di = dim_begin();
-    Array::Dim_iter de = dim_end();
-    vector<dimension> non_contiguous_dims;
     vector<int> non_contiguous_dim_index;
     
-    int dim_num = 0; 
     // We will check if the chunk has any interaction with the subset
-    for (; di != de; di++) {
-
-        auto start = (unsigned long long)(dimension_start_ll (di, true));
-        auto stride = (unsigned long long)(dimension_stride_ll (di, true));
-        stop[dim_num] = (unsigned long long)(dimension_stop_ll (di, true));
+    for (int i=0; i <num_dims; i++) {
 
         // Note: start is the index number of the subset, so the >=; otherwise, off by 1.
-        if((start >=(chunk_origin[dim_num] + chunk_shape[dim_num])) || (stop[dim_num] < chunk_origin[dim_num])) {
+        if((start[i] >=(chunk_origin[i] + chunk_shape[i])) || (stop[i] < chunk_origin[i])) {
             needed_chunk = false;
             break;
         }
-        else if (stride != 1) { // We need to further check if stride is not 1.
-            // Also adjust the stopping pint if necessary.
-            if ((stop[dim_num] - start)%stride != 0)
-                stop[dim_num] = stop[dim_num] -(stop[dim_num] - start)%stride;
-            // The new stop may be beyond this chunk's domain, so we should check.
-            if (stop[dim_num] < chunk_origin[dim_num]) {
-                needed_chunk = false;
-                break;
+        else if (stride[i] != 1) { // We need to further check if stride is not 1.
+            // Also adjust the stopping point if necessary.
+            if ((stop[i] - start[i])%stride[i] != 0) {
+                stop[i] = stop[i] -(stop[i] - start[i])%stride[i];
+                // The new stop may be beyond this chunk's domain, so we should check.
+                if (stop[i] < chunk_origin[i]) {
+                    needed_chunk = false;
+                    break;
+                }
             }
-            non_contiguous_dims.push_back(this->get_dimension(dim_num));
-            non_contiguous_dim_index.push_back(dim_num);
-            if (is_contiguous_subset)
-                is_contiguous_subset = false;
+            non_contiguous_dim_index.push_back(i);
         }
-        dim_num++;
     }
 
     // Note: we already filtered out the chunks outside the start-stop domain. However, we still need to check the case
     // when the stride is not 1 for any dimension and see if the chunk has interaction with the subset.
-    if (needed_chunk && !is_contiguous_subset) {
+    if (needed_chunk && non_contiguous_dim_index.empty() == false) {
 
         BESDEBUG(dmrpp_3, prolog << "Need to further check the stride >1 case. "  << endl);
         // For dimensions that have the stride >1 only. 
-        for (unsigned int i = 0; i <non_contiguous_dims.size(); i++) {
-
-            auto stride = (unsigned long long)((non_contiguous_dims[i]).stride);
+        for (unsigned int j = 0; j <non_contiguous_dim_index.size(); j++) {
 
             // non_contiguous_dim_index stores the dimension index of the dimensions that the stride >1   
             // Obtain the corresponding chunk_size of this dimension.
-            auto chunk_size = chunk_shape[non_contiguous_dim_index[i]];
+            auto chunk_size = chunk_shape[non_contiguous_dim_index[j]];
+
+            auto nc_stride = stride[non_contiguous_dim_index[j]];          
 
             // If the chunk_size is >= stride, the chunk along this dimension is big enough to cover at least 1 subset point.
             // We just go to the next non-contiguous dimension.
-            if (chunk_size >=stride) 
+            if (chunk_size >=nc_stride) 
                 continue;
             else  {
-                auto start = (unsigned long long)((non_contiguous_dims[i]).start);
-                // Note the stop is adjusted.
-                unsigned long long new_stop = stop[non_contiguous_dim_index[i]];
-                auto chunk_start_pos = chunk_origin[non_contiguous_dim_index[i]];
+                auto chunk_start_pos = chunk_origin[non_contiguous_dim_index[j]];
                 unsigned long long chunk_end_pos = chunk_start_pos + chunk_size -1;
                 // If we find an edge chunk(the chunk across start or stop), it covers an element
                 // go to the next non-contiguous dimension.
-                if (chunk_start_pos <= start || chunk_end_pos >=new_stop)
+                if (chunk_start_pos <= start[non_contiguous_dim_index[j]] || chunk_end_pos >=stop[non_contiguous_dim_index[j]])
                     continue;
                 else { // Now we need to see if the chunk in this dimension covers an element inside the subset domain
-                    unsigned long long chunk_rel_pos = chunk_start_pos - start;
+                    unsigned long long chunk_rel_pos = chunk_start_pos - start[non_contiguous_dim_index[j]];
                     unsigned long long chunk_rel_end = chunk_rel_pos + chunk_size - 1;
      
-                    if (chunk_rel_pos%stride == 0 )// The chunk start just covers an element
+                    if (chunk_rel_pos%nc_stride == 0 )// The chunk start just covers an element
                         continue;
-                    else if (chunk_rel_end/stride != chunk_rel_pos/stride)// Either chunk covers an element or chunk stop is an element
+                    else if (chunk_rel_end/nc_stride != chunk_rel_pos/nc_stride)// Either chunk covers an element or chunk stop is an element
                         continue;
                     else {
                         // This chunk doesn't select any element in this dimension. Not needed.
@@ -2250,8 +2238,14 @@ void DmrppArray::read_chunks() {
     //  if it's contiguous there.
     // Find the required Chunks and put them into SuperChunks.
     bool found_needed_chunks = false;
+    vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
+    vector<unsigned long long> var_start;
+    vector<unsigned long long> var_stop;
+    vector<unsigned long long> var_stride;
+    int num_dims = obtain_subset_dims(var_start,var_stop,var_stride);
     for (const auto &chunk : get_immutable_chunks()) {
-        bool needed = find_needed_chunks_simple(chunk);
+        
+        bool needed = find_needed_chunks_simple(chunk,chunk_shape,var_start,var_stride,var_stop,num_dims);
         if (needed) {
             found_needed_chunks = true;
             bool added = current_super_chunk->add_chunk(chunk);
@@ -2395,11 +2389,16 @@ void DmrppArray::read_buffer_chunks() {
     vector<unsigned long long> buf_end_pos_vec;
     bool find_first_non_filled_chunk = true;
     vector<bool> chunks_needed;
+    vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
+    vector<unsigned long long> var_start;
+    vector<unsigned long long> var_stop;
+    vector<unsigned long long> var_stride;
+    int num_dims = obtain_subset_dims(var_start,var_stop,var_stride);
 
     // 1. We have to start somewhere, so we will search the first non_filled buffer offset.
     //    We also obtain the needed chunks info. 
     for (const auto &chunk: get_immutable_chunks()) {
-        bool needed = find_needed_chunks_simple(chunk);
+        bool needed = find_needed_chunks_simple(chunk,chunk_shape,var_start,var_stride,var_stop,num_dims);
         if (needed) {
             chunks_needed.push_back(true);
         }
@@ -4034,9 +4033,14 @@ void DmrppArray::add_dio_var_storage_info_constrained() {
     BESDEBUG(PARSER, prolog << " begins." << endl);
     Array::var_storage_info dmrpp_vs_info = this->get_var_storage_info();
 
+    vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
+    vector<unsigned long long> var_start;
+    vector<unsigned long long> var_stop;
+    vector<unsigned long long> var_stride;
+    int num_dims = obtain_subset_dims(var_start,var_stop,var_stride);
     auto chunks = this->get_chunks();
     for (const auto &chunk:chunks) {
-        bool needed = find_needed_chunks_simple(chunk);
+        bool needed = find_needed_chunks_simple(chunk,chunk_shape,var_start,var_stride,var_stop,num_dims);
         if (needed) {
             BESDEBUG(dmrpp_3, prolog<<"this chunk is needed. chunk offset is: "<<chunk->get_offset()<<endl);
             dio_subset_chunks_needed.push_back(true);
@@ -4100,6 +4104,21 @@ void DmrppArray::add_dio_var_storage_info_unconstrained() {
         dmrpp_vs_info.var_chunk_info.push_back(vci_t);
     }
     this->set_var_storage_info(dmrpp_vs_info);
+
+}
+int DmrppArray::obtain_subset_dims(vector<unsigned long long>& var_start,vector<unsigned long long>&var_stop,vector<unsigned long long>&var_stride) {
+
+    Array::Dim_iter di = dim_begin();
+    Array::Dim_iter de = dim_end();
+ 
+    for (; di != de; di++) {
+
+        var_start.push_back((unsigned long long)(dimension_start_ll (di, true)));
+        var_stride.push_back((unsigned long long)(dimension_stride_ll (di, true)));
+        var_stop.push_back((unsigned long long)(dimension_stop_ll (di, true)));
+
+    }
+    return this->dimensions();
 
 }
 } // namespace dmrpp

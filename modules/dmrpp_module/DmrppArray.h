@@ -168,7 +168,10 @@ private:
     std::shared_ptr<Chunk> find_needed_chunks(unsigned int dim, std::vector<unsigned long long> *target_element_address,
                                               std::shared_ptr<Chunk> chunk);
 
-    bool find_needed_chunks_simple(std::shared_ptr<Chunk> chunk);
+    bool find_needed_chunks_simple(std::shared_ptr<Chunk> chunk, const std::vector<unsigned long long> & chunk_shape, 
+                                   const std::vector<unsigned long long> & start, const std::vector<unsigned long long> & stride,
+                                   std::vector<unsigned long long> & stop, int num_dims);
+    int obtain_subset_dims(vector<unsigned long long>& var_start,vector<unsigned long long>&var_stop,vector<unsigned long long>&var_stride);
 
     virtual void insert_chunk(unsigned int dim, std::vector<unsigned long long> *target_element_address,
                               std::vector<unsigned long long> *chunk_element_address, std::shared_ptr<Chunk> chunk,
