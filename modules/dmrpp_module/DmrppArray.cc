@@ -2037,6 +2037,11 @@ bool DmrppArray::find_needed_chunks_simple(std::shared_ptr<Chunk> chunk) {
     // The chunk's origin point a.k.a. its "position in array".
     const vector<unsigned long long> &chunk_origin = chunk->get_position_in_array();
 
+    // When stride is not 1, the stop may not be selected. We will adjust
+    // the stop to the actual last selected point array index.
+    // For example, a[0:4:7] The actual selected points are 0 and 4. So we
+    // can reduce our search domain to [0:4:4]. 
+    vector<unsigned long long>stop(dimensions());
     bool is_contiguous_subset = true; 
 
     Array::Dim_iter di = dim_begin();
@@ -2050,14 +2055,22 @@ bool DmrppArray::find_needed_chunks_simple(std::shared_ptr<Chunk> chunk) {
 
         auto start = (unsigned long long)(dimension_start_ll (di, true));
         auto stride = (unsigned long long)(dimension_stride_ll (di, true));
-        auto stop = (unsigned long long)(dimension_stop_ll (di, true));
+        stop[dim_num] = (unsigned long long)(dimension_stop_ll (di, true));
 
         // Note: start is the index number of the subset, so the >=; otherwise, off by 1.
-        if((start >=(chunk_origin[dim_num] + chunk_shape[dim_num])) || (stop < chunk_origin[dim_num])) {
+        if((start >=(chunk_origin[dim_num] + chunk_shape[dim_num])) || (stop[dim_num] < chunk_origin[dim_num])) {
             needed_chunk = false;
             break;
         }
         else if (stride != 1) { // We need to further check if stride is not 1.
+            // Also adjust the stopping pint if necessary.
+            if ((stop[dim_num] - start)%stride != 0)
+                stop[dim_num] = stop[dim_num] -(stop[dim_num] - start)%stride;
+            // The new stop may be beyond this chunk's domain, so we should check.
+            if (stop[dim_num] < chunk_origin[dim_num]) {
+                needed_chunk = false;
+                break;
+            }
             non_contiguous_dims.push_back(this->get_dimension(dim_num));
             non_contiguous_dim_index.push_back(dim_num);
             if (is_contiguous_subset)
@@ -2086,12 +2099,13 @@ bool DmrppArray::find_needed_chunks_simple(std::shared_ptr<Chunk> chunk) {
                 continue;
             else  {
                 auto start = (unsigned long long)((non_contiguous_dims[i]).start);
-                auto stop = (unsigned long long)((non_contiguous_dims[i]).stop);
+                // Note the stop is adjusted.
+                unsigned long long new_stop = stop[non_contiguous_dim_index[i]];
                 auto chunk_start_pos = chunk_origin[non_contiguous_dim_index[i]];
                 unsigned long long chunk_end_pos = chunk_start_pos + chunk_size -1;
                 // If we find an edge chunk(the chunk across start or stop), it covers an element
                 // go to the next non-contiguous dimension.
-                if (chunk_start_pos <= start || chunk_end_pos >=stop)
+                if (chunk_start_pos <= start || chunk_end_pos >=new_stop)
                     continue;
                 else { // Now we need to see if the chunk in this dimension covers an element inside the subset domain
                     unsigned long long chunk_rel_pos = chunk_start_pos - start;
@@ -2110,7 +2124,8 @@ bool DmrppArray::find_needed_chunks_simple(std::shared_ptr<Chunk> chunk) {
             }
         }
     }
-    BESDEBUG(dmrpp_3, prolog << "needed_chunk: " << (needed_chunk ? "true" : "false") << endl);
+    BESDEBUG(dmrpp_3, prolog << "var name: "<< var()->name() << " needed_chunk: " << (needed_chunk ? "true" : "false") << endl);
+ 
     return needed_chunk;
 }
 
