@@ -30,7 +30,7 @@ CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 AM_LDFLAGS = 
 include $(top_srcdir)/coverage.mk
 
-SUBDIRS = ngap_container dmrpp_transmitter build_dmrpp_h4 . unit-tests tests data tests_build_dmrpp get_dmrpp
+SUBDIRS = ngap_container dmrpp_transmitter . build_dmrpp_h4 unit-tests tests data tests_build_dmrpp get_dmrpp
 
 lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libdmrpp_module.la
@@ -56,7 +56,7 @@ DMRPP_MODULE = DmrppModule.cc DmrppRequestHandler.cc DmrppModule.h DmrppRequestH
 libdmrpp_module_la_SOURCES = $(BES_HDRS) $(BES_SRCS) $(DMRPP_MODULE)
 libdmrpp_module_la_LDFLAGS = -avoid-version -module
 libdmrpp_module_la_LIBADD = -L$(builddir)/ngap_container -lngap $(BES_DISPATCH_LIB) \
-    $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
+    $(BES_HTTP_LIB) $(BES_DAP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
     $(H5_LDFLAGS) $(H5_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) -ltest-types \
     -Ldmrpp_transmitter -ldmrpp_return_as
 
@@ -73,10 +73,10 @@ h5common.h: Makefile
 build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
 build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) DmrppRequestHandler.cc DmrppRequestHandler.h \
     build_dmrpp.cc build_dmrpp_util.cc build_dmrpp_util.h h5common.cc h5common.h
-build_dmrpp_LDFLAGS = $(top_builddir)/dap/.libs/libdap_module.a
-build_dmrpp_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(H5_LDFLAGS) \
-    $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
-    $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
+build_dmrpp_LDFLAGS =
+build_dmrpp_LDADD = $(top_builddir)/dap/.libs/libdap_module.a -L$(builddir)/ngap_container -lngap \
+$(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(H5_LDFLAGS)  $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
+$(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
 
 # jhrg 6/2/23 $(BES_EXTRA_LIBS)
 

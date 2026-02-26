@@ -22,45 +22,28 @@ AM_CXXFLAGS=
 AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
-# SUBDIRS = . unit-tests tests
-
-# These tests will fail if the DmrApiTest also fails: tests jhrg 6/29/23
-
-#noinst_PROGRAMS = build_dmrpp_h4
 bin_PROGRAMS = build_dmrpp_h4
 
 build_dmrpp_h4_SOURCES = $(SRC) $(HDR)
 
-SRC = build_dmrpp_h4.cc build_dmrpp_util_h4.cc ../Chunk.cc ../DMRpp.cc ../DMZ.cc ../DmrppArray.cc ../DmrppByte.cc ../DmrppCommon.cc \
-   ../DmrppD4Enum.cc ../DmrppD4Group.cc ../DmrppD4Opaque.cc ../DmrppD4Sequence.cc ../DmrppFloat32.cc ../DmrppFloat64.cc \
-   ../DmrppInt16.cc ../DmrppInt32.cc ../DmrppInt64.cc ../DmrppInt8.cc ../DmrppStr.cc ../DmrppStructure.cc \
-   ../DmrppTypeFactory.cc ../DmrppUInt16.cc ../DmrppUInt32.cc ../DmrppUInt64.cc ../DmrppUrl.cc ../SuperChunk.cc \
-   ../DmrppRequestHandler.cc ../CurlHandlePool.cc ../vlsa_util.cc ../float_byteswap.cc
+SRC = build_dmrpp_h4.cc build_dmrpp_util_h4.cc
 
-HDR = build_dmrpp_util_h4.h ../Chunk.h ../DMRpp.h ../DMZ.h ../DmrppArray.h ../DmrppByte.h ../DmrppCommon.h \
-    ../DmrppD4Enum.h ../DmrppD4Group.h ../DmrppD4Opaque.h ../DmrppD4Sequence.h ../DmrppFloat32.h ../DmrppFloat64.h \
-    ../DmrppInt16.h ../DmrppInt32.h ../DmrppInt64.h ../DmrppInt8.h ../DmrppStr.h ../DmrppStructure.h \
-    ../DmrppTypeFactory.h ../DmrppUInt16.h ../DmrppUInt32.h ../DmrppUInt64.h ../DmrppUrl.h ../SuperChunk.h \
-    ../DmrppRequestHandler.h ../CurlHandlePool.h ../vlsa_util.h ../byteswap_compat.h ../float_byteswap.h
+HDR = build_dmrpp_util_h4.h
 
 build_dmrpp_h4_CPPFLAGS = $(AM_CPPFLAGS)
 
-#build_dmrpp_h4_LDFLAGS = $(HDFEOS2_LDFLAGS) $(HDFEOS2_LIBS) $(HDF4_LDFLAGS) $(BES_DAP_LIB_LDFLAGS)
 build_dmrpp_h4_LDFLAGS = $(HDFEOS2_LDFLAGS) $(HDF4_LDFLAGS) $(BES_DAP_LIB_LDFLAGS)
 
-# jhrg 12/18/23 $(top_builddir)/dap/.libs/libdap_module.a
+# The code in dmrpp_module now builds a convenience library that is then linked
+# with the DmrppRequestHandler and DmrppModule classes to make the module. That convenience library
+# is also used to make standalone programs like build_dmrpp_h4. SBL & JHRG 2.2.26
 
-build_dmrpp_h4_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
-    $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) $(HDFEOS2_LIBS) $(HDF4_LIBS)
+build_dmrpp_h4_LDADD = $(top_builddir)/modules/dmrpp_module/.libs/libdmrpp_module.a \
+-L$(top_builddir)/modules/dmrpp_module/ngap_container -lngap \
+$(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) \
+$(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) $(HDFEOS2_LIBS) $(HDF4_LIBS)
 
 lib_besdir=$(libdir)/bes
-
-# lib_bes_LTLIBRARIES = libcmr_module.la
-
-# libcmr_module_la_SOURCES = $(CMR_SRC) $(CMR_HDR)
-# libcmr_module_la_LDFLAGS = -avoid-version -module
-# libcmr_module_la_LIBADD = $(LIBADD)
-
 
 EXTRA_DIST = get_dmrpp_h4
 
