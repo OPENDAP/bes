@@ -465,3 +465,8 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_six_big_chunks_comp.h5
 # Direct chunk IO for the buffer chunk subset cases.
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_odd_chunk_size_comp_dio_constraint.h5.dmrpp.bescmd)
 
+# Dmrpp different subset cases.
+# var1: stride 1 normal case var2: stride 1 corner case var3: big stride case 
+# var4: stride >1, case for edge chunks,no selected chunks,chunk start covers an element
+# var5: stride >1, case for edge chunks, chunk across over an element or chunk stop at an element 
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/multi_chunks_multi_constraints.h5.dmrpp.bescmd], [bes.nc4.grp.reduce_dim.conf])
