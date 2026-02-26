@@ -1745,7 +1745,6 @@ void DmrppArray::read_chunks_with_linked_blocks_constrained() {
     vector<unsigned long long> var_stride;
     int num_dims = obtain_subset_dims(var_start,var_stop,var_stride);
     for (const auto &chunk : get_immutable_chunks()) {
-        const vector<unsigned long long> &chunk_shape = get_chunk_dimension_sizes();
         bool needed = find_needed_chunks_simple(chunk,chunk_shape,var_start,var_stride,var_stop,num_dims);
         if (needed) {
             if (chunk->get_multi_linked_blocks()) {
@@ -2076,27 +2075,27 @@ bool DmrppArray::find_needed_chunks_simple(std::shared_ptr<Chunk> chunk, const s
 
         BESDEBUG(dmrpp_3, prolog << "Need to further check the stride >1 case. "  << endl);
         // For dimensions that have the stride >1 only. 
-        for (unsigned int j = 0; j <non_contiguous_dim_index.size(); j++) {
+        for (const auto &nc_index:non_contiguous_dim_index) {
 
             // non_contiguous_dim_index stores the dimension index of the dimensions that the stride >1   
             // Obtain the corresponding chunk_size of this dimension.
-            auto chunk_size = chunk_shape[non_contiguous_dim_index[j]];
+            auto chunk_size = chunk_shape[nc_index];
 
-            auto nc_stride = stride[non_contiguous_dim_index[j]];          
+            auto nc_stride = stride[nc_index];          
 
             // If the chunk_size is >= stride, the chunk along this dimension is big enough to cover at least 1 subset point.
             // We just go to the next non-contiguous dimension.
             if (chunk_size >=nc_stride) 
                 continue;
             else  {
-                auto chunk_start_pos = chunk_origin[non_contiguous_dim_index[j]];
+                auto chunk_start_pos = chunk_origin[nc_index];
                 unsigned long long chunk_end_pos = chunk_start_pos + chunk_size -1;
                 // If we find an edge chunk(the chunk across start or stop), it covers an element
                 // go to the next non-contiguous dimension.
-                if (chunk_start_pos <= start[non_contiguous_dim_index[j]] || chunk_end_pos >=stop[non_contiguous_dim_index[j]])
+                if (chunk_start_pos <= start[nc_index] || chunk_end_pos >=stop[nc_index])
                     continue;
                 else { // Now we need to see if the chunk in this dimension covers an element inside the subset domain
-                    unsigned long long chunk_rel_pos = chunk_start_pos - start[non_contiguous_dim_index[j]];
+                    unsigned long long chunk_rel_pos = chunk_start_pos - start[nc_index];
                     unsigned long long chunk_rel_end = chunk_rel_pos + chunk_size - 1;
      
                     if (chunk_rel_pos%nc_stride == 0 )// The chunk start just covers an element
