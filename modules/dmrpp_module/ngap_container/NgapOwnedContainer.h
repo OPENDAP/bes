@@ -137,6 +137,7 @@ public:
     static std::string get_data_source_location() { return d_data_source_location; }
 
     std::string access() override;
+    std::string alt_access();
 
     bool release() override {
         return true;
