@@ -699,6 +699,10 @@ void FONcArray::define(int ncid) {
                         FONcRequestHandler::use_shuffle)                
                         shuffle = 1;
                     
+                    if (NC_SHORT == d_array_type || NC_USHORT == d_array_type || NC_INT == d_array_type ||
+                        NC_UINT == d_array_type || NC_INT64 == d_array_type || NC_UINT64 == d_array_type ||
+                        FONcRequestHandler::no_use_compression_for_float == false) {               
+                    
                     int deflate = 1;
                     int deflate_level = 4;
                     stax = nc_def_var_deflate(ncid, d_varid, shuffle, deflate, deflate_level);
@@ -707,6 +711,7 @@ void FONcArray::define(int ncid) {
                         string err = (string) "fileout.netcdf - Failed to define compression (deflate) level for variable "
                                      + d_varname;
                         FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                    }
                     }
                 }
 
