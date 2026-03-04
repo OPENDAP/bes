@@ -273,7 +273,7 @@ FONcUtils::convert(BaseType *v, const string &ncdf_version, bool is_classic_mode
 FONcBaseType *
 FONcUtils::convert(BaseType *v, const string &ncdf_version, bool is_classic_model,
                    unordered_map<string,vector<pair<string,int>>> & GFQN_to_en_typeid_vec,
-                   const vector<string> & unlimited_dim_names) {
+                   const vector<string> & unlimited_dim_names /* default is empty */) {
     map<string,int>fdimname_to_id;
     vector<int>rds_nums;
     return convert(v, ncdf_version, is_classic_model,fdimname_to_id,rds_nums, GFQN_to_en_typeid_vec, unlimited_dim_names);
@@ -322,7 +322,7 @@ FONcUtils::convert(BaseType *v,
                    map<string,int>&fdimname_to_id,
                    vector<int>&rds_nums,
                    unordered_map<string,vector<pair<string,int>>> & GFQN_to_en_typeid_vec,
-                   const vector<string>& unlimited_dimnames)
+                   const vector<string>& unlimited_dimnames /*default is empty. */  )
 {
     FONcBaseType *b = nullptr;
 

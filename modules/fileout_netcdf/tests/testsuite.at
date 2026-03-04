@@ -412,9 +412,6 @@ AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/SDS_simple_comp.hdf.dap2.bescmd],
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/SDS_simple_comp.hdf.dap2dmr.bescmd], [bes.h4cf.conf])
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/sinusoid.hdf_constraint.dap2.bescmd], [bes.h4cf.conf])
 
-# Unlimited dimension with compression(direct IO is not applied)
-AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/part_chunk_data_unlim_comp.h5.dmrpp.bescmd)
-
 #Disable direct IO tests
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/One_chunk_shuf_deflate.h5.dmrpp.bescmd], [bes.nc4.grp.disable_dio.conf])
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/One_chunk_shuf_deflate.h5.dmrpp.bescmd], [bes.nc4.grp.disable_dio.conf])
@@ -450,7 +447,6 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_one_bigger_chunk_size_
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_simple_bigger_chunk.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_simple_bigger_chunk_constraint.h5.dmrpp.bescmd)
 
-
 # One chunk, chunk size is bigger than the array size, data is compressed.
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_one_bigger_chunk_size_comp.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_group_atomic_puredim_2d_unlimited_comp.nc.dmrpp.bescmd)
@@ -462,6 +458,14 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_six_big_chunks_comp.h5
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_3.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_4.bescmd)
 
+# Direct chunk IO for the unlimited dimension with compression
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/part_chunk_data_unlim_comp.h5.dmrpp.bescmd)
+
+# Direct chunk IO for the unlimited dimension subset cases.
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_2_1.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_unlimited_1_big_comp.nc.dmrpp_constraint.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_group_unlimited_comp.h5.dmrpp_constraint.bescmd)
+
 # Direct chunk IO for the buffer chunk subset cases.
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_odd_chunk_size_comp_dio_constraint.h5.dmrpp.bescmd)
 
@@ -470,3 +474,4 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_odd_chunk_size_comp_di
 # var4: stride >1, case for edge chunks,no selected chunks,chunk start covers an element
 # var5: stride >1, case for edge chunks, chunk across over an element or chunk stop at an element 
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/multi_chunks_multi_constraints.h5.dmrpp.bescmd], [bes.nc4.grp.reduce_dim.conf])
+

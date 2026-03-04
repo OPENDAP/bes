@@ -809,7 +809,7 @@ void FONcTransform::transform_dap4_no_group() {
     
                 BESDEBUG(MODULE, prolog << "Converting variable '" << v->name() << "'" << endl);
     
-                // This is a factory class call, and 'fg' is specialized for 'v'
+                // This is a factory class call, and 'fg' is specialized for 'v' 
                 FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model, GFQN_to_en_typeid_vec,root_no_grp_unlimited_dimnames);
                 
                 _fonc_vars.push_back(fb);
@@ -830,7 +830,7 @@ void FONcTransform::transform_dap4_no_group() {
                 if (v->type() == dods_array_c) {
                     auto t_a = dynamic_cast<Array *>(v);
                     if (t_a->get_dio_flag()) {
-                        set_constraint_var_dio_flag(t_a);
+                        set_constraint_var_dio_flag(t_a, root_no_grp_unlimited_dimnames);
 #if 0
                         bool var_has_unlim_dim = false;
                         if (is_root_no_grp_unlimited_dim) 
@@ -1083,7 +1083,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
                 BESDEBUG(MODULE, prolog << "Converting variable '" << v->name() << "'" << endl);
     
                 // This is a factory class call, and 'fg' is specialized for 'v'
-                FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums, GFQN_to_en_typeid_vec,root_no_grp_unlimited_dimnames);
+                FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums, GFQN_to_en_typeid_vec);
     
                 fonc_vars_in_grp.push_back(fb);
     
@@ -1106,7 +1106,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
                 if (v->type() == dods_array_c) {
                     auto t_a = dynamic_cast<Array *>(v);
                     if (t_a->get_dio_flag()) { 
-                        set_constraint_var_dio_flag(t_a);
+                        set_constraint_var_dio_flag(t_a, unlimited_dimnames);
 #if 0
                         bool var_has_unlim_dim = false;
                         var_has_unlim_dim = check_var_unlimited_dimension(t_a,unlimited_dimnames);
@@ -1119,7 +1119,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
                 }
     
                 // This is a factory class call, and 'fg' is specialized for 'v'
-                FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums,GFQN_to_en_typeid_vec, root_no_grp_unlimited_dimnames);
+                FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums,GFQN_to_en_typeid_vec);
     
                 fonc_vars_in_grp.push_back(fb);
     
@@ -1362,7 +1362,7 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp) {
     }
 
 }
-void FONcTransform::set_constraint_var_dio_flag(libdap::Array* t_a) const {
+void FONcTransform::set_constraint_var_dio_flag(libdap::Array* t_a, const vector<string>& unlimited_dimnames) const {
 
     // The last check to see if the direct io can be done is to check if
     // this array is a good subset. If no, we cannot use direct IO.
@@ -1399,7 +1399,7 @@ void FONcTransform::set_constraint_var_dio_flag(libdap::Array* t_a) const {
         Array::var_storage_info dmrpp_vs_info = t_a->get_var_storage_info();
         vector<size_t> chunk_dim_sizes = dmrpp_vs_info.chunk_dims;
     
-        // If the subset size is smaller than a chunk size, no direct chunk IO.
+        // If the dimension is not unlimited and the subset size is smaller than a chunk size, no direct chunk IO.
         di = t_a->dim_begin();
         int dim_rank_count = 0;
         for (; di != de; di++) {
@@ -1411,8 +1411,10 @@ void FONcTransform::set_constraint_var_dio_flag(libdap::Array* t_a) const {
                 BESDEBUG(MODULE, prolog << "chunk_dim_size of this dimension: " <<chunk_dim_sizes[dim_rank_count] << endl);
                 BESDEBUG(MODULE, prolog << "The subset size of this dimension is smaller than the corresponding chunk size. " << endl);
                 BESDEBUG(MODULE, prolog << "Cannot do direct IO subset: the variable name is: " <<t_a->var()->name() << endl);
-                no_dio = true;
-                break;
+                
+                no_dio = no_dio_dimension(unlimited_dimnames,t_a->dimension_name(di));
+                if (no_dio)
+                    break;
             }
             dim_rank_count++;
         }
@@ -1643,6 +1645,26 @@ bool FONcTransform::obtain_unlimited_dimension_info(libdap::D4Group *d4_grp, vec
     }
 
     return ret_value; 
+}
+
+bool FONcTransform::no_dio_dimension(const vector<string> &unlimited_dimnames, const string &dim_name) const {
+
+    bool no_dio = false;
+    if (unlimited_dimnames.empty() == false) {
+        bool find_unlimited_dim_name = false;
+        for (const auto & udimname:unlimited_dimnames) {
+            if (udimname == dim_name) {
+                find_unlimited_dim_name = true;
+                break;
+            }
+        }
+        if (!find_unlimited_dim_name)
+            no_dio = true;
+    } 
+    else 
+        no_dio = true;
+    return no_dio;
+ 
 }
 
 #if 0

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="2.0" name="nc4_group_unlimited_comp.h5" dmrpp:href="data/nc4_group_unlimited_comp.h5" dmrpp:version="3.21.1">
+    <Dimension name="dim1" size="2"/>
+    <Int32 name="dim1">
+        <Dim name="/dim1"/>
+        <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="-2147483647" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="3172" nBytes="14" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Float32 name="d1">
+        <Dim name="/dim1"/>
+        <Map name="/dim1"/>
+        <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="9.96921e+36" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="3186" nBytes="16" chunkPositionInArray="[0]"/>
+        </dmrpp:chunks>
+    </Float32>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>dim1</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2026-03-04T15:27:33Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/hyrax-2030/bes/modules/fileout_netcdf/data/nc4_group_unlimited_comp.h5 -r nc4_group_unlimited_comp.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+        </Attribute>
+    </Attribute>
+    <Group name="g1">
+        <Dimension name="dim2" size="3"/>
+        <Int32 name="dim2">
+            <Dim name="/g1/dim2"/>
+            <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="-2147483647" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>3</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="3128" nBytes="17" chunkPositionInArray="[0]"/>
+            </dmrpp:chunks>
+        </Int32>
+        <Float32 name="d2">
+            <Dim name="/dim1"/>
+            <Dim name="/g1/dim2"/>
+            <Map name="/dim1"/>
+            <Map name="/g1/dim2"/>
+            <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="9.96921e+36" byteOrder="LE">
+                <dmrpp:chunkDimensionSizes>2 3</dmrpp:chunkDimensionSizes>
+                <dmrpp:chunk offset="3145" nBytes="27" chunkPositionInArray="[0,0]"/>
+            </dmrpp:chunks>
+        </Float32>
+        <Attribute name="DODS_EXTRA" type="Container">
+            <Attribute name="Unlimited_Dimension" type="String">
+                <Value>dim2</Value>
+            </Attribute>
+        </Attribute>
+    </Group>
+</Dataset>
