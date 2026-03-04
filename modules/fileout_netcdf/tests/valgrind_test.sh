@@ -346,6 +346,9 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_six_big_chun
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_2.bescmd
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_3.bescmd
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_4.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_2_1.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_group_unlimited_comp.h5.dmrpp_constraint.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_unlimited_1_big_comp.nc.dmrpp_constraint.bescmd
 
 # Direct chunk IO for the buffer chunk subset cases.
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_odd_chunk_size_comp_dio_constraint.h5.dmrpp.bescmd
