@@ -923,17 +923,16 @@ void DMZ::set_up_all_direct_io_flags_phase_2(DMR *dmr) {
 void DMZ::set_up_direct_io_flag_phase_2(D4Group *group) {
     for (auto i = group->var_begin(), e = group->var_end(); i != e; ++i) {
         if ((*i)->type() == dods_array_c)
-            set_up_direct_io_flag_phase_2((*i));
+            set_up_direct_io_flag_phase_2(group, (*i));
     }
 
     for (auto gi = group->grp_begin(), ge = group->grp_end(); gi != ge; ++gi)
         set_up_direct_io_flag_phase_2((*gi));
 }
 
-void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
+void DMZ::set_up_direct_io_flag_phase_2(D4Group * grp, BaseType *btp) {
     bool is_integer_float = false;
     Array *t_a = nullptr;
-
     Type t = btp->type();
     if (t == dods_array_c) {
         t_a = dynamic_cast<Array *>(btp);
@@ -1046,7 +1045,7 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
     bool chunk_less_dim = true;
     if (chunk_dim_sizes.size() == dim_sizes.size()) {
         for (unsigned int i = 0; i < dim_sizes.size(); i++) {
-            if (chunk_dim_sizes[i] > dim_sizes[i]) {
+            if (chunk_dim_sizes[i] > dim_sizes[i]  && has_unlimited_dim(grp)==false) {
                 chunk_less_dim = false;
                 break;
             }
@@ -1091,6 +1090,18 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
     t_a->set_dio_flag();
 }
 
+bool DMZ::has_unlimited_dim(libdap::D4Group *group) {
+
+    bool ret_value = false;
+    D4Attribute *d4_container = group->attributes()->get("DODS_EXTRA");
+    if (d4_container) {
+        // The current HDF5 handler implementation ensures the unlimited dimension name and size
+        // are passed to the variable level. So we don't need to check them.
+        if (d4_container->attributes()->get("Unlimited_Dimension"))
+            ret_value = true;
+    }
+    return ret_value;
+}
 
 /**
  * Check to see if the current tag is either an \c Attribute or an \c Alias
