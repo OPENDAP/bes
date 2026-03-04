@@ -130,9 +130,7 @@ before_script:
 
 stages:
   - name: build-and-test
-    if: false
   - name: build-rpms
-    if: false
   - name: build-docker
   - name: scan
     if:  branch = master
@@ -215,10 +213,10 @@ jobs:
           --env AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
           opendap/rocky9_hyrax_builder:latest /root/bes/travis/build-rh9-rpm.sh
 
-    - stage: build-rpms
-      name: "Build bes docker image (RHEL8)"
+    - stage: build-docker
+      name: "Build docker image bes_core:-el8"
       script:
-        - export BES_BUILD=docker-rhel8
+        - export BES_BUILD=docker-el8
         - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
         - export DOCKER_NAME="bes_core"
         - export BUILDER_BASE_IMAGE="opendap/rocky8_hyrax_builder:latest"
@@ -238,9 +236,9 @@ jobs:
           docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
 
     - stage: build-docker
-      name: "Build bes docker image (RHEL9)"
+      name: "Build docker image bes_core:-el9"
       script:
-        - export BES_BUILD=docker-rhel9
+        - export BES_BUILD=docker-el9
         - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
         - export DOCKER_NAME="bes_core"
         - export BUILDER_BASE_IMAGE="opendap/rocky9_hyrax_builder:latest"
