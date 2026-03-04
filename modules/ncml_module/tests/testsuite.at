@@ -140,7 +140,7 @@ AT_SETUP([$2 response for $1: seeking match to $3])
 AT_KEYWORDS([$2])
 AT_MAKE_BESCMD_FILE([$1], [$2], [$4])
 AT_CHECK([besstandalone -c bes_conf_path -i ./test.bescmd], [$5], [stdout], [ignore])
-AT_CHECK([grep $3 stdout], [], [ignore], [], [])
+AT_CHECK([grep --text $3 stdout], [], [ignore], [], [])
 AT_CLEANUP
 ])
 

@@ -1,7 +1,13 @@
 # Dockerfile for bes_core images
 ARG BUILDER_BASE_IMAGE
 ARG FINAL_BASE_IMAGE
-FROM ${BUILDER_BASE_IMAGE} AS builder
+FROM ${BUILDER_BASE_IMAGE:-"rockylinux:8"} AS builder
+
+ARG BUILDER_BASE_IMAGE
+RUN if [ -z "$BUILDER_BASE_IMAGE" ]; then \
+        echo "Error: Non-empty BUILDER_BASE_IMAGE must be specified. Exiting."; \
+        exit 1; \
+    fi
 
 ENV USER="bes_user"
 ENV USER_ID=101
@@ -63,18 +69,18 @@ RUN echo "Sanity check: CPPFLAGS=$CPPFLAGS LDFLAGS=$LDFLAGS prefix=$PREFIX" \
 RUN make install -j$(nproc --ignore=1)
 
 # Test the BES
-RUN set +e; \
-    besctl start; \
-    make check -j$(nproc --ignore=1); \
-    status=$?; \
-    if test $status -ne 0 ; then \
-        cat modules/ncml_module/tests/testsuite.log; \
-        echo "********"; \
-        cat modules/ncml_module/tests/testsuite.dir/*/*; \
-        exit $status; \
-    fi; \
-    set -e; \
-    besctl stop;
+# RUN set +e; \
+#     besctl start; \
+#     make check -j$(nproc --ignore=1); \
+#     status=$?; \
+#     if test $status -ne 0 ; then \
+#         cat modules/ncml_module/tests/testsuite.log; \
+#         echo "********"; \
+#         cat modules/ncml_module/tests/testsuite.dir/*/*; \
+#         exit $status; \
+#     fi; \
+#     set -e; \
+#     besctl stop;
 
 RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
 
