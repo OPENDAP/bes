@@ -123,6 +123,7 @@ private:
 
     virtual bool obtain_unlimited_dimension_info_helper(libdap::D4Attributes *d4_attrs, vector<string> &unlimited_dim_names);
     virtual bool obtain_unlimited_dimension_info(libdap::D4Group *grp, std::vector<std::string> &unlimited_dim_names);
+    virtual bool no_dio_dimension(const std::vector<std::string> &unlimited_dim_names, const string &dim_name) const;
 #if 0
     virtual bool check_var_unlimited_dimension(libdap::Array *t_a, const std::vector<std::string> &unlimited_dim_names);
 #endif
