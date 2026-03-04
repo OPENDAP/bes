@@ -346,6 +346,7 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
             dmz->parse_xml_string(dmrpp_content);
 
             dmz->build_thin_dmr(dmr);
+            dmz->load_all_attributes(dmr);
 
             BESDEBUG("dmrpp","Before calling set_up_all_direct_io_flags"<<endl);
             if (DmrppRequestHandler::is_netcdf4_enhanced_response == true &&
@@ -358,7 +359,6 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
                 }
             }
 
-            dmz->load_all_attributes(dmr);
         }
         else {
             string data_pathname = container->access();
@@ -376,6 +376,7 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
             dmz->parse_xml_doc(data_pathname);
 
             dmz->build_thin_dmr(dmr);
+            dmz->load_all_attributes(dmr);
             BESDEBUG("dmrpp","Before calling set_up_all_direct_io_flags: second"<<endl);
             if (DmrppRequestHandler::is_netcdf4_enhanced_response == true &&
                 DmrppRequestHandler::disable_direct_io == false) { 
@@ -387,7 +388,6 @@ void DmrppRequestHandler::get_dmrpp_from_container_or_cache(BESContainer *contai
                 }
             }
  
-            dmz->load_all_attributes(dmr);
         }
     }
     catch (...) {
