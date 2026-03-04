@@ -65,8 +65,8 @@ public:
     static nc_type dap4_int_float_type_to_nc4_type(libdap::Type);
     static string gen_name(const vector<string> &embed, const string &name, string &original);
     static FONcBaseType * convert(libdap::BaseType *v,const string & version, bool classic_model);
-    static FONcBaseType * convert(libdap::BaseType *v,const string & version, bool classic_model,unordered_map<string,vector<pair<string,int>>> & ,const vector<string>&);
-    static FONcBaseType * convert(libdap::BaseType *v,const string & version, bool classic_model, map<string,int>&,vector<int>&, unordered_map<string,vector<pair<string,int>>> & ,const vector<string>&);
+    static FONcBaseType * convert(libdap::BaseType *v,const string & version, bool classic_model,unordered_map<string,vector<pair<string,int>>> & ,const vector<string>& unlimited_dimnames={});
+    static FONcBaseType * convert(libdap::BaseType *v,const string & version, bool classic_model, map<string,int>&,vector<int>&, unordered_map<string,vector<pair<string,int>>> & ,const vector<string>& unlimited_dimnames={});
     static void handle_error(int stax, const string &err, const string &file, int line);
 };
 

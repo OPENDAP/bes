@@ -809,7 +809,7 @@ void FONcTransform::transform_dap4_no_group() {
     
                 BESDEBUG(MODULE, prolog << "Converting variable '" << v->name() << "'" << endl);
     
-                // This is a factory class call, and 'fg' is specialized for 'v'
+                // This is a factory class call, and 'fg' is specialized for 'v' 
                 FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model, GFQN_to_en_typeid_vec,root_no_grp_unlimited_dimnames);
                 
                 _fonc_vars.push_back(fb);
@@ -1083,7 +1083,8 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
                 BESDEBUG(MODULE, prolog << "Converting variable '" << v->name() << "'" << endl);
     
                 // This is a factory class call, and 'fg' is specialized for 'v'
-                FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums, GFQN_to_en_typeid_vec,root_no_grp_unlimited_dimnames);
+                FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums, GFQN_to_en_typeid_vec);
+                //FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums, GFQN_to_en_typeid_vec,root_no_grp_unlimited_dimnames);
     
                 fonc_vars_in_grp.push_back(fb);
     
@@ -1119,7 +1120,8 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
                 }
     
                 // This is a factory class call, and 'fg' is specialized for 'v'
-                FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums,GFQN_to_en_typeid_vec, root_no_grp_unlimited_dimnames);
+                //FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums,GFQN_to_en_typeid_vec, root_no_grp_unlimited_dimnames);
+                FONcBaseType *fb = FONcUtils::convert(v, FONC_RETURN_AS_NETCDF4, false, fdimname_to_id, rds_nums,GFQN_to_en_typeid_vec);
     
                 fonc_vars_in_grp.push_back(fb);
     
