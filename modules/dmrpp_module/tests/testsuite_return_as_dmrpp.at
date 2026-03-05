@@ -4,7 +4,7 @@ AT_INIT([bes/modules/dmrpp_module/tests testsuite_return_as_dmrpp])
 
 m4_include([../../common/handler_tests_macros.m4])
 
-# override the defzult value of bes_conf. jhrg 6/5/25
+# override the default value of bes_conf. jhrg 6/5/25
 # bes_conf=bes-return-as-dmrpp.conf
 
 # m4_include([multi_input_tests.m4])
@@ -15,4 +15,4 @@ AT_BESCMD_BESCONF_RESPONSE_TEST([return_as_dmrpp/dmrpp-return-as-test.bescmd], [
 # This test will fail because the baseline is out of s date. we need to 
 # update/change the macro so that varying parts of the response are replaced
 # by markers (e.g., dates, software version numbers).
-# AT_BESCMD_BESCONF_RESPONSE_TEST([return_as_dmrpp/dmrpp-return-as-test-2.bescmd], [bes-return-as-dmrpp.conf])
+AT_BESCMD_BESCONF_RESPONSE_TEST([return_as_dmrpp/dmrpp-return-as-test-2.bescmd], [bes-return-as-dmrpp.conf])
