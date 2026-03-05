@@ -120,22 +120,40 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array,
  * @param chunk_shape The chunk shape
  * @param array The DmrppArray instance that called this function
  * @param array_shape How the DAP Array this chunk is part of was
+ * @param io_mode The io-mode for accessing the super_chunk.
  * constrained - used to determine where/how to add the chunk's data to the
  * whole array.
  */
 void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsigned long long> &chunk_shape,
-                                     DmrppArray *array, const vector<unsigned long long> &array_shape) {
+                                     DmrppArray *array, const vector<unsigned long long> &array_shape,
+                                     const IO_AccessMode io_mode) {
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
 
     chunk->read_chunk();
 
-    if (array) {
+    if(array) {
         if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
             chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(),
                                 array->get_bytes_per_element());
 
         array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
     }
+  /*
+    switch (io_mode) {
+        case normal:
+            if(array) {
+                if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
+                    chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(),
+                                        array->get_bytes_per_element());
+
+                array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
+            } //break;
+        case direct:
+            if (array)
+                array->insert_chunk_unconstrained_dio(chunk);
+            break;
+        default: throw BESInternalError("Unsupported io-mode.", __FILE__, __LINE__);
+    }*/
 
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl);
 }
@@ -183,7 +201,7 @@ bool one_chunk_unconstrained_compute_thread(unique_ptr<one_chunk_unconstrained_a
     BES_STOPWATCH_START(COMPUTE_THREADS, timer_tag.str());
 #endif
 
-    process_one_chunk_unconstrained(args->chunk, args->chunk_shape, args->array, args->array_shape);
+    process_one_chunk_unconstrained(args->chunk, args->chunk_shape, args->array, args->array_shape, args->io_mode);
     return true;
 }
 
@@ -371,10 +389,12 @@ void process_chunks_concurrent(const string &super_chunk_id, queue<shared_ptr<Ch
  * @param chunk_shape The shape of the chunk (passing is faster than recomputing this value)
  * @param array The DmrppArray into which the chunk data will be placed.
  * @param array_shape The shape of the DmrppArray (passing is faster than recomputing this value)
+ * @param access_mode The io-mode for accessing the super_chunk.
  */
 void process_chunks_unconstrained_concurrent(const string &super_chunk_id, queue<shared_ptr<Chunk>> &chunks,
                                              const vector<unsigned long long> &chunk_shape, DmrppArray *array,
-                                             const vector<unsigned long long> &array_shape) {
+                                             const vector<unsigned long long> &array_shape,
+                                             IO_AccessMode io_mode) {
 
     // We maintain a list  of futures to track our parallel activities.
     list<future<bool>> futures;
@@ -395,66 +415,13 @@ void process_chunks_unconstrained_concurrent(const string &super_chunk_id, queue
                     auto chunk = chunks.front();
 
                     auto args = unique_ptr<one_chunk_unconstrained_args>(
-                        new one_chunk_unconstrained_args(super_chunk_id, chunk, array, array_shape, chunk_shape));
+                        new one_chunk_unconstrained_args(super_chunk_id, chunk, array, array_shape, chunk_shape, io_mode));
 
-                    thread_started = start_one_chunk_unconstrained_compute_thread(futures, std::move(args));
-
-                    if (thread_started) {
-                        chunks.pop();
-                    } else {
-                        // Thread did not start, ownership of the arguments was not passed to the thread.
-                        BESDEBUG(SUPER_CHUNK_MODULE,
-                                 prolog << "Thread not started. args deleted, Chunk remains in queue.)"
-                                        << " chunk_processing_thread_counter: " << chunk_processing_thread_counter
-                                        << " futures.size(): " << futures.size() << endl);
+                    switch (io_mode) {
+                        case normal: thread_started = start_one_chunk_unconstrained_compute_thread(futures, std::move(args)); break;
+                        case direct: thread_started = start_one_chunk_unconstrained_compute_thread_dio(futures, std::move(args)); break;
+                        default: throw BESInternalError("Unsupported io-mode.", __FILE__, __LINE__);
                     }
-                }
-            } else {
-                // No more Chunks and no futures means we're done here.
-                if (futures.empty())
-                    done = true;
-            }
-        }
-    } catch (...) {
-        // Complete all the futures, otherwise we'll have threads out there using up resources
-        while (!futures.empty()) {
-            if (futures.back().valid())
-                futures.back().get();
-            futures.pop_back();
-        }
-        // re-throw the exception
-        throw;
-    }
-}
-
-// Direct IO routine for processing chunks when the variable is not constrained.
-void process_chunks_unconstrained_concurrent_dio(const string &super_chunk_id, queue<shared_ptr<Chunk>> &chunks,
-                                                 const vector<unsigned long long> &chunk_shape, DmrppArray *array,
-                                                 const vector<unsigned long long> &array_shape) {
-
-    // We maintain a list  of futures to track our parallel activities.
-    list<future<bool>> futures;
-    try {
-        bool done = false;
-        while (!done) {
-
-            if (!futures.empty())
-                get_next_future(futures, chunk_processing_thread_counter, DMRPP_WAIT_FOR_FUTURE_MS, prolog);
-
-            // If future_finished is true this means that the chunk_processing_thread_counter has been decremented,
-            // because future::get() was called or a call to future::valid() returned false.
-
-            if (!chunks.empty()) {
-                // Next we try to add a new Chunk compute thread if we can - there might be room.
-                bool thread_started = true;
-                while (thread_started && !chunks.empty()) {
-                    auto chunk = chunks.front();
-
-                    auto args = unique_ptr<one_chunk_unconstrained_args>(
-                        new one_chunk_unconstrained_args(super_chunk_id, chunk, array, array_shape, chunk_shape));
-
-                    // Call direct IO routine
-                    thread_started = start_one_chunk_unconstrained_compute_thread_dio(futures, std::move(args));
 
                     if (thread_started) {
                         chunks.pop();
@@ -747,13 +714,18 @@ BESDEBUG("dmrpp", "SuperChunk read buffer offset: " << d_offset <<" buffer size:
     //
     // TODO Replace or improve this way of handling fill value chunks. jhrg 5/7/22
     // TODO Verify fill_value handling for 'normal' io-mode only, danh 3/6/26
-    if ( d_i_mode == Normal ) {
-        if (d_uses_fill_value)
-            read_fill_value_chunk();
-        else
+    switch ( d_io_mode ) {
+        case normal:
+            if (d_uses_fill_value)
+                read_fill_value_chunk();
+            else
+                read_aggregate_bytes();
+            break;
+        case direct:
             read_aggregate_bytes();
-    } else {
-        read_aggregate_bytes();
+            break;
+        default:
+            throw BESInternalError("Unsupported io-mode.", __FILE__, __LINE__);
     }
 
     // TODO Check if Chunk::read() sets these. jhrg 5/9/22
@@ -832,7 +804,7 @@ void SuperChunk::process_child_chunks_unconstrained() {
         BES_STOPWATCH_START(SUPER_CHUNK_MODULE, prolog + "Serial Chunk Processing. sc_id: " + d_id);
 #endif
         for (const auto &chunk : d_chunks) {
-            process_one_chunk_unconstrained(chunk, chunk_shape, d_parent_array, array_shape);
+            process_one_chunk_unconstrained(chunk, chunk_shape, d_parent_array, array_shape, d_io_mode);
         }
     } else {
 #if DMRPP_ENABLE_THREAD_TIMERS
@@ -844,7 +816,7 @@ void SuperChunk::process_child_chunks_unconstrained() {
         for (const auto &chunk : d_chunks) {
             chunks_to_process.push(chunk);
         }
-        process_chunks_unconstrained_concurrent(d_id, chunks_to_process, chunk_shape, d_parent_array, array_shape);
+        process_chunks_unconstrained_concurrent(d_id, chunks_to_process, chunk_shape, d_parent_array, array_shape, d_io_mode);;
     }
 }
 
@@ -876,41 +848,5 @@ string SuperChunk::to_string(bool verbose = false) const {
  */
 void SuperChunk::dump(ostream &strm) const { strm << to_string(false); }
 
-// direct chunk method to read unconstrained variables.
-void SuperChunk::read_unconstrained_dio() {
-
-    // Retrieve data for the direct IO case.
-    retrieve_data_dio();
-
-    BES_PROFILE_TIMING(
-        string("Handle SuperChunk data dio - ") + (get_data_url() ? get_data_url()->get_url_no_query() : "") +
-        string(" - ") + ::to_string(get_size()) + string(" byte(s) - ") + ::to_string(get_chunk_count()) +
-        " chunk(s) - Using multithreading: " + (DmrppRequestHandler::d_use_compute_threads ? "true" : "false"));
-
-    // The size in element of each of the array's dimensions
-    const vector<unsigned long long> array_shape = d_parent_array->get_shape(true);
-    // The size, in elements, of each of the chunk's dimensions
-    const vector<unsigned long long> chunk_shape = d_parent_array->get_chunk_dimension_sizes();
-
-    if (!DmrppRequestHandler::d_use_compute_threads) {
-#if DMRPP_ENABLE_THREAD_TIMERS
-        BES_STOPWATCH_START(SUPER_CHUNK_MODULE, prolog + "Serial Chunk Processing. sc_id: " + d_id);
-#endif
-        for (const auto &chunk : d_chunks) {
-            process_one_chunk_unconstrained_dio(chunk, chunk_shape, d_parent_array, array_shape);
-        }
-    } else {
-#if DMRPP_ENABLE_THREAD_TIMERS
-        stringstream timer_tag;
-        timer_tag << prolog << "Concurrent Chunk Processing. sc_id: " << d_id;
-        BES_STOPWATCH_START(SUPER_CHUNK_MODULE, timer_tag.str());
-#endif
-        queue<shared_ptr<Chunk>> chunks_to_process;
-        for (const auto &chunk : d_chunks)
-            chunks_to_process.push(chunk);
-
-        process_chunks_unconstrained_concurrent_dio(d_id, chunks_to_process, chunk_shape, d_parent_array, array_shape, d_IoMode);
-    }
-}
 
 } // namespace dmrpp
