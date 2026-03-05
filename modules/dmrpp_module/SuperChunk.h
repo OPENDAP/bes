@@ -34,6 +34,8 @@
 
 namespace dmrpp {
 
+    enum IoMode { Normal, Direct };
+
 // Forward Declaration
 class DmrppArray;
 
@@ -59,6 +61,8 @@ class SuperChunk {
 
     bool non_contiguous_chunk{false};
 
+    IoMode d_io_mode{Normal};
+
     bool is_contiguous(std::shared_ptr<Chunk> candidate_chunk);
     void map_chunks_to_buffer();
     void map_non_contiguous_chunks_to_buffer();
@@ -67,7 +71,7 @@ class SuperChunk {
 
 public:
     // Make the sc_id an uint64 and not a string - the code uses sstream to make the value. jhrg 5/7/22
-    explicit SuperChunk(const std::string &sc_id, DmrppArray *parent = nullptr) : d_id(sc_id), d_parent_array(parent) {}
+    explicit SuperChunk(const std::string &sc_id, DmrppArray *parent = nullptr) : d_id(sc_id), d_parent_array(parent), d_io_mode(Normal) {}
 
     virtual ~SuperChunk() { delete[] d_read_buffer; }
 

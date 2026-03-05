@@ -396,6 +396,7 @@ void process_chunks_unconstrained_concurrent(const string &super_chunk_id, queue
 
                     auto args = unique_ptr<one_chunk_unconstrained_args>(
                         new one_chunk_unconstrained_args(super_chunk_id, chunk, array, array_shape, chunk_shape));
+
                     thread_started = start_one_chunk_unconstrained_compute_thread(futures, std::move(args));
 
                     if (thread_started) {
@@ -745,61 +746,15 @@ BESDEBUG("dmrpp", "SuperChunk read buffer offset: " << d_offset <<" buffer size:
     // and utilize our friend cURL to stuff the bytes into d_read_buffer
     //
     // TODO Replace or improve this way of handling fill value chunks. jhrg 5/7/22
-    if (d_uses_fill_value)
-        read_fill_value_chunk();
-    else
+    // TODO Verify fill_value handling for 'normal' io-mode only, danh 3/6/26
+    if ( d_i_mode == Normal ) {
+        if (d_uses_fill_value)
+            read_fill_value_chunk();
+        else
+            read_aggregate_bytes();
+    } else {
         read_aggregate_bytes();
-
-    // TODO Check if Chunk::read() sets these. jhrg 5/9/22
-    // Set each Chunk's read state to true.
-    // Set each chunks byte count to the expected
-    // size for the chunk - because upstream events
-    // have assured this to be true.
-    for (const auto &chunk : d_chunks) {
-        chunk->set_is_read(true);
-        chunk->set_bytes_read(chunk->get_size());
     }
-}
-
-// Direct chunk IO routine for retrieve_data, it clones from retrieve_data(). To ensure
-// the regular operations. Still use a separate method.
-void SuperChunk::retrieve_data_dio() {
-
-    // Leave this comment copied from retrieve_data_dio().
-    // TODO I think this code should set d_is_read. It sets it for the Chunk, which may be redundant). jhrg 5/9/22
-    if (d_is_read) {
-        BESDEBUG(SUPER_CHUNK_MODULE,
-                 prolog << "SuperChunk (" << (void **)this << ") has already been read! Returning." << endl);
-        return;
-    }
-
-    BES_PROFILE_TIMING(string("Request SuperChunk data dio - ") +
-                       (get_data_url() ? get_data_url()->get_url_no_query() : "") + string(" - ") +
-                       ::to_string(get_size()) + string(" byte(s) - ") + ::to_string(get_chunk_count()) + " chunk(s)");
-
-    if (!d_read_buffer) {
-        // Allocate memory for SuperChunk receive buffer.
-        // release memory in destructor.
-        d_read_buffer = new char[d_size];
-    }
-
-    BESDEBUG("dmrpp", "SuperChunk dio read buffer offset: " << d_offset <<" buffer size: " << d_size <<  "." << endl);
-
-    // Massage the chunks so that their read/receive/intern data buffer
-    // points to the correct section of the d_read_buffer memory.
-    // "Slice it up!"
-    if (non_contiguous_chunk)
-        map_non_contiguous_chunks_to_buffer();
-    else
-        map_chunks_to_buffer();
-    //map_chunks_to_buffer();
-
-    // Read the bytes from the target URL. (pthreads, maybe depends on size...)
-    // Use one (or possibly more) thread(s) depending on d_size
-    // and utilize our friend cURL to stuff the bytes into d_read_buffer
-    //
-    // TODO Replace or improve this way of handling fill value chunks. jhrg 5/7/22
-    read_aggregate_bytes();
 
     // TODO Check if Chunk::read() sets these. jhrg 5/9/22
     // Set each Chunk's read state to true.
@@ -954,7 +909,7 @@ void SuperChunk::read_unconstrained_dio() {
         for (const auto &chunk : d_chunks)
             chunks_to_process.push(chunk);
 
-        process_chunks_unconstrained_concurrent_dio(d_id, chunks_to_process, chunk_shape, d_parent_array, array_shape);
+        process_chunks_unconstrained_concurrent_dio(d_id, chunks_to_process, chunk_shape, d_parent_array, array_shape, d_IoMode);
     }
 }
 
