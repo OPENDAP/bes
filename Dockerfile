@@ -1,7 +1,13 @@
 # Dockerfile for bes_core images
 ARG BUILDER_BASE_IMAGE
 ARG FINAL_BASE_IMAGE
-FROM ${BUILDER_BASE_IMAGE} AS builder
+FROM ${BUILDER_BASE_IMAGE:-"rockylinux:8"} AS builder
+
+ARG BUILDER_BASE_IMAGE
+RUN if [ -z "$BUILDER_BASE_IMAGE" ]; then \
+        echo "Error: Non-empty BUILDER_BASE_IMAGE must be specified. Exiting."; \
+        exit 1; \
+    fi
 
 ENV USER="bes_user"
 ENV USER_ID=101
