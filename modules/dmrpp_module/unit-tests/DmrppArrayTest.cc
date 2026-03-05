@@ -81,8 +81,8 @@ public:
         if (bes_debug) BESDebug::SetUp("cerr,bes,http,curl,dmrpp");
 
         unsigned long long int max_threads = 8;
-        dmrpp::DmrppRequestHandler::d_use_transfer_threads = true;
-        dmrpp::DmrppRequestHandler::d_max_transfer_threads = max_threads;
+        //dmrpp::DmrppRequestHandler::d_use_transfer_threads = true;
+        //dmrpp::DmrppRequestHandler::d_max_transfer_threads = max_threads;
 
         // Various things will gripe about this not being used... This is how the
         // CurlHandlePool gets instantiated. jhrg 4/22/22

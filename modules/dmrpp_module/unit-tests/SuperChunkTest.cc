@@ -73,8 +73,8 @@ public:
         DBG(cerr << prolog << "TheBESKeys::ConfigFile: " << TheBESKeys::ConfigFile << endl);
 
         unsigned int max_threads = 8;
-        dmrpp::DmrppRequestHandler::d_use_transfer_threads = true;
-        dmrpp::DmrppRequestHandler::d_max_transfer_threads = max_threads;
+        //dmrpp::DmrppRequestHandler::d_use_transfer_threads = true;
+        //dmrpp::DmrppRequestHandler::d_max_transfer_threads = max_threads;
 
         // This call instantiates the curlHandlePool. jhrg 5/24/22
         foo = new dmrpp::DmrppRequestHandler("Chaos");

@@ -41,9 +41,6 @@
 #define DMRPP_OBJECT_CACHE_ENTRIES_KEY "DMRPP.ObjectCacheEntries"
 #define DMRPP_OBJECT_CACHE_PURGE_LEVEL_KEY "DMRPP.ObjectCachePurgeLevel"
 
-#define DMRPP_USE_TRANSFER_THREADS_KEY "DMRPP.UseParallelTransfers"
-#define DMRPP_MAX_TRANSFER_THREADS_KEY "DMRPP.MaxParallelTransfers"
-
 #define DMRPP_USE_COMPUTE_THREADS_KEY "DMRPP.UseComputeThreads"
 #define DMRPP_MAX_COMPUTE_THREADS_KEY "DMRPP.MaxComputeThreads"
 

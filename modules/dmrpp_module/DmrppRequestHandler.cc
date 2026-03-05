@@ -117,9 +117,6 @@ bool DmrppRequestHandler::d_use_object_cache = true;
 unsigned int DmrppRequestHandler::d_object_cache_entries = 100;
 double DmrppRequestHandler::d_object_cache_purge_level = 0.2;
 
-bool DmrppRequestHandler::d_use_transfer_threads = false;
-unsigned int DmrppRequestHandler::d_max_transfer_threads = 8;
-
 bool DmrppRequestHandler::d_use_compute_threads = true;
 unsigned int DmrppRequestHandler::d_max_compute_threads = 8;
 
@@ -200,19 +197,6 @@ DmrppRequestHandler::DmrppRequestHandler(const string &name) :
     add_method(HELP_RESPONSE, dap_build_help);
 
     stringstream msg;
-    read_key_value(DMRPP_USE_TRANSFER_THREADS_KEY, d_use_transfer_threads);
-    read_key_value(DMRPP_MAX_TRANSFER_THREADS_KEY, d_max_transfer_threads);
-    msg << prolog << "Concurrent Transfer Threads: ";
-    if (DmrppRequestHandler::d_use_transfer_threads) {
-        msg << "Enabled. max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl;
-    }
-    else {
-        msg << "Disabled." << endl;
-    }
-
-    INFO_LOG(msg.str());
-    msg.str(std::string());
-
     read_key_value(DMRPP_USE_COMPUTE_THREADS_KEY, d_use_compute_threads);
     read_key_value(DMRPP_MAX_COMPUTE_THREADS_KEY, d_max_compute_threads);
     msg << prolog << "Concurrent Compute Threads: ";
