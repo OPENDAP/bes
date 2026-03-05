@@ -469,8 +469,9 @@ public:
             unsigned int struct_size);
 
 
-    void accumlate_storage_size(unsigned long long chunk_storage_size) {var_chunks_storage_size += chunk_storage_size; }
+    void accumulate_storage_size(unsigned long long chunk_storage_size) {var_chunks_storage_size += chunk_storage_size; }
     unsigned long long get_var_chunks_storage_size() const {return var_chunks_storage_size; }
+    void set_var_chunks_storage_size(unsigned long long chunk_storage_size)  {var_chunks_storage_size = chunk_storage_size; }
     virtual void dump(std::ostream & strm) const;
 };
 

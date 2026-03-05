@@ -1,7 +1,13 @@
 # Dockerfile for bes_core images
 ARG BUILDER_BASE_IMAGE
 ARG FINAL_BASE_IMAGE
-FROM ${BUILDER_BASE_IMAGE} AS builder
+FROM ${BUILDER_BASE_IMAGE:-"rockylinux:8"} AS builder
+
+ARG BUILDER_BASE_IMAGE
+RUN if [ -z "$BUILDER_BASE_IMAGE" ]; then \
+        echo "Error: Non-empty BUILDER_BASE_IMAGE must be specified. Exiting."; \
+        exit 1; \
+    fi
 
 ENV USER="bes_user"
 ENV USER_ID=101
@@ -65,6 +71,8 @@ RUN make install -j$(nproc --ignore=1)
 # Test the BES
 RUN besctl start && make check -j$(nproc --ignore=1) && besctl stop
 
+RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
+
 #####
 ##### Final layer: libdap + hyrax-dependencies + bes
 #####
@@ -73,11 +81,10 @@ FROM ${FINAL_BASE_IMAGE} AS bes_image
 # Duplicated from installation above, this time on a slimmer base image...
 # Install the libdap rpms
 ARG LIBDAP_RPM_FILENAME
-ARG LIBDAP_DEVEL_RPM_FILENAME
 RUN --mount=from=aws_downloads,target=/tmp_mounted \
     yum update -y \
     && dnf install sudo which procps libicu -y \
-    && echo "Installing libdap snapshot rpms: $LIBDAP_RPM_FILENAME, $LIBDAP_DEVEL_RPM_FILENAME" \
+    && echo "Installing libdap snapshot rpms: $LIBDAP_RPM_FILENAME" \
     && dnf -y install "/tmp_mounted/$LIBDAP_RPM_FILENAME" \
     && dnf clean all
 
@@ -105,11 +112,13 @@ USER $USER
 WORKDIR "/home/$USER"
 
 COPY --from=builder /home/${USER}/bes/bes_VERSION bes_VERSION
+COPY --from=builder /home/${USER}/bes/libdap_VERSION libdap_VERSION
 COPY --from=builder $PREFIX $PREFIX
 
 # Sanity check....
 RUN echo "besdaemon is here: "`which besdaemon` \
     && echo "BES_VERSION (from bes_VERSION) is $(cat bes_VERSION)" \
+    && echo "LIBDAP_VERSION (from libdap_VERSION) is $(cat libdap_VERSION)" \
     && besctl start \
     && besctl stop
 
