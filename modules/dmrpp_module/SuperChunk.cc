@@ -126,34 +126,35 @@ void process_one_chunk(shared_ptr<Chunk> chunk, DmrppArray *array,
  */
 void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsigned long long> &chunk_shape,
                                      DmrppArray *array, const vector<unsigned long long> &array_shape,
-                                     const IO_AccessMode io_mode) {
+                                     IO_AccessMode io_mode) {
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
 
     chunk->read_chunk();
 
-    if(array) {
+    /*if(array) {
         if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
             chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(),
                                 array->get_bytes_per_element());
 
         array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
-    }
-  /*
+    }*/
+
     switch (io_mode) {
-        case normal:
+        case IO_AccessMode::Normal:
             if(array) {
                 if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
                     chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(),
                                         array->get_bytes_per_element());
 
                 array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
-            } //break;
-        case direct:
+            }
+            break;
+        case IO_AccessMode::Direct:
             if (array)
                 array->insert_chunk_unconstrained_dio(chunk);
             break;
         default: throw BESInternalError("Unsupported io-mode.", __FILE__, __LINE__);
-    }*/
+    }
 
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl);
 }
@@ -201,7 +202,7 @@ bool one_chunk_unconstrained_compute_thread(unique_ptr<one_chunk_unconstrained_a
     BES_STOPWATCH_START(COMPUTE_THREADS, timer_tag.str());
 #endif
 
-    process_one_chunk_unconstrained(args->chunk, args->chunk_shape, args->array, args->array_shape, args->io_mode);
+    process_one_chunk_unconstrained(args->chunk, args->chunk_shape, args->array, args->array_shape);
     return true;
 }
 
@@ -418,8 +419,8 @@ void process_chunks_unconstrained_concurrent(const string &super_chunk_id, queue
                         new one_chunk_unconstrained_args(super_chunk_id, chunk, array, array_shape, chunk_shape, io_mode));
 
                     switch (io_mode) {
-                        case normal: thread_started = start_one_chunk_unconstrained_compute_thread(futures, std::move(args)); break;
-                        case direct: thread_started = start_one_chunk_unconstrained_compute_thread_dio(futures, std::move(args)); break;
+                        case IO_AccessMode::Normal: thread_started = start_one_chunk_unconstrained_compute_thread(futures, std::move(args)); break;
+                        case IO_AccessMode::Direct: thread_started = start_one_chunk_unconstrained_compute_thread_dio(futures, std::move(args)); break;
                         default: throw BESInternalError("Unsupported io-mode.", __FILE__, __LINE__);
                     }
 
@@ -715,13 +716,13 @@ BESDEBUG("dmrpp", "SuperChunk read buffer offset: " << d_offset <<" buffer size:
     // TODO Replace or improve this way of handling fill value chunks. jhrg 5/7/22
     // TODO Verify fill_value handling for 'normal' io-mode only, danh 3/6/26
     switch ( d_io_mode ) {
-        case normal:
+        case IO_AccessMode::Normal:
             if (d_uses_fill_value)
                 read_fill_value_chunk();
             else
                 read_aggregate_bytes();
             break;
-        case direct:
+        case IO_AccessMode::Direct:
             read_aggregate_bytes();
             break;
         default:
@@ -804,7 +805,7 @@ void SuperChunk::process_child_chunks_unconstrained() {
         BES_STOPWATCH_START(SUPER_CHUNK_MODULE, prolog + "Serial Chunk Processing. sc_id: " + d_id);
 #endif
         for (const auto &chunk : d_chunks) {
-            process_one_chunk_unconstrained(chunk, chunk_shape, d_parent_array, array_shape, d_io_mode);
+            process_one_chunk_unconstrained(chunk, chunk_shape, d_parent_array, array_shape);
         }
     } else {
 #if DMRPP_ENABLE_THREAD_TIMERS

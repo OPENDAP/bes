@@ -34,8 +34,6 @@
 
 namespace dmrpp {
 
-    enum IO_AccessMode { normal, direct };
-
 // Forward Declaration
 class DmrppArray;
 
@@ -44,8 +42,10 @@ class DmrppArray;
  * inflation.
  *
  */
+    enum class IO_AccessMode { Normal, Direct };
 
 class SuperChunk {
+
     // private
     friend class SuperChunkTest;
 
@@ -62,7 +62,7 @@ class SuperChunk {
 
     bool non_contiguous_chunk{false};
 
-    IO_AccessMode d_io_mode{normal};
+    IO_AccessMode d_io_mode{IO_AccessMode::Normal};
 
     bool is_contiguous(std::shared_ptr<Chunk> candidate_chunk);
     void map_chunks_to_buffer();
@@ -72,7 +72,7 @@ class SuperChunk {
 
 public:
     // Make the sc_id an uint64 and not a string - the code uses sstream to make the value. jhrg 5/7/22
-    explicit SuperChunk(const std::string &sc_id, DmrppArray *parent = nullptr) : d_id(sc_id), d_parent_array(parent), d_io_mode(normal) {}
+    explicit SuperChunk(const std::string &sc_id, DmrppArray *parent = nullptr) : d_id(sc_id), d_parent_array(parent), d_io_mode(IO_AccessMode::Normal) {}
 
     virtual ~SuperChunk() { delete[] d_read_buffer; }
 
@@ -142,7 +142,7 @@ struct one_chunk_unconstrained_args {
                                  const std::vector<unsigned long long> &a_s, const std::vector<unsigned long long> &c_s,
                                  const IO_AccessMode io_mode)
         : parent_thread_id(std::this_thread::get_id()), parent_super_chunk_id(sc_id), chunk(std::move(c)), array(a),
-          array_shape(a_s), chunk_shape(c_s), io_mode(normal) {}
+          array_shape(a_s), chunk_shape(c_s), io_mode(IO_AccessMode::Normal) {}
 };
 
 void process_chunks_concurrent(const string &super_chunk_id, std::queue<shared_ptr<Chunk>> &chunks, DmrppArray *array,
