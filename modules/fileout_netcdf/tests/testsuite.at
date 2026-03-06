@@ -236,7 +236,7 @@ AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/test_ba_stride_stop.dap.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/test_ba_start_dim.dap.bescmd)
 
 dnl Add a test to check if the compression is turned on for netCDF-4 
-AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION(bescmd/gridT.3.compression.bescmd)
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/gridT.3.compression.bescmd],[bes.nc4.conf])
 
 dnl Add tests for the HDF5 CF DMR direct mapping 
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR(bescmd/d_int8.h5.2.bescmd)
@@ -415,12 +415,12 @@ AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/sinusoid.hdf_constraint.dap2.besc
 #Disable direct IO tests
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/One_chunk_shuf_deflate.h5.dmrpp.bescmd], [bes.nc4.grp.disable_dio.conf])
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/One_chunk_shuf_deflate.h5.dmrpp.bescmd], [bes.nc4.grp.disable_dio.conf])
-AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION(bescmd/One_chunk_shuf_deflate.h5.dmrpp_dio.compression.bescmd)
-AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION_2(bescmd/One_chunk_shuf_deflate.h5.dmrpp_disable_dio.compression.bescmd)
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/One_chunk_shuf_deflate.h5.dmrpp_dio.compression.bescmd],[bes.nc4.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/One_chunk_shuf_deflate.h5.dmrpp_disable_dio.compression.bescmd],[bes.nc4.grp.disable_dio.conf])
 
 # The dio=off is in the dmrpp file
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/One_chunk_shuf_deflate.h5.disable_dio.dmrpp.bescmd)
-AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION(bescmd/One_chunk_shuf_deflate.h5.disable_dio.dmrpp.compression.bescmd)
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/One_chunk_shuf_deflate.h5.disable_dio.dmrpp.compression.bescmd],[bes.nc4.conf])
 
 # reduce dimension name
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/nc4_group_atomic_comp.h5.dmrpp.bescmd], [bes.nc4.grp.reduce_dim.conf])
