@@ -30,23 +30,19 @@ SRC = build_dmrpp_h4.cc build_dmrpp_util_h4.cc ../Chunk.cc ../DMRpp.cc ../DMZ.cc
    ../DmrppD4Enum.cc ../DmrppD4Group.cc ../DmrppD4Opaque.cc ../DmrppD4Sequence.cc ../DmrppFloat32.cc ../DmrppFloat64.cc \
    ../DmrppInt16.cc ../DmrppInt32.cc ../DmrppInt64.cc ../DmrppInt8.cc ../DmrppStr.cc ../DmrppStructure.cc \
    ../DmrppTypeFactory.cc ../DmrppUInt16.cc ../DmrppUInt32.cc ../DmrppUInt64.cc ../DmrppUrl.cc ../SuperChunk.cc \
-   ../DmrppRequestHandler.cc ../CurlHandlePool.cc ../vlsa_util.cc ../float_byteswap.cc ../ngap_container/NgapOwnedContainer.cc \
-   ../ngap_container/NgapApi.cc 
+   ../DmrppRequestHandler.cc ../CurlHandlePool.cc ../vlsa_util.cc ../float_byteswap.cc
 
 HDR = build_dmrpp_util_h4.h ../Chunk.h ../DMRpp.h ../DMZ.h ../DmrppArray.h ../DmrppByte.h ../DmrppCommon.h \
     ../DmrppD4Enum.h ../DmrppD4Group.h ../DmrppD4Opaque.h ../DmrppD4Sequence.h ../DmrppFloat32.h ../DmrppFloat64.h \
     ../DmrppInt16.h ../DmrppInt32.h ../DmrppInt64.h ../DmrppInt8.h ../DmrppStr.h ../DmrppStructure.h \
     ../DmrppTypeFactory.h ../DmrppUInt16.h ../DmrppUInt32.h ../DmrppUInt64.h ../DmrppUrl.h ../SuperChunk.h \
-    ../DmrppRequestHandler.h ../CurlHandlePool.h ../vlsa_util.h ../byteswap_compat.h ../float_byteswap.h \
-    ../ngap_container/NgapOwnedContainer.h ../ngap_container/NgapApi.h
+    ../DmrppRequestHandler.h ../CurlHandlePool.h ../vlsa_util.h ../byteswap_compat.h ../float_byteswap.h
 
 build_dmrpp_h4_CPPFLAGS = $(AM_CPPFLAGS)
-
 build_dmrpp_h4_LDFLAGS = $(HDFEOS2_LDFLAGS) $(HDF4_LDFLAGS) $(BES_DAP_LIB_LDFLAGS)
-
-
-build_dmrpp_h4_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) \
-    $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) $(BYTESWAP_LIBS) $(HDFEOS2_LIBS) $(HDF4_LIBS)
+build_dmrpp_h4_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) -L$(builddir)/../ngap_container -lngap \
+$(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) \
+$(BYTESWAP_LIBS) $(HDFEOS2_LIBS) $(HDF4_LIBS)
 
 lib_besdir = $(libdir)/bes
 
