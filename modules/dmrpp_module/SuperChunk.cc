@@ -140,20 +140,21 @@ void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsig
     }*/
 
     switch (io_mode) {
-        case IO_AccessMode::Normal:
-            if(array) {
-                if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
-                    chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(),
-                                        array->get_bytes_per_element());
+    case IO_AccessMode::Normal:
+        if (array) {
+            if (!chunk->get_uses_fill_value() && !array->is_filters_empty())
+                chunk->filter_chunk(array->get_filters(), array->get_chunk_size_in_elements(),
+                                    array->get_bytes_per_element());
 
-                array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
-            }
-            break;
-        case IO_AccessMode::Direct:
-            if (array)
-                array->insert_chunk_unconstrained_dio(chunk);
-            break;
-        default: throw BESInternalError("Unsupported io-mode.", __FILE__, __LINE__);
+            array->insert_chunk_unconstrained(chunk, 0, 0, array_shape, 0, chunk_shape, chunk->get_position_in_array());
+        }
+        break;
+    case IO_AccessMode::Direct:
+        if (array)
+            array->insert_chunk_unconstrained_dio(chunk);
+        break;
+    default:
+        throw BESInternalError("Unsupported io-mode.", __FILE__, __LINE__);
     }
 
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "END" << endl);
@@ -394,8 +395,7 @@ void process_chunks_concurrent(const string &super_chunk_id, queue<shared_ptr<Ch
  */
 void process_chunks_unconstrained_concurrent(const string &super_chunk_id, queue<shared_ptr<Chunk>> &chunks,
                                              const vector<unsigned long long> &chunk_shape, DmrppArray *array,
-                                             const vector<unsigned long long> &array_shape,
-                                             IO_AccessMode io_mode) {
+                                             const vector<unsigned long long> &array_shape, IO_AccessMode io_mode) {
 
     // We maintain a list  of futures to track our parallel activities.
     list<future<bool>> futures;
@@ -415,13 +415,18 @@ void process_chunks_unconstrained_concurrent(const string &super_chunk_id, queue
                 while (thread_started && !chunks.empty()) {
                     auto chunk = chunks.front();
 
-                    auto args = unique_ptr<one_chunk_unconstrained_args>(
-                        new one_chunk_unconstrained_args(super_chunk_id, chunk, array, array_shape, chunk_shape, io_mode));
+                    auto args = unique_ptr<one_chunk_unconstrained_args>(new one_chunk_unconstrained_args(
+                        super_chunk_id, chunk, array, array_shape, chunk_shape, io_mode));
 
                     switch (io_mode) {
-                        case IO_AccessMode::Normal: thread_started = start_one_chunk_unconstrained_compute_thread(futures, std::move(args)); break;
-                        case IO_AccessMode::Direct: thread_started = start_one_chunk_unconstrained_compute_thread_dio(futures, std::move(args)); break;
-                        default: throw BESInternalError("Unsupported io-mode.", __FILE__, __LINE__);
+                    case IO_AccessMode::Normal:
+                        thread_started = start_one_chunk_unconstrained_compute_thread(futures, std::move(args));
+                        break;
+                    case IO_AccessMode::Direct:
+                        thread_started = start_one_chunk_unconstrained_compute_thread_dio(futures, std::move(args));
+                        break;
+                    default:
+                        throw BESInternalError("Unsupported io-mode.", __FILE__, __LINE__);
                     }
 
                     if (thread_started) {
@@ -698,7 +703,8 @@ void SuperChunk::retrieve_data() {
         // release memory in destructor.
         d_read_buffer = new char[d_size];
     }
-BESDEBUG("dmrpp", "SuperChunk read buffer offset: " << d_offset <<" buffer size: " << d_size <<  "." << endl);
+
+    BESDEBUG("dmrpp", "SuperChunk read buffer offset: " << d_offset << " buffer size: " << d_size << "." << endl);
 
     // Massage the chunks so that their read/receive/intern data buffer
     // points to the correct section of the d_read_buffer memory.
@@ -715,18 +721,18 @@ BESDEBUG("dmrpp", "SuperChunk read buffer offset: " << d_offset <<" buffer size:
     //
     // TODO Replace or improve this way of handling fill value chunks. jhrg 5/7/22
     // TODO Verify fill_value handling for 'normal' io-mode only, danh 3/6/26
-    switch ( d_io_mode ) {
-        case IO_AccessMode::Normal:
-            if (d_uses_fill_value)
-                read_fill_value_chunk();
-            else
-                read_aggregate_bytes();
-            break;
-        case IO_AccessMode::Direct:
+    switch (d_io_mode) {
+    case IO_AccessMode::Normal:
+        if (d_uses_fill_value)
+            read_fill_value_chunk();
+        else
             read_aggregate_bytes();
-            break;
-        default:
-            throw BESInternalError("Unsupported io-mode.", __FILE__, __LINE__);
+        break;
+    case IO_AccessMode::Direct:
+        read_aggregate_bytes();
+        break;
+    default:
+        throw BESInternalError("Unsupported io-mode.", __FILE__, __LINE__);
     }
 
     // TODO Check if Chunk::read() sets these. jhrg 5/9/22
@@ -817,7 +823,9 @@ void SuperChunk::process_child_chunks_unconstrained() {
         for (const auto &chunk : d_chunks) {
             chunks_to_process.push(chunk);
         }
-        process_chunks_unconstrained_concurrent(d_id, chunks_to_process, chunk_shape, d_parent_array, array_shape, d_io_mode);;
+        process_chunks_unconstrained_concurrent(d_id, chunks_to_process, chunk_shape, d_parent_array, array_shape,
+                                                d_io_mode);
+        ;
     }
 }
 
@@ -848,6 +856,5 @@ string SuperChunk::to_string(bool verbose = false) const {
  * @param strm
  */
 void SuperChunk::dump(ostream &strm) const { strm << to_string(false); }
-
 
 } // namespace dmrpp

@@ -75,6 +75,9 @@ struct ons {
  * methods, one for the 'no chunks' case and one for arrays 'with chunks.'
  */
 class DmrppArray : public libdap::Array, public dmrpp::DmrppCommon {
+    friend void process_one_chunk_unconstrained(shared_ptr<Chunk> chunk, const vector<unsigned long long> &chunk_shape,
+                                                DmrppArray *array, const vector<unsigned long long> &array_shape,
+                                                IO_AccessMode io_mode);
 
 private:
     // void _duplicate(const DmrppArray &ts);
@@ -153,25 +156,28 @@ private:
     void read_chunks_with_linked_blocks();
     void read_chunks_with_linked_blocks_constrained();
 
-    
     bool use_buffer_chunk();
     void read_buffer_chunks();
     void read_buffer_chunks_unconstrained();
 
     unsigned long long get_maximum_constrained_buffer_nelmts();
-    unsigned long long obtain_buffer_end_pos(const vector<unsigned long long>& t_buf_end_pos_vec, unsigned long long cur_buf_end_pos) const;
-    void obtain_buffer_end_pos_vec(const vector<bool>& subset_chunks_needed, unsigned long long max_buffer_size, unsigned long long buffer_offset,
-                                 unsigned long long last_unfilled_chunk_index, vector<unsigned long long> & buf_end_pos_vec) const;
+    unsigned long long obtain_buffer_end_pos(const vector<unsigned long long> &t_buf_end_pos_vec,
+                                             unsigned long long cur_buf_end_pos) const;
+    void obtain_buffer_end_pos_vec(const vector<bool> &subset_chunks_needed, unsigned long long max_buffer_size,
+                                   unsigned long long buffer_offset, unsigned long long last_unfilled_chunk_index,
+                                   vector<unsigned long long> &buf_end_pos_vec) const;
 
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim);
 
     std::shared_ptr<Chunk> find_needed_chunks(unsigned int dim, std::vector<unsigned long long> *target_element_address,
                                               std::shared_ptr<Chunk> chunk);
 
-    bool find_needed_chunks_simple(std::shared_ptr<Chunk> chunk, const std::vector<unsigned long long> & chunk_shape, 
-                                   const std::vector<unsigned long long> & start, const std::vector<unsigned long long> & stride,
-                                   std::vector<unsigned long long> & stop, int num_dims);
-    int obtain_subset_dims(vector<unsigned long long>& var_start,vector<unsigned long long>&var_stop,vector<unsigned long long>&var_stride);
+    bool find_needed_chunks_simple(std::shared_ptr<Chunk> chunk, const std::vector<unsigned long long> &chunk_shape,
+                                   const std::vector<unsigned long long> &start,
+                                   const std::vector<unsigned long long> &stride, std::vector<unsigned long long> &stop,
+                                   int num_dims);
+    int obtain_subset_dims(vector<unsigned long long> &var_start, vector<unsigned long long> &var_stop,
+                           vector<unsigned long long> &var_stride);
 
     virtual void insert_chunk(unsigned int dim, std::vector<unsigned long long> *target_element_address,
                               std::vector<unsigned long long> *chunk_element_address, std::shared_ptr<Chunk> chunk,
@@ -183,7 +189,6 @@ private:
 
     void add_dio_var_storage_info_constrained();
     void add_dio_var_storage_info_unconstrained();
-
 
     unsigned long long inflate_simple(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len);
 

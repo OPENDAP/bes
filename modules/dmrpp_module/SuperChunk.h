@@ -42,7 +42,7 @@ class DmrppArray;
  * inflation.
  *
  */
-    enum class IO_AccessMode { Normal, Direct };
+enum class IO_AccessMode { Normal, Direct };
 
 class SuperChunk {
 
@@ -72,7 +72,8 @@ class SuperChunk {
 
 public:
     // Make the sc_id an uint64 and not a string - the code uses sstream to make the value. jhrg 5/7/22
-    explicit SuperChunk(const std::string &sc_id, DmrppArray *parent = nullptr) : d_id(sc_id), d_parent_array(parent), d_io_mode(IO_AccessMode::Normal) {}
+    explicit SuperChunk(const std::string &sc_id, DmrppArray *parent = nullptr)
+        : d_id(sc_id), d_parent_array(parent), d_io_mode(IO_AccessMode::Normal) {}
 
     virtual ~SuperChunk() { delete[] d_read_buffer; }
 
@@ -88,12 +89,14 @@ public:
     virtual void read() { process_child_chunks(); }
 
     virtual void read_unconstrained() { process_child_chunks_unconstrained(); }
-
-    virtual void read_unconstrained_dio();
+    // I hacked (added) this. jhrg 3/6/26
+    virtual void read_unconstrained_dio() { process_child_chunks_unconstrained(); }
 
     virtual void retrieve_data();
-    virtual void retrieve_data_dio();
-
+#if 0
+        // I had to remove this because the implementation (aka definition) no longer exists. jhrg 3/6/26
+        virtual void retrieve_data_dio();
+#endif
     virtual void process_child_chunks();
     virtual void process_child_chunks_unconstrained();
 
@@ -150,8 +153,7 @@ void process_chunks_concurrent(const string &super_chunk_id, std::queue<shared_p
 
 void process_chunks_unconstrained_concurrent(const string &super_chunk_id, std::queue<std::shared_ptr<Chunk>> &chunks,
                                              const std::vector<unsigned long long> &chunk_shape, DmrppArray *array,
-                                             const std::vector<unsigned long long> &array_shape,
-                                             IO_AccessMode io_mode);
+                                             const std::vector<unsigned long long> &array_shape, IO_AccessMode io_mode);
 
 } // namespace dmrpp
 
