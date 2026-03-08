@@ -832,6 +832,7 @@ void DmrppArray::read_chunks_dio_unconstrained() {
             sc_id.str(std::string());
             sc_id << name() << "-" << sc_count++;
             current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(), this));
+            current_super_chunk->set_io_mode(IO_AccessMode::Direct);
             super_chunks.push(current_super_chunk);
             if (!current_super_chunk->add_chunk(chunk)) {
                 stringstream msg;
@@ -858,7 +859,7 @@ void DmrppArray::read_chunks_dio_unconstrained() {
         BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl);
 
         // Call direct IO routine
-        super_chunk->read_unconstrained_dio();
+        super_chunk->read_unconstrained();
     }
     set_read_p(true);
 }
@@ -919,6 +920,7 @@ void DmrppArray::read_buffer_chunks_dio_unconstrained()
 
     // Set the non-contiguous chunk flag
     current_super_chunk->set_non_contiguous_chunk_flag(true);
+    current_super_chunk->set_io_mode(IO_AccessMode::Direct);
     super_chunks.push(current_super_chunk);
 
     unsigned long long buf_end_pos_counter = 0;
@@ -950,7 +952,7 @@ void DmrppArray::read_buffer_chunks_dio_unconstrained()
     while(!super_chunks.empty()) {
         auto super_chunk = super_chunks.front();
         super_chunks.pop();
-        super_chunk->read_unconstrained_dio();
+        super_chunk->read_unconstrained();
     }
 
     set_read_p(true);
@@ -1834,6 +1836,7 @@ void DmrppArray::read_chunks_dio_constrained() {
                 sc_id.str(std::string()); // Clears stringstream.
                 sc_id << name() << "-" << sc_count++;
                 current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(), this));
+                current_super_chunk->set_io_mode(IO_AccessMode::Direct);
                 super_chunks.push(current_super_chunk);
                 if (!current_super_chunk->add_chunk(chunk)) {
                     stringstream msg;
@@ -1862,7 +1865,7 @@ void DmrppArray::read_chunks_dio_constrained() {
         BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl);
         // For the direct IO, the unconstrained and constrained cases are the same.
         // TODO: will change the read_unconstrained_dio() to a more meaningful name.
-        super_chunk->read_unconstrained_dio();
+        super_chunk->read_unconstrained();
     }
 
     set_read_p(true);
@@ -2038,6 +2041,7 @@ void DmrppArray::read_buffer_chunks_dio_constrained() {
 
                 // We need to mark that this superchunk includes non-contiguous chunks.
                 current_super_chunk->set_non_contiguous_chunk_flag(true);
+                current_super_chunk->set_io_mode(IO_AccessMode::Direct);
                 super_chunks.push(current_super_chunk);
                 buf_end_pos_counter++;
                 if(!current_super_chunk->add_chunk_non_contiguous(chunks[i],buf_end_pos_vec[buf_end_pos_counter])){
@@ -2056,7 +2060,7 @@ void DmrppArray::read_buffer_chunks_dio_constrained() {
         auto super_chunk = super_chunks.front();
         super_chunks.pop();
         // For the direct IO, the unconstrained and constrained cases are the same. 
-        super_chunk->read_unconstrained_dio();
+        super_chunk->read_unconstrained();
     }
 
     set_read_p(true);

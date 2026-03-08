@@ -35,7 +35,7 @@ include $(top_srcdir)/coverage.mk
 # and build_dmrpp_util.h. I also removed the build_dmrpp program from the SUBDIRS variable below. We will need to 
 # add it back when we put the builder code back. jhrg 3/6/26
 # Was: SUBDIRS = ngap_container dmrpp_transmitter build_dmrpp_h4 . unit-tests tests data tests_build_dmrpp get_dmrpp
-SUBDIRS = ngap_container dmrpp_transmitter . unit-tests tests data
+SUBDIRS = ngap_container dmrpp_transmitter build_dmrpp_h4 . unit-tests tests data tests_build_dmrpp
 
 
 lib_besdir=$(libdir)/bes
@@ -68,7 +68,7 @@ libdmrpp_module_la_LIBADD = -L$(builddir)/ngap_container -lngap $(BES_DISPATCH_L
 
 # jhrg 3/6/26 I took the dmrpp builder code out temporarily because it was getting in the way of refactoring.
 # Was: bin_PROGRAMS = build_dmrpp check_dmrpp merge_dmrpp reduce_mdf
-bin_PROGRAMS = check_dmrpp merge_dmrpp reduce_mdf
+bin_PROGRAMS = build_dmrpp check_dmrpp merge_dmrpp reduce_mdf
 
 BUILT_SOURCES = h5common.cc h5common.h
 
@@ -79,13 +79,13 @@ h5common.h: Makefile
 	cp $(top_srcdir)/modules/hdf5_handler/h5common.h ./h5common.h
 
 # jhrg 3/6/26 More removal that will have to be undone later.
-# build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
-# build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) DmrppRequestHandler.cc DmrppRequestHandler.h \
-#     build_dmrpp.cc build_dmrpp_util.cc build_dmrpp_util.h h5common.cc h5common.h
-# build_dmrpp_LDFLAGS = $(top_builddir)/dap/.libs/libdap_module.a
-# build_dmrpp_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(H5_LDFLAGS) \
-#     $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
-#     $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
+build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(top_srcdir)/modules/hdf5_handler
+build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) DmrppRequestHandler.cc DmrppRequestHandler.h \
+    build_dmrpp.cc build_dmrpp_util.cc build_dmrpp_util.h h5common.cc h5common.h
+build_dmrpp_LDFLAGS = $(top_builddir)/dap/.libs/libdap_module.a
+build_dmrpp_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(H5_LDFLAGS) \
+    $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
+    $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
 
 # jhrg 6/2/23 $(BES_EXTRA_LIBS)
 

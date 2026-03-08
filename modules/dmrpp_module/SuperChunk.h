@@ -90,7 +90,7 @@ public:
 
     virtual void read_unconstrained() { process_child_chunks_unconstrained(); }
     // I hacked (added) this. jhrg 3/6/26
-    virtual void read_unconstrained_dio() { process_child_chunks_unconstrained(); }
+    //virtual void read_unconstrained_dio() { process_child_chunks_unconstrained(); }
 
     virtual void retrieve_data();
 #if 0
@@ -108,6 +108,9 @@ public:
 
     std::string to_string(bool verbose) const;
     virtual void dump(std::ostream &strm) const;
+
+    IO_AccessMode get_io_mode() { return d_io_mode; }
+    void set_io_mode(IO_AccessMode access_mode) { d_io_mode = access_mode; }
 };
 
 /**
