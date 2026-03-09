@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="2.0" name="h5_odd_chunk_size_comp2.h5" dmrpp:href="data/h5_odd_chunk_size_comp2.h5" dmrpp:version="3.21.1">
+    <Int32 name="DS1">
+        <Dim size="11"/>
+        <Dim size="13"/>
+        <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>3 5</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4045" nBytes="36" chunkPositionInArray="[0,0]"/>
+            <dmrpp:chunk offset="4157" nBytes="38" chunkPositionInArray="[0,5]"/>
+            <dmrpp:chunk offset="4016" nBytes="29" chunkPositionInArray="[0,10]"/>
+            <dmrpp:chunk offset="4195" nBytes="42" chunkPositionInArray="[3,0]"/>
+            <dmrpp:chunk offset="4237" nBytes="42" chunkPositionInArray="[3,5]"/>
+            <dmrpp:chunk offset="4279" nBytes="36" chunkPositionInArray="[3,10]"/>
+            <dmrpp:chunk offset="4116" nBytes="41" chunkPositionInArray="[6,0]"/>
+            <dmrpp:chunk offset="4315" nBytes="43" chunkPositionInArray="[6,5]"/>
+            <dmrpp:chunk offset="4081" nBytes="35" chunkPositionInArray="[6,10]"/>
+            <dmrpp:chunk offset="4358" nBytes="35" chunkPositionInArray="[9,0]"/>
+            <dmrpp:chunk offset="4393" nBytes="34" chunkPositionInArray="[9,5]"/>
+            <dmrpp:chunk offset="4427" nBytes="28" chunkPositionInArray="[9,10]"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2026-03-09T17:04:41Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/hyrax-2036/bes/modules/hdf5_handler/data/src/h5_odd_chunk_size_comp2.h5 -r h5_odd_chunk_size_comp2.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
