@@ -68,6 +68,11 @@ RUN echo "Sanity check: CPPFLAGS=$CPPFLAGS LDFLAGS=$LDFLAGS prefix=$PREFIX" \
     --enable-developer
 RUN make install -j$(nproc --ignore=1)
 
+# Clean up extraneous files; do it in this stage so we don't pull them over
+# at the next stage
+RUN rm $PREFIX/lib/bes/*.a \
+    && rm $PREFIX/lib/bes/*.la
+
 # Test the BES
 RUN besctl start && make check -j$(nproc --ignore=1) && besctl stop
 
