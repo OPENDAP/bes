@@ -830,7 +830,7 @@ void FONcTransform::transform_dap4_no_group() {
                 if (v->type() == dods_array_c) {
                     auto t_a = dynamic_cast<Array *>(v);
                     if (t_a->get_dio_flag()) {
-                        set_constraint_var_dio_flag(t_a, root_no_grp_unlimited_dimnames);
+                        set_constraint_var_dio_flag(root_grp, t_a, root_no_grp_unlimited_dimnames);
 #if 0
                         bool var_has_unlim_dim = false;
                         if (is_root_no_grp_unlimited_dim) 
@@ -1106,7 +1106,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
                 if (v->type() == dods_array_c) {
                     auto t_a = dynamic_cast<Array *>(v);
                     if (t_a->get_dio_flag()) { 
-                        set_constraint_var_dio_flag(t_a, unlimited_dimnames);
+                        set_constraint_var_dio_flag(d4_grp, t_a, unlimited_dimnames);
 #if 0
                         bool var_has_unlim_dim = false;
                         var_has_unlim_dim = check_var_unlimited_dimension(t_a,unlimited_dimnames);
@@ -1362,7 +1362,7 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp) {
     }
 
 }
-void FONcTransform::set_constraint_var_dio_flag(libdap::Array* t_a, const vector<string>& unlimited_dimnames) const {
+void FONcTransform::set_constraint_var_dio_flag(D4Group *d4_grp, Array* t_a, const vector<string>& unlimited_dimnames) const {
 
     // The last check to see if the direct io can be done is to check if
     // this array is a good subset. If no, we cannot use direct IO.
@@ -1412,7 +1412,7 @@ void FONcTransform::set_constraint_var_dio_flag(libdap::Array* t_a, const vector
                 BESDEBUG(MODULE, prolog << "The subset size of this dimension is smaller than the corresponding chunk size. " << endl);
                 BESDEBUG(MODULE, prolog << "Cannot do direct IO subset: the variable name is: " <<t_a->var()->name() << endl);
                 
-                no_dio = no_dio_dimension(unlimited_dimnames,t_a->dimension_name(di));
+                no_dio = no_dio_dimension(d4_grp, t_a, unlimited_dimnames,di);
                 if (no_dio)
                     break;
             }
@@ -1608,7 +1608,7 @@ void FONcTransform::build_reduce_dim_internal(D4Group *grp, D4Group *root_grp) {
 
 }
 
-bool FONcTransform::obtain_unlimited_dimension_info_helper(libdap::D4Attributes *d4_attrs, vector<string> &unlimited_dim_names){
+bool FONcTransform::obtain_unlimited_dimension_info_helper(libdap::D4Attributes *d4_attrs, vector<string> &unlimited_dim_names) const{
 
     bool ret_value = false;
 
@@ -1628,7 +1628,7 @@ bool FONcTransform::obtain_unlimited_dimension_info_helper(libdap::D4Attributes 
     return ret_value;
 }
 
-bool FONcTransform::obtain_unlimited_dimension_info(libdap::D4Group *d4_grp, vector<string> &unlimited_dim_names) {
+bool FONcTransform::obtain_unlimited_dimension_info(libdap::D4Group *d4_grp, vector<string> &unlimited_dim_names) const{
 
     bool ret_value = false;
     D4Attributes *d4_attrs = d4_grp->attributes();
@@ -1647,24 +1647,82 @@ bool FONcTransform::obtain_unlimited_dimension_info(libdap::D4Group *d4_grp, vec
     return ret_value; 
 }
 
-bool FONcTransform::no_dio_dimension(const vector<string> &unlimited_dimnames, const string &dim_name) const {
+bool FONcTransform::no_dio_dimension(D4Group *d4_grp, Array * d_a, const vector<string> &unlimited_dimnames, Array::Dim_iter di) const{
 
-    bool no_dio = false;
+    string dim_name = d_a->dimension_name(di);
+    // When dimension name is 0, definitely cannot do dio.
+    if (dim_name.empty())
+        return true;
+
+    bool no_dio = true;
+
+    // We find that most unlimited dimensions are defined under the immediate group rather than the ancestor group. So we explicitly search the immediate group with an inexpensive way.
     if (unlimited_dimnames.empty() == false) {
-        bool find_unlimited_dim_name = false;
         for (const auto & udimname:unlimited_dimnames) {
             if (udimname == dim_name) {
-                find_unlimited_dim_name = true;
+                no_dio = false;
                 break;
             }
         }
-        if (!find_unlimited_dim_name)
-            no_dio = true;
     } 
-    else 
-        no_dio = true;
+    // Check if this dimension is defined in an ancestor group.
+    if (no_dio) 
+        no_dio = no_dio_ancestor_dimension(d4_grp,d_a,di);
     return no_dio;
  
+}
+
+bool FONcTransform::no_dio_ancestor_dimension(D4Group *d4_grp, Array *d_a, Array::Dim_iter di) const{
+
+    bool ret_value = true;
+
+    // Obtain the D4Dimension of this (dap2) dimension.
+    D4Dimension *d4dim = d_a->dimension_D4dim(di);
+
+    // Obtain the group where this D4Dimension is defined.
+    D4Group *d4dim_grp = d4dim->parent()->parent();
+
+    // Obtain the group FQN for the D4Dimension group.
+    string d4dim_grp_fqn = d4dim_grp->FQN();
+
+    D4Group *temp_grp = d4_grp;
+
+    if (temp_grp->get_parent()) {
+
+        temp_grp = static_cast<D4Group*>(temp_grp->get_parent());
+        while (temp_grp) {
+
+            // Obtain the fully qualified name of this temp_grp.
+            string temp_grp_fqn = temp_grp->FQN();
+            
+            // See if the fully qualified name of this group matches the group where the D4Dimension is defined.
+            if (d4dim_grp_fqn == temp_grp_fqn) {
+
+                // Obtain the Unlimited dimension(if any) under this group.
+                vector<string> unlimited_dimnames;
+                bool has_unlimited_dim = obtain_unlimited_dimension_info(temp_grp,unlimited_dimnames);
+
+                if (has_unlimited_dim) {
+
+                    string dim_name = d_a->dimension_name(di);
+                    for (const auto & udimname:unlimited_dimnames) {
+                        if (udimname == dim_name) {
+                            ret_value = false;
+                            break;
+                        }
+                    }
+                }
+                // We find the ancestor group, no need to go up. Out of the while loop.
+                break;
+            }
+            if (temp_grp->get_parent())
+                temp_grp = static_cast<D4Group*>(temp_grp->get_parent());
+            else
+                temp_grp = nullptr;
+        }
+    }
+    return ret_value;      
+
 }
 
 #if 0
