@@ -1,6 +1,6 @@
 {
     // For Hyrax, prefix and PATH need to be set. jhrg 3/11/26
-    "prefix": "/Users/jimg/src/opendap/hyrax_git/build",
+    "prefix": "/Users/jimg/src/opendap/hyrax/build",
     "PATH": "${config:prefix}/bin:${config:prefix}/deps/bin:${env:PATH}",
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
     "C_Cpp.default.compileCommands": "${workspaceFolder}/compile_commands.json",
