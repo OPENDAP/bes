@@ -4086,7 +4086,23 @@ void DmrppArray::add_dio_var_storage_info_unconstrained() {
     for (unsigned int i = 0; i < chunks.size(); i++) {
         if (i > 0)
             chunks[i]->set_direct_io_offset(chunks[i - 1]->get_direct_io_offset() + chunks[i - 1]->get_size());
+      
+        BESDEBUG(MODULE, prolog << "chunk_use_fill_value is: " << chunks[i]->get_uses_fill_value() << endl);
+        BESDEBUG(MODULE, prolog << "chunk_offset is: " << chunks[i]->get_offset() << endl);
         BESDEBUG(MODULE, prolog << "direct_io_offset is: " << chunks[i]->get_direct_io_offset() << endl);
+    }
+
+    for (auto iter_chunk = this->d_chunks.begin(); iter_chunk != this->d_chunks.end();) {
+        if((*iter_chunk)->get_uses_fill_value()) {
+            //delete(*iter_chunk);
+            if((*iter_chunk).unique())
+                BESDEBUG(MODULE, prolog << "shared pointer is the unique owner"<<endl);
+            (*iter_chunk).reset();
+            iter_chunk=this->d_chunks.erase(iter_chunk);
+        }
+        else {
+            ++iter_chunk;
+        }
     }
 
     // Fill in the chunk information so that the fileout netcdf can retrieve.
