@@ -489,4 +489,5 @@ AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/h5_six_big_chunks
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_4.compression.bescmd],[bes.nc4.grp.conf])
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/nc4_unlimited_1_big_comp.nc.dmrpp_constraint.compression.bescmd],[bes.nc4.grp.conf])
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/nc4_group_unlimited_comp.h5.dmrpp_constraint_2.compression.bescmd],[bes.nc4.grp.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/nc4_group_unlimited_comp.h5.dmrpp_1v.compression.bescmd],[bes.nc4.grp.conf])
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/nc4_group_unlimited_comp.h5.dmrpp_constraint_3.compression.bescmd],[bes.nc4.grp.conf])
