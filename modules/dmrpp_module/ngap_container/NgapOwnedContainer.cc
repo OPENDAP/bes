@@ -64,6 +64,10 @@ using namespace bes;
 
 namespace ngap {
 
+// This is a flag that can be set in the unit tests to enable reading DMR++ files from the local file system. jhrg
+// 3/11/26
+bool NgapOwnedContainer::d_enable_dmrpp_local_files_for_testing = false;
+
 // This data source location currently (8/10/24) is a S3 bucket where the DMR++ files are stored
 // for the OPeNDAP-owned data used by the tests. jhrg 8/10/24
 std::string NgapOwnedContainer::d_data_source_location = "https://cloudydap.s3.us-east-1.amazonaws.com";
@@ -257,16 +261,41 @@ string NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(const string &rest_pa
         throw BESSyntaxUserError("Invalid OpeNDAP 'source' path: " + rest_path, __FILE__, __LINE__);
     }
 
-    auto path_pos = rest_path.find(parts[2]) + parts[2].size();
+    auto path_pos = rest_path.find(parts[1]) + parts[1].size();
     string dmrpp_name = rest_path.substr(path_pos);
 
-    // http://<bucket_name>.s3.amazonaws.com/<object_key>
+    // https://<source>/<object_key>
     // Change so the first part is read from a configuration file.
     // That way it can be a file:// URL for testing, and later can be set
     // in other ways. jhrg 5/1/24
-    string dmrpp_url_str = "http://" + parts[1] + '/' + dmrpp_name;
+    string dmrpp_url_str = "https://" + parts[1] + dmrpp_name;
+
+    if (dmrpp_url_str.find(".dmrpp") == string::npos)
+        dmrpp_url_str.append(".dmrpp");
 
     return dmrpp_url_str;
+}
+/**
+ * @brief Build the local filesystem path to a DMR++ document.
+ *
+ * This helper exists to support tests that exercise `NgapOwnedContainer`
+ * using locally stored DMR++ files instead of fetching them remotely.
+ * Production use should prefer the normal remote access path; if DMR++
+ * files are meant to be served directly from disk, use a `FileContainer`
+ * created with `<setContainer storage="catalog">`.
+ *
+ * @param rest_path The granule path relative to `BES.Data.RootDirectory`.
+ * @return The absolute path to the DMR++ file in the local filesystem.
+ * @exception BESInternalError Thrown if local DMR++ file access is not enabled.
+ */
+string NgapOwnedContainer::build_dmrpp_url_to_local_path(const string &rest_path) {
+    if (!d_enable_dmrpp_local_files_for_testing)
+        throw BESInternalError("Testing local files for DMR++ is not enabled.", __FILE__, __LINE__);
+
+    if (rest_path.find(".dmrpp") == string::npos)
+        return NgapOwnedContainer::get_data_source_location() + rest_path + ".dmrpp";
+    else
+        return NgapOwnedContainer::get_data_source_location() + rest_path;
 }
 
 bool NgapOwnedContainer::get_item_from_dmrpp_cache(string &dmrpp_string) const {
@@ -429,6 +458,31 @@ void NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) co
 }
 
 /**
+ * @brief Read a DMR++ document from the local filesystem.
+ *
+ * This method is used only by tests that enable local DMR++ file access.
+ * It resolves the current container's real name against
+ * `BES.Data.RootDirectory`, reads the file contents, and then applies the
+ * standard OPeNDAP-owned DMR++ content filters.
+ *
+ * @param dmrpp_string Value-result parameter that receives the DMR++ text.
+ * @exception BESInternalError Thrown if the OPeNDAP content filters cannot be built.
+ */
+void NgapOwnedContainer::dmrpp_read_from_local_path(string &dmrpp_string) const {
+    BES_MODULE_TIMING(prolog + get_real_name());
+
+    string dmrpp_file = build_dmrpp_url_to_local_path(get_real_name());
+    INFO_LOG(prolog + "Look in the local file system for the DMRpp for: " + dmrpp_file);
+    dmrpp_string = BESUtil::file_to_string(dmrpp_file);
+
+    map<string, string, std::less<>> content_filters;
+    if (!get_opendap_content_filters(content_filters)) {
+        throw BESInternalError("Could not build opendap content filters for DMR++", __FILE__, __LINE__);
+    }
+    filter_response(content_filters, dmrpp_string);
+}
+
+/**
  * @brief Read the DMR++ from a DAAC S3 bucket
  * @param dmrpp_string value-result parameter for the DMR++ doc as a string
  * @exception http::HttpError if the granule is not found
@@ -487,20 +541,23 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
     if (NgapOwnedContainer::d_use_dmrpp_cache && get_item_from_dmrpp_cache(dmrpp_string)) {
         return true;
     } else {
-        // Else, the DMR++ is neither in the memory cache nor the file cache.
-        // Read it from S3, etc., and filter it. Put it in the memory cache
-        bool dmrpp_read = false;
-
         // If the server is set up to try the OPeNDAP bucket, look there first if the path starts with
         // "source/". jhrg 3/10/26
         if (NgapOwnedContainer::d_use_opendap_bucket && get_real_name().find("source/") == 0) {
             // If we get the DMR++ from the OPeNDAP bucket, set dmrpp_read to true so
             // we don't also try the DAAC bucket.
             dmrpp_read_from_opendap_bucket(dmrpp_string);
-        } else {
-            // Try the DAAC bucket if either the OPeNDAP bucket is not used or the container real name
-            // does not start with 'source/'. jhrg 3/10/26
+
+        }
+        // Try the DAAC bucket if either the OPeNDAP bucket is not used or the container real name
+        // does not start with 'source/'. jhrg 3/10/26
+        else if (get_real_name().find("collections/") == 0) {
             dmrpp_read_from_daac_bucket(dmrpp_string);
+        }
+        // If the URL path starts with neither 'source' nor 'collections' and local files are tested,
+        // try to read from the local file system. jhrg 3/10/26else if
+        else if (NgapOwnedContainer::d_enable_dmrpp_local_files_for_testing) {
+            dmrpp_read_from_local_path(dmrpp_string);
         }
     }
 

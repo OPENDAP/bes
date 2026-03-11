@@ -62,7 +62,8 @@ namespace ngap {
  */
 class NgapOwnedContainer : public BESContainer {
 
-    std::string d_ngap_path; // The (in)famous REST path
+    std::string d_ngap_path;                            // The (in)famous REST path
+    static bool d_enable_dmrpp_local_files_for_testing; // per instance flag for testing.
 
     static std::string d_data_source_location;
     static bool d_use_opendap_bucket;
@@ -100,9 +101,11 @@ class NgapOwnedContainer : public BESContainer {
 
     static std::string build_dmrpp_url_to_owned_bucket(const std::string &rest_path);
     static NgapApi::DataAccessUrls build_data_urls_to_daac_bucket(const std::string &rest_path);
+    static std::string build_dmrpp_url_to_local_path(const std::string &rest_path);
 
     void dmrpp_read_from_opendap_bucket(std::string &dmrpp_string) const;
     void dmrpp_read_from_daac_bucket(std::string &dmrpp_string) const;
+    void dmrpp_read_from_local_path(std::string &dmrpp_string) const;
 
     bool get_item_from_dmrpp_cache(std::string &dmrpp_string) const;
     bool put_item_in_dmrpp_cache(const std::string &dmrpp_string) const;
@@ -134,6 +137,7 @@ public:
 
     /// @brief Set the S3 bucket used for 'owned' DMR++ documents.
     static void set_data_source_location(const std::string &data_source_location) {
+        d_enable_dmrpp_local_files_for_testing = true;
         d_data_source_location = data_source_location;
     }
     static std::string get_data_source_location() { return d_data_source_location; }
