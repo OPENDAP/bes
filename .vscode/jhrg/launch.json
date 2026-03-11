@@ -1,0 +1,31 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug getdap4",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/.libs/getdap4",
+      "args": ["-d", "http://test.opendap.org/opendap/data/nc/fnoc1.nc"],
+      "cwd": "${workspaceFolder}",
+      "environment": [
+        {
+          "name": "DYLD_LIBRARY_PATH",
+          "value": "${workspaceFolder}/.libs:${env:DYLD_LIBRARY_PATH}"
+        },
+        {
+          "name": "PATH",
+          "value": "${config:PATH}"
+        }
+      ],
+      "MIMode": "lldb",
+      "setupCommands": [
+        {
+          "description": "Allow stepping into all frames",
+          "text": "settings set target.process.thread.step-avoid-regexp ^$",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}

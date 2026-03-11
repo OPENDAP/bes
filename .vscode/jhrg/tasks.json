@@ -1,0 +1,77 @@
+{
+  "version": "2.0.0",
+  "options": {
+    "cwd": "${workspaceFolder}",
+    "env": {
+      "TESTSUITEFLAGS": "-j",
+      "prefix": "${config:prefix}",
+      "PATH": "${config:PATH}"
+    },
+    "shell": {
+      "executable": "/bin/zsh",
+      "args": ["-c"]
+    }
+  },
+  "tasks": [
+    {
+      "label": "autotools: configure",
+      "type": "shell",
+      "command": "echo \"prefix: $prefix\" && autoreconf -fvi && ./configure --prefix=$prefix --enable-developer",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "autotools: build",
+      "type": "shell",
+      "command": "make -j",
+      "problemMatcher": ["$gcc"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "autotools: check",
+      "type": "shell",
+      "command": "make -j check",
+      "problemMatcher": ["$gcc"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "autotools: install",
+      "type": "shell",
+      "command": "make install",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "autotools: clean",
+      "type": "shell",
+      "command": "make clean",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "autotools: compile_commands",
+      "type": "shell",
+      "command": "make clean && bear -- make -j && bear --append -- make -j check",
+      "problemMatcher": ["$gcc"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
