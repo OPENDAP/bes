@@ -18,7 +18,7 @@
         "${workspaceFolder}/server/**",
         "${workspaceFolder}/standalone/**",
         "${workspaceFolder}/xmlcommand/**",
-        "${workspaceFolder}/modules/**",
+        "${workspaceFolder}/modules/**"
     ],
     "C_Cpp.default.cppStandard": "c++14",
     "C_Cpp.default.intelliSenseMode": "macos-clang-arm64",
