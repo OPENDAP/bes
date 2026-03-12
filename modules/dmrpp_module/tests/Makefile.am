@@ -107,7 +107,7 @@ clean-local:
 
 $(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4 multi_input_tests.m4
 
-$(TESTSUITE_NGAP_CONTAINERS): $(TESTSUITE_NGAP_CONTAINER).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4 multi_input_tests.m4
+$(TESTSUITE_NGAP_CONTAINER): $(TESTSUITE_NGAP_CONTAINER).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4 multi_input_tests.m4
 
 $(TESTSUITE_RA_DMRPP): $(TESTSUITE_RA_DMRPP).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4
 
