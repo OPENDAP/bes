@@ -26,6 +26,7 @@
 #include <memory>
 
 #include "BESContextManager.h"
+#include "BESError.h"
 #include "BESInternalError.h"
 #include "BESSyntaxUserError.h"
 #include "BESUtil.h"
@@ -82,6 +83,9 @@ public:
     void setUp() override {
         set_bes_keys();
         configure_ngap_handler();
+        NgapOwnedContainer::d_enable_dmrpp_local_files_for_testing = false;
+        NgapOwnedContainer::d_data_source_location = "";
+        NgapOwnedContainer::d_inject_data_url = true;
     }
 
     // Delete the cache dir after each test; really only needed for the
@@ -89,6 +93,8 @@ public:
     void tearDown() override {
         NgapOwnedContainer::d_dmrpp_file_cache.clear();
         NgapOwnedContainer::d_dmrpp_mem_cache.clear();
+        NgapOwnedContainer::d_enable_dmrpp_local_files_for_testing = false;
+        NgapOwnedContainer::d_data_source_location = "";
     }
 
     void test_file_to_string() {
@@ -176,6 +182,74 @@ public:
         CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw",
                                      NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path),
                                      BESSyntaxUserError);
+    }
+
+    void test_build_dmrpp_url_to_local_path() {
+        TEST_NAME;
+        NgapOwnedContainer::set_data_source_location(TEST_DATA_LOCATION);
+
+        string rest_path = "/data/d_int.h5";
+        string expected = string(TEST_DATA_LOCATION) + "/data/d_int.h5.dmrpp";
+        string actual = NgapOwnedContainer::build_dmrpp_url_to_local_path(rest_path);
+
+        CPPUNIT_ASSERT_MESSAGE("The local DMR++ path should be built (got: " + actual + " expected: " + expected + ").",
+                               actual == expected);
+    }
+
+    void test_build_dmrpp_url_to_local_path_keeps_extension() {
+        TEST_NAME;
+        NgapOwnedContainer::set_data_source_location(TEST_DATA_LOCATION);
+
+        string rest_path = "/data/d_int.h5.dmrpp";
+        string expected = string(TEST_DATA_LOCATION) + "/data/d_int.h5.dmrpp";
+        string actual = NgapOwnedContainer::build_dmrpp_url_to_local_path(rest_path);
+
+        CPPUNIT_ASSERT_MESSAGE("The local DMR++ path should preserve the extension.",
+                               actual == expected);
+    }
+
+    void test_build_dmrpp_url_to_local_path_requires_enable_flag() {
+        TEST_NAME;
+        string rest_path = "/data/d_int.h5";
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw when local file testing is disabled",
+                                     NgapOwnedContainer::build_dmrpp_url_to_local_path(rest_path),
+                                     BESInternalError);
+    }
+
+    void test_build_dmrpp_url_to_local_path_rejects_parent_segments() {
+        TEST_NAME;
+        NgapOwnedContainer::set_data_source_location(TEST_DATA_LOCATION);
+
+        string rest_path = "/data/../d_int.h5";
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should reject local paths containing '../'",
+                                     NgapOwnedContainer::build_dmrpp_url_to_local_path(rest_path), BESError);
+    }
+
+    void test_build_dmrpp_url_to_local_path_rejects_parent_segments_in_data_source_location() {
+        TEST_NAME;
+        NgapOwnedContainer::set_data_source_location(string(TEST_DATA_LOCATION) + "/../unsafe-root");
+
+        string rest_path = "/data/d_int.h5";
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should reject a data source location containing '../'",
+                                     NgapOwnedContainer::build_dmrpp_url_to_local_path(rest_path), BESError);
+    }
+
+    void test_dmrpp_read_from_local_path() {
+        TEST_NAME;
+        NgapOwnedContainer container;
+        container.set_real_name("/data/d_int.h5");
+        container.set_data_source_location(TEST_DATA_LOCATION);
+
+        string expected = BESUtil::file_to_string(string(TEST_DATA_LOCATION) + "/data/d_int.h5.dmrpp");
+        string dmrpp_string;
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("Reading a local DMR++ file should not throw",
+                                        container.dmrpp_read_from_local_path(dmrpp_string));
+
+        CPPUNIT_ASSERT_MESSAGE("The local DMR++ file should be read", !dmrpp_string.empty());
+        CPPUNIT_ASSERT_MESSAGE("The local DMR++ should match the fixture content for this dataset",
+                               dmrpp_string == expected);
+        CPPUNIT_ASSERT_MESSAGE("The local DMR++ should still describe the expected dataset",
+                               dmrpp_string.find("d_int.h5") != string::npos);
     }
 
     void test_item_in_cache() {
@@ -457,6 +531,12 @@ public:
     CPPUNIT_TEST(test_build_dmrpp_url_to_owned_bucket_bad_path_2);
     CPPUNIT_TEST(test_build_dmrpp_url_to_owned_bucket_bad_path_4);
     CPPUNIT_TEST(test_build_dmrpp_url_to_owned_bucket_bad_path_5);
+    CPPUNIT_TEST(test_build_dmrpp_url_to_local_path);
+    CPPUNIT_TEST(test_build_dmrpp_url_to_local_path_keeps_extension);
+    CPPUNIT_TEST(test_build_dmrpp_url_to_local_path_requires_enable_flag);
+    CPPUNIT_TEST(test_build_dmrpp_url_to_local_path_rejects_parent_segments);
+    CPPUNIT_TEST(test_build_dmrpp_url_to_local_path_rejects_parent_segments_in_data_source_location);
+    CPPUNIT_TEST(test_dmrpp_read_from_local_path);
 
     CPPUNIT_TEST(test_item_in_cache);
     CPPUNIT_TEST(test_cache_item);

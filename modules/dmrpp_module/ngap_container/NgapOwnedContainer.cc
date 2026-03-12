@@ -38,6 +38,7 @@
 
 #include "BESContextManager.h"
 #include "BESDebug.h"
+#include "BESForbiddenError.h"
 #include "BESLog.h"
 #include "BESStopWatch.h"
 #include "BESSyntaxUserError.h"
@@ -296,6 +297,13 @@ string NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(const string &rest_pa
 string NgapOwnedContainer::build_dmrpp_url_to_local_path(const string &rest_path) {
     if (!d_enable_dmrpp_local_files_for_testing)
         throw BESInternalError("Testing local files for DMR++ is not enabled.", __FILE__, __LINE__);
+    if (NgapOwnedContainer::get_data_source_location().find("../") != string::npos)
+        throw BESForbiddenError("Path traversal is not allowed in local DMR++ root: " +
+                                    NgapOwnedContainer::get_data_source_location(),
+                                __FILE__, __LINE__);
+    if (rest_path.find("../") != string::npos)
+        throw BESForbiddenError("Path traversal is not allowed in local DMR++ path: " + rest_path, __FILE__,
+                                __LINE__);
 
     if (rest_path.find(".dmrpp") == string::npos)
         return NgapOwnedContainer::get_data_source_location() + rest_path + ".dmrpp";
