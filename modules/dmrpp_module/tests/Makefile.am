@@ -56,7 +56,7 @@ TESTSUITE_MERGE_DMRPP = $(srcdir)/testsuite_merge_dmrpp
 
 check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_RA_DMRPP) $(TESTSUITE_DMRPP_BUILDER_H4) \
     $(TESTSUITE_CHECK_DMRPP) $(TESTSUITE_MERGE_DMRPP) $(TESTSUITE_S3) $(TESTSUITE_DMRPP_BUILDER) \
-    $(TESTSUITE_NGAP_CONTAINER) bes.conf bes_serial.conf bes-return-as-dmrpp.conf
+	$(TESTSUITE_NGAP_CONTAINER) bes.conf bes_serial.conf bes-return-as-dmrpp.conf
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes_serial.conf
 	$(SHELL) '$(TESTSUITE_NGAP_CONTAINER)' $(TESTSUITEFLAGS)
@@ -96,6 +96,7 @@ check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_RA_DMRPP) $(TESTSUITE_DMR
 
 clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
+    test ! -f '$(TESTSUITE_NGAP_CONTAINER)' || $(SHELL) '$(TESTSUITE_NGAP_CONTAINER)' --clean
 	test ! -f '$(TESTSUITE_RA_DMRPP)' || $(SHELL) '$(TESTSUITE_RA_DMRPP)' --clean
 	test ! -f '$(TESTSUITE_DMRPP_BUILDER_H4)' || $(SHELL) '$(TESTSUITE_DMRPP_BUILDER_H4)' --clean
 	test ! -f '$(TESTSUITE_CHECK_DMRPP)' || $(SHELL) '$(TESTSUITE_CHECK_DMRPP)' --clean
@@ -107,7 +108,7 @@ clean-local:
 
 $(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4 multi_input_tests.m4
 
-$(TESTSUITE_NGAP_CONTAINER): $(TESTSUITE_NGAP_CONTAINER).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4 multi_input_tests.m4
+$(TESTSUITE_NGAP_CONTAINER): $(TESTSUITE_NGAP_CONTAINER).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4
 
 $(TESTSUITE_RA_DMRPP): $(TESTSUITE_RA_DMRPP).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4
 
