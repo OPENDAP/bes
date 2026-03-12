@@ -14,7 +14,7 @@ EXTRA_DIST = contiguous chunked compact new_types s3 fill_value deflate_twice st
     $(TESTSUITE_DMRPP_BUILDER) $(TESTSUITE_DMRPP_BUILDER).at $(TESTSUITE_DMRPP_BUILDER_H4) \
     $(TESTSUITE_DMRPP_BUILDER_H4).at $(TESTSUITE_CHECK_DMRPP)  $(TESTSUITE_CHECK_DMRPP).at \
     $(TESTSUITE_MERGE_DMRPP) $(TESTSUITE_MERGE_DMRPP).at $(TESTSUITE_RA_DMRPP) $(TESTSUITE_RA_DMRPP).at \
-    atlocal.in bes.conf.in bes_serial.conf.in bes-return-as-dmrpp.conf.in package.m4 multi_input_tests.m4
+    $(TESTSUITE_NGAP_CONTAINER).a atlocal.in bes.conf.in bes_serial.conf.in bes-return-as-dmrpp.conf.in package.m4 multi_input_tests.m4
 
 DISTCLEANFILES = atconfig
 
@@ -39,6 +39,8 @@ AUTOTEST = $(AUTOM4TE) --language=autotest
 
 TESTSUITE = $(srcdir)/testsuite
 
+TESTSUITE_NGAP_CONTAINER = $(srcdir)/testsuite_ngap_container
+
 TESTSUITE_RA_DMRPP = $(srcdir)/testsuite_return_as_dmrpp
 
 TESTSUITE_S3 = $(srcdir)/testsuite_s3_tests
@@ -54,9 +56,10 @@ TESTSUITE_MERGE_DMRPP = $(srcdir)/testsuite_merge_dmrpp
 
 check-local: atconfig atlocal $(TESTSUITE) $(TESTSUITE_RA_DMRPP) $(TESTSUITE_DMRPP_BUILDER_H4) \
     $(TESTSUITE_CHECK_DMRPP) $(TESTSUITE_MERGE_DMRPP) $(TESTSUITE_S3) $(TESTSUITE_DMRPP_BUILDER) \
-        bes.conf bes_serial.conf bes-return-as-dmrpp.conf
+    $(TESTSUITE_NGAP_CONTAINER) bes.conf bes_serial.conf bes-return-as-dmrpp.conf
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS) --conf=bes_serial.conf
+	$(SHELL) '$(TESTSUITE_NGAP_CONTAINER)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE_DMRPP_BUILDER_H4)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE_CHECK_DMRPP)' $(TESTSUITEFLAGS)
 	$(SHELL) '$(TESTSUITE_MERGE_DMRPP)' $(TESTSUITEFLAGS)
@@ -103,6 +106,8 @@ clean-local:
 	$(AUTOTEST) -I '$(srcdir)' -o $@ $@.at
 
 $(TESTSUITE): $(TESTSUITE).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4 multi_input_tests.m4
+
+$(TESTSUITE_NGAP_CONTAINERS): $(TESTSUITE_NGAP_CONTAINERS).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4 multi_input_tests.m4
 
 $(TESTSUITE_RA_DMRPP): $(TESTSUITE_RA_DMRPP).at $(srcdir)/package.m4 $(top_srcdir)/modules/common/handler_tests_macros.m4
 

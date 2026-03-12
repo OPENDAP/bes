@@ -68,10 +68,11 @@ namespace ngap {
 // 3/11/26
 bool NgapOwnedContainer::d_enable_dmrpp_local_files_for_testing = false;
 
-// This data source location currently (8/10/24) is a S3 bucket where the DMR++ files are stored
-// for the OPeNDAP-owned data used by the tests. jhrg 8/10/24
-std::string NgapOwnedContainer::d_data_source_location = "https://cloudydap.s3.us-east-1.amazonaws.com";
-bool NgapOwnedContainer::d_use_opendap_bucket = true;
+// The data source location is used as a prefix for the REST path to build the full URL to the DMR++ file.
+// See build_dmrpp_url_to_local_path(). This is primarily for testing purposes. jhrg 3/12/26
+std::string NgapOwnedContainer::d_data_source_location = "";
+bool NgapOwnedContainer::d_support_source_prefix = true;
+
 bool NgapOwnedContainer::d_inject_data_url = true;
 
 // CMR caching
@@ -107,12 +108,16 @@ FileCache NgapOwnedContainer::d_dmrpp_file_cache;
  */
 NgapOwnedContainer::NgapOwnedContainer(const string &sym_name, const string &real_name, const string &)
     : BESContainer(sym_name, real_name, "owned-ngap"), d_ngap_path(real_name) {
-    NgapOwnedContainer::d_data_source_location =
-        TheBESKeys::read_string_key(DATA_SOURCE_LOCATION, NgapOwnedContainer::d_data_source_location);
-    NgapOwnedContainer::d_use_opendap_bucket =
-        TheBESKeys::read_bool_key(USE_OPENDAP_BUCKET, NgapOwnedContainer::d_use_opendap_bucket);
+    NgapOwnedContainer::d_support_source_prefix =
+        TheBESKeys::read_bool_key(USE_OPENDAP_BUCKET, NgapOwnedContainer::d_support_source_prefix);
     NgapOwnedContainer::d_inject_data_url =
         TheBESKeys::read_bool_key(NGAP_INJECT_DATA_URL_KEY, NgapOwnedContainer::d_inject_data_url);
+    NgapOwnedContainer::d_enable_dmrpp_local_files_for_testing = TheBESKeys::read_bool_key(
+        NGAP_ENABLE_DMRPP_LOCAL_FILES_FOR_TESTING, NgapOwnedContainer::d_enable_dmrpp_local_files_for_testing);
+
+    if (d_enable_dmrpp_local_files_for_testing)
+        NgapOwnedContainer::d_data_source_location = TheBESKeys::read_string_key(
+            "BES.Catalog.catalog.RootDirectory", NgapOwnedContainer::d_data_source_location);
 
     // Read BES keys to determine if the caches should be used. jhrg 9/22/23
     NgapOwnedContainer::d_use_cmr_cache = TheBESKeys::read_bool_key(USE_CMR_CACHE, NgapOwnedContainer::d_use_cmr_cache);
@@ -168,7 +173,7 @@ void NgapOwnedContainer::_duplicate(BESContainer &dest) {
     ngap_dset->d_ngap_path = d_ngap_path;
     // BESContainer::_duplicate(dest);
 }
-
+#if 1
 /**
  * @brief Read data from a file descriptor into a string.
  * @param fd The file descriptor to read from.
@@ -198,7 +203,7 @@ bool NgapOwnedContainer::file_to_string(int fd, string &content) {
 
     return true;
 }
-
+#endif
 /**
  * @brief Set the real name of the container using the CMR or cache.
  *
@@ -249,8 +254,8 @@ NgapApi::DataAccessUrls NgapOwnedContainer::build_data_urls_to_daac_bucket(const
 }
 
 /**
- * @brief Build a URL to the granule in the OPeNDAP S3 bucket
- * @param rest_path The REST path of the granule: '/collections/<ccid>/granules/<granule_id>'
+ * @brief Build a URL to the granule in an OPeNDAP S3 bucket or other HTTPS location.
+ * @param rest_path The REST path of the granule: '/source/<https source>/<path/object-key>'
  * @param data_source The protocol and host name part of the URL
  * @return The URL to the item in a S3 bucket
  */
@@ -264,7 +269,7 @@ string NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(const string &rest_pa
     auto path_pos = rest_path.find(parts[1]) + parts[1].size();
     string dmrpp_name = rest_path.substr(path_pos);
 
-    // https://<source>/<object_key>
+    // https://<source>/<object-key>
     // Change so the first part is read from a configuration file.
     // That way it can be a file:// URL for testing, and later can be set
     // in other ways. jhrg 5/1/24
@@ -469,8 +474,6 @@ void NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) co
  * @exception BESInternalError Thrown if the OPeNDAP content filters cannot be built.
  */
 void NgapOwnedContainer::dmrpp_read_from_local_path(string &dmrpp_string) const {
-    BES_MODULE_TIMING(prolog + get_real_name());
-
     string dmrpp_file = build_dmrpp_url_to_local_path(get_real_name());
     INFO_LOG(prolog + "Look in the local file system for the DMRpp for: " + dmrpp_file);
     dmrpp_string = BESUtil::file_to_string(dmrpp_file);
@@ -543,7 +546,7 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
     } else {
         // If the server is set up to try the OPeNDAP bucket, look there first if the path starts with
         // "source/". jhrg 3/10/26
-        if (NgapOwnedContainer::d_use_opendap_bucket && get_real_name().find("source/") == 0) {
+        if (NgapOwnedContainer::d_support_source_prefix && get_real_name().find("source/") == 0) {
             // If we get the DMR++ from the OPeNDAP bucket, set dmrpp_read to true so
             // we don't also try the DAAC bucket.
             dmrpp_read_from_opendap_bucket(dmrpp_string);

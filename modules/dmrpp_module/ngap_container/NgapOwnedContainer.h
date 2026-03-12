@@ -66,7 +66,7 @@ class NgapOwnedContainer : public BESContainer {
     static bool d_enable_dmrpp_local_files_for_testing; // per instance flag for testing.
 
     static std::string d_data_source_location;
-    static bool d_use_opendap_bucket;
+    static bool d_support_source_prefix;
     static bool d_inject_data_url;
 
     static int d_cmr_cache_size_items;  // max number of entries
