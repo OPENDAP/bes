@@ -1,0 +1,34 @@
+{
+    // For Hyrax, prefix and PATH need to be set. jhrg 3/11/26
+    "prefix": "/Users/jimg/src/opendap/hyrax/build",
+    "PATH": "${config:prefix}/bin:${config:prefix}/deps/bin:${env:PATH}",
+    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/compile_commands.json",
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}",
+        "${workspaceFolder}/cmdln",
+        "${workspaceFolder}/dap",
+        "${workspaceFolder}/dapreader",
+        "${workspaceFolder}/dispatch/**",
+        "${workspaceFolder}/hello_world",
+        "${workspaceFolder}/http/**",
+        "${workspaceFolder}/ppt/**",
+        "${workspaceFolder}/pugixml/**",
+        "${workspaceFolder}/rapidjson/**",
+        "${workspaceFolder}/server/**",
+        "${workspaceFolder}/standalone/**",
+        "${workspaceFolder}/xmlcommand/**",
+        "${workspaceFolder}/modules/**"
+    ],
+    "C_Cpp.default.cppStandard": "c++14",
+    "C_Cpp.default.intelliSenseMode": "macos-clang-arm64",
+    "C_Cpp.vcFormat.indent.namespaceContents": false,
+    "terminal.integrated.env.osx": {
+        "prefix": "${config:prefix}",
+        "PATH": "${config:PATH}"
+    },
+    "terminal.integrated.env.linux": {
+        "prefix": "${config:prefix}",
+        "PATH": "${config:PATH}"
+    }
+}
