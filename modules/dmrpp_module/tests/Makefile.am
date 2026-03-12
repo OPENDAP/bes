@@ -14,7 +14,8 @@ check_dmrpp merge_dmrpp return_as_dmrpp $(TESTSUITE) $(TESTSUITE).at $(TESTSUITE
 $(TESTSUITE_DMRPP_BUILDER) $(TESTSUITE_DMRPP_BUILDER).at $(TESTSUITE_DMRPP_BUILDER_H4) \
 $(TESTSUITE_DMRPP_BUILDER_H4).at $(TESTSUITE_CHECK_DMRPP)  $(TESTSUITE_CHECK_DMRPP).at \
 $(TESTSUITE_MERGE_DMRPP) $(TESTSUITE_MERGE_DMRPP).at $(TESTSUITE_RA_DMRPP) $(TESTSUITE_RA_DMRPP).at \
-$(TESTSUITE_NGAP_CONTAINER).at atlocal.in bes.conf.in bes_serial.conf.in bes-return-as-dmrpp.conf.in package.m4 multi_input_tests.m4
+$(TESTSUITE_NGAP_CONTAINER) $(TESTSUITE_NGAP_CONTAINER).at atlocal.in bes.conf.in bes_serial.conf.in \
+bes-return-as-dmrpp.conf.in package.m4 multi_input_tests.m4
 
 DISTCLEANFILES = atconfig
 
