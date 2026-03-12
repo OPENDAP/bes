@@ -1093,12 +1093,27 @@ void DMZ::set_up_direct_io_flag_phase_2(D4Group * grp, BaseType *btp) {
 bool DMZ::has_unlimited_dim(libdap::D4Group *group) {
 
     bool ret_value = false;
-    D4Attribute *d4_container = group->attributes()->get("DODS_EXTRA");
-    if (d4_container) {
-        // The current HDF5 handler implementation ensures the unlimited dimension name and size
-        // are passed to the variable level. So we don't need to check them.
-        if (d4_container->attributes()->get("Unlimited_Dimension"))
-            ret_value = true;
+    D4Group *temp_grp = group;
+
+    // Notice: this method only needs to be called when the chunk size is greater than the
+    // dimension size. HDF5 only doesn't allow chunk size to be greater than the dimension size
+    // unless this dimension is unlimited. So if we find an Unlimited_Dimension attribute under
+    // any ancestor group, we can be sure that this dimension must be unlimited.  
+    while (temp_grp) {
+
+        D4Attribute *d4_container = temp_grp->attributes()->get("DODS_EXTRA");
+        if (d4_container) {
+            // The current HDF5 handler implementation ensures the unlimited dimension name and size
+            // are passed to the variable level. So we don't need to check them.
+            if (d4_container->attributes()->get("Unlimited_Dimension")) {
+                ret_value = true;
+                break;
+            }
+        }
+        if (temp_grp->get_parent()) 
+            temp_grp = static_cast<D4Group*>(temp_grp->get_parent());
+        else
+            temp_grp = nullptr;
     }
     return ret_value;
 }
