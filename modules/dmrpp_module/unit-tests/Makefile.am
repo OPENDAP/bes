@@ -10,11 +10,12 @@ AUTOMAKE_OPTIONS = foreign subdir-objects
 
 AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap \
     -I$(top_srcdir)/http -I$(top_srcdir)/pugixml/src -I$(top_srcdir)/modules/common \
-    -I$(top_srcdir)/modules/dmrpp_module $(DAP_CFLAGS)
+    -I$(top_srcdir)/modules/dmrpp_module -I$(top_srcdir)/aws $(DAP_CFLAGS)
 
 # Added -lz for ubuntu
 LIBADD = $(BES_DISPATCH_LIB) $(top_builddir)/dap/.libs/libdap_module.a $(BES_HTTP_LIB) \
     -L$(top_builddir)/modules/common -lmodules_common $(H5_LDFLAGS) \
+	$(top_builddir)/aws/libbes_aws.la $(aws_libs) \
     $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
 
 # jhrg 6/2/23 $(BES_EXTRA_LIBS)
@@ -29,8 +30,20 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -Wcast-align
 
 AM_CXXFLAGS = -Wno-vla-extension -Wno-inconsistent-missing-override -Wno-unused-variable
-AM_LDFLAGS =
+AM_LDFLAGS = -L$(aws_libdir)
 include $(top_srcdir)/coverage.mk
+
+if DARWIN
+AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,@loader_path
+else
+AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,'$$ORIGIN'
+    ifeq ($(strip $(aws_libdir64)),)
+        $(info "aws_libdir64 not set, skipping")
+    else
+        AM_LDFLAGS += -L$(aws_libdir64)
+        AM_LDFLAGS += -Wl,-rpath,$(aws_libdir64)
+    endif
+endif
 
 # This determines what gets built by make check
 check_PROGRAMS = $(UNIT_TESTS)
