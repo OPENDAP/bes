@@ -1,0 +1,14 @@
+# See https://clang.llvm.org/docs/ClangFormatStyleOptions.html for more options.
+---
+BasedOnStyle: LLVM
+Language: Cpp
+# ColumnLimit: 80 jhrg 7/15/24
+ColumnLimit: 120
+# IndentWidth: 2 jhrg 7/15/24
+IndentWidth: 4
+# TabWidth: 8 jhrg 7/15/24
+TabWidth: 4
+# AccessModifierOffset: -2 jhrg 7/15/24
+AccessModifierOffset: -4
+# Just in case... jhrg 10/31/25
+UseCRLF: false
