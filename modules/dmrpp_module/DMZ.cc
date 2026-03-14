@@ -1060,11 +1060,13 @@ void DMZ::set_up_direct_io_flag_phase_2(D4Group * grp, BaseType *btp) {
     // Another special case is that some chunks are only filled with the fvalues. This case cannot be handled by direct IO.
     // First calculate the number of logical chunks.
     // Also up to this step, the size of chunk_dim_sizes must be the same as the size of dim_sizes. No need to double check.
+#if 0
     size_t num_logical_chunks = 1;
     for (unsigned int i = 0; i < dim_sizes.size(); i++)
         num_logical_chunks *= (size_t) ceil((float) dim_sizes[i] / (float) chunk_dim_sizes[i]);
     if (num_logical_chunks != (num_chunks_children - 1))
         return;
+#endif
 
     // Now we should provide the variable info for the define mode inside the fileout netCDF module.
     // The chunk offset/length etc. information will be provided after load_chunk() is called in the read().
@@ -2279,6 +2281,7 @@ void DMZ::load_chunks(BaseType *btp) {
             const auto &array_shape = get_array_dims(array);
             size_t num_logical_chunks = logical_chunks(array_shape, dc(btp));
             // do we need to run this code?
+            //if (num_logical_chunks != dc(btp)->get_chunk_count() && array->get_dio_flag()== false) {
             if (num_logical_chunks != dc(btp)->get_chunk_count()) {
                 const auto &chunk_map = get_chunk_map(dc(btp)->get_immutable_chunks());
                 // Since the variable has some chunks that hold only fill values, add those chunks

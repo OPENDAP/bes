@@ -107,7 +107,6 @@ class DmrppCommon {
 	std::string d_filters;
 	std::string d_byte_order;
 	std::vector<unsigned long long> d_chunk_dimension_sizes;
-	std::vector<std::shared_ptr<Chunk>> d_chunks;
 	bool d_twiddle_bytes = false;
 
     // These indicate that the chunks or attributes have been loaded into the
@@ -150,6 +149,7 @@ class DmrppCommon {
     // Structure offset 
     std::vector<unsigned int> struct_offsets;
 protected:
+    std::vector<std::shared_ptr<Chunk>> d_chunks;
     virtual char *read_atomic(const std::string &name);
       virtual char *read_atomic(const std::string &name, size_t & buf_size);
     // This declaration allows code in the SuperChunky program to use the protected method.

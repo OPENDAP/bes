@@ -4084,10 +4084,41 @@ void DmrppArray::add_dio_var_storage_info_unconstrained() {
 
     // Need to provide the offset of a chunk in the final data buffer.
     for (unsigned int i = 0; i < chunks.size(); i++) {
+
         if (i > 0)
             chunks[i]->set_direct_io_offset(chunks[i - 1]->get_direct_io_offset() + chunks[i - 1]->get_size());
+      
+        BESDEBUG(MODULE, prolog << "chunk_use_fill_value is: " << chunks[i]->get_uses_fill_value() << endl);
+        BESDEBUG(MODULE, prolog << "chunk_offset is: " << chunks[i]->get_offset() << endl);
         BESDEBUG(MODULE, prolog << "direct_io_offset is: " << chunks[i]->get_direct_io_offset() << endl);
     }
+
+
+#if 0
+    for (auto iter_chunk = this->d_chunks.begin(); iter_chunk != this->d_chunks.end();) {
+        if((*iter_chunk)->get_uses_fill_value()) {
+            //delete(*iter_chunk);
+            if((*iter_chunk).unique())
+                BESDEBUG(MODULE, prolog << "shared pointer is the unique owner"<<endl);
+            (*iter_chunk).reset();
+            iter_chunk=this->d_chunks.erase(iter_chunk);
+        }
+        else {
+            ++iter_chunk;
+        }
+    }
+#endif
+
+     d_chunks.erase(
+              std::remove_if(d_chunks.begin(),d_chunks.end(),
+                              [](const std::shared_ptr<Chunk>&c){
+                                  return c->get_uses_fill_value()==true;
+                              }),
+              d_chunks.end()
+              );
+                    
+
+    
 
     // Fill in the chunk information so that the fileout netcdf can retrieve.
     // Provide chunk offset/length etc.
