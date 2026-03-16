@@ -636,7 +636,7 @@ void FONcArray::define(int ncid) {
         if (!d_io_flag || !((d_a->get_var_storage_info()).has_filled_chunks)) {
 
             BESDEBUG("fonc","nc_def_var_fill to NC_NOFILL  "<<d_varname << endl);
-            int stax = nc_def_var_fill(ncid, d_varid, NC_NOFILL, nullptr );
+            stax = nc_def_var_fill(ncid, d_varid, NC_NOFILL, nullptr );
             if (stax != NC_NOERR) {
                     string err = (string) "fileout.netcdf - " + "Failed to clear fill value for " + d_varname;
                     FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
