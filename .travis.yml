@@ -239,7 +239,7 @@ jobs:
           echo "Tagging image with BES version: ${BUILD_VERSION_TAG}"
           docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
 
-    - stage: build-docker
+    - stage: build-rpms
       name: "Build docker image bes_core:-el9"
       script:
         - set -e
