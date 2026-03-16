@@ -26,13 +26,13 @@
 #ifndef NgapOwnedContainer_h_
 #define NgapOwnedContainer_h_ 1
 
-#include <string>
 #include <map>
 #include <memory>
+#include <string>
 
 #include "BESContainer.h"
-#include "MemoryCache.h"
 #include "FileCache.h"
+#include "MemoryCache.h"
 #include "NgapApi.h"
 
 namespace http {
@@ -60,22 +60,23 @@ namespace ngap {
  *
  * @see NgapOwnedContainerStorage
  */
-class NgapOwnedContainer: public BESContainer {
+class NgapOwnedContainer : public BESContainer {
 
-    std::string d_ngap_path;    // The (in)famous REST path
+    std::string d_ngap_path;                            // The (in)famous REST path
+    static bool d_enable_dmrpp_local_files_for_testing; // per instance flag for testing.
 
     static std::string d_data_source_location;
-    static bool d_use_opendap_bucket;
+    static bool d_support_source_prefix;
     static bool d_inject_data_url;
 
-    static int d_cmr_cache_size_items;      // max number of entries
-    static int d_cmr_cache_purge_items;     // remove this many during purge
+    static int d_cmr_cache_size_items;  // max number of entries
+    static int d_cmr_cache_purge_items; // remove this many during purge
 
     static bool d_use_cmr_cache;
     static MemoryCache<NgapApi::DataAccessUrls> d_cmr_mem_cache_urls;
 
-    static int d_dmrpp_mem_cache_size_items;    // max number of entries
-    static int d_dmrpp_mem_cache_purge_items;   // remove this many during purge
+    static int d_dmrpp_mem_cache_size_items;  // max number of entries
+    static int d_dmrpp_mem_cache_purge_items; // remove this many during purge
 
     static bool d_use_dmrpp_cache;
     static MemoryCache<std::string> d_dmrpp_mem_cache;
@@ -93,15 +94,19 @@ class NgapOwnedContainer: public BESContainer {
     // easy to test in the unit tests. jhrg 4/29/24
     static bool file_to_string(int fd, std::string &content);
 
-    static bool get_daac_content_filters(const NgapApi::DataAccessUrls &data_urls, std::map<std::string, std::string, std::less<>> &content_filters);
+    static bool get_daac_content_filters(const NgapApi::DataAccessUrls &data_urls,
+                                         std::map<std::string, std::string, std::less<>> &content_filters);
     static bool get_opendap_content_filters(std::map<std::string, std::string, std::less<>> &content_filters);
-    static void filter_response(const std::map<std::string, std::string, std::less<>> &content_filters, std::string &content);
+    static void filter_response(const std::map<std::string, std::string, std::less<>> &content_filters,
+                                std::string &content);
 
-    static std::string build_dmrpp_url_to_owned_bucket(const std::string &rest_path, const std::string &data_source);
+    static std::string build_dmrpp_url_to_owned_bucket(const std::string &rest_path);
     static NgapApi::DataAccessUrls build_data_urls_to_daac_bucket(const std::string &rest_path);
+    static std::string build_dmrpp_url_to_local_path(const std::string &rest_path);
 
-    bool dmrpp_read_from_opendap_bucket(std::string &dmrpp_string) const;
+    void dmrpp_read_from_opendap_bucket(std::string &dmrpp_string) const;
     void dmrpp_read_from_daac_bucket(std::string &dmrpp_string) const;
+    void dmrpp_read_from_local_path(std::string &dmrpp_string) const;
 
     bool get_item_from_dmrpp_cache(std::string &dmrpp_string) const;
     bool put_item_in_dmrpp_cache(const std::string &dmrpp_string) const;
@@ -133,15 +138,15 @@ public:
 
     /// @brief Set the S3 bucket used for 'owned' DMR++ documents.
     static void set_data_source_location(const std::string &data_source_location) {
+        d_enable_dmrpp_local_files_for_testing = true;
         d_data_source_location = data_source_location;
     }
     static std::string get_data_source_location() { return d_data_source_location; }
 
     std::string access() override;
+    std::string alt_access();
 
-    bool release() override {
-        return true;
-    }
+    bool release() override { return true; }
 
     void dump(std::ostream &strm) const override;
 };

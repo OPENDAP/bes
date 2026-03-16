@@ -64,7 +64,7 @@ DmrppStr.h DmrppStructure.h DmrppUrl.h DmrppD4Enum.h DmrppD4Group.h \
 DmrppD4Opaque.h DmrppD4Sequence.h DmrppTypeFactory.h \
 DmrppMetadataStore.h DmrppNames.h byteswap_compat.h  \
 SuperChunk.h Base64.h DMZ.h  DmrppChunkOdometer.h UnsupportedTypeException.h \
-vlsa_util.h float_byteswap.h
+vlsa_util.h float_byteswap.h 
 
 DMRPP_MODULE = DmrppModule.cc DmrppRequestHandler.cc DmrppModule.h DmrppRequestHandler.h
 
@@ -89,9 +89,9 @@ build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(top_srcdir)/modules/hdf
 build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) DmrppRequestHandler.cc DmrppRequestHandler.h \
     build_dmrpp.cc build_dmrpp_util.cc build_dmrpp_util.h h5common.cc h5common.h
 build_dmrpp_LDFLAGS = $(top_builddir)/dap/.libs/libdap_module.a $(AM_LDFLAGS)
-build_dmrpp_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(H5_LDFLAGS) \
-    $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
-    $(LDADD) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz 
+build_dmrpp_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) -L$(builddir)/ngap_container -lngap \
+    $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
+    $(LDADD) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
 
 # jhrg 6/2/23 $(BES_EXTRA_LIBS)
 
