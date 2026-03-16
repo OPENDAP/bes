@@ -1060,14 +1060,22 @@ void DMZ::set_up_direct_io_flag_phase_2(D4Group * grp, BaseType *btp) {
     // Another special case is that some chunks are only filled with the fvalues. This case cannot be handled by direct IO.
     // First calculate the number of logical chunks.
     // Also up to this step, the size of chunk_dim_sizes must be the same as the size of dim_sizes. No need to double check.
-#if 0
+
+    bool has_filled_chunks = false;
     size_t num_logical_chunks = 1;
     for (unsigned int i = 0; i < dim_sizes.size(); i++)
         num_logical_chunks *= (size_t) ceil((float) dim_sizes[i] / (float) chunk_dim_sizes[i]);
     if (num_logical_chunks != (num_chunks_children - 1))
-        return;
-#endif
+        has_filled_chunks = true;
 
+    // Filled chunks can be supported for the whole variable case. However, we also need to check if _FillValue attribute is
+    // defined in this variable.
+    if (has_filled_chunks) {
+
+        BESDEBUG(PARSER, prolog << "has_filled_chunks: " <<btp->name() << endl);
+        if (btp->attributes()->find("_FillValue")==nullptr)
+            return;
+    }
     // Now we should provide the variable info for the define mode inside the fileout netCDF module.
     // The chunk offset/length etc. information will be provided after load_chunk() is called in the read().
 
@@ -1078,6 +1086,7 @@ void DMZ::set_up_direct_io_flag_phase_2(D4Group * grp, BaseType *btp) {
     Array::var_storage_info dmrpp_vs_info;
 
     // Add the filter info.
+    dmrpp_vs_info.has_filled_chunks = has_filled_chunks;
     dmrpp_vs_info.filter = filter;
 
     // Provide the deflate compression levels.

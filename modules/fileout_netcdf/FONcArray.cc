@@ -583,27 +583,22 @@ void FONcArray::define(int ncid) {
             }
         }
 
+        int stax = NC_NOERR;
         if (d_is_dap4_enum) {
-            int stax = nc_def_var(ncid, d_varname.c_str(), d_fa_nc4_enum_type_id, d_ndims, d_dim_ids.data(), &d_varid);
+            stax = nc_def_var(ncid, d_varname.c_str(), d_fa_nc4_enum_type_id, d_ndims, d_dim_ids.data(), &d_varid);
             if (stax != NC_NOERR) {
                 string err = (string) "fileout.netcdf - Failed to define enum variable " + d_varname;
                 FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
             }  
         } 
         else {
-            int stax = nc_def_var(ncid, d_varname.c_str(), d_array_type, d_ndims, d_dim_ids.data(), &d_varid);
+            stax = nc_def_var(ncid, d_varname.c_str(), d_array_type, d_ndims, d_dim_ids.data(), &d_varid);
             if (stax != NC_NOERR) {
                 string err = (string) "fileout.netcdf - Failed to define variable " + d_varname;
                 FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
             }
         }
     
-        int stax = nc_def_var_fill(ncid, d_varid, NC_NOFILL, nullptr );
-        if (stax != NC_NOERR) {
-                string err = (string) "fileout.netcdf - " + "Failed to clear fill value for " + d_varname;
-                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-        }
-        
 #ifndef NBEBUG
 
         if (fdio_flag) {
@@ -637,7 +632,17 @@ void FONcArray::define(int ncid) {
 
         // Obtain the direct IO flag
         bool d_io_flag = d_a->get_dio_flag();
+    
+        if (!d_io_flag || !((d_a->get_var_storage_info()).has_filled_chunks)) {
 
+            BESDEBUG("fonc","nc_def_var_fill to NC_NOFILL  "<<d_varname << endl);
+            int stax = nc_def_var_fill(ncid, d_varid, NC_NOFILL, nullptr );
+            if (stax != NC_NOERR) {
+                    string err = (string) "fileout.netcdf - " + "Failed to clear fill value for " + d_varname;
+                    FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+            }
+        }
+ 
 #ifndef NBEBUG
         BESDEBUG("fonc", "d_io_flag after intern_data(): "<<d_io_flag<<endl);
         

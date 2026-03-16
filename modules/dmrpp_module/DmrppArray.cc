@@ -4109,17 +4109,16 @@ void DmrppArray::add_dio_var_storage_info_unconstrained() {
     }
 #endif
 
-     d_chunks.erase(
-              std::remove_if(d_chunks.begin(),d_chunks.end(),
-                              [](const std::shared_ptr<Chunk>&c){
-                                  return c->get_uses_fill_value()==true;
-                              }),
-              d_chunks.end()
-              );
+     if (dmrpp_vs_info.has_filled_chunks) {
+         d_chunks.erase(
+                  std::remove_if(d_chunks.begin(),d_chunks.end(),
+                                  [](const std::shared_ptr<Chunk>&c){
+                                      return c->get_uses_fill_value()==true;
+                                  }),
+                  d_chunks.end()
+                  );
+     }
                     
-
-    
-
     // Fill in the chunk information so that the fileout netcdf can retrieve.
     // Provide chunk offset/length etc.
     auto im_chunks = this->get_immutable_chunks();
