@@ -216,15 +216,17 @@ jobs:
     - stage: build-docker
       name: "Build docker image bes_core:-el8"
       script:
-        - export BES_BUILD=docker-el8
-        - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
-        - export DOCKER_NAME="bes_core"
-        - export BUILDER_BASE_IMAGE="opendap/rocky8_hyrax_builder:latest"
-        - export FINAL_BASE_IMAGE="rockylinux:8"
-        - export DIST=el8
-        - export OS=rocky8
-        - export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
-        - export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
+        - set -e
+        - |
+          export BES_BUILD=docker-el8
+          echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+          export DOCKER_NAME="bes_core"
+          export BUILDER_BASE_IMAGE="opendap/rocky8_hyrax_builder:latest"
+          export FINAL_BASE_IMAGE="rockylinux:8"
+          export DIST=el8
+          export OS=rocky8
+          export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
+          export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
         - ./travis/build-rhel-docker.sh
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
@@ -238,15 +240,17 @@ jobs:
     - stage: build-docker
       name: "Build docker image bes_core:-el9"
       script:
-        - export BES_BUILD=docker-el9
-        - echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
-        - export DOCKER_NAME="bes_core"
-        - export BUILDER_BASE_IMAGE="opendap/rocky9_hyrax_builder:latest"
-        - export FINAL_BASE_IMAGE="rockylinux:9"
-        - export DIST=el9
-        - export OS=rocky9
-        - export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
-        - export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
+        - set -e
+        - |
+          export BES_BUILD=docker-el9
+          echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+          export DOCKER_NAME="bes_core"
+          export BUILDER_BASE_IMAGE="opendap/rocky9_hyrax_builder:latest"
+          export FINAL_BASE_IMAGE="rockylinux:9"
+          export DIST=el9
+          export OS=rocky9
+          export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
+          export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
         - ./travis/build-rhel-docker.sh
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
