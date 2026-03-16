@@ -632,10 +632,10 @@ AM_COND_IF([LOOK_FOR_AWS],
         [aws_prefix=$ac_bes_dependencies_prefix
 
          aws_libs=" -laws-cpp-sdk-s3 -laws-cpp-sdk-core -laws-crt-cpp -laws-c-io \
-         -laws-c-http -laws-c-compression -laws-c-event-stream \
-         -laws-c-auth -laws-c-cal \
-         -laws-c-mqtt -laws-c-s3 -laws-c-sdkutils -laws-c-common \
-         -lxml2 -lz -lbz2 -lcurl -laws-checksums"
+                  -laws-c-http -laws-c-compression -laws-c-event-stream \
+                  -laws-c-auth -laws-c-cal \
+                  -laws-c-mqtt -laws-c-s3 -laws-c-sdkutils -laws-c-common \
+                  -lxml2 -lz -lbz2 -lcurl -laws-checksums"
 
          dnl AC_CANONICAL_HOST is needed to access the 'host_os' variable
          AC_CANONICAL_HOST

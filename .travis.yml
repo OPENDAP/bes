@@ -197,8 +197,8 @@ jobs:
           export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}-${DIST}"
           echo "Tagging image with BES version: ${BUILD_VERSION_TAG}"
           docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
-        # Temporarily *always* push to docker hub, rather than waiting for a deploy after merge to main
-        - bash ./travis/deploy-to-docker-hub.sh
+        # Enable to *always* push to docker hub, rather than waiting for a deploy after merge to main
+        # - bash ./travis/deploy-to-docker-hub.sh
 
     - stage: build-docker
       name: "Build docker image bes_core:-el9"
