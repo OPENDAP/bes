@@ -9,7 +9,7 @@ RUN if [ -z "$BUILDER_BASE_IMAGE" ]; then \
         exit 1; \
     fi
 
-ENV USER="bes_user"
+ENV BES_USER="bes_user"
 ENV USER_ID=101
 
 RUN yum update -y \
@@ -20,10 +20,10 @@ RUN useradd \
         --user-group \
         --comment "BES daemon" \
         --uid ${USER_ID} \
-        $USER \
-    && echo $USER ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USER
-USER $USER
-WORKDIR "/home/$USER"
+        $BES_USER \
+    && echo $BES_USER ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$BES_USER
+USER $BES_USER
+WORKDIR "/home/$BES_USER"
 
 # Start bes build process
 ARG GDAL_OPTION
@@ -51,12 +51,12 @@ RUN --mount=from=aws_downloads,target=/tmp_mounted \
 # To debug what has been installed, use
 # rpm -ql "$PREFIX/rpmbuild/${LIBDAP_RPM_FILENAME}"
 
-RUN sudo chown -R $USER:$USER $DEPS_PREFIX \
+RUN sudo chown -R $BES_USER:$BES_USER $DEPS_PREFIX \
     && sudo chmod o+x /root
 
 # Build the BES
 COPY . ./bes
-RUN sudo chown -R $USER:$USER bes
+RUN sudo chown -R $BES_USER:$BES_USER bes
 WORKDIR bes
 
 RUN autoreconf -fiv
@@ -75,10 +75,10 @@ RUN sudo make install
 RUN sudo rm ${PREFIX}/lib/bes/*.a \
     && sudo rm ${PREFIX}/lib/bes/*.la
 
-# Update permissions to support user \"${USER}\" running the daemon"
-RUN sudo setfacl -R -m u:${USER}:rwx ${PREFIX}/var \
-    && sudo setfacl -R -m u:${USER}:rwx ${PREFIX}/run \
-    && sudo setfacl -R -m u:${USER}:rwx ${PREFIX}/share
+# Update permissions to support user \"${BES_USER}\" running the daemon"
+RUN sudo setfacl -R -m u:${BES_USER}:rwx ${PREFIX}/var \
+    && sudo setfacl -R -m u:${BES_USER}:rwx ${PREFIX}/run \
+    && sudo setfacl -R -m u:${BES_USER}:rwx ${PREFIX}/share
 
 # Test the BES
 RUN besctl start && make check -j$(nproc --ignore=1) && besctl stop
@@ -106,7 +106,7 @@ RUN --mount=from=aws_downloads,target=/tmp_mounted \
     && dnf -y install "/tmp_mounted/$LIBDAP_RPM_FILENAME" \
     && dnf clean all
 
-ENV USER="bes_user"
+ENV BES_USER="bes_user"
 ENV USER_ID=101
 ENV PREFIX="/"
 ENV DEPS_PREFIX="/root/install"
@@ -116,22 +116,22 @@ RUN useradd \
         --user-group \
         --comment "BES daemon" \
         --uid ${USER_ID} \
-        $USER \
-    && echo $USER ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USER
+        $BES_USER \
+    && echo $BES_USER ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$BES_USER
 
 # Install the latest hyrax dependencies
 ARG HYRAX_DEPENDENCIES_TARBALL
 RUN --mount=from=aws_downloads,target=/tmp_mounted \
     sudo tar -C "/root" -xzvf "/tmp_mounted/$HYRAX_DEPENDENCIES_TARBALL"
 
-RUN sudo chown -R $USER:$USER $DEPS_PREFIX \
+RUN sudo chown -R $BES_USER:$BES_USER $DEPS_PREFIX \
     && sudo chmod o+x /root
 
-USER $USER
-WORKDIR "/home/$USER"
+USER $BES_USER
+WORKDIR "/home/$BES_USER"
 
-COPY --from=builder /home/${USER}/bes/bes_VERSION bes_VERSION
-COPY --from=builder /home/${USER}/bes/libdap_VERSION libdap_VERSION
+COPY --from=builder /home/${BES_USER}/bes/bes_VERSION bes_VERSION
+COPY --from=builder /home/${BES_USER}/bes/libdap_VERSION libdap_VERSION
 COPY --from=builder $DEPS_PREFIX $DEPS_PREFIX
 
 # There has to be a better way. And there is! We can mount the previous
@@ -147,10 +147,10 @@ COPY --from=builder /include/bes /include/bes
 COPY --from=builder /etc/rc.d/init.d/besd /etc/rc.d/init.d/besd
 COPY --from=builder /bin/bes* /bin
 
-# Update permissions to support user \"${USER}\" running the daemon"
-RUN sudo setfacl -R -m u:${USER}:rwx ${PREFIX}/var \
-    && sudo setfacl -R -m u:${USER}:rwx ${PREFIX}/run \
-    && sudo setfacl -R -m u:${USER}:rwx ${PREFIX}/share
+# Update permissions to support user \"${BES_USER}\" running the daemon"
+RUN sudo setfacl -R -m u:${BES_USER}:rwx ${PREFIX}/var \
+    && sudo setfacl -R -m u:${BES_USER}:rwx ${PREFIX}/run \
+    && sudo setfacl -R -m u:${BES_USER}:rwx ${PREFIX}/share
 
 # Sanity check....
 RUN echo "besdaemon is here: "`which besdaemon` \
