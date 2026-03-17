@@ -9,19 +9,31 @@ RUN if [ -z "$BUILDER_BASE_IMAGE" ]; then \
         exit 1; \
     fi
 
+ENV USER="bes_user"
+ENV USER_ID=101
+
 RUN yum update -y \
     && dnf install sudo -y \
     && dnf clean all
 
+RUN useradd \
+        --user-group \
+        --comment "BES daemon" \
+        --uid ${USER_ID} \
+        $USER \
+    && echo $USER ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USER
+USER $USER
+WORKDIR "/home/$USER"
+
 # Start bes build process
 ARG GDAL_OPTION
 ARG BES_BUILD_NUMBER
-ENV DEPS_PREFIX="/root/install"
-ENV PATH="$PREFIX/bin:$DEPS_PREFIX/deps/bin:$PATH"
+ENV PREFIX="/root/install"
+ENV PATH="$PREFIX/bin:$PREFIX/deps/bin:$PATH"
 
 ENV CPPFLAGS="-I/usr/include/tirpc"
 ENV LDFLAGS="-ltirpc"
-ENV LD_LIBRARY_PATH="${DEPS_PREFIX}/deps/lib"
+ENV LD_LIBRARY_PATH="${PREFIX}/deps/lib"
 
 # Install the latest hyrax dependencies
 ARG HYRAX_DEPENDENCIES_TARBALL
@@ -38,6 +50,9 @@ RUN --mount=from=aws_downloads,target=/tmp_mounted \
 # To debug what has been installed, use
 # rpm -ql "$PREFIX/rpmbuild/${LIBDAP_RPM_FILENAME}"
 
+RUN sudo chown -R $USER:$USER $PREFIX \
+    && sudo chmod o+x /root
+
 # Build the BES
 COPY . ./bes
 RUN sudo chown -R $USER:$USER bes
@@ -46,11 +61,11 @@ WORKDIR bes
 RUN autoreconf -fiv
 RUN echo "Sanity check: CPPFLAGS=$CPPFLAGS LDFLAGS=$LDFLAGS prefix=$PREFIX" \
     && ./configure --disable-dependency-tracking \
-    --with-dependencies="${DEPS_PREFIX}/deps" \
+    --with-dependencies="${PREFIX}/deps" \
+    --prefix="${PREFIX}" \
     $GDAL_OPTION \
     --with-build=$BES_BUILD_NUMBER \
-    && echo "DONE"
-RUN make -j$(nproc --ignore=1)
+    --enable-developer
 RUN make install -j$(nproc --ignore=1)
 
 # Clean up extraneous files; do it in this stage so we don't pull them over
@@ -86,9 +101,8 @@ RUN --mount=from=aws_downloads,target=/tmp_mounted \
 
 ENV USER="bes_user"
 ENV USER_ID=101
-ENV PREFIX="/"
-ENV DEPS_PREFIX="/root/install"
-ENV PATH="$PREFIX/bin:$DEPS_PREFIX/deps/bin:$PATH"
+ENV PREFIX="/root/install"
+ENV PATH="$PREFIX/bin:$PREFIX/deps/bin:$PATH"
 
 RUN useradd \
         --user-group \
@@ -102,17 +116,15 @@ ARG HYRAX_DEPENDENCIES_TARBALL
 RUN --mount=from=aws_downloads,target=/tmp_mounted \
     sudo tar -C "/root" -xzvf "/tmp_mounted/$HYRAX_DEPENDENCIES_TARBALL"
 
+RUN sudo chown -R $USER:$USER $PREFIX \
+    && sudo chmod o+x /root
+
+USER $USER
 WORKDIR "/home/$USER"
 
 COPY --from=builder /home/${USER}/bes/bes_VERSION bes_VERSION
 COPY --from=builder /home/${USER}/bes/libdap_VERSION libdap_VERSION
-COPY --from=builder /root /root
-COPY --from=builder $DEPS_PREFIX $DEPS_PREFIX
-
-USER $USER
-RUN sudo chown -R $USER:$USER $DEPS_PREFIX \
-    && sudo chmod o+x /root \
-    && echo "Okay..."
+COPY --from=builder $PREFIX $PREFIX
 
 # Sanity check....
 RUN echo "besdaemon is here: "`which besdaemon` \
