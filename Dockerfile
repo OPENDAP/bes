@@ -28,7 +28,7 @@ WORKDIR "/home/$USER"
 # Start bes build process
 ARG GDAL_OPTION
 ARG BES_BUILD_NUMBER
-ENV PREFIX="/"
+ENV PREFIX=""
 ENV DEPS_PREFIX="/root/install"
 ENV PATH="$PREFIX/bin:$DEPS_PREFIX/deps/bin:$PATH"
 
@@ -70,12 +70,12 @@ RUN echo "Sanity check: CPPFLAGS=$CPPFLAGS LDFLAGS=$LDFLAGS prefix=$PREFIX" \
 RUN make -j$(nproc --ignore=1)
 RUN sudo make install
 
-# # Clean up extraneous files; do it in this stage so we don't pull them over
-# # at the next stage
+# Clean up extraneous files; do it in this stage so we don't pull them over
+# at the next stage
 RUN sudo rm ${PREFIX}/lib/bes/*.a \
     && sudo rm ${PREFIX}/lib/bes/*.la
 
-# # Update permissions to support user \"${USER}\" running the daemon"
+# Update permissions to support user \"${USER}\" running the daemon"
 RUN sudo setfacl -R -m u:${USER}:rwx ${PREFIX}/var \
     && sudo setfacl -R -m u:${USER}:rwx ${PREFIX}/run \
     && sudo setfacl -R -m u:${USER}:rwx ${PREFIX}/share
@@ -133,6 +133,11 @@ WORKDIR "/home/$USER"
 COPY --from=builder /home/${USER}/bes/bes_VERSION bes_VERSION
 COPY --from=builder /home/${USER}/bes/libdap_VERSION libdap_VERSION
 COPY --from=builder $DEPS_PREFIX $DEPS_PREFIX
+
+# There has to be a better way. And there is! We can mount the previous
+# image and run an install directly from it, I believe. 
+# ref https://stackoverflow.com/questions/45202089/docker-multi-stage-build-and-mounting-sharing-from-previous-stage
+# For now, leaving as a future improvement.
 COPY --from=builder /etc/bes /etc/bes
 COPY --from=builder /usr/lib /usr/lib
 COPY --from=builder /usr/bin /usr/bin
@@ -141,6 +146,11 @@ COPY --from=builder /share/bes /share/bes
 COPY --from=builder /include/bes /include/bes
 COPY --from=builder /etc/rc.d/init.d/besd /etc/rc.d/init.d/besd
 COPY --from=builder /bin/bes* /bin
+
+# Update permissions to support user \"${USER}\" running the daemon"
+RUN sudo setfacl -R -m u:${USER}:rwx ${PREFIX}/var \
+    && sudo setfacl -R -m u:${USER}:rwx ${PREFIX}/run \
+    && sudo setfacl -R -m u:${USER}:rwx ${PREFIX}/share
 
 # Sanity check....
 RUN echo "besdaemon is here: "`which besdaemon` \
