@@ -4093,33 +4093,9 @@ void DmrppArray::add_dio_var_storage_info_unconstrained() {
         BESDEBUG(MODULE, prolog << "direct_io_offset is: " << chunks[i]->get_direct_io_offset() << endl);
     }
 
-
-#if 0
-    for (auto iter_chunk = this->d_chunks.begin(); iter_chunk != this->d_chunks.end();) {
-        if((*iter_chunk)->get_uses_fill_value()) {
-            //delete(*iter_chunk);
-            if((*iter_chunk).unique())
-                BESDEBUG(MODULE, prolog << "shared pointer is the unique owner"<<endl);
-            (*iter_chunk).reset();
-            iter_chunk=this->d_chunks.erase(iter_chunk);
-        }
-        else {
-            ++iter_chunk;
-        }
-    }
-#endif
-
-     if (dmrpp_vs_info.has_filled_chunks) 
+    // Remove filled chunks when dio is turned on. 
+    if (dmrpp_vs_info.has_filled_chunks) 
         remove_filled_chunks();
-#if 0
-         d_chunks.erase(
-                  std::remove_if(d_chunks.begin(),d_chunks.end(),
-                                  [](const std::shared_ptr<Chunk>&c){
-                                      return c->get_uses_fill_value()==true;
-                                  }),
-                  d_chunks.end()
-                  );
-#endif
                     
     // Fill in the chunk information so that the fileout netcdf can retrieve.
     // Provide chunk offset/length etc.
