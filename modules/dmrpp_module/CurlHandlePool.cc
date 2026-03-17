@@ -308,7 +308,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
     string reason = "The requested resource does not match any of the AllowedHost rules.";
     if (!http::AllowedHosts::theHosts()->is_allowed(chunk->get_data_url(), reason)) {
         stringstream ss;
-        ss << "ERROR! The chunk url " << chunk->get_data_url()->str() << " was rejected because: " << reason;
+        ss << "ERROR! The chunk url " << chunk->get_data_url()->get_url_no_query() << " was rejected because: " << reason;
         throw BESForbiddenError(ss.str(), __FILE__, __LINE__);
     }
 
@@ -389,7 +389,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
         }
 #if 0
         AccessCredentials *credentials = CredentialsManager::theCM()->get(handle->d_url);
-        INFO_LOG(prolog << "Looked for credentials for: " << handle->d_url->str() << '\n');
+        INFO_LOG(prolog << "Looked for credentials for: " << handle->d_url->get_url_no_query() << '\n');
         // TODO Replace with: curl_slist *sign_s3_url(const shared_ptr <url> &target_url, AccessCredentials *ac, curl_slist *req_headers)
         //  jhrg 11/22/24
         if (credentials && credentials->is_s3_cred()) {
@@ -421,10 +421,10 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
         // FIXME DO NOT MERGE THIS. For POC work on DMR++ Ownership.
         //  TRY abuse the credentials mgr to get/use and EDL Token for certain URLs. jhrg 5/18/24
         else if (credentials) {
-            INFO_LOG(prolog << "Looking for EDL Token for URL: " << handle->d_url->str() << '\n');
+            INFO_LOG(prolog << "Looking for EDL Token for URL: " << handle->d_url->get_url_no_query() << '\n');
             string edl_token = credentials->get("edl_token");
             if (!edl_token.empty()) {
-                INFO_LOG(prolog << "Using EDL Token for URL: " << handle->d_url->str() << '\n');
+                INFO_LOG(prolog << "Using EDL Token for URL: " << handle->d_url->get_url_no_query() << '\n');
                 handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "Authorization", edl_token);
                 res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
                 curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf.data(), __FILE__, __LINE__);
