@@ -29,11 +29,12 @@ WORKDIR "/home/$USER"
 ARG GDAL_OPTION
 ARG BES_BUILD_NUMBER
 ENV PREFIX="/root/install"
-ENV PATH="$PREFIX/bin:$PREFIX/deps/bin:$PATH"
+ENV DEPS_PREFIX="/root/install"
+ENV PATH="$PREFIX/bin:$DEPS_PREFIX/deps/bin:$PATH"
 
 ENV CPPFLAGS="-I/usr/include/tirpc"
 ENV LDFLAGS="-ltirpc"
-ENV LD_LIBRARY_PATH="${PREFIX}/deps/lib"
+ENV LD_LIBRARY_PATH="${DEPS_PREFIX}/deps/lib"
 
 # Install the latest hyrax dependencies
 ARG HYRAX_DEPENDENCIES_TARBALL
@@ -50,7 +51,7 @@ RUN --mount=from=aws_downloads,target=/tmp_mounted \
 # To debug what has been installed, use
 # rpm -ql "$PREFIX/rpmbuild/${LIBDAP_RPM_FILENAME}"
 
-RUN sudo chown -R $USER:$USER $PREFIX \
+RUN sudo chown -R $USER:$USER $DEPS_PREFIX \
     && sudo chmod o+x /root
 
 # Build the BES
@@ -61,7 +62,7 @@ WORKDIR bes
 RUN autoreconf -fiv
 RUN echo "Sanity check: CPPFLAGS=$CPPFLAGS LDFLAGS=$LDFLAGS prefix=$PREFIX" \
     && ./configure --disable-dependency-tracking \
-    --with-dependencies="${PREFIX}/deps" \
+    --with-dependencies="${DEPS_PREFIX}/deps" \
     --prefix="${PREFIX}" \
     $GDAL_OPTION \
     --with-build=$BES_BUILD_NUMBER \
@@ -102,7 +103,8 @@ RUN --mount=from=aws_downloads,target=/tmp_mounted \
 ENV USER="bes_user"
 ENV USER_ID=101
 ENV PREFIX="/root/install"
-ENV PATH="$PREFIX/bin:$PREFIX/deps/bin:$PATH"
+ENV DEPS_PREFIX="/root/install"
+ENV PATH="$PREFIX/bin:$DEPS_PREFIX/deps/bin:$PATH"
 
 RUN useradd \
         --user-group \
@@ -116,7 +118,7 @@ ARG HYRAX_DEPENDENCIES_TARBALL
 RUN --mount=from=aws_downloads,target=/tmp_mounted \
     sudo tar -C "/root" -xzvf "/tmp_mounted/$HYRAX_DEPENDENCIES_TARBALL"
 
-RUN sudo chown -R $USER:$USER $PREFIX \
+RUN sudo chown -R $USER:$USER $DEPS_PREFIX \
     && sudo chmod o+x /root
 
 USER $USER
@@ -125,6 +127,7 @@ WORKDIR "/home/$USER"
 COPY --from=builder /home/${USER}/bes/bes_VERSION bes_VERSION
 COPY --from=builder /home/${USER}/bes/libdap_VERSION libdap_VERSION
 COPY --from=builder $PREFIX $PREFIX
+COPY --from=builder $DEPS_PREFIX $DEPS_PREFIX
 
 # Sanity check....
 RUN echo "besdaemon is here: "`which besdaemon` \
