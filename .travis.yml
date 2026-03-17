@@ -238,6 +238,12 @@ jobs:
           export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}-${DIST}"
           echo "Tagging image with BES version: ${BUILD_VERSION_TAG}"
           docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
+        # TODO: COMMENT OUT THE FOLLOWING BEFORE MERGE!
+        - |
+          export DEBUGGING_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}-${DIST}-pull-request-test-image"
+          docker tag ${SNAPSHOT_IMAGE_TAG} ${DEBUGGING_TAG}
+          echo $DOCKER_HUB_PWSD | docker login -u $DOCKER_HUB_UID --password-stdin
+          docker push ${DEBUGGING_TAG}
 
     - stage: build-rpms
       name: "Build docker image bes_core:-el9"
