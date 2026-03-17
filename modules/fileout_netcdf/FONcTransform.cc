@@ -1442,6 +1442,12 @@ void FONcTransform::set_constraint_var_dio_flag(D4Group *d4_grp, Array* t_a, con
             return;
         }
 
+        // Lastly if this is a filled chunk constraint case, we cannot do direct chunk IO. 
+        if ((t_a->get_var_storage_info()).has_filled_chunks) {
+            t_a->set_dio_flag(false);   
+            return;
+        }
+
         BESDEBUG(MODULE, prolog << "Can do direct IO subset: the variable name is: " <<t_a->var()->name() << endl);
     }
 

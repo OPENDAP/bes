@@ -1060,12 +1060,22 @@ void DMZ::set_up_direct_io_flag_phase_2(D4Group * grp, BaseType *btp) {
     // Another special case is that some chunks are only filled with the fvalues. This case cannot be handled by direct IO.
     // First calculate the number of logical chunks.
     // Also up to this step, the size of chunk_dim_sizes must be the same as the size of dim_sizes. No need to double check.
+
+    bool has_filled_chunks = false;
     size_t num_logical_chunks = 1;
     for (unsigned int i = 0; i < dim_sizes.size(); i++)
         num_logical_chunks *= (size_t) ceil((float) dim_sizes[i] / (float) chunk_dim_sizes[i]);
     if (num_logical_chunks != (num_chunks_children - 1))
-        return;
+        has_filled_chunks = true;
 
+    // Filled chunks can be supported for the whole variable case. However, we also need to check if _FillValue attribute is
+    // defined in this variable.
+    if (has_filled_chunks) {
+
+        BESDEBUG(PARSER, prolog << "has_filled_chunks: " <<btp->name() << endl);
+        if (btp->attributes()->find("_FillValue")==nullptr)
+            return;
+    }
     // Now we should provide the variable info for the define mode inside the fileout netCDF module.
     // The chunk offset/length etc. information will be provided after load_chunk() is called in the read().
 
@@ -1076,6 +1086,7 @@ void DMZ::set_up_direct_io_flag_phase_2(D4Group * grp, BaseType *btp) {
     Array::var_storage_info dmrpp_vs_info;
 
     // Add the filter info.
+    dmrpp_vs_info.has_filled_chunks = has_filled_chunks;
     dmrpp_vs_info.filter = filter;
 
     // Provide the deflate compression levels.
@@ -2279,7 +2290,11 @@ void DMZ::load_chunks(BaseType *btp) {
             const auto &array_shape = get_array_dims(array);
             size_t num_logical_chunks = logical_chunks(array_shape, dc(btp));
             // do we need to run this code?
+            // When the direct IO is on, we don't need to handle the filled chunks. In case, still keep the commented old code.
+            if (num_logical_chunks != dc(btp)->get_chunk_count() && array->get_dio_flag()== false) {
+#if 0
             if (num_logical_chunks != dc(btp)->get_chunk_count()) {
+#endif
                 const auto &chunk_map = get_chunk_map(dc(btp)->get_immutable_chunks());
                 // Since the variable has some chunks that hold only fill values, add those chunks
                 // to the vector of chunks.
