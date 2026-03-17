@@ -85,9 +85,9 @@ RUN besctl start && make check -j$(nproc --ignore=1) && besctl stop
 
 RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
 
-# # #####
-# # ##### Final layer: libdap + hyrax-dependencies + bes
-# # #####
+#####
+##### Final layer: libdap + hyrax-dependencies + bes
+#####
 FROM ${FINAL_BASE_IMAGE:-rockylinux:8} AS bes_image
 
 ARG FINAL_BASE_IMAGE
@@ -134,10 +134,13 @@ COPY --from=builder /home/${USER}/bes/bes_VERSION bes_VERSION
 COPY --from=builder /home/${USER}/bes/libdap_VERSION libdap_VERSION
 COPY --from=builder $DEPS_PREFIX $DEPS_PREFIX
 COPY --from=builder /etc/bes /etc/bes
-COPY --from=builder /usr/lib/bes /usr/lib/bes
+COPY --from=builder /usr/lib /usr/lib
+COPY --from=builder /usr/bin /usr/bin
 COPY --from=builder /run/bes /run/bes
 COPY --from=builder /share/bes /share/bes
 COPY --from=builder /include/bes /include/bes
+COPY --from=builder /etc/rc.d/init.d/besd /etc/rc.d/init.d/besd
+COPY --from=builder /bin/bes* /bin
 
 # Sanity check....
 RUN echo "besdaemon is here: "`which besdaemon` \
