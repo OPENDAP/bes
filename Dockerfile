@@ -88,60 +88,64 @@ RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
 # # #####
 # # ##### Final layer: libdap + hyrax-dependencies + bes
 # # #####
-# FROM ${FINAL_BASE_IMAGE:-rockylinux:8} AS bes_image
+FROM ${FINAL_BASE_IMAGE:-rockylinux:8} AS bes_image
 
-# ARG FINAL_BASE_IMAGE
-# RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
-#         echo "Error: Non-empty FINAL_BASE_IMAGE must be specified. Exiting."; \
-#         exit 1; \
-#     fi
+ARG FINAL_BASE_IMAGE
+RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
+        echo "Error: Non-empty FINAL_BASE_IMAGE must be specified. Exiting."; \
+        exit 1; \
+    fi
 
-# # Duplicated from installation above, this time on a slimmer base image...
-# # Install the libdap rpms
-# ARG LIBDAP_RPM_FILENAME
-# RUN --mount=from=aws_downloads,target=/tmp_mounted \
-#     yum update -y \
-#     && dnf install sudo which procps libicu -y \
-#     && echo "Installing libdap snapshot rpms: $LIBDAP_RPM_FILENAME" \
-#     && dnf -y install "/tmp_mounted/$LIBDAP_RPM_FILENAME" \
-#     && dnf clean all
+# Duplicated from installation above, this time on a slimmer base image...
+# Install the libdap rpms
+ARG LIBDAP_RPM_FILENAME
+RUN --mount=from=aws_downloads,target=/tmp_mounted \
+    yum update -y \
+    && dnf install sudo which procps libicu -y \
+    && echo "Installing libdap snapshot rpms: $LIBDAP_RPM_FILENAME" \
+    && dnf -y install "/tmp_mounted/$LIBDAP_RPM_FILENAME" \
+    && dnf clean all
 
-# ENV USER="bes_user"
-# ENV USER_ID=101
-# ENV PREFIX="/root/install"
-# ENV DEPS_PREFIX="/root/install"
-# ENV PATH="$PREFIX/bin:$DEPS_PREFIX/deps/bin:$PATH"
+ENV USER="bes_user"
+ENV USER_ID=101
+ENV PREFIX="/"
+ENV DEPS_PREFIX="/root/install"
+ENV PATH="$PREFIX/bin:$DEPS_PREFIX/deps/bin:$PATH"
 
-# RUN useradd \
-#         --user-group \
-#         --comment "BES daemon" \
-#         --uid ${USER_ID} \
-#         $USER \
-#     && echo $USER ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USER
+RUN useradd \
+        --user-group \
+        --comment "BES daemon" \
+        --uid ${USER_ID} \
+        $USER \
+    && echo $USER ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USER
 
-# # Install the latest hyrax dependencies
-# ARG HYRAX_DEPENDENCIES_TARBALL
-# RUN --mount=from=aws_downloads,target=/tmp_mounted \
-#     sudo tar -C "/root" -xzvf "/tmp_mounted/$HYRAX_DEPENDENCIES_TARBALL"
+# Install the latest hyrax dependencies
+ARG HYRAX_DEPENDENCIES_TARBALL
+RUN --mount=from=aws_downloads,target=/tmp_mounted \
+    sudo tar -C "/root" -xzvf "/tmp_mounted/$HYRAX_DEPENDENCIES_TARBALL"
 
-# RUN sudo chown -R $USER:$USER $DEPS_PREFIX \
-#     && sudo chmod o+x /root
+RUN sudo chown -R $USER:$USER $DEPS_PREFIX \
+    && sudo chmod o+x /root
 
-# USER $USER
-# WORKDIR "/home/$USER"
+USER $USER
+WORKDIR "/home/$USER"
 
-# COPY --from=builder /home/${USER}/bes/bes_VERSION bes_VERSION
-# COPY --from=builder /home/${USER}/bes/libdap_VERSION libdap_VERSION
-# COPY --from=builder $PREFIX $PREFIX
-# COPY --from=builder $DEPS_PREFIX $DEPS_PREFIX
+COPY --from=builder /home/${USER}/bes/bes_VERSION bes_VERSION
+COPY --from=builder /home/${USER}/bes/libdap_VERSION libdap_VERSION
+COPY --from=builder $DEPS_PREFIX $DEPS_PREFIX
+COPY --from=builder /etc/bes /etc/bes
+COPY --from=builder /usr/lib/bes /usr/lib/bes
+COPY --from=builder /run/bes /run/bes
+COPY --from=builder /share/bes /share/bes
+COPY --from=builder /include/bes /include/bes
 
-# # Sanity check....
-# RUN echo "besdaemon is here: "`which besdaemon` \
-#     && echo "BES_VERSION (from bes_VERSION) is $(cat bes_VERSION)" \
-#     && echo "LIBDAP_VERSION (from libdap_VERSION) is $(cat libdap_VERSION)" \
-#     && besctl start \
-#     && besctl stop
+# Sanity check....
+RUN echo "besdaemon is here: "`which besdaemon` \
+    && echo "BES_VERSION (from bes_VERSION) is $(cat bes_VERSION)" \
+    && echo "LIBDAP_VERSION (from libdap_VERSION) is $(cat libdap_VERSION)" \
+    && besctl start \
+    && besctl stop
 
-# ENTRYPOINT [ "/bin/bash" ]
+ENTRYPOINT [ "/bin/bash" ]
 
-# CMD ["-"]
+CMD ["-"]
