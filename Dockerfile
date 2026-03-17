@@ -28,7 +28,7 @@ WORKDIR "/home/$USER"
 # Start bes build process
 ARG GDAL_OPTION
 ARG BES_BUILD_NUMBER
-ENV PREFIX="/root/install"
+ENV PREFIX="/"
 ENV DEPS_PREFIX="/root/install"
 ENV PATH="$PREFIX/bin:$DEPS_PREFIX/deps/bin:$PATH"
 
@@ -63,34 +63,31 @@ RUN autoreconf -fiv
 RUN echo "Sanity check: CPPFLAGS=$CPPFLAGS LDFLAGS=$LDFLAGS prefix=$PREFIX" \
     && ./configure --disable-dependency-tracking \
     --with-dependencies="${DEPS_PREFIX}/deps" \
-    # --prefix="${PREFIX}" \
+    --prefix="${PREFIX}" \
     $GDAL_OPTION \
     --with-build=$BES_BUILD_NUMBER \
     --enable-developer
-RUN sudo make install -j$(nproc --ignore=1)
+RUN make -j$(nproc --ignore=1)
+RUN sudo make install
 
-# Clean up extraneous files; do it in this stage so we don't pull them over
-# at the next stage
-RUN sudo rm /usr/local/lib/bes/*.a \
-    && sudo rm /usr/local/lib/bes/*.la
+# # Clean up extraneous files; do it in this stage so we don't pull them over
+# # at the next stage
+RUN sudo rm ${PREFIX}/lib/bes/*.a \
+    && sudo rm ${PREFIX}/lib/bes/*.la
 
-RUN echo "Updating permissions to support user \"${USER}\" running the daemon" \
-    && ls -l /usr/local/var/ \
-    && ls -l /usr/local/var/run \
-    && sudo chmod -R a+w /usr/local/var/ \
-    && ls -l /usr/local/var/ \
-    && ls -l /usr/local/var/run \
-    && echo "ready?"
+# # Update permissions to support user \"${USER}\" running the daemon"
+RUN sudo setfacl -R -m u:${USER}:rwx ${PREFIX}/var \
+    && sudo setfacl -R -m u:${USER}:rwx ${PREFIX}/run \
+    && sudo setfacl -R -m u:${USER}:rwx ${PREFIX}/share
 
-# # Test the BES
-# RUN besctl start && make check -j$(nproc --ignore=1) && besctl stop
-RUN besctl start && besctl stop
+# Test the BES
+RUN besctl start && make check -j$(nproc --ignore=1) && besctl stop
 
-# RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
+RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
 
-# #####
-# ##### Final layer: libdap + hyrax-dependencies + bes
-# #####
+# # #####
+# # ##### Final layer: libdap + hyrax-dependencies + bes
+# # #####
 # FROM ${FINAL_BASE_IMAGE:-rockylinux:8} AS bes_image
 
 # ARG FINAL_BASE_IMAGE
