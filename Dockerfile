@@ -63,16 +63,24 @@ RUN autoreconf -fiv
 RUN echo "Sanity check: CPPFLAGS=$CPPFLAGS LDFLAGS=$LDFLAGS prefix=$PREFIX" \
     && ./configure --disable-dependency-tracking \
     --with-dependencies="${DEPS_PREFIX}/deps" \
-    --prefix="${PREFIX}" \
+    # --prefix="${PREFIX}" \
     $GDAL_OPTION \
     --with-build=$BES_BUILD_NUMBER \
     --enable-developer
-RUN make install -j$(nproc --ignore=1)
+RUN sudo make install -j$(nproc --ignore=1)
 
 # Clean up extraneous files; do it in this stage so we don't pull them over
 # at the next stage
-# RUN rm $PREFIX/lib/bes/*.a \
-#     && rm $PREFIX/lib/bes/*.la
+RUN sudo rm /usr/local/lib/bes/*.a \
+    && sudo rm /usr/local/lib/bes/*.la
+
+RUN echo "Updating permissions to support user \"${USER}\" running the daemon" \
+    && ls -l /usr/local/var/ \
+    && ls -l /usr/local/var/run \
+    && sudo chmod -R a+w /usr/local/var/ \
+    && ls -l /usr/local/var/ \
+    && ls -l /usr/local/var/run \
+    && echo "ready?"
 
 # # Test the BES
 # RUN besctl start && make check -j$(nproc --ignore=1) && besctl stop
