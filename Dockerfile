@@ -143,6 +143,7 @@ COPY --from=builder /usr/lib /usr/lib
 COPY --from=builder /usr/bin /usr/bin
 COPY --from=builder /run/bes /run/bes
 COPY --from=builder /share/bes /share/bes
+COPY --from=builder /share/hyrax /share/hyrax
 COPY --from=builder /include/bes /include/bes
 COPY --from=builder /etc/rc.d/init.d/besd /etc/rc.d/init.d/besd
 COPY --from=builder /bin/bes* /bin
