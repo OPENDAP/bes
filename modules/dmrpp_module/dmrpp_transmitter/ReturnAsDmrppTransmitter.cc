@@ -47,7 +47,8 @@ using namespace ngap;
  * return a DMR++ document as XML. The bes command <get type="dap" ...> is
  * called with returnAs="dmrpp".
  */
-ReturnAsDmrppTransmitter::ReturnAsDmrppTransmitter() {
+ReturnAsDmrppTransmitter::ReturnAsDmrppTransmitter()
+{
     BESTransmitter::add_method(DAP4DATA_SERVICE, ReturnAsDmrppTransmitter::send_dmrpp);
 }
 
@@ -61,17 +62,21 @@ ReturnAsDmrppTransmitter::ReturnAsDmrppTransmitter() {
  * the NASA NGAP system.
  * @throws BESInteralError if there is a string output error when sending the response.
  */
-void ReturnAsDmrppTransmitter::send_dmrpp(BESResponseObject *, BESDataHandlerInterface &dhi) {
+void ReturnAsDmrppTransmitter::send_dmrpp(BESResponseObject *, BESDataHandlerInterface &dhi)
+{
     const auto container = dynamic_cast<NgapOwnedContainer *>(dhi.containers.front());
-    if (!container) throw BESInternalFatalError("expected NgapOwnedContainer", __FILE__, __LINE__);
-    auto dmrpp = container->access();
+    if (!container)
+        throw BESInternalFatalError("expected NgapOwnedContainer", __FILE__, __LINE__);
+    auto dmrpp = container->alt_access();
 
     // Test if the DMR++ has a trailing null and if so, remove it. jhrg 6/6/25
-    if (!dmrpp.empty() && dmrpp.back() == '\0') {
+    if (!dmrpp.empty() && dmrpp.back() == '\0')
+    {
         dmrpp.pop_back();
     }
 
     auto &strm = dhi.get_output_stream();
     strm << dmrpp << flush;
-    if (!strm) throw BESInternalError("Output stream is not set, can not return as", __FILE__, __LINE__);
+    if (!strm)
+        throw BESInternalError("Output stream is not set, can not return as", __FILE__, __LINE__);
 }

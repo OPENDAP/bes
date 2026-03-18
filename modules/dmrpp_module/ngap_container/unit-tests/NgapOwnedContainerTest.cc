@@ -25,11 +25,12 @@
 
 #include <memory>
 
-#include "BESUtil.h"
-#include "TheBESKeys.h"
 #include "BESContextManager.h"
+#include "BESError.h"
 #include "BESInternalError.h"
 #include "BESSyntaxUserError.h"
+#include "BESUtil.h"
+#include "TheBESKeys.h"
 
 #include "NgapOwnedContainer.h"
 
@@ -38,16 +39,16 @@
 
 using namespace std;
 
-const auto DMRPP_LOCATION = "https://dmrpp-sit-poc.s3.amazonaws.com";
-const auto DMRPP_TEST_BUCKET_OPENDAP_AWS = "https://s3.amazonaws.com/cloudydap";
-const auto TEST_DATA_LOCATION = string("file://") + TEST_SRC_DIR;
+const auto DMRPP_TEST_BUCKET_OPENDAP_AWS = "s3.amazonaws.com/cloudydap";
+// const auto TEST_DATA_LOCATION = string("file://") + TEST_SRC_DIR;
+const auto TEST_DATA_LOCATION = TEST_SRC_DIR;
 
 #define TEST_NAME DBG(cerr << __PRETTY_FUNCTION__ << "()\n")
 #define prolog string("NgapOwnedContainerTest::").append(__func__).append("() - ")
 
 namespace ngap {
 
-class NgapOwnedContainerTest: public CppUnit::TestFixture {
+class NgapOwnedContainerTest : public CppUnit::TestFixture {
     string d_cache_dir = string(TEST_BUILD_DIR) + "/owned-cache";
 
 public:
@@ -55,7 +56,7 @@ public:
     NgapOwnedContainerTest() = default;
     ~NgapOwnedContainerTest() override = default;
     NgapOwnedContainerTest(const NgapOwnedContainerTest &src) = delete;
-    const NgapOwnedContainerTest &operator=(const NgapOwnedContainerTest & rhs) = delete;
+    const NgapOwnedContainerTest &operator=(const NgapOwnedContainerTest &rhs) = delete;
 
     static void set_bes_keys() {
         TheBESKeys::TheKeys()->set_key("BES.LogName", "./bes.log");
@@ -70,8 +71,8 @@ public:
 
     void configure_ngap_handler() const {
         NgapOwnedContainer::d_use_dmrpp_cache = true;
-        NgapOwnedContainer::d_dmrpp_file_cache_dir = d_cache_dir;   // This is made if it doesn't exist
-        NgapOwnedContainer::d_dmrpp_file_cache_size_mb = 100 * MEGABYTE; // MB
+        NgapOwnedContainer::d_dmrpp_file_cache_dir = d_cache_dir;             // This is made if it doesn't exist
+        NgapOwnedContainer::d_dmrpp_file_cache_size_mb = 100 * MEGABYTE;      // MB
         NgapOwnedContainer::d_dmrpp_file_cache_purge_size_mb = 20 * MEGABYTE; // MB
         NgapOwnedContainer::d_dmrpp_file_cache.initialize(NgapOwnedContainer::d_dmrpp_file_cache_dir,
                                                           NgapOwnedContainer::d_dmrpp_file_cache_size_mb,
@@ -82,6 +83,9 @@ public:
     void setUp() override {
         set_bes_keys();
         configure_ngap_handler();
+        NgapOwnedContainer::d_enable_dmrpp_local_files_for_testing = false;
+        NgapOwnedContainer::d_data_source_location = "";
+        NgapOwnedContainer::d_inject_data_url = true;
     }
 
     // Delete the cache dir after each test; really only needed for the
@@ -89,6 +93,8 @@ public:
     void tearDown() override {
         NgapOwnedContainer::d_dmrpp_file_cache.clear();
         NgapOwnedContainer::d_dmrpp_mem_cache.clear();
+        NgapOwnedContainer::d_enable_dmrpp_local_files_for_testing = false;
+        NgapOwnedContainer::d_data_source_location = "";
     }
 
     void test_file_to_string() {
@@ -101,20 +107,22 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The file should be closed", close(fd) == 0);
         CPPUNIT_ASSERT_MESSAGE("The file should have content", !content.empty());
         DBG2(cerr << "Content length : " << content.size() << '\n');
-        CPPUNIT_ASSERT_MESSAGE("The file should be > 1k (was" + to_string(content.size()) + ").", content.size() > 1'000);
+        CPPUNIT_ASSERT_MESSAGE("The file should be > 1k (was" + to_string(content.size()) + ").",
+                               content.size() > 1'000);
     }
 
     void test_file_to_string_bigger_than_buffer() {
         TEST_NAME;
         string content;
-        string file_name = string(TEST_SRC_DIR) + "/NgapApiTest.cc";    // ~16k while the buffer is 4k
+        string file_name = string(TEST_SRC_DIR) + "/NgapApiTest.cc"; // ~16k while the buffer is 4k
         int fd = open(file_name.c_str(), O_RDONLY);
         CPPUNIT_ASSERT_MESSAGE("The file " + file_name + " should be open", fd != -1);
         CPPUNIT_ASSERT_MESSAGE("The file should be read", NgapOwnedContainer::file_to_string(fd, content));
         CPPUNIT_ASSERT_MESSAGE("The file should be closed", close(fd) == 0);
         CPPUNIT_ASSERT_MESSAGE("The file should have content", !content.empty());
         DBG2(cerr << "Content length : " << content.size() << '\n');
-        CPPUNIT_ASSERT_MESSAGE("The file should be > 16k (was " + to_string(content.size()) + ").", content.size() > 15'000);
+        CPPUNIT_ASSERT_MESSAGE("The file should be > 16k (was " + to_string(content.size()) + ").",
+                               content.size() > 15'000);
     }
 
     void test_file_to_string_file_not_open() {
@@ -128,9 +136,18 @@ public:
 
     void test_build_dmrpp_url_to_owned_bucket() {
         TEST_NAME;
-        string rest_path = "collections/C1996541017-GHRC_DAAC/granules/amsua15_2020.028_12915_1139_1324_WI.nc";
-        string expected = "https://dmrpp-sit-poc.s3.amazonaws.com/C1996541017-GHRC_DAAC/amsua15_2020.028_12915_1139_1324_WI.nc.dmrpp";
-        string actual = NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path, DMRPP_LOCATION);
+        string rest_path = "source/xyz.opendap.org/stuff.nc.dmrpp";
+        string expected = "https://xyz.opendap.org/stuff.nc.dmrpp";
+        string actual = NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path);
+        CPPUNIT_ASSERT_MESSAGE("The URL should be built (got: " + actual + " expected: " + expected + ").",
+                               actual == expected);
+    }
+
+    void test_build_dmrpp_url_to_owned_bucket_2() {
+        TEST_NAME;
+        string rest_path = "source/xyz.opendap.org/opendap/data/nc/stuff.nc.dmrpp";
+        string expected = "https://xyz.opendap.org/opendap/data/nc/stuff.nc.dmrpp";
+        string actual = NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path);
         CPPUNIT_ASSERT_MESSAGE("The URL should be built (got: " + actual + " expected: " + expected + ").",
                                actual == expected);
     }
@@ -139,34 +156,100 @@ public:
         TEST_NAME;
         string rest_path = "collections/C1996541017-GHRC_DAAC/granules/amsua15_2020.028_12915_1139_1324_WI.nc/extra";
         CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw",
-                                     NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path, DMRPP_LOCATION), BESSyntaxUserError);
+                                     NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path),
+                                     BESSyntaxUserError);
     }
 
     void test_build_dmrpp_url_to_owned_bucket_bad_path_2() {
         TEST_NAME;
         string rest_path = "C1996541017-GHRC_DAAC/granules/amsua15_2020.028_12915_1139_1324_WI.nc";
         CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw",
-                                     NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path, DMRPP_LOCATION), BESSyntaxUserError);
-    }
-
-    void test_build_dmrpp_url_to_owned_bucket_bad_path_3() {
-        TEST_NAME;
-        string rest_path = "collections/C1996541017-GHRC_DAAC/amsua15_2020.028_12915_1139_1324_WI.nc";
-        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw",
-                                     NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path, DMRPP_LOCATION), BESSyntaxUserError);
+                                     NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path),
+                                     BESSyntaxUserError);
     }
 
     void test_build_dmrpp_url_to_owned_bucket_bad_path_4() {
         TEST_NAME;
         string rest_path = "C1996541017-GHRC_DAAC/amsua15_2020.028_12915_1139_1324_WI.nc";
         CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw",
-                                     NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path, DMRPP_LOCATION), BESSyntaxUserError);
+                                     NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path),
+                                     BESSyntaxUserError);
     }
+
     void test_build_dmrpp_url_to_owned_bucket_bad_path_5() {
         TEST_NAME;
         string rest_path = "";
         CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw",
-                                     NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path, DMRPP_LOCATION), BESSyntaxUserError);
+                                     NgapOwnedContainer::build_dmrpp_url_to_owned_bucket(rest_path),
+                                     BESSyntaxUserError);
+    }
+
+    void test_build_dmrpp_url_to_local_path() {
+        TEST_NAME;
+        NgapOwnedContainer::set_data_source_location(TEST_DATA_LOCATION);
+
+        string rest_path = "/data/d_int.h5";
+        string expected = string(TEST_DATA_LOCATION) + "/data/d_int.h5.dmrpp";
+        string actual = NgapOwnedContainer::build_dmrpp_url_to_local_path(rest_path);
+
+        CPPUNIT_ASSERT_MESSAGE("The local DMR++ path should be built (got: " + actual + " expected: " + expected + ").",
+                               actual == expected);
+    }
+
+    void test_build_dmrpp_url_to_local_path_keeps_extension() {
+        TEST_NAME;
+        NgapOwnedContainer::set_data_source_location(TEST_DATA_LOCATION);
+
+        string rest_path = "/data/d_int.h5.dmrpp";
+        string expected = string(TEST_DATA_LOCATION) + "/data/d_int.h5.dmrpp";
+        string actual = NgapOwnedContainer::build_dmrpp_url_to_local_path(rest_path);
+
+        CPPUNIT_ASSERT_MESSAGE("The local DMR++ path should preserve the extension.",
+                               actual == expected);
+    }
+
+    void test_build_dmrpp_url_to_local_path_requires_enable_flag() {
+        TEST_NAME;
+        string rest_path = "/data/d_int.h5";
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw when local file testing is disabled",
+                                     NgapOwnedContainer::build_dmrpp_url_to_local_path(rest_path),
+                                     BESInternalError);
+    }
+
+    void test_build_dmrpp_url_to_local_path_rejects_parent_segments() {
+        TEST_NAME;
+        NgapOwnedContainer::set_data_source_location(TEST_DATA_LOCATION);
+
+        string rest_path = "/data/../d_int.h5";
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should reject local paths containing '../'",
+                                     NgapOwnedContainer::build_dmrpp_url_to_local_path(rest_path), BESError);
+    }
+
+    void test_build_dmrpp_url_to_local_path_rejects_parent_segments_in_data_source_location() {
+        TEST_NAME;
+        NgapOwnedContainer::set_data_source_location(string(TEST_DATA_LOCATION) + "/../unsafe-root");
+
+        string rest_path = "/data/d_int.h5";
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should reject a data source location containing '../'",
+                                     NgapOwnedContainer::build_dmrpp_url_to_local_path(rest_path), BESError);
+    }
+
+    void test_dmrpp_read_from_local_path() {
+        TEST_NAME;
+        NgapOwnedContainer container;
+        container.set_real_name("/data/d_int.h5");
+        container.set_data_source_location(TEST_DATA_LOCATION);
+
+        string expected = BESUtil::file_to_string(string(TEST_DATA_LOCATION) + "/data/d_int.h5.dmrpp");
+        string dmrpp_string;
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("Reading a local DMR++ file should not throw",
+                                        container.dmrpp_read_from_local_path(dmrpp_string));
+
+        CPPUNIT_ASSERT_MESSAGE("The local DMR++ file should be read", !dmrpp_string.empty());
+        CPPUNIT_ASSERT_MESSAGE("The local DMR++ should match the fixture content for this dataset",
+                               dmrpp_string == expected);
+        CPPUNIT_ASSERT_MESSAGE("The local DMR++ should still describe the expected dataset",
+                               dmrpp_string.find("d_int.h5") != string::npos);
     }
 
     void test_item_in_cache() {
@@ -174,7 +257,8 @@ public:
         string dmrpp_string;
         NgapOwnedContainer container;
         container.set_real_name("/data/dmrpp/a2_local_twoD.h5");
-        CPPUNIT_ASSERT_MESSAGE("The item should not be in the cache", !container.get_item_from_dmrpp_cache(dmrpp_string));
+        CPPUNIT_ASSERT_MESSAGE("The item should not be in the cache",
+                               !container.get_item_from_dmrpp_cache(dmrpp_string));
         CPPUNIT_ASSERT_MESSAGE("The item should empty", dmrpp_string.empty());
     }
 
@@ -183,7 +267,8 @@ public:
         string dmrpp_string = "cached DMR++";
         NgapOwnedContainer container;
         container.set_real_name("/data/dmrpp/a2_local_twoD.h5");
-        CPPUNIT_ASSERT_MESSAGE("The item should be added to the cache", container.put_item_in_dmrpp_cache(dmrpp_string));
+        CPPUNIT_ASSERT_MESSAGE("The item should be added to the cache",
+                               container.put_item_in_dmrpp_cache(dmrpp_string));
         string cached_value;
         CPPUNIT_ASSERT_MESSAGE("The item should be in the cache", container.get_item_from_dmrpp_cache(cached_value));
         CPPUNIT_ASSERT_MESSAGE("The item should be the same", cached_value == dmrpp_string);
@@ -194,14 +279,15 @@ public:
         string dmrpp_string = "cached DMR++";
         NgapOwnedContainer container;
         container.set_real_name("/data/dmrpp/a2_local_twoD.h5");
-        CPPUNIT_ASSERT_MESSAGE("The item should be added to the cache", container.put_item_in_dmrpp_cache(dmrpp_string));
+        CPPUNIT_ASSERT_MESSAGE("The item should be added to the cache",
+                               container.put_item_in_dmrpp_cache(dmrpp_string));
         string cached_value;
         CPPUNIT_ASSERT_MESSAGE("The item should be in the cache", container.get_item_from_dmrpp_cache(cached_value));
         CPPUNIT_ASSERT_MESSAGE("The item should be the same", cached_value == dmrpp_string);
 
         // now 'stomp' on the cached item
-        CPPUNIT_ASSERT_MESSAGE("The item should not be added to the cache", !container.put_item_in_dmrpp_cache(
-                "Over-written cache item"));
+        CPPUNIT_ASSERT_MESSAGE("The item should not be added to the cache",
+                               !container.put_item_in_dmrpp_cache("Over-written cache item"));
         CPPUNIT_ASSERT_MESSAGE("The item should be in the cache", container.get_item_from_dmrpp_cache(cached_value));
         DBG2(cerr << "Cached value: " << cached_value << '\n');
         CPPUNIT_ASSERT_MESSAGE("The item should be the same", cached_value == dmrpp_string);
@@ -211,11 +297,12 @@ public:
         TEST_NAME;
         string dmrpp_string;
         NgapOwnedContainer container;
-        // The REST path will become data/d_int.h5
-        container.set_real_name("collections/data/granules/d_int.h5");
-        // Set the location of the data as a file:// URL for this test.
+        // The REST path will become TEST_DATA_LOCATION/data/d_int.h5
+        container.set_real_name("/data/d_int.h5");
+        // Set the location of the data as a file for this test.
         container.set_data_source_location(TEST_DATA_LOCATION);
-        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be found", container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be found",
+                               container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
         DBG2(cerr << "DMR++: " << dmrpp_string << '\n');
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the string", !dmrpp_string.empty());
     }
@@ -224,17 +311,18 @@ public:
         TEST_NAME;
         string dmrpp_string;
         NgapOwnedContainer container;
-        // The REST path will become data/d_int.h5
-        string real_name = "collections/data/granules/d_int.h5";
+        // The REST path will become TEST_DATA_LOCATION/data/d_int.h5
+        string real_name = "/data/d_int.h5";
         container.set_real_name(real_name);
-        // Set the location of the data as a file:// URL for this test.
+        // Set the location of the data as a file for this test.
         container.set_data_source_location(TEST_DATA_LOCATION);
 
         string cache_value;
         int status = container.get_item_from_dmrpp_cache(cache_value);
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should not be in the cache (found: " + cache_value + ").", !status);
 
-        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be found", container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be found",
+                               container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
         DBG2(cerr << "DMR++: " << dmrpp_string << '\n');
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the string", !dmrpp_string.empty());
 
@@ -246,10 +334,10 @@ public:
         TEST_NAME;
         string dmrpp_string;
         NgapOwnedContainer container;
-        // The REST path will become data/d_int.h5
-        string real_name = "collections/data/granules/d_int.h5";
+        // The REST path will become TEST_DATA_LOCATION/data/d_int.h5
+        string real_name = "/data/d_int.h5";
         container.set_real_name(real_name);
-        // Set the location of the data as a file:// URL for this test.
+        // Set the location of the data as a file for this test.
         container.set_data_source_location(TEST_DATA_LOCATION);
 
         string key = FileCache::hash_key(real_name);
@@ -261,7 +349,8 @@ public:
         result = NgapOwnedContainer::d_dmrpp_mem_cache.get(real_name, cache_value);
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should not be in the memory cache.", !result);
 
-        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be found", container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be found",
+                               container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
         DBG2(cerr << "DMR++: " << dmrpp_string << '\n');
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the string", !dmrpp_string.empty());
 
@@ -276,9 +365,9 @@ public:
         TEST_NAME;
         string dmrpp_string;
         NgapOwnedContainer container;
-        // The REST path will become data/d_int.h5
-        container.set_real_name("collections/data/granules/d_int.h5");
-        // Set the location of the data as a file:// URL for this test.
+        // The REST path will become TEST_DATA_LOCATION/data/d_int.h5
+        container.set_real_name("/data/d_int.h5");
+        // Set the location of the data as a file for this test.
         container.set_data_source_location(TEST_DATA_LOCATION);
 
         string cached_value;
@@ -286,11 +375,13 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should not be in the cache (found: " + cached_value + ").", !status);
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should not be in the cached value", cached_value.empty());
 
-        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be found", container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be found",
+                               container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
         DBG2(cerr << "DMR++: " << dmrpp_string << '\n');
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the string", !dmrpp_string.empty());
 
-        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the cache", container.get_dmrpp_from_cache_or_remote_source(cached_value));
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the cache",
+                               container.get_dmrpp_from_cache_or_remote_source(cached_value));
         DBG2(cerr << "DMR++: " << cached_value << '\n');
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the cached value", !cached_value.empty());
     }
@@ -299,19 +390,40 @@ public:
         TEST_NAME;
 
         NgapOwnedContainer container;
-        // The REST path will become data/d_int.h5
-        container.set_real_name("collections/data/granules/d_int.h5");
-        // Set the location of the data as a file:// URL for this test.
+        // The REST path will become TEST_DATA_LOCATION/data/d_int.h5
+        container.set_real_name("/data/d_int.h5");
+        // Set the location of the data as a file for this test.
         container.set_data_source_location(TEST_DATA_LOCATION);
 
         string dmrpp = container.access();
+        // .access() changed to only set the container type, SBL 1.23.26
+        // DBG2(cerr << "DMR++: " << dmrpp << '\n');
+        // CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the string", !dmrpp.empty());
+
+        // string attrs = container.get_attributes();
+        // CPPUNIT_ASSERT_MESSAGE("The container attributes should be 'as-string'", attrs == "as-string");
+
+        CPPUNIT_ASSERT_MESSAGE("The container type should be 'dmrpp'", container.get_container_type() == "dmrpp");
+    }
+
+    void test_alt_access() {
+        TEST_NAME;
+
+        NgapOwnedContainer container;
+        // The REST path will become /data/d_int.h5
+        container.set_real_name("/data/d_int.h5");
+        // Set the location of the data as a file for this test.
+        container.set_data_source_location(TEST_DATA_LOCATION);
+
+        CPPUNIT_ASSERT_MESSAGE("The container type should be 'dmrpp'",
+                               container.access() == "" && container.get_container_type() == "dmrpp");
+
+        string dmrpp = container.alt_access();
         DBG2(cerr << "DMR++: " << dmrpp << '\n');
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the string", !dmrpp.empty());
 
         string attrs = container.get_attributes();
         CPPUNIT_ASSERT_MESSAGE("The container attributes should be 'as-string'", attrs == "as-string");
-
-        CPPUNIT_ASSERT_MESSAGE("The container type should be 'dmrpp'", container.get_container_type() == "dmrpp");
     }
 
     void test_access_s3() {
@@ -324,8 +436,7 @@ public:
         }
 
         string cmac_url(cmac_url_c_str);
-        if (getenv("CMAC_ID") == nullptr
-            || cmac_url.find(DMRPP_TEST_BUCKET_OPENDAP_AWS) == string::npos) {
+        if (getenv("CMAC_ID") == nullptr || cmac_url.find(DMRPP_TEST_BUCKET_OPENDAP_AWS) == string::npos) {
             DBG(cerr << "Skipping test_access_s3 because CMAC_ID (AWS_ACCESS_KEY_ID) is not set.\n");
             return;
         }
@@ -333,12 +444,15 @@ public:
         NgapOwnedContainer container;
         // The REST path will become ngap_owned/d_int.h5. This exists in the S3 bucket
         // s3-module-test-bucket that DMRPP_TEST_BUCKET_OPENDAP_AWS points toward. jhrg 5/17/24
-        container.set_real_name("collections/ngap_owned/granules/d_int.h5");
+        container.set_real_name("source/" + string(DMRPP_TEST_BUCKET_OPENDAP_AWS) + "/ngap_owned/d_int.h5");
         // Set the location of the data as a file:// URL for this test.
-        container.set_data_source_location(DMRPP_TEST_BUCKET_OPENDAP_AWS);
+        // FIXME jhrg container.set_data_source_location(DMRPP_TEST_BUCKET_OPENDAP_AWS);
 
-        string dmrpp; // = container.access();
-        CPPUNIT_ASSERT_NO_THROW_MESSAGE("This should not throw an exception", dmrpp = container.access());
+        CPPUNIT_ASSERT_MESSAGE("The container type should be 'dmrpp'",
+                               container.access() == "" && container.get_container_type() == "dmrpp");
+
+        string dmrpp;
+        CPPUNIT_ASSERT_NO_THROW_MESSAGE("This should not throw an exception", dmrpp = container.alt_access());
         DBG2(cerr << "DMR++: " << dmrpp << '\n');
         CPPUNIT_ASSERT_MESSAGE("The response should not be empty", !dmrpp.empty());
         string dmrpp_str = R"(dmrpp:href="https://s3.amazonaws.com/cloudydap/ngap_owned/d_int.h5")";
@@ -346,42 +460,44 @@ public:
 
         string attrs = container.get_attributes();
         CPPUNIT_ASSERT_MESSAGE("The container attributes should be 'as-string'", attrs == "as-string");
-
-        CPPUNIT_ASSERT_MESSAGE("The container type should be 'dmrpp'", container.get_container_type() == "dmrpp");
     }
 
     void test_filter_response_injects_s3_data_urls() {
         TEST_NAME;
 
         NgapOwnedContainer container;
-        // The REST path will become data/ATL08_20200716202251.h5
-        string real_name = "collections/data/granules/ATL08_20200716202251.h5";
+        // The REST path will become TEST_DATA_LOCATION/data/ATL08_20200716202251.h5
+        string real_name = "/data/ATL08_20200716202251.h5";
         container.set_real_name(real_name);
-        // Set the location of the data as a file:// URL for this test.
+        // Set the location of the data as a file for this test.
         container.set_data_source_location(TEST_DATA_LOCATION);
 
         string dmrpp_string;
-        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be found", container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
+        CPPUNIT_ASSERT_MESSAGE("The DMR++ should be found",
+                               container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the string", !dmrpp_string.empty());
 
         // Create filters
         NgapApi::DataAccessUrls data_urls("foo", "bar", "bat");
-        map <string, string, std::less<>> content_filters;
-        CPPUNIT_ASSERT_MESSAGE("The content filters should be created from the urls", NgapOwnedContainer::get_daac_content_filters(data_urls, content_filters));
+        map<string, string, std::less<>> content_filters;
+        CPPUNIT_ASSERT_MESSAGE("The content filters should be created from the urls",
+                               NgapOwnedContainer::get_daac_content_filters(data_urls, content_filters));
         CPPUNIT_ASSERT_MESSAGE("Two content filters should have been created", content_filters.size() == 2);
 
         // Test that filters are applied correctly
         NgapOwnedContainer::filter_response(content_filters, dmrpp_string);
         string expected_str = "dmrpp:href=\"foo\" dmrpp:s3=\"bar\" dmrpp:s3credentials=\"bat\" dmrpp:trust=\"true\"";
-        CPPUNIT_ASSERT_MESSAGE("All data urls should be in the DMR++ string; did not find `" + expected_str + "` in:\n" + dmrpp_string, dmrpp_string.find(expected_str) != string::npos);
+        CPPUNIT_ASSERT_MESSAGE("All data urls should be in the DMR++ string; did not find `" + expected_str +
+                                   "` in:\n" + dmrpp_string,
+                               dmrpp_string.find(expected_str) != string::npos);
     }
 
     void test_filter_response_injects_s3_data_urls_even_if_empty() {
         TEST_NAME;
 
         NgapOwnedContainer container;
-        // The REST path will become data/ATL08_20200716202251.h5
-        string real_name = "collections/data/granules/ATL08_20200716202251.h5";
+        // The REST path will become TEST_DATA_LOCATION/data/ATL08_20200716202251.h5
+        string real_name = "/data/ATL08_20200716202251.h5";
         container.set_real_name(real_name);
         // Set the location of the data as a file:// URL for this test.
         container.set_data_source_location(TEST_DATA_LOCATION);
@@ -391,27 +507,36 @@ public:
 
         // Create filters
         NgapApi::DataAccessUrls data_urls("foo", "", "");
-        map <string, string, std::less<>> content_filters;
-        CPPUNIT_ASSERT_MESSAGE("The content filters should be created from the urls", NgapOwnedContainer::get_daac_content_filters(data_urls, content_filters));
+        map<string, string, std::less<>> content_filters;
+        CPPUNIT_ASSERT_MESSAGE("The content filters should be created from the urls",
+                               NgapOwnedContainer::get_daac_content_filters(data_urls, content_filters));
 
         // Test that filters are applied correctly
         NgapOwnedContainer::filter_response(content_filters, dmrpp_string);
         string expected_str = "dmrpp:href=\"foo\" dmrpp:s3=\"\" dmrpp:s3credentials=\"\" dmrpp:trust=\"true\"";
-        CPPUNIT_ASSERT_MESSAGE("All data urls should be in the DMR++ string; did not find `" + expected_str + "` in:\n" + dmrpp_string, dmrpp_string.find(expected_str) != string::npos);
+        CPPUNIT_ASSERT_MESSAGE("All data urls should be in the DMR++ string; did not find `" + expected_str +
+                                   "` in:\n" + dmrpp_string,
+                               dmrpp_string.find(expected_str) != string::npos);
     }
 
-    CPPUNIT_TEST_SUITE( NgapOwnedContainerTest );
+    CPPUNIT_TEST_SUITE(NgapOwnedContainerTest);
 
     CPPUNIT_TEST(test_file_to_string);
     CPPUNIT_TEST(test_file_to_string_bigger_than_buffer);
     CPPUNIT_TEST(test_file_to_string_file_not_open);
 
     CPPUNIT_TEST(test_build_dmrpp_url_to_owned_bucket);
+    CPPUNIT_TEST(test_build_dmrpp_url_to_owned_bucket_2);
     CPPUNIT_TEST(test_build_dmrpp_url_to_owned_bucket_bad_path);
     CPPUNIT_TEST(test_build_dmrpp_url_to_owned_bucket_bad_path_2);
-    CPPUNIT_TEST(test_build_dmrpp_url_to_owned_bucket_bad_path_3);
     CPPUNIT_TEST(test_build_dmrpp_url_to_owned_bucket_bad_path_4);
     CPPUNIT_TEST(test_build_dmrpp_url_to_owned_bucket_bad_path_5);
+    CPPUNIT_TEST(test_build_dmrpp_url_to_local_path);
+    CPPUNIT_TEST(test_build_dmrpp_url_to_local_path_keeps_extension);
+    CPPUNIT_TEST(test_build_dmrpp_url_to_local_path_requires_enable_flag);
+    CPPUNIT_TEST(test_build_dmrpp_url_to_local_path_rejects_parent_segments);
+    CPPUNIT_TEST(test_build_dmrpp_url_to_local_path_rejects_parent_segments_in_data_source_location);
+    CPPUNIT_TEST(test_dmrpp_read_from_local_path);
 
     CPPUNIT_TEST(test_item_in_cache);
     CPPUNIT_TEST(test_cache_item);
@@ -423,6 +548,7 @@ public:
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_test_cache_use);
 
     CPPUNIT_TEST(test_access);
+    CPPUNIT_TEST(test_alt_access);
     CPPUNIT_TEST(test_access_s3);
 
     CPPUNIT_TEST(test_filter_response_injects_s3_data_urls);
@@ -433,10 +559,9 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(NgapOwnedContainerTest);
 
-} // namespace dmrpp
+} // namespace ngap
 
-int main(int argc, char*argv[])
-{
+int main(int argc, char *argv[]) {
     bool status = bes_run_tests<ngap::NgapOwnedContainerTest>(argc, argv, "cerr,ngap,cache");
 
     return status ? 0 : 1;

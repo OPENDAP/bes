@@ -330,11 +330,9 @@ namespace dmrpp
             // the DMR++ itself might be returned as a string by access(). If the container
             // did not come from the NGAP handler, the return value might be a string that
             // names a file on the local host. jhrg 10/19/23
-            string container_attributes = container->get_attributes();
-            if (container_attributes == "as-string") {
-                dmr->set_filename(container_attributes);
-                dmr->set_name(name_path(container_attributes));
-
+            auto ngap_container = dynamic_cast<ngap::NgapOwnedContainer *>(container);
+            if (ngap_container)
+            {
                 // this shared_ptr is held by the DMRpp BaseType instances
                 dmz = make_shared<DMZ>();
 
@@ -342,13 +340,17 @@ namespace dmrpp
                 DmrppTypeFactory factory(dmz);
                 dmr->set_factory(&factory);
 
-                string dmrpp_content = container->access();
+                string dmrpp_content = ngap_container->alt_access();
+
+                string container_attributes = container->get_attributes();
+                dmr->set_filename(container_attributes);
+                dmr->set_name(name_path(container_attributes));
 
                 dmz->parse_xml_string(dmrpp_content);
 
                 dmz->build_thin_dmr(dmr);
                 dmz->load_all_attributes(dmr);
-
+                
                 BESDEBUG("dmrpp", "Before calling set_up_all_direct_io_flags" << endl);
                 if (DmrppRequestHandler::is_netcdf4_enhanced_response == true &&
                     DmrppRequestHandler::disable_direct_io == false)

@@ -45,4 +45,5 @@ get_dmrpp/unit-tests/grid_1_2d.h5_mvs.h5
 /tests/timing_log*
 
 /tests/testsuite_dmrpp_builder_h4
+/tests/testsuite_ngap_container
 /build_dmrpp_h4/build_dmrpp_h4
