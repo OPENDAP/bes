@@ -134,10 +134,9 @@ COPY --from=builder /home/${BES_USER}/bes/bes_VERSION bes_VERSION
 COPY --from=builder /home/${BES_USER}/bes/libdap_VERSION libdap_VERSION
 COPY --from=builder $DEPS_PREFIX $DEPS_PREFIX
 
-# There has to be a better way. And there is! We can mount the previous
-# image and run an install directly from it, I believe. 
-# ref https://stackoverflow.com/questions/45202089/docker-multi-stage-build-and-mounting-sharing-from-previous-stage
-# For now, leaving as a future improvement.
+# Copy over everything installed in the builder image
+# This is a little ham-fisted, but seems to be at least sufficient
+# (if not particularly elegant!).
 COPY --from=builder /etc/bes /etc/bes
 COPY --from=builder /usr/lib /usr/lib
 COPY --from=builder /usr/bin /usr/bin
