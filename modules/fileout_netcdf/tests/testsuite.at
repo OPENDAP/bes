@@ -495,6 +495,6 @@ AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/nc4_group_unlimit
 # The dio for filled chunk tests
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/FValue_chunks_partial_fill_compress_attr.h5.dmrpp.bescmd)
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/FValue_chunks_partial_fill_compress_attr.h5.dmrpp.bescmd],[bes.nc4.grp.conf])
-#AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/FValue_chunks_partial_fill_compress.h5.dmrpp.bescmd],[bes.nc4.grp.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/FValue_chunks_partial_fill_compress.h5.dmrpp.bescmd],[bes.nc4.grp.conf])
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/FValue_chunks_partial_fill_compress_attr_constraint.h5.dmrpp.bescmd],[bes.nc4.grp.conf])
 
