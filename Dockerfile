@@ -28,7 +28,7 @@ WORKDIR "/home/$BES_USER"
 # Start bes build process
 ARG GDAL_OPTION
 ARG BES_BUILD_NUMBER
-ENV PREFIX=""
+ENV PREFIX="/"
 ENV DEPS_PREFIX="/root/install"
 ENV PATH="$PREFIX/bin:$DEPS_PREFIX/deps/bin:$PATH"
 
