@@ -300,7 +300,7 @@ if (args.verbosity is True):
     By default, a temporary BES configuration file will be created to use for generation of the dmr. It will be deleted before the end of this program. 
     One can use -C option to generate the dmr file by using the EnableCF option in the HDF5 handler.
     If the default way does not work for you, you can try the -s option to let the program check if it can use the BES configuration file provided by the system.
-         To use this option, the file name bes.conf will be searched to see if it is under /etc/bes, this is the common place for the rpm installation.
+         To use this option, the file name bes.conf will be searched to see if it is under /etc/bes, this is the common place for the installation.
          If still not found, it will search this file according to the path of besstandalone.
          The HDF5 file should be provided somewhere under the directory specified by BES.Catalog.catalog.RootDirectory inside the bes configuration file.
 
