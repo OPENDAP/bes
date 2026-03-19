@@ -34,7 +34,7 @@ ENV PATH="$PREFIX/bin:$DEPS_PREFIX/deps/bin:$PATH"
 
 ENV CPPFLAGS="-I/usr/include/tirpc"
 ENV LDFLAGS="-ltirpc"
-ENV LD_LIBRARY_PATH="${DEPS_PREFIX}/deps/lib"
+ENV LD_LIBRARY_PATH="$DEPS_PREFIX/deps/lib"
 
 # Install the latest hyrax dependencies
 ARG HYRAX_DEPENDENCIES_TARBALL
@@ -62,8 +62,8 @@ WORKDIR bes
 RUN autoreconf -fiv
 RUN echo "Sanity check: CPPFLAGS=$CPPFLAGS LDFLAGS=$LDFLAGS prefix=$PREFIX" \
     && ./configure --disable-dependency-tracking \
-    --with-dependencies="${DEPS_PREFIX}/deps" \
-    --prefix="${PREFIX}" \
+    --with-dependencies="$DEPS_PREFIX/deps" \
+    --prefix="$PREFIX" \
     $GDAL_OPTION \
     --with-build=$BES_BUILD_NUMBER \
     --enable-developer
@@ -72,13 +72,13 @@ RUN sudo make install
 
 # Clean up extraneous files; do it in this stage so we don't pull them over
 # at the next stage
-RUN sudo rm ${PREFIX}/lib/bes/*.a \
-    && sudo rm ${PREFIX}/lib/bes/*.la
+RUN sudo rm $PREFIX/lib/bes/*.a \
+    && sudo rm $PREFIX/lib/bes/*.la
 
-# Update permissions to support user \"${BES_USER}\" running the daemon"
-RUN sudo setfacl -R -m u:${BES_USER}:rwx ${PREFIX}/var \
-    && sudo setfacl -R -m u:${BES_USER}:rwx ${PREFIX}/run \
-    && sudo setfacl -R -m u:${BES_USER}:rwx ${PREFIX}/share
+# Update permissions to support user $BES_USER running the daemon
+RUN sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/var \
+    && sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/run \
+    && sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/share
 
 # Test the BES
 RUN besctl start && make check -j$(nproc --ignore=1) && besctl stop
@@ -130,8 +130,8 @@ RUN sudo chown -R $BES_USER:$BES_USER $DEPS_PREFIX \
 USER $BES_USER
 WORKDIR "/home/$BES_USER"
 
-COPY --from=builder /home/${BES_USER}/bes/bes_VERSION bes_VERSION
-COPY --from=builder /home/${BES_USER}/bes/libdap_VERSION libdap_VERSION
+COPY --from=builder /home/$BES_USER/bes/bes_VERSION bes_VERSION
+COPY --from=builder /home/$BES_USER/bes/libdap_VERSION libdap_VERSION
 COPY --from=builder $DEPS_PREFIX $DEPS_PREFIX
 
 # Copy over everything installed in the builder image
@@ -147,10 +147,10 @@ COPY --from=builder /include/bes /include/bes
 COPY --from=builder /etc/rc.d/init.d/besd /etc/rc.d/init.d/besd
 COPY --from=builder /bin/bes* /bin
 
-# Update permissions to support user \"${BES_USER}\" running the daemon"
-RUN sudo setfacl -R -m u:${BES_USER}:rwx ${PREFIX}/var \
-    && sudo setfacl -R -m u:${BES_USER}:rwx ${PREFIX}/run \
-    && sudo setfacl -R -m u:${BES_USER}:rwx ${PREFIX}/share
+# Update permissions to support user $BES_USER running the daemon
+RUN sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/var \
+    && sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/run \
+    && sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/share
 
 # Sanity check....
 RUN echo "besdaemon is here: "`which besdaemon` \
