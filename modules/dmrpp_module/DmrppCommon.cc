@@ -458,6 +458,19 @@ unsigned long DmrppCommon::add_chunk(
     d_chunks.push_back(chunk);
     return d_chunks.size();
 }
+
+void DmrppCommon::remove_filled_chunks() {
+
+    d_chunks.erase(
+                  std::remove_if(d_chunks.begin(),d_chunks.end(),
+                                  [](const std::shared_ptr<Chunk>&c){
+                                      return c->get_uses_fill_value()==true;
+                                  }),
+                  d_chunks.end()
+                  );
+
+}
+
 /**
  * @brief read method for the atomic types
  *

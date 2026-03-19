@@ -4084,11 +4084,19 @@ void DmrppArray::add_dio_var_storage_info_unconstrained() {
 
     // Need to provide the offset of a chunk in the final data buffer.
     for (unsigned int i = 0; i < chunks.size(); i++) {
+
         if (i > 0)
             chunks[i]->set_direct_io_offset(chunks[i - 1]->get_direct_io_offset() + chunks[i - 1]->get_size());
+      
+        BESDEBUG(MODULE, prolog << "chunk_use_fill_value is: " << chunks[i]->get_uses_fill_value() << endl);
+        BESDEBUG(MODULE, prolog << "chunk_offset is: " << chunks[i]->get_offset() << endl);
         BESDEBUG(MODULE, prolog << "direct_io_offset is: " << chunks[i]->get_direct_io_offset() << endl);
     }
 
+    // Remove filled chunks when dio is turned on. 
+    if (dmrpp_vs_info.has_filled_chunks) 
+        remove_filled_chunks();
+                    
     // Fill in the chunk information so that the fileout netcdf can retrieve.
     // Provide chunk offset/length etc.
     auto im_chunks = this->get_immutable_chunks();

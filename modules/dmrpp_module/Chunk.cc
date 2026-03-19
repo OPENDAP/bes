@@ -119,7 +119,7 @@ void process_s3_error_response(const shared_ptr<http::url> &data_url, const stri
     if (code == "AccessDenied") {
         stringstream msg;
         msg << prolog << "ACCESS DENIED - The underlying object store has refused access to: "
-            << data_url->protocol() << data_url->host() << data_url->path() << " Object Store Message: "
+            << data_url->protocol() << data_url->get_url_no_query() << " Object Store Message: "
             << message;
         BESDEBUG(MODULE, msg.str() << endl);
         VERBOSE(msg.str());
@@ -178,7 +178,7 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
         catch (std::exception &e) {
             stringstream msg;
             msg << prolog << "Caught std::exception when accessing object store data.";
-            msg << " (Tried: " << data_url->str() << ")" << " Message: " << e.what();
+            msg << " (Tried: " << data_url->get_url_no_query() << ")" << " Message: " << e.what();
             BESDEBUG(MODULE, msg.str() << endl);
             throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
         }
@@ -554,7 +554,7 @@ void Chunk::add_tracking_query_param() {
         auto match_length = (unsigned int) match_result;
         if (match_length == d_data_url->str().size()) {
             BESDEBUG(MODULE,
-                     prolog << "FULL MATCH. pattern: " << s3_vh_regex_str << " url: " << d_data_url->str() << endl);
+                     prolog << "FULL MATCH. pattern: " << s3_vh_regex_str << " url: " << d_data_url->get_url_no_query() << endl);
             add_tracking = true;;
         }
     }
@@ -568,7 +568,7 @@ void Chunk::add_tracking_query_param() {
             auto match_length = (unsigned int) match_result;
             if (match_length == d_data_url->str().size()) {
                 BESDEBUG(MODULE,
-                         prolog << "FULL MATCH. pattern: " << s3_vh_regex_str << " url: " << d_data_url->str() << endl);
+                         prolog << "FULL MATCH. pattern: " << s3_vh_regex_str << " url: " << d_data_url->get_url_no_query() << endl);
                 add_tracking = true;;
             }
         }
@@ -1325,7 +1325,7 @@ void Chunk::read_chunk_dio() {
 void Chunk::dump(ostream &oss) const {
     oss << "Chunk";
     oss << "[ptr='" << (void *) this << "']";
-    oss << "[data_url='" << d_data_url->str() << "']";
+    oss << "[data_url='" << d_data_url->get_url_no_query() << "']";
     oss << "[offset=" << d_offset << "]";
     oss << "[size=" << d_size << "]";
     oss << "[chunk_position_in_array=(";
@@ -1368,7 +1368,7 @@ std::shared_ptr<http::url> Chunk::get_data_url() const {
     if (url == nullptr) {
         url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url);
     }
-    BESDEBUG(MODULE, prolog << "Using data_url: " << url->str() << endl);
+    BESDEBUG(MODULE, prolog << "Using data_url: " << effective_url->get_url_no_query() << endl);
 
 #if ENABLE_TRACKING_QUERY_PARAMETER
     //A conditional call to void Chunk::add_tracking_query_param()

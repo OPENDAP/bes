@@ -87,7 +87,7 @@ docker build \
     --build-arg BES_BUILD_NUMBER="$BES_BUILD_NUMBER" \
     --tag "${SNAPSHOT_IMAGE_TAG}" \
     --build-context aws_downloads="$AWS_DOWNLOADS_DIR/" \
-    --progress=plain $DOCKER_DEV_FLAGS \
+    $DOCKER_DEV_FLAGS \
     -f ${BES_REPO_DIR}/Dockerfile ${BES_REPO_DIR}
 
 echo "Docker build complete!"
