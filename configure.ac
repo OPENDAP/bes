@@ -1127,8 +1127,6 @@ AH_BOTTOM([
 
 AC_CONFIG_FILES([Makefile
 		 bes_VERSION
-		 bes.spec
-		 bes.spec.all_static
 		 abi_checker.xml
 		 bes_dispatch.pc
 		 bes_ppt.pc
