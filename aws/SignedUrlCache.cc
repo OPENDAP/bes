@@ -122,7 +122,8 @@ shared_ptr<SignedUrlCache::S3AccessKeyTuple> SignedUrlCache::retrieve_cached_s3c
  * Find the terminal (effective) url for the source_url. If the source_url matches the
  * skip_regex then it will not be cached.
  *
- * Unlike EffectiveUrlCache, return nullptr instead of making a new EffectiveUrl(source_url);
+ * Unlike EffectiveUrlCache, return nullptr instead of making a new EffectiveUrl(source_url)
+ * if unable to construct a signed url.
  *
  * @param source_url
  * @returns The signed effective URL, nullptr if none able to be created 
@@ -214,7 +215,7 @@ shared_ptr <http::EffectiveUrl> SignedUrlCache::get_signed_url(shared_ptr <http:
         // the instance we placed in the cache - it can be modified and the one in the cache
         // is unchanged. Trusted state was established from source_url when signed_url was
         // created in sign_url()
-        signed_url = make_shared<http::EffectiveUrl>(signed_url);
+        signed_url = make_shared<http::EffectiveUrl>(signed_url, true);
     } else {
         // Here we have a !expired instance of a shared_ptr<EffectiveUrl> retrieved from the cache.
         // Now we need to make a copy to return, inheriting trust from the requesting URL.
