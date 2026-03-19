@@ -481,13 +481,6 @@ void DmrppArray::read_contiguous() {
     // This is the original chunk for this 'contiguous' variable.
     auto the_one_chunk = get_immutable_chunks()[0];
 
-    unsigned long long the_one_chunk_offset = the_one_chunk->get_offset();
-    unsigned long long the_one_chunk_size = the_one_chunk->get_size();
-
-    // We only want to read in the Chunk concurrently if:
-    // - Concurrent transfers are enabled (DmrppRequestHandler::d_use_transfer_threads)
-    // - The variable's size is above the threshold value held in DmrppRequestHandler::d_contiguous_concurrent_threshold
-
     // Read the the_one_chunk as is. This is the non-parallel I/O case
     the_one_chunk->read_chunk();
 
