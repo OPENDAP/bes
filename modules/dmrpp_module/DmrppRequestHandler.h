@@ -77,9 +77,6 @@ public:
 
     static CurlHandlePool *curl_handle_pool;
 
-    static bool d_use_transfer_threads;
-    static unsigned int d_max_transfer_threads;
-
     static bool d_use_compute_threads;
     static unsigned int d_max_compute_threads;
 

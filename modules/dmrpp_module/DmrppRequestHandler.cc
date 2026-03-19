@@ -118,9 +118,6 @@ namespace dmrpp
     unsigned int DmrppRequestHandler::d_object_cache_entries = 100;
     double DmrppRequestHandler::d_object_cache_purge_level = 0.2;
 
-    bool DmrppRequestHandler::d_use_transfer_threads = false;
-    unsigned int DmrppRequestHandler::d_max_transfer_threads = 8;
-
     bool DmrppRequestHandler::d_use_compute_threads = true;
     unsigned int DmrppRequestHandler::d_max_compute_threads = 8;
 
@@ -208,20 +205,6 @@ namespace dmrpp
         add_method(HELP_RESPONSE, dap_build_help);
 
         stringstream msg;
-        read_key_value(DMRPP_USE_TRANSFER_THREADS_KEY, d_use_transfer_threads);
-        read_key_value(DMRPP_MAX_TRANSFER_THREADS_KEY, d_max_transfer_threads);
-        msg << prolog << "Concurrent Transfer Threads: ";
-        if (DmrppRequestHandler::d_use_transfer_threads)
-        {
-            msg << "Enabled. max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl;
-        }
-        else
-        {
-            msg << "Disabled." << endl;
-        }
-
-        INFO_LOG(msg.str());
-        msg.str(std::string());
 
         read_key_value(DMRPP_USE_COMPUTE_THREADS_KEY, d_use_compute_threads);
         read_key_value(DMRPP_MAX_COMPUTE_THREADS_KEY, d_max_compute_threads);
@@ -251,11 +234,6 @@ namespace dmrpp
         // Check the value of FONc.ClassicModel to determine if this response is a netCDF-4 classic from fileout netCDF
         // This must be done here since direct IO flag for individual variables  should NOT be set for netCDF-4 classic response.
         read_key_value(DMRPP_USE_CLASSIC_IN_FILEOUT_NETCDF, is_netcdf4_classic_response);
-
-#if !HAVE_CURL_MULTI_API
-        if (DmrppRequestHandler::d_use_transfer_threads)
-            ERROR_LOG("The DMR++ handler is configured to use parallel transfers, but the libcurl Multi API is not present, defaulting to serial transfers");
-#endif
 
         if (!curl_handle_pool)
         {
@@ -372,7 +350,7 @@ namespace dmrpp
 
                 dmz->build_thin_dmr(dmr);
                 dmz->load_all_attributes(dmr);
-
+                
                 BESDEBUG("dmrpp", "Before calling set_up_all_direct_io_flags" << endl);
                 if (DmrppRequestHandler::is_netcdf4_enhanced_response == true &&
                     DmrppRequestHandler::disable_direct_io == false)
@@ -385,6 +363,7 @@ namespace dmrpp
                         dmz->set_up_all_direct_io_flags_phase_2(dmr);
                     }
                 }
+
             }
             else
             {
@@ -416,6 +395,7 @@ namespace dmrpp
                         dmz->set_up_all_direct_io_flags_phase_2(dmr);
                     }
                 }
+
             }
         }
         catch (...)
