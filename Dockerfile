@@ -101,7 +101,7 @@ RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
 ARG LIBDAP_RPM_FILENAME
 RUN --mount=from=aws_downloads,target=/tmp_mounted \
     yum update -y \
-    && dnf install sudo which procps libicu acl -y \
+    && dnf install sudo which procps libicu acl chkconfig -y \
     && echo "Installing libdap snapshot rpms: $LIBDAP_RPM_FILENAME" \
     && dnf -y install "/tmp_mounted/$LIBDAP_RPM_FILENAME" \
     && dnf clean all
