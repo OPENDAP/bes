@@ -140,8 +140,8 @@ COPY --from=builder $DEPS_PREFIX $DEPS_PREFIX
 COPY --from=builder /etc/bes /etc/bes
 COPY --from=builder /usr/lib /usr/lib
 COPY --from=builder /run/bes /run/bes
-COPY --from=builder /usr/share/bes /usr/share/bes
-COPY --from=builder /usr/share/hyrax /usr/share/hyrax
+COPY --from=builder /share/bes /usr/share/bes
+COPY --from=builder /share/hyrax /usr/share/hyrax
 COPY --from=builder /include/bes /include/bes
 COPY --from=builder /etc/rc.d/init.d/besd /etc/rc.d/init.d/besd
 COPY --from=builder /bin/bes* /bin
@@ -161,14 +161,51 @@ COPY --from=builder \
     /usr/bin/reduce_mdf \
     /usr/bin/
 
-# Update permissions to support user $BES_USER running the daemon
-RUN sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/var \
-    && sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/run \
-    && sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/share
+RUN sudo setfacl -R -m u:$BES_USER:rwx /var/run \
+    && sudo setfacl -R -m u:$BES_USER:rwx /run \
+    && sudo setfacl -R -m u:$BES_USER:rwx /usr/share
 
-# Sanity check....
-RUN echo "besdaemon is here: "`which besdaemon` \
-    && echo "BES_VERSION (from bes_VERSION) is $(cat bes_VERSION)" \
+################################################################
+# Set up besdaemon
+
+USER root
+WORKDIR /
+
+# Adapted from bes/spec.all_static.in in RPM creation.
+# The four *.pem substitutions may be unnecessary, as those *.pem files may be
+# vestigial substitutions for a build process past.
+RUN sed -i.dist \
+    -e 's:=.*/bes.log:=/var/log/bes/bes.log:' \
+    -e 's:=.*/lib/bes:=/usr/lib/bes:' \
+    -e 's:=.*/share/bes:=/usr/share/bes:' \
+    -e 's:=.*/share/hyrax:=/usr/share/hyrax:' \
+    -e 's:=/full/path/to/serverside/certificate/file.pem:=/etc/pki/bes/cacerts/file.pem:' \
+    -e 's:=/full/path/to/serverside/key/file.pem:=/etc/pki/bes/public/file.pem:' \
+    -e 's:=/full/path/to/clientside/certificate/file.pem:=/etc/pki/bes/cacerts/file.pem:' \
+    -e 's:=/full/path/to/clientside/key/file.pem:=/etc/pki/bes/public/file.pem:' \
+    -e 's:=user_name:='"$BES_USER"':' \
+    -e 's:=group_name:='"$BES_USER"':' \
+    /etc/bes/bes.conf \
+    && mkdir -p "/var/log/bes/" \
+    && touch "/var/log/bes/bes.log" \
+    && chown -R $BES_USER:$BES_USER "/var/log/bes/"
+
+# Start besd service at boot
+RUN chkconfig --add besd \
+    && ldconfig \
+    && chkconfig --list | grep besd
+
+# Confirm that the besd service starts at boot
+RUN echo "besdaemon is here: $(which besdaemon)" \
+    && echo "whoami: $(whoami)" \
+    && BESD_COUNT=$(chkconfig --list | grep besd) \
+    && if [ -z "$BESD_COUNT" ]; then \
+        echo "Error: besd service not configured to run on startup. Exiting."; \
+        exit 1; \
+    fi
+
+# Sanity-check versions, and that the besctl can be started and stopped without failing
+RUN echo "BES_VERSION (from bes_VERSION) is $(cat bes_VERSION)" \
     && echo "LIBDAP_VERSION (from libdap_VERSION) is $(cat libdap_VERSION)" \
     && besctl start \
     && besctl stop
