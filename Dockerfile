@@ -169,7 +169,6 @@ RUN sudo setfacl -R -m u:$BES_USER:rwx /var/run \
 # Set up besdaemon
 
 USER root
-WORKDIR /
 
 # Adapted from bes/spec.all_static.in in RPM creation.
 # The four *.pem substitutions may be unnecessary, as those *.pem files may be
