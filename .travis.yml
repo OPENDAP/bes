@@ -130,7 +130,9 @@ before_script:
 
 stages:
   - name: build-and-test
+    if: branch = never
   - name: build-rpms
+    if: branch = never
   - name: build-docker
   - name: scan
     if:  branch = master
