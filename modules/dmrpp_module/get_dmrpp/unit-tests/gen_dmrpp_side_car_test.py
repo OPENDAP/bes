@@ -68,7 +68,7 @@ class TestSample(unittest.TestCase):
         if not os.environ.get('PRESERVE_TEST_ASSETS'):
             self.addCleanup(os.remove, "grid_1_2d.hdf.dmrpp")
         
-        # Since we also add the dmrpp metadata generation informatio for the HDF4 files,
+        # Since we also add the dmrpp metadata generation information for the HDF4 files,
         # we need to ignore those information when doing comparision.
         with open('grid_1_2d.hdf.dmrpp') as f:
             dmrpp_lines_after_54 = f.readlines()[54:]
