@@ -130,6 +130,7 @@ before_script:
 
 stages:
   - name: build-and-test
+    # if: branch = never
   - name: build-docker
   - name: scan
     if:  branch = master
@@ -160,7 +161,7 @@ jobs:
         - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION--enable-developer
         - make distcheck -j16 GZIP_ENV=--fast
 
-    - stage: build-and-test
+    - stage: never
       name: "dist"
       script:
         - export BES_BUILD=srcdist
@@ -270,6 +271,7 @@ jobs:
         - ./travis/trigger-olfs-build.sh
 
 after_script:
+  - if test "$BES_BUILD" = "main"; then cat cmdln/tests/testsuite.log; fi
   - ./travis/upload-test-results.sh
 
 before_deploy:

@@ -14,13 +14,27 @@ M_VER = 0.1.0
 
 AM_CPPFLAGS = $(HDF4_CFLAGS) $(HDFEOS2_CPPFLAGS) -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/modules/dmrpp_module \
     -I$(top_srcdir)/pugixml/src -I$(top_srcdir)/http -I$(top_srcdir)/modules/dmrpp_module/ngap_container -I$(top_srcdir)/dap \
-    $(DAP_CFLAGS)
+    $(DAP_CFLAGS) -I$(top_srcdir)/aws
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
 AM_CXXFLAGS=
-AM_LDFLAGS =
+AM_LDFLAGS = -L$(aws_libdir)
 include $(top_srcdir)/coverage.mk
+
+if DARWIN
+AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,@loader_path
+else
+AM_LDFLAGS += -Wl,-rpath,$(aws_libdir) -Wl,-rpath,'$$ORIGIN'
+    ifeq ($(strip $(aws_libdir64)),)
+        $(info "aws_libdir64 not set, skipping")
+    else
+        AM_LDFLAGS += -L$(aws_libdir64)
+        AM_LDFLAGS += -Wl,-rpath,$(aws_libdir64)
+    endif
+endif
+
+LDADD = $(top_builddir)/aws/libbes_aws.la $(aws_libs)
 
 bin_PROGRAMS = build_dmrpp_h4
 
@@ -39,13 +53,13 @@ HDR = build_dmrpp_util_h4.h ../Chunk.h ../DMRpp.h ../DMZ.h ../DmrppArray.h ../Dm
     ../DmrppRequestHandler.h ../CurlHandlePool.h ../vlsa_util.h ../byteswap_compat.h ../float_byteswap.h
 
 build_dmrpp_h4_CPPFLAGS = $(AM_CPPFLAGS)
-build_dmrpp_h4_LDFLAGS = $(HDFEOS2_LDFLAGS) $(HDF4_LDFLAGS) $(BES_DAP_LIB_LDFLAGS)
+
+build_dmrpp_h4_LDFLAGS = $(HDFEOS2_LDFLAGS) $(HDF4_LDFLAGS) $(BES_DAP_LIB_LDFLAGS) $(AM_LDFLAGS)
 build_dmrpp_h4_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) -L$(builddir)/../ngap_container -lngap \
-$(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) \
-$(BYTESWAP_LIBS) $(HDFEOS2_LIBS) $(HDF4_LIBS)
+    $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) \
+    $(BYTESWAP_LIBS) $(HDFEOS2_LIBS) $(HDF4_LIBS) $(LDADD)
 
 lib_besdir = $(libdir)/bes
-
 
 EXTRA_DIST = get_dmrpp_h4
 
