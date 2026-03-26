@@ -35,8 +35,10 @@ class TestSample(unittest.TestCase):
         # Hacky removal of lines that otherwise show spurious failure
         # due to test brittleness. (Better fix would be to run same version
         # stripping as on non-python tests)
-        dmrpp_lines_after_79.pop(220)
-        baseline_lines_after_79.pop(220)
+        # The following two lines may cause IndexError and they are not necessary since the testing file should not be changed.
+        # If the testing file is changed, the right way is to update the baseline file.
+        #dmrpp_lines_after_79.pop(220)
+        #baseline_lines_after_79.pop(220)
 
         self.assertEqual(dmrpp_lines_after_79 ,baseline_lines_after_79)
    
@@ -56,8 +58,10 @@ class TestSample(unittest.TestCase):
         # Hacky removal of lines that otherwise show spurious failure
         # due to test brittleness. (Better fix would be to run same version
         # stripping as on non-python tests)
-        dmrpp_lines_after_19.pop(221)
-        baseline_lines_after_19.pop(221)
+        # The following two lines may cause IndexError and they are not necessary since the testing file should not be changed.
+        # If the testing file is changed, the right way is to update the baseline file.
+        #dmrpp_lines_after_19.pop(221)
+        #baseline_lines_after_19.pop(221)
 
         self.assertEqual(dmrpp_lines_after_19 ,baseline_lines_after_19)
 
