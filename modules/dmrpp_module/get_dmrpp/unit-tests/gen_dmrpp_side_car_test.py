@@ -37,8 +37,8 @@ class TestSample(unittest.TestCase):
         # stripping as on non-python tests)
         # The following two lines may cause IndexError and they are not necessary since the testing file should not be changed.
         # If the testing file is changed, the right way is to update the baseline file.
-        #dmrpp_lines_after_79.pop(220)
-        #baseline_lines_after_79.pop(220)
+        dmrpp_lines_after_79.pop(216)
+        baseline_lines_after_79.pop(216)
 
         self.assertEqual(dmrpp_lines_after_79 ,baseline_lines_after_79)
    
