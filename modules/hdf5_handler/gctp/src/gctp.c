@@ -71,31 +71,34 @@ static long NAD83[134] = {101,102,5010,5300,201,202,203,301,302,401,402,403,
 */
 
 /* Added explicit return type. 6/5/23 */
+#if 0
 int
 gctp(incoor,insys,inzone,inparm,inunit,indatum,ipr,efile,jpr,pfile,outcoor,
      outsys,outzone,outparm,outunit,outdatum,fn27,fn83,iflg)
-
-double *incoor;		/* input coordinates				*/
-long *insys;		/* input projection code			*/
-long *inzone;		/* input zone number				*/
-double *inparm;		/* input projection parameter array		*/
-long *inunit;		/* input units					*/
-long *indatum;		/* input datum 					*/
-long *ipr;		/* printout flag for error messages. 0=screen, 1=file,
+     #endif
+int
+gctp(
+double *incoor,		/* input coordinates				*/
+long *insys,		/* input projection code			*/
+long *inzone,		/* input zone number				*/
+double *inparm,		/* input projection parameter array		*/
+long *inunit,		/* input units					*/
+long *indatum,		/* input datum 					*/
+long *ipr,		/* printout flag for error messages. 0=screen, 1=file,
 			   2=both*/
-char *efile;		/* error file name				*/
-long *jpr;		/* printout flag for projection parameters 0=screen, 
+char *efile,		/* error file name				*/
+long *jpr,		/* printout flag for projection parameters 0=screen, 
 			   1=file, 2 = both*/
-char *pfile;		/* error file name				*/
-double *outcoor;	/* output coordinates				*/
-long *outdatum;		/* output datum					*/
-long *outsys;		/* output projection code			*/
-long *outzone;		/* output zone					*/
-double *outparm;	/* output projection array			*/
-long *outunit;		/* output units					*/
-char fn27[];		/* file name of NAD 1927 parameter file		*/
-char fn83[]; 	 	/* file name of NAD 1983 parameter file		*/
-long *iflg;		/* error flag					*/
+char *pfile,		/* error file name				*/
+double *outcoor,	/* output coordinates				*/
+long *outdatum,		/* output datum					*/
+long *outsys,		/* output projection code			*/
+long *outzone,		/* output zone					*/
+double *outparm,	/* output projection array			*/
+long *outunit,		/* output units					*/
+char fn27[],		/* file name of NAD 1927 parameter file		*/
+char fn83[], 	 	/* file name of NAD 1983 parameter file		*/
+long *iflg)		/* error flag					*/
 {
 double x;		/* x coordinate 				*/
 double y;		/* y coordinate					*/
