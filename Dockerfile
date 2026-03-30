@@ -1,8 +1,17 @@
 # Dockerfile for bes_core images
+
+# I think we might want to explain here that this Dockerfile is intended to build a base image
+# that will be used to build subsequent images for our production BES/Hyrax images. Also,
+# we might want to explain that the build process is split into two stages, with the first stage
+# building the BES and the second stage copying over the built BES and its dependencies to a
+# slimmer base image. jhrg 3/29/26
+
 ARG BUILDER_BASE_IMAGE
 ARG FINAL_BASE_IMAGE
 FROM ${BUILDER_BASE_IMAGE:-"rockylinux:8"} AS builder
 
+# Sanity check that the required build argument is provided and non-empty, evn though 
+# a default value is provided above. We want to enforce that the value is always specified. jhrg 3/29/26
 ARG BUILDER_BASE_IMAGE
 RUN if [ -z "$BUILDER_BASE_IMAGE" ]; then \
         echo "Error: Non-empty BUILDER_BASE_IMAGE must be specified. Exiting."; \
@@ -59,6 +68,9 @@ COPY . ./bes
 RUN sudo chown -R $BES_USER:$BES_USER bes
 WORKDIR bes
 
+# *** Note that since this is going to be used in production, the --enable-developer 
+# configure option should not be used. This is the only change that I think we need
+# to make to the build process for production images. jhrg 3/29/26
 RUN autoreconf -fiv
 RUN echo "Sanity check: CPPFLAGS=$CPPFLAGS LDFLAGS=$LDFLAGS prefix=$PREFIX" \
     && ./configure --disable-dependency-tracking \
@@ -173,6 +185,8 @@ USER root
 # Adapted from bes/spec.all_static.in in RPM creation.
 # The four *.pem substitutions may be unnecessary, as those *.pem files may be
 # vestigial substitutions for a build process past.
+#
+# Yes, I believe they are vestigial. Let's try to find time to test removing them. jhrg 3/29/26
 RUN sed -i.dist \
     -e 's:=.*/bes.log:=/var/log/bes/bes.log:' \
     -e 's:=.*/lib/bes:=/usr/lib/bes:' \
@@ -189,6 +203,8 @@ RUN sed -i.dist \
     && touch "/var/log/bes/bes.log" \
     && chown -R $BES_USER:$BES_USER "/var/log/bes/"
 
+# We have some contributed scripts that work with systemctl, is it worth trying to set up 
+# systemctl in this image? jhrg 3/29/26
 # Start besd service at boot
 RUN chkconfig --add besd \
     && ldconfig \
