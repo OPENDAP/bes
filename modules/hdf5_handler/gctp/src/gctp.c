@@ -75,7 +75,7 @@ static long NAD83[134] = {101,102,5010,5300,201,202,203,301,302,401,402,403,
 int
 gctp(incoor,insys,inzone,inparm,inunit,indatum,ipr,efile,jpr,pfile,outcoor,
      outsys,outzone,outparm,outunit,outdatum,fn27,fn83,iflg)
-     #endif
+#endif
 int
 gctp(
 double *incoor,		/* input coordinates				*/
