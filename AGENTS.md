@@ -51,14 +51,15 @@ Notes:
 
 ## CI And Container Workflows
 
-- CI is defined in [`.travis.yml`](/Users/jimg/src/opendap/hyrax_git/bes/.travis.yml) and uses autotools, `make check`, `make distcheck`, coverage builds, and Docker image builds.
-- Docker builds are driven by [`Dockerfile`](/Users/jimg/src/opendap/hyrax_git/bes/Dockerfile) and [`travis/build-rhel-docker.sh`](/Users/jimg/src/opendap/hyrax_git/bes/travis/build-rhel-docker.sh).
+- CI is defined in [`.travis.yml`](.travis.yml) and uses autotools, `make check`, `make distcheck`, coverage builds, and Docker image builds.
+- Additional CI in [`.github/workflows`](.github/workflows) for OSX Intel and ARM64.
+- Docker builds are driven by [`Dockerfile`](Dockerfile) and [`travis/build-rhel-docker.sh`](travis/build-rhel-docker.sh).
 - CI commonly configures with `--disable-dependency-tracking`, `--with-dependencies=$prefix/deps`, and `--enable-developer`.
 - Docker and CI assume external dependency artifacts such as hyrax-dependencies and libdap builds; do not hardcode local-only assumptions into those paths.
 
 ## Generated Files And Build Artifacts
 
-- Prefer editing source inputs such as [`configure.ac`](/Users/jimg/src/opendap/hyrax_git/bes/configure.ac) and [`Makefile.am`](/Users/jimg/src/opendap/hyrax_git/bes/Makefile.am), not generated outputs like `configure`, `Makefile.in`, or `config.h.in`, unless the task explicitly requires regenerating them.
+- Prefer editing source inputs such as [`configure.ac`](configure.ac) and [`Makefile.am`](Makefile.am), not generated outputs like `configure`, `Makefile.in`, or `config.h.in`, unless the task explicitly requires regenerating them.
 - This repository may contain checked-in generated files and local build artifacts. Do not delete or revert unrelated generated files just to make the tree look clean.
 - If you regenerate autotools outputs, keep the resulting changes tightly scoped and mention that regeneration was performed.
 
