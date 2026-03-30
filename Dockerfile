@@ -11,7 +11,7 @@ ARG FINAL_BASE_IMAGE
 FROM ${BUILDER_BASE_IMAGE:-"rockylinux:8"} AS builder
 
 # Sanity check that the required build argument is provided and non-empty, evn though 
-# a default value is provided above. We want to enforce that the value is always specified. jhrg 3/29/26
+# a default value is provided above. We want to enforce that the value is always specified.
 ARG BUILDER_BASE_IMAGE
 RUN if [ -z "$BUILDER_BASE_IMAGE" ]; then \
         echo "Error: Non-empty BUILDER_BASE_IMAGE must be specified. Exiting."; \
