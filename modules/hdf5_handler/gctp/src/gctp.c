@@ -45,8 +45,8 @@ static long outpj[MAXPROJ + 1];		/* output projection array	*/
 static long outdat[MAXPROJ + 1];	/* output dataum array		*/
 static long outzn[MAXPROJ + 1];		/* output zone array		*/
 static double pdout[MAXPROJ + 1][15]; 	/* output projection parm array	*/
-static long (*hfor_trans[MAXPROJ + 1])();/* forward function pointer array*/
-static long (*hinv_trans[MAXPROJ + 1])();/* inverse function pointer array*/
+static int (*hfor_trans[MAXPROJ + 1])(double, double, double *, double *);/* forward function pointer array*/
+static int (*hinv_trans[MAXPROJ + 1])(double, double, double *, double *);/* inverse function pointer array*/
 
 			/* Table of unit codes as specified by state
 			   laws as of 2/1/92 for NAD 1983 State Plane
@@ -91,11 +91,11 @@ long *jpr,		/* printout flag for projection parameters 0=screen,
 			   1=file, 2 = both*/
 char *pfile,		/* error file name				*/
 double *outcoor,	/* output coordinates				*/
-long *outdatum,		/* output datum					*/
 long *outsys,		/* output projection code			*/
 long *outzone,		/* output zone					*/
 double *outparm,	/* output projection array			*/
 long *outunit,		/* output units					*/
+long *outdatum,		/* output datum					*/
 char fn27[],		/* file name of NAD 1927 parameter file		*/
 char fn83[], 	 	/* file name of NAD 1983 parameter file		*/
 long *iflg)		/* error flag					*/
@@ -106,7 +106,7 @@ double factor;		/* conversion factor				*/
 double lon;		/* longitude					*/
 double lat;		/* latitude					*/
 /*double temp;	*/	/* dummy variable				*/
-double pakr2dm();
+double pakr2dm(double ang);
 long i,j;		/* loop counters				*/
 long ininit_flag;	/* input initilization flag			*/
 long outinit_flag;	/* output initilization flag			*/
@@ -257,10 +257,10 @@ y = incoor[1] * factor;
          dummy[0] = inparm[0];
          dummy[1] = inparm[1];
          }
-      hinv_init((int)*insys,(int)*inzone,dummy,(int)*indatum,fn27,fn83,&iflgval,(int *)hinv_trans);
+      hinv_init((int)*insys,(int)*inzone,dummy,(int)*indatum,fn27,fn83,&iflgval,hinv_trans);
       }
    else
-     hinv_init((int)*insys,(int)*inzone,inparm,(int)*indatum,fn27,fn83,&iflgval,(int *)hinv_trans);
+     hinv_init((int)*insys,(int)*inzone,inparm,(int)*indatum,fn27,fn83,&iflgval,hinv_trans);
    *iflg=(long)iflgval;
 
    if ((int)*iflg != 0)
@@ -319,10 +319,10 @@ else
 	 dummy[0] = outparm[0];
 	 dummy[1] = outparm[1];
 	 }
-      hfor_init((int)*outsys,(int)*outzone,dummy,(int)*outdatum,fn27,fn83,&iflgval,(int *)hfor_trans);
+      hfor_init((int)*outsys,(int)*outzone,dummy,(int)*outdatum,fn27,fn83,&iflgval,hfor_trans);
       }
    else
-     hfor_init((int)*outsys,(int)*outzone,outparm,(int)*outdatum,fn27,fn83,&iflgval,(int *)hfor_trans);
+     hfor_init((int)*outsys,(int)*outzone,outparm,(int)*outdatum,fn27,fn83,&iflgval,hfor_trans);
 
    *iflg=(long)iflgval;
 

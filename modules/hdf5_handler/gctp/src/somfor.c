@@ -57,7 +57,6 @@ double sat_ratio)               /* satellite ratio which specify the
 long i;
 double alf,e2c,e2s,one_es;
 double dlam,fb,fa2,fa4,fc1,fc3,suma2,suma4,sumc1,sumc3,sumb;
-double adjust_lon();
 
 /* Assign satellite ratio to a global variable 
    ------------------------------------------- */
