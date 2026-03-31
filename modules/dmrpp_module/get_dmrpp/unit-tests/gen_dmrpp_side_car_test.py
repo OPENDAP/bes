@@ -35,9 +35,10 @@ class TestSample(unittest.TestCase):
         # Hacky removal of lines that otherwise show spurious failure
         # due to test brittleness. (Better fix would be to run same version
         # stripping as on non-python tests)
-        # The following two lines may cause IndexError.
-        dmrpp_lines_after_79.pop(216)
-        baseline_lines_after_79.pop(216)
+        # Although the above statement may be true, 
+        # the following two lines may cause IndexError,we comment them out now.
+        #dmrpp_lines_after_79.pop(216)
+        #baseline_lines_after_79.pop(216)
 
         self.assertEqual(dmrpp_lines_after_79 ,baseline_lines_after_79)
    
@@ -98,8 +99,9 @@ class TestSample(unittest.TestCase):
         # Hacky removal of lines that otherwise show spurious failure
         # due to test brittleness. (Better fix would be to run same version
         # stripping as on non-python tests)
-        dmrpp_minus_18_lines.pop(62)
-        baseline_minus_18_lines.pop(62)
+        # Although the above statement may be true, the following lines may cause IndexError.So comment them out.
+        #dmrpp_minus_18_lines.pop(62)
+        #baseline_minus_18_lines.pop(62)
 
         self.assertEqual(dmrpp_minus_18_lines ,baseline_minus_18_lines)
  
