@@ -79,15 +79,27 @@ RUN sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/var \
     && sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/run \
     && sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/share
 
-# Test the BES
-RUN sudo -s besctl start && make check -j$(nproc --ignore=1) && sudo -s besctl stop
+# Test the BES. We need the besctl to be running while we do this, so that
+# we hit all the tests---so we need to make some configuration adjustments
+# so that the bes daemon will run successfully
+RUN sudo sed -i.dist \
+    -e 's:=user_name:='"$BES_USER"':' \
+    -e 's:=group_name:='"$BES_USER"':' \
+    /etc/bes/bes.conf \
+    && sudo touch "/var/bes.log" \
+    && sudo chown -R $BES_USER:$BES_USER "/var/bes.log" \
+    && sudo -s --preserve-env=PATH \
+    && whoami \
+    && besctl start \
+    && make check -j$(nproc --ignore=1) \
+    && besctl stop
 
 RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
 
 #####
 ##### Final layer: libdap + hyrax-dependencies + bes
 #####
-FROM ${FINAL_BASE_IMAGE:-rockylinux:8} AS bes_image
+FROM ${FINAL_BASE_IMAGE:-rockylinux:8} AS bes_core
 
 ARG FINAL_BASE_IMAGE
 RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
