@@ -80,7 +80,7 @@ RUN sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/var \
     && sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/share
 
 # Test the BES
-RUN sudo -s (besctl start && make check -j$(nproc --ignore=1) && besctl stop)
+RUN sudo -s besctl start && make check -j$(nproc --ignore=1) && sudo -s besctl stop
 
 RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
 
