@@ -1,10 +1,9 @@
 # Dockerfile for bes_core images
 
-# I think we might want to explain here that this Dockerfile is intended to build a base image
-# that will be used to build subsequent images for our production BES/Hyrax images. Also,
-# we might want to explain that the build process is split into two stages, with the first stage
+# This Dockerfile is intended to build a base image
+# that will be used to build subsequent images for our production BES/Hyrax images. # The build process is split into two stages, with the first stage
 # building the BES and the second stage copying over the built BES and its dependencies to a
-# slimmer base image. jhrg 3/29/26
+# slimmer base image.
 
 ARG BUILDER_BASE_IMAGE
 ARG FINAL_BASE_IMAGE
