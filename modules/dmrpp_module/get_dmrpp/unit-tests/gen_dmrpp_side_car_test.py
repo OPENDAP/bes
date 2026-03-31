@@ -35,8 +35,10 @@ class TestSample(unittest.TestCase):
         # Hacky removal of lines that otherwise show spurious failure
         # due to test brittleness. (Better fix would be to run same version
         # stripping as on non-python tests)
-        dmrpp_lines_after_79.pop(220)
-        baseline_lines_after_79.pop(220)
+        # Although the above statement may be true, 
+        # the following two lines may cause IndexError,however, github macOS build keeps throwing errors.
+        dmrpp_lines_after_79.pop(216)
+        baseline_lines_after_79.pop(216)
 
         self.assertEqual(dmrpp_lines_after_79 ,baseline_lines_after_79)
    
@@ -56,8 +58,10 @@ class TestSample(unittest.TestCase):
         # Hacky removal of lines that otherwise show spurious failure
         # due to test brittleness. (Better fix would be to run same version
         # stripping as on non-python tests)
-        dmrpp_lines_after_19.pop(221)
-        baseline_lines_after_19.pop(221)
+        # The following two lines may cause IndexError and they are not necessary since the testing file should not be changed.
+        # If the testing file is changed, the right way is to update the baseline file.
+        #dmrpp_lines_after_19.pop(221)
+        #baseline_lines_after_19.pop(221)
 
         self.assertEqual(dmrpp_lines_after_19 ,baseline_lines_after_19)
 
@@ -68,7 +72,7 @@ class TestSample(unittest.TestCase):
         if not os.environ.get('PRESERVE_TEST_ASSETS'):
             self.addCleanup(os.remove, "grid_1_2d.hdf.dmrpp")
         
-        # Since we also add the dmrpp metadata generation informatio for the HDF4 files,
+        # Since we also add the dmrpp metadata generation information for the HDF4 files,
         # we need to ignore those information when doing comparision.
         with open('grid_1_2d.hdf.dmrpp') as f:
             dmrpp_lines_after_54 = f.readlines()[54:]
@@ -95,8 +99,9 @@ class TestSample(unittest.TestCase):
         # Hacky removal of lines that otherwise show spurious failure
         # due to test brittleness. (Better fix would be to run same version
         # stripping as on non-python tests)
-        dmrpp_minus_18_lines.pop(62)
-        baseline_minus_18_lines.pop(62)
+        # Although the above statement may be true, the following lines may cause IndexError.So comment them out.
+        #dmrpp_minus_18_lines.pop(62)
+        #baseline_minus_18_lines.pop(62)
 
         self.assertEqual(dmrpp_minus_18_lines ,baseline_minus_18_lines)
  

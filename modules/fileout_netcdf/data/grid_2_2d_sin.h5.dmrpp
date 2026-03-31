@@ -1,42 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="removed" name="grid_2_2d_sin.h5" dmrpp:href="OPeNDAP_DMRpp_DATA_ACCESS_URL" dmrpp:version="removed">
-    <Attribute name="build_dmrpp_metadata" type="Container">
-        <Attribute name="created" type="String">
-            <Value>removed date string</Value>
-        </Attribute>
-        <Attribute name="build_dmrpp" type="String">
-            <Value>removed_version</Value>
-        </Attribute>
-        <Attribute name="bes" type="String">
-            <Value>removed_version</Value>
-        </Attribute>
-        <Attribute name="libdap" type="String">
-            <Value>removed_version</Value>
-        </Attribute>
-        <Attribute name="configuration" type="String">
-            <Value>
-# TheBESKeys::get_as_config()
-AllowedHosts=^https?:\/\/
-BES.Catalog.catalog.FollowSymLinks=Yes
-BES.Catalog.catalog.RootDirectory=< path_removed >
-BES.Catalog.catalog.TypeMatch=dmrpp:.*\.(dmrpp)$;
-BES.Catalog.catalog.TypeMatch+=h5:.*(\.bz2|\.gz|\.Z)?$;
-BES.Data.RootDirectory=/dev/null
-BES.LogName=./bes.log
-BES.UncompressCache.dir=/tmp/hyrax_ux
-BES.UncompressCache.prefix=ux_
-BES.UncompressCache.size=500
-BES.modules=dap,cmd,h5,dmrpp,nc,fonc
-FONc.ClassicModel=false
-FONc.NoGlobalAttrs=true
-H5.EnableCF=false
-H5.EnableCheckNameClashing=true
-</Value>
-        </Attribute>
-        <Attribute name="invocation" type="String">
-            <Value>Removed</Value>
-        </Attribute>
-    </Attribute>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="2.0" name="grid_2_2d_sin.h5" dmrpp:href="data/grid_2_2d_sin.h5" dmrpp:version="3.21.1">
     <Group name="HDFEOS">
         <Group name="ADDITIONAL">
             <Group name="FILE_ATTRIBUTES"/>
@@ -76,7 +39,7 @@ H5.EnableCheckNameClashing=true
                     </Attribute>
                     <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
-                        <dmrpp:chunk offset="26160" nBytes="25" chunkPositionInArray="[0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
+                        <dmrpp:chunk offset="26160" nBytes="25" chunkPositionInArray="[0]" href="data/grid_2_2d_sin.h5_mvs.h5" />
                     </dmrpp:chunks>
                 </Float64>
                 <Float64 name="YDim">
@@ -95,7 +58,7 @@ H5.EnableCheckNameClashing=true
                     </Attribute>
                     <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
-                        <dmrpp:chunk offset="26185" nBytes="24" chunkPositionInArray="[0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
+                        <dmrpp:chunk offset="26185" nBytes="24" chunkPositionInArray="[0]" href="data/grid_2_2d_sin.h5_mvs.h5" />
                     </dmrpp:chunks>
                 </Float64>
                 <Float64 name="Latitude">
@@ -106,7 +69,7 @@ H5.EnableCheckNameClashing=true
                     </Attribute>
                     <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
-                        <dmrpp:chunk offset="26209" nBytes="28" chunkPositionInArray="[0,0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
+                        <dmrpp:chunk offset="26209" nBytes="28" chunkPositionInArray="[0,0]" href="data/grid_2_2d_sin.h5_mvs.h5" />
                     </dmrpp:chunks>
                 </Float64>
                 <Float64 name="Longitude">
@@ -117,7 +80,7 @@ H5.EnableCheckNameClashing=true
                     </Attribute>
                     <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
-                        <dmrpp:chunk offset="26237" nBytes="41" chunkPositionInArray="[0,0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
+                        <dmrpp:chunk offset="26237" nBytes="41" chunkPositionInArray="[0,0]" href="data/grid_2_2d_sin.h5_mvs.h5" />
                     </dmrpp:chunks>
                 </Float64>
                 <Group name="Data_Fields">
@@ -176,7 +139,7 @@ H5.EnableCheckNameClashing=true
                     </Attribute>
                     <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>4</dmrpp:chunkDimensionSizes>
-                        <dmrpp:chunk offset="37804" nBytes="43" chunkPositionInArray="[0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
+                        <dmrpp:chunk offset="37804" nBytes="43" chunkPositionInArray="[0]" href="data/grid_2_2d_sin.h5_mvs.h5" />
                     </dmrpp:chunks>
                 </Float64>
                 <Float64 name="YDim">
@@ -195,7 +158,7 @@ H5.EnableCheckNameClashing=true
                     </Attribute>
                     <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>4</dmrpp:chunkDimensionSizes>
-                        <dmrpp:chunk offset="37847" nBytes="40" chunkPositionInArray="[0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
+                        <dmrpp:chunk offset="37847" nBytes="40" chunkPositionInArray="[0]" href="data/grid_2_2d_sin.h5_mvs.h5" />
                     </dmrpp:chunks>
                 </Float64>
                 <Float64 name="Latitude">
@@ -206,7 +169,7 @@ H5.EnableCheckNameClashing=true
                     </Attribute>
                     <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>4 4</dmrpp:chunkDimensionSizes>
-                        <dmrpp:chunk offset="37887" nBytes="46" chunkPositionInArray="[0,0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
+                        <dmrpp:chunk offset="37887" nBytes="46" chunkPositionInArray="[0,0]" href="data/grid_2_2d_sin.h5_mvs.h5" />
                     </dmrpp:chunks>
                 </Float64>
                 <Float64 name="Longitude">
@@ -217,7 +180,7 @@ H5.EnableCheckNameClashing=true
                     </Attribute>
                     <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
                         <dmrpp:chunkDimensionSizes>4 4</dmrpp:chunkDimensionSizes>
-                        <dmrpp:chunk offset="37933" nBytes="139" chunkPositionInArray="[0,0]" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL" />
+                        <dmrpp:chunk offset="37933" nBytes="139" chunkPositionInArray="[0,0]" href="data/grid_2_2d_sin.h5_mvs.h5" />
                     </dmrpp:chunks>
                 </Float64>
                 <Group name="Data_Fields">
