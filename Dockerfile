@@ -82,14 +82,14 @@ RUN sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/var \
 # Test the BES. We need the besctl to be running while we do this, so that
 # we hit all the tests---so we need to make some configuration adjustments
 # so that the bes daemon will run successfully
-RUN sudo sed -i.dist \
+RUN && sudo -s --preserve-env=PATH \
+    && whoami \
+    && sed -i.dist \
     -e 's:=user_name:='"$BES_USER"':' \
     -e 's:=group_name:='"$BES_USER"':' \
     /etc/bes/bes.conf \
-    && sudo touch "/var/bes.log" \
-    && sudo chown -R $BES_USER:$BES_USER "/var/bes.log" \
-    && sudo -s --preserve-env=PATH \
-    && whoami \
+    && touch "/var/bes.log" \
+    && chown -R $BES_USER:$BES_USER "/var/bes.log" \
     && besctl start \
     && make check -j$(nproc --ignore=1) \
     && besctl stop
