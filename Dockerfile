@@ -184,8 +184,6 @@ USER root
 # Adapted from bes/spec.all_static.in in RPM creation.
 # The four *.pem substitutions may be unnecessary, as those *.pem files may be
 # vestigial substitutions for a build process past.
-#
-# Yes, I believe they are vestigial. Let's try to find time to test removing them. jhrg 3/29/26
 RUN sed -i.dist \
     -e 's:=.*/bes.log:=/var/log/bes/bes.log:' \
     -e 's:=.*/lib/bes:=/usr/lib/bes:' \
