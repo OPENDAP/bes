@@ -65,8 +65,7 @@ RUN echo "Sanity check: CPPFLAGS=$CPPFLAGS LDFLAGS=$LDFLAGS prefix=$PREFIX" \
     --with-dependencies="$DEPS_PREFIX/deps" \
     --prefix="$PREFIX" \
     $GDAL_OPTION \
-    --with-build=$BES_BUILD_NUMBER \
-    --enable-developer
+    --with-build=$BES_BUILD_NUMBER
 RUN make -j$(nproc --ignore=1)
 RUN sudo make install
 
@@ -81,7 +80,7 @@ RUN sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/var \
     && sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/share
 
 # Test the BES
-RUN besctl start && make check -j$(nproc --ignore=1) && besctl stop
+RUN sudo -s (besctl start && make check -j$(nproc --ignore=1) && besctl stop)
 
 RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
 
