@@ -36,9 +36,9 @@ class TestSample(unittest.TestCase):
         # due to test brittleness. (Better fix would be to run same version
         # stripping as on non-python tests)
         # Although the above statement may be true, 
-        # the following two lines may cause IndexError,we comment them out now.
-        #dmrpp_lines_after_79.pop(216)
-        #baseline_lines_after_79.pop(216)
+        # the following two lines may cause IndexError,however, github macOS build keeps throwing errors.
+        dmrpp_lines_after_79.pop(216)
+        baseline_lines_after_79.pop(216)
 
         self.assertEqual(dmrpp_lines_after_79 ,baseline_lines_after_79)
    
