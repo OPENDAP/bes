@@ -139,42 +139,22 @@ namespace dmrpp
     bool DmrppRequestHandler::disable_direct_io = false;
 
     bool DmrppRequestHandler::use_buffer_chunk = true;
-    // There are methods in TheBESKeys that should be used instead of these.
-    // jhrg 9/26/23
+
+    // Using TheBESKeys calls inside the handler overloads
+    // kln 4/1/26
     static void read_key_value(const std::string &key_name, bool &key_value)
     {
-        bool key_found = false;
-        string value;
-        TheBESKeys::TheKeys()->get_value(key_name, value, key_found);
-        if (key_found)
-        {
-            value = BESUtil::lowercase(value);
-            key_value = (value == "true" || value == "yes");
-        }
+        key_value = TheBESKeys::read_bool_key(key_name, key_value);
     }
 
     static void read_key_value(const std::string &key_name, unsigned int &key_value)
     {
-        bool key_found = false;
-        string value;
-        TheBESKeys::TheKeys()->get_value(key_name, value, key_found);
-        if (key_found)
-        {
-            istringstream iss(value);
-            iss >> key_value;
-        }
+        key_value = static_cast<unsigned int>(TheBESKeys::read_ulong_key(key_name, key_value));
     }
 
     static void read_key_value(const std::string &key_name, unsigned long long &key_value)
     {
-        bool key_found = false;
-        string value;
-        TheBESKeys::TheKeys()->get_value(key_name, value, key_found);
-        if (key_found)
-        {
-            istringstream iss(value);
-            iss >> key_value;
-        }
+        key_value = static_cast<unsigned long long>(TheBESKeys::read_uint64_key(key_name, key_value));
     }
 
     static void read_key_value(const std::string &key_name, double &key_value)
