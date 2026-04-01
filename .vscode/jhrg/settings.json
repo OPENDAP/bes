@@ -19,6 +19,7 @@
         "${workspaceFolder}/standalone/**",
         "${workspaceFolder}/xmlcommand/**",
         "${workspaceFolder}/modules/**",
+        "${workspaceFolder}/modules/hdf5_handler/gtcp/include/**"
     ],
     "C_Cpp.default.cppStandard": "c++14",
     "C_Cpp.default.intelliSenseMode": "macos-clang-arm64",
