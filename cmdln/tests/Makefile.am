@@ -23,11 +23,9 @@ clean-local:
 	test ! -f '$(TESTSUITE)' || $(SHELL) '$(TESTSUITE)' --clean
 	-rm -f $(TESTSUITE) $(srcdir)/package.m4
 
-# Run these tests serially. We may have a races condition with the bescmdln
-# client. jhrg 4/1/2026
 check-local: $(TESTSUITE) install-data
 	@if bescmdln -x "show version;"; \
-		then $(SHELL) '$(TESTSUITE)' \
+		then $(SHELL) '$(TESTSUITE)'; \
 		else echo "no bes found, not running cmdln-based tests"; \
 	fi
 
