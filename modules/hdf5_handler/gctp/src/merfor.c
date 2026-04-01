@@ -47,7 +47,6 @@ double false_east,		/* x offset in meters		*/
 double false_north)		/* y offset in meters		*/
 {
 double temp;			/* temporary variable		*/
-double e0fn(),e1fn(),e2fn(),e3fn(); 	/* 	functions	*/
 
 /* Place parameters in static storage for common use
   -------------------------------------------------*/
