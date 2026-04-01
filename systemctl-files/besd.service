@@ -1,0 +1,23 @@
+[Unit]
+Description=Hyrax Back-End Service
+After=network.target httpd.service
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/sysconfig/besd
+ExecStart=/usr/bin/besdaemon $BESD_OPTIONS
+ExecReload=/usr/bin/kill -HUP $MAINPID
+Restart=on-failure
+RestartSec=30s
+PIDFile=/run/bes.pid
+#KillMode=control-group
+#TimeoutStopSec=30s
+# Uncomment to immediately kill all processes, including the subprocesses
+KillMode=mixed
+
+# Increase the default a bit in order to allow many simultaneous
+# files to be monitored, we might need a lot of fds.
+LimitNOFILE=16384
+
+[Install]
+WantedBy=multi-user.target
