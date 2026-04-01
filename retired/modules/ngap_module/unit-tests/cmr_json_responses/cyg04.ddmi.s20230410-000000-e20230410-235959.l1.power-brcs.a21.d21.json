@@ -1,0 +1,330 @@
+{
+  "hits" : 1,
+  "took" : 307,
+  "items" : [ {
+    "meta" : {
+      "concept-type" : "granule",
+      "concept-id" : "G2653766826-POCLOUD",
+      "revision-id" : 3,
+      "native-id" : "cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21",
+      "collection-concept-id" : "C2251464384-POCLOUD",
+      "provider-id" : "POCLOUD",
+      "format" : "application/vnd.nasa.cmr.umm+json",
+      "revision-date" : "2023-04-11T21:03:32.226Z"
+    },
+    "umm" : {
+      "TemporalExtent" : {
+        "RangeDateTime" : {
+          "EndingDateTime" : "2023-04-10T23:59:59.999Z",
+          "BeginningDateTime" : "2023-04-10T00:00:00.499Z"
+        }
+      },
+      "GranuleUR" : "cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21",
+      "ProviderDates" : [ {
+        "Type" : "Insert",
+        "Date" : "2023-04-11T20:55:54.356Z"
+      }, {
+        "Type" : "Update",
+        "Date" : "2023-04-11T20:55:54.356Z"
+      } ],
+      "SpatialExtent" : {
+        "HorizontalSpatialDomain" : {
+          "Geometry" : {
+            "BoundingRectangles" : [ {
+              "WestBoundingCoordinate" : -180,
+              "SouthBoundingCoordinate" : -40,
+              "EastBoundingCoordinate" : 180,
+              "NorthBoundingCoordinate" : 40
+            } ]
+          }
+        }
+      },
+      "DataGranule" : {
+        "ArchiveAndDistributionInformation" : [ {
+          "SizeUnit" : "MB",
+          "Size" : 9.918212890625E-5,
+          "Checksum" : {
+            "Value" : "1d1d77934b9099fd8da3f1fca53cfc07",
+            "Algorithm" : "MD5"
+          },
+          "Name" : "cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.nc.md5"
+        }, {
+          "SizeUnit" : "MB",
+          "Size" : 1290.025263786316,
+          "Checksum" : {
+            "Value" : "faefeaf1e3d43701048629093f9abd3f",
+            "Algorithm" : "MD5"
+          },
+          "Name" : "cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.nc"
+        } ],
+        "DayNightFlag" : "Unspecified",
+        "ProductionDateTime" : "2023-04-11T19:38:10.000Z"
+      },
+      "CollectionReference" : {
+        "Version" : "2.1",
+        "ShortName" : "CYGNSS_L1_V2.1"
+      },
+      "RelatedUrls" : [ {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-protected/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.nc",
+        "Description" : "Download cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.nc",
+        "Type" : "GET DATA"
+      }, {
+        "URL" : "s3://podaac-ops-cumulus-protected/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.nc",
+        "Description" : "This link provides direct download access via S3 to the granule",
+        "Type" : "GET DATA"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.nc.md5",
+        "Description" : "Download cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.nc.md5",
+        "Type" : "EXTENDED METADATA"
+      }, {
+        "URL" : "s3://podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.nc.md5",
+        "Description" : "This link provides direct download access via S3 to the granule",
+        "Type" : "EXTENDED METADATA"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/s3credentials",
+        "Description" : "api endpoint to retrieve temporary credentials valid for same-region direct s3 access",
+        "Type" : "VIEW RELATED INFORMATION"
+      }, {
+        "URL" : "https://opendap.earthdata.nasa.gov/collections/C2251464384-POCLOUD/granules/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21",
+        "Type" : "USE SERVICE API",
+        "Subtype" : "OPENDAP DATA",
+        "Description" : "OPeNDAP request URL"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.prn_code.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.sv_num.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.track_id.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.ddm_ant.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.zenith_code_phase.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.sp_ddmi_delay_correction.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.sp_ddmi_dopp_correction.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.add_range_to_sp.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.add_range_to_sp_pvt.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.sp_ddmi_dopp.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.sp_fsw_delay.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.sp_delay_error.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.sp_dopp_error.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.fsw_comp_delay_shift.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.fsw_comp_dopp_shift.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.prn_fig_of_merit.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.tx_clk_bias.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.sp_alt.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.sp_inc_angle.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.sp_theta_orbit.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.sp_az_orbit.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.sp_theta_body.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.sp_az_body.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.sp_rx_gain.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.gps_eirp.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.gps_tx_power_db_w.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.gps_ant_gain_db_i.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.gps_off_boresight_angle_deg.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.direct_signal_snr.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.ddm_snr.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.ddm_noise_floor.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.inst_gain.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.lna_noise_figure.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.rx_to_sp_range.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.tx_to_sp_range.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.bb_nearest.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.fresnel_coeff.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.ddm_nbrcs.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.ddm_les.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.nbrcs_scatter_area.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.les_scatter_area.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.brcs_ddm_peak_bin_delay_row.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.brcs_ddm_peak_bin_dopp_col.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.brcs_ddm_sp_bin_delay_row.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.brcs_ddm_sp_bin_dopp_col.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.ddm_brcs_uncert.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      }, {
+        "URL" : "https://archive.podaac.earthdata.nasa.gov/podaac-ops-cumulus-public/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.quality_flags.png",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Subtype" : "DIRECT DOWNLOAD",
+        "MimeType" : "image/png"
+      } ]
+    }
+  } ]
+}

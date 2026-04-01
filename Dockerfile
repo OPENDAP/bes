@@ -186,6 +186,7 @@ USER root
 # Adapted from bes/spec.all_static.in in RPM creation.
 # The four *.pem substitutions may be unnecessary, as those *.pem files may be
 # vestigial substitutions for a build process past. See HYRAX-2075.
+
 RUN sed -i.dist \
     -e 's:=.*/bes.log:=/var/log/bes/bes.log:' \
     -e 's:=.*/lib/bes:=/usr/lib/bes:' \
