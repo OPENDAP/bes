@@ -1,5 +1,0 @@
-#! /bin/sh
-test ${ZSH_VERSION+y} && alias -g '${1+"$@"}'='"$@"'
-cd '/Users/jimg/src/opendap/hyrax/bes/modules/dmrpp_module/tests'
-exec ${CONFIG_SHELL-/bin/sh} "/Users/jimg/src/opendap/hyrax/bes/modules/dmrpp_module/tests/./testsuite_dmrpp_builder" -v -d  1 ${1+"$@"}
-exit 1

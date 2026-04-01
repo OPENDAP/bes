@@ -1,4 +1,0 @@
-https://machine/opendap/child_dir/child_file.conf.html
-https://machine/opendap/child_dir/child_file1.html
-https://machine/opendap/file1.html
-https://machine/opendap/file2.html
