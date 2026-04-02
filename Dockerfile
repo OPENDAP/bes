@@ -68,10 +68,6 @@ COPY . ./bes
 RUN sudo chown -R $BES_USER:$BES_USER bes
 WORKDIR bes
 
-# *** Note that since this is going to be used in production, the
-# --enable-developer configure option should not be used. This is the only
-# change that I think we need to make to the build process for production
-# images. jhrg 3/29/26
 RUN autoreconf -fiv
 RUN echo "Sanity check: CPPFLAGS=$CPPFLAGS LDFLAGS=$LDFLAGS prefix=$PREFIX" \
     && ./configure --disable-dependency-tracking \
@@ -102,62 +98,62 @@ RUN sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/var \
     && sudo chown -R $BES_USER:$BES_USER "/var/bes.log" \
     && echo "okay, ready to run tests"
 
-# # ...now run the tests. The daemon has to be started as root.
-# RUN sudo -s --preserve-env=PATH besctl start \
-#     && make check -j$(nproc --ignore=1) \
-#     && sudo -s besctl stop \
-#     && echo "tests complete"
+# ...now run the tests. The daemon has to be started as root.
+RUN sudo -s --preserve-env=PATH besctl start \
+    && make check -j$(nproc --ignore=1) \
+    && sudo -s besctl stop \
+    && echo "tests complete"
 
-# RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
+RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
 
-# #####
-# ##### Final layer: libdap + hyrax-dependencies + bes
-# #####
-# FROM ${FINAL_BASE_IMAGE:-rockylinux:8} AS bes_core
+#####
+##### Final layer: libdap + hyrax-dependencies + bes
+#####
+FROM ${FINAL_BASE_IMAGE:-rockylinux:8} AS bes_core
 
-# ARG FINAL_BASE_IMAGE
-# RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
-#         echo "Error: Non-empty FINAL_BASE_IMAGE must be specified. Exiting."; \
-#         exit 1; \
-#     fi
+ARG FINAL_BASE_IMAGE
+RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
+        echo "Error: Non-empty FINAL_BASE_IMAGE must be specified. Exiting."; \
+        exit 1; \
+    fi
 
-# # Duplicated from installation above, this time on a slimmer base image...
-# # Install the libdap rpms
-# ARG LIBDAP_RPM_FILENAME
-# RUN --mount=from=aws_downloads,target=/tmp_mounted \
-#     yum update -y \
-#     && dnf install sudo which procps libicu acl chkconfig -y \
-#     && echo "Installing libdap snapshot rpms: $LIBDAP_RPM_FILENAME" \
-#     && dnf -y install "/tmp_mounted/$LIBDAP_RPM_FILENAME" \
-#     && dnf clean all
+# Duplicated from installation above, this time on a slimmer base image...
+# Install the libdap rpms
+ARG LIBDAP_RPM_FILENAME
+RUN --mount=from=aws_downloads,target=/tmp_mounted \
+    yum update -y \
+    && dnf install sudo which procps libicu acl chkconfig -y \
+    && echo "Installing libdap snapshot rpms: $LIBDAP_RPM_FILENAME" \
+    && dnf -y install "/tmp_mounted/$LIBDAP_RPM_FILENAME" \
+    && dnf clean all
 
-# ENV BES_USER="bes_user"
-# ENV USER_ID=101
-# ENV PREFIX="/"
-# ENV DEPS_PREFIX="/root/install"
-# ENV PATH="$PREFIX/bin:$DEPS_PREFIX/deps/bin:$PATH"
+ENV BES_USER="bes_user"
+ENV USER_ID=101
+ENV PREFIX="/"
+ENV DEPS_PREFIX="/root/install"
+ENV PATH="$PREFIX/bin:$DEPS_PREFIX/deps/bin:$PATH"
 
-# RUN useradd \
-#         --user-group \
-#         --comment "BES daemon" \
-#         --uid ${USER_ID} \
-#         $BES_USER \
-#     && echo $BES_USER ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$BES_USER
+RUN useradd \
+        --user-group \
+        --comment "BES daemon" \
+        --uid ${USER_ID} \
+        $BES_USER \
+    && echo $BES_USER ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$BES_USER
 
-# # Install the latest hyrax dependencies
-# ARG HYRAX_DEPENDENCIES_TARBALL
-# RUN --mount=from=aws_downloads,target=/tmp_mounted \
-#     sudo tar -C "/root" -xzvf "/tmp_mounted/$HYRAX_DEPENDENCIES_TARBALL"
+# Install the latest hyrax dependencies
+ARG HYRAX_DEPENDENCIES_TARBALL
+RUN --mount=from=aws_downloads,target=/tmp_mounted \
+    sudo tar -C "/root" -xzvf "/tmp_mounted/$HYRAX_DEPENDENCIES_TARBALL"
 
-# RUN sudo chown -R $BES_USER:$BES_USER $DEPS_PREFIX \
-#     && sudo chmod o+x /root
+RUN sudo chown -R $BES_USER:$BES_USER $DEPS_PREFIX \
+    && sudo chmod o+x /root
 
-# USER $BES_USER
-# WORKDIR "/home/$BES_USER"
+USER $BES_USER
+WORKDIR "/home/$BES_USER"
 
-# COPY --from=builder /home/$BES_USER/bes/bes_VERSION bes_VERSION
-# COPY --from=builder /home/$BES_USER/bes/libdap_VERSION libdap_VERSION
-# COPY --from=builder $DEPS_PREFIX $DEPS_PREFIX
+COPY --from=builder /home/$BES_USER/bes/bes_VERSION bes_VERSION
+COPY --from=builder /home/$BES_USER/bes/libdap_VERSION libdap_VERSION
+COPY --from=builder $DEPS_PREFIX $DEPS_PREFIX
 
 # Copy over everything installed in the builder image.
 # This is a little ham-fisted, but seems to be at least sufficient
@@ -186,19 +182,18 @@ COPY --from=builder \
     /usr/bin/reduce_mdf \
     /usr/bin/
 
-# RUN sudo setfacl -R -m u:$BES_USER:rwx /var/run \
-#     && sudo setfacl -R -m u:$BES_USER:rwx /run \
-#     && sudo setfacl -R -m u:$BES_USER:rwx /usr/share
+RUN sudo setfacl -R -m u:$BES_USER:rwx /var/run \
+    && sudo setfacl -R -m u:$BES_USER:rwx /run \
+    && sudo setfacl -R -m u:$BES_USER:rwx /usr/share
 
-# ################################################################
-# # Set up besdaemon
+################################################################
+# Set up besdaemon
 
-# USER root
+USER root
 
 # Adapted from bes/spec.all_static.in in RPM creation.
 # The four *.pem substitutions may be unnecessary, as those *.pem files may be
 # vestigial substitutions for a build process past. See HYRAX-2075.
-
 RUN sed -i.dist \
     -e 's:=.*/bes.log:=/var/log/bes/bes.log:' \
     -e 's:=.*/lib/bes:=/usr/lib/bes:' \
