@@ -77,8 +77,7 @@ RUN sudo rm $PREFIX/lib/bes/*.a \
 # Test time! We need the besdaemon to be running while we do this, so that
 # we hit all the tests. In order to run the daemon, we need to update some
 # permissions.
-
-# Support user $BES_USER running the daemon
+# First, support user $BES_USER running the daemon...
 RUN sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/var \
     && sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/run \
     && sudo chown -R $BES_USER:$BES_USER $PREFIX/share/mds \
