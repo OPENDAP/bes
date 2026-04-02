@@ -69,68 +69,26 @@ using namespace std;
  * @param default_value
  * @see read_key_value() - other impls
  */
+// Refactored to use TheBESKeys calls inside the handler overloads
+// kln 4/1/26
 static void read_key_value(const string &key_name, bool &key, const bool default_value)
 {
-    bool key_found = false;
-    string value;
-    TheBESKeys::TheKeys()->get_value(key_name, value, key_found);
-    // 'key' holds the string value at this point if key_found is true
-    if (key_found) {
-        value = BESUtil::lowercase(value);
-        key = (value == "true" || value == "yes");
-    }
-    else {
-        key = default_value;
-    }
+    key = TheBESKeys::read_bool_key(key_name, default_value);
 }
 
 static void read_key_value(const string &key_name, string &key, const string &default_value)
 {
-    bool key_found = false;
-    TheBESKeys::TheKeys()->get_value(key_name, key, key_found);
-    // 'key' holds the string value at this point if key_found is true
-    if (key_found) {
-        BESUtil::trim_if_trailing_slash(key);
-    }
-    else {
-        key = default_value;
-    }
+    key = TheBESKeys::read_string_key(key_name, default_value);
 }
 
 static void read_key_value(const string &key_name, size_t &key, const int default_value)
 {
-    bool key_found = false;
-    string value;
-    TheBESKeys::TheKeys()->get_value(key_name, value, key_found);
-    // 'key' holds the string value at this point if key_found is true
-    if (key_found) {
-        istringstream iss(value);
-        iss >> key;
-        // if (iss.eof() || iss.bad() || iss.fail()) key = default_value;
-        if (iss.bad() || iss.fail()) key = default_value;
-    }
-    else {
-        key = default_value;
-    }
+    key = static_cast<unsigned int>(TheBESKeys::read_ulong_key(key_name, default_value));
 }
 
 static void read_key_value(const string &key_name, unsigned long long &key, const unsigned long long default_value)
 {
-    bool key_found = false;
-    string value;
-    TheBESKeys::TheKeys()->get_value(key_name, value, key_found);
-    // 'key' holds the string value at this point if key_found is true
-    if (key_found) {
-        try {
-            key = stoull(value);
-        }
-        catch (const std::invalid_argument& ia) {
-            key = default_value;
-        }
-    }
-    else {
-        key = default_value;
-    }
+    key = TheBESKeys::read_uint64_key(key_name, default_value);
 }
 
 

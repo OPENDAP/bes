@@ -111,36 +111,16 @@ static bool version_ge(const string &version, float value)
     return false; // quiet warnings...
 }
 
-/**
- * Stolen from the HDF5 handler code
- */
+// Refactored to use TheBESKeys calls inside the handler overloads
+// kln 4/1/26
 static bool get_bool_key(const string &key, bool def_val)
 {
-    bool found = false;
-    string doset = "";
-    const string dosettrue = "true";
-    const string dosetyes = "yes";
-
-    TheBESKeys::TheKeys()->get_value(key, doset, found);
-    if (true == found) {
-        doset = BESUtil::lowercase(doset);
-        return (dosettrue == doset || dosetyes == doset);
-    }
-    return def_val;
+    return TheBESKeys::read_bool_key(key, def_val);
 }
 
 static unsigned int get_uint_key(const string &key, unsigned int def_val)
 {
-    bool found = false;
-    string doset = "";
-
-    TheBESKeys::TheKeys()->get_value(key, doset, found);
-    if (true == found) {
-        return atoi(doset.c_str()); // use better code TODO
-    }
-    else {
-        return def_val;
-    }
+    return static_cast<unsigned int>(TheBESKeys::read_ulong_key(key, def_val));
 }
 
 static float get_float_key(const string &key, float def_val)
