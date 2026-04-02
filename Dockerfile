@@ -1,8 +1,17 @@
 # Dockerfile for bes_core images
+
+# This Dockerfile is intended to build a base image that will be used to build
+# subsequent images for our production BES/Hyrax images. The build process is
+# split into two stages, with the first stage building the BES and the second
+# stage copying over the built BES and its dependencies to a slimmer base image. 
+
 ARG BUILDER_BASE_IMAGE
 ARG FINAL_BASE_IMAGE
 FROM ${BUILDER_BASE_IMAGE:-"rockylinux:8"} AS builder
 
+# Sanity check that the required build argument is provided and non-empty, evn
+# though a default value is provided above. We want to enforce that the value is
+# always specified.
 ARG BUILDER_BASE_IMAGE
 RUN if [ -z "$BUILDER_BASE_IMAGE" ]; then \
         echo "Error: Non-empty BUILDER_BASE_IMAGE must be specified. Exiting."; \
@@ -59,6 +68,10 @@ COPY . ./bes
 RUN sudo chown -R $BES_USER:$BES_USER bes
 WORKDIR bes
 
+# *** Note that since this is going to be used in production, the
+# --enable-developer configure option should not be used. This is the only
+# change that I think we need to make to the build process for production
+# images. jhrg 3/29/26
 RUN autoreconf -fiv
 RUN echo "Sanity check: CPPFLAGS=$CPPFLAGS LDFLAGS=$LDFLAGS prefix=$PREFIX" \
     && ./configure --disable-dependency-tracking \
@@ -146,7 +159,7 @@ COPY --from=builder /home/$BES_USER/bes/bes_VERSION bes_VERSION
 COPY --from=builder /home/$BES_USER/bes/libdap_VERSION libdap_VERSION
 COPY --from=builder $DEPS_PREFIX $DEPS_PREFIX
 
-# Copy over everything installed in the builder image
+# Copy over everything installed in the builder image.
 # This is a little ham-fisted, but seems to be at least sufficient
 # (if not particularly elegant!).
 COPY --from=builder /etc/bes /etc/bes
@@ -184,7 +197,8 @@ USER root
 
 # Adapted from bes/spec.all_static.in in RPM creation.
 # The four *.pem substitutions may be unnecessary, as those *.pem files may be
-# vestigial substitutions for a build process past.
+# vestigial substitutions for a build process past. See HYRAX-2075.
+
 RUN sed -i.dist \
     -e 's:=.*/bes.log:=/var/log/bes/bes.log:' \
     -e 's:=.*/lib/bes:=/usr/lib/bes:' \
