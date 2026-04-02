@@ -74,23 +74,27 @@ RUN sudo make install
 RUN sudo rm $PREFIX/lib/bes/*.a \
     && sudo rm $PREFIX/lib/bes/*.la
 
-# Update permissions to support user $BES_USER running the daemon
+# Test time! We need the besdaemon to be running while we do this, so that
+# we hit all the tests. In order to run the daemon, we need to update some
+# permissions.
+
+# Support user $BES_USER running the daemon
 RUN sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/var \
     && sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/run \
-    && sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/share
-
-# Test the BES. We need the besctl to be running while we do this, so that
-# we hit all the tests---so we need to make some configuration adjustments
-# so that the bes daemon will run successfully
-RUN sudo sed -i.dist \
+    && sudo chown -R $BES_USER:$BES_USER $PREFIX/share/mds \
+    && sudo sed -i.dist \
     -e 's:=user_name:='"$BES_USER"':' \
     -e 's:=group_name:='"$BES_USER"':' \
     /etc/bes/bes.conf \
     && sudo touch "/var/bes.log" \
     && sudo chown -R $BES_USER:$BES_USER "/var/bes.log" \
-    && sudo -s --preserve-env=PATH besctl start \
+    && echo "okay, ready to run tests"
+
+# ...now run the tests. The daemon has to be started as root.
+RUN sudo -s --preserve-env=PATH besctl start \
     && make check -j$(nproc --ignore=1) \
-    && sudo -s besctl stop
+    && sudo -s besctl stop \
+    && echo "tests complete"
 
 RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
 
