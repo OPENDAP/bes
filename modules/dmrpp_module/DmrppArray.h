@@ -99,6 +99,8 @@ private:
     vector<char> d_structure_array_str_buf;
     bool is_special_structure = false;
 
+    vector<bool> dio_subset_chunks_needed;
+
     DmrppArray::dimension get_dimension(unsigned int dim_num);
 
     void insert_constrained_contiguous(Dim_iter dim_iter, unsigned long *target_index,
@@ -141,6 +143,8 @@ private:
     virtual void insert_chunk_unconstrained_dio(std::shared_ptr<Chunk> chunk);
 
     void read_chunks();
+    void read_chunks_dio_constrained();
+    void read_buffer_chunks_dio_constrained();
     void read_chunks_unconstrained();
     void read_chunks_dio_unconstrained();
     void read_buffer_chunks_dio_unconstrained();
@@ -164,6 +168,11 @@ private:
     std::shared_ptr<Chunk> find_needed_chunks(unsigned int dim, std::vector<unsigned long long> *target_element_address,
                                               std::shared_ptr<Chunk> chunk);
 
+    bool find_needed_chunks_simple(std::shared_ptr<Chunk> chunk, const std::vector<unsigned long long> & chunk_shape, 
+                                   const std::vector<unsigned long long> & start, const std::vector<unsigned long long> & stride,
+                                   std::vector<unsigned long long> & stop, int num_dims);
+    int obtain_subset_dims(vector<unsigned long long>& var_start,vector<unsigned long long>&var_stop,vector<unsigned long long>&var_stride);
+
     virtual void insert_chunk(unsigned int dim, std::vector<unsigned long long> *target_element_address,
                               std::vector<unsigned long long> *chunk_element_address, std::shared_ptr<Chunk> chunk,
                               const vector<unsigned long long> &constrained_array_shape, char *target_buf);
@@ -171,6 +180,10 @@ private:
     bool check_struct_handling();
 
     bool use_direct_io_opt();
+
+    void add_dio_var_storage_info_constrained();
+    void add_dio_var_storage_info_unconstrained();
+
 
     unsigned long long inflate_simple(char **destp, unsigned long long dest_len, char *src, unsigned long long src_len);
 

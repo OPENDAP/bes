@@ -583,27 +583,22 @@ void FONcArray::define(int ncid) {
             }
         }
 
+        int stax = NC_NOERR;
         if (d_is_dap4_enum) {
-            int stax = nc_def_var(ncid, d_varname.c_str(), d_fa_nc4_enum_type_id, d_ndims, d_dim_ids.data(), &d_varid);
+            stax = nc_def_var(ncid, d_varname.c_str(), d_fa_nc4_enum_type_id, d_ndims, d_dim_ids.data(), &d_varid);
             if (stax != NC_NOERR) {
                 string err = (string) "fileout.netcdf - Failed to define enum variable " + d_varname;
                 FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
             }  
         } 
         else {
-            int stax = nc_def_var(ncid, d_varname.c_str(), d_array_type, d_ndims, d_dim_ids.data(), &d_varid);
+            stax = nc_def_var(ncid, d_varname.c_str(), d_array_type, d_ndims, d_dim_ids.data(), &d_varid);
             if (stax != NC_NOERR) {
                 string err = (string) "fileout.netcdf - Failed to define variable " + d_varname;
                 FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
             }
         }
     
-        int stax = nc_def_var_fill(ncid, d_varid, NC_NOFILL, nullptr );
-        if (stax != NC_NOERR) {
-                string err = (string) "fileout.netcdf - " + "Failed to clear fill value for " + d_varname;
-                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
-        }
-        
 #ifndef NBEBUG
 
         if (fdio_flag) {
@@ -637,7 +632,17 @@ void FONcArray::define(int ncid) {
 
         // Obtain the direct IO flag
         bool d_io_flag = d_a->get_dio_flag();
+    
+        if (!d_io_flag || !((d_a->get_var_storage_info()).has_filled_chunks)) {
 
+            BESDEBUG("fonc","nc_def_var_fill to NC_NOFILL  "<<d_varname << endl);
+            stax = nc_def_var_fill(ncid, d_varid, NC_NOFILL, nullptr );
+            if (stax != NC_NOERR) {
+                    string err = (string) "fileout.netcdf - " + "Failed to clear fill value for " + d_varname;
+                    FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+            }
+        }
+ 
 #ifndef NBEBUG
         BESDEBUG("fonc", "d_io_flag after intern_data(): "<<d_io_flag<<endl);
         
@@ -672,7 +677,7 @@ void FONcArray::define(int ncid) {
 
             if (d_io_flag) {
                 // Use the direct chunk IO settings.
-                define_dio_filters(ncid, d_varid);     
+                define_dio_filters(ncid);     
             }
             else {
                 if (FONcRequestHandler::chunk_size == 0)
@@ -779,8 +784,21 @@ void FONcArray::write_nc_variable(int ncid, nc_type var_type) {
     bool d_io_flag = d_a->get_dio_flag();
 
     if (d_io_flag) {
+
         // direct IO operation.
-        write_direct_io_data(ncid,d_varid);
+        bool partial_subset_array = false;
+        Array::Dim_iter di = d_a->dim_begin();
+        Array::Dim_iter de = d_a->dim_end();
+        for (; di != de; di++) {
+            if (d_a->dimension_size_ll(di,true) != d_a->dimension_size_ll(di, false)) {
+                partial_subset_array = true;
+                break;
+            }
+        }   
+        if (partial_subset_array == true)
+            write_direct_subset_io_data(ncid);
+        else 
+            write_direct_io_data(ncid);
         d_a->clear_local_data();
         return;
     }
@@ -1146,7 +1164,7 @@ void FONcArray::write_for_nc4_types(int ncid) {
 }
 
 // Method to define filters of direct IO.
-void FONcArray::define_dio_filters(int ncid, int d_varid) {
+void FONcArray::define_dio_filters(int ncid) {
 
     Array::var_storage_info dmrpp_vs_info = d_a->get_var_storage_info();
 
@@ -1268,8 +1286,8 @@ void FONcArray::allocate_dio_nc4_def_filters(int ncid, int d_varid, bool has_fle
 
 }
 
-// Write data for the direct IO case.
-void FONcArray::write_direct_io_data(int ncid, int d_varid) {
+// Write data for the direct IO case. This is for the whole variable.
+void FONcArray::write_direct_io_data(int ncid) {
 
     char dummy_buffer[1];
     vector<size_t> var_count(d_ndims);
@@ -1304,6 +1322,59 @@ void FONcArray::write_direct_io_data(int ncid, int d_varid) {
         delete[] chunk_buf;
     }
  
+}
+
+void FONcArray::write_direct_subset_io_data(int ncid) {
+
+    vector<size_t> orig_var_start;
+    auto di = d_a->dim_begin();
+    auto de = d_a->dim_end();
+    for (; di != de; di++) 
+        orig_var_start.push_back(d_a->dimension_start_ll (di, true));
+
+    char dummy_buffer[1];
+    vector<size_t> var_count(d_ndims);
+    vector<size_t> var_start(d_ndims);
+    for (int dim = 0; dim < d_ndims; dim++)
+        var_count[dim] = d_dim_sizes[dim];
+
+    BESDEBUG("fonc", "FONcArray() - direct IO subset write " << endl);
+    // The following call doesn't write any data but set up the necessary operations for sending data directly.
+    int stax = nc_put_vara(ncid, d_varid, var_start.data(),var_count.data(),dummy_buffer);
+    if (stax != NC_NOERR) {
+        string err = "fileout.netcdf - the direct IO version of nc_put_var error for variable " + d_varname;
+        FONcUtils::handle_error(stax , err, __FILE__, __LINE__);
+    }
+
+    Array::var_storage_info dmrpp_vs_info = d_a->get_var_storage_info();
+
+    for (const auto & var_chunk_info:dmrpp_vs_info.var_chunk_info) {
+
+        Array::var_chunk_info_t vci = var_chunk_info;
+
+        auto chunk_buf = new char[vci.chunk_buffer_size];
+        memcpy (chunk_buf,d_a->get_buf()+vci.chunk_direct_io_offset,vci.chunk_buffer_size);
+        BESDEBUG("fonc", "FONcArray() - chunk_buffer_size: "<< vci.chunk_buffer_size <<endl);
+        BESDEBUG("fonc", "FONcArray() - chunk_direct_io_offset: "<< vci.chunk_direct_io_offset <<endl);
+        BESDEBUG("fonc", "FONcArray() - chunk_coords size: "<< vci.chunk_coords.size() <<endl);
+
+        vector<size_t> new_chunk_coords(d_ndims);   
+        for (unsigned int i = 0; i<d_ndims;i++) {
+            new_chunk_coords[i] = vci.chunk_coords[i] - orig_var_start[i];
+            BESDEBUG("fonc", "FONcArray() - chunk_coords[" << i <<"]="<< vci.chunk_coords[i] <<endl);
+            BESDEBUG("fonc", "FONcArray() - orig_var_start[" << i <<"]="<< orig_var_start[i] <<endl);
+            BESDEBUG("fonc", "FONcArray() - new_chunk_coords[" << i <<"]="<< new_chunk_coords[i] <<endl);
+        }
+
+        stax = nc4_write_chunk(ncid, d_varid, vci.filter_mask, vci.chunk_coords.size(), (const size_t *)(new_chunk_coords.data()),vci.chunk_buffer_size, chunk_buf);
+        if (stax != NC_NOERR) {
+            string err = "fileout.netcdf - nc4_write_chunk error for variable " + d_varname;
+            FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+
+        }
+
+        delete[] chunk_buf;
+    }
 }
 
 

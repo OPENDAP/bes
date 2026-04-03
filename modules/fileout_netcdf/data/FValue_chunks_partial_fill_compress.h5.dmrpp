@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="FValue_chunks_partial_fill_compress.h5" dmrpp:href="data/FValue_chunks_partial_fill_compress.h5" dmrpp:version="3.21.1">
+    <Int32 name="chunks_some_fill">
+        <Dim size="4"/>
+        <Dim size="4"/>
+        <dmrpp:chunks compressionType="deflate" deflateLevel="6" fillValue="-99" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4016" nBytes="17" chunkPositionInArray="[0,0]"/>
+            <dmrpp:chunk offset="4033" nBytes="17" chunkPositionInArray="[2,2]"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2025-08-30T14:39:19Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/opendap-minternal/misc/fillvalue/FValue_chunks_partial_fill_compress.h5 -r FValue_chunks_partial_fill_compress.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

@@ -114,24 +114,6 @@ dist-hook:
 	-rm -rf `find $(distdir) -name '*.spec' -a ! -name bes.spec `
 	-rm -rf `find $(distdir) -name 'test_config.h' `
 
-# Build linux RPMs
-
-srpm: dist
-	rpmbuild -ts --clean $(RPM_OPTIONS) @PACKAGE@-@PACKAGE_VERSION@.tar.gz
-
-# NB: 'dist' builds a tar.gz package using automake in the CWD.
-rpm: dist
-	cp @PACKAGE@-@VERSION@.tar.gz ~/rpmbuild/SOURCES
-	rpmbuild -bb --clean $(RPM_OPTIONS) bes.spec
-
-# This target is pretty specific to our need to build a RPM for use at
-# NASA DAACs. We are assuming that the user has the rpmbuild dirs.
-# This will link with everything it can find in the local deps dir,
-# removing the need for EPEL
-all-static-rpm: dist
-	cp @PACKAGE@-@VERSION@.tar.gz ~/rpmbuild/SOURCES
-	rpmbuild -bb $(RPM_OPTIONS) bes.spec.all_static
-
 .PHONY: clion-source-discovery
 clion-source-discovery:
 	-$(MAKE) $(MFLAGS)

@@ -923,17 +923,16 @@ void DMZ::set_up_all_direct_io_flags_phase_2(DMR *dmr) {
 void DMZ::set_up_direct_io_flag_phase_2(D4Group *group) {
     for (auto i = group->var_begin(), e = group->var_end(); i != e; ++i) {
         if ((*i)->type() == dods_array_c)
-            set_up_direct_io_flag_phase_2((*i));
+            set_up_direct_io_flag_phase_2(group, (*i));
     }
 
     for (auto gi = group->grp_begin(), ge = group->grp_end(); gi != ge; ++gi)
         set_up_direct_io_flag_phase_2((*gi));
 }
 
-void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
+void DMZ::set_up_direct_io_flag_phase_2(D4Group * grp, BaseType *btp) {
     bool is_integer_float = false;
     Array *t_a = nullptr;
-
     Type t = btp->type();
     if (t == dods_array_c) {
         t_a = dynamic_cast<Array *>(btp);
@@ -1046,7 +1045,7 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
     bool chunk_less_dim = true;
     if (chunk_dim_sizes.size() == dim_sizes.size()) {
         for (unsigned int i = 0; i < dim_sizes.size(); i++) {
-            if (chunk_dim_sizes[i] > dim_sizes[i]) {
+            if (chunk_dim_sizes[i] > dim_sizes[i]  && has_unlimited_dim(grp)==false) {
                 chunk_less_dim = false;
                 break;
             }
@@ -1061,12 +1060,22 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
     // Another special case is that some chunks are only filled with the fvalues. This case cannot be handled by direct IO.
     // First calculate the number of logical chunks.
     // Also up to this step, the size of chunk_dim_sizes must be the same as the size of dim_sizes. No need to double check.
+
+    bool has_filled_chunks = false;
     size_t num_logical_chunks = 1;
     for (unsigned int i = 0; i < dim_sizes.size(); i++)
         num_logical_chunks *= (size_t) ceil((float) dim_sizes[i] / (float) chunk_dim_sizes[i]);
     if (num_logical_chunks != (num_chunks_children - 1))
-        return;
+        has_filled_chunks = true;
 
+    // Filled chunks can be supported for the whole variable case. However, we also need to check if _FillValue attribute is
+    // defined in this variable.
+    if (has_filled_chunks) {
+
+        BESDEBUG(PARSER, prolog << "has_filled_chunks: " <<btp->name() << endl);
+        if (btp->attributes()->find("_FillValue")==nullptr)
+            return;
+    }
     // Now we should provide the variable info for the define mode inside the fileout netCDF module.
     // The chunk offset/length etc. information will be provided after load_chunk() is called in the read().
 
@@ -1077,6 +1086,7 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
     Array::var_storage_info dmrpp_vs_info;
 
     // Add the filter info.
+    dmrpp_vs_info.has_filled_chunks = has_filled_chunks;
     dmrpp_vs_info.filter = filter;
 
     // Provide the deflate compression levels.
@@ -1091,6 +1101,33 @@ void DMZ::set_up_direct_io_flag_phase_2(BaseType *btp) {
     t_a->set_dio_flag();
 }
 
+bool DMZ::has_unlimited_dim(libdap::D4Group *group) {
+
+    bool ret_value = false;
+    D4Group *temp_grp = group;
+
+    // Notice: this method only needs to be called when the chunk size is greater than the
+    // dimension size. HDF5 only doesn't allow chunk size to be greater than the dimension size
+    // unless this dimension is unlimited. So if we find an Unlimited_Dimension attribute under
+    // any ancestor group, we can be sure that this dimension must be unlimited.  
+    while (temp_grp) {
+
+        D4Attribute *d4_container = temp_grp->attributes()->get("DODS_EXTRA");
+        if (d4_container) {
+            // The current HDF5 handler implementation ensures the unlimited dimension name and size
+            // are passed to the variable level. So we don't need to check them.
+            if (d4_container->attributes()->get("Unlimited_Dimension")) {
+                ret_value = true;
+                break;
+            }
+        }
+        if (temp_grp->get_parent()) 
+            temp_grp = static_cast<D4Group*>(temp_grp->get_parent());
+        else
+            temp_grp = nullptr;
+    }
+    return ret_value;
+}
 
 /**
  * Check to see if the current tag is either an \c Attribute or an \c Alias
@@ -1891,7 +1928,7 @@ void DMZ::process_chunk(DmrppCommon *dc, const xml_node &chunk) const {
                           chunk_position_in_array);
     }
 
-    dc->accumlate_storage_size(stoull(size));
+    dc->accumulate_storage_size(stoull(size));
 }
 
 void DMZ::process_block(DmrppCommon *dc, const xml_node &chunk, unsigned int block_count) const {
@@ -1925,7 +1962,7 @@ void DMZ::process_block(DmrppCommon *dc, const xml_node &chunk, unsigned int blo
         dc->add_chunk(d_dataset_elem_href, dc->get_byte_order(), stoull(size), stoull(offset), true, block_count);
 
 
-    dc->accumlate_storage_size(stoull(size));
+    dc->accumulate_storage_size(stoull(size));
 }
 
 /**
@@ -2253,7 +2290,11 @@ void DMZ::load_chunks(BaseType *btp) {
             const auto &array_shape = get_array_dims(array);
             size_t num_logical_chunks = logical_chunks(array_shape, dc(btp));
             // do we need to run this code?
+            // When the direct IO is on, we don't need to handle the filled chunks. In case, still keep the commented old code.
+            if (num_logical_chunks != dc(btp)->get_chunk_count() && array->get_dio_flag()== false) {
+#if 0
             if (num_logical_chunks != dc(btp)->get_chunk_count()) {
+#endif
                 const auto &chunk_map = get_chunk_map(dc(btp)->get_immutable_chunks());
                 // Since the variable has some chunks that hold only fill values, add those chunks
                 // to the vector of chunks.
@@ -2671,7 +2712,7 @@ void DMZ::process_multi_blocks_chunk(dmrpp::DmrppCommon *dc, const pugi::xml_nod
     }
 
 
-    dc->accumlate_storage_size(stoull(size));
+    dc->accumulate_storage_size(stoull(size));
 }
 
 // Return the index of the pos in nD array to the equivalent pos in 1D array

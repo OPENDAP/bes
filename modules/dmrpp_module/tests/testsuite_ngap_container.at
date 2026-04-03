@@ -1,0 +1,8 @@
+# Process with autom4te to create an -*- Autotest -*- test suite.
+
+AT_INIT([bes/modules/dmrpp_module/tests testsuite_ngap_container])
+
+m4_include([../../common/handler_tests_macros.m4])
+
+AT_BESCMD_RESPONSE_TEST([ngap_container/chunked_fourD.h5.2.dmr])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([ngap_container/chunked_fourD.h5.2.dap])

@@ -1,0 +1,48 @@
+{
+    // For Hyrax, prefix and PATH need to be set. jhrg 3/11/26
+    "prefix": "/Users/jimg/src/opendap/hyrax_git/build",
+    "PATH": "${config:prefix}/bin:${config:prefix}/deps/bin:${env:PATH}",
+    // C/C++ extensionsettings. jhrg 3/11/26
+    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/compile_commands.json",
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}",
+        "${workspaceFolder}/cmdln",
+        "${workspaceFolder}/dap",
+        "${workspaceFolder}/dapreader",
+        "${workspaceFolder}/dispatch/**",
+        "${workspaceFolder}/hello_world",
+        "${workspaceFolder}/http/**",
+        "${workspaceFolder}/ppt/**",
+        "${workspaceFolder}/pugixml/**",
+        "${workspaceFolder}/rapidjson/**",
+        "${workspaceFolder}/server/**",
+        "${workspaceFolder}/standalone/**",
+        "${workspaceFolder}/xmlcommand/**",
+        "${workspaceFolder}/modules/**"
+    ],
+    "C_Cpp.default.cppStandard": "c++14",
+    "C_Cpp.default.intelliSenseMode": "macos-clang-arm64",
+    "C_Cpp.vcFormat.indent.namespaceContents": false,
+    // Makefile settings. jhrg 3/11/26
+    "files.associations": {
+        "*.am": "makefile"
+    },
+    "[makefile]": {
+        "editor.insertSpaces": false
+    },
+    // Exclude object files from the file explorer. jhrg 3/29/26
+    "files.exclude": {
+        "**/*.o": true,
+        "**/*.lo": true
+    },
+    // Terminal environment settings. jhrg 3/11/26
+    "terminal.integrated.env.osx": {
+        "prefix": "${config:prefix}",
+        "PATH": "${config:PATH}"
+    },
+    "terminal.integrated.env.linux": {
+        "prefix": "${config:prefix}",
+        "PATH": "${config:PATH}"
+    }
+}

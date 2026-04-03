@@ -7,7 +7,6 @@ Building and Installing the BES
 
 BUILDING FROM A GIT CLONE
 BUILDING FROM A SOURCE DISTRIBUTION
-BUILDING AN RPM
 RUNNING DISTCHECK
 BUILD REQUIREMENTS
 NOTES
@@ -69,22 +68,6 @@ recommend that you install cppunit if you have not already.
 
 3. Type `make install' to install the BES software. The package
 installs in /usr/local/ by default; use --prefix to change that.
-
-BUILDING AN RPM
-
-There are several targets in the BES Makefile that can be used to build
-RPM packages. The target 'rpm' will assume you want to use the bes.spec
-file and build an RPM for either the bes alone or bes w/modules (depending
-on the file that configure.ac is linked to). In the latter case, only
-modules with dependencies that are installed using RPM will be built.
-
-The BES Makefile also has another set of targets that are intended for 
-use with a BES + modules build and will build _all_ of the modules, using
-static linkage for the one that don't have their dependencies provided by
-an RPM. To build this kind of RPM, you need to first get and build the 
-hyrax-dependencies package and do so using one of the special targets in its
-Makefile for 'static-rpms'. You will also need to force it to build only
-static libraries using CONFIGURE_FLAGS=--disable-shared when you rum 'make'.
 
 RUNNING DISTCHECK
 
@@ -180,17 +163,6 @@ NOTES
     directory. Macros in configure.ac supply gnulib-tool with all the
     information it needs. Only developers working on libdap should ever have
     to do this.
-
-  o To build a rpm file for a source or binary distribution: 1) Use 'make
-    dist' to build a *.tar.gz file; 2) Copy that to ~/rpm/SOURCES,
-    and; 3) Run 'rpmbuild -ts ~/rpm/SOURCES/bes.*.tar.gz' to make the
-    source package. Use '-tb' to make the binary package. I use a
-    ~/.rpmmacros file that contains:
-
-	%_topdir		/home/jimg/rpm
-	%_tmppath       /home/jimg/rpm/tmp
-	
-    Or, use the 'rpm' target in the Makefile.
 
   o DEBUGGING AIDS
 

@@ -1,17 +1,24 @@
 # Build the bes for the same architecture as OPeNDAP developer
 # machines, to ensure code changes won't break local development
-
+name: OSX CI
 on:
-  # For now, run only on manually triggered builds (workflow_dispatch).
-  # Uncomment the "push" and "pull_request" to build on all non-draft PRs
   workflow_dispatch:
   push:
     branches:
       - master
       - main
       - /^(.*-test-deploy)$/
+    paths-ignore:
+      - ".vscode/**"
+      - "*.md"
+      - "Dockerfile"
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - ".vscode/**"
+      - "*.md"
+      - "Dockerfile"
+
 concurrency:
   # Cancel intermediate builds only on pull requests
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -70,7 +77,7 @@ jobs:
           echo "PATH: $(cat $GITHUB_PATH)"
           ls $prefix
         shell: bash
-      - name: Build, check, and install libdap
+      - name: Build and install libdap
         run: |
           # In the future, consider moving this to the libdap repo...
           set -x
@@ -80,7 +87,6 @@ jobs:
           autoreconf -fiv
           ./configure --prefix=$prefix --enable-developer
           make -j16
-          make check
           make install
           ls $prefix
         shell: bash

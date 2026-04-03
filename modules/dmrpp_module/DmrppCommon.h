@@ -107,7 +107,7 @@ class DmrppCommon {
 	std::string d_filters;
 	std::string d_byte_order;
 	std::vector<unsigned long long> d_chunk_dimension_sizes;
-	std::vector<std::shared_ptr<Chunk>> d_chunks;
+        std::vector<std::shared_ptr<Chunk>> d_chunks;
 	bool d_twiddle_bytes = false;
 
     // These indicate that the chunks or attributes have been loaded into the
@@ -467,10 +467,12 @@ public:
             unsigned long long chunk_size,
             const std::vector<unsigned long long> &position_in_array,
             unsigned int struct_size);
+   virtual void remove_filled_chunks();
 
 
-    void accumlate_storage_size(unsigned long long chunk_storage_size) {var_chunks_storage_size += chunk_storage_size; }
+    void accumulate_storage_size(unsigned long long chunk_storage_size) {var_chunks_storage_size += chunk_storage_size; }
     unsigned long long get_var_chunks_storage_size() const {return var_chunks_storage_size; }
+    void set_var_chunks_storage_size(unsigned long long chunk_storage_size)  {var_chunks_storage_size = chunk_storage_size; }
     virtual void dump(std::ostream & strm) const;
 };
 

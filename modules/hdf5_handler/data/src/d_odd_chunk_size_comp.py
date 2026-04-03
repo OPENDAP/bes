@@ -1,7 +1,7 @@
 import numpy as np
 import h5py
 
-FILE = "h5_odd_chunk_size_comp.h5"
+FILE = "h5_odd_chunk_size_comp2.h5"
 DATASET = "DS1"
 
 DIM0 = 11
@@ -19,7 +19,7 @@ def run():
 
     with h5py.File(FILE, 'w') as f:
         dset = f.create_dataset(DATASET, (DIM0, DIM1), chunks=(CHUNK0, CHUNK1),
-                                 compression='gzip', dtype='<i4')
+                                 compression='gzip', compression_opts=1, dtype='<i4')
         dset[...] = wdata
 
 if __name__ == "__main__":

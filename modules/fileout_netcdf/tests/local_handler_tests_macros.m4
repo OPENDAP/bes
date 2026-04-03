@@ -523,19 +523,18 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_REDUCE_DIM_HDR_OS],  
     AT_CLEANUP
 ])
 
-
-dnl Only check if the netcdf-4 file is compressed.
-m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION],  [dnl
+dnl Check if the netcdf-4 file is compressed with the BES configuration as an input parameter.
+m4_define([AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION],  [dnl
     AT_SETUP([$1])
     AT_KEYWORDS([nc4 enhanced binary ncdump])
 
     input=$abs_srcdir/$1
-    baseline=$abs_srcdir/$1.baseline
-    pass=$2
-    repeat=$3
+    bes_conf=$2
+    
+    baseline=$abs_srcdir/$1.$2.baseline
+    pass=$3
+    repeat=$4
     compression="Deflate"
-    shuffle="Shuffle"
-    bes_conf=bes.nc4.conf
 
     AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
 
@@ -544,21 +543,16 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION],  [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
          [
          AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
-
          AT_CHECK([ncdump -sh test.nc > tmp])
          AT_CHECK([grep -m 1 $compression tmp >$baseline.comp.tmp]) 
-         AT_CHECK([grep -m 1 $shuffle tmp >>$baseline.comp.tmp]) 
- 
          ],
          [
          AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
          AT_CHECK([ncdump -sh test.nc > tmp])
          dnl only need to check if the deflate compression appears.
          AT_CHECK([grep -m 1 $compression tmp >tmp2]) 
-         AT_CHECK([grep -m 1 $shuffle tmp >>tmp2]) 
          AT_CHECK([diff -b -B $baseline.comp tmp2])
-        
-         AT_XFAIL_IF([test z$2 = zxfail])
+         AT_XFAIL_IF([test z$3 = zxfail])
          ])
 
     AT_CLEANUP
@@ -566,46 +560,6 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION],  [dnl
 ])
 
 
-dnl Only check if the netcdf-4 file is compressed.
-m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION_2],  [dnl
-    AT_SETUP([$1])
-    AT_KEYWORDS([nc4 enhanced binary ncdump])
-
-    input=$abs_srcdir/$1
-    baseline=$abs_srcdir/$1.baseline
-    pass=$2
-    repeat=$3
-    compression="Deflate"
-    shuffle="Shuffle"
-    bes_conf=bes.nc4.grp.disable_dio.conf
-
-    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
-
-    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
-
-    AS_IF([test -n "$baselines" -a x$baselines = xyes],
-         [
-         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
-
-         AT_CHECK([ncdump -sh test.nc > tmp])
-         AT_CHECK([grep -m 1 $compression tmp >$baseline.comp.tmp]) 
-         AT_CHECK([grep -m 1 $shuffle tmp >>$baseline.comp.tmp]) 
- 
-         ],
-         [
-         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
-         AT_CHECK([ncdump -sh test.nc > tmp])
-         dnl only need to check if the deflate compression appears.
-         AT_CHECK([grep -m 1 $compression tmp >tmp2]) 
-         AT_CHECK([grep -m 1 $shuffle tmp >>tmp2]) 
-         AT_CHECK([diff -b -B $baseline.comp tmp2])
-        
-         AT_XFAIL_IF([test z$2 = zxfail])
-         ])
-
-    AT_CLEANUP
-
-])
 
 # More macros for the CF DMR direct mapping in the HDF5 handler. 
 # This is mainly used for the NASA tests. KY 2021-10-11

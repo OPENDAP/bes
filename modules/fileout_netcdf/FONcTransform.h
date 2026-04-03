@@ -38,6 +38,7 @@
 #include <map>
 #include <unordered_map>
 #include <set>
+#include <libdap/Array.h>
 
 #include <BESObj.h>
 
@@ -121,8 +122,10 @@ private:
     virtual void build_reduce_dim();
     virtual void build_reduce_dim_internal(libdap::D4Group *grp, libdap::D4Group *root_grp);
 
-    virtual bool obtain_unlimited_dimension_info_helper(libdap::D4Attributes *d4_attrs, vector<string> &unlimited_dim_names);
-    virtual bool obtain_unlimited_dimension_info(libdap::D4Group *grp, std::vector<std::string> &unlimited_dim_names);
+    virtual bool obtain_unlimited_dimension_info_helper(libdap::D4Attributes *d4_attrs, vector<string> &unlimited_dim_names) const;
+    virtual bool obtain_unlimited_dimension_info(libdap::D4Group *grp, std::vector<std::string> &unlimited_dim_names) const;
+    virtual bool no_dio_dimension(libdap::D4Group *grp, libdap::Array *d_a, const vector<string> &unlimited_dimnames,libdap::Array::Dim_iter di) const;
+    virtual bool no_dio_ancestor_dimension(libdap::D4Group *grp, libdap::Array *d_a,libdap::Array::Dim_iter di) const;
 #if 0
     virtual bool check_var_unlimited_dimension(libdap::Array *t_a, const std::vector<std::string> &unlimited_dim_names);
 #endif
@@ -137,7 +140,7 @@ private:
             const string &ce);
     void set_max_size_and_encoding(unsigned long long &max_request_size_kb, string &return_encoding);
 
-    void set_constraint_var_dio_flag(libdap::Array*) const;
+    void set_constraint_var_dio_flag(libdap::D4Group *grp, libdap::Array*, const vector<string>&) const;
 
 };
 

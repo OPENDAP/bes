@@ -206,6 +206,7 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/eos5_2_grids.h5.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/eos5_2_grids_dap4constraint.h5.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(bescmd/eos5_ps_grp.h5.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(bescmd/eos5_sin_grp.h5.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(bescmd/eos5_sin_grp_nmd.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/grid_1_3d_xyz_aug_dap4.h5.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/grid_1_2d_dap4.h5.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/swath_1_2d_xyz_special_char.h5.bescmd)
@@ -236,7 +237,7 @@ AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/test_ba_stride_stop.dap.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/test_ba_start_dim.dap.bescmd)
 
 dnl Add a test to check if the compression is turned on for netCDF-4 
-AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION(bescmd/gridT.3.compression.bescmd)
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/gridT.3.compression.bescmd],[bes.nc4.conf])
 
 dnl Add tests for the HDF5 CF DMR direct mapping 
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR(bescmd/d_int8.h5.2.bescmd)
@@ -412,19 +413,6 @@ AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/SDS_simple_comp.hdf.dap2.bescmd],
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/SDS_simple_comp.hdf.dap2dmr.bescmd], [bes.h4cf.conf])
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/sinusoid.hdf_constraint.dap2.bescmd], [bes.h4cf.conf])
 
-# Unlimited dimension with compression(direct IO is not applied)
-AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/part_chunk_data_unlim_comp.h5.dmrpp.bescmd)
-
-#Disable direct IO tests
-AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/One_chunk_shuf_deflate.h5.dmrpp.bescmd], [bes.nc4.grp.disable_dio.conf])
-AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/One_chunk_shuf_deflate.h5.dmrpp.bescmd], [bes.nc4.grp.disable_dio.conf])
-AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION(bescmd/One_chunk_shuf_deflate.h5.dmrpp_dio.compression.bescmd)
-AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION_2(bescmd/One_chunk_shuf_deflate.h5.dmrpp_disable_dio.compression.bescmd)
-
-# The dio=off is in the dmrpp file
-AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/One_chunk_shuf_deflate.h5.disable_dio.dmrpp.bescmd)
-AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_COMPRESSION(bescmd/One_chunk_shuf_deflate.h5.disable_dio.dmrpp.compression.bescmd)
-
 # reduce dimension name
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/nc4_group_atomic_comp.h5.dmrpp.bescmd], [bes.nc4.grp.reduce_dim.conf])
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/t_grp_dim.bescmd], [bes.nc4.grp.reduce_dim.conf])
@@ -450,8 +438,64 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_one_bigger_chunk_size_
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_simple_bigger_chunk.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_simple_bigger_chunk_constraint.h5.dmrpp.bescmd)
 
-
 # One chunk, chunk size is bigger than the array size, data is compressed.
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_one_bigger_chunk_size_comp.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_group_atomic_puredim_2d_unlimited_comp.nc.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_unlimited_1_big_comp.nc.dmrpp.bescmd)
+
+# Direct chunk IO for the subset cases.
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_2.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_3.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_4.bescmd)
+
+# Direct chunk IO for the unlimited dimension with compression
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/part_chunk_data_unlim_comp.h5.dmrpp.bescmd)
+
+# Direct chunk IO for the unlimited dimension subset cases.
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_2_1.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_unlimited_1_big_comp.nc.dmrpp_constraint.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/nc4_group_unlimited_comp.h5.dmrpp_constraint.bescmd)
+
+# Dmrpp different subset cases, testing the find_needed_chunks_simple
+# var1: stride 1 normal case var2: stride 1 corner case var3: big stride case 
+# var4: stride >1, case for edge chunks,no selected chunks,chunk start covers an element
+# var5: stride >1, case for edge chunks, chunk across over an element or chunk stop at an element 
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/multi_chunks_multi_constraints.h5.dmrpp.bescmd], [bes.nc4.grp.reduce_dim.conf])
+
+# General Tests to check if the direct chunk IO feature is supposed to behave as expected. 
+# For the following tests, if the deflate level is 1 in the baseline files, that means the direct chunk IO is on.
+#                          if the deflate level is 4 in the baseline files, that means the direct chunk IO cannot be used. 
+
+# Direct chunk IO for the buffer chunk subset cases.
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/h5_odd_chunk_size_comp_dio_constraint.h5.dmrpp.bescmd)
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/h5_less_odd_chunk_size_comp.h5.dmrpp.compression.bescmd],[bes.nc4.grp.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/h5_odd_chunk_size_comp2_dio_constraint.h5.dmrpp.compression.bescmd],[bes.nc4.grp.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/h5_odd_chunk_size_comp2_no_dio_constraint.h5.dmrpp.compression.bescmd],[bes.nc4.grp.conf])
+
+
+#Disable direct IO tests
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/One_chunk_shuf_deflate.h5.dmrpp.bescmd], [bes.nc4.grp.disable_dio.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/One_chunk_shuf_deflate.h5.dmrpp_disable_dio.compression.bescmd],[bes.nc4.grp.disable_dio.conf])
+
+# The dio=off is in the dmrpp file
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/One_chunk_shuf_deflate.h5.disable_dio.dmrpp.bescmd)
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/One_chunk_shuf_deflate.h5.disable_dio.dmrpp.compression.bescmd],[bes.nc4.conf])
+
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/One_chunk_shuf_deflate.h5.dmrpp_dio.compression.bescmd],[bes.nc4.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/SDS_simple_comp.hdf.dmrpp.compression.bescmd],[bes.nc4.grp.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint.compression.bescmd],[bes.nc4.grp.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_2.compression.bescmd],[bes.nc4.grp.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_3.compression.bescmd],[bes.nc4.grp.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_4.compression.bescmd],[bes.nc4.grp.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/nc4_unlimited_1_big_comp.nc.dmrpp_constraint.compression.bescmd],[bes.nc4.grp.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/nc4_group_unlimited_comp.h5.dmrpp_constraint_2.compression.bescmd],[bes.nc4.grp.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/nc4_group_unlimited_comp.h5.dmrpp_1v.compression.bescmd],[bes.nc4.grp.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/nc4_group_unlimited_comp.h5.dmrpp_constraint_3.compression.bescmd],[bes.nc4.grp.conf])
+
+# The dio for filled chunk tests
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/FValue_chunks_partial_fill_compress_attr.h5.dmrpp.bescmd)
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/FValue_chunks_partial_fill_compress_attr.h5.dmrpp.bescmd],[bes.nc4.grp.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/FValue_chunks_partial_fill_compress.h5.dmrpp.bescmd],[bes.nc4.grp.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/FValue_chunks_partial_fill_compress_attr_constraint.h5.dmrpp.bescmd],[bes.nc4.grp.conf])
+
