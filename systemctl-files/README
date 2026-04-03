@@ -1,6 +1,4 @@
-This directory holds files that will enable the BES to be controlled
-using the systemd/systemctl utilities found on a modern Unix system.
-These can be used in place of the chkconfig script and the current 
-besd script built using besd.in with configure. 
+These files can be used with the Unix systemd daemon to
+start, start, etc. the BES. See the command systemctl.
 
 Contributed by "White, Marcus O. (GSFC-619.0)[ADNET SYSTEMS INC]" <marcus.o.white@nasa.gov>
