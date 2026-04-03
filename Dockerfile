@@ -107,7 +107,7 @@ ENV DIST=${DIST:-el8}
 RUN if [ "$DIST" == "el9" ]; then \
         echo "# Warning: Skipping make check because of undiagnosed el9 errors; ref TODO-ISSUE-LINK"; \
     else \
-        make check -j$(nproc --ignore=1) \
+        make check -j$(nproc --ignore=1); \
     fi
 
 # ...and turn off the besdaemon. We want to turn this on/off regardless of
