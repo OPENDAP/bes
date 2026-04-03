@@ -365,7 +365,7 @@ std::pair<std::string, std::string> SignedUrlCache::split_s3_url(std::string con
 
     // Get the bucket name by removing prefix "s3://" (which must exist or the path 
     // wouldn't have been extracted from cmr) and including everything up to the first slash
-    std::string bucket = s3_url.substr(5, s3_url.find("/"));
+    std::string bucket = s3_url.substr(5, s3_url.substr(5).find("/"));
 
     // The object name is everything after the bucket name, not including the first "/"
     std::string object = s3_url.substr(s3_url.find(bucket) + 1 + bucket.size());
