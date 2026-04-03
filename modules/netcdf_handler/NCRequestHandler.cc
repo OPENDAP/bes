@@ -201,8 +201,9 @@ NCRequestHandler::NCRequestHandler(const string &name) :
         }
     }
 
-    NCRequestHandler::_use_mds = get_bool_key("NC.UseMDS",false);
-    NCRequestHandler::_cache_entries = get_uint_key("NC.CacheEntries", 0);
+    NCRequestHandler::_use_mds = TheBESKeys::read_bool_key("NC.UseMDS", false);
+    NCRequestHandler::_cache_entries = static_cast<unsigned int>(TheBESKeys::read_ulong_key("NC.CacheEntries", 0));
+    // No float option in TheBESKeys
     NCRequestHandler::_cache_purge_level = get_float_key("NC.CachePurgeLevel", 0.2);
 
     if (get_cache_entries()) {  // else it stays at its default of null

@@ -69,28 +69,6 @@ using namespace std;
  * @param default_value
  * @see read_key_value() - other impls
  */
-// Refactored to use TheBESKeys calls inside the handler overloads
-// kln 4/1/26
-static void read_key_value(const string &key_name, bool &key, const bool default_value)
-{
-    key = TheBESKeys::read_bool_key(key_name, default_value);
-}
-
-static void read_key_value(const string &key_name, string &key, const string &default_value)
-{
-    key = TheBESKeys::read_string_key(key_name, default_value);
-}
-
-static void read_key_value(const string &key_name, size_t &key, const int default_value)
-{
-    key = static_cast<unsigned int>(TheBESKeys::read_ulong_key(key_name, default_value));
-}
-
-static void read_key_value(const string &key_name, unsigned long long &key, const unsigned long long default_value)
-{
-    key = TheBESKeys::read_uint64_key(key_name, default_value);
-}
-
 
 /** @brief Constructor for FileOut NetCDF module
  *
@@ -106,28 +84,11 @@ FONcRequestHandler::FONcRequestHandler( const string &name )
     add_method( HELP_RESPONSE, FONcRequestHandler::build_help ) ;
     add_method( VERS_RESPONSE, FONcRequestHandler::build_version ) ;
 
+    // Refactored to use TheBESKeys calls
+    // kln 4/1/26
     if (FONcRequestHandler::temp_dir.empty()) {
-        read_key_value(FONC_TEMP_DIR_KEY, FONcRequestHandler::temp_dir, FONC_TEMP_DIR);
+        FONcRequestHandler::temp_dir = TheBESKeys::read_bool_key(FONC_TEMP_DIR_KEY, FONC_TEMP_DIR);
     }
-
-    // Not currently used. jhrg 11/30/15
-    read_key_value(FONC_BYTE_TO_SHORT_KEY, FONcRequestHandler::byte_to_short, FONC_BYTE_TO_SHORT);
-
-    read_key_value(FONC_USE_COMP_KEY, FONcRequestHandler::use_compression, FONC_USE_COMP);
-
-    read_key_value(FONC_USE_SHUFFLE_KEY, FONcRequestHandler::use_shuffle, FONC_USE_SHUFFLE);
-
-    read_key_value(FONC_CHUNK_SIZE_KEY, FONcRequestHandler::chunk_size, FONC_CHUNK_SIZE);
-
-    read_key_value(FONC_CLASSIC_MODEL_KEY, FONcRequestHandler::classic_model, FONC_CLASSIC_MODEL);
-
-    read_key_value(FONC_REDUCE_DIM_KEY, FONcRequestHandler::reduce_dim, FONC_REDUCE_DIM);
-
-    read_key_value(FONC_NO_GLOBAL_ATTRS_KEY, FONcRequestHandler::no_global_attrs, FONC_NO_GLOBAL_ATTRS);
-
-    read_key_value(FONC_REQUEST_MAX_SIZE_KB_KEY, FONcRequestHandler::request_max_size_kb, FONC_REQUEST_MAX_SIZE_KB);
-
-    read_key_value(FONC_NC3_CLASSIC_FORMAT_KEY, FONcRequestHandler::nc3_classic_format, FONC_NC3_CLASSIC_FORMAT);
 
     BESDEBUG("fonc", "FONcRequestHandler::temp_dir: " << FONcRequestHandler::temp_dir << endl);
     BESDEBUG("fonc", "FONcRequestHandler::byte_to_short: " << FONcRequestHandler::byte_to_short << endl);
