@@ -40,7 +40,7 @@ HYRAX_DEPENDENCIES_TARBALL="hyrax-dependencies-${OS}.tgz"
 LIBDAP_RPM_FILENAME="libdap-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
 LIBDAP_DEVEL_RPM_FILENAME="libdap-devel-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
 DOCKER_DEV_FLAGS=${DOCKER_DEV_FLAGS:-""}
-GDAL_OPTION=${GDAL_OPTION:-"--without-gdal"}
+GDAL_OPTION=${GDAL_OPTION:-""}
 AWS_DOWNLOADS_DIR="/tmp/dependency_downloads"
 
 loggy "#########################################################################"
