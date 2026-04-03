@@ -436,8 +436,8 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_vl_string_1d.h5.dmrpp])
 # for the DMR was moved to the NGAP module (at least for now). When DMR object
 # copying is fixed, these DMR and DAP tests should work again. jhrg 9/27/23
 
-AT_BESCMD_MULTI_RESPONSE_TEST([chunked/chunked_oneD.h5.dmr], xfail)
-AT_BESCMD_MULTI_RESPONSE_TEST([chunked/chunked_fourD.h5.2.dmr], xfail)
+AT_BESCMD_MULTI_RESPONSE_TEST([chunked/chunked_oneD.h5.dmr], xpass)
+AT_BESCMD_MULTI_RESPONSE_TEST([chunked/chunked_fourD.h5.2.dmr], xpass)
 
 AT_BESCMD_MULTI_RESPONSE_TEST([chunked/chunked_fourD.h5.2.dds], xpass)
 AT_BESCMD_MULTI_RESPONSE_TEST([chunked/chunked_fourD.h5.2.das], xpass)

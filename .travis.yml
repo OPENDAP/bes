@@ -52,14 +52,13 @@ git:
 
 env:
   global:
-    # Should the BES build with GDAL? This is here to round up build errors. Set this
-    # to the 'configure' script option to use (--with-gdal) or not use (--without-gdal).
-    # jhrg 12/2/25
-    # Turn this off - build and test GDAL-related modules again. jhrg 2/4/26
-    - GDAL_OPTION=--with-gdal
     # NB: This value of $prefix must be shared between the hyrax-deps, libdap and bes builds.
     - prefix=$HOME/install
     - PATH=$prefix/bin:$prefix/deps/bin:$PATH
+    # Should the BES build with GDAL? This is here to round up build errors. Set this
+    # to the 'configure' script option to use (--with-gdal) or not use (--without-gdal).
+    # jhrg 12/2/25
+    - GDAL_OPTION=--with-gdal=$prefix/deps
     - TESTSUITEFLAGS=-j7
     # Change this when libdap version numbers change
     - LIBDAP_RPM_VERSION=3.21.1-0
