@@ -105,7 +105,7 @@ RUN sudo -s --preserve-env=PATH besctl start
 ARG DIST
 ENV DIST=${DIST:-el8}
 RUN if [ "$DIST" == "el9" ]; then \
-        echo "# Warning: Skipping make check because of undiagnosed el9 errors; ref TODO-ISSUE-LINK"; \
+        echo "# Warning: Skipping make check because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299"; \
     else \
         make check -j$(nproc --ignore=1); \
     fi
