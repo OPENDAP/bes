@@ -25,7 +25,7 @@ clean-local:
 
 check-local: $(TESTSUITE) install-data
 	@if bescmdln -x "show version;"; \
-		then $(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS); \
+		then $(SHELL) '$(TESTSUITE)'; \
 		else echo "no bes found, not running cmdln-based tests"; \
 	fi
 
