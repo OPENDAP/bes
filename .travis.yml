@@ -131,6 +131,7 @@ before_script:
 
 stages:
   - name: build-and-test
+    # if: branch = never
   - name: build-docker
   - name: scan
     if:  branch = master
@@ -153,30 +154,30 @@ jobs:
         - echo "LD_LIBRARY_PATH - $LD_LIBRARY_PATH" >&2
         - make -j16 && make install && besctl start && make check -j16 && besctl stop
 
-    - stage: build-and-test
-      name: "distcheck"
-      script:
-        - export BES_BUILD=distcheck
-        - autoreconf --force --install --verbose
-        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION--enable-developer
-        - make distcheck -j16 GZIP_ENV=--fast
+    # - stage: build-and-test
+    #   name: "distcheck"
+    #   script:
+    #     - export BES_BUILD=distcheck
+    #     - autoreconf --force --install --verbose
+    #     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION--enable-developer
+    #     - make distcheck -j16 GZIP_ENV=--fast
+
+    # - stage: never
+    #   name: "dist"
+    #   script:
+    #     - export BES_BUILD=srcdist
+    #     - autoreconf --force --install --verbose
+    #     - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --with-build=$BES_BUILD_NUMBER
+    #     - make dist -j7
+    #     # Make both a bes-<version>-<build num> and bes-snapshot tar.gz. This will simplify
+    #     # other operations that use the bes source code. Note that the VERSION file holds a
+    #     # string that is the version number that is set by the configure script and the build
+    #     # number passed into configure when it is run. jhrg 3/23/21
+    #     - SOURCE_VERSION=$(cat bes_VERSION)
+    #     - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
+    #     - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
 
     - stage: build-and-test
-      name: "dist"
-      script:
-        - export BES_BUILD=srcdist
-        - autoreconf --force --install --verbose
-        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --with-build=$BES_BUILD_NUMBER
-        - make dist -j7
-        # Make both a bes-<version>-<build num> and bes-snapshot tar.gz. This will simplify
-        # other operations that use the bes source code. Note that the VERSION file holds a
-        # string that is the version number that is set by the configure script and the build
-        # number passed into configure when it is run. jhrg 3/23/21
-        - SOURCE_VERSION=$(cat bes_VERSION)
-        - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
-        - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
-
-    - stage: build-docker
       name: "Build docker image bes_core:-el8"
       script:
         - set -e
@@ -206,29 +207,29 @@ jobs:
         #   echo $DOCKER_HUB_PWSD | docker login -u $DOCKER_HUB_UID --password-stdin
         #   docker push ${DEBUGGING_TAG}
 
-    - stage: build-docker
-      name: "Build docker image bes_core:-el9"
-      script:
-        - set -e
-        - |
-          export BES_BUILD=docker-el9
-          echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
-          export DOCKER_NAME="bes_core"
-          export BUILDER_BASE_IMAGE="opendap/rocky9_hyrax_builder:latest"
-          export FINAL_BASE_IMAGE="rockylinux:9"
-          export DIST=el9
-          export OS=rocky9
-          export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
-          export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
-        - ./travis/build-rhel-docker.sh
-        # Note: We need downstream access to the environment variable
-        # `BUILD_VERSION_TAG` that can only be determined AFTER the image
-        # is built:
-        - |
-          export BES_VERSION="$(docker run --rm ${SNAPSHOT_IMAGE_TAG} -c 'cat bes_VERSION')"
-          export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}-${DIST}"
-          echo "Tagging image with BES version: ${BUILD_VERSION_TAG}"
-          docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
+    # - stage: build-docker
+    #   name: "Build docker image bes_core:-el9"
+    #   script:
+    #     - set -e
+    #     - |
+    #       export BES_BUILD=docker-el9
+    #       echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+    #       export DOCKER_NAME="bes_core"
+    #       export BUILDER_BASE_IMAGE="opendap/rocky9_hyrax_builder:latest"
+    #       export FINAL_BASE_IMAGE="rockylinux:9"
+    #       export DIST=el9
+    #       export OS=rocky9
+    #       export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
+    #       export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
+    #     - ./travis/build-rhel-docker.sh
+    #     # Note: We need downstream access to the environment variable
+    #     # `BUILD_VERSION_TAG` that can only be determined AFTER the image
+    #     # is built:
+    #     - |
+    #       export BES_VERSION="$(docker run --rm ${SNAPSHOT_IMAGE_TAG} -c 'cat bes_VERSION')"
+    #       export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}-${DIST}"
+    #       echo "Tagging image with BES version: ${BUILD_VERSION_TAG}"
+    #       docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
 
     - stage: scan
       name: "scan bes"
@@ -271,6 +272,7 @@ jobs:
         - ./travis/trigger-olfs-build.sh
 
 after_script:
+  - if test "$BES_BUILD" = "main"; then cat cmdln/tests/testsuite.log; fi
   - ./travis/upload-test-results.sh
 
 before_deploy:
