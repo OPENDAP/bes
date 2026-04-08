@@ -409,21 +409,23 @@ uint64_t SignedUrlCache::num_seconds_until_expiration(const string &credentials_
 std::shared_ptr<http::EffectiveUrl> SignedUrlCache::sign_url(std::string const &s3_url, 
                                                              std::shared_ptr<S3AccessKeyTuple> const s3_access_key_tuple,
                                                              std::string aws_region) {
+    auto expiration_seconds = num_seconds_until_expiration(get<3>(*s3_access_key_tuple));
+    if (expiration_seconds == 0) {
+        // No point in creating a url that is already expired!! 
+        return nullptr;
+    }
+
     bes::AWS_SDK aws_sdk;
     string id = get<0>(*s3_access_key_tuple);
     string secret = get<1>(*s3_access_key_tuple);
-    aws_sdk.initialize_s3_client(aws_region, id, secret);
+    string token = get<2>(*s3_access_key_tuple);
+    string expiration = get<3>(*s3_access_key_tuple);
+    aws_sdk.initialize_s3_client_for_session(aws_region, id, secret, token); // TODO-consider passing expiration through too
 
     string bucket;
     string object;
     tie(bucket, object) = split_s3_url(s3_url);
     if (bucket.empty() || object.empty()) {
-        return nullptr;
-    }
-
-    auto expiration_seconds = num_seconds_until_expiration(get<3>(*s3_access_key_tuple));
-    if (expiration_seconds == 0) {
-        // No point in creating a url that is already expired!! 
         return nullptr;
     }
 

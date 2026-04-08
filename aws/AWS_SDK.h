@@ -44,14 +44,17 @@ namespace bes
 
         void throw_if_s3_client_uninitialized() const; // throws BESInternalFatalError
 
-        static Aws::S3::S3Client get_s3_client(const std::string &region, const std::string &aws_key,
-                                               const std::string &aws_secret_key);
+        static Aws::S3::S3Client get_s3_client_for_session_credentials(const std::string &region,
+                                                                      const std::string &aws_key,
+                                                                      const std::string &aws_secret_key,
+                                                                      const std::string &aws_session_token);
 
         friend class AWS_SDK_Test;
 
     public:
         AWS_SDK() = default;
-        ~AWS_SDK() override = default;
+        ~AWS_SDK() override;
+
         AWS_SDK(const AWS_SDK &) = delete;
         AWS_SDK &operator=(const AWS_SDK &) = delete;
         AWS_SDK(const AWS_SDK &&) = delete;
@@ -67,9 +70,12 @@ namespace bes
             Aws::ShutdownAPI(options);
         }
 
-        void initialize_s3_client(const std::string &region, const std::string &aws_key, const std::string &aws_secret_key) override
+        void initialize_s3_client_for_session(const std::string &region,
+                                              const std::string &aws_key,
+                                              const std::string &aws_secret_key,
+                                              const std::string &aws_session_token) override
         {
-            d_s3_client = get_s3_client(region, aws_key, aws_secret_key);
+            d_s3_client = get_s3_client_for_session_credentials(region, aws_key, aws_secret_key, aws_session_token);
             d_is_s3_client_initialized = true;
         }
 

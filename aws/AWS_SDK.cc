@@ -49,6 +49,9 @@ namespace bes {
 
 Aws::SDKOptions AWS_SDK::options;
 
+AWS_SDK::~AWS_SDK() {
+    aws_library_shutdown();
+}
 
 /**
  * @brief Get an S3 Client.
@@ -57,12 +60,15 @@ Aws::SDKOptions AWS_SDK::options;
  * @param aws_secret_key The AWS Secret Key
  * @return The AWS S3 Client object
  */
-Aws::S3::S3Client AWS_SDK::get_s3_client(const string &region, const string &aws_key, const string &aws_secret_key) {
+Aws::S3::S3Client AWS_SDK::get_s3_client_for_session_credentials(const string &region,
+                                                                 const string &aws_key,
+                                                                 const string &aws_secret_key,
+                                                                 const string &aws_session_token) {
     Aws::S3::S3ClientConfiguration clientConfig;
     clientConfig.region = region; // Set your region
 
     // Create a shared pointer to a SimpleAWSCredentialsProvider using your key and secret.
-    auto credentialsProvider = Aws::Auth::AWSCredentials(aws_key, aws_secret_key);
+    auto credentialsProvider = Aws::Auth::AWSCredentials(aws_key, aws_secret_key, aws_session_token);
 
     // Construct the S3 client with the credentials provider and client configuration.
     // std::shared_ptr<S3EndpointProviderBase> is nullptr in the following call.
