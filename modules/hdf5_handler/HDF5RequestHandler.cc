@@ -229,9 +229,9 @@ void HDF5RequestHandler::load_config()
     BES_STOPWATCH_START(HDF5_NAME, prolog + "ClockTheBESKeys");
 
     // Obtain the metadata cache entries and purge level.
-    HDF5RequestHandler::_mdcache_entries   = TheBESKeys::read_uint64_key("H5.MetaDataMemCacheEntries", 0);
-    HDF5RequestHandler::_lrdcache_entries  = TheBESKeys::read_uint64_key("H5.LargeDataMemCacheEntries", 0);
-    HDF5RequestHandler::_srdcache_entries  = TheBESKeys::read_uint64_key("H5.SmallDataMemCacheEntries", 0);
+    HDF5RequestHandler::_mdcache_entries   = TheBESKeys::read_ulong_key("H5.MetaDataMemCacheEntries", 0);
+    HDF5RequestHandler::_lrdcache_entries  = TheBESKeys::read_ulong_key("H5.LargeDataMemCacheEntries", 0);
+    HDF5RequestHandler::_srdcache_entries  = TheBESKeys::read_ulong_key("H5.SmallDataMemCacheEntries", 0);
     HDF5RequestHandler::_cache_purge_level = TheBESKeys::read_float_key("H5.CachePurgeLevel", 0.2F);
 
     if (get_mdcache_entries()) {  // else it stays at its default of null
@@ -367,8 +367,8 @@ void HDF5RequestHandler::load_config()
     if (get_usecf())
         load_config_cf_cache();
 
-    _stp_east_filename = TheBESKeys::read_bool_key("H5.STPEastFileName", false);
-    _stp_north_filename = TheBESKeys::read_bool_key("H5.STPNorthFileName", false);
+    _stp_east_filename = TheBESKeys::read_string_key("H5.STPEastFileName", "");
+    _stp_north_filename = TheBESKeys::read_string_key("H5.STPNorthFileName", "");
     BESDEBUG(HDF5_NAME, prolog << "END" << endl);
 }
 
@@ -380,8 +380,8 @@ void HDF5RequestHandler::load_config_disk_cache() {
         _use_disk_cache  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.EnableDiskDataCache: " << (_use_disk_cache?"true":"false") << endl);
 
-    _disk_cache_dir              = TheBESKeys::read_bool_key("H5.DiskCacheDataPath", false);
-    _disk_cachefile_prefix       = TheBESKeys::read_bool_key("H5.DiskCacheFilePrefix", false);
+    _disk_cache_dir              = TheBESKeys::read_string_key("H5.DiskCacheDataPath", "");
+    _disk_cachefile_prefix       = TheBESKeys::read_string_key("H5.DiskCacheFilePrefix", "");
     _disk_cache_size             = TheBESKeys::read_ulong_key("H5.DiskCacheSize", 0);
 
     key_value = obtain_beskeys_info("H5.DiskCacheComp",has_key);
@@ -411,7 +411,7 @@ void HDF5RequestHandler::load_config_disk_cache() {
     if (has_key)
         _use_latlon_disk_cache  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.EnableEOSGeoCacheFile: " << (_use_latlon_disk_cache?"true":"false") << endl);
-    _latlon_disk_cache_size      = TheBESKeys::read_uint64_key("H5.Cache.latlon.size", 0);
+    _latlon_disk_cache_size      = TheBESKeys::read_ulong_key("H5.Cache.latlon.size", 0);
     _latlon_disk_cache_dir       = TheBESKeys::read_string_key("H5.Cache.latlon.path", "");
     _latlon_disk_cachefile_prefix= TheBESKeys::read_string_key("H5.Cache.latlon.prefix", "");
 

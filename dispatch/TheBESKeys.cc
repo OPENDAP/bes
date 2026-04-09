@@ -456,7 +456,7 @@ uint64_t TheBESKeys::read_uint64_key(const string &key, uint64_t default_value) 
  *
  * @param key The key to look up
  * @param default_value Return this value if \arg key is not found.
- * @return The integer value of \arg key.
+ * @return The float value of \arg key.
  */
 float TheBESKeys::read_float_key(const std::string &key, float default_value) {
     bool found = false;
@@ -464,13 +464,8 @@ float TheBESKeys::read_float_key(const std::string &key, float default_value) {
     TheBESKeys::TheKeys()->get_value(key, value, found);
     // 'key' holds the string value at this point if found is true
     if (found) {
-        std::istringstream iss(value);
-        float float_val;
-        iss >> float_val;
-        if (!iss.eof() || iss.bad() || iss.fail())
-            return default_value;
-        else
-            return float_val;
+        float float_val = std::stof(value);
+        return float_val;
     } else {
         return default_value;
     }

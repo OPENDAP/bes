@@ -113,11 +113,6 @@ static bool version_ge(const string &version, float value)
 
 // Refactored to use TheBESKeys calls inside the handler overloads
 // kln 4/1/26
-static bool get_bool_key(const string &key, bool def_val)
-{
-    return TheBESKeys::read_bool_key(key, def_val);
-}
-
 static unsigned int get_uint_key(const string &key, unsigned int def_val)
 {
     return static_cast<unsigned int>(TheBESKeys::read_ulong_key(key, def_val));
@@ -204,7 +199,7 @@ NCRequestHandler::NCRequestHandler(const string &name) :
     NCRequestHandler::_use_mds = TheBESKeys::read_bool_key("NC.UseMDS", false);
     NCRequestHandler::_cache_entries = static_cast<unsigned int>(TheBESKeys::read_ulong_key("NC.CacheEntries", 0));
     // No float option in TheBESKeys
-    NCRequestHandler::_cache_purge_level = get_float_key("NC.CachePurgeLevel", 0.2);
+    NCRequestHandler::_cache_purge_level = TheBESKeys::read_float_key("NC.CachePurgeLevel", 0.2);
 
     if (get_cache_entries()) {  // else it stays at its default of null
         das_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());
