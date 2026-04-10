@@ -97,47 +97,17 @@ FFRequestHandler::FFRequestHandler(const string &name) :
 
     ff_register_functions();
 
-    bool key_found = false;
-    string doset;
-    TheBESKeys::TheKeys()->get_value("FF.RSSFormatSupport", doset, key_found);
-    if (key_found) {
-        doset = BESUtil::lowercase(doset);
-        if (doset == "true" || doset == "yes")
-            FFRequestHandler::d_RSS_format_support = true;
-        else
-            FFRequestHandler::d_RSS_format_support = false;
-    }
-    else
-        FFRequestHandler::d_RSS_format_support = false;
-
-    key_found = false;
-    string path;
-    TheBESKeys::TheKeys()->get_value("FF.RSSFormatFiles", path, key_found);
-    if (key_found)
-        FFRequestHandler::d_RSS_format_files = path;
-    else
-        FFRequestHandler::d_RSS_format_files = "";
-
+    FFRequestHandler::d_RSS_format_support = TheBESKeys::read_bool_key("FF.RSSFormatSupport", false);
+    FFRequestHandler::d_RSS_format_files = TheBESKeys::read_string_key("FF.RSSFormatFiles", "");
     BESDEBUG("ff", "d_RSS_format_support: " << d_RSS_format_support << endl);
     BESDEBUG("ff", "d_RSS_format_files: " << d_RSS_format_files << endl);
 
     // Set regex support for format files
-    key_found = false;
-    string regex_doset;
-    TheBESKeys::TheKeys()->get_value("FF.RegexFormatSupport", regex_doset, key_found);
-    if (key_found) {
-        regex_doset = BESUtil::lowercase(regex_doset);
-        if (regex_doset == "true" || regex_doset == "yes")
-            FFRequestHandler::d_Regex_format_support = true;
-        else
-            FFRequestHandler::d_Regex_format_support = false;
-    }
-    else
-        FFRequestHandler::d_Regex_format_support = false;
+    FFRequestHandler::d_Regex_format_support = TheBESKeys::read_bool_key("FF.RegexFormatSupport", false);
     BESDEBUG("ff", "d_Regex_format_support: " << d_Regex_format_support << endl);
 
     // Fill a map with regex and format file path
-    key_found = false;
+    bool key_found = false;
     vector<string> regex_fmt_files;
     TheBESKeys::TheKeys()->get_values("FF.Regex", regex_fmt_files, key_found);
     vector<string>::iterator it;

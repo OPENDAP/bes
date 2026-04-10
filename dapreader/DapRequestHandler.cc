@@ -75,22 +75,6 @@ bool DapRequestHandler::d_use_test_types_set = false;
 
 const string module = "dapreader";
 
-static void read_key_value(const std::string &key_name, bool &key_value, bool &is_key_set)
-{
-    if (is_key_set == false) {
-        bool key_found = false;
-        string doset;
-        TheBESKeys::TheKeys()->get_value(key_name, doset, key_found);
-        if (key_found) {
-            // It was set in the conf file
-            is_key_set = true;
-
-            doset = BESUtil::lowercase(doset);
-            key_value = (doset == "true" || doset == "yes");
-        }
-    }
-}
-
 static bool extension_match(const string &data_source, const string &extension)
 {
     string::size_type pos = data_source.rfind(extension);
@@ -110,8 +94,8 @@ DapRequestHandler::DapRequestHandler(const string &name) :
     add_method(VERS_RESPONSE, dap_build_vers);
     add_method(HELP_RESPONSE, dap_build_help);
 
-    read_key_value("DR.UseTestTypes", d_use_test_types, d_use_test_types_set);
-    read_key_value("DR.UseSeriesValues", d_use_series_values, d_use_series_values_set);
+    d_use_test_types = TheBESKeys::read_bool_key("DR.UseTestTypes", d_use_test_types_set);
+    d_use_series_values = TheBESKeys::read_bool_key("DR.UseSeriesValues", d_use_series_values_set);
 }
 
 /** Read values from a DAP2 or DAP4 response

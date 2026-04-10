@@ -95,16 +95,10 @@ NCMLRequestHandler::NCMLRequestHandler(const string &name) :
     add_method(VERS_RESPONSE, NCMLRequestHandler::ncml_build_vers);
     add_method(HELP_RESPONSE, NCMLRequestHandler::ncml_build_help);
 
-    if (NCMLRequestHandler::_global_attributes_container_name_set == false) {
-        bool key_found = false;
-        string value;
-        TheBESKeys::TheKeys()->get_value("NCML.GlobalAttributesContainerName", value, key_found);
-        if (key_found) {
-            // It was set in the conf file
-            NCMLRequestHandler::_global_attributes_container_name_set = true;
-
-            NCMLRequestHandler::_global_attributes_container_name = value;
-        }
+    // It was set in the conf file
+    NCMLRequestHandler::_global_attributes_container_name_set = TheBESKeys::read_bool_key("NCML.GlobalAttributesContainerName", false);
+    if (NCMLRequestHandler::_global_attributes_container_name_set) {
+        NCMLRequestHandler::_global_attributes_container_name = TheBESKeys::read_string_key("NCML.GlobalAttributesContainerName", "");
     }
 }
 

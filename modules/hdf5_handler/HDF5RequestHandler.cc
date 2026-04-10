@@ -229,9 +229,9 @@ void HDF5RequestHandler::load_config()
     BES_STOPWATCH_START(HDF5_NAME, prolog + "ClockTheBESKeys");
 
     // Obtain the metadata cache entries and purge level.
-    HDF5RequestHandler::_mdcache_entries   = TheBESKeys::read_ulong_key("H5.MetaDataMemCacheEntries", 0);
-    HDF5RequestHandler::_lrdcache_entries  = TheBESKeys::read_ulong_key("H5.LargeDataMemCacheEntries", 0);
-    HDF5RequestHandler::_srdcache_entries  = TheBESKeys::read_ulong_key("H5.SmallDataMemCacheEntries", 0);
+    HDF5RequestHandler::_mdcache_entries   = TheBESKeys::read_int_key("H5.MetaDataMemCacheEntries", 0);
+    HDF5RequestHandler::_lrdcache_entries  = TheBESKeys::read_int_key("H5.LargeDataMemCacheEntries", 0);
+    HDF5RequestHandler::_srdcache_entries  = TheBESKeys::read_int_key("H5.SmallDataMemCacheEntries", 0);
     HDF5RequestHandler::_cache_purge_level = TheBESKeys::read_float_key("H5.CachePurgeLevel", 0.2F);
 
     if (get_mdcache_entries()) {  // else it stays at its default of null

@@ -456,6 +456,34 @@ uint64_t TheBESKeys::read_uint64_key(const string &key, uint64_t default_value) 
  *
  * @param key The key to look up
  * @param default_value Return this value if \arg key is not found.
+ * @return The double value of \arg key.
+ */
+double TheBESKeys::read_double_key(const std::string &key, double default_value) {
+    bool found = false;
+    string value;
+    TheBESKeys::TheKeys()->get_value(key, value, found);
+    // 'key' holds the string value at this point if found is true
+    if (found) {
+        std::istringstream iss(value);
+        double double_val;
+        iss >> double_val;
+        if (!iss.eof() || iss.bad() || iss.fail())
+            return default_value;
+        else
+            return double_val;
+    } else {
+        return default_value;
+    }
+}
+
+/**
+ * @brief Read a float key from the bes.conf file.
+ *
+ * Look-up the bes key \arg key and return its value if set. If the
+ * key is not set, return the default value.
+ *
+ * @param key The key to look up
+ * @param default_value Return this value if \arg key is not found.
  * @return The float value of \arg key.
  */
 float TheBESKeys::read_float_key(const std::string &key, float default_value) {
