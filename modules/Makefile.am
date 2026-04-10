@@ -10,6 +10,12 @@ EXTRA_DIST = data/README
 toplevel_datadir = $(datadir)/hyrax/data
 toplevel_data_DATA = data/README
 
+### TODO Remove before merge!!!. jhrg 4/10/26
+if BUILD_GDAL
+SUBDIRS = gdal_module
+
+else
+
 SUBDIRS = common csv_handler freeform_handler functions usage asciival
 
 if WITH_CMR
@@ -56,4 +62,7 @@ endif
 
 if USING_GRIDFIELDS
 SUBDIRS += ugrid_functions
+endif
+
+####TODO Remove before merge!!!. jhrg 4/10/26
 endif

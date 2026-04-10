@@ -67,6 +67,15 @@ dnl to default values otherwise.
 AC_CANONICAL_HOST
 AC_SUBST(host)
 
+dnl Moved this out of the AWS-specific checks. jhrg 10/16/25
+
+AC_MSG_CHECKING([the OS type for shared object dependencies linkage])
+AS_CASE([$host],
+    [*darwin*], [AM_CONDITIONAL([DARWIN], [true])
+                 AC_MSG_NOTICE([OSX found.])],
+    [AM_CONDITIONAL([DARWIN], [false])
+     AC_MSG_NOTICE([OSX not found, may assume Linux in places.])])
+
 dnl This is the default. If the caller uses --enable-developer, that option
 dnl will override these values
 cxx_debug_flags=
@@ -478,21 +487,27 @@ AS_IF([test -n "$ac_bes_dependencies_prefix"],
      # because it'll add complexity and I'm not sure we do need it. jhrg 1/23/26
      AS_IF([test -d "${deps_libdir}64"],
         [deps_libdir64=${deps_libdir}64
-         AC_SUBST([deps_libdir64])])])
+         AC_SUBST([deps_libdir64])])
+     AS_IF([test -d "${deps_proj_libdir}64"],
+        [deps_proj_libdir64=${deps_proj_libdir}64
+         AC_SUBST([deps_proj_libdir64])])])
 
 # If deps_libdir is set above to a special dependencies dir, then do the following
 # to support dynamic linking with the dependencies given that they are not installed
 # in a 'standard' location. jhrg 1/7/26
 
+# This checks tosee if the BES dependencies are in a 'special' place. If so, make sure that
+# path is on LDFLAGS. At the same time, check for the lib64 directory and if it exists, add
+# it to LDFLAGS. Then, assume we might be linking shared libraries. Handle DARWIN (OSX) 
+# differently than Linux because of the different rpath syntax. jhrg 1/7/26
 AS_IF([test -n "$deps_libdir"],
-   [AM_LDFLAGS="$AM_LDFLAGS -L$deps_libdir -L$deps_proj_libdir"
-    echo "AM_LDFLAGS is $AM_LDFLAGS"
+   [AM_LDFLAGS="$AM_LDFLAGS -L$deps_libdir"
     AS_IF([test -n "$deps_libdir64"],[AM_LDFLAGS="$AM_LDFLAGS -L$deps_libdir64"])
-        AM_CONDITIONAL([DARWIN],
-         [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,${deps_libdir} -Wl,-rpath,${deps_proj_libdir} -Wl,-rpath,@loader_path"
-          echo "AM_LDFLAGS is $AM_LDFLAGS"],
-         [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,$deps_libdir -Wl,-rpath,$deps_proj_libdir -Wl,-rpath,''$ORIGIN''"
-          AS_IF([test -n "$deps_libdir64"], [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,$deps_libdir64"])])
+    AM_CONDITIONAL([DARWIN],
+        [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,$deps_libdir -Wl,-rpath,@loader_path"],
+        [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,$deps_libdir -Wl,-rpath,''$ORIGIN''"
+        AS_IF([test -n "$deps_libdir64"], [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,$deps_libdir64 -Wl,-rpath,''$ORIGIN''"])])
+    AC_MSG_NOTICE([Set AM_LDFLAGS to $AM_LDFLAGS])
     AC_SUBST([AM_LDFLAGS])])
 
 BES_DISPATCH_LIB="-L\$(top_builddir)/dispatch -lbes_dispatch"
@@ -582,15 +597,6 @@ AS_IF([test $curl_is_ok = no],
     [AC_MSG_ERROR([libcurl: insufficient version or not found])])
     
 ])  dnl End AM_COND_IF BES_DEVELOPER for DMR++/libcurl
-
-dnl Moved this out of the AWS-specific checks. jhrg 10/16/25
-
-AC_MSG_CHECKING([the OS type for shared object dependencies linkage])
-AS_CASE([$host],
-    [*darwin*], [AM_CONDITIONAL([DARWIN], [true])
-                 AC_MSG_NOTICE([OSX found.])],
-    [AM_CONDITIONAL([DARWIN], [false])
-     AC_MSG_NOTICE([OSX not found.])])
 
 dnl Should we look for the AWS C++ SDK? By default, 'yes' but --without-aws will
 dnl disable the check. jhrg 10/16/25
@@ -756,17 +762,31 @@ AS_IF([test -n "$with_gdal_prefix" -a $with_gdal_prefix = no],
     dnl then
     [AC_MSG_NOTICE([Using $with_gdal_prefix as the GDAL prefix directory.])
 
-    dnl This fix is for OSX with shared libs. Seems to not be needed on Linux.
-    dnl jhrg 11/07/25
-    gdal_shared_lib=
-    gdal_shared_lib="-Wl,-rpath,$prefix/deps/lib -Wl,-rpath,$prefix/deps/proj/lib"
-    gdal_shared_lib="$gdal_shred_lib -Wl,-rpath,@loader_path"
+     
+    # Add the rpath options for shared versons of the GDAL dependencies. Note
+    # that AM_LDFLAGS has the shared path info for deps/lib and deps/lib64. jhrg 4/10/26
+    GDAL_LDFLAGS=""
+    if test -d "$prefix/deps/proj/lib"; then
+    GDAL_LDFLAGS="$GDAL_LDFLAGS -Wl,-rpath,$prefix/deps/proj/lib"
+    fi
+    if test -d "$prefix/deps/proj/lib64"; then
+        GDAL_LDFLAGS="$GDAL_LDFLAGS -Wl,-rpath,$prefix/deps/proj/lib64"
+    fi
+    # Add the OS-specific shared linker syntax for the rpath option. jhrg 4/10/26
+    AM_CONDITIONAL([DARWIN],
+        [GDAL_LDFLAGS="$GDAL_LDFLAGS -Wl,-rpath,@loader_path"],
+        [GDAL_LDFLAGS="$GDAL_LDFLAGS -Wl,-rpath,''$ORIGIN''"])
 
-    GDAL_LDFLAGS="$gdal_shared_lib `$with_gdal_prefix/bin/gdal-config --libs` `$with_gdal_prefix/bin/gdal-config --dep-libs`"
+    # The newer versions of gdal-config have a --dep-libs option that includes 
+    # the libs of the dependencies. We need to use that to get the proj library, 
+    # which is a dependency of gdal. jhrg 4/10/26
+    GDAL_LDFLAGS="$GDAL_LDFLAGS $($with_gdal_prefix/bin/gdal-config --libs) $($with_gdal_prefix/bin/gdal-config --dep-libs)"
+    AC_MSG_NOTICE([Set GDAL_LDFLAGS to $GDAL_LDFLAGS.])
+
     GDAL_CFLAGS="`$with_gdal_prefix/bin/gdal-config --cflags`"
     GDAL_FOUND=1
-    AC_DEFINE([HAVE_GDAL], [1], [The GDAL Library is present])
-    AC_MSG_NOTICE([Set GDAL_LDFLAGS to $GDAL_LDFLAGS.])],
+
+    AC_DEFINE([HAVE_GDAL], [1], [The GDAL Library is present])],
     
     dnl else if
     [test -n "$with_gdal_prefix"],
@@ -807,7 +827,7 @@ AM_COND_IF([BUILD_GDAL], [
         [ AC_MSG_NOTICE([Found OPENJPEG; building GMLJP2 support.]) ],
         [ AC_MSG_NOTICE([I could not find OPENJPEG, not building GMLJP2 support.]) ])
 
-],[ # else AN_CONF_IF([BUILD_GDAL]
+    ],[ # else AN_CONF_IF([BUILD_GDAL]
 
     dnl if we are not building the gdal-related things, make sure that 
     dnl OPENJPEG_FOUND is defined and is false

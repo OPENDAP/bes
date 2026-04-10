@@ -15,7 +15,6 @@ M_VER=1.0.3
 
 AM_CPPFLAGS = $(GDAL_CFLAGS) $(DAP_CFLAGS) -I$(top_srcdir) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
 AM_CXXFLAGS =
-AM_LDFLAGS = -L$(builddir)/reader -L$(builddir)/writer
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lgdal_reader -lgdal_writer
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
@@ -42,7 +41,7 @@ GDAL_SRCS = GDALModule.cc GDALRequestHandler.cc
 GDAL_HDRS = GDALModule.h GDALRequestHandler.h
 
 libgdal_module_la_SOURCES = $(GDAL_SRCS) $(GDAL_HDRS)
-libgdal_module_la_LDFLAGS = $(AM_LDFLAGS) -avoid-version -module $(GDAL_LDFLAGS)
+libgdal_module_la_LDFLAGS = -avoid-version -module -L$(builddir)/reader -L$(builddir)/writer $(AM_LDFLAGS) $(GDAL_LDFLAGS)
 libgdal_module_la_LIBADD = $(LIBADD)
 
 moduledir = $(sysconfdir)/bes/modules
