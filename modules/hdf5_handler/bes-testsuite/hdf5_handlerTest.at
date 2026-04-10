@@ -557,7 +557,7 @@ AT_BESCMD_H5_BESCONF_DAP2DATA_TEST([h5.cf/grid_1_2d.h5.function.dods.bescmd],[be
 # in different orders in different platforms and since NASA uses Linux to serve, we decide
 # to ignore the tests on Mac OS to avoid the false failures since the attribute values are retrieved
 # correctly. see HYRAX-595.
-AT_BESCMD_H5_BESCONF2_RESPONSE_TEST_OS([vfd_swmr_group_attrs.h5.dmr.bescmd],[bes.cfdmr.conf])
+AT_BESCMD_H5_BESCONF2_RESPONSE_TEST_OS([h5.cf/vfd_swmr_group_attrs.h5.dmr.bescmd],[bes.cfdmr.conf])
 
 # Default cases.
 # Compound dataset(dap2)

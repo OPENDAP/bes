@@ -249,7 +249,7 @@ m4_define([AT_BESCMD_H5_BESCONF2_RESPONSE_TEST_OS], [dnl
 
     # The baseline needs to contain something to tie it to the bes conf file since
     # the same bescmd file may produce different output with a different bes conf.
-    baseline=$abs_srcdir/$1.$2.baseline
+    baseline=$abs_srcdir/$1.baseline
 
     # Oddly, setting 'pass' to $3 and then using $pass in AT_XFAIL_IF() does not work,
     # but using $3 does. This might be a function of when the AT_XFAIL_IF() macro is
