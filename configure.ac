@@ -492,6 +492,9 @@ AS_IF([test -n "$ac_bes_dependencies_prefix"],
         [deps_proj_libdir64=${deps_proj_libdir}64
          AC_SUBST([deps_proj_libdir64])])])
 
+AC_MSG_NOTICE([Set deps_libdir to $deps_libdir and deps_proj_libdir to $deps_proj_libdir])
+AC_MSG_NOTICE([Set deps_libdir64 to $deps_libdir64 and deps_proj_libdir64 to $deps_proj_libdir64])
+
 # If deps_libdir is set above to a special dependencies dir, then do the following
 # to support dynamic linking with the dependencies given that they are not installed
 # in a 'standard' location. jhrg 1/7/26
