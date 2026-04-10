@@ -72,8 +72,7 @@ RUN autoreconf -fiv
 RUN echo "Sanity check: CPPFLAGS=$CPPFLAGS LDFLAGS=$LDFLAGS prefix=$PREFIX" \
     && ./configure --disable-dependency-tracking \
     --with-dependencies="$DEPS_PREFIX/deps" \
-    --prefix="$PREFIX" 
-    $GDAL_OPTION \
+    --prefix="$PREFIX" $GDAL_OPTION \
     --with-build=$BES_BUILD_NUMBER
 RUN make -j$(nproc --ignore=1)
 RUN sudo make install
