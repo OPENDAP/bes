@@ -60,16 +60,6 @@ bool FONcRequestHandler::nc3_classic_format;
 
 using namespace std;
 
-/**
- * Look at the BES configuration keys and see if key_name is included
- * and, if so, what its value is.
- *
- * @param key_name The key to loop up
- * @param key Value result parameter that takes on the value of the key
- * @param default_value
- * @see read_key_value() - other impls
- */
-
 /** @brief Constructor for FileOut NetCDF module
  *
  * This constructor adds functions to add to the build of a help request
@@ -79,16 +69,24 @@ using namespace std;
  * of request handlers
  */
 FONcRequestHandler::FONcRequestHandler( const string &name )
-    : BESRequestHandler( name )
+: BESRequestHandler( name )
 {
     add_method( HELP_RESPONSE, FONcRequestHandler::build_help ) ;
     add_method( VERS_RESPONSE, FONcRequestHandler::build_version ) ;
 
-    // Refactored to use TheBESKeys calls
-    // kln 4/1/26
     if (FONcRequestHandler::temp_dir.empty()) {
-        FONcRequestHandler::temp_dir = TheBESKeys::read_bool_key(FONC_TEMP_DIR_KEY, FONC_TEMP_DIR);
+        FONcRequestHandler::temp_dir = TheBESKeys::read_string_key(FONC_TEMP_DIR_KEY, FONC_TEMP_DIR);
     }
+
+    // Updated calls to use TheBESKeys. kln 04/10/26
+    FONcRequestHandler::use_compression = TheBESKeys::read_bool_key(FONC_USE_COMP_KEY, FONC_USE_COMP);
+    FONcRequestHandler::use_shuffle = TheBESKeys::read_bool_key(FONC_USE_SHUFFLE_KEY, FONC_USE_SHUFFLE);
+    FONcRequestHandler::chunk_size = TheBESKeys::read_ulong_key(FONC_CHUNK_SIZE_KEY, FONC_CHUNK_SIZE);
+    FONcRequestHandler::classic_model = TheBESKeys::read_bool_key(FONC_CLASSIC_MODEL_KEY, FONC_CLASSIC_MODEL);
+    FONcRequestHandler::reduce_dim = TheBESKeys::read_bool_key(FONC_REDUCE_DIM_KEY, FONC_REDUCE_DIM);
+    FONcRequestHandler::no_global_attrs = TheBESKeys::read_bool_key(FONC_NO_GLOBAL_ATTRS_KEY, FONC_NO_GLOBAL_ATTRS);
+    FONcRequestHandler::request_max_size_kb = TheBESKeys::read_ulong_key(FONC_REQUEST_MAX_SIZE_KB_KEY, FONC_REQUEST_MAX_SIZE_KB);
+    FONcRequestHandler::nc3_classic_format = TheBESKeys::read_bool_key(FONC_NC3_CLASSIC_FORMAT_KEY, FONC_NC3_CLASSIC_FORMAT);
 
     BESDEBUG("fonc", "FONcRequestHandler::temp_dir: " << FONcRequestHandler::temp_dir << endl);
     BESDEBUG("fonc", "FONcRequestHandler::byte_to_short: " << FONcRequestHandler::byte_to_short << endl);
@@ -168,9 +166,8 @@ void
 FONcRequestHandler::dump( ostream &strm ) const
 {
     strm << BESIndent::LMarg << "FONcRequestHandler::dump - ("
-			     << (void *)this << ")" << endl ;
+    << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
     BESRequestHandler::dump( strm ) ;
     BESIndent::UnIndent() ;
 }
-
