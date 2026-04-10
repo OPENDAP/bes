@@ -103,17 +103,6 @@ char* obtain_str(char*temp_ptr,string & str);
 // 2. The main function to obtain DAS info from the cache.
 char* get_attr_info_from_dc(char*temp_pointer,DAS *das,AttrTable *at);
 
-
-// Obtain the BES key as an integer
-static unsigned int get_uint_key(const string &key,unsigned int def_val);
-static unsigned long get_ulong_key(const string &key,unsigned long def_val);
-
-// Obtain the BES key as a floating-pointer number.
-static float get_float_key(const string &key, float def_val);
-
-// Obtain the BES key as a string.
-static string get_beskeys(const string&);
-
 // Obtain the BES key info.
 bool obtain_beskeys_info(const string &, bool &);
 
@@ -240,10 +229,10 @@ void HDF5RequestHandler::load_config()
     BES_STOPWATCH_START(HDF5_NAME, prolog + "ClockTheBESKeys");
 
     // Obtain the metadata cache entries and purge level.
-    HDF5RequestHandler::_mdcache_entries   = get_uint_key("H5.MetaDataMemCacheEntries", 0);
-    HDF5RequestHandler::_lrdcache_entries  = get_uint_key("H5.LargeDataMemCacheEntries", 0);
-    HDF5RequestHandler::_srdcache_entries  = get_uint_key("H5.SmallDataMemCacheEntries", 0);
-    HDF5RequestHandler::_cache_purge_level = get_float_key("H5.CachePurgeLevel", 0.2F);
+    HDF5RequestHandler::_mdcache_entries   = TheBESKeys::read_int_key("H5.MetaDataMemCacheEntries", 0);
+    HDF5RequestHandler::_lrdcache_entries  = TheBESKeys::read_int_key("H5.LargeDataMemCacheEntries", 0);
+    HDF5RequestHandler::_srdcache_entries  = TheBESKeys::read_int_key("H5.SmallDataMemCacheEntries", 0);
+    HDF5RequestHandler::_cache_purge_level = TheBESKeys::read_float_key("H5.CachePurgeLevel", 0.2F);
 
     if (get_mdcache_entries()) {  // else it stays at its default of null
         das_cache = new ObjMemCache(get_mdcache_entries(), get_cache_purge_level());
@@ -262,7 +251,8 @@ void HDF5RequestHandler::load_config()
     //
     // Check if the EnableCF key is set.
     bool has_key = false;
-    bool key_value = obtain_beskeys_info("H5.EnableCF",has_key);
+    bool key_value =
+            obtain_beskeys_info("H5.EnableCF",has_key);
     if (has_key)
         _usecf = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.EnableCF: " << (_usecf?"true":"false") << endl);
@@ -377,8 +367,8 @@ void HDF5RequestHandler::load_config()
     if (get_usecf())
         load_config_cf_cache();
 
-    _stp_east_filename = get_beskeys("H5.STPEastFileName");
-    _stp_north_filename = get_beskeys("H5.STPNorthFileName");
+    _stp_east_filename = TheBESKeys::read_string_key("H5.STPEastFileName", "");
+    _stp_north_filename = TheBESKeys::read_string_key("H5.STPNorthFileName", "");
     BESDEBUG(HDF5_NAME, prolog << "END" << endl);
 }
 
@@ -390,9 +380,9 @@ void HDF5RequestHandler::load_config_disk_cache() {
         _use_disk_cache  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.EnableDiskDataCache: " << (_use_disk_cache?"true":"false") << endl);
 
-    _disk_cache_dir              = get_beskeys("H5.DiskCacheDataPath");
-    _disk_cachefile_prefix       = get_beskeys("H5.DiskCacheFilePrefix");
-    _disk_cache_size             = get_ulong_key("H5.DiskCacheSize",0);
+    _disk_cache_dir              = TheBESKeys::read_string_key("H5.DiskCacheDataPath", "");
+    _disk_cachefile_prefix       = TheBESKeys::read_string_key("H5.DiskCacheFilePrefix", "");
+    _disk_cache_size             = TheBESKeys::read_ulong_key("H5.DiskCacheSize", 0);
 
     key_value = obtain_beskeys_info("H5.DiskCacheComp",has_key);
     if (has_key)
@@ -403,8 +393,8 @@ void HDF5RequestHandler::load_config_disk_cache() {
     if (has_key)
         _disk_cache_float_only_comp_data  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.DiskCacheFloatOnlyComp: " << (_disk_cache_float_only_comp_data?"true":"false") << endl);
-    _disk_cache_comp_threshold   = get_float_key("H5.DiskCacheCompThreshold",1.0);
-    _disk_cache_var_size         = 1024*get_uint_key("H5.DiskCacheCompVarSize",0);
+    _disk_cache_comp_threshold   = TheBESKeys::read_float_key("H5.DiskCacheCompThreshold", 1.0);
+    _disk_cache_var_size         = TheBESKeys::read_ulong_key("H5.DiskCacheCompVarSize", 0);
 
     key_value = obtain_beskeys_info("H5.EnableDiskMetaDataCache",has_key);
     if (has_key)
@@ -415,15 +405,15 @@ void HDF5RequestHandler::load_config_disk_cache() {
     if (has_key)
         _use_disk_dds_cache  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.EnableDiskDDSCache: " << (_use_disk_dds_cache?"true":"false") << endl);
-    _disk_meta_cache_path        = get_beskeys("H5.DiskMetaDataCachePath");
+    _disk_meta_cache_path        = TheBESKeys::read_string_key("H5.DiskMetaDataCachePath", "");
 
     key_value = obtain_beskeys_info("H5.EnableEOSGeoCacheFile",has_key);
     if (has_key)
         _use_latlon_disk_cache  = key_value;
     BESDEBUG(HDF5_NAME, prolog << "H5.EnableEOSGeoCacheFile: " << (_use_latlon_disk_cache?"true":"false") << endl);
-    _latlon_disk_cache_size      = get_uint_key("H5.Cache.latlon.size",0);
-    _latlon_disk_cache_dir       = get_beskeys("H5.Cache.latlon.path");
-    _latlon_disk_cachefile_prefix= get_beskeys("H5.Cache.latlon.prefix");
+    _latlon_disk_cache_size      = TheBESKeys::read_ulong_key("H5.Cache.latlon.size", 0);
+    _latlon_disk_cache_dir       = TheBESKeys::read_string_key("H5.Cache.latlon.path", "");
+    _latlon_disk_cachefile_prefix= TheBESKeys::read_string_key("H5.Cache.latlon.prefix", "");
 
     if (_disk_cache_comp_data == true && _use_disk_cache == true) {
         if (_disk_cache_comp_threshold < 1.0) {
@@ -1743,10 +1733,10 @@ bool HDF5RequestHandler::obtain_lrd_common_cache_dirs()
     string lrd_config_fname;
 
     // Obtain DataCache path
-    lrd_config_fpath = get_beskeys("H5.DataCachePath");
+    lrd_config_fpath = TheBESKeys::read_string_key("H5.DataCachePath", "");
 
     // Obtain the configure file name that specifics the large file configuration
-    lrd_config_fname = get_beskeys("H5.LargeDataMemCacheFileName");
+    lrd_config_fname = TheBESKeys::read_string_key("H5.LargeDataMemCacheFileName", "");
  
     // If either the configure file path or fname is missing, won't add specific mem. cache dirs. 
     if (lrd_config_fpath.empty() || lrd_config_fname.empty())
@@ -2277,58 +2267,6 @@ bool obtain_beskeys_info(const string& key, bool & has_key) {
         doset = BESUtil::lowercase(doset) ;
         ret_value = (dosettrue == doset  || dosetyes == doset);
     }
-    return ret_value;
-}
-
-
-// get_uint_key and get_float_key are copied from the netCDF handler.
-static unsigned int get_uint_key(const string &key, unsigned int def_val)
-{
-    bool found = false;
-    string doset;
-
-    TheBESKeys::TheKeys()->get_value(key, doset, found);
-    if (true == found) {
-        // In C++11, stoi is better.
-        return stoi(doset);
-    }
-    else {
-        return def_val;
-    }
-}
-
-static unsigned long get_ulong_key(const string &key, unsigned long def_val)
-{
-    bool found = false;
-    string doset;
-
-    TheBESKeys::TheKeys()->get_value(key, doset, found);
-    if (true == found) {
-        // In C++11, stoul is better.
-        return stoul(doset);
-    }
-    else {
-        return def_val;
-    }
-}
-static float get_float_key(const string &key, float def_val)
-{
-    bool found = false;
-    string doset;
-
-    TheBESKeys::TheKeys()->get_value(key, doset, found);
-    if (true == found)
-        return stof(doset);
-    else
-        return def_val;
-}
-
-static string get_beskeys(const string &key) {
-
-    bool found = false;
-    string ret_value;
-
-    TheBESKeys::TheKeys()->get_value( key, ret_value, found ) ;
     return ret_value;
 }
 
