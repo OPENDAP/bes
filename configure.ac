@@ -773,8 +773,8 @@ AS_IF([test -n "$with_gdal_prefix" -a $with_gdal_prefix = no],
     # Add the rpath options for shared versons of the GDAL dependencies. Note
     # that AM_LDFLAGS has the shared path info for deps/lib and deps/lib64. jhrg 4/10/26
     GDAL_LDFLAGS=""
-    AS_IF([test -n "$deps_proj_libdir"], [AM_LDGDAL_LDFLAGSFLAGS="$GDAL_LDFLAGS -Wl,-rpath,$deps_proj_libdir"])
-    AS_IF([test -n "$deps_proj_libdir64"], [AM_LDGDAL_LDFLAGSFLAGS="$GDAL_LDFLAGS -Wl,-rpath,$deps_proj_libdir64"])
+    AS_IF([test -n "$deps_proj_libdir"], [GDAL_LDFLAGS="$GDAL_LDFLAGS -Wl,-rpath,$deps_proj_libdir"])
+    AS_IF([test -n "$deps_proj_libdir64"], [GDAL_LDFLAGS="$GDAL_LDFLAGS -Wl,-rpath,$deps_proj_libdir64"])
  
     # Add the OS-specific shared linker syntax for the rpath option. jhrg 4/10/26
     AM_COND_IF([DARWIN],
