@@ -58,7 +58,7 @@ env:
     # Should the BES build with GDAL? This is here to round up build errors. Set this
     # to the 'configure' script option to use (--with-gdal) or not use (--without-gdal).
     # jhrg 12/2/25
-    - CONFIGURE_OPTIONs=--disable-ncml
+    - CONFIGURE_OPTIONS=--disable-ncml
     - TESTSUITEFLAGS=-j7
     # Change this when libdap version numbers change
     - LIBDAP_RPM_VERSION=3.21.1-0
