@@ -8,7 +8,7 @@
 # $BES_REPO_DIR, $SNAPSHOT_IMAGE_TAG, $BUILD_VERSION_TAG, $DIST, $OS, $BES_BUILD_NUMBER,
 # and $LIBDAP_RPM_VERSION are set.
 #
-# Optional env vars are $GDAL_OPTION and $DOCKER_DEV_FLAGS.
+# Optional env vars are $CONFIGURE_OPTIONS and $DOCKER_DEV_FLAGS.
 #
 # When running locally, AWS credentials for OPeNDAP AWS must also be set, e.g.,
 # $AWS_ACCESS_KEY_ID and $AWS_SECRET_ACCESS_KEY (or set via aws configuration)
@@ -22,6 +22,7 @@
 #    OS=rocky8 \
 #    BES_BUILD_NUMBER=12345 \
 #    LIBDAP_RPM_VERSION='3.21.1-332' \
+#    CONFIGURE_OPTIONS="--disable-ncml" \
 #    bash build-rhel-docker.sh
 #
 # If building locally, add any extra docker build flags through the ENV var
@@ -40,7 +41,7 @@ HYRAX_DEPENDENCIES_TARBALL="hyrax-dependencies-${OS}.tgz"
 LIBDAP_RPM_FILENAME="libdap-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
 LIBDAP_DEVEL_RPM_FILENAME="libdap-devel-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
 DOCKER_DEV_FLAGS=${DOCKER_DEV_FLAGS:-""}
-GDAL_OPTION=${GDAL_OPTION:-""}
+CONFIGURE_OPTIONS=${CONFIGURE_OPTIONS:-""}
 AWS_DOWNLOADS_DIR="/tmp/dependency_downloads"
 
 loggy "#########################################################################"
@@ -56,7 +57,7 @@ loggy "               DIST: '$DIST'"
 loggy "                 OS: '$OS'"
 loggy "   BES_BUILD_NUMBER: '$BES_BUILD_NUMBER'"
 loggy " LIBDAP_RPM_VERSION: '$LIBDAP_RPM_VERSION'"
-loggy "        GDAL_OPTION: '$GDAL_OPTION'"
+loggy "  CONFIGURE_OPTIONS: '$CONFIGURE_OPTIONS'"
 loggy "   DOCKER_DEV_FLAGS: '$DOCKER_DEV_FLAGS'"
 loggy "        DOCKER_NAME: '$DOCKER_NAME'"
 loggy ""
@@ -84,7 +85,7 @@ docker build \
     --build-arg LIBDAP_DEVEL_RPM_FILENAME="$LIBDAP_DEVEL_RPM_FILENAME" \
     --build-arg DIST="$DIST" \
     --build-arg HYRAX_DEPENDENCIES_TARBALL="$HYRAX_DEPENDENCIES_TARBALL" \
-    --build-arg GDAL_OPTION="$GDAL_OPTION" \
+    --build-arg CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS" \
     --build-arg BES_BUILD_NUMBER="$BES_BUILD_NUMBER" \
     --tag "${SNAPSHOT_IMAGE_TAG}" \
     --build-context aws_downloads="$AWS_DOWNLOADS_DIR/" \

@@ -58,7 +58,7 @@ env:
     # Should the BES build with GDAL? This is here to round up build errors. Set this
     # to the 'configure' script option to use (--with-gdal) or not use (--without-gdal).
     # jhrg 12/2/25
-    - CONFIGURE_OPTIONs=
+    - CONFIGURE_OPTIONs=--disable-ncml
     - TESTSUITEFLAGS=-j7
     # Change this when libdap version numbers change
     - LIBDAP_RPM_VERSION=3.21.1-0
@@ -148,7 +148,7 @@ jobs:
         - export BES_BUILD=main
         # - export RUNTESTFLAGS="-v"
         - autoreconf --force --install --verbose
-        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+        - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
         - export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
         - echo "LD_LIBRARY_PATH - $LD_LIBRARY_PATH" >&2
         - make -j16 && make install && besctl start && make check -j16 && besctl stop
@@ -158,7 +158,7 @@ jobs:
       script:
         - export BES_BUILD=distcheck
         - autoreconf --force --install --verbose
-        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+        - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
         - make distcheck -j16 GZIP_ENV=--fast
 
     - stage: build-and-test
@@ -166,7 +166,7 @@ jobs:
       script:
         - export BES_BUILD=srcdist
         - autoreconf --force --install --verbose
-        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
+        - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
         - make dist -j7
         # Make both a bes-<version>-<build num> and bes-snapshot tar.gz. This will simplify
         # other operations that use the bes source code. Note that the VERSION file holds a
@@ -235,7 +235,7 @@ jobs:
       script:
       - export BES_BUILD=sonar-bes-framework
       - autoreconf --force --install --verbose
-      - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer --enable-coverage
+      - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer --enable-coverage
       - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
       - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
       - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "QUALITY GATE PASS"
@@ -245,7 +245,7 @@ jobs:
       script:
         - export BES_BUILD=sonar-bes-modules
         - autoreconf --force --install --verbose
-        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
+        - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
         - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
         - sonar-scanner -Dproject.settings=sonar-bes-modules-1.properties -Dsonar.login=$SONAR_MODULES_LOGIN
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
@@ -255,7 +255,7 @@ jobs:
       script:
         - export BES_BUILD=sonar-bes-hdf-handlers
         - autoreconf --force --install --verbose
-        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
+        - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
         - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
         - sonar-scanner -Dproject.settings=sonar-bes-hdf-handlers.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
         # We call the hdf4/5 handlers scan opendap-bes-submodules for historical reasons. jhrg 1/13/22
@@ -267,7 +267,7 @@ jobs:
         - export STAGE=hyrax-olfs
         - echo $STAGE
         - autoreconf --force --install --verbose
-        - ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
+        - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
         - ./travis/trigger-olfs-build.sh
 
 after_script:

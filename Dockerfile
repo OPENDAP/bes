@@ -35,7 +35,7 @@ USER $BES_USER
 WORKDIR "/home/$BES_USER"
 
 # Start bes build process
-ARG GDAL_OPTION
+ARG CONFIGURE_OPTIONS
 ARG BES_BUILD_NUMBER
 ENV PREFIX="/"
 ENV DEPS_PREFIX="/root/install"
@@ -72,7 +72,7 @@ RUN autoreconf -fiv
 RUN echo "Sanity check: CPPFLAGS=$CPPFLAGS LDFLAGS=$LDFLAGS prefix=$PREFIX" \
     && ./configure --disable-dependency-tracking \
     --with-dependencies="$DEPS_PREFIX/deps" \
-    --prefix="$PREFIX" $GDAL_OPTION \
+    --prefix="$PREFIX" $CONFIGURE_OPTIONS \
     --with-build=$BES_BUILD_NUMBER
 RUN make -j$(nproc --ignore=1)
 RUN sudo make install
