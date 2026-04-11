@@ -981,6 +981,15 @@ AC_CHECK_STARE(
   $ac_bes_dependencies_prefix
 )
 
+dnl should the NCML handler be built? 
+AC_ARG_ENABLE([ncml], AS_HELP_STRING([--enable-ncml],[Enable NCML (default is YES)]),
+    [case "${enableval}" in
+        yes) ncml_enabled=true ;;
+        no)  ncml_enabled=false ;;
+        *)   AC_MSG_ERROR([bad value ${enableval} for --enable-ncml]) ;;
+    esac],
+    [ncml_enabled=yes])
+
 dnl NCML module test
 dnl
 dnl Look for the minimum version of the icu libs and headers
@@ -991,17 +1000,21 @@ dnl in case there are multiple icu development environments on the machine
 dnl NOTE: LD_LIBRARY_PATH or DYLD_LIBRARY_PATH may need to be set for this
 dnl to work, however.
 AC_CHECK_ICU([3.6],
-	[AM_CONDITIONAL([BUILD_NCML],[true])
+	[icu_found=true
 	AC_MSG_NOTICE([ICU_CPPFLAGS=$ICU_CPPFLAGS])
 	AC_MSG_NOTICE([ICU_LIBS=$ICU_LIBS])
 	],
-	[AC_MSG_WARN([The icu library and/or icu headers not found; not building the NCML handler.])
- 	AM_CONDITIONAL([BUILD_NCML],[false])
+	[icu_found=false
+	AC_MSG_WARN([The icu library and/or icu headers not found; not building the NCML handler.])
 	],
 	$ac_bes_dependencies_prefix
 )
 
-dnl Look for gridfields
+AS_IF([test x$icu_found = xtrue -a x$ncml_enabled = xyes],
+    [AM_CONDITIONAL([BUILD_NCML],[true])
+     AC_MSG_NOTICE([Found ICU; building NCML support.])],
+    [AM_CONDITIONAL([BUILD_NCML],[false])
+     AC_MSG_NOTICE([I could not find ICU, not building NCML support.])])
 
 dnl When pkgconfig support is added, use this
 libdap_libgridfields_module="libgridfields >= 1.0.3"
