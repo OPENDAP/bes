@@ -984,8 +984,10 @@ AC_CHECK_STARE(
 dnl should the NCML handler be built? 
 AC_ARG_ENABLE([ncml], AS_HELP_STRING([--enable-ncml],[Enable NCML (default is YES)]),
     [case "${enableval}" in
-        yes) ncml_enabled=true ;;
-        no)  ncml_enabled=false ;;
+        yes) ncml_enabled=true
+             AC_MSG_NOTICE([NCML support requested]) ;;
+        no)  ncml_enabled=false
+             AC_MSG_NOTICE([NCML support disabled]) ;;
         *)   AC_MSG_ERROR([bad value ${enableval} for --enable-ncml]) ;;
     esac],
     [ncml_enabled=yes])
@@ -1012,9 +1014,9 @@ AC_CHECK_ICU([3.6],
 
 AS_IF([test x$icu_found = xtrue -a x$ncml_enabled = xyes],
     [AM_CONDITIONAL([BUILD_NCML],[true])
-     AC_MSG_NOTICE([Found ICU; building NCML support.])],
+     AC_MSG_NOTICE([Found ICU; building the NCML handler.])],
     [AM_CONDITIONAL([BUILD_NCML],[false])
-     AC_MSG_NOTICE([I could not find ICU, not building NCML support.])])
+     AC_MSG_NOTICE([I could not find ICU or NCML support explicitly disabled, not building the NCML handler.])])
 
 dnl When pkgconfig support is added, use this
 libdap_libgridfields_module="libgridfields >= 1.0.3"
