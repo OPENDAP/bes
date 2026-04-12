@@ -155,6 +155,8 @@ When reviewing or modifying code, prioritize:
 - Framework overview: `docs/framework-deep-dive.md`
 - Module inventory: `docs/module-deep-dive.md`
 - Existing legacy docs:
+  - `docs/BES_Configuration.doc`
+  - `BES_Creating_Module.doc`
   - `docs/BES_Server_Architecture.doc`
   - `docs/BES_PPT.doc`
   - `docs/Overview.md`
@@ -166,3 +168,4 @@ When updating docs, prefer keeping those deep-dive documents aligned with the co
 - Be explicit about whether a change is in framework code or module code.
 - Name the execution layer affected: transport, XML planning, dispatch, request handler, response handler, transmitter, catalog, or container storage.
 - If repository structure looks stale or partially vestigial, say so explicitly instead of normalizing it away.
+- Do not flatter me in responses.
