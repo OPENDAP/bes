@@ -17,6 +17,7 @@ a group of 'plugin modules.' These modules isolate the operations for specific k
 daa from the BES software itself. Each kind of data that can be read is accessed using
 a different module and each response other than the DAP2/4 responses is returned using
 a module.
+For more detail, see [BES Modules](BES_Modules.md) and [BES Framework](BES_Framework.md).
 
 The BES does not contain (much) software that implements the DAP2/4 protocols. Instead, it
 uses the libdap4 library for that. See [github.com/opendap/libdap4](github.com/opendap/libdap4).
