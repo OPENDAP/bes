@@ -6,7 +6,6 @@
 .dir
 autom4te.cache
 /bes-*
-docs
 .idea/
 bes_VERSION
 cookies
