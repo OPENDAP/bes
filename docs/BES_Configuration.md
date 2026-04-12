@@ -9,9 +9,9 @@ Patrick West
 
 This document describes the settings in the BES configuration file.
 
-The configuration file is installed in the BES installation's `etc/bes` directory. For example, if you install the BES into `/usr/local`, then `bes.conf` will be located in `/usr/local/etc/bes/bes.conf`. If you want to use a different configuration file, set the environment variable `BES_CONF` to the path of that file.
+The configuration file is installed in the BES installation's `etc/bes` directory. For example, if you install the BES into `/usr/local`, then `bes.conf` will be located in `/usr/local/etc/bes/bes.conf`. If you want to use a different configuration file, pass its path with the `-c` option when starting `besd` (or with `besctl`).
 
-For example, if you used the `createModule` script (refer to `OpeNDAP_Creating_Module.doc`) then a `bes.conf` file is created for you in your module's directory. Set `BES_CONF` to point to that file to test your new module.
+If you start the server with the `-i` option, the BES uses that value as a prefix and looks for `etc/bes/bes.conf` underneath it.
 
 ## 1. The `bes.conf` configuration file
 
@@ -19,13 +19,13 @@ The BES configuration file, `bes.conf`, contains key/value pairs used by the OPe
 
 ### 1.1 BES administrator
 
-Set `OPeNDAP.ServerAdministrator` to the email address of the person who administers your OPeNDAP server installation. If error conditions occur within the BES, this email address will be reported as the contact for the installation.
+Set `BES.ServerAdministrator` to the email address of the person who administers your OPeNDAP server installation. If error conditions occur within the BES, this email address will be reported as the contact for the installation.
 
 ### 1.2 BES logging
 
-The `OPeNDAP.LogName` key defines the full path to the BES log file. This log file tracks what requests are made and whether they complete. The default is `./bes.log`, which places the log file in the current working directory where the BES was started.
+The `BES.LogName` key defines the full path to the BES log file. This log file tracks what requests are made and whether they complete. The distributed configuration sets this to `@prefix@/var/bes.log`.
 
-The `OPeNDAP.LogVerbose` key defaults to `no`, meaning the system will not dump debug information to the log file. If you set it to `yes`, the BES writes more detail to the log. This can help determine whether there is a problem with the server and where that problem might be.
+The `BES.LogVerbose` key defaults to `no`, meaning the system will not dump debug information to the log file. If you set it to `yes`, the BES writes more detail to the log. This can help determine whether there is a problem with the server and where that problem might be.
 
 ### 1.3 BES modules
 
@@ -80,9 +80,9 @@ By default, all files and directories are included except those that begin with 
 
 A client can connect to your server either by specifying a port on the server machine or by using a UNIX socket.
 
-The key `BES.ServerPort` sets the default port that the BES listens on, defaulting to `10002`. This can be overridden from the command line using the `-p` option to `besctl`.
+The key `BES.ServerPort` sets the default port that the BES listens on. The distributed configuration uses `10022`. This can be overridden from the command line using the `-p` option to `besctl`.
 
-The key `BES.ServerUnixSocket` should be set to the full path of your UNIX socket file. The default is `/tmp/opendap.socket`, which should work fine. This can also be overridden from the command line using the `-u` option to `besctl`.
+The key `BES.ServerUnixSocket` should be set to the full path of your UNIX socket file. A common choice is `/tmp/opendap.socket`. This can also be overridden from the command line using the `-u` option to `besctl`.
 
 ### 1.6 Running a secure server
 
@@ -105,7 +105,7 @@ There are also help files for the DAP responses. These files are represented by 
 Should the OPeNDAP server buffer informational requests? That is what this key specifies. A value of `no` means that the information is not buffered and is transmitted as it is added to the informational response object. If set to `yes`, then the information is buffered in the object and not transmitted until all information is gathered.
 
 ```conf
-OPeNDAP.Info.Buffered=no
+BES.Info.Buffered=no
 ```
 
 ### 1.9 Cache and compression
@@ -116,9 +116,9 @@ The BES does this by executing the shell script specified by the `BES.Compressed
 
 To determine whether the data file is compressed, the BES compares the name of the file to the regular expression specified in `BES.Compressed.Extensions`. If none is specified, the default recognizes `.gz`, `.Z`, and `.bz2` compression styles.
 
-The BES uncompresses the data into the directory specified by `BES.CacheDir`, which defaults to `/tmp`.
+The BES uncompresses the data into the directory specified by `BES.UncompressCache.dir`.
 
-The BES also attempts to keep the size of the cache directory at a manageable level. If the size of uncompressed BES files exceeds `BES.CacheDir.MaxSize`, which defaults to `500 MB`, the BES attempts to remove the oldest files in the cache until the size is below the specified number.
+The BES also attempts to keep the size of the cache directory at a manageable level. If the size of uncompressed BES files exceeds `BES.UncompressCache.size` (in MB), the BES attempts to remove the oldest files in the cache until the size is below the specified number. The cache file name prefix is set with `BES.UncompressCache.prefix`.
 
 ### 1.10 Container persistence
 
