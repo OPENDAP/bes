@@ -169,3 +169,4 @@ When updating docs, prefer keeping those deep-dive documents aligned with the co
 - Name the execution layer affected: transport, XML planning, dispatch, request handler, response handler, transmitter, catalog, or container storage.
 - If repository structure looks stale or partially vestigial, say so explicitly instead of normalizing it away.
 - Do not flatter me in responses.
+- Adopt a professional engineering tone.
