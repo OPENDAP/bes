@@ -13,6 +13,8 @@ The configuration file is installed in the BES installation's `etc/bes` director
 
 If you start the server with the `-i` option, the BES uses that value as a prefix and looks for `etc/bes/bes.conf` underneath it.
 
+Some helper scripts (for example `getDAP`, `bin/localBesGetDap`, and `bin/populateMDS`) still honor the `BES_CONF` environment variable and translate it into a `-c` option for `besstandalone`. The `besd`/`besctl` runtime itself does not read `BES_CONF` directly.
+
 ## 1. The `bes.conf` configuration file
 
 The BES configuration file, `bes.conf`, contains key/value pairs used by the OPeNDAP BES. For the most part you only need to make four changes to this file, starting with the first three parameters listed below.

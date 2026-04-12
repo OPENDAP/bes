@@ -115,7 +115,7 @@ Before you run the server, update `bes.conf`. This file contains key/value pairs
 
 Once you have built the module and updated `bes.conf`, you are ready to start the server.
 
-First, point the BES at your configuration file. The BES default configuration file is installed under `etc/bes`. For example, if you installed the BES into `/usr/local`, the default file is at `/usr/local/etc/bes`. The `besCreateModule` script generates a `bes.conf` file for you; edit it and pass that file to `besctl` using `-c`. If you prefer, you can pass an install prefix with `-i` and the BES will look for `etc/bes/bes.conf` under that prefix.
+First, point the BES at your configuration file. The BES default configuration file is installed under `etc/bes`. For example, if you installed the BES into `/usr/local`, the default file is at `/usr/local/etc/bes`. The `besCreateModule` script generates a `bes.conf` file for you; edit it and pass that file to `besctl` using `-c`. If you prefer, you can pass an install prefix with `-i` and the BES will look for `etc/bes/bes.conf` under that prefix. Some helper scripts still honor `BES_CONF` and translate it into `-c` for `besstandalone`, but `besd`/`besctl` do not read `BES_CONF` directly.
 
 Start the server:
 
