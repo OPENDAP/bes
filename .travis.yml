@@ -55,8 +55,8 @@ env:
     # NB: This value of $prefix must be shared between the hyrax-deps, libdap and bes builds.
     - prefix=$HOME/install
     - PATH=$prefix/bin:$prefix/deps/bin:$PATH
-    # Should the BES build with GDAL? This is here to round up build errors. Set this
-    # to the 'configure' script option to use (--with-gdal) or not use (--without-gdal).
+    # Should the BES build with the NCML handler? This is here to round up build errors. Set this
+    # to the 'configure' script option (--disable-ncml) to disable it.
     # jhrg 12/2/25
     - CONFIGURE_OPTIONS=--disable-ncml
     - TESTSUITEFLAGS=-j7
