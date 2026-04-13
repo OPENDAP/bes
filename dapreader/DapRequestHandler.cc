@@ -75,6 +75,20 @@ bool DapRequestHandler::d_use_test_types_set = false;
 
 const string module = "dapreader";
 
+static void read_key_value(const std::string &key_name, bool &key_value, bool &is_key_set)
+{
+    if (!is_key_set) {
+        bool key_found = false;
+        string doset;
+        TheBESKeys::TheKeys()->get_value(key_name, doset, key_found);
+        if (key_found) {
+            // It was set in the conf file
+            is_key_set = true;
+            key_value = TheBESKeys::read_bool_key(key_name, key_value);
+        }
+    }
+}
+
 static bool extension_match(const string &data_source, const string &extension)
 {
     string::size_type pos = data_source.rfind(extension);
@@ -82,7 +96,7 @@ static bool extension_match(const string &data_source, const string &extension)
 }
 
 DapRequestHandler::DapRequestHandler(const string &name) :
-        BESRequestHandler(name)
+BESRequestHandler(name)
 {
     add_method(DAS_RESPONSE, dap_build_das);
     add_method(DDS_RESPONSE, dap_build_dds);
@@ -94,8 +108,8 @@ DapRequestHandler::DapRequestHandler(const string &name) :
     add_method(VERS_RESPONSE, dap_build_vers);
     add_method(HELP_RESPONSE, dap_build_help);
 
-    d_use_test_types = TheBESKeys::read_bool_key("DR.UseTestTypes", d_use_test_types_set);
-    d_use_series_values = TheBESKeys::read_bool_key("DR.UseSeriesValues", d_use_series_values_set);
+    read_key_value("DR.UseTestTypes", d_use_test_types, d_use_test_types_set);
+    read_key_value("DR.UseSeriesValues", d_use_series_values, d_use_series_values_set);
 }
 
 /** Read values from a DAP2 or DAP4 response
@@ -111,13 +125,13 @@ void DapRequestHandler::load_dds_from_data_file(const string &accessed, DDS &dds
     TestTypeFactory t_factory;
     BaseTypeFactory b_factory;
     if (d_use_test_types)
-        dds.set_factory(&t_factory);   
-        //valgrind shows the leaking caused by the following line. KY 2019-12-12
-        //dds.set_factory(new TestTypeFactory);   // DDS deletes the factory
+        dds.set_factory(&t_factory);
+    //valgrind shows the leaking caused by the following line. KY 2019-12-12
+    //dds.set_factory(new TestTypeFactory);   // DDS deletes the factory
     else
         dds.set_factory(&b_factory);
-        //valgrind shows the leaking caused by the following line. KY 2019-12-12
-        //dds.set_factory(new BaseTypeFactory);
+    //valgrind shows the leaking caused by the following line. KY 2019-12-12
+    //dds.set_factory(new BaseTypeFactory);
 
     unique_ptr<Connect> url(new Connect(accessed));
     Response r(fopen(accessed.c_str(), "r"), 0);
@@ -225,7 +239,7 @@ void DapRequestHandler::build_dmr_from_file(const string& accessed, bool explici
         url->read_data_no_mime(*dmr, r);
     }
     else if (extension_match(accessed, ".dds") || extension_match(accessed, ".dods")
-            || extension_match(accessed, ".data")) {
+    || extension_match(accessed, ".data")) {
 
         unique_ptr<DDS> dds(new DDS(0 /*factory*/));
 
@@ -526,4 +540,3 @@ void DapRequestHandler::dump(ostream &strm) const
     BESRequestHandler::dump(strm);
     BESIndent::UnIndent();
 }
-
