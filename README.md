@@ -45,6 +45,8 @@ Information about the Hyrax data server can be found here in the
 latest and most comprehensive Hyrax documentation.</a>
 <br /> <br/>
 <a href="https://opendap.github.io/bes/html/">The BES API Documentation is here</a>
+<br /> <br/>
+See [`docs/BES_Overview.md`](docs/BES_Overview.md) as a starting point for technical documentation for the BES.
 
 ## Contents
 * What's here: What files are in the distribution
