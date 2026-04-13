@@ -2,9 +2,9 @@
 
 # README for the OPeNDAP BES
 
-For specific information about the BES, see the file _NEWS_ for a summary of
+For specific information about the BES, see the file [_NEWS_](./NEWS) for a summary of
 new features, important updates, and version-specific release notes. See
-_ChangeLog_ for a complete listing of changes/fixes since the previous release.
+[_ChangeLog_](./ChangeLog) for a complete listing of changes/fixes since the previous release.
 
 ## Introduction
 The Back-end Server (BES) for Hyrax is a unix daemon that builds DAP2 and DAP4 response
