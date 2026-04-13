@@ -4,91 +4,9 @@
 
 README for the OPeNDAP BES 
 ==========================
-# Version 3.21.1-0
-
-This version of the BES is part of Hyrax 1.17.1, a data server that supports the
-OPeNDAP data access protocols. See
-[opendap.org/software/hyrax/1.17](https://www.opendap.org/software/hyrax/1.17)
-for information about Hyrax.
-
-For specific information about the BES, see the file _NEWS_ for a summary of new
-features and important updates. See _ChangeLog_ for a complete listing of changes/fixes
-since the previous release.
-
-Major changes in this release are substantially improved support for HDF4, HDF4-EOS and 
-HDF4-EOS2 data stored in S3 via the DMR++ much faster generation of NetCDF4 response 
-files. There are many  other improvements and bug fixes.
-
-This version of the BES requires *libdap-3.21.1*
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14646648.svg)](https://doi.org/10.5281/zenodo.14646648)
-
-
-# Version 3.21.0-46
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10564745.svg)](https://doi.org/10.5281/zenodo.10564745)
-
-This version of the BES is part of Hyrax 1.17.0, a data server that supports the
-OPeNDAP data access protocols. See
-[opendap.org/software/hyrax/1.17](https://www.opendap.org/software/hyrax/1.17)
-for information about Hyrax.
-
-For specific information about the BES, see the file _NEWS_ for a summary of new
-features and important updates. See _ChangeLog_ for a complete listing of changes/fixes
-since the previous release.
-
-Major changes in this release are substantially improved support for HDF5 data stored
-in S3 via the DMR++ much faster generation of NetCDF4 response files. There are many 
-other improvements and bug fixes.
-
-This version of the BES requires *libdap-3.21.0*
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10564122.svg)](https://doi.org/10.5281/zenodo.10564122)
-
-# Version 3.20.13
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6884800.svg)](https://doi.org/10.5281/zenodo.6884800)
-
-This version of the BES is part of Hyrax 1.16.8, a data server that supports the
-OPeNDAP data access protocols. See
-[opendap.org/software/hyrax/1.16](https://www.opendap.org/software/hyrax/1.16)
-for information about Hyrax.
-
-For specific information about the BES, see the file _NEWS_ for a summary of new
-features and important updates. See _ChangeLog_ for a complete listing of changes/fixes
-since the previous release.
-
-This version of the BES requires *libdap-3.20.11*
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6878992.svg)](https://doi.org/10.5281/zenodo.6878992)
-
-# Version 3.20.12
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6803473.svg)](https://doi.org/10.5281/zenodo.6803473)
-
-_DOI available at https://zenodo.org/ search for OPENDAP/bes version 3.20.12_
-
-This version of the BES is part of Hyrax 1.16.7, a data server that supports the
-OPeNDAP data access protocols. See
-[opendap.org/software/hyrax/1.16](https://www.opendap.org/software/hyrax/1.16)
-for information about Hyrax.
-
-For specific information about the BES, see the file _NEWS_ for a summary of new
-features and important updates. See _ChangeLog_ for a complete listing of changes/fixes
-since the previous release.
-
-This version of the BES requires *libdap-3.20.10*
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6789103.svg)](https://doi.org/10.5281/zenodo.6789103)
-
-
-# Version 3.20.11
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6799677.svg)](https://doi.org/10.5281/zenodo.6799677)
-
-This version of the BES is part of Hyrax 1.16.6, a data server that supports the
-OPeNDAP data access protocols. See 
-[opendap.org/software/hyrax/1.16](https://www.opendap.org/software/hyrax/1.16)
-for information about Hyrax.
- 
-For specific information about the BES, see the file _NEWS_ for a summary of new 
-features and important updates. See _ChangeLog_ for a complete listing of changes/fixes 
-since the previous release. 
-
-This version of the BES requires *libdap-3.20.10*
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6789103.svg)](https://doi.org/10.5281/zenodo.6789103)
+For specific information about the BES, see the file _NEWS_ for a summary of
+new features, important updates, and version-specific release notes. See
+_ChangeLog_ for a complete listing of changes/fixes since the previous release.
 
 
 
