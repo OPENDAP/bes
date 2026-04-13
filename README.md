@@ -48,10 +48,10 @@ https://opendap.github.io/bes/html/
 See [`docs/BES_Overview.md`](./docs/BES_Overview.md) as a starting point for technical documentation for the BES.
 
 ## Contents
-- What's here: What files are in the distribution
-- Configuration: How to configure the BES
-- Testing: Once built and configured, how do you know it works?
-- Various features the BES supports
+- [What's here](#whats-here): What files are in the distribution
+- [Configuration](#configuration): How to configure the BES
+- [Testing](#testing): Once built and configured, how do you know it works?
+- [Various features the BES supports](#various-features-the-bes-supports)
 
 ## What's here
 Here there's a bes-config script which will be installing in $prefix/bin that
