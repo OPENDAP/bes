@@ -20,7 +20,8 @@ can also use data stored in database systems, web object stores (e.g., S3), othe
 of web APIs and remote data accessed using plain HTTP.
 
 In addition to the DAP2/4 protocols, the BES can package responses to queries for data in
-a number of well-known binary file types, including NetCDF3/4, GeoTIFF and ASCII/CSV.
+a number of well-known binary file types, including NetCDF3/4, GeoTIFF, ASCII/CSV and
+JPEG2000.
 
 All the functionality specific to DAP or particular types of data is implemented using
 a group of 'plugin modules.' These modules isolate the operations for specific kinds of
