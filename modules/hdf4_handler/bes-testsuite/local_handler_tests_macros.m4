@@ -124,8 +124,6 @@ m4_define([AT_BESCMD_H4_BESCONF_DAP2DATA_TEST], [
 
 ])
 
-dnl Note: HDF5 handler DAP4 data tests don't remove the checksum.
-dnl       If this becomes an issue, we will add REMOVE_DAP4_CHECKSUM([stdout]) in the future.
 m4_define([AT_BESCMD_H4_BESCONF_DAP4DATA_TEST], [
 
     AT_SETUP([$1 $2])
