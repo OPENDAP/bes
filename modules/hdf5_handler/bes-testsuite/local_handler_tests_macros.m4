@@ -100,9 +100,6 @@ m4_define([AT_BESCMD_H5_BESCONF3_RESPONSE_TEST], [dnl
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$2
 
-    # Here the bes_conf var is set using parameter number 2. This shadows the
-    # value that can be set using the optional -c (--conf) argument (see the top
-    # of this file). We might improve on this! jhrg 3/11/22
     bes_conf=$abs_builddir/$3
 
     pass=$4
@@ -136,9 +133,6 @@ m4_define([AT_BESCMD_H5_BESCONF_DAP2DATA_TEST], [
     input=$abs_srcdir/$1
     baseline=$abs_srcdir/$1.baseline
 
-    # Here the bes_conf var is set using parameter number 2. This shadows the
-    # value that can be set using the optional -c (--conf) argument (see the top
-    # of this file). We might improve on this! jhrg 3/11/22
     bes_conf=$abs_builddir/$2
 
     AT_XFAIL_IF([test z$3 = zxfail])
@@ -198,8 +192,6 @@ m4_define([AT_BESCMD_H5_BESCONF_DAP4DATA_TEST], [
     AT_CLEANUP
 ])
 
-dnl Note: HDF5 handler DAP4 data tests don't remove the checksum.
-dnl       If this becomes an issue, we will add REMOVE_DAP4_CHECKSUM([stdout]) in the future.
 m4_define([AT_BESCMD_H5_BESCONF2_DAP4DATA_TEST], [
 
     AT_SETUP([$1 $2 $3])
@@ -235,6 +227,9 @@ m4_define([AT_BESCMD_H5_BESCONF2_DAP4DATA_TEST], [
     AT_CLEANUP
 ])
 
+# Running this macro will generate expected failure on Mac if output is different than the baseline.
+# However, if the baseline file on Mac is the same as the output, unexpected pass will show. 
+# For other platforms, this test is the same as other tests because AT_XFAIL_IF is a no-op.
 m4_define([AT_BESCMD_H5_BESCONF2_RESPONSE_TEST_OS], [dnl
 
     AT_SETUP([$1 $2])
@@ -242,18 +237,10 @@ m4_define([AT_BESCMD_H5_BESCONF2_RESPONSE_TEST_OS], [dnl
 
     input=$abs_srcdir/$1
 
-    # Here the bes_conf var is set using parameter number 2. This shadows the
-    # value that can be set using the optional -c (--conf) argument (see the top
-    # of this file). We might improve on this! jhrg 3/11/22
     bes_conf=$abs_builddir/$2
 
-    # The baseline needs to contain something to tie it to the bes conf file since
-    # the same bescmd file may produce different output with a different bes conf.
     baseline=$abs_srcdir/$1.baseline
 
-    # Oddly, setting 'pass' to $3 and then using $pass in AT_XFAIL_IF() does not work,
-    # but using $3 does. This might be a function of when the AT_XFAIL_IF() macro is
-    # expanded. jhrg 3.20.20
     pass=$3
     repeat=$4
 
@@ -276,6 +263,4 @@ m4_define([AT_BESCMD_H5_BESCONF2_RESPONSE_TEST_OS], [dnl
 
     AT_CLEANUP
 ])
-
-
 
