@@ -31,7 +31,7 @@ jobs:
     name: Build on ${{ matrix.runs-on }}
     runs-on: ${{ matrix.runs-on }}
     env:
-      GDAL_OPTION: "--without-gdal"
+      CONFIGURE_OPTIONS: "--disable-ncml"
       CMAC_ID: "${{ secrets.AWS_GHA_BES_ID }}"
       CMAC_ACCESS_KEY: "${{ secrets.AWS_GHA_BES_SECRET_KEY }}"
       CMAC_URL: "https://s3.amazonaws.com/cloudydap/"
@@ -96,7 +96,7 @@ jobs:
           export prefix="$HOME/install"
           pwd
           autoreconf --force --install --verbose
-          ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $GDAL_OPTION --enable-developer
+          ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $CONFIGURE_OPTIONS --enable-developer
           set +x
         shell: bash
       - name: Build and test bes
