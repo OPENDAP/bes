@@ -45,7 +45,7 @@ The BES API documentation:
 
 https://opendap.github.io/bes/html/
 
-See `docs/BES_Overview.md` as a starting point for technical documentation for the BES.
+See [`docs/BES_Overview.md`](./docs/BES_Overview.md) as a starting point for technical documentation for the BES.
 
 ## Contents
 - What's here: What files are in the distribution
