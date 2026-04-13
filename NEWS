@@ -52,17 +52,17 @@
 * Major changes include improved support for HDF4, HDF4-EOS, and HDF4-EOS2 data
   stored in S3 via the DMR++, plus much faster generation of NetCDF4 response files.
 * This version of the BES requires libdap-3.21.1.
-* DOI: 10.5281/zenodo.14646648
+* DOI: https://doi.org/10.5281/zenodo.14646648
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ## News for 3.21.0
 
-## Release Details (3.21.0-46)
+## Release Details
 * This version of the BES is part of Hyrax 1.17.0. See opendap.org/software/hyrax/1.17.
 * Major changes include improved support for HDF5 data stored in S3 via the DMR++
   and much faster generation of NetCDF4 response files.
 * This version of the BES requires libdap-3.21.0.
-* DOI: 10.5281/zenodo.10564122
+* DOI: https://doi.org/10.5281/zenodo.10564122
 
 Reworked the way we implement the BES's singletons (or more of them at least)
 so that they use the Meyers Singleton pattern. This includes the EffectiveUrlCache
@@ -126,18 +126,20 @@ The bundled grid() and geogrid() server side functions now support DAP4.
 * Triggered a build to test new dependencies (hdf-4 and netcdf-4 updates).
 * Improved error messages for the response is too big, and response tool too
   much time to marshall.
+## Release Details
 * This version of the BES is part of Hyrax 1.16.8. See opendap.org/software/hyrax/1.16.
 * This version of the BES requires libdap-3.20.11.
-* DOI: 10.5281/zenodo.6878992
+* DOI: https://doi.org/10.5281/zenodo.6878992
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ## News for 3.20.12
 
 * Patched bug in HDF5Array.cc introduced by the std::vector refactor
 * Added time.h header to ppt/SocketUtilities.cc
+## Release Details
 * This version of the BES is part of Hyrax 1.16.7. See opendap.org/software/hyrax/1.16.
 * This version of the BES requires libdap-3.20.10.
-* DOI: 10.5281/zenodo.6803473
+* DOI: https://doi.org/10.5281/zenodo.6803473
 * Note: DOI also available at zenodo.org (search for OPENDAP/bes version 3.20.12).
 
 
@@ -166,9 +168,10 @@ The bundled grid() and geogrid() server side functions now support DAP4.
 * Improved support for arrays of type String.
 * Fixed trusted url bug in DMZ parser.
 * Added support for "empty" valuyes scalars with associated _FillValue metadata.
+## Release Details
 * This version of the BES is part of Hyrax 1.16.6. See opendap.org/software/hyrax/1.16.
 * This version of the BES requires libdap-3.20.10.
-* DOI: 10.5281/zenodo.6799677
+* DOI: https://doi.org/10.5281/zenodo.6799677
 
 #### get_dmrpp Improvements
 * Added support for S3 hosted granules to get_dmrpp
