@@ -2,16 +2,23 @@
 # machines, to ensure code changes won't break local development
 name: OSX CI
 on:
-  # For now, run only on manually triggered builds (workflow_dispatch).
-  # Uncomment the "push" and "pull_request" to build on all non-draft PRs
   workflow_dispatch:
   push:
     branches:
       - master
       - main
       - /^(.*-test-deploy)$/
+    paths-ignore:
+      - ".vscode/**"
+      - "*.md"
+      - "Dockerfile"
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - ".vscode/**"
+      - "*.md"
+      - "Dockerfile"
+
 concurrency:
   # Cancel intermediate builds only on pull requests
   group: ${{ github.workflow }}-${{ github.ref }}

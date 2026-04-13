@@ -771,6 +771,14 @@ m4_define([REMOVE_VERSIONS], [dnl
   mv $1.awk $1
 ])
 
+m4_define([REMOVE_DMR_VERSIONS], [dnl
+  awk '{
+    gsub(/dmrVersion="[[0-9]+]\.[[0-9]+]"/, "dmrVersion=\"removed\"");
+    print
+  }' < $1 > $1.awk
+  mv $1.awk $1
+])
+
 
 dnl Given a filename, remove the <Value> element of a DAP4 data response as
 dnl printed by getdap4 so that we dont have issues with comparing data values

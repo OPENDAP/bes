@@ -82,6 +82,7 @@ docker build \
     --build-arg FINAL_BASE_IMAGE="$FINAL_BASE_IMAGE" \
     --build-arg LIBDAP_RPM_FILENAME="$LIBDAP_RPM_FILENAME" \
     --build-arg LIBDAP_DEVEL_RPM_FILENAME="$LIBDAP_DEVEL_RPM_FILENAME" \
+    --build-arg DIST="$DIST" \
     --build-arg HYRAX_DEPENDENCIES_TARBALL="$HYRAX_DEPENDENCIES_TARBALL" \
     --build-arg GDAL_OPTION="$GDAL_OPTION" \
     --build-arg BES_BUILD_NUMBER="$BES_BUILD_NUMBER" \
