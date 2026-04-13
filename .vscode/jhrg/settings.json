@@ -46,10 +46,6 @@
         "PATH": "${config:PATH}"
     },
     "cSpell.words": [
-        "autotest",
-        "LIBDAP",
-        "opendap",
-        "rockylinux",
-        "sonarcloud"
+        "DISTCHECK"
     ]
 }
