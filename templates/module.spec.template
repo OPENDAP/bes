@@ -1,0 +1,33 @@
+Name: OPENDAP_TYPE_module
+Version: 0.0.1
+Release: 1%{?dist}
+Summary: OPeNDAP BES module for OPENDAP_TYPE
+
+License: LGPLv2.1+
+URL: https://www.opendap.org/
+Source0: %{name}-%{version}.tar.gz
+
+BuildRequires: gcc-c++, libtool, make, autoconf, automake, pkgconfig
+
+%description
+OPeNDAP BES module for OPENDAP_TYPE.
+
+%prep
+%setup -q
+
+%build
+./configure %{?configure_args}
+make %{?_smp_mflags}
+
+%install
+rm -rf %{buildroot}
+make DESTDIR=%{buildroot} install
+
+%files
+%license COPYING
+%doc README NEWS
+%{_libdir}/bes/libOPENDAP_TYPE_module.so
+
+%changelog
+* Thu Jan 01 1970 OPeNDAP - 0.0.1-1
+- Initial package

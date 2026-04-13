@@ -8,6 +8,26 @@ then
     exit 1
 fi
 
+require_template()
+{
+    if [ ! -f "${TEMPLATE_DIR}/$1" ]
+    then
+        echo "Required template missing: ${TEMPLATE_DIR}/$1"
+        echo "Please update the templates directory before running besCreateModule."
+        exit 1
+    fi
+}
+
+copy_template_if_exists()
+{
+    if [ -f "${TEMPLATE_DIR}/$1" ]
+    then
+        /bin/cp "${TEMPLATE_DIR}/$1" "./$2"
+    else
+        echo "Warning: template not found: ${TEMPLATE_DIR}/$1 (skipping)"
+    fi
+}
+
 echo "Enter server type, e.g. cedar, fits, netcdf: "
 read serverType
 if [ "$serverType" = "" ]
@@ -59,11 +79,12 @@ fi
 # edit these.
 for i in COPYRIGHT COPYING NEWS README
 do
-/bin/cp ${TEMPLATE_DIR}/${i} ./
+    copy_template_if_exists ${i} ${i}
 done
 
 for i in RequestHandler.cc RequestHandler.h ResponseNames.h
 do
+require_template ${i}
 /bin/cp ${TEMPLATE_DIR}/${i} ./${classPrefix}${i}
 ed ./${classPrefix}${i} << EOF > /dev/null 2>&1
 ,s/OPENDAP_CLASS/${classPrefix}/g
@@ -75,6 +96,7 @@ done
 
 for i in Module.h Module.cc
 do
+require_template ${i}
 /bin/cp ${TEMPLATE_DIR}/${i} ./${classPrefix}${i}
 ed ./${classPrefix}${i} << EOF > /dev/null 2>&1
 ,s/OPENDAP_CLASS/${classPrefix}/g
@@ -102,22 +124,44 @@ done
 #q
 #EOF
 
+require_template Makefile.am.template
+require_template configure.ac
+
 for i in Makefile.am.template configure.ac bes-data.sh.in module.spec.template
 do
-/bin/cp ${TEMPLATE_DIR}/${i} ./${i}
-ed ./${i} << EOF > /dev/null 2>&1
+    if [ -f "${TEMPLATE_DIR}/${i}" ]
+    then
+        /bin/cp ${TEMPLATE_DIR}/${i} ./${i}
+        ed ./${i} << EOF > /dev/null 2>&1
 ,s/OPENDAP_CLASS/${classPrefix}/g
 ,s/OPENDAP_TYPE/${serverType}/g
 w
 q
 EOF
+    else
+        echo "Warning: template not found: ${TEMPLATE_DIR}/${i} (skipping)"
+    fi
 done
-/bin/mv Makefile.am.template Makefile.am
-/bin/mv bes-data.sh.in bes-${serverType}-data.sh.in
-/bin/mv module.spec.template ${serverType}_module.spec
+if [ -f Makefile.am.template ]
+then
+    /bin/mv Makefile.am.template Makefile.am
+fi
+if [ -f bes-data.sh.in ]
+then
+    /bin/mv bes-data.sh.in bes-${serverType}-data.sh.in
+fi
+if [ -f module.spec.template ]
+then
+    /bin/mv module.spec.template ${serverType}_module.spec
+fi
 
 /bin/mkdir conf
-/bin/cp ${TEMPLATE_DIR}/conf/* conf/
+if [ -d "${TEMPLATE_DIR}/conf" ]
+then
+    /bin/cp ${TEMPLATE_DIR}/conf/* conf/
+else
+    echo "Warning: template directory ${TEMPLATE_DIR}/conf not found (skipping)"
+fi
 
 include_dap=0
 
@@ -481,8 +525,7 @@ echo "*                                                     *"
 echo "* Your ${classPrefix} files have been created"
 echo "*                                                     *"
 echo "* You will need to make modifications to some of the  *"
-echo "* code created here. Please refer to the document     *"
-echo "* OPeNDAPCreatingServer for more information          *"
+echo "* code created here. Please refer to                   *"
+echo "* docs/BES_Creating_New_Modules.md for more info      *"
 echo "*                                                     *"
 echo "*******************************************************"
-

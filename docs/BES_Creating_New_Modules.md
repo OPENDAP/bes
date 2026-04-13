@@ -11,7 +11,7 @@ Patrick West
 
 This manual guides you through creating a new OPeNDAP BES module using the `besCreateModule` script. It explains which files are created, which functions you need to implement, and how to build and run your module. It assumes you understand the OPeNDAP data model. If not, see [http://www.opendap.org/](http://www.opendap.org/).
 
-For more information on the server architecture, see `BES_Server_Architecture.doc`. For more information on configuration, see `BES_Configuration.doc`.
+For more information on the server architecture, see `docs/BES_Framework.md`. For more information on configuration, see `docs/BES_Configuration.md`.
 
 ## 1. Creating a New OPeNDAP Module
 
@@ -25,7 +25,7 @@ Run the script from the command line:
 ./besCreateModule
 ```
 
-The script asks three questions.
+The script asks four questions.
 
 **Question 1**
 
@@ -46,7 +46,7 @@ This prefix is used for generated C++ class names. For example, `Cedar` or `HDF5
 **Question 3**
 
 ```
-Enter responses handled by this server (das dds data):
+Enter response types handled by this server (das dds data):
 (space separated. help and version are added for you, no need to include them here)
 ```
 
@@ -55,6 +55,14 @@ If your module provides DAS, DDS, and Data objects, press Enter to accept the de
 ```
 das dds data tab flat info stream
 ```
+
+**Question 4**
+
+```
+Enter new commands you are implementing:
+```
+
+If you are adding custom BES commands (beyond the built-in `show`, `set`, `get`, etc.), list them here. Entering nothing skips command generation. Each command creates a stub XML command parser and a response handler.
 
 After you answer the questions, the script creates files. For example, if you enter `hdf`, `HDF`, and accept the default responses, it creates:
 
@@ -65,18 +73,25 @@ After you answer the questions, the script creates files. For example, if you en
 - `HDFResponseNames.h`
 - `Makefile.am`
 - `configure.ac`
-- `bes.conf`
+- `bes-hdf-data.sh.in` (install-time helper script)
+- `COPYRIGHT`, `COPYING`, `NEWS`, `README` (if present in templates)
+- `hdf_module.spec` (if the spec template is present)
 
 If you add new response types, the script also creates two files per response type:
 
 - `HDF<response_type>ResponseHandler.cc`
 - `HDF<response_type>ResponseHandler.h`
 
-A new `conf` directory is also created with build configuration files.
+If you add new commands, the script also creates two files per command:
+
+- `HDF<command>XMLCommand.cc`
+- `HDF<command>XMLCommand.h`
+
+A new `conf` directory is also created with build configuration files **if** the templates include a `conf/` directory. If you are missing those templates, update the templates before running the script.
 
 The script then runs `autoreconf`, `configure`, and `make`. The code builds a BES module library that can be loaded dynamically into the BES. This assumes you have already built the OPeNDAP code (libdap and BES).
 
-The default `configure` prefix is taken from the `OPENDAP_ROOT` environment variable, which you should set before running the script.
+The script runs `./configure` with default settings. If you need a specific install prefix or dependency path, rerun `./configure` yourself with the appropriate flags before building.
 
 Now you need to implement the code that builds your responses. You can update `configure.ac` and `Makefile.am` to include any libraries or headers your module needs.
 
@@ -109,13 +124,13 @@ You can extend the BES in additional ways through your dynamically loaded module
 
 ## 3. The `bes.conf` Configuration File
 
-Before you run the server, update `bes.conf`. This file contains key/value pairs used by the BES. For more information, see `BES_Configuration.doc`.
+Before you run the server, update `bes.conf`. This file contains key/value pairs used by the BES. For more information, see `docs/BES_Configuration.md`.
 
 ## 4. Starting and Stopping the Server
 
 Once you have built the module and updated `bes.conf`, you are ready to start the server.
 
-First, point the BES at your configuration file. The BES default configuration file is installed under `etc/bes`. For example, if you installed the BES into `/usr/local`, the default file is at `/usr/local/etc/bes`. The `besCreateModule` script generates a `bes.conf` file for you; edit it and pass that file to `besctl` using `-c`. If you prefer, you can pass an install prefix with `-i` and the BES will look for `etc/bes/bes.conf` under that prefix. Some helper scripts still honor `BES_CONF` and translate it into `-c` for `besstandalone`, but `besd`/`besctl` do not read `BES_CONF` directly.
+First, point the BES at your configuration file. The BES default configuration file is installed under `etc/bes`. For example, if you installed the BES into `/usr/local`, the default file is at `/usr/local/etc/bes`. The `besCreateModule` script does **not** generate `bes.conf`; it generates a `bes-<type>-data.sh` helper script (from `bes-<type>-data.sh.in`) that can update an existing `bes.conf` after install. Edit `bes.conf` as needed and pass that file to `besctl` using `-c`. If you prefer, you can pass an install prefix with `-i` and the BES will look for `etc/bes/bes.conf` under that prefix. Some helper scripts still honor `BES_CONF` and translate it into `-c` for `besstandalone`, but `besd`/`besctl` do not read `BES_CONF` directly.
 
 Start the server:
 
