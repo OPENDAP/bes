@@ -68,8 +68,10 @@ static int visit_link_cb(hid_t  group_id, const char *name, const H5L_info_t *oi
 static int visit_obj_cb(hid_t o_id, const char *name, const H5O_info_t *oinfo, void *_op_data);
 static int visit_obj_cb2(hid_t o_id, const char *name, const H5O_info_t *oinfo, void *_op_data);
 
+#if 0
 // H5Aiterate2 call back function, check if having the dimension scale attributes.
 static herr_t attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void *opdata);
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn get_attr_info(hid_t dset, int index, bool is_dap4,DSattr_t *attr_inst_ptr,
@@ -620,6 +622,7 @@ void get_dataset(hid_t pid, const string &dname, DS_t * dt_inst_ptr)
 
 }
 
+#if 0
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn get_dataset_dmr(const hid_t file_id, hid_t pid, const string &dname, DS_t * dt_inst_ptr)
 /// For DAP4, obtain data information in a dataset datatype, dataspace(dimension sizes)
@@ -828,7 +831,9 @@ void get_dataset_dmr(hid_t file_id, hid_t pid, const string &dname, DS_t * dt_in
     }
  
 }
+#endif
 
+#if 0
 // This function will retrieve the dimension names for all dimensions in this variable. The variable is
 // represented as the HDF5 dataset id dset. 
 bool handle_dimscale_dmr(hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
@@ -927,6 +932,7 @@ bool handle_dimscale_dmr(hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
 
     return is_pure_dim;
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn print_attr(hid_t type, int loc, void *sm_buf)
@@ -1958,6 +1964,7 @@ bool has_dimscale_attr(hid_t dataset) {
 
 }
 
+#if 0
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn attr_info(hid_t loc_id, const char* name, const H5A_info_t* void*opdata)
 ///
@@ -2052,6 +2059,7 @@ attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void
 
     return 0;
 }
+#endif
 
 bool check_var_null_dim_name(hid_t fileid) {
 
@@ -2219,6 +2227,7 @@ bool has_null_dim_name(hid_t dataset) {
 
 }
 
+#if 0
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn obtain_dimnames(hid_t dset, int ndims, DS_t * dt_inst_ptr, vector<link_info_t> & hdf5_hls)
 /// Obtain the dimension names of an HDF5 dataset and save the dimension names.
@@ -2413,6 +2422,7 @@ string obtain_dimname_deref(hid_t ref_dset, const DS_t *dt_inst_ptr) {
     string trim_objname = objname_str.substr(0,objnamelen);
     return trim_objname;
 }
+#endif
 
 void obtain_dimname_hardlinks(hid_t file_id, hid_t ref_dset, vector<link_info_t>& hdf5_hls, string & trim_objname) {
     // We need to check if there are hardlinks for this variable.
