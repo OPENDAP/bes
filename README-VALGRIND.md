@@ -1,27 +1,39 @@
-#To get valgrind output with suppressed errors
+# Valgrind Output With Suppressed Errors
 
-(for instance with command `besstandalone -c tests/bes.conf -i tests/contiguous/coads_climatology.dmr` in dmrpp-module):
+Example command uses `besstandalone -c tests/bes.conf -i tests/contiguous/coads_climatology.dmr` in `dmrpp-module`.
 
-## 1. Generate valgrind output
-####(vg-dmrpp.txt)
+## 1. Generate Valgrind Output
 
-`cd ../hyrax/bes/modules/dmrpp-module`
+Output file: `vg-dmrpp.txt`
 
-`valgrind --leak-check=full --show-reachable=yes --error-limit=no --gen-suppressions=all --log-file=vg-dmrpp.txt besstandalone -c tests/bes.conf -i tests/contiguous/coads_climatology.dmr
-`
+```bash
+cd ../hyrax/bes/modules/dmrpp-module
+valgrind --leak-check=full --show-reachable=yes --error-limit=no \
+  --gen-suppressions=all --log-file=vg-dmrpp.txt \
+  besstandalone -c tests/bes.conf -i tests/contiguous/coads_climatology.dmr
+```
 
-If in the log file you get "Warning: client switching stacks?..." then use `--max-stackframe` option to get clean output.
+If the log shows `Warning: client switching stacks?...`, use `--max-stackframe` to get clean output.
 
-## 2. Get suppression file 
-####(vg-dmrpp.supp)
+## 2. Generate Suppression File
 
-`cat vg-dmrpp.txt | /home/opendap/hyrax/bes/parse_valgrind_suppressions.sh > vg-dmrpp.supp
-`
-## 3. Get valgrind output with suppression file
+Output file: `vg-dmrpp.supp`
 
-`valgrind -s --leak-check=full --show-reachable=yes --error-limit=no --suppressions=./vg-dmrpp.supp --gen-suppressions=all --log-file=test_bes_make.log besstandalone -c tests/bes.conf -i tests/contiguous/coads_climatology.dmr`
+```bash
+cat vg-dmrpp.txt | /home/opendap/hyrax/bes/parse_valgrind_suppressions.sh > vg-dmrpp.supp
+```
 
-Suppression file could be edited to remove repeated lines that catches multiple similar errors.
+## 3. Run Valgrind With Suppressions
 
+```bash
+valgrind -s --leak-check=full --show-reachable=yes --error-limit=no \
+  --suppressions=./vg-dmrpp.supp --gen-suppressions=all \
+  --log-file=test_bes_make.log \
+  besstandalone -c tests/bes.conf -i tests/contiguous/coads_climatology.dmr
+```
 
-https://wiki.wxwidgets.org/Valgrind_Suppression_File_Howto
+You can edit the suppression file to remove repeated lines that match multiple similar errors.
+
+## Reference
+
+- https://wiki.wxwidgets.org/Valgrind_Suppression_File_Howto
