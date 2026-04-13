@@ -1,5 +1,15 @@
 # Introduction
 
+## Documentation map
+
+| Document | What it covers |
+| --- | --- |
+| [BES Modules](BES_Modules.md) | Overview of the plugin module system and module responsibilities. |
+| [BES Framework](BES_Framework.md) | Core framework concepts, request/response flow, and extension points. |
+| [BES Configuration](BES_Configuration.md) | Runtime configuration, `bes.conf`, and module configuration files. |
+| [Creating New Modules](BES_Creating_New_Modules.md) | Guidance for adding new data or response modules. |
+| [BES PPT/TfTP](BES_PPT.md) | Low-level PPT/TfTP protocol details for BES connections. |
+
 ## The Hyrax server architecture
 
 ## The BES
@@ -16,8 +26,8 @@ All the functionality specific to DAP or particular types of data is implemented
 a group of 'plugin modules.' These modules isolate the operations for specific kinds of
 daa from the BES software itself. Each kind of data that can be read is accessed using
 a different module and each response other than the DAP2/4 responses is returned using
-a module.
-For more detail, see [BES Modules](BES_Modules.md) and [BES Framework](BES_Framework.md).
+a module. For more detail, see [BES Modules](BES_Modules.md) and [BES Framework](BES_Framework.md).
+For guidance on adding new modules, see [Creating New Modules](BES_Creating_New_Modules.md).
 
 The BES does not contain (much) software that implements the DAP2/4 protocols. Instead, it
 uses the libdap4 library for that. See [github.com/opendap/libdap4](github.com/opendap/libdap4).
@@ -31,9 +41,10 @@ support lazy data read operations, only reading those data that are needed and o
 they are needed. Note that some kinds of well-known binary responses must be built in full
 before they are returned, but this is not a requirement of the framework but the responses,
 or their APIs.
+For configuration details and installed layout, see [BES Configuration](BES_Configuration.md).
+For the PPT/TfTP protocol used between clients and the BES, see [BES PPT/TfTP](BES_PPT.md).
 
-Information about the Hyrax data server can be found here in the
-<a href="https://opendap.github.io/hyrax_guide/Master_Hyrax_Guide.html">
+Information about the Hyrax data server can be found here in the <a href="https://opendap.github.io/hyrax_guide/Master_Hyrax_Guide.html">
 latest and most comprehensive Hyrax documentation.</a>
 <br /> <br/>
 <a href="https://opendap.github.io/bes/html/">The BES API Documentation is here</a>
