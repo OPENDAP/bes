@@ -2483,14 +2483,12 @@ void obtain_dimname_hardlinks(hid_t file_id, hid_t ref_dset, vector<link_info_t>
 #endif
 
             t_link_info_t t_li_info;
-            t_li_info.
-                    link_unvisited = obj_info.rc;
+            t_li_info.link_unvisited = obj_info.rc;
 
 #if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13) || (H5_VERS_MINOR == 14)))
             memcpy(&t_li_info.link_addr,&obj_info.token,sizeof(H5O_token_t));
 #else
-            t_li_info.
-                    link_addr = obj_info.addr;
+            t_li_info.link_addr = obj_info.addr;
 #endif
 
             if (H5Lvisit(file_id, H5_INDEX_NAME, H5_ITER_NATIVE, visit_link_cb,

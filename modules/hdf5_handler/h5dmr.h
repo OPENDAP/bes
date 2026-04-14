@@ -154,7 +154,7 @@ bool breadth_first(hid_t, hid_t, const char *, libdap::D4Group* par_grp, const c
 void obtain_hdf5_object_name(hid_t pid, hsize_t obj_index, const char *gname, std::vector<char> &oname);
 bool check_soft_external_links(libdap::D4Group *par_grp, hid_t pid, int & slinkindex, const char *gname,
                                const std::vector<char> &oname, bool handle_softlink);
-void get_dataset_dmr(hid_t file_id, hid_t pid, const std::string &dname, DS_t * dt_inst_ptr, bool has_dimscale,
+void get_dataset_dmr(libdap::D4Group *par_grp, hid_t file_id, hid_t pid, const std::string &dname, DS_t * dt_inst_ptr, bool has_dimscale,
                      bool is_eos5, bool &is_pure_dims, std::vector<link_info_t> &, std::vector<std::string> &, const eos5_dim_info_t &);
 void handle_actual_dataset(libdap::D4Group *par_grp, hid_t pid, const string &full_path_name, const string &fname,
                            bool use_dimscale, bool is_eos5, eos5_dim_info_t &eos5_dim_info);
@@ -165,13 +165,15 @@ void handle_child_grp(hid_t file_id, hid_t pid, const char *gname, libdap::D4Gro
                       bool use_dimscale, bool is_eos5,std::vector<link_info_t> & hdf5_hls,
                       eos5_dim_info_t & eos5_dim_info, std::vector<std::string> & handled_cv_names,
                       const std::vector<char>& oname, std::unordered_set<std::string>&);
-bool handle_dimscale_dmr(hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
+bool handle_dimscale_dmr(libdap::D4Group *d4_grp, hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
                          DS_t * dt_inst_ptr,std::vector<link_info_t> &hdf5_hls,std::vector<std::string> &handled_cv_names,
                          const eos5_dim_info_t &);
-void obtain_dimnames(hid_t file_id, hid_t dset, int ndim, DS_t*dt_inst_ptr, std::vector<link_info_t>&, bool is_eos5, const eos5_dim_info_t &);
-void obtain_dimnames_internal(hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr,std::vector<link_info_t> & hdf5_hls,
+void obtain_dimnames(libdap::D4Group *d4_grp, hid_t file_id, hid_t dset, int ndim, DS_t*dt_inst_ptr, std::vector<link_info_t>&, bool is_eos5, const eos5_dim_info_t &);
+void obtain_dimnames_internal(libdap::D4Group *d4_grp, hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr,std::vector<link_info_t> & hdf5_hls,
                               bool is_eos5, const string &dimlist_name, const eos5_dim_info_t &);
-std::string obtain_dimname_deref(hid_t ref_dset, const DS_t *dt_inst_ptr);
+
+std::string obtain_dimname_deref(libdap::D4Group *d4_grp, hid_t ref_dset, const DS_t *dt_inst_ptr);
+std::string obtain_dimname_dap4(libdap::D4Group *d4_grp, size_t dim_size);
 
 void read_objects(libdap::D4Group* d4_grp,hid_t, const std::string & varname, const std::string & filename, hid_t, bool, bool,
                   eos5_dim_info_t &);
