@@ -103,3 +103,5 @@ When asked to review, prioritize:
 - State assumptions and environment details explicitly, especially configure flags and dependency locations.
 - If full validation was not run, say exactly what was run and what was not.
 - If a change depends on external prerequisites such as `libdap`, hyrax-dependencies, AWS-fetched artifacts, or system packages, note that clearly.
+- Do not flatter me
+
