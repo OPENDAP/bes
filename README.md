@@ -303,7 +303,7 @@ Each of the handlers, which can be built as submodules within this
 code, also has DAP2 and DAP4 support on their master branch and a
 'dap2' branch for the DAP2-only code.
 
-## Support for Data Stored on Amazon's S3 Web Object Store
+### Support for Data Stored on Amazon's S3 Web Object Store
 Hyrax 1.16 has prototype support for subset-in-place of HDF5 and NetCDF4
 data files that are stored on AWS S3. See the preliminary documentation in
 https://github.com/OPENDAP/bes/blob/master/modules/dmrpp_module/data/README.md.
@@ -313,7 +313,7 @@ disk so that it can be served (and subset) in-place from S3 without reformatting
 the original data files. Support for other web object stores besides S3
 has also been demonstrated.
 
-## Support for Dataset Crawler/Indexer Systems
+### Support for Dataset Crawler/Indexer Systems
 We have added support for Datasets served by Hyrax now provide
 information Google and other search engines need to make these data
 findable. All dataset landing pages and catalog navigation
@@ -325,7 +325,7 @@ Hyrax service to Google (and other) crawlers attention. LINK TO
 JSON-LD README.MD. Our work on JSON-LD support was funded by NSF Grant
 number 1740704.
 
-## Experimental Support for STARE Indexing
+### Experimental Support for STARE Indexing
 We have added experimental support for STARE (Spatio Temporal
 Adaptive-Resolution Encoding) as part of our work on NASA ACCESS
 grant 17-ACCESS17-0039.
