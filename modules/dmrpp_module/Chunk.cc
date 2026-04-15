@@ -1364,9 +1364,9 @@ std::shared_ptr<http::url> Chunk::get_data_url() const {
 
     std::shared_ptr<http::EffectiveUrl> url = SignedUrlCache::TheCache()->get_signed_url(d_data_url);
 
-    // if (url == nullptr) {
-        // url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url);
-    // }
+    if (url == nullptr) {
+        url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url);
+    }
     // BESDEBUG(MODULE, prolog << "Using data_url: " << url->get_url_no_query() << endl);
 
 #if ENABLE_TRACKING_QUERY_PARAMETER
