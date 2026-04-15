@@ -325,7 +325,7 @@ Hyrax service to Google (and other) crawlers attention. LINK TO
 JSON-LD README.MD. Our work on JSON-LD support was funded by NSF Grant
 number 1740704.
 
-## Experimental Support for STARE Indexing
+### Experimental Support for STARE Indexing
 We have added experimental support for STARE (Spatio Temporal
 Adaptive-Resolution Encoding) as part of our work on NASA ACCESS
 grant 17-ACCESS17-0039.
