@@ -313,7 +313,7 @@ disk so that it can be served (and subset) in-place from S3 without reformatting
 the original data files. Support for other web object stores besides S3
 has also been demonstrated.
 
-## Support for Dataset Crawler/Indexer Systems
+### Support for Dataset Crawler/Indexer Systems
 We have added support for Datasets served by Hyrax now provide
 information Google and other search engines need to make these data
 findable. All dataset landing pages and catalog navigation
