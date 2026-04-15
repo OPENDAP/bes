@@ -4,7 +4,7 @@ TEMPLATE_DIR=@pkgdatadir@/templates
 if [ ! -d ${TEMPLATE_DIR} ]
 then
     echo "the templates directory does not exist."
-    echo "It containes template files for use by your new server"
+    echo "It contains template files for use by your new server"
     exit 1
 fi
 

@@ -7,7 +7,10 @@ Boulder, CO.
 Patrick West  
 <mailto:pwest@hao.ucar.edu>
 
-This document describes the settings in the BES configuration file.
+This document describes the settings in the BES configuration file. It is intended for developers, not people configuring production servers. For many of our integration tests, a `bes.conf` (or equivalent) file needs to be written. These are generally automatically generated from 'input' files name `bes.conf.in` using the autotools system. Look at code in the modules subdirectories to learn more about this.
+
+>[!TIP]
+If you have wound up here looking for information about configuing a production server, go to [The Hyrax Installation Guide](https://opendap.github.io/hyrax_guide/Master_Hyrax_Guide.html), and specifically [Section 4, Configuring and Customizing Hyrax](https://opendap.github.io/hyrax_guide/Master_Hyrax_Guide.html#_configuring_and_customizing_hyrax).
 
 The configuration file is installed in the BES installation's `etc/bes` directory. For example, if you install the BES into `/usr/local`, then `bes.conf` will be located in `/usr/local/etc/bes/bes.conf`. If you want to use a different configuration file, pass its path with the `-c` option when starting `besd` (or with `besctl`).
 
@@ -31,7 +34,7 @@ The `BES.LogVerbose` key defaults to `no`, meaning the system will not dump debu
 
 ### 1.3 BES modules
 
-The BES comes with a default set of commands. You can display help, version, and process information; list what keys are defined in the BES; set containers; create definitions; stream files back; and set context.
+_The modules loaded into the BES each implement a set of default commands. You can display help, version, and process information; list what keys are defined in the BES; set containers; create definitions; stream files back; and set context.
 
 The BES provides a mechanism to load new modules into the server, creating ways to access different types of data, new commands, new aggregation, and more. Refer to `OpeNDAP_Creating_Module.doc` for more information on creating a new BES module.
 
@@ -40,12 +43,10 @@ The parameter `BES.modules` is set to the names of the modules you want to load.
 There are examples in `bes.conf`. Here is one. Suppose you have a netCDF module to be loaded, and this netCDF module handles DAP requests. You would have the following parameters set in the configuration file:
 
 ```conf
-BES.modules=dap,cmd,ascii,usage,www,nc
+BES.modules=dap,cmd,ascii,nc
 BES.module.dap=/usr/local/lib/bes/libdap_module.so
 BES.module.cmd=/usr/local/lib/bes/libdap_cmd_module.so
 BES.module.ascii=/usr/local/lib/bes/libascii_module.so
-BES.module.usage=/usr/local/lib/bes/libusage_module.so
-BES.module.www=/usr/local/lib/bes/libwww_module.so
 BES.module.nc=/usr/local/lib/bes/libnc_module.so
 ```
 
@@ -61,6 +62,9 @@ BES.module.say=/usr/local/lib/bes/libsay_module.so
 There are two different ways that the BES can serve data. The first is as a standalone server and the other is in coordination with the OLFS, which serves THREDDS catalog information.
 
 For the standalone case, set `BES.Data.RootDirectory` to the full path to the data you will be serving. When creating containers that represent files, the path to the data file will be relative to this parameter.
+
+> [!NOTE]
+While the configuration for the BES must contain a value for `BES.Data.RootDirectory`, it is often set to `/dev/null` because with Hyrax, `BES.Catalog.catalog.RootDirectory` is often used instead.
 
 For a BES that works with the OLFS, which serves THREDDS catalog information, set `BES.Catalog.catalog.RootDirectory` to the full path to the root directory for your catalog. This is used only when the catalog represents a file system. Catalogs can be represented in other ways, such as from a database.
 
@@ -140,8 +144,5 @@ The key `BES.Memory.GlobalArea.Verbose` has possible values `{yes,no}`. This key
 
 ### 1.12 Single or multiple client connections at a time
 
-As mentioned in the document `BES_Server_Architecture.doc`, the BES can process a single client connection at a time or multiple client connections at a time. The key `BES.ProcessManagerMethod` can be set to either `single`, which means only one client can connect at any given time, or to `multiple`, which means multiple clients can connect to the server at any one time.
+The BES can process a single client connection at a time or multiple client connections at a time. The key `BES.ProcessManagerMethod` can be set to either `single`, which means only one client can connect at any given time, or to `multiple`, which means multiple clients can connect to the server at any one time.
 
-### 1.13 Connecting with a browser
-
-The key `BES.DefaultResponseMethod` is for internal use only and should not be set by the user.
