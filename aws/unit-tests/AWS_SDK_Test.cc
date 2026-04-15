@@ -174,7 +174,7 @@ public:
         string id;
         string secret;
         get_s3_creds(id, secret);
-        aws_sdk.initialize_s3_client("us-east-1", id, secret);
+        aws_sdk.initialize_global_s3_client("us-east-1", id, secret, "");
         const string object = "/samples/chunked_twoD.h5";
         const string bucket = "cloudydap";
         const bool status = aws_sdk.s3_head_exists(bucket, object);
@@ -186,7 +186,7 @@ public:
         string id;
         string secret;
         get_s3_creds(id, secret);
-        aws_sdk.initialize_s3_client("us-east-1", id, secret);
+        aws_sdk.initialize_global_s3_client("us-east-1", id, secret, "");
         const string object = "/samples/not_here";
         const string bucket = "cloudydap";
         const bool status = aws_sdk.s3_head_exists(bucket, object);
@@ -199,7 +199,7 @@ public:
 
     static void test_s3_head_exists_bad_creds() {
         AWS_SDK aws_sdk;
-        aws_sdk.initialize_s3_client("us-east-1", "foo", "bar");
+        aws_sdk.initialize_global_s3_client("us-east-1", "foo", "bar", "");
         const string object = "/samples/chunked_twoD.h5";
         const string bucket = "cloudydap";
         const bool status = aws_sdk.s3_head_exists(bucket, object);
@@ -215,7 +215,7 @@ public:
         string id;
         string secret;
         get_s3_creds(id, secret);
-        aws_sdk.initialize_s3_client("us-east-1", id, secret);
+        aws_sdk.initialize_global_s3_client("us-east-1", id, secret, "");
         const string object =
                 "/C2036877806-POCLOUD/20180101000000-OSISAF-L3C_GHRSST-SSTsubskin-GOES16-ssteqc_goes16_20180101_000000-v02.0-fv01.0.dmrpp";
         const string bucket = "cloudydap";
@@ -228,7 +228,7 @@ public:
         string id;
         string secret;
         get_s3_creds(id, secret);
-        aws_sdk.initialize_s3_client("us-east-1", id, secret);
+        aws_sdk.initialize_global_s3_client("us-east-1", id, secret, "");
         const string object = "/C2036877806-POCLOUD/foobar.baz";
         const string bucket = "cloudydap";
         const string dmrpp = aws_sdk.s3_get_as_string(bucket, object);
@@ -241,7 +241,7 @@ public:
 
     static void test_s3_get_as_string_bad_creds() {
         AWS_SDK aws_sdk;
-        aws_sdk.initialize_s3_client("us-east-1", "foo", "bar");
+        aws_sdk.initialize_global_s3_client("us-east-1", "foo", "bar", "");
         const string object = "/C2036877806-POCLOUD/20180101000000-OSISAF-L3C_GHRSST-SSTsubskin-GOES16-ssteqc_goes16_20180101_000000-v02.0-fv01.0.dmrpp";
         const string bucket = "cloudydap";
         const string dmrpp = aws_sdk.s3_get_as_string(bucket, object);
@@ -257,7 +257,7 @@ public:
         string id;
         string secret;
         get_s3_creds(id, secret);
-        aws_sdk.initialize_s3_client("us-east-1", id, secret);
+        aws_sdk.initialize_global_s3_client("us-east-1", id, secret, "");
         const string object =
                 "/C2036877806-POCLOUD/20180101000000-OSISAF-L3C_GHRSST-SSTsubskin-GOES16-ssteqc_goes16_20180101_000000-v02.0-fv01.0.dmrpp";
         const string bucket = "cloudydap";
@@ -276,7 +276,7 @@ public:
         string id;
         string secret;
         get_s3_creds(id, secret);
-        aws_sdk.initialize_s3_client("us-east-1", id, secret);
+        aws_sdk.initialize_global_s3_client("us-east-1", id, secret, "");
         const string object = "/samples/chunked_twoD.h5";
         const string bucket = "cloudydap";
         const uint64_t expiration_seconds = 60;
@@ -296,7 +296,7 @@ public:
         string id;
         string secret;
         get_s3_creds(id, secret);
-        aws_sdk.initialize_s3_client("us-east-1", id, secret);
+        aws_sdk.initialize_global_s3_client("us-east-1", id, secret, "");
         const string object = "/foo";
         const string bucket = "cloudydap";
         const uint64_t expiration_seconds = 60;
@@ -308,7 +308,7 @@ public:
 
     static void test_s3_generate_presigned_object_url_bad_creds() {
         AWS_SDK aws_sdk;
-        aws_sdk.initialize_s3_client("us-east-1", "foo", "bar");
+        aws_sdk.initialize_global_s3_client("us-east-1", "foo", "bar", "");
         const string object = "/samples/chunked_twoD.h5";
         const string bucket = "cloudydap";
         const uint64_t expiration_seconds = 60;
@@ -323,7 +323,7 @@ public:
         string id;
         string secret;
         get_s3_creds(id, secret);
-        aws_sdk.initialize_s3_client("us-east-1", id, secret);
+        aws_sdk.initialize_global_s3_client("us-east-1", id, secret, "");
         const string object = "/samples/chunked_twoD.h5";
         const string bucket = "cloudydap";
         const uint64_t expiration_seconds = 2;

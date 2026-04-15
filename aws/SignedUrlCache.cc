@@ -28,7 +28,7 @@
 #include "config.h"
 
 #include <mutex>
-
+#include <regex>
 #include <sstream>
 #include <string>
 
@@ -42,6 +42,10 @@
 #include "HttpNames.h"
 #include "EffectiveUrl.h"
 #include "SignedUrlCache.h"
+
+#include <aws/core/Aws.h>
+#include <aws/core/auth/AWSCredentialsProvider.h>
+#include <aws/s3/S3Client.h>
 
 #include "rapidjson/document.h"
 
@@ -409,10 +413,18 @@ uint64_t SignedUrlCache::num_seconds_until_expiration(const string &credentials_
 std::shared_ptr<http::EffectiveUrl> SignedUrlCache::sign_url(std::string const &s3_url, 
                                                              std::shared_ptr<S3AccessKeyTuple> const s3_access_key_tuple,
                                                              std::string aws_region) {
+    
+
     bes::AWS_SDK aws_sdk;
     string id = get<0>(*s3_access_key_tuple);
     string secret = get<1>(*s3_access_key_tuple);
-    aws_sdk.initialize_s3_client(aws_region, id, secret);
+    string token = get<2>(*s3_access_key_tuple);
+    string expiration = get<3>(*s3_access_key_tuple);
+    auto expiration_seconds = num_seconds_until_expiration(get<3>(*s3_access_key_tuple));
+    if (expiration_seconds == 0) {
+        // No point in creating a url that is already expired!!
+        return nullptr;
+    }
 
     string bucket;
     string object;
@@ -421,20 +433,32 @@ std::shared_ptr<http::EffectiveUrl> SignedUrlCache::sign_url(std::string const &
         return nullptr;
     }
 
-    auto expiration_seconds = num_seconds_until_expiration(get<3>(*s3_access_key_tuple));
-    if (expiration_seconds == 0) {
-        // No point in creating a url that is already expired!! 
-        return nullptr;
-    }
+    // TODO: pull following lines into a `s3_generate_presigned_object_url_with_credentials` function
+    // Instead of using (or updating) the default aws sdk credentials, we want to use temporary 
+    // credentials returned from TEA.
+    Aws::Auth::AWSCredentials credentials(id, secret, token); //TODO: add expiration
+    Aws::Client::ClientConfiguration config;
+    config.region = aws_region;
+    Aws::S3::S3Client s3_client(credentials, nullptr, config);
 
-    // Can this call fail? If the aws library isn't initialized, it could through a
+    // Use that info to generate our signed url!
+    // Can this fail? If the aws library isn't initialized, it could throw a
     // BESInternalFatalError, but the library is initialized in the constructor of SignedUrlCache,
     // so if we're here it MUST be initialized.
-    // As far as I can tell, the internal signing function
-    // doesn't have a chance to throw....
-    const Aws::String url_str = aws_sdk.s3_generate_presigned_object_url(bucket, object, expiration_seconds);
+    // It seems like the internal signing function doesn't otherwise throw.
+    Aws::String presigned_url = s3_client.GeneratePresignedUrl(
+        bucket,
+        object,
+        Aws::Http::HttpMethod::HTTP_GET, 
+        expiration_seconds
+    );
 
-    return make_shared<http::EffectiveUrl>(url_str);
+    // TODO: attempt domain swapping?
+    // string presigned_url_with_prefix = std::regex_replace(presigned_url,
+    //     std::regex("https://ornl-cumulus-prod-protected.s3.us-west-2.amazonaws.com"),
+    //     "https://d3o6w55j8uz1ro.cloudfront.net/s3-d0f68fa49c8cba12794bb586349f2341/ornl-cumulus-prod-protected.s3.us-west-2.amazonaws.com");
+
+    return make_shared<http::EffectiveUrl>(presigned_url);
 }
 
 /**

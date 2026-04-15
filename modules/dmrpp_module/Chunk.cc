@@ -119,7 +119,7 @@ void process_s3_error_response(const shared_ptr<http::url> &data_url, const stri
     if (code == "AccessDenied") {
         stringstream msg;
         msg << prolog << "ACCESS DENIED - The underlying object store has refused access to: "
-            << data_url->get_url_no_query() << " Object Store Message: "
+            << data_url->str() << " Object Store Message: "
             << message;
         BESDEBUG(MODULE, msg.str() << endl);
         VERBOSE(msg.str());
@@ -127,7 +127,7 @@ void process_s3_error_response(const shared_ptr<http::url> &data_url, const stri
     }
     else {
         stringstream msg;
-        msg << prolog << "The underlying object store returned an error. " << "(Tried: " << data_url->get_url_no_query() << ") Object Store Message: " << message;
+        msg << prolog << "The underlying object store returned an error. " << "(Tried: " << data_url->str() << ") Object Store Message: " << message;
         BESDEBUG(MODULE, msg.str() << endl);
         VERBOSE(msg.str());
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
@@ -1364,10 +1364,10 @@ std::shared_ptr<http::url> Chunk::get_data_url() const {
 
     std::shared_ptr<http::EffectiveUrl> url = SignedUrlCache::TheCache()->get_signed_url(d_data_url);
 
-    if (url == nullptr) {
-        url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url);
-    }
-    BESDEBUG(MODULE, prolog << "Using data_url: " << url->get_url_no_query() << endl);
+    // if (url == nullptr) {
+        // url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url);
+    // }
+    // BESDEBUG(MODULE, prolog << "Using data_url: " << url->get_url_no_query() << endl);
 
 #if ENABLE_TRACKING_QUERY_PARAMETER
     //A conditional call to void Chunk::add_tracking_query_param()
