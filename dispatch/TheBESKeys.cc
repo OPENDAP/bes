@@ -464,13 +464,8 @@ double TheBESKeys::read_double_key(const std::string &key, double default_value)
     TheBESKeys::TheKeys()->get_value(key, value, found);
     // 'key' holds the string value at this point if found is true
     if (found) {
-        std::istringstream iss(value);
-        double double_val;
-        iss >> double_val;
-        if (!iss.eof() || iss.bad() || iss.fail())
-            return default_value;
-        else
-            return double_val;
+        double double_val = std::stod(value);
+        return double_val;
     } else {
         return default_value;
     }
