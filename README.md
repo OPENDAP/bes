@@ -303,7 +303,7 @@ Each of the handlers, which can be built as submodules within this
 code, also has DAP2 and DAP4 support on their master branch and a
 'dap2' branch for the DAP2-only code.
 
-## Support for Data Stored on Amazon's S3 Web Object Store
+### Support for Data Stored on Amazon's S3 Web Object Store
 Hyrax 1.16 has prototype support for subset-in-place of HDF5 and NetCDF4
 data files that are stored on AWS S3. See the preliminary documentation in
 https://github.com/OPENDAP/bes/blob/master/modules/dmrpp_module/data/README.md.
