@@ -3929,7 +3929,7 @@ void get_dataset_dmr(D4Group *d4_grp, hid_t file_id, hid_t pid, const string &dn
 
     // For DAP4 when dimension scales are used.
     if (true == use_dimscale)
-        is_pure_dim = handle_dimscale_dmr(d4_grp, file_id,dset, dspace, is_eos5,dt_inst_ptr, hdf5_hls, handled_cv_names,eos5_dim_info);
+        is_pure_dim = handle_dimscale_dmr(d4_grp, file_id,pid, dset, dspace, is_eos5,dt_inst_ptr, hdf5_hls, handled_cv_names,eos5_dim_info);
 
     if (H5Tclose(dtype)<0) {
         H5Sclose(dspace);
@@ -3954,7 +3954,7 @@ void get_dataset_dmr(D4Group *d4_grp, hid_t file_id, hid_t pid, const string &dn
 
 // This function will retrieve the dimension names for all dimensions in this variable. The variable is
 // represented as the HDF5 dataset id dset. 
-bool handle_dimscale_dmr(D4Group *d4_grp, hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
+bool handle_dimscale_dmr(D4Group *d4_grp, hid_t file_id, hid_t pid, hid_t dset, hid_t dspace,  bool is_eos5,
                          DS_t * dt_inst_ptr,vector<link_info_t> &hdf5_hls,vector<string> &handled_cv_names, const eos5_dim_info_t &eos5_dim_info)
 {
     bool is_pure_dim = false;
@@ -4046,7 +4046,7 @@ bool handle_dimscale_dmr(D4Group *d4_grp, hid_t file_id, hid_t dset, hid_t dspac
         is_pure_dim = false;
     }
     else if(false == is_pure_dim) {//Except pure dimension,we need to save all dimension names in this dimension.
-        obtain_dimnames(d4_grp, file_id,dset,dt_inst_ptr->ndims,dt_inst_ptr,hdf5_hls,is_eos5,eos5_dim_info);
+        obtain_dimnames(d4_grp,file_id,pid,dset,dt_inst_ptr->ndims,dt_inst_ptr,hdf5_hls,is_eos5,eos5_dim_info);
     }
 
     return is_pure_dim;
@@ -4061,19 +4061,19 @@ bool handle_dimscale_dmr(D4Group *d4_grp, hid_t file_id, hid_t dset, hid_t dspac
 /// \param[in/out] hdf5_hls  vector that stores the hard link info of this dimension.
 
 ///////////////////////////////////////////////////////////////////////////////
-void obtain_dimnames(D4Group *d4_grp, hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr,vector<link_info_t> & hdf5_hls, bool is_eos5, const eos5_dim_info_t &eos5_dim_info) {
+void obtain_dimnames(D4Group *d4_grp, hid_t file_id,hid_t pid, hid_t dset,int ndims, DS_t *dt_inst_ptr,vector<link_info_t> & hdf5_hls, bool is_eos5, const eos5_dim_info_t &eos5_dim_info) {
 
     htri_t has_dimension_list = -1;
     string dimlist_name = "DIMENSION_LIST";
     has_dimension_list = H5Aexists(dset,dimlist_name.c_str());
 
     if (has_dimension_list > 0 && ndims > 0) 
-        obtain_dimnames_internal(d4_grp, file_id, dset, ndims, dt_inst_ptr,hdf5_hls, is_eos5, dimlist_name, eos5_dim_info);
+        obtain_dimnames_internal(d4_grp, file_id, pid, dset, ndims, dt_inst_ptr,hdf5_hls, is_eos5, dimlist_name, eos5_dim_info);
 
     return ;
 }
 
-void obtain_dimnames_internal(D4Group *d4_grp, hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr,vector<link_info_t> & hdf5_hls,
+void obtain_dimnames_internal(D4Group *d4_grp, hid_t file_id, hid_t pid, hid_t dset,int ndims, DS_t *dt_inst_ptr,vector<link_info_t> & hdf5_hls,
                               bool is_eos5, const string &dimlist_name, const eos5_dim_info_t &eos5_dim_info)
 {
     hobj_ref_t rbuf;
@@ -4135,18 +4135,17 @@ void obtain_dimnames_internal(D4Group *d4_grp, hid_t file_id,hid_t dset,int ndim
 
                 // See if we can quickly obtain the dimension name by searching all the qualified dimensions
                 BESDEBUG("h5",  "object name:" << dt_inst_ptr->name << endl);
-                trim_objname = obtain_dimname_dap4(d4_grp,(size_t)(dt_inst_ptr->size[i]));
+                trim_objname = obtain_dimname_dap4(d4_grp,pid, (size_t)(dt_inst_ptr->size[i]));
                 BESDEBUG("h5",  "dim name from dap4:" << trim_objname << endl);
-                if (trim_objname.empty()) {
-                    rbuf =((hobj_ref_t*)vlbuf[i].p)[0];
-        
-                    if ((ref_dset = H5RDEREFERENCE(attr_id, H5R_OBJECT, &rbuf)) < 0) {
-                        string msg = "Cannot dereference from the DIMENSION_LIST attribute  for the variable " + string(dt_inst_ptr->name);
-                        throw BESInternalError(msg,__FILE__, __LINE__);
-                    }
-        
-                    trim_objname = obtain_dimname_deref(d4_grp, ref_dset,dt_inst_ptr);
+                rbuf =((hobj_ref_t*)vlbuf[i].p)[0];
+                if ((ref_dset = H5RDEREFERENCE(attr_id, H5R_OBJECT, &rbuf)) < 0) {
+                    string msg = "Cannot dereference from the DIMENSION_LIST attribute  for the variable " + string(dt_inst_ptr->name);
+                    throw BESInternalError(msg,__FILE__, __LINE__);
                 }
+        
+                if (trim_objname.empty()) 
+                    trim_objname = obtain_dimname_deref(d4_grp, ref_dset,dt_inst_ptr);
+                
                 obtain_dimname_hardlinks(file_id,ref_dset,hdf5_hls,trim_objname);
             }
 
@@ -4258,12 +4257,13 @@ string obtain_dimname_deref(D4Group *d4_grp, hid_t ref_dset, const DS_t *dt_inst
     return trim_objname;
 }
 
-string obtain_dimname_dap4(D4Group *d4_grp, size_t dim_size) {
+string obtain_dimname_dap4(D4Group *d4_grp, hid_t pid, size_t dim_size) {
 
     BESDEBUG("h5",  "coming to obtain_dimname_dap4" << endl);
     BESDEBUG("h5",  "dim_size:" << dim_size <<endl);
     string dim_path="";
     bool enable_obtain_dim_path = true;
+    bool dimscale_in_cur_grp = false;
     D4Group *temp_grp = d4_grp;
     while (temp_grp) {
 
@@ -4271,13 +4271,16 @@ string obtain_dimname_dap4(D4Group *d4_grp, size_t dim_size) {
         //Obtain all the dimensions of this group.
         D4Dimensions *temp_dims = temp_grp->dims();
         for (D4Dimensions::D4DimensionsIter di = temp_dims->dim_begin(), de = temp_dims->dim_end(); di != de; ++di) {
-            BESDEBUG("h5",  "obtain_dimname_deref_dap4() - check dimensions" << endl);
-            BESDEBUG("h5",  "obtain_dimname_deref_dap4() - dim name is: " << (*di)->name() << endl);
-            BESDEBUG("h5",  "obtain_dimname_deref_dap4() - dim size is: " << (*di)->size() << endl);
-            BESDEBUG("h5",  "obtain_dimname_deref_dap4() - fully_qualfied_dim name is: " << (*di)->fully_qualified_name() << endl);
+            BESDEBUG("h5",  "obtain_dimname_dap4() - check dimensions" << endl);
+            BESDEBUG("h5",  "obtain_dimname_dap4() - dim name is: " << (*di)->name() << endl);
+            BESDEBUG("h5",  "obtain_dimname_dap4() - dim size is: " << (*di)->size() << endl);
+            BESDEBUG("h5",  "obtain_dimname_dap4() - fully_qualfied_dim name is: " << (*di)->fully_qualified_name() << endl);
             if (dim_size == (*di)->size()) {
-                if (dim_path.empty()) 
+                if (dim_path.empty()) {
                     dim_path = (*di)->fully_qualified_name();
+                    if (temp_grp == d4_grp)
+                        dimscale_in_cur_grp = true;
+                }
                 else {
                     enable_obtain_dim_path = false;
                     dim_path="";
@@ -4295,9 +4298,98 @@ string obtain_dimname_dap4(D4Group *d4_grp, size_t dim_size) {
             temp_grp = nullptr;
 
     } 
-    return dim_path;
-    
 
+    // Now we have to check if there is any dimension candidate within this group since the DAP4 group may not obtain those groups yet.
+    if(!dim_path.empty() && multi_dim_candidates(pid,dim_size,dimscale_in_cur_grp)) 
+        dim_path="";
+
+    return dim_path;
+
+}
+
+bool multi_dim_candidates(hid_t pid, size_t dim_size, bool dim_scale_in_cur_grp) {
+
+    // Obtain the number of objects in this group
+    H5G_info_t g_info; 
+    hsize_t nelems = 0;
+    if (H5Gget_info(pid,&g_info) < 0) {
+        string msg =
+            "h5_dmr multi_dim_candidates: counting hdf5 group elements error. ";
+        throw BESInternalError(msg,__FILE__, __LINE__);
+    }
+
+    nelems = g_info.nlinks;
+
+    short num_dim_candidates = 0;
+
+    // First iterate through the HDF5 datasets under the group.
+    for (hsize_t i = 0; i < nelems; i++) {
+
+        // Obtain the object type, such as group or dataset. 
+        H5O_info_t oinfo;
+        if (H5OGET_INFO_BY_IDX(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
+                              i, &oinfo, H5P_DEFAULT) <0 ) {
+            string msg = "h5_dmr multi_dim_candidates: Error obtaining the info for the object.";
+            throw BESInternalError(msg,__FILE__, __LINE__);
+        }
+
+        // A valide dimension scale attached to a variable must have at least 3 attributes.
+        if (H5O_TYPE_DATASET == oinfo.type && oinfo.num_attrs > 2) {
+
+            vector <char> oname;
+            ssize_t oname_size;
+        
+            // Query the length of this object name.
+            oname_size = H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,
+                                    nullptr,(size_t)DODS_NAMELEN, H5P_DEFAULT);
+            if (oname_size <= 0) {
+                string msg = "h5_dmr multi_dim_candidates: Error getting the size of the hdf5 object from the group. ";
+                throw BESInternalError(msg,__FILE__, __LINE__);
+            }
+
+            // Obtain the name of the object
+            oname.resize((size_t) oname_size + 1);
+        
+            if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,
+                                   oname.data(),(size_t)(oname_size+1), H5P_DEFAULT) < 0) {
+                string msg = "h5_dmr multi_dim_candidates: Error getting the hdf5 object name from the group. ";
+                throw BESInternalError(msg,__FILE__, __LINE__);
+            }
+            string dset_name = string(oname.begin(),oname.end()-1);
+            hid_t dset_id = -1;
+            if ((dset_id = H5Dopen(pid,dset_name.c_str(),H5P_DEFAULT)) < 0) {
+                string msg = "cannot open the HDF5 dataset  " + dset_name +".";
+                throw BESInternalError(msg,__FILE__, __LINE__);
+            }
+
+            hid_t dspace = -1;
+            if ((dspace = H5Dget_space(dset_id)) < 0) {
+                H5Dclose(dset_id);
+                string msg = "cannot get the the dataspace of HDF5 dataset  " + dset_name +".";
+                throw BESInternalError(msg,__FILE__, __LINE__);
+            }
+
+            if (H5S_SIMPLE == H5Sget_simple_extent_type(dspace)) {
+                if (H5Sget_simple_extent_ndims(dspace) ==1) {
+                    if (dim_size == H5Sget_simple_extent_npoints(dspace) && H5Aexists(dset_id,"CLASS")>0) {
+                        num_dim_candidates += 1;
+                        if (num_dim_candidates >1)
+                            break;
+                    }
+                }
+            }
+            H5Sclose(dspace);
+            H5Dclose(dset_id);
+
+        }
+    }
+
+    bool has_multi_dim_candidates = false;
+    // If the dim scale we found is under an ancestor group and there is a dimension scale candidate under the current group,we still have to use the general approach.
+    if (num_dim_candidates >1 || (num_dim_candidates == 1 && !dim_scale_in_cur_grp))
+        has_multi_dim_candidates =  true;
+
+    return has_multi_dim_candidates;
 }
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn attr_info(hid_t loc_id, const char* name, const H5A_info_t* void*opdata)

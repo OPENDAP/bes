@@ -165,15 +165,16 @@ void handle_child_grp(hid_t file_id, hid_t pid, const char *gname, libdap::D4Gro
                       bool use_dimscale, bool is_eos5,std::vector<link_info_t> & hdf5_hls,
                       eos5_dim_info_t & eos5_dim_info, std::vector<std::string> & handled_cv_names,
                       const std::vector<char>& oname, std::unordered_set<std::string>&);
-bool handle_dimscale_dmr(libdap::D4Group *d4_grp, hid_t file_id, hid_t dset, hid_t dspace,  bool is_eos5,
+bool handle_dimscale_dmr(libdap::D4Group *d4_grp, hid_t file_id, hid_t pid,  hid_t dset, hid_t dspace,  bool is_eos5,
                          DS_t * dt_inst_ptr,std::vector<link_info_t> &hdf5_hls,std::vector<std::string> &handled_cv_names,
                          const eos5_dim_info_t &);
-void obtain_dimnames(libdap::D4Group *d4_grp, hid_t file_id, hid_t dset, int ndim, DS_t*dt_inst_ptr, std::vector<link_info_t>&, bool is_eos5, const eos5_dim_info_t &);
-void obtain_dimnames_internal(libdap::D4Group *d4_grp, hid_t file_id,hid_t dset,int ndims, DS_t *dt_inst_ptr,std::vector<link_info_t> & hdf5_hls,
+void obtain_dimnames(libdap::D4Group *d4_grp, hid_t file_id, hid_t pid, hid_t dset, int ndim, DS_t*dt_inst_ptr, std::vector<link_info_t>&, bool is_eos5, const eos5_dim_info_t &);
+void obtain_dimnames_internal(libdap::D4Group *d4_grp, hid_t file_id, hid_t pid, hid_t dset,int ndims, DS_t *dt_inst_ptr,std::vector<link_info_t> & hdf5_hls,
                               bool is_eos5, const string &dimlist_name, const eos5_dim_info_t &);
 
 std::string obtain_dimname_deref(libdap::D4Group *d4_grp, hid_t ref_dset, const DS_t *dt_inst_ptr);
-std::string obtain_dimname_dap4(libdap::D4Group *d4_grp, size_t dim_size);
+std::string obtain_dimname_dap4(libdap::D4Group *d4_grp, hid_t pid, size_t dim_size);
+bool multi_dim_candidates(hid_t pid, size_t dim_size, bool dim_scale_in_cur_grp);
 
 void read_objects(libdap::D4Group* d4_grp,hid_t, const std::string & varname, const std::string & filename, hid_t, bool, bool,
                   eos5_dim_info_t &);
