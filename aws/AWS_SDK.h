@@ -42,12 +42,12 @@ namespace bes
         bool d_is_s3_client_initialized = false;
         static Aws::SDKOptions options;
 
-        void throw_if_s3_client_uninitialized() const; // throws BESInternalFatalError
+        static Aws::S3::S3Client make_s3_client(const std::string &region,
+                                                const std::string &aws_key,
+                                                const std::string &aws_secret_key,
+                                                const std::string &aws_session_token);
 
-        static Aws::S3::S3Client get_s3_client_for_session_credentials(const std::string &region,
-                                                                      const std::string &aws_key,
-                                                                      const std::string &aws_secret_key,
-                                                                      const std::string &aws_session_token);
+        void throw_if_s3_client_uninitialized() const; // throws BESInternalFatalError
 
         friend class AWS_SDK_Test;
 
@@ -60,24 +60,14 @@ namespace bes
         AWS_SDK(const AWS_SDK &&) = delete;
         AWS_SDK &operator=(const AWS_SDK &&) = delete;
 
-        static void aws_library_initialize()
-        {
-            Aws::InitAPI(options); // Must only be called once, as per AWS SDK
-        }
+        static void aws_library_initialize();
 
-        static void aws_library_shutdown()
-        {
-            Aws::ShutdownAPI(options);
-        }
+        static void aws_library_shutdown();
 
-        void initialize_s3_client_for_session(const std::string &region,
-                                              const std::string &aws_key,
-                                              const std::string &aws_secret_key,
-                                              const std::string &aws_session_token) override
-        {
-            d_s3_client = get_s3_client_for_session_credentials(region, aws_key, aws_secret_key, aws_session_token);
-            d_is_s3_client_initialized = true;
-        }
+        void initialize_global_s3_client(const std::string &region,
+                                         const std::string &aws_key,
+                                         const std::string &aws_secret_key,
+                                         const std::string &aws_session_token) override;
 
         bool s3_head_exists(const std::string &bucket, const std::string &key) override;
         std::string s3_get_as_string(const std::string &bucket, const std::string &key) override;

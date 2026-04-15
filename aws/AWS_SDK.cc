@@ -28,8 +28,8 @@
 
 #include "config.h"
 
-#include <string>
 #include <exception>
+#include <string>
 
 #include <aws/core/Aws.h>
 #include <aws/core/auth/AWSCredentialsProvider.h>
@@ -49,9 +49,7 @@ namespace bes {
 
 Aws::SDKOptions AWS_SDK::options;
 
-AWS_SDK::~AWS_SDK() {
-    aws_library_shutdown();
-}
+AWS_SDK::~AWS_SDK() { aws_library_shutdown(); }
 
 /**
  * @brief Get an S3 Client.
@@ -60,18 +58,13 @@ AWS_SDK::~AWS_SDK() {
  * @param aws_secret_key The AWS Secret Key
  * @return The AWS S3 Client object
  */
-Aws::S3::S3Client AWS_SDK::get_s3_client_for_session_credentials(const string &region,
-                                                                 const string &aws_key,
-                                                                 const string &aws_secret_key,
-                                                                 const string &aws_session_token) {
+Aws::S3::S3Client AWS_SDK::make_s3_client(const string &region, const string &aws_key, const string &aws_secret_key,
+                                          const string &aws_session_token) {
     Aws::S3::S3ClientConfiguration clientConfig;
-    clientConfig.region = region; // Set your region
-
-    // Create a shared pointer to a SimpleAWSCredentialsProvider using your key and secret.
+    clientConfig.region = region;
+    // Note: in general, the session token will likely be an empty string.
+    // Short-term credentials (e.g. STS) require passing in a session token.
     auto credentialsProvider = Aws::Auth::AWSCredentials(aws_key, aws_secret_key, aws_session_token);
-
-    // Construct the S3 client with the credentials provider and client configuration.
-    // std::shared_ptr<S3EndpointProviderBase> is nullptr in the following call.
     return {credentialsProvider, nullptr, clientConfig};
 }
 
@@ -79,6 +72,25 @@ void AWS_SDK::throw_if_s3_client_uninitialized() const {
     if (!d_is_s3_client_initialized) {
         throw BESInternalFatalError("AWS s3 client called before initialization.", __FILE__, __LINE__);
     }
+}
+
+void AWS_SDK::aws_library_initialize()
+{
+    Aws::InitAPI(options); // Must only be called once, as per AWS SDK
+}
+
+void AWS_SDK::aws_library_shutdown()
+{
+    Aws::ShutdownAPI(options);
+}
+
+void AWS_SDK::initialize_global_s3_client(const std::string &region,
+                                    const std::string &aws_key,
+                                    const std::string &aws_secret_key,
+                                    const std::string &aws_session_token)
+{
+    d_s3_client = make_s3_client(region, aws_key, aws_secret_key, aws_session_token);
+    d_is_s3_client_initialized = true;
 }
 
 /**
@@ -172,13 +184,13 @@ bool AWS_SDK::s3_get_as_file(const string &bucket, const string &key, const stri
  * @param key Name of an object key.
  * @param expirationSeconds Expiration in seconds for pre-signed URL.
  * @param clientConfig Aws client configuration.
- * @return Aws::String A pre-signed URL. Will look something like `https://<bucket>.s3.us-east-1.amazonaws.com/<key>?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<hash>%2F20251010%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251010T152738Z&X-Amz-Expires=60&X-Amz-SignedHeaders=host&X-Amz-Signature=<hash>`
+ * @return Aws::String A pre-signed URL. Will look something like
+ * `https://<bucket>.s3.us-east-1.amazonaws.com/<key>?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=<hash>%2F20251010%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20251010T152738Z&X-Amz-Expires=60&X-Amz-SignedHeaders=host&X-Amz-Signature=<hash>`
  */
-Aws::String AWS_SDK::s3_generate_presigned_object_url(const Aws::String &bucket_name,
-                                                      const Aws::String &key,
+Aws::String AWS_SDK::s3_generate_presigned_object_url(const Aws::String &bucket_name, const Aws::String &key,
                                                       uint64_t expiration_seconds) {
     throw_if_s3_client_uninitialized();
 
     return d_s3_client.GeneratePresignedUrl(bucket_name, key, Aws::Http::HttpMethod::HTTP_GET, expiration_seconds);
 }
-}
+} // namespace bes
