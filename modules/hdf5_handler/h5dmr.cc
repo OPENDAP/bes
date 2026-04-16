@@ -4000,13 +4000,11 @@ bool handle_dimscale_dmr(D4Group *d4_grp, hid_t file_id, hid_t pid, hid_t dset, 
                 throw BESInternalError(msg,__FILE__, __LINE__);
             }
 
-            // Find the dimension scale. DIM*SCALE is a must. Then NAME=VARIABLE or (REFERENCE_LIST and not PURE DIM)
             // Here a little bias towards files created by the netCDF-4 APIs.
             // If we don't have RERERENCE_LIST in a dataset that has CLASS=DIMENSION_SCALE attribute,
-            // we will ignore this orphanage dimension scale since it is not associated with other datasets.
-            // However, it is an orphanage dimension scale created by the netCDF-4 APIs, we think
-            // it must have a purpose to do this way by data creator. So keep this as a dimension scale.
-            //
+            // we should ignore this orphanage dimension scale since it is not associated with other datasets.
+            // However, since it is an orphanage dimension scale created by the netCDF-4 APIs, we think
+            // the data creater may have a purpose to do this way. So we still keep this as a dimension scale.
             if ((dim_attr_mark[0] && !dim_attr_mark[1]) || dim_attr_mark[2])
                 is_dimscale =true;
             else if(dim_attr_mark[1])
@@ -4045,7 +4043,7 @@ bool handle_dimscale_dmr(D4Group *d4_grp, hid_t file_id, hid_t pid, hid_t dset, 
         }
         is_pure_dim = false;
     }
-    else if(false == is_pure_dim) {//Except pure dimension,we need to save all dimension names in this dimension.
+    else if(false == is_pure_dim) {//Except for a pure dimension variable,we need to save all dimension names for this variable.
         obtain_dimnames(d4_grp,file_id,pid,dset,dt_inst_ptr->ndims,dt_inst_ptr,hdf5_hls,is_eos5,eos5_dim_info);
     }
 
@@ -4134,9 +4132,11 @@ void obtain_dimnames_internal(D4Group *d4_grp, hid_t file_id, hid_t pid, hid_t d
             if (!is_eos5_missing_dimscale){
 
                 // See if we can quickly obtain the dimension name by searching all the qualified dimensions
+
                 BESDEBUG("h5",  "object name:" << dt_inst_ptr->name << endl);
                 trim_objname = obtain_dimname_dap4(d4_grp,pid, (size_t)(dt_inst_ptr->size[i]));
                 BESDEBUG("h5",  "dim name from dap4:" << trim_objname << endl);
+
                 rbuf =((hobj_ref_t*)vlbuf[i].p)[0];
                 if ((ref_dset = H5RDEREFERENCE(attr_id, H5R_OBJECT, &rbuf)) < 0) {
                     string msg = "Cannot dereference from the DIMENSION_LIST attribute  for the variable " + string(dt_inst_ptr->name);
@@ -4264,10 +4264,12 @@ string obtain_dimname_dap4(D4Group *d4_grp, hid_t pid, size_t dim_size) {
     string dim_path="";
     bool enable_obtain_dim_path = true;
     bool dimscale_in_cur_grp = false;
+
     D4Group *temp_grp = d4_grp;
     while (temp_grp) {
 
         BESDEBUG("h5",  "temp_grp->name:" << temp_grp->FQN() << endl);
+
         //Obtain all the dimensions of this group.
         D4Dimensions *temp_dims = temp_grp->dims();
         for (D4Dimensions::D4DimensionsIter di = temp_dims->dim_begin(), de = temp_dims->dim_end(); di != de; ++di) {
@@ -4292,6 +4294,7 @@ string obtain_dimname_dap4(D4Group *d4_grp, hid_t pid, size_t dim_size) {
 
         if (!enable_obtain_dim_path)
             break;
+
         if(temp_grp->get_parent())
             temp_grp = static_cast<D4Group*>(temp_grp->get_parent());
         else
@@ -4299,7 +4302,7 @@ string obtain_dimname_dap4(D4Group *d4_grp, hid_t pid, size_t dim_size) {
 
     } 
 
-    // Now we have to check if there is any dimension candidate within this group since the DAP4 group may not obtain those groups yet.
+    // Now we have to check if there is any dimension variable candidate within this group since the DAP4 group may not obtain these variables yet.
     if(!dim_path.empty() && multi_dim_candidates(pid,dim_size,dimscale_in_cur_grp)) 
         dim_path="";
 
