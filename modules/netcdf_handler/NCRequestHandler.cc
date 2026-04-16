@@ -111,20 +111,6 @@ static bool version_ge(const string &version, float value)
     return false; // quiet warnings...
 }
 
-static float get_float_key(const string &key, float def_val)
-{
-    bool found = false;
-    string doset = "";
-
-    TheBESKeys::TheKeys()->get_value(key, doset, found);
-    if (true == found) {
-        return atof(doset.c_str()); // use better code TODO
-    }
-    else {
-        return def_val;
-    }
-}
-
 NCRequestHandler::NCRequestHandler(const string &name) :
     BESRequestHandler(name)
 {
