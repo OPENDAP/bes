@@ -147,7 +147,7 @@ typedef struct {
     std::vector<std::pair<eos5_dname_info_t,eos5_cname_info_t>> dimpath_to_cvpath;
 } eos5_dim_info_t;
 
-
+// This header file has to be in this location. Don't move top.
 #include "h5get.h"
 bool breadth_first(hid_t, hid_t, const char *, libdap::D4Group* par_grp, const char *,bool,bool,
                    std::vector<link_info_t>&, eos5_dim_info_t & ,std::vector<std::string> &, std::unordered_set<std::string>&);
