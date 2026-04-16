@@ -4144,7 +4144,7 @@ void obtain_dimnames_internal(D4Group *d4_grp, hid_t file_id, hid_t pid, hid_t d
                 }
         
                 if (trim_objname.empty()) 
-                    trim_objname = obtain_dimname_deref(d4_grp, ref_dset,dt_inst_ptr);
+                    trim_objname = obtain_dimname_deref(ref_dset,dt_inst_ptr);
                 
                 obtain_dimname_hardlinks(file_id,ref_dset,hdf5_hls,trim_objname);
             }
@@ -4230,7 +4230,7 @@ void obtain_dimnames_internal(D4Group *d4_grp, hid_t file_id, hid_t pid, hid_t d
         throw;
     }
 }
-string obtain_dimname_deref(D4Group *d4_grp, hid_t ref_dset, const DS_t *dt_inst_ptr) {
+string obtain_dimname_deref(hid_t ref_dset, const DS_t *dt_inst_ptr) {
 
     
     BESDEBUG("h5",  "obtain_dimname_deref() - object name: " << string(dt_inst_ptr->name)<< endl);
@@ -4358,7 +4358,7 @@ bool multi_dim_candidates(hid_t pid, size_t dim_size, bool dim_scale_in_cur_grp)
                 string msg = "h5_dmr multi_dim_candidates: Error getting the hdf5 object name from the group. ";
                 throw BESInternalError(msg,__FILE__, __LINE__);
             }
-            string dset_name = string(oname.begin(),oname.end()-1);
+            auto dset_name = string(oname.begin(),oname.end()-1);
             hid_t dset_id = -1;
             if ((dset_id = H5Dopen(pid,dset_name.c_str(),H5P_DEFAULT)) < 0) {
                 string msg = "cannot open the HDF5 dataset  " + dset_name +".";

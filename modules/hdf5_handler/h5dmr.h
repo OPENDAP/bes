@@ -172,7 +172,7 @@ void obtain_dimnames(libdap::D4Group *d4_grp, hid_t file_id, hid_t pid, hid_t ds
 void obtain_dimnames_internal(libdap::D4Group *d4_grp, hid_t file_id, hid_t pid, hid_t dset,int ndims, DS_t *dt_inst_ptr,std::vector<link_info_t> & hdf5_hls,
                               bool is_eos5, const string &dimlist_name, const eos5_dim_info_t &);
 
-std::string obtain_dimname_deref(libdap::D4Group *d4_grp, hid_t ref_dset, const DS_t *dt_inst_ptr);
+std::string obtain_dimname_deref(hid_t ref_dset, const DS_t *dt_inst_ptr);
 std::string obtain_dimname_dap4(libdap::D4Group *d4_grp, hid_t pid, size_t dim_size);
 bool multi_dim_candidates(hid_t pid, size_t dim_size, bool dim_scale_in_cur_grp);
 
