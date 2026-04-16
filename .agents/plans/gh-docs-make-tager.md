@@ -1,5 +1,11 @@
 # Plan: Add `make gh-docs` Target
 
+DO NOT IMPLEMENT THIS PLAN AS WRITTEN
+
+This plan must be modified to per form all the steps _except_ pushing to master. 
+That should be a separate step to allow validation of the docs. The READMR.gh...
+should be updated to explain how to perform that validation.
+
 ## Goal
 Add a top-level `gh-docs` target that automates publishing the Doxygen reference guide to the `gh-pages` branch using `make docs` instead of `doxygen doxy.conf`.
 
