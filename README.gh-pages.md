@@ -8,7 +8,10 @@ hard to implement in a robust way.
 
 ## TL;DR
 
-You can build/update the online (and local HTML) documentation using `make docs`.
+You can build/update the local HTML documentation using `make docs`.
+
+Coming Soon: When #1312 is complete, a new `gh-docs` target will update the online
+documentation (if you have write access to the repository).
 
 >[!NOTE]
 This has nothing to do with the developer documentation in the `bes/docs` directory.
