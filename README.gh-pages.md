@@ -3,10 +3,17 @@
 The online documentation uses doxygen to build the reference documentation
 for the bes and then pushes those HTML pages up to a GitHub Pages website.
 
-The process is simple, but involves some 'tricks' that make the process 
+The 'by-hand' process is simple, but involves some 'tricks' that make the process 
 hard to implement in a robust way.
 
-## Steps
+## TL;DR
+
+You can build/update the online (and local HTML) documentation using `make docs`.
+
+>[!NOTE]
+This has nothing to do with the developer documentation in the `bes/docs` directory.
+
+## Steps to build the docs by hand
 
 1. Check out the `gh-pages` branch of the repo (this is an orphaned branch).
 2. Remove the `html` directory and its contents.
@@ -41,6 +48,8 @@ git checkout master
 Then, in a browser, go to the BES reference documentation:
 
 https://opendap.github.io/bes/html/
+
+# Appendix
 
 ## Create the Orphaned `gh-pages` Branch
 

@@ -1,6 +1,11 @@
-[![TravisCI](https://travis-ci.org/OPENDAP/bes.svg?branch=master)](https://travis-ci.org/OPENDAP/bes)
 
 # README for the OPeNDAP BES
+
+---
+[![TravisCI](https://travis-ci.org/OPENDAP/bes.svg?branch=master)](https://travis-ci.org/OPENDAP/bes)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14655683.svg)](https://doi.org/10.5281/zenodo.14655683)
+
+---
 
 For specific information about the BES, see the file [_NEWS_](./NEWS) for a summary of
 new features, important updates, and version-specific release notes. See
@@ -206,7 +211,7 @@ BESClient>
 Try some simple commands:
 
 ```text
-BESClient> show help;
+BESClient> show version;
 <showHelp>
     <response>
 
@@ -330,8 +335,6 @@ We have added experimental support for STARE (Spatio Temporal
 Adaptive-Resolution Encoding) as part of our work on NASA ACCESS
 grant 17-ACCESS17-0039.
 
-## Server Function roi() Improvements
-
 ## Site-Specific Configuration
 The BES uses a number of configuration files, and until now, a site has to
 customize these for their server. Each server installation would overwrite
@@ -442,32 +445,24 @@ CF options:
 ```text
 The OPeNDAP BES code is copyrighted using the GNU Lesser GPL. See the
 file COPYING or contact the Free Software Foundation, Inc., at 59 Temple
-Place, Suite 330, Boston, MA 02111-1307 USA. Older versions of the BES were
-copyrighted by the University Corporation for Atmospheric Research;
-see the file COPYRIGHT_UCAR.
+Place, Suite 330, Boston, MA 02111-1307 USA. 
+
+Older versions of the BES were copyrighted by the University Corporation for Atmospheric Research; see the file COPYRIGHT_UCAR.
 ```
 
-### PicoSHA2 License
+### nlohmann License
 
 ```text
-The BES uses PicoSHA2 - a library that provides an implementation of the
-SHA256 hashing algorithm; its copyright follows
+The class is licensed under the MIT License:
 
-Copyright (C) 2017 okdshin
+Copyright © 2013-2026 Niels Lohmann
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ```
-
-The BES uses pugixml - a source code header library that provides xml parsing.
-Its license explicitly includes such use:
 
 ### pugixml License
 
@@ -514,4 +509,23 @@ Unless required by applicable law or agreed to in writing, software distributed
 under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
 CONDITIONS OF ANY KIND, either express or implied. See the License for the
 specific language governing permissions and limitations under the License.
+```
+
+### PicoSHA2 License
+
+```text
+The BES uses PicoSHA2 - a library that provides an implementation of the
+SHA256 hashing algorithm; its copyright follows
+
+Copyright (C) 2017 okdshin
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
 ```
