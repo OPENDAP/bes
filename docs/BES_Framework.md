@@ -22,7 +22,7 @@ The main framework directories involved in that flow are:
 
 ### 1. Process startup
 
-`server/ServerApp.cc` is the main listener process.
+[`server/ServerApp.cc`](../server/ServerApp.cc) is the main listener process (`beslistener`).
 
 At startup it:
 
@@ -35,7 +35,9 @@ At startup it:
 - constructs a `PPTServer`,
 - enters the signal-aware accept loop.
 
-`dispatch/BESModuleApp.cc` is the generic module loader used by both `server` and `standalone`.
+In typical deployments, a small supervisor process (`besdaemon`, implemented in [`server/daemon.cc`](../server/daemon.cc)) starts the master `beslistener`, watches its exit status, and restarts it on a requested restart or abnormal termination. This keeps the listener lightweight while still providing a watchdog and control plane for start/stop/restart and config reloads.
+
+[`dispatch/BESModuleApp.cc`](../dispatch/BESModuleApp.cc) is the generic module loader used by both `server` and `standalone`.
 
 Its job is:
 
@@ -47,7 +49,7 @@ Its job is:
 
 ### 2. Default framework registration
 
-Before optional modules load, `dispatch/BESDefaultModule.cc` seeds the framework with the base services needed to process any request.
+Before optional modules load, [`dispatch/BESDefaultModule.cc`](../dispatch/BESDefaultModule.cc) seeds the framework with the base services needed to process any request.
 
 It registers:
 
@@ -57,7 +59,7 @@ It registers:
 - default definition storage backends,
 - the core `bes` debug context.
 
-Separately, `xmlcommand/BESXMLDefaultCommands.cc` registers the XML commands that the framework itself understands, including:
+Separately, [`xmlcommand/BESXMLDefaultCommands.cc`](../xmlcommand/BESXMLDefaultCommands.cc) registers the XML commands that the framework itself understands, including:
 
 - `show`,
 - `get`,
@@ -73,7 +75,7 @@ Together these two initializers create the base grammar and base runtime needed 
 
 ### 3. PPT transport
 
-`ppt/PPTServer.cc` owns the protocol-level handshake on top of the socket listener.
+[`ppt/PPTServer.cc`](../ppt/PPTServer.cc) owns the protocol-level handshake on top of the socket listener.
 
 Its responsibilities are:
 
@@ -87,12 +89,14 @@ The framework keeps PPT separate from request execution. The transport knows how
 
 ### 4. Listener and worker model
 
-`server/BESServerHandler.cc` is the bridge from PPT connection to request execution.
+[`server/BESServerHandler.cc`](../server/BESServerHandler.cc) is the bridge from PPT connection to request execution.
 
 It supports two process models controlled by `BES.ProcessManagerMethod`:
 
 - `single`: one process handles requests directly.
 - `multiple`: the listener forks a child per client connection.
+
+In both modes, each connected client gets its own process space, either because the listener is single-threaded or because a per-connection child process is forked.
 
 Inside the worker loop, BES:
 
@@ -111,7 +115,7 @@ This separation matters: the server layer manages sockets, process lifetime, and
 
 ### 5. `BESInterface` as the request execution shell
 
-`dispatch/BESInterface.cc` is the generic execution shell used by `BESXMLInterface`.
+[`dispatch/BESInterface.cc`](../dispatch/BESInterface.cc) is the generic execution shell used by `BESXMLInterface`.
 
 It provides the common lifecycle:
 
@@ -125,7 +129,7 @@ It provides the common lifecycle:
 8. convert exceptions into error responses,
 9. finish logging and cleanup.
 
-Its central request-state object is `dispatch/BESDataHandlerInterface.h`.
+Its central request-state object is [`dispatch/BESDataHandlerInterface.h`](../dispatch/BESDataHandlerInterface.h).
 
 That object carries:
 
@@ -141,7 +145,7 @@ The important design choice is that BES passes around one mutable execution cont
 
 ### 6. Building the plan from XML
 
-`xmlcommand/BESXMLInterface.cc` is where the framework turns BES XML into executable work.
+[`xmlcommand/BESXMLInterface.cc`](../xmlcommand/BESXMLInterface.cc) is where the framework turns BES XML into executable work.
 
 `build_data_request_plan()`:
 
@@ -183,7 +187,7 @@ The framework is registry-driven. Modules do not patch a switch statement; they 
 
 ### Request handlers
 
-`dispatch/BESRequestHandlerList.cc` maps a container type or module name to a `BESRequestHandler`.
+[`dispatch/BESRequestHandlerList.cc`](../dispatch/BESRequestHandlerList.cc) maps a container type or module name to a `BESRequestHandler`.
 
 Its key behaviors are:
 
@@ -215,7 +219,7 @@ Examples include:
 
 ### Transmitters
 
-`dispatch/BESReturnManager.cc` maps `return as ...` names to `BESTransmitter` instances.
+[`dispatch/BESReturnManager.cc`](../dispatch/BESReturnManager.cc) maps `return as ...` names to `BESTransmitter` instances.
 
 This keeps response construction separate from response serialization.
 
@@ -274,7 +278,7 @@ At the end of a request:
 
 ## `standalone/` and why it exists
 
-`standalone/StandAloneClient.cc` uses the same `BESXMLInterface` path as the daemon, but skips PPT and sockets entirely.
+[`standalone/StandAloneClient.cc`](../standalone/StandAloneClient.cc) uses the same `BESXMLInterface` path as the daemon, but skips PPT and sockets entirely.
 
 That makes it useful for:
 
