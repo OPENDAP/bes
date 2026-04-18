@@ -1,0 +1,23 @@
+# Automake file for OPENDAP_TYPE module
+
+AUTOMAKE_OPTIONS = foreign
+ACLOCAL_AMFLAGS = -I conf
+
+AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/xmlcommand $(XML2_CFLAGS)
+AM_CXXFLAGS =
+
+AM_LDFLAGS =
+
+lib_besdir=$(libdir)/bes
+lib_bes_LTLIBRARIES = libOPENDAP_TYPE_module.la
+
+SUBDIRS = .
+
+BES_SRCS = OPENDAP_CLASSModule.cc OPENDAP_CLASSRequestHandler.cc
+BES_HDRS = OPENDAP_CLASSModule.h OPENDAP_CLASSRequestHandler.h OPENDAP_CLASSResponseNames.h
+
+libOPENDAP_TYPE_module_la_SOURCES = $(BES_SRCS) $(BES_HDRS)
+libOPENDAP_TYPE_module_la_LDFLAGS = -avoid-version -module
+libOPENDAP_TYPE_module_la_LIBADD = $(BES_LIBS)
+
+EXTRA_PROGRAMS =
