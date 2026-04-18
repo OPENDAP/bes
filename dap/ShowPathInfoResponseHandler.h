@@ -1,8 +1,8 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 //
-// W10NResponseHandler.h
+// ShowPathInfoResponseHandler.h
 //
-// This file is part of BES w10n handler
+// This file is part of BES dap package
 //
 // Copyright (c) 2015v OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>

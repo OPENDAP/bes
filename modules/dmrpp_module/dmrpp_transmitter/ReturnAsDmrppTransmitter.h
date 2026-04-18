@@ -1,6 +1,6 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 //
-// FoW10JsonTransmitter.h
+// ReturnAsDmrppTransmitter.h
 //
 // This file is part of BES DMRPP Module
 //

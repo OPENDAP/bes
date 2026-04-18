@@ -62,7 +62,6 @@ Use the module categories from `docs/module-deep-dive.md` when reasoning about `
 - `modules/fileout_json`
 - `modules/fileout_covjson`
 - `modules/usage`
-- `modules/w10n_handler`
 
 ### Function modules
 
