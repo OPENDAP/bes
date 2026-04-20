@@ -264,3 +264,40 @@ m4_define([AT_BESCMD_H5_BESCONF2_RESPONSE_TEST_OS], [dnl
     AT_CLEANUP
 ])
 
+# Running this macro will generate expected failure on Mac if output is different than the baseline.
+# However, if the baseline file on Mac is the same as the output, unexpected pass will show. 
+# For other platforms, this test is the same as other tests because AT_XFAIL_IF is a no-op.
+m4_define([AT_BESCMD_H5_BESCONF3_RESPONSE_TEST_OS], [dnl
+
+    AT_SETUP([$1 $2])
+    AT_KEYWORDS([bescmd])
+
+    input=$abs_srcdir/$1
+
+    baseline=$abs_srcdir/$2
+
+    bes_conf=$abs_builddir/$3
+
+    pass=$4
+    repeat=$5
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone $repeat -c $bes_conf -i $input], [], [stdout])
+        REMOVE_DMR_VERSIONS([stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone $repeat -c $bes_conf -i $input], [], [stdout])
+        REMOVE_DMR_VERSIONS([stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        AT_XFAIL_IF([grep -q "darwin" <<< AT_PACKAGE_HOST])
+        ])
+
+    AT_CLEANUP
+])
+
