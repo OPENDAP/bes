@@ -9,8 +9,9 @@ command and the file globbing patterns for our code. Take that and pipe it into
 _clang-format_. Note the use of _xargs_ to limit the number of things (_-n_) passed
 to the formater and set the number of parallel invocations (_-P_).
 
-[!TIP] Avoid running this at the top of a repo since it will recurse and edit
-thousands of files. Unless that's what you want.
+> [!TIP]
+> Avoid running this at the top of a repo since it will recurse and edit
+> thousands of files. Unless that's what you want.
 
 For all of this stuff, try it first on one file. Look at the results, then go
 forward with caution. Test and commit after every change. Here's how to run the 
@@ -18,7 +19,7 @@ formatter on just one file. Note that we have a _.clang-format_ file in the root
 of both _libdap4_ and _bes_.
 
 ```bash
-lang-format -i --style=file BESVersionResponseHandler.h
+clang-format -i --style=file BESVersionResponseHandler.h
 ```
 
 Here's a more general version that will reformat many files. Be cautious since
@@ -62,8 +63,9 @@ Here is an example of the error from a missing header directory:
       |          ^~~~~~~~~~~~~~~~~~~~~~~~~~
 ```
 
-[!CAUTION] Avoid the temptation of running clang-tidy in parallel using xargs.
-Doing that will result in corrupt files.
+> [!CAUTION]
+> Avoid the temptation of running clang-tidy in parallel using xargs.
+> Doing that will result in corrupt files.
 
 When clang-tidy finds errors, it will not fix _anything_ in that source file.
 There is a workaround; use the _-fix-errors_ option. But this may not be what is best.
@@ -131,7 +133,7 @@ These are very safe, very C++11/14 core style improvements:
 * `modernize-use-equals-delete`
 * `modernize-redundant-void-arg`
 
-## 2. Pointer / null usage
+### 2. Pointer / null usage
 
 All C++14 friendly:
 
@@ -160,7 +162,7 @@ These are usually low drama:
 * `modernize-use-bare-nullptr` (if available in your version) – similar spirit to `use-nullptr`.
 * `modernize-deprecated-headers` – replace `<stdio.h>` with `<cstdio>`, etc.
 
-## 5. Things I’d be *careful* with in legacy code
+### 5. Things I’d be *careful* with in legacy code
 
 These are *powerful* but more likely to cause friction in an older, widely used codebase, even though they’re C++14-compatible:
 

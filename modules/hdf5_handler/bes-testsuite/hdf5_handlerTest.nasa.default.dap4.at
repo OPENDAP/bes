@@ -6,6 +6,7 @@ AT_INIT([bes.conf besstandalone getdap])
 # AT_COPYRIGHT([])
 
 AT_TESTED([besstandalone])
+m4_include([../../common/handler_tests_macros.m4])
 
 # Usage: _AT_TEST_*(<bescmd source>, <baseline file>)
 
@@ -17,6 +18,7 @@ AT_KEYWORDS([bescmd])
 
 # This is the original.
 AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 || true], [], [stdout], [stderr])
+REMOVE_DMR_VERSIONS([stdout])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 
@@ -39,6 +41,7 @@ AT_KEYWORDS([bescmd])
 #AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap4 -D -M - > $2|| true], [], [stdout], [stderr])
 
 AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap4 -D -M - || true], [], [stdout], [stderr])
+REMOVE_DMR_VERSIONS([stdout])
 AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CLEANUP])
 #

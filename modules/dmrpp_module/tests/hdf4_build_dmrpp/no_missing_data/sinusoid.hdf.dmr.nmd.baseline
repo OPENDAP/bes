@@ -53,6 +53,7 @@ END
             <Attribute name="eos_cf_grid_mapping" type="String">
                 <Value>grid1 eos_cf_projection</Value>
             </Attribute>
+            <dmrpp:missingdata>cA==</dmrpp:missingdata>
         </Byte>
         <Float64 name="XDim">
             <Dim name="/XDim_grid1"/>

@@ -139,55 +139,6 @@ namespace dmrpp
     bool DmrppRequestHandler::disable_direct_io = false;
 
     bool DmrppRequestHandler::use_buffer_chunk = true;
-    // There are methods in TheBESKeys that should be used instead of these.
-    // jhrg 9/26/23
-    static void read_key_value(const std::string &key_name, bool &key_value)
-    {
-        bool key_found = false;
-        string value;
-        TheBESKeys::TheKeys()->get_value(key_name, value, key_found);
-        if (key_found)
-        {
-            value = BESUtil::lowercase(value);
-            key_value = (value == "true" || value == "yes");
-        }
-    }
-
-    static void read_key_value(const std::string &key_name, unsigned int &key_value)
-    {
-        bool key_found = false;
-        string value;
-        TheBESKeys::TheKeys()->get_value(key_name, value, key_found);
-        if (key_found)
-        {
-            istringstream iss(value);
-            iss >> key_value;
-        }
-    }
-
-    static void read_key_value(const std::string &key_name, unsigned long long &key_value)
-    {
-        bool key_found = false;
-        string value;
-        TheBESKeys::TheKeys()->get_value(key_name, value, key_found);
-        if (key_found)
-        {
-            istringstream iss(value);
-            iss >> key_value;
-        }
-    }
-
-    static void read_key_value(const std::string &key_name, double &key_value)
-    {
-        bool key_found = false;
-        string value;
-        TheBESKeys::TheKeys()->get_value(key_name, value, key_found);
-        if (key_found)
-        {
-            istringstream iss(value);
-            iss >> key_value;
-        }
-    }
 
     /**
      * Here we register all of our handler functions so that the BES Dispatch machinery
@@ -206,8 +157,9 @@ namespace dmrpp
 
         stringstream msg;
 
-        read_key_value(DMRPP_USE_COMPUTE_THREADS_KEY, d_use_compute_threads);
-        read_key_value(DMRPP_MAX_COMPUTE_THREADS_KEY, d_max_compute_threads);
+        // Using TheBESKeys calls instead of custom functions kln 4/1/26
+        d_use_compute_threads = TheBESKeys::read_bool_key(DMRPP_USE_COMPUTE_THREADS_KEY, d_use_compute_threads);
+        d_max_compute_threads = TheBESKeys::read_bool_key(DMRPP_MAX_COMPUTE_THREADS_KEY, d_max_compute_threads);
         msg << prolog << "Concurrent Compute Threads: ";
         if (DmrppRequestHandler::d_use_compute_threads)
         {
@@ -222,18 +174,18 @@ namespace dmrpp
         msg.str(std::string());
 
         // DMRPP_CONTIGUOUS_CONCURRENT_THRESHOLD_KEY
-        read_key_value(DMRPP_CONTIGUOUS_CONCURRENT_THRESHOLD_KEY, d_contiguous_concurrent_threshold);
+        d_contiguous_concurrent_threshold = TheBESKeys::read_ulong_key(DMRPP_CONTIGUOUS_CONCURRENT_THRESHOLD_KEY, d_contiguous_concurrent_threshold);
         msg << prolog << "Contiguous Concurrency Threshold: " << d_contiguous_concurrent_threshold << " bytes." << endl;
         INFO_LOG(msg.str());
 
         // Whether the default direct IO feature is disabled. Read the key in.
-        read_key_value(DMRPP_DISABLE_DIRECT_IO, disable_direct_io);
+        disable_direct_io = TheBESKeys::read_bool_key(DMRPP_DISABLE_DIRECT_IO, disable_direct_io);
 
-        read_key_value(DMRPP_USE_BUFFER_CHUNK, use_buffer_chunk);
+        use_buffer_chunk = TheBESKeys::read_bool_key(DMRPP_USE_BUFFER_CHUNK, use_buffer_chunk);
 
         // Check the value of FONc.ClassicModel to determine if this response is a netCDF-4 classic from fileout netCDF
         // This must be done here since direct IO flag for individual variables  should NOT be set for netCDF-4 classic response.
-        read_key_value(DMRPP_USE_CLASSIC_IN_FILEOUT_NETCDF, is_netcdf4_classic_response);
+        is_netcdf4_classic_response = TheBESKeys::read_bool_key(DMRPP_USE_CLASSIC_IN_FILEOUT_NETCDF, is_netcdf4_classic_response);
 
         if (!curl_handle_pool)
         {
@@ -242,11 +194,11 @@ namespace dmrpp
         }
 
         // This can be set to true using the bes conf file; the default value is false
-        read_key_value(DMRPP_USE_OBJECT_CACHE_KEY, d_use_object_cache);
+        d_use_object_cache = TheBESKeys::read_bool_key(DMRPP_USE_OBJECT_CACHE_KEY, d_use_object_cache);
         if (d_use_object_cache)
         {
-            read_key_value(DMRPP_OBJECT_CACHE_ENTRIES_KEY, d_object_cache_entries);
-            read_key_value(DMRPP_OBJECT_CACHE_PURGE_LEVEL_KEY, d_object_cache_purge_level);
+            d_object_cache_entries = TheBESKeys::read_int_key(DMRPP_OBJECT_CACHE_ENTRIES_KEY, d_object_cache_entries);
+            d_object_cache_purge_level = TheBESKeys::read_double_key(DMRPP_OBJECT_CACHE_PURGE_LEVEL_KEY, d_object_cache_purge_level);
             // The default value of these is nullptr
             dds_cache = make_unique<ObjMemCache>(d_object_cache_entries, d_object_cache_purge_level);
             das_cache = make_unique<ObjMemCache>(d_object_cache_entries, d_object_cache_purge_level);

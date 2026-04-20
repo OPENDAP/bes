@@ -4,6 +4,16 @@
 
 These instructions apply to the entire `bes` repository.
 
+## Communication
+
+- State assumptions and environment details explicitly, especially configure flags and dependency locations.
+- If full validation was not run, say exactly what was run and what was not.
+- If a change depends on external prerequisites such as `libdap`, hyrax-dependencies, AWS-fetched artifacts, or system packages, note that clearly.
+- Do not make up data
+- Talk to me directly
+- Be concise and to the point
+- Be critical of my requests and your own work
+
 ## Project Context
 
 - `bes` is the Back-End Server for Hyrax and is a long-lived C++ codebase with downstream users who depend on stable behavior.
@@ -97,9 +107,3 @@ When asked to review, prioritize:
 3. Build-system or packaging regressions in autotools, distcheck, CI, or Docker flows
 4. Configuration/install-layout regressions that would affect deployed BES instances
 5. Missing or weak regression coverage
-
-## Communication
-
-- State assumptions and environment details explicitly, especially configure flags and dependency locations.
-- If full validation was not run, say exactly what was run and what was not.
-- If a change depends on external prerequisites such as `libdap`, hyrax-dependencies, AWS-fetched artifacts, or system packages, note that clearly.

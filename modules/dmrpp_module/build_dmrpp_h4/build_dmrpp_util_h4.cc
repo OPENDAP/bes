@@ -1399,7 +1399,7 @@ bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id,
 }
 
 // Currently this function is only for CF grid_mapping dummy variable.
-bool handle_chunks_for_none_array(BaseType *btp, bool disable_missing_data, string &err_msg) {
+bool handle_chunks_for_none_array(BaseType *btp, string &err_msg) {
 
     bool ret_value = false;
 
@@ -1410,25 +1410,26 @@ bool handle_chunks_for_none_array(BaseType *btp, bool disable_missing_data, stri
 
         auto attr = d4_attrs->find("eos_cf_grid_mapping");
 
-        if (disable_missing_data == false) {
 
-            // Here we don't bother to check the attribute value since this CF grid variable value is dummy.
-            if (attr) {
-    
-                auto db = dynamic_cast<DmrppByte *>(btp);
-                if (!db) {
-                    err_msg = "Expected to find a DmrppByte instance but did not in handle_chunks_for_none_array";
-                    return false;
-                }
+        // Since this is just a one-byte variable, regardless the disable_missing data flag,
+        // we always save the value in the dmrpp file rather than in the missing data side car file.
 
-                VERBOSE(cerr<<"For none_array cf dummy grid variable: var name: "<<btp->name() <<endl);
+        // Here we don't bother to check the attribute value since this CF grid variable value is dummy.
+        if (attr) {
 
-                char buf='p';
-                db->set_missing_data(true);
-                db->set_value((dods_byte)buf);
-                db->set_read_p(true);
-    
+            auto db = dynamic_cast<DmrppByte *>(btp);
+            if (!db) {
+                err_msg = "Expected to find a DmrppByte instance but did not in handle_chunks_for_none_array";
+                return false;
             }
+
+            VERBOSE(cerr<<"For none_array cf dummy grid variable: var name: "<<btp->name() <<endl);
+
+            char buf='p';
+            db->set_missing_data(true);
+            db->set_value((dods_byte)buf);
+            db->set_read_p(true);
+
         }
         ret_value = true;
     }
@@ -1456,7 +1457,7 @@ bool get_chunks_for_a_variable(const string& filename,int32 sd_id, int32 file_id
             return get_chunks_for_an_array(filename,sd_id,file_id, btp,disable_missing_data);
         default: {
             string err_msg;
-            bool ret_value = handle_chunks_for_none_array(btp,disable_missing_data,err_msg);
+            bool ret_value = handle_chunks_for_none_array(btp,err_msg);
             if (ret_value == false) {
                 if (err_msg.empty() == false) { 
                     close_hdf4_file_ids(sd_id,file_id);

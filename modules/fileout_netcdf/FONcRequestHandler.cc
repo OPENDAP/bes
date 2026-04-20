@@ -60,80 +60,6 @@ bool FONcRequestHandler::nc3_classic_format;
 
 using namespace std;
 
-/**
- * Look at the BES configuration keys and see if key_name is included
- * and, if so, what its value is.
- *
- * @param key_name The key to loop up
- * @param key Value result parameter that takes on the value of the key
- * @param default_value
- * @see read_key_value() - other impls
- */
-static void read_key_value(const string &key_name, bool &key, const bool default_value)
-{
-    bool key_found = false;
-    string value;
-    TheBESKeys::TheKeys()->get_value(key_name, value, key_found);
-    // 'key' holds the string value at this point if key_found is true
-    if (key_found) {
-        value = BESUtil::lowercase(value);
-        key = (value == "true" || value == "yes");
-    }
-    else {
-        key = default_value;
-    }
-}
-
-static void read_key_value(const string &key_name, string &key, const string &default_value)
-{
-    bool key_found = false;
-    TheBESKeys::TheKeys()->get_value(key_name, key, key_found);
-    // 'key' holds the string value at this point if key_found is true
-    if (key_found) {
-        BESUtil::trim_if_trailing_slash(key);
-    }
-    else {
-        key = default_value;
-    }
-}
-
-static void read_key_value(const string &key_name, size_t &key, const int default_value)
-{
-    bool key_found = false;
-    string value;
-    TheBESKeys::TheKeys()->get_value(key_name, value, key_found);
-    // 'key' holds the string value at this point if key_found is true
-    if (key_found) {
-        istringstream iss(value);
-        iss >> key;
-        // if (iss.eof() || iss.bad() || iss.fail()) key = default_value;
-        if (iss.bad() || iss.fail()) key = default_value;
-    }
-    else {
-        key = default_value;
-    }
-}
-
-static void read_key_value(const string &key_name, unsigned long long &key, const unsigned long long default_value)
-{
-    bool key_found = false;
-    string value;
-    TheBESKeys::TheKeys()->get_value(key_name, value, key_found);
-    // 'key' holds the string value at this point if key_found is true
-    if (key_found) {
-        try {
-            key = stoull(value);
-        }
-        catch (const std::invalid_argument& ia) {
-            key = default_value;
-        }
-    }
-    else {
-        key = default_value;
-    }
-}
-
-
 /** @brief Constructor for FileOut NetCDF module
  *
  * This constructor adds functions to add to the build of a help request
@@ -143,33 +69,24 @@ static void read_key_value(const string &key_name, unsigned long long &key, cons
  * of request handlers
  */
 FONcRequestHandler::FONcRequestHandler( const string &name )
-    : BESRequestHandler( name )
+: BESRequestHandler( name )
 {
     add_method( HELP_RESPONSE, FONcRequestHandler::build_help ) ;
     add_method( VERS_RESPONSE, FONcRequestHandler::build_version ) ;
 
     if (FONcRequestHandler::temp_dir.empty()) {
-        read_key_value(FONC_TEMP_DIR_KEY, FONcRequestHandler::temp_dir, FONC_TEMP_DIR);
+        FONcRequestHandler::temp_dir = TheBESKeys::read_string_key(FONC_TEMP_DIR_KEY, FONC_TEMP_DIR);
     }
 
-    // Not currently used. jhrg 11/30/15
-    read_key_value(FONC_BYTE_TO_SHORT_KEY, FONcRequestHandler::byte_to_short, FONC_BYTE_TO_SHORT);
-
-    read_key_value(FONC_USE_COMP_KEY, FONcRequestHandler::use_compression, FONC_USE_COMP);
-
-    read_key_value(FONC_USE_SHUFFLE_KEY, FONcRequestHandler::use_shuffle, FONC_USE_SHUFFLE);
-
-    read_key_value(FONC_CHUNK_SIZE_KEY, FONcRequestHandler::chunk_size, FONC_CHUNK_SIZE);
-
-    read_key_value(FONC_CLASSIC_MODEL_KEY, FONcRequestHandler::classic_model, FONC_CLASSIC_MODEL);
-
-    read_key_value(FONC_REDUCE_DIM_KEY, FONcRequestHandler::reduce_dim, FONC_REDUCE_DIM);
-
-    read_key_value(FONC_NO_GLOBAL_ATTRS_KEY, FONcRequestHandler::no_global_attrs, FONC_NO_GLOBAL_ATTRS);
-
-    read_key_value(FONC_REQUEST_MAX_SIZE_KB_KEY, FONcRequestHandler::request_max_size_kb, FONC_REQUEST_MAX_SIZE_KB);
-
-    read_key_value(FONC_NC3_CLASSIC_FORMAT_KEY, FONcRequestHandler::nc3_classic_format, FONC_NC3_CLASSIC_FORMAT);
+    // Updated calls to use TheBESKeys. kln 04/10/26
+    FONcRequestHandler::use_compression = TheBESKeys::read_bool_key(FONC_USE_COMP_KEY, FONC_USE_COMP);
+    FONcRequestHandler::use_shuffle = TheBESKeys::read_bool_key(FONC_USE_SHUFFLE_KEY, FONC_USE_SHUFFLE);
+    FONcRequestHandler::chunk_size = TheBESKeys::read_ulong_key(FONC_CHUNK_SIZE_KEY, FONC_CHUNK_SIZE);
+    FONcRequestHandler::classic_model = TheBESKeys::read_bool_key(FONC_CLASSIC_MODEL_KEY, FONC_CLASSIC_MODEL);
+    FONcRequestHandler::reduce_dim = TheBESKeys::read_bool_key(FONC_REDUCE_DIM_KEY, FONC_REDUCE_DIM);
+    FONcRequestHandler::no_global_attrs = TheBESKeys::read_bool_key(FONC_NO_GLOBAL_ATTRS_KEY, FONC_NO_GLOBAL_ATTRS);
+    FONcRequestHandler::request_max_size_kb = TheBESKeys::read_ulong_key(FONC_REQUEST_MAX_SIZE_KB_KEY, FONC_REQUEST_MAX_SIZE_KB);
+    FONcRequestHandler::nc3_classic_format = TheBESKeys::read_bool_key(FONC_NC3_CLASSIC_FORMAT_KEY, FONC_NC3_CLASSIC_FORMAT);
 
     BESDEBUG("fonc", "FONcRequestHandler::temp_dir: " << FONcRequestHandler::temp_dir << endl);
     BESDEBUG("fonc", "FONcRequestHandler::byte_to_short: " << FONcRequestHandler::byte_to_short << endl);
@@ -249,9 +166,8 @@ void
 FONcRequestHandler::dump( ostream &strm ) const
 {
     strm << BESIndent::LMarg << "FONcRequestHandler::dump - ("
-			     << (void *)this << ")" << endl ;
+    << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
     BESRequestHandler::dump( strm ) ;
     BESIndent::UnIndent() ;
 }
-
