@@ -202,7 +202,7 @@ AT_BESCMD_H5_BESCONF_DAP2DATA_TEST([h5.nasa/S20030602003090.L3m_MO_ST92_CHL_chlo
 AT_BESCMD_H5_BESCONF_RESPONSE_TEST([h5.nasa/S20030602003090.L3m_MO_ST92_CHL_chlor_a_9km.h5.dds.bescmd],[bes.conf])
 AT_BESCMD_H5_BESCONF_RESPONSE_TEST([h5.nasa/S20030602003090.L3m_MO_ST92_CHL_chlor_a_9km.h5.ddx.bescmd],[bes.conf])
 AT_BESCMD_H5_BESCONF_RESPONSE_TEST([h5.nasa/good_imerge.h5.das.bescmd],[bes.conf])
-AT_BESCMD_H5_BESCONF_DAP2DATA_TEST([h5.nasa/ood_imerge.h5.data.bescmd],[bes.conf])
+AT_BESCMD_H5_BESCONF_DAP2DATA_TEST([h5.nasa/good_imerge.h5.data.bescmd],[bes.conf])
 AT_BESCMD_H5_BESCONF_RESPONSE_TEST([h5.nasa/good_imerge.h5.dds.bescmd],[bes.conf])
 AT_BESCMD_H5_BESCONF_RESPONSE_TEST([h5.nasa/good_imerge.h5.ddx.bescmd],[bes.conf])
 AT_BESCMD_H5_BESCONF_RESPONSE_TEST([h5.nasa/MOP03T-20131129-L3V4.2.1.h5.das.bescmd],[bes.conf])

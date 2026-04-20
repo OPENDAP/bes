@@ -34,7 +34,7 @@ AT_BESCMD_H5_BESCONF3_RESPONSE_TEST([h5.nasa/acos_L2s_110419_43_Production_v1101
 AT_BESCMD_H5_BESCONF3_RESPONSE_TEST([h5.nasa/oco2_L2StdND_03945a_150330_B6000_150331024816.h5.dmr.bescmd],[h5.nasa.dmr/oco2_L2StdND_03945a_150330_B6000_150331024816.h5.dmr.bescmd.baseline],[bes.cfdmr.conf])
 
 #oco2 64-bit data
-AT_BESCMD_H5_BESCONF2_DAP4DATA_TEST([h5.nasa/oco2_L2StdND_03945a_150330_B6000_150331024816.h5.dap4constraint.bescmd],[h5.nasa.dmr/oco2_L2StdND_03945a_150330_B6000_150331024816.h5.dap4constraint.bescmd.baseline],[bes.cfdmr.conf])
+AT_BESCMD_H5_BESCONF2_NC_DAP4DATA_TEST([h5.nasa/oco2_L2StdND_03945a_150330_B6000_150331024816.h5.dap4constraint.bescmd],[h5.nasa.dmr/oco2_L2StdND_03945a_150330_B6000_150331024816.h5.dap4constraint.bescmd.baseline],[bes.cfdmr.conf])
 
 AT_BESCMD_H5_BESCONF3_RESPONSE_TEST([h5.nasa/mabel_l2a_20110322T165030_005_1.h5.dmr.bescmd],[h5.nasa.dmr/mabel_l2a_20110322T165030_005_1.h5.dmr.bescmd.baseline],[bes.cfdmr.conf])
 
@@ -126,8 +126,8 @@ AT_BESCMD_H5_BESCONF3_RESPONSE_TEST([h5.nasa/20020602090000-JPL-L4_GHRSST-SSTfnd
 
 #Big array size tests
 AT_BESCMD_H5_BESCONF3_RESPONSE_TEST([h5.nasa/dset_big.dmr.bescmd],[h5.nasa.dmr/dset_big.dmr.bescmd.baseline],[bes.cfdmr.conf])
-AT_BESCMD_H5_BESCONF2_DAP4DATA_TEST([h5.nasa/dset_big_start.bescmd],[h5.nasa.dmr/dset_big_start.bescmd.baseline],[bes.cfdmr.conf])
-AT_BESCMD_H5_BESCONF2_DAP4DATA_TEST([h5.nasa/dset_big_stride.bescmd],[h5.nasa.dmr/dset_big_stride.bescmd.baseline],[bes.cfdmr.conf])
+AT_BESCMD_H5_BESCONF2_NC_DAP4DATA_TEST([h5.nasa/dset_big_start.bescmd],[h5.nasa.dmr/dset_big_start.bescmd.baseline],[bes.cfdmr.conf])
+AT_BESCMD_H5_BESCONF2_NC_DAP4DATA_TEST([h5.nasa/dset_big_stride.bescmd],[h5.nasa.dmr/dset_big_stride.bescmd.baseline],[bes.cfdmr.conf])
 AT_BESCMD_H5_BESCONF3_RESPONSE_TEST([h5.nasa/test_ba_grp_dim_whole.h5.dmr.bescmd],[h5.nasa.dmr/test_ba_grp_dim_whole.h5.dmr.bescmd.baseline],[bes.cfdmr.conf])
 AT_BESCMD_H5_BESCONF3_RESPONSE_TEST([h5.nasa/daymet_v4_daily_na_prcp_2010.nc.h5.dmr.bescmd],[h5.nasa.dmr/daymet_v4_daily_na_prcp_2010.nc.h5.dmr.bescmd.baseline],[bes.cfdmr.conf])
 
