@@ -112,11 +112,11 @@ m4_define([AT_BESCMD_H4_BESCONF_DAP2DATA_TEST], [
 
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
         [
-        AT_CHECK([besstandalone -c $bes_conf -i $input | getdap -Ms -], [0], [stdout])
+        AT_CHECK([besstandalone -c $bes_conf -i $input | getdap -M -], [0], [stdout])
         AT_CHECK([mv stdout $baseline.tmp])
         ],
         [
-        AT_CHECK([besstandalone -c $bes_conf -i $input | getdap -Ms -], [0], [stdout])
+        AT_CHECK([besstandalone -c $bes_conf -i $input | getdap -M -], [0], [stdout])
         AT_CHECK([diff -b -B $baseline stdout])
         ])
 
