@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="1.0" name="grid_2_2d_ps.hdf">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="2.0" name="grid_2_2d_ps.hdf">
     <Dimension name="YDim_NPGrid" size="5"/>
     <Dimension name="XDim_NPGrid" size="4"/>
     <Dimension name="YDim_SPGrid" size="4"/>
@@ -60,7 +60,7 @@ END
 </Value>
     </Attribute>
     <Group name="NPGrid">
-        <Byte name="eos5_cf_projection">
+        <Byte name="eos_cf_projection">
             <Attribute name="grid_mapping_name" type="String">
                 <Value>polar_stereographic</Value>
             </Attribute>
@@ -82,8 +82,11 @@ END
             <Attribute name="_CoordinateAxisTypes" type="String">
                 <Value>GeoX GeoY</Value>
             </Attribute>
+            <Attribute name="eos_cf_grid_mapping" type="String">
+                <Value>NPGrid eos_cf_projection</Value>
+            </Attribute>
         </Byte>
-        <Float64 name="XDim">
+        <Float64 name="XDim_NPGrid">
             <Dim name="/XDim_NPGrid"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_x_coordinate</Value>
@@ -97,8 +100,11 @@ END
             <Attribute name="_CoordinateAxisType" type="String">
                 <Value>GeoX</Value>
             </Attribute>
+            <Attribute name="eos_cf_grid" type="String">
+                <Value>NPGrid XDim</Value>
+            </Attribute>
         </Float64>
-        <Float64 name="YDim">
+        <Float64 name="YDim_NPGrid">
             <Dim name="/YDim_NPGrid"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_y_coordinate</Value>
@@ -111,6 +117,9 @@ END
             </Attribute>
             <Attribute name="_CoordinateAxisType" type="String">
                 <Value>GeoY</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid" type="String">
+                <Value>NPGrid YDim</Value>
             </Attribute>
         </Float64>
         <Float64 name="Latitude">
@@ -151,7 +160,7 @@ END
         <Group name="Grid_Attributes"/>
     </Group>
     <Group name="SPGrid">
-        <Byte name="eos5_cf_projection">
+        <Byte name="eos_cf_projection">
             <Attribute name="grid_mapping_name" type="String">
                 <Value>polar_stereographic</Value>
             </Attribute>
@@ -173,8 +182,11 @@ END
             <Attribute name="_CoordinateAxisTypes" type="String">
                 <Value>GeoX GeoY</Value>
             </Attribute>
+            <Attribute name="eos_cf_grid_mapping" type="String">
+                <Value>SPGrid eos_cf_projection</Value>
+            </Attribute>
         </Byte>
-        <Float64 name="XDim">
+        <Float64 name="XDim_SPGrid">
             <Dim name="/XDim_SPGrid"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_x_coordinate</Value>
@@ -188,8 +200,11 @@ END
             <Attribute name="_CoordinateAxisType" type="String">
                 <Value>GeoX</Value>
             </Attribute>
+            <Attribute name="eos_cf_grid" type="String">
+                <Value>SPGrid XDim</Value>
+            </Attribute>
         </Float64>
-        <Float64 name="YDim">
+        <Float64 name="YDim_SPGrid">
             <Dim name="/YDim_SPGrid"/>
             <Attribute name="standard_name" type="String">
                 <Value>projection_y_coordinate</Value>
@@ -202,6 +217,9 @@ END
             </Attribute>
             <Attribute name="_CoordinateAxisType" type="String">
                 <Value>GeoY</Value>
+            </Attribute>
+            <Attribute name="eos_cf_grid" type="String">
+                <Value>SPGrid YDim</Value>
             </Attribute>
         </Float64>
         <Float64 name="Latitude">

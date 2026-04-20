@@ -51,8 +51,7 @@ public:
     virtual ~FoCovJsonRequestHandler(void);
 
     void dump(std::ostream &strm) const override;
-    
-    static bool obtain_beskeys_info(const std::string& key, bool & has_key);
+
     static bool get_may_ignore_z_axis() { return _may_ignore_z_axis; }
     static bool get_simple_geo() { return _simple_geo; }
     static bool build_help(BESDataHandlerInterface &dhi);

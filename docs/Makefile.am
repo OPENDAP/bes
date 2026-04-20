@@ -1,5 +1,5 @@
 
-EXTRA_DIST = BES_PPT.doc BES_Creating_Module.doc BES_Configuration.doc BES_Server_Architecture.doc
+EXTRA_DIST = BES_Overview.md BES_PPT.md BES_Creating_New_Modules.md BES_Configuration.md BES_Framework.md BES_Modules.md
 
 clean-local:
 	rm -rf html

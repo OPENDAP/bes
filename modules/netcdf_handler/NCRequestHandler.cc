@@ -111,52 +111,6 @@ static bool version_ge(const string &version, float value)
     return false; // quiet warnings...
 }
 
-/**
- * Stolen from the HDF5 handler code
- */
-static bool get_bool_key(const string &key, bool def_val)
-{
-    bool found = false;
-    string doset = "";
-    const string dosettrue = "true";
-    const string dosetyes = "yes";
-
-    TheBESKeys::TheKeys()->get_value(key, doset, found);
-    if (true == found) {
-        doset = BESUtil::lowercase(doset);
-        return (dosettrue == doset || dosetyes == doset);
-    }
-    return def_val;
-}
-
-static unsigned int get_uint_key(const string &key, unsigned int def_val)
-{
-    bool found = false;
-    string doset = "";
-
-    TheBESKeys::TheKeys()->get_value(key, doset, found);
-    if (true == found) {
-        return atoi(doset.c_str()); // use better code TODO
-    }
-    else {
-        return def_val;
-    }
-}
-
-static float get_float_key(const string &key, float def_val)
-{
-    bool found = false;
-    string doset = "";
-
-    TheBESKeys::TheKeys()->get_value(key, doset, found);
-    if (true == found) {
-        return atof(doset.c_str()); // use better code TODO
-    }
-    else {
-        return def_val;
-    }
-}
-
 NCRequestHandler::NCRequestHandler(const string &name) :
     BESRequestHandler(name)
 {
@@ -172,8 +126,8 @@ NCRequestHandler::NCRequestHandler(const string &name) :
     add_method(HELP_RESPONSE, NCRequestHandler::nc_build_help);
     add_method(VERS_RESPONSE, NCRequestHandler::nc_build_version);
 
-    // TODO replace with get_bool_key above 5/21/16 jhrg
-
+    // Refactored to use TheBESKeys calls inside the handler overloads
+    // kln 4/1/26
     if (NCRequestHandler::_show_shared_dims_set == false) {
         bool key_found = false;
         string doset;
@@ -221,9 +175,10 @@ NCRequestHandler::NCRequestHandler(const string &name) :
         }
     }
 
-    NCRequestHandler::_use_mds = get_bool_key("NC.UseMDS",false);
-    NCRequestHandler::_cache_entries = get_uint_key("NC.CacheEntries", 0);
-    NCRequestHandler::_cache_purge_level = get_float_key("NC.CachePurgeLevel", 0.2);
+    NCRequestHandler::_use_mds = TheBESKeys::read_bool_key("NC.UseMDS", false);
+    NCRequestHandler::_cache_entries = static_cast<unsigned int>(TheBESKeys::read_ulong_key("NC.CacheEntries", 0));
+    // No float option in TheBESKeys
+    NCRequestHandler::_cache_purge_level = TheBESKeys::read_float_key("NC.CachePurgeLevel", 0.2f);
 
     if (get_cache_entries()) {  // else it stays at its default of null
         das_cache = new ObjMemCache(get_cache_entries(), get_cache_purge_level());

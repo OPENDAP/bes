@@ -80,7 +80,6 @@ using namespace libdap;
 const string HDF4_NAME="h4";
 #define prolog std::string("HDF4RequestHandler::").append(__func__).append("() - ")
 
-bool check_beskeys(const string &);
 bool get_beskeys(const string &,string &);
 bool is_beskey_exist(const string &key); 
 
@@ -163,38 +162,38 @@ HDF4RequestHandler::HDF4RequestHandler(const string & name) :
     BESRequestHandler::add_method(VERS_RESPONSE, HDF4RequestHandler::hdf4_build_version);
 
     if (true == is_beskey_exist("H4.EnableDirectDMR"))
-        _direct_dmr=check_beskeys("H4.EnableDirectDMR");
-    _usecf = check_beskeys("H4.EnableCF");
+        _direct_dmr=TheBESKeys::read_bool_key("H4.EnableDirectDMR", false);
+    _usecf = TheBESKeys::read_bool_key("H4.EnableCF", false);
 
     // The following keys are only effective when usecf is true.
     // Keys to tune the performance -general
-    _pass_fileid                       = check_beskeys("H4.EnablePassFileID");
-    _disable_structmeta                = check_beskeys("H4.DisableStructMetaAttr");
-    _enable_special_eos                = check_beskeys("H4.EnableSpecialEOS");
-    _disable_scaleoffset_comp          = check_beskeys("H4.DisableScaleOffsetComp");
-    _disable_ecsmetadata_min           = check_beskeys("H4.DisableECSMetaDataMin");
-    _disable_ecsmetadata_all           = check_beskeys("H4.DisableECSMetaDataAll");
+    _pass_fileid                       = TheBESKeys::read_bool_key("H4.EnablePassFileID", false);
+    _disable_structmeta                = TheBESKeys::read_bool_key("H4.DisableStructMetaAttr", false);
+    _enable_special_eos                = TheBESKeys::read_bool_key("H4.EnableSpecialEOS", false);
+    _disable_scaleoffset_comp          = TheBESKeys::read_bool_key("H4.DisableScaleOffsetComp", false);
+    _disable_ecsmetadata_min           = TheBESKeys::read_bool_key("H4.DisableECSMetaDataMin", false);
+    _disable_ecsmetadata_all           = TheBESKeys::read_bool_key("H4.DisableECSMetaDataAll", false);
 
     // Keys to tune the performance - cache
-    _enable_eosgeo_cachefile           = check_beskeys("H4.EnableEOSGeoCacheFile");
-    _enable_data_cachefile             = check_beskeys("H4.EnableDataCacheFile");
-    _enable_metadata_cachefile         = check_beskeys("H4.EnableMetaDataCacheFile");
+    _enable_eosgeo_cachefile           = TheBESKeys::read_bool_key("H4.EnableEOSGeoCacheFile", false);
+    _enable_data_cachefile             = TheBESKeys::read_bool_key("H4.EnableDataCacheFile", false);
+    _enable_metadata_cachefile         = TheBESKeys::read_bool_key("H4.EnableMetaDataCacheFile", false);
 
     // Keys to handle vdata and vgroups
-    _enable_hybrid_vdata               = check_beskeys("H4.EnableHybridVdata");
-    _enable_ceres_vdata                = check_beskeys("H4.EnableCERESVdata");
-    _enable_vdata_attr                 = check_beskeys("H4.EnableVdata_to_Attr");
-    _enable_vdata_desc_attr            = check_beskeys("H4.EnableVdataDescAttr");
-    _disable_vdata_nameclashing_check  = check_beskeys("H4.DisableVdataNameclashingCheck");
-    _enable_vgroup_attr                = check_beskeys("H4.EnableVgroupAttr");
+    _enable_hybrid_vdata               = TheBESKeys::read_bool_key("H4.EnableHybridVdata", false);
+    _enable_ceres_vdata                = TheBESKeys::read_bool_key("H4.EnableCERESVdata", false);
+    _enable_vdata_attr                 = TheBESKeys::read_bool_key("H4.EnableVdata_to_Attr", false);
+    _enable_vdata_desc_attr            = TheBESKeys::read_bool_key("H4.EnableVdataDescAttr", false);
+    _disable_vdata_nameclashing_check  = TheBESKeys::read_bool_key("H4.DisableVdataNameclashingCheck", false);
+    _enable_vgroup_attr                = TheBESKeys::read_bool_key("H4.EnableVgroupAttr", false);
 
     // Misc. keys
-    _enable_check_modis_geo_file       = check_beskeys("H4.EnableCheckMODISGeoFile");
-    _enable_swath_grid_attr            = check_beskeys("H4.EnableSwathGridAttr");
-    _enable_ceres_merra_short_name     = check_beskeys("H4.EnableCERESMERRAShortName");
-    _enable_check_scale_offset_type    = check_beskeys("H4.EnableCheckScaleOffsetType");
+    _enable_check_modis_geo_file       = TheBESKeys::read_bool_key("H4.EnableCheckMODISGeoFile", false);
+    _enable_swath_grid_attr            = TheBESKeys::read_bool_key("H4.EnableSwathGridAttr", false);
+    _enable_ceres_merra_short_name     = TheBESKeys::read_bool_key("H4.EnableCERESMERRAShortName", false);
+    _enable_check_scale_offset_type    = TheBESKeys::read_bool_key("H4.EnableCheckScaleOffsetType", false);
 
-    _disable_swath_dim_map             = check_beskeys("H4.DisableSwathDimMap");
+    _disable_swath_dim_map             = TheBESKeys::read_bool_key("H4.DisableSwathDimMap", false);
 
     // Cache path etc. 
     _cache_latlon_path_exist           =get_beskeys("HDF4.Cache.latlon.path",_cache_latlon_path);
@@ -1527,8 +1526,8 @@ bool HDF4RequestHandler::hdf4_build_data_cf_sds_with_IDs(BESDataHandlerInterface
         // the HDF-EOS2 coremetadata or archivemetadata will not be passed to DAP.
         bool ecs_metadata = true;
 #if 0
-        if((true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataMin")) 
-            || (true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"))) 
+        if((true == TheBESKeys::read_bool_key("H4.DisableECSMetaDataMin"), false)
+            || (true == TheBESKeys::read_bool_key("H4.DisableECSMetaDataAll"), false))
 #endif
         if((true == _disable_ecsmetadata_min) 
             || (true == _disable_ecsmetadata_all)) 
@@ -1708,8 +1707,8 @@ bool HDF4RequestHandler::hdf4_build_dmr(BESDataHandlerInterface &dhi)
             // KY 2014-10-23
             bool ecs_metadata = true;
 #if 0
-            if((true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataMin")) 
-                || (true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"))) 
+            if((true == TheBESKeys::read_bool_key("H4.DisableECSMetaDataMin"), false)
+                || (true == TheBESKeys::read_bool_key("H4.DisableECSMetaDataAll"), false))
 #endif
             if((true == _disable_ecsmetadata_min) 
                 || (true == _disable_ecsmetadata_all)) 
@@ -2028,8 +2027,8 @@ bool HDF4RequestHandler::hdf4_build_dmr_with_IDs(BESDataHandlerInterface & dhi) 
     // KY 2014-10-23
     bool ecs_metadata = true;
 #if 0
-    if((true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataMin")) 
-       || (true == HDFCFUtil::check_beskeys("H4.DisableECSMetaDataAll"))) 
+    if((true == TheBESKeys::read_bool_key("H4.DisableECSMetaDataMin"), false)
+        || (true == TheBESKeys::read_bool_key("H4.DisableECSMetaDataAll"), false))
 #endif
     if((true == _disable_ecsmetadata_min) 
         || (true == _disable_ecsmetadata_all)) 
@@ -2371,23 +2370,6 @@ bool r_dds_cache_file(const string & cache_filename, DDS *dds_ptr,const string &
     }
 
     return dds_set_cache;
-
-}
-
-bool check_beskeys(const string & key) {
-
-    bool found = false;
-    string doset ="";
-    const string dosettrue ="true";
-    const string dosetyes = "yes";
-
-    TheBESKeys::TheKeys()->get_value( key, doset, found ) ;
-    if( true == found ) {
-        doset = BESUtil::lowercase( doset ) ;
-        if( dosettrue == doset  || dosetyes == doset )
-            return true;
-    }
-    return false;
 
 }
 

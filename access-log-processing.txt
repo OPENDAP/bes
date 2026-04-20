@@ -1,0 +1,3 @@
+ How I made accesses.06.26.24.txt
+
+cut -f 1 -d ' ' localhost_access_log.2024-06-26.txt | sort -n | uniq -c | sort -r -n > accesses.06.26.24.txt

@@ -45,9 +45,11 @@ m4_define([AT_BESCMD_MULTI_RESPONSE_TEST], [dnl
         AT_CHECK([diff -b -B response_3 ${baseline}_r_3])
 
         # Check that caching was used
-        # NB: 'miss' will be 1 for dmr, but two for dds or das.
-        AT_CHECK([test $(grep -c 'Cache miss' stderr) -le 2])
-        AT_CHECK([test $(grep -c 'Cache hit' stderr) -eq 2])
+        m4_ifdef([BES_DEVELOPER], [
+            # NB: 'miss' will be 1 for dmr, but two for dds or das.
+            AT_CHECK([test $(grep -c 'Cache miss' stderr) -le 2])
+            AT_CHECK([test $(grep -c 'Cache hit' stderr) -eq 1])
+        ], [])
         ])
 
     AT_CLEANUP
@@ -235,9 +237,11 @@ m4_define([AT_BINARY_DAP2_MULTI_RESPONSE_TEST],  [dnl
         AT_CHECK([diff -b -B response_3 ${baseline}_r_3])
 
         # Check that caching was used
-        # NB: 'miss' will be 1 for dmr, but two for dds or das.
-        AT_CHECK([test $(grep -c 'Cache miss' stderr) -le 2])
-        AT_CHECK([test $(grep -c 'Cache hit' stderr) -eq 2])
+        m4_ifdef([BES_DEVELOPER], [
+            # NB: 'miss' will be 1 for dmr, but two for dds or das.
+            AT_CHECK([test $(grep -c 'Cache miss' stderr) -le 2])
+            AT_CHECK([test $(grep -c 'Cache hit' stderr) -eq 2])
+        ], [])
         ])
 
     AT_CLEANUP

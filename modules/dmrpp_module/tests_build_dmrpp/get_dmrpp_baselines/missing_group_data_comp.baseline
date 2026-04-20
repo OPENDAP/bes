@@ -9,11 +9,6 @@ group: HDFEOS {
       	XDim = 2 ;
       	YDim = 2 ;
       variables:
-      	ubyte eos5_cf_projection ;
-      		eos5_cf_projection:grid_mapping_name = "sinusoidal" ;
-      		eos5_cf_projection:longitude_of_central_meridian = 0. ;
-      		eos5_cf_projection:earth_radius = 6371007.181 ;
-      		eos5_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
       	double XDim(XDim) ;
       		XDim:standard_name = "projection_x_coordinate" ;
       		XDim:long_name = "x coordinate of projection " ;
@@ -29,8 +24,6 @@ group: HDFEOS {
       	double Longitude(YDim, XDim) ;
       		Longitude:units = "degrees_east" ;
       data:
-
-       eos5_cf_projection = 112 ;
 
        XDim = -8895604.157333, -8339628.8975 ;
 
@@ -50,11 +43,6 @@ group: HDFEOS {
       	XDim = 4 ;
       	YDim = 4 ;
       variables:
-      	ubyte eos5_cf_projection ;
-      		eos5_cf_projection:grid_mapping_name = "sinusoidal" ;
-      		eos5_cf_projection:longitude_of_central_meridian = 0. ;
-      		eos5_cf_projection:earth_radius = 6371007.181 ;
-      		eos5_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
       	double XDim(XDim) ;
       		XDim:standard_name = "projection_x_coordinate" ;
       		XDim:long_name = "x coordinate of projection " ;
@@ -70,8 +58,6 @@ group: HDFEOS {
       	double Longitude(YDim, XDim) ;
       		Longitude:units = "degrees_east" ;
       data:
-
-       eos5_cf_projection = 112 ;
 
        XDim = -8895604.157333, -8617616.5274165, -8339628.8975, 
           -8061641.2675835 ;

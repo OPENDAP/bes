@@ -160,6 +160,10 @@ public:
 
     static uint64_t read_uint64_key(const std::string &key, uint64_t default_value);
 
+    static double read_double_key(const std::string &key, double default_value);
+
+    static float read_float_key(const std::string &key, float default_value);
+
     std::unordered_map<std::string, std::vector<std::string>>::const_iterator keys_begin() {
         return d_the_keys.begin();
     }

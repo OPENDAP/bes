@@ -52,6 +52,12 @@ cp_build_script:
 	cp -f  ../$(srcdir)/gen_dmrpp_side_car $(builddir); \
 	cp -f  ../$(srcdir)/get_hdf_side_car $(builddir); \
 	cp -f  ../$(srcdir)/get_dmrpp_h5 $(builddir); \
+	cp -f $(abs_top_srcdir)/modules/dmrpp_module/build_dmrpp_h4/get_dmrpp_h4 $(builddir); \
+	cp -f $(abs_top_builddir)/modules/hdf5_handler/.libs/libhdf5_module.so $(builddir); \
+	cp -f $(abs_top_builddir)/modules/hdf4_handler/.libs/libhdf4_module.so $(builddir); \
+	cp -f $(abs_top_builddir)/modules/fileout_netcdf/.libs/libfonc_module.so $(builddir); \
+	cp -f $(abs_top_builddir)/xmlcommand/.libs/libdap_xml_module.so $(builddir); \
+	cp -f $(abs_top_builddir)/dap/.libs/libdap_module.so $(builddir); \
 	fi;
 
 # See the comment about NOTPARALLEL above. With parallel make, these target dependencies
@@ -60,21 +66,12 @@ cp_build_script:
 check-local: echo-variables cp_build_script check-local-gen-dmrpp
 
 check-local-gen-dmrpp:
-	if test $(srcdir) != .; then \
-	(PATH=$(abs_top_builddir)/modules/dmrpp_module:$(abs_top_builddir)/modules/dmrpp_module/build_dmrpp_h4:$(abs_top_builddir)/standalone:$(abs_builddir):$$PATH; python3 -m unittest gen_dmrpp_side_car_test) \
-	else \
-	python3 -m unittest gen_dmrpp_side_car_test; \
-    fi;
+	(PATH=$(abs_top_builddir)/modules/dmrpp_module:$(abs_top_builddir)/modules/dmrpp_module/build_dmrpp_h4:$(abs_top_builddir)/standalone:$(abs_builddir):$$PATH; python3 -m unittest gen_dmrpp_side_car_test) 
 
 clean-local:
 	rm -f $(builddir)/gen_dmrpp_side_car; \
 	rm -f $(builddir)/get_hdf_side_car; \
 	rm -f $(builddir)/get_dmrpp_h5; \
-	if test $(srcdir) != .; then \
-	rm -f $(builddir)/$(HDF_FILES); \
-	rm -f $(builddir)/$(HDF5_FILES); \
-	rm -f $(builddir)/$(PYTHON_FILES); \
-	rm -f $(builddir)/$(BASELINE_FILES); \
 	rm -f $(builddir)/get_dmrpp_h4; \
 	rm -f $(builddir)/libhdf5_module.so; \
 	rm -f $(builddir)/libhdf4_module.so; \
@@ -82,4 +79,9 @@ clean-local:
 	rm -f $(builddir)/libdap_xml_module.so; \
 	rm -f $(builddir)/libdap_module.so; \
 	rm -rf $(builddir)/__pycache__; \
+	if test $(srcdir) != .; then \
+	rm -f $(builddir)/$(HDF_FILES); \
+	rm -f $(builddir)/$(HDF5_FILES); \
+	rm -f $(builddir)/$(PYTHON_FILES); \
+	rm -f $(builddir)/$(BASELINE_FILES); \
 	fi;
