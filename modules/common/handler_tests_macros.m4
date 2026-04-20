@@ -831,7 +831,7 @@ m4_define([PRINT_DAP4_DATA_RESPONSE], [dnl
     mv $1.txt $1
 ])
 
-dnl This macro is smiliar to the PRINT_DAP4_DATA_RESPONSE,but without the -C option for getdap4.
+dnl This macro is similar to the PRINT_DAP4_DATA_RESPONSE,but without the -C option for getdap4.
 dnl KY 4/20/26
  
 m4_define([PRINT_NC_DAP4_DATA_RESPONSE], [dnl
