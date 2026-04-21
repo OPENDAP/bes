@@ -44,6 +44,10 @@ jobs:
       LDFLAGS: "-L/opt/homebrew/opt/bison/lib -L/opt/homebrew/opt/jpeg/lib -L/opt/homebrew/opt/openssl/lib"
       CPPFLAGS: "-I/opt/homebrew/opt/jpeg/include -I/opt/homebrew/opt/openssl/include"
       TESTSUITEFLAGS: "-j16"
+      CCACHE_DIR: "$HOME/.ccache"
+      CCACHE_MAXSIZE: "750M"
+      CC: "ccache clang"
+      CXX: "ccache clang++"
     strategy:
       fail-fast: false
       matrix:
@@ -55,9 +59,17 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 1
+      - name: Cache ccache
+        uses: actions/cache@v4
+        with:
+          path: ~/.ccache
+          key: ${{ runner.os }}-${{ matrix.runs-on }}-ccache-${{ hashFiles('libdap4-snapshot', '.github/workflows/build-osx.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.runs-on }}-ccache-
       - name: Install system dependencies
         run: |
           brew install bison \
+                       ccache \
                        jpeg \
                        cppunit \
                        autoconf \
@@ -77,28 +89,54 @@ jobs:
       - name: Update PATH
         run: |
           export prefix="$HOME/install"
-          echo -e "$prefix/bin:$prefix/deps/bin:/opt/homebrew/opt/bison/bin:/opt/homebrew/opt/jpeg/bin:$(cat $GITHUB_PATH)" > $GITHUB_PATH
+          {
+            echo "$prefix/bin"
+            echo "$prefix/deps/bin"
+            echo "/opt/homebrew/opt/bison/bin"
+            echo "/opt/homebrew/opt/jpeg/bin"
+          } >> "$GITHUB_PATH"
           echo "prefix: $prefix"
-          echo "PATH: $(cat $GITHUB_PATH)"
+          echo "Configured entries in GITHUB_PATH:"
+          cat "$GITHUB_PATH"
           ls $prefix
         shell: bash
+      - name: Restore libdap install cache
+        id: cache-libdap
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/install/bin
+            ~/install/include
+            ~/install/lib
+            ~/install/share
+          key: ${{ runner.os }}-${{ matrix.runs-on }}-libdap-${{ hashFiles('libdap4-snapshot', '.github/workflows/build-osx.yml') }}
       - name: Build and install libdap
         run: |
           # In the future, consider moving this to the libdap repo...
           set -x
           export prefix="$HOME/install"
+          ccache --set-config=max_size="$CCACHE_MAXSIZE"
+          ccache --show-stats || true
+          if [[ "${{ steps.cache-libdap.outputs.cache-hit }}" == "true" ]] && [[ -x "$prefix/bin/dap-config" ]]; then
+            echo "Using cached libdap install from $prefix"
+            "$prefix/bin/dap-config" --version || true
+            exit 0
+          fi
           git clone https://github.com/opendap/libdap4
           cd libdap4
           autoreconf -fiv
           ./configure --prefix=$prefix --enable-developer
           make -j16
           make install
+          ccache --show-stats || true
           ls $prefix
         shell: bash
       - name: Configure bes build
         run: |
           set -x
           export prefix="$HOME/install"
+          ccache --set-config=max_size="$CCACHE_MAXSIZE"
+          ccache --show-stats || true
           pwd
           autoreconf --force --install --verbose
           ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $CONFIGURE_OPTIONS
@@ -112,9 +150,10 @@ jobs:
           export LD_LIBRARY_PATH="$prefix/deps/lib:$LD_LIBRARY_PATH"
           make -j16
           make install
-          besctl start
+          sudo -s $prefix/bin/besctl start
           make check -j16
-          besctl stop
+          sudo -s $prefix/bin/besctl stop
+          ccache --show-stats || true
           set +x
         shell: bash
         continue-on-error: true
