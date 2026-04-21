@@ -139,7 +139,7 @@ jobs:
           ccache --show-stats || true
           pwd
           autoreconf --force --install --verbose
-          ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $CONFIGURE_OPTIONS
+          ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer $CONFIGURE_OPTIONS
           set +x
         shell: bash
       - name: Build and test bes
@@ -150,9 +150,9 @@ jobs:
           export LD_LIBRARY_PATH="$prefix/deps/lib:$LD_LIBRARY_PATH"
           make -j16
           make install
-          sudo -s $prefix/bin/besctl start
+          besctl start
           make check -j16
-          sudo -s $prefix/bin/besctl stop
+          besctl stop
           ccache --show-stats || true
           set +x
         shell: bash
