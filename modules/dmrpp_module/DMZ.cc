@@ -307,7 +307,10 @@ void DMZ::process_dataset(DMR *dmr, const xml_node &xml_root) {
             dmr->set_dap_version(attr.value());
         }
         else if (is_eq(attr.name(), "dmrVersion")) {
-            dmr->set_dmr_version(attr.value());
+            // dmr->set_dmr_version(attr.value());
+            // We set this to 1.0 because there are documents with a 2.0
+            // in the system but they should have been 1.0 all along
+            dmr->set_dmr_version("1.0");
         }
         else if (is_eq(attr.name(), "base")) {
             dmr->set_request_xml_base(attr.value());
