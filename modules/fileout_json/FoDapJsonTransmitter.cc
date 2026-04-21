@@ -68,7 +68,7 @@ using namespace ::libdap;
 
 string FoDapJsonTransmitter::temp_dir;
 
-/** @brief Construct the FoW10nJsonTransmitter
+/** @brief Construct the FoDapJsonTransmitter
  *
  *
  * The transmitter is created to add the ability to return OPeNDAP data

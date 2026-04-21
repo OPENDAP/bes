@@ -18,7 +18,6 @@ rm -rf \
     ncml_module \
     netcdf_handler \
     ugrid_functions \
-    w10n_handler \
     xml_data_handler
 #    hdf4_handler \
 #    hdf5_handler \

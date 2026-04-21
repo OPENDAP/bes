@@ -126,14 +126,6 @@ It supports NetCDF3 and NetCDF4-style returns and is one of the canonical exampl
 
 Adds non-DAP informational responses such as usage/help-oriented outputs. Historically this package grouped human-facing handlers like usage, ASCII, and HTML-form style responses.
 
-### `w10n_handler`
-
-Adds `return as w10n` JSON output and related path-info behavior. In practice this is a specialized JSON-facing module for a particular API/view of dataset information rather than a raw format reader.
-
-## Function modules
-
-These modules do not primarily read a file format. They register libdap server-side functions that can be used inside constraint expressions or related DAP processing.
-
 ### `debug_functions`
 
 Registers testing and fault-injection functions such as:
@@ -234,7 +226,6 @@ This directory appears vestigial or incomplete in the current checkout. It conta
 | `s3_reader` | S3-backed container/storage reader |
 | `ugrid_functions` | UGRID subsetting functions |
 | `usage` | usage/help-style non-DAP outputs |
-| `w10n_handler` | specialized JSON-oriented output/path-info module |
 | `xml_data_handler` | XML value-output handler |
 
 ## Patterns across the module tree

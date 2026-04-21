@@ -1,6 +1,6 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 //
-// FoW10JsonTransmitter.h
+// FoDapJsonTransmitter.h
 //
 // This file is part of BES JSON File Out Module
 //
@@ -37,7 +37,7 @@ class BESDataHandlerInterface;
 /** @brief BESTransmitter class named "json" that transmits an OPeNDAP
  * data object as a JSON file
  *
- * The FoW10JsonTransmitter transforms an OPeNDAP DataDDS object into a
+ * The FoDapJsonTransmitter transforms an OPeNDAP DataDDS object into a
  * JSON file and streams the new (temporary) JSON file back to the
  * client.
  *
