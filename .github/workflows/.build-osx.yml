@@ -12,12 +12,16 @@ on:
       - ".vscode/**"
       - "*.md"
       - "Dockerfile"
+      - "README*"
+      - "docs/**"
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     paths-ignore:
       - ".vscode/**"
       - "*.md"
       - "Dockerfile"
+      - "README*"
+      - "docs/**"
 
 concurrency:
   # Cancel intermediate builds only on pull requests
@@ -39,6 +43,7 @@ jobs:
       CMAC_ON: "yes"
       LDFLAGS: "-L/opt/homebrew/opt/bison/lib -L/opt/homebrew/opt/jpeg/lib -L/opt/homebrew/opt/openssl/lib"
       CPPFLAGS: "-I/opt/homebrew/opt/jpeg/include -I/opt/homebrew/opt/openssl/include"
+      TESTSUITEFLAGS: "-j16"
     strategy:
       fail-fast: false
       matrix:
