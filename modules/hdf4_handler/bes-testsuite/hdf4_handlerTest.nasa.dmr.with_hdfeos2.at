@@ -14,7 +14,7 @@ m4_include([local_handler_tests_macros.m4])
 
 AT_BESCMD_H4_BESCONF_RESPONSE_TEST([h4.nasa.dmr/1B21.19971208.00160.7.HDF.dmr.bescmd], [bes.with_hdfeos2.conf])
 AT_BESCMD_H4_BESCONF_RESPONSE_TEST([h4.nasa.dmr/3B42.20180802.03.7.HDF.dmr.bescmd], [bes.with_hdfeos2.conf])
-AT_BESCMD_H4_BESCONF_DAP4DATA_TEST(([h4.nasa.dmr/3B42.20180802.03.7.HDF.dap.bescmd], [bes.with_hdfeos2.conf])
+AT_BESCMD_H4_BESCONF_NC_DAP4DATA_TEST([h4.nasa.dmr/3B42.20180802.03.7.HDF.dap.bescmd], [bes.with_hdfeos2.conf])
 AT_BESCMD_H4_BESCONF_RESPONSE_TEST([h4.nasa.dmr/AIRS.2010.01.01.L3.CO2Std_IR031.v5.9.14.hdf.dmr.bescmd], [bes.with_hdfeos2.conf])
 AT_BESCMD_H4_BESCONF_RESPONSE_TEST([h4.nasa.dmr/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf.dmr.bescmd], [bes.with_hdfeos2.conf])
 AT_BESCMD_H4_BESCONF_RESPONSE_TEST([h4.nasa.dmr/AMSR_E_L2_Land_V09_200206190615_A.hdf.dmr.bescmd], [bes.with_hdfeos2.conf])
