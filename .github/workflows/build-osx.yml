@@ -160,12 +160,12 @@ jobs:
       - name: Post failure logs to aws
         if: steps.build-and-test.outcome == 'failure'
         run: |
-          ./travis/upload-test-results.sh
+          sh ./.github/scripts/upload-test-results.sh
           # Because previous job failed, we need to re-throw failure
           # now that logs are uploaded
           exit 1
         shell: bash
         env:
-          TRAVIS_JOB_NUMBER: gha-${{ github.run_id }}-${{ github.job }}
+          GHA_RUNNER_LABEL: ${{ matrix.runs-on }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_GHA_BES_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_GHA_BES_SECRET_KEY }}
