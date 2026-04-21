@@ -1374,12 +1374,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/ugrid_functions/Makefile 
     modules/ugrid_functions/unit-tests/Makefile
     modules/ugrid_functions/tests/Makefile 
-    modules/ugrid_functions/tests/atlocal
-        
-    modules/w10n_handler/Makefile 
-    modules/w10n_handler/unit-tests/Makefile
-    modules/w10n_handler/tests/Makefile 
-    modules/w10n_handler/tests/atlocal])
+    modules/ugrid_functions/tests/atlocal])
 
     dnl Move these into the autotest.at files using an autotest option.
     AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
@@ -1420,7 +1415,6 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     AC_CONFIG_TESTDIR(modules/gdal_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/ncml_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/ugrid_functions/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/w10n_handler/tests, [standalone])
 
     AC_CONFIG_TESTDIR(modules/functions/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/functions/stare/tests, [standalone])

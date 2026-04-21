@@ -149,8 +149,6 @@ include_directories(modules/ugrid_functions)
 include_directories(modules/ugrid_functions/unit-tests)
 include_directories(modules/usage)
 
-include_directories(modules/w10n_handler)
-include_directories(modules/w10n_handler/unit-tests)
 include_directories(modules/www-interface)
 
 include_directories(modules/xml_data_handler)
@@ -1671,23 +1669,6 @@ add_executable(
     modules/usage/BESUsageTransmit.h
     modules/usage/usage.cc
     modules/usage/usage.h
-    modules/w10n_handler/unit-tests/test_config.h
-    modules/w10n_handler/unit-tests/W10nTest.cc
-    modules/w10n_handler/w10n_utils.cc
-    modules/w10n_handler/w10n_utils.h
-    modules/w10n_handler/W10nJsonRequestHandler.cc
-    modules/w10n_handler/W10nJsonRequestHandler.h
-    modules/w10n_handler/W10nJsonTransform.cc
-    modules/w10n_handler/W10nJsonTransform.h
-    modules/w10n_handler/W10nJsonTransmitter.cc
-    modules/w10n_handler/W10nJsonTransmitter.h
-    modules/w10n_handler/W10NModule.cc
-    modules/w10n_handler/W10NModule.h
-    modules/w10n_handler/W10NNames.h
-    modules/w10n_handler/W10nShowPathInfoCommand.cc
-    modules/w10n_handler/W10nShowPathInfoCommand.h
-    modules/w10n_handler/W10nShowPathInfoResponseHandler.cc
-    modules/w10n_handler/W10nShowPathInfoResponseHandler.h
     modules/www-interface/not_used/BESWWWGetCommand.cc
     modules/www-interface/not_used/BESWWWGetCommand.h
     modules/www-interface/BESWWW.h
