@@ -101,7 +101,7 @@ jobs:
           export prefix="$HOME/install"
           pwd
           autoreconf --force --install --verbose
-          ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $CONFIGURE_OPTIONS --enable-developer
+          ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps $CONFIGURE_OPTIONS
           set +x
         shell: bash
       - name: Build and test bes
