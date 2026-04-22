@@ -979,7 +979,6 @@ ugrid_test_05.nc
 ugrid_test_06.cdl
 ugrid_test_06.nc
 
-./modules/w10n_handler/data:
 README
 atomicTypes.cdl
 atomicTypes.nc

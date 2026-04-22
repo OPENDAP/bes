@@ -15,7 +15,6 @@ httpd_catalog_module
 ngap_module
 s3_reader
 fileout_json
-w10n_handler
 gateway_module
 xml_data_handler
 builddmrpp_module

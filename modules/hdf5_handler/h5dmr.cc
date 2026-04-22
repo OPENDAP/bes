@@ -2030,7 +2030,7 @@ hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, 
 
     if (obj_type == H5O_TYPE_DATASET) {
 
-        hid_t did_ref = H5Rdereference2(dset_id, H5P_DEFAULT, H5R_OBJECT, &((ref_list[0]).s_ref));
+        hid_t did_ref = H5RDEREFERENCE(dset_id, H5R_OBJECT, &((ref_list[0]).s_ref));
         if (did_ref < 0) {
             H5Aclose(attr_id);
             H5Tclose(atype_id);
