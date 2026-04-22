@@ -91,7 +91,6 @@
 ./modules/netcdf_handler/data/nc4_test_files:
 ./modules/netcdf_handler/data:
 ./modules/ugrid_functions/data:
-./modules/w10n_handler/data:
 ./modules/xml_data_handler/data:
 1998-6-avhrr-t1.dat
 1998-6-avhrr-t1.dat.das
