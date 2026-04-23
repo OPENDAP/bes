@@ -4325,23 +4325,19 @@ bool is_dap4_dimension_name(hid_t pid, hid_t oid, const string &temp_dim_path) {
         string msg = "h5_dmr is_dap4_dimension_name: Error obtaining the address for the object.";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
-//cerr<<"an_obj_addr: "<<obj_addr <<endl;
     
     H5L_info2_t linfo;
-//cerr<<"temp_dim_path: "<<temp_dim_path <<endl;
     // Note for the rare cases, the HDF5 object name may contain special characters that are corrected
     // by the handler when generating the dimension names. For this case, the H5Lget_info2 will be negative.
-    // It is not an error but it is a case that we may have to use the generic approach.
-    if (H5Lget_info2(pid,temp_dim_path.c_str(),&linfo,H5P_DEFAULT) <0) {
+    // It is not an error but it is a case that we may have to use the generic approach. KY-2026-04-23
+    if (H5Lget_info2(pid,temp_dim_path.c_str(),&linfo,H5P_DEFAULT) <0) 
         return false;
-    }
 
     haddr_t link_obj_addr;
     if (H5VLnative_token_to_addr(pid,linfo.u.token, &link_obj_addr)) {
         string msg = "h5_dmr is_dap4_dimension_name: Error obtaining the address for the object that this link points to .";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
-//cerr<<"link_obj_addr: "<<link_obj_addr <<endl;
 
     if (link_obj_addr == obj_addr)
         return true;
@@ -4366,7 +4362,6 @@ string obtain_dim_via_hdf5_group(hid_t pid, hid_t oid,const string &full_path) {
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
  
-//cerr<<"obj_addr: "<<obj_addr<<endl;
     // Obtain the number of objects in this group
     H5G_info_t g_info; 
     hsize_t nelems = 0;
@@ -4378,7 +4373,6 @@ string obtain_dim_via_hdf5_group(hid_t pid, hid_t oid,const string &full_path) {
 
     nelems = g_info.nlinks;
 
-//cerr<<"nelems: "<<nelems<<endl;
 
     // Iterate through the HDF5 datasets under the group.
     for (hsize_t i = 0; i < nelems; i++) {
@@ -4391,7 +4385,7 @@ string obtain_dim_via_hdf5_group(hid_t pid, hid_t oid,const string &full_path) {
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
-        // A valide dimension scale attached to a variable must have at least 3 attributes.
+        // The dimension scale must be an HDF5 dataset.
         if (H5O_TYPE_DATASET == gm_oinfo.type) {
 
             haddr_t gm_obj_addr;
@@ -4400,7 +4394,6 @@ string obtain_dim_via_hdf5_group(hid_t pid, hid_t oid,const string &full_path) {
                 throw BESInternalError(msg,__FILE__, __LINE__);
             }
 
-//cerr<<"gm_obj_addr: "<<gm_obj_addr<<endl;
             // Find the object 
             if (gm_obj_addr == obj_addr) {
                          
