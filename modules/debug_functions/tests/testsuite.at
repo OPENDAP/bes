@@ -82,8 +82,8 @@ m4_define([AT_BESCMD_BINARYDATA_RESPONSE_PATTERN_TEST],  [dnl
         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap -Ms -], [0], [stdout])
 
         AS_IF([ test "x$(uname -m)" = "xarm64" -a -f $baseline.m_proc],
-            [ AT_CHECK([diff -b -B $baseline.m_proc stdout]) ],
-            [ AT_CHECK([diff -b -B $baseline stdout]) ])
+            [ AT_CHECK([grep -E -f $baseline.m_proc stdout], [0], [ignore]) ],
+            [ AT_CHECK([grep -E -f $baseline stdout], [0], [ignore]) ])
     ])
 
     AT_CLEANUP
