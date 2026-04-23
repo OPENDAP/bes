@@ -46,6 +46,9 @@
         "PATH": "${config:PATH}"
     },
     "cSpell.words": [
-        "DISTCHECK"
+        "CMAC",
+        "libdap",
+        "ncml",
+        "NDAP"
     ]
 }
