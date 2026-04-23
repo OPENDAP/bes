@@ -4303,10 +4303,9 @@ string obtain_dimname_dap4(D4Group *d4_grp, hid_t pid, hid_t oid, size_t dim_siz
 
     BESDEBUG("h5","dim_path before calling obtain_dim_via_hdf5_group: " << dim_path <<endl);
     // Now we need to check if there is any dimension variable candidate within this group since the DAP4 group may not obtain these variables yet.
-    if(dim_path.empty())  {
-        BESDEBUG("h5","group full path before calling obtain_dim_via_hdf5_group: " << d4_grp->FQN() <<endl);
+    if(dim_path.empty() && d4_grp!=nullptr)  
         dim_path = obtain_dim_via_hdf5_group(pid, oid,d4_grp->FQN());
-    }
+   
 
     return dim_path;
 
