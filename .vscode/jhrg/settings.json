@@ -47,9 +47,15 @@
         "PATH": "${config:PATH}"
     },
     "cSpell.words": [
+        "OPENDAP",
+        "DISTCHECK",
+        "bescmd",
+        "besstandalone",
+        "BINARYDATA",
+        "CMAC",
         "libdap",
         "ncml",
-        "OPENDAP",
-        "DISTCHECK"
+        "NDAP",
+        "xfail"
     ]
 }
