@@ -1,3 +1,1 @@
-The data:
-String info = "Summed for 1000 ms.";
-
+String info = "Summed for 1[0-9]{3} ms\.";

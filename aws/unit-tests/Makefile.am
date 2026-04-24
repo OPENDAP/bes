@@ -2,7 +2,9 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/aws -I$(top_srcdir)/dispatch
+# Prefer the AWS headers from --with-dependencies over any incidental
+# Homebrew installation that may also be present in CPPFLAGS.
+AM_CPPFLAGS = -I$(aws_prefix)/include -I$(top_srcdir) -I$(top_srcdir)/aws -I$(top_srcdir)/dispatch
 
 # Help the link step find libs at build time too (not just run time).
 # NB: We could use the default value of AM_LDFLAGS for the AWS libs if we wanted

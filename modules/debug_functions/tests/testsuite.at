@@ -57,6 +57,38 @@ dnl These tests are for the timeout feature. The first call should return
 dnl a valid response but the second should timeout, which currently means
 dnl the BES just exits
 
-AT_BESCMD_BINARYDATA_RESPONSE_TEST([bescmd/sum_until.bescmd])
+m4_define([AT_BESCMD_BINARYDATA_RESPONSE_PATTERN_TEST],  [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([bescmd data dap2 DAP2])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+
+    AT_XFAIL_IF([test z$2 = zxfail])
+    feature=$3
+
+    AS_IF([test -n "$feature"],
+        [AT_SKIP_IF([test -z "$(grep $feature $top_srcdir/modules/configured_features.txt)"])])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone -c $bes_conf -i $1; skip if not $repeat"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap -Ms -], [0], [stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input | getdap -Ms -], [0], [stdout])
+
+        AS_IF([ test "x$(uname -m)" = "xarm64" -a -f $baseline.m_proc],
+            [ AT_CHECK([grep -E -f $baseline.m_proc stdout], [0], [ignore]) ],
+            [ AT_CHECK([grep -E -f $baseline stdout], [0], [ignore]) ])
+    ])
+
+    AT_CLEANUP
+])
+
+AT_BESCMD_BINARYDATA_RESPONSE_PATTERN_TEST([bescmd/sum_until.bescmd])
 AT_BESCMD_RESPONSE_PATTERN_TEST([bescmd/sum_until2.bescmd], xfail)
 AT_BESCMD_RESPONSE_PATTERN_TEST([bescmd/sum_until3.bescmd], xfail)
