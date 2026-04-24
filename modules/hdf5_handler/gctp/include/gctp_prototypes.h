@@ -286,7 +286,7 @@ long untfz(long inunit, long outunit, double *factor);
 int init(long ipr, long jpr, char *efile, char *pfile);
 void close_file(void);
 int hinv_init(int insys, int inzone, double *inparm, int indatum, char *fn27, char *fn83, int *iflg, int (*hinv_trans[])(double, double, double*, double*));
-int gctp(double *incoor, long *insys, long *inzone, double *inparm, long *inunit, long *indatum, long *ipr, char *efile, long *jpr, char *pfile, double *outcoor, long *outsys, long *outzone, double *outparm, long *outunit, long *outdatum, char *fn27, char *fn83, long *iflg);
+int gctp(const double *incoor, const long *insys, const long *inzone, double *inparm, long *inunit, const long *indatum, const long *ipr, char *efile, const long *jpr, char *pfile, double *outcoor, const long *outsys, const long *outzone, double *outparm, long *outunit, const long *outdatum, char *fn27, char *fn83, long *iflg);
 int gctp_(double *incoor, long *insys, long *inzone, double *inparm, long *inunit, long *indatum, long *ipr, char *efile, long *jpr, char *pfile, double *outcoor, long *outsys, long *outzone, double *outparm, long *outunit, long *outdatum, char *fn27, char *fn83, long *iflg);
 
 #endif

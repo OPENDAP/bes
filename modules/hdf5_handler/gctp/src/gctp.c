@@ -36,6 +36,8 @@ ALGORITHM REFERENCES
 #define TRUE 1
 #define FALSE 0
 
+double pakr2dm(double ang); /* defined in cproj.c jhrg 3/31/26*/
+
 static long iter = 0;			/* First time flag		*/
 static long inpj[MAXPROJ + 1];		/* input projection array	*/
 static long indat[MAXPROJ + 1];		/* input dataum array		*/
@@ -71,31 +73,26 @@ static long NAD83[134] = {101,102,5010,5300,201,202,203,301,302,401,402,403,
 */
 
 /* Added explicit return type. 6/5/23 */
-#if 0
-int
-gctp(incoor,insys,inzone,inparm,inunit,indatum,ipr,efile,jpr,pfile,outcoor,
-     outsys,outzone,outparm,outunit,outdatum,fn27,fn83,iflg)
-#endif
 int
 gctp(
-double *incoor,		/* input coordinates				*/
-long *insys,		/* input projection code			*/
-long *inzone,		/* input zone number				*/
+const double *incoor,		/* input coordinates				*/
+const long *insys,		/* input projection code			*/
+const long *inzone,		/* input zone number				*/
 double *inparm,		/* input projection parameter array		*/
 long *inunit,		/* input units					*/
-long *indatum,		/* input datum 					*/
-long *ipr,		/* printout flag for error messages. 0=screen, 1=file,
+const long *indatum,		/* input datum 					*/
+const long *ipr,		/* printout flag for error messages. 0=screen, 1=file,
 			   2=both*/
 char *efile,		/* error file name				*/
-long *jpr,		/* printout flag for projection parameters 0=screen, 
+const long *jpr,		/* printout flag for projection parameters 0=screen, 
 			   1=file, 2 = both*/
 char *pfile,		/* error file name				*/
 double *outcoor,	/* output coordinates				*/
-long *outsys,		/* output projection code			*/
-long *outzone,		/* output zone					*/
+const long *outsys,		/* output projection code			*/
+const long *outzone,		/* output zone					*/
 double *outparm,	/* output projection array			*/
 long *outunit,		/* output units					*/
-long *outdatum,		/* output datum					*/
+const long *outdatum,		/* output datum					*/
 char fn27[],		/* file name of NAD 1927 parameter file		*/
 char fn83[], 	 	/* file name of NAD 1983 parameter file		*/
 long *iflg)		/* error flag					*/
@@ -106,7 +103,7 @@ double factor;		/* conversion factor				*/
 double lon;		/* longitude					*/
 double lat;		/* latitude					*/
 /*double temp;	*/	/* dummy variable				*/
-double pakr2dm(double ang);
+/* double pakr2dm(double ang); move declaration to top of file jhrg 3/31/26 */
 long i,j;		/* loop counters				*/
 long ininit_flag;	/* input initilization flag			*/
 long outinit_flag;	/* output initilization flag			*/
