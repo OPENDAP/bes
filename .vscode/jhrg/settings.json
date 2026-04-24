@@ -46,9 +46,13 @@
         "PATH": "${config:PATH}"
     },
     "cSpell.words": [
+        "bescmd",
+        "besstandalone",
+        "BINARYDATA",
         "CMAC",
         "libdap",
         "ncml",
-        "NDAP"
+        "NDAP",
+        "xfail"
     ]
 }
