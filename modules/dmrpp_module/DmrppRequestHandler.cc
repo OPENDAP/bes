@@ -110,16 +110,16 @@ namespace dmrpp
     // that make and delete many of these objects. jhrg 11/22/24
     CurlHandlePool *DmrppRequestHandler::curl_handle_pool{nullptr};
 
-    // These now only affect the DDS and DAS ObjMemCaches; the DMR++
+    // These now only effect the DDS and DAS ObjMemCaches; the DMR++
     // is cached in the NGAP module. Once issues with the DMR++ object's
     // copy constructor are solved, the ObjMemCache can be used again.
     // jhrg 9/26/23
     bool DmrppRequestHandler::d_use_object_cache = true;
-    unsigned int DmrppRequestHandler::d_object_cache_entries = 100;
+    int DmrppRequestHandler::d_object_cache_entries = 100;
     double DmrppRequestHandler::d_object_cache_purge_level = 0.2;
 
     bool DmrppRequestHandler::d_use_compute_threads = true;
-    unsigned int DmrppRequestHandler::d_max_compute_threads = 8;
+    unsigned long DmrppRequestHandler::d_max_compute_threads = 8;
 
     // Default minimum value is 2MB: 2 * (1024*1024)
     unsigned long long DmrppRequestHandler::d_contiguous_concurrent_threshold = DMRPP_DEFAULT_CONTIGUOUS_CONCURRENT_THRESHOLD;
@@ -159,7 +159,7 @@ namespace dmrpp
 
         // Using TheBESKeys calls instead of custom functions kln 4/1/26
         d_use_compute_threads = TheBESKeys::read_bool_key(DMRPP_USE_COMPUTE_THREADS_KEY, d_use_compute_threads);
-        d_max_compute_threads = TheBESKeys::read_bool_key(DMRPP_MAX_COMPUTE_THREADS_KEY, d_max_compute_threads);
+        d_max_compute_threads = TheBESKeys::read_ulong_key(DMRPP_MAX_COMPUTE_THREADS_KEY, d_max_compute_threads);
         msg << prolog << "Concurrent Compute Threads: ";
         if (DmrppRequestHandler::d_use_compute_threads)
         {

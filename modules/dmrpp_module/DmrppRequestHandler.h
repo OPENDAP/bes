@@ -58,7 +58,7 @@ private:
     static std::unique_ptr<ObjMemCache> dds_cache;
 
     static bool d_use_object_cache;
-    static unsigned int d_object_cache_entries;
+    static int d_object_cache_entries;
     static double d_object_cache_purge_level;
 
 
@@ -78,7 +78,7 @@ public:
     static CurlHandlePool *curl_handle_pool;
 
     static bool d_use_compute_threads;
-    static unsigned int d_max_compute_threads;
+    static unsigned long d_max_compute_threads;
 
     static unsigned long long d_contiguous_concurrent_threshold;
 
