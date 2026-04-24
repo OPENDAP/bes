@@ -7,6 +7,7 @@
 autom4te.cache
 /bes-*
 .idea/
+.vscode/*.json
 bes_VERSION
 cookies
 gcovr_report.txt
@@ -175,5 +176,3 @@ timing/*/*.dtps
 /.scannerwork/
 /bw-output/
 
-## IDE configuration
-.vscode/**
