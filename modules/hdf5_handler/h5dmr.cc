@@ -2030,7 +2030,7 @@ hsize_t obtain_unlim_pure_dim_size_internal_value(hid_t dset_id, hid_t attr_id, 
 
     if (obj_type == H5O_TYPE_DATASET) {
 
-        hid_t did_ref = H5Rdereference2(dset_id, H5P_DEFAULT, H5R_OBJECT, &((ref_list[0]).s_ref));
+        hid_t did_ref = H5RDEREFERENCE(dset_id, H5R_OBJECT, &((ref_list[0]).s_ref));
         if (did_ref < 0) {
             H5Aclose(attr_id);
             H5Tclose(atype_id);
@@ -4134,8 +4134,6 @@ void obtain_dimnames_internal(D4Group *d4_grp, hid_t file_id, hid_t pid, hid_t d
                 // See if we can quickly obtain the dimension name by searching all the qualified dimensions
 
                 BESDEBUG("h5",  "object name:" << dt_inst_ptr->name << endl);
-                trim_objname = obtain_dimname_dap4(d4_grp,pid, (size_t)(dt_inst_ptr->size[i]));
-                BESDEBUG("h5",  "dim name from dap4:" << trim_objname << endl);
 
                 rbuf =((hobj_ref_t*)vlbuf[i].p)[0];
                 if ((ref_dset = H5RDEREFERENCE(attr_id, H5R_OBJECT, &rbuf)) < 0) {
@@ -4143,6 +4141,9 @@ void obtain_dimnames_internal(D4Group *d4_grp, hid_t file_id, hid_t pid, hid_t d
                     throw BESInternalError(msg,__FILE__, __LINE__);
                 }
         
+                trim_objname = obtain_dimname_dap4(d4_grp,pid, ref_dset, (size_t)(dt_inst_ptr->size[i]));
+                BESDEBUG("h5",  "dim name from dap4:" << trim_objname << endl);
+
                 if (trim_objname.empty()) 
                     trim_objname = obtain_dimname_deref(ref_dset,dt_inst_ptr);
                 
@@ -4257,13 +4258,12 @@ string obtain_dimname_deref(hid_t ref_dset, const DS_t *dt_inst_ptr) {
     return trim_objname;
 }
 
-string obtain_dimname_dap4(D4Group *d4_grp, hid_t pid, size_t dim_size) {
+string obtain_dimname_dap4(D4Group *d4_grp, hid_t pid, hid_t oid, size_t dim_size) {
 
     BESDEBUG("h5",  "coming to obtain_dimname_dap4" << endl);
     BESDEBUG("h5",  "dim_size:" << dim_size <<endl);
     string dim_path="";
-    bool enable_obtain_dim_path = true;
-    bool dimscale_in_cur_grp = false;
+    bool find_dim_name = false;
 
     D4Group *temp_grp = d4_grp;
     while (temp_grp) {
@@ -4279,20 +4279,19 @@ string obtain_dimname_dap4(D4Group *d4_grp, hid_t pid, size_t dim_size) {
             BESDEBUG("h5",  "obtain_dimname_dap4() - fully_qualfied_dim name is: " << (*di)->fully_qualified_name() << endl);
             if (dim_size == (*di)->size()) {
                 if (dim_path.empty()) {
-                    dim_path = (*di)->fully_qualified_name();
-                    if (temp_grp == d4_grp)
-                        dimscale_in_cur_grp = true;
-                }
-                else {
-                    enable_obtain_dim_path = false;
-                    dim_path="";
+                    string temp_dim_path = (*di)->fully_qualified_name();
+                    find_dim_name = is_dap4_dimension_name(pid, oid, temp_dim_path);
+                    if (find_dim_name) {
+                        dim_path = temp_dim_path;
+                        break;
+                    }
                 }
             }
-            if (!enable_obtain_dim_path) 
+            if (find_dim_name) 
                 break;
         }
 
-        if (!enable_obtain_dim_path)
+        if (find_dim_name)
             break;
 
         if(temp_grp->get_parent())
@@ -4302,97 +4301,128 @@ string obtain_dimname_dap4(D4Group *d4_grp, hid_t pid, size_t dim_size) {
 
     } 
 
-    // Now we have to check if there is any dimension variable candidate within this group since the DAP4 group may not obtain these variables yet.
-    if(!dim_path.empty() && multi_dim_candidates(pid,dim_size,dimscale_in_cur_grp)) 
-        dim_path="";
+    BESDEBUG("h5","dim_path before calling obtain_dim_via_hdf5_group: " << dim_path <<endl);
+    // Now we need to check if there is any dimension variable candidate within this group since the DAP4 group may not obtain these variables yet.
+    if(dim_path.empty() && d4_grp!=nullptr)  
+        dim_path = obtain_dim_via_hdf5_group(pid, oid,d4_grp->FQN());
+   
 
     return dim_path;
 
 }
 
-bool multi_dim_candidates(hid_t pid, size_t dim_size, bool dim_scale_in_cur_grp) {
+bool is_dap4_dimension_name(hid_t pid, hid_t oid, const string &temp_dim_path) {
 
+    H5O_info2_t oinfo;
+    if (H5Oget_info3(oid,&oinfo,H5O_INFO_BASIC) <0) {
+        string msg = "h5_dmr is_dap4_dimension_name: Error obtaining the info for the object.";
+        throw BESInternalError(msg,__FILE__, __LINE__);
+    }
+
+    haddr_t obj_addr;
+    if (H5VLnative_token_to_addr(oid,oinfo.token, &obj_addr)) {
+        string msg = "h5_dmr is_dap4_dimension_name: Error obtaining the address for the object.";
+        throw BESInternalError(msg,__FILE__, __LINE__);
+    }
+    
+    H5L_info2_t linfo;
+    // Note for the rare cases, the HDF5 object name may contain special characters that are corrected
+    // by the handler when generating the dimension names. For this case, the H5Lget_info2 will be negative.
+    // It is not an error but it is a case that we may have to use the generic approach. KY-2026-04-23
+    if (H5Lget_info2(pid,temp_dim_path.c_str(),&linfo,H5P_DEFAULT) <0) 
+        return false;
+
+    haddr_t link_obj_addr;
+    if (H5VLnative_token_to_addr(pid,linfo.u.token, &link_obj_addr)) {
+        string msg = "h5_dmr is_dap4_dimension_name: Error obtaining the address for the object that this link points to .";
+        throw BESInternalError(msg,__FILE__, __LINE__);
+    }
+
+    if (link_obj_addr == obj_addr)
+        return true;
+    else 
+        return false;
+
+}
+
+string obtain_dim_via_hdf5_group(hid_t pid, hid_t oid,const string &full_path) {
+
+    string dim_path;
+    
+    H5O_info2_t oinfo;
+    if (H5Oget_info3(oid,&oinfo,H5O_INFO_BASIC) <0) {
+        string msg = "h5_dmr obtain_dim_via_hdf5_group: Error obtaining the info for the object.";
+        throw BESInternalError(msg,__FILE__, __LINE__);
+    }   
+
+    haddr_t obj_addr;
+    if (H5VLnative_token_to_addr(oid,oinfo.token, &obj_addr)) {
+        string msg = "h5_dmr obtain_dim_via_hdf5_group: Error obtaining the address for the object.";
+        throw BESInternalError(msg,__FILE__, __LINE__);
+    }
+ 
     // Obtain the number of objects in this group
     H5G_info_t g_info; 
     hsize_t nelems = 0;
     if (H5Gget_info(pid,&g_info) < 0) {
         string msg =
-            "h5_dmr multi_dim_candidates: counting hdf5 group elements error. ";
+            "h5_dmr obtain_dim_via_hdf5_group: counting hdf5 group elements error. ";
         throw BESInternalError(msg,__FILE__, __LINE__);
     }
 
     nelems = g_info.nlinks;
 
-    short num_dim_candidates = 0;
 
-    // First iterate through the HDF5 datasets under the group.
+    // Iterate through the HDF5 datasets under the group.
     for (hsize_t i = 0; i < nelems; i++) {
 
-        // Obtain the object type, such as group or dataset. 
-        H5O_info_t oinfo;
-        if (H5OGET_INFO_BY_IDX(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
-                              i, &oinfo, H5P_DEFAULT) <0 ) {
-            string msg = "h5_dmr multi_dim_candidates: Error obtaining the info for the object.";
+        // Obtain the object type of this group member. 
+        H5O_info_t gm_oinfo;
+        if (H5Oget_info_by_idx3(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,i,&gm_oinfo,H5O_INFO_BASIC,
+                                H5P_DEFAULT) <0 ) {
+            string msg = "h5_dmr obtain_dim_via_hdf5_group: Error obtaining the info for the object.";
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
 
-        // A valide dimension scale attached to a variable must have at least 3 attributes.
-        if (H5O_TYPE_DATASET == oinfo.type && oinfo.num_attrs > 2) {
+        // The dimension scale must be an HDF5 dataset.
+        if (H5O_TYPE_DATASET == gm_oinfo.type) {
 
-            vector <char> oname;
-            ssize_t oname_size;
-        
-            // Query the length of this object name.
-            oname_size = H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,
-                                    nullptr,(size_t)DODS_NAMELEN, H5P_DEFAULT);
-            if (oname_size <= 0) {
-                string msg = "h5_dmr multi_dim_candidates: Error getting the size of the hdf5 object from the group. ";
+            haddr_t gm_obj_addr;
+            if (H5VLnative_token_to_addr(pid,gm_oinfo.token, &gm_obj_addr)) {
+                string msg = "h5_dmr is_dap4_dimension_name: Error obtaining the address for the object.";
                 throw BESInternalError(msg,__FILE__, __LINE__);
             }
 
-            // Obtain the name of the object
-            oname.resize((size_t) oname_size + 1);
-        
-            if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,
-                                   oname.data(),(size_t)(oname_size+1), H5P_DEFAULT) < 0) {
-                string msg = "h5_dmr multi_dim_candidates: Error getting the hdf5 object name from the group. ";
-                throw BESInternalError(msg,__FILE__, __LINE__);
-            }
-            auto dset_name = string(oname.begin(),oname.end()-1);
-            hid_t dset_id = -1;
-            if ((dset_id = H5Dopen(pid,dset_name.c_str(),H5P_DEFAULT)) < 0) {
-                string msg = "cannot open the HDF5 dataset  " + dset_name +".";
-                throw BESInternalError(msg,__FILE__, __LINE__);
-            }
-
-            hid_t dspace = -1;
-            if ((dspace = H5Dget_space(dset_id)) < 0) {
-                H5Dclose(dset_id);
-                string msg = "cannot get the the dataspace of HDF5 dataset  " + dset_name +".";
-                throw BESInternalError(msg,__FILE__, __LINE__);
-            }
-
-            if (H5S_SIMPLE == H5Sget_simple_extent_type(dspace)) {
-                if (H5Sget_simple_extent_ndims(dspace) ==1) {
-                    if (dim_size == H5Sget_simple_extent_npoints(dspace) && H5Aexists(dset_id,"CLASS")>0) {
-                        num_dim_candidates += 1;
-                        if (num_dim_candidates >1)
-                            break;
-                    }
+            // Find the object 
+            if (gm_obj_addr == obj_addr) {
+                         
+                vector <char> oname;
+                ssize_t oname_size;
+            
+                // Query the length of this object name.
+                oname_size = H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,
+                                        nullptr,(size_t)DODS_NAMELEN, H5P_DEFAULT);
+                if (oname_size <= 0) {
+                    string msg = "h5_dmr obtain_dim_via_hdf5_group: Error getting the size of the hdf5 object from the group. ";
+                    throw BESInternalError(msg,__FILE__, __LINE__);
                 }
+    
+                // Obtain the name of the object
+                oname.resize((size_t) oname_size + 1);
+            
+                if (H5Lget_name_by_idx(pid,".",H5_INDEX_NAME,H5_ITER_NATIVE,i,
+                                       oname.data(),(size_t)(oname_size+1), H5P_DEFAULT) < 0) {
+                    string msg = "h5_dmr obtain_dim_via_hdf5_group: Error getting the hdf5 object name from the group. ";
+                    throw BESInternalError(msg,__FILE__, __LINE__);
+                }
+                dim_path = full_path  +string(oname.begin(),oname.end()-1);
+                break;
             }
-            H5Sclose(dspace);
-            H5Dclose(dset_id);
-
         }
     }
 
-    bool has_multi_dim_candidates = false;
-    // If the dim scale we found is under an ancestor group and there is a dimension scale candidate under the current group,we still have to use the general approach.
-    if (num_dim_candidates >1 || (num_dim_candidates == 1 && !dim_scale_in_cur_grp))
-        has_multi_dim_candidates =  true;
-
-    return has_multi_dim_candidates;
+    BESDEBUG("h5","dim_path before exiting obtain_dim_via_hdf5_group: " << dim_path <<endl);
+    return dim_path;
 }
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn attr_info(hid_t loc_id, const char* name, const H5A_info_t* void*opdata)
