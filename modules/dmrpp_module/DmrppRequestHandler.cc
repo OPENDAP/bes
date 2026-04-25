@@ -159,7 +159,7 @@ namespace dmrpp
 
         // Using TheBESKeys calls instead of custom functions kln 4/1/26
         d_use_compute_threads = TheBESKeys::read_bool_key(DMRPP_USE_COMPUTE_THREADS_KEY, d_use_compute_threads);
-        d_max_compute_threads = TheBESKeys::read_ulong_key(DMRPP_MAX_COMPUTE_THREADS_KEY, d_max_compute_threads);
+        d_max_compute_threads = std::max(4UL, TheBESKeys::read_ulong_key(DMRPP_MAX_COMPUTE_THREADS_KEY, d_max_compute_threads));
         msg << prolog << "Concurrent Compute Threads: ";
         if (DmrppRequestHandler::d_use_compute_threads)
         {
