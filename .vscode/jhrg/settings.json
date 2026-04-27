@@ -7,7 +7,9 @@
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
     "C_Cpp.default.compileCommands": "${workspaceFolder}/compile_commands.json",
     "C_Cpp.default.includePath": [
-        "${workspaceFolder}",
+        "${config:prefix}/include/**",
+        "${config:prefix}/deps/include/**",
+        "${workspaceFolder}/**",
         "${workspaceFolder}/cmdln",
         "${workspaceFolder}/dap",
         "${workspaceFolder}/dapreader",
