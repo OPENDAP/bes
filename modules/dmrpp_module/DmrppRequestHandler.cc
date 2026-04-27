@@ -119,7 +119,9 @@ namespace dmrpp
     double DmrppRequestHandler::d_object_cache_purge_level = 0.2;
 
     bool DmrppRequestHandler::d_use_compute_threads = true;
-    unsigned long DmrppRequestHandler::d_max_compute_threads = 8;
+    unsigned long DmrppRequestHandler::d_max_compute_threads = 8UL;
+    unsigned long DmrppRequestHandler::d_default_max_compute_threads = 4UL;
+
 
     // Default minimum value is 2MB: 2 * (1024*1024)
     unsigned long long DmrppRequestHandler::d_contiguous_concurrent_threshold = DMRPP_DEFAULT_CONTIGUOUS_CONCURRENT_THRESHOLD;
@@ -159,7 +161,7 @@ namespace dmrpp
 
         // Using TheBESKeys calls instead of custom functions kln 4/1/26
         d_use_compute_threads = TheBESKeys::read_bool_key(DMRPP_USE_COMPUTE_THREADS_KEY, d_use_compute_threads);
-        d_max_compute_threads = std::max(4UL, TheBESKeys::read_ulong_key(DMRPP_MAX_COMPUTE_THREADS_KEY, d_max_compute_threads));
+        d_max_compute_threads = std::max(d_default_max_compute_threads, TheBESKeys::read_ulong_key(DMRPP_MAX_COMPUTE_THREADS_KEY, d_max_compute_threads));
         msg << prolog << "Concurrent Compute Threads: ";
         if (DmrppRequestHandler::d_use_compute_threads)
         {
