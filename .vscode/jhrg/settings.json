@@ -7,20 +7,9 @@
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
     "C_Cpp.default.compileCommands": "${workspaceFolder}/compile_commands.json",
     "C_Cpp.default.includePath": [
-        "${workspaceFolder}",
-        "${workspaceFolder}/cmdln",
-        "${workspaceFolder}/dap",
-        "${workspaceFolder}/dapreader",
-        "${workspaceFolder}/dispatch/**",
-        "${workspaceFolder}/hello_world",
-        "${workspaceFolder}/http/**",
-        "${workspaceFolder}/ppt/**",
-        "${workspaceFolder}/pugixml/**",
-        "${workspaceFolder}/rapidjson/**",
-        "${workspaceFolder}/server/**",
-        "${workspaceFolder}/standalone/**",
-        "${workspaceFolder}/xmlcommand/**",
-        "${workspaceFolder}/modules/**"
+        "${config:prefix}/include",
+        "${config:prefix}/deps/include",
+        "${workspaceFolder}/**"
     ],
     "C_Cpp.default.cppStandard": "c++14",
     "C_Cpp.default.intelliSenseMode": "macos-clang-arm64",
@@ -47,15 +36,16 @@
         "PATH": "${config:PATH}"
     },
     "cSpell.words": [
-        "OPENDAP",
-        "DISTCHECK",
         "bescmd",
         "besstandalone",
         "BINARYDATA",
         "CMAC",
+        "DISTCHECK",
+        "Dmrpp",
         "libdap",
         "ncml",
         "NDAP",
+        "OPENDAP",
         "xfail"
     ]
 }
