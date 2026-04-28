@@ -1261,7 +1261,7 @@ void get_softlink(D4Group* par_grp, hid_t h5obj_id,  const string & oname, int i
 
 
 ///////////////////////////////////////////////////////////////////////////////
-/// \fn get_hardlink(hid_t h5obj_id, const string & oname)
+/// \fn get_hardlink_dmr(hid_t h5obj_id, const string & oname)
 /// will put hardlink information into a DAS table.
 ///
 /// \param h5obj_id object id
@@ -1289,28 +1289,19 @@ string get_hardlink_dmr( hid_t h5obj_id, const string & oname) {
 
     if (obj_info.rc >1) {
 
-        string objno;
-
-#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13) || (H5_VERS_MINOR == 14)))
-        char *obj_tok_str = nullptr;
-        if(H5Otoken_to_str(h5obj_id, &(obj_info.token), &obj_tok_str) <0) {
-            string msg = "H5Otoken_to_str failed for variable " + oname + ".";
-            throw BESInternalError(msg,__FILE__,__LINE__);
-        } 
-        objno.assign(obj_tok_str,obj_tok_str+strlen(obj_tok_str));
-        H5free_memory(obj_tok_str);
-
-#else
-        ostringstream oss;
-        oss << hex << obj_info.addr;
-        objno = oss.str();
-#endif
+        haddr_t obj_addr;
+        if (H5VLnative_token_to_addr(h5obj_id,obj_info.token, &obj_addr)) {
+            string msg = "h5_dmr get_hardlink_dmr: Error obtaining the address for the object.";
+            throw BESInternalError(msg,__FILE__, __LINE__);
+        }
+ 
+        string objno = to_string(obj_addr);
 
         BESDEBUG("h5", "dap4->get_hardlink_dmr() objno=" << objno << endl);
 
         // Add this hard link to the map.
         // obj_paths is a global variable defined at the beginning of this file.
-        // it is essentially an id to obj name map. See HDF5PathFinder.h.
+        // Basically it is an id to obj name map. See HDF5PathFinder.h.
         if (!obj_paths.add(objno, oname)) {
             return objno;
         }
