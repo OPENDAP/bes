@@ -143,7 +143,7 @@ bool HDF5Array::read()
     if (get_dap_type(dtype_id,is_dap4()) == "Url") {
         bool ret_ref = false;
         try {
-	    ret_ref = m_array_of_reference(dset_id,dtype_id);
+	    ret_ref = m_array_of_reference(dset_id);
             H5Tclose(dtype_id);
             H5Dclose(dset_id);
             H5Fclose(file_id);
@@ -785,7 +785,7 @@ void HDF5Array:: m_array_of_object_reference(hid_t d_dset_id, vector<string>& v_
     }
 }
 
-bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id) {
+bool HDF5Array::m_array_of_reference(hid_t dset_id) {
 
     H5R_ref_t *rbuf = nullptr;
     hid_t  mem_space_id = 0;
