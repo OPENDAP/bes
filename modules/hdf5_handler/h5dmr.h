@@ -63,18 +63,11 @@
 // Note: if it is necessary to retrieve all the link paths, uncomment
 // vector<string>link_paths and change corresponding code.
 
-#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13)) || (H5_VERS_MINOR == 14))
 typedef struct {
     H5O_token_t  link_addr;
     string slink_path;
     //vector<string> link_paths;
 } link_info_t;
-#else 
-typedef struct {
-    haddr_t  link_addr;
-    string slink_path;
-} link_info_t;
-#endif
 
 enum class HE5_TYPE {SW,GD,ZA};
 
