@@ -66,13 +66,12 @@ class HDF5Array:public libdap::Array {
     void m_array_of_structure_catch_close_hdf5_ids(hid_t memb_id, char * memb_name, std::vector<char> &values,
                                                    bool has_values, hid_t mspace, hid_t dtypeid, hid_t memtype) const;
 
-    bool m_array_of_reference(hid_t dset_id,hid_t dtype_id);
+    bool m_array_of_reference(hid_t dset_id);
     void m_array_of_region_reference(hid_t d_dset_id,std::vector<std::string>& v_str, int64_t nelms,
                                      const std::vector<int64_t>& offset, const std::vector<int64_t> &step);
     void m_array_of_object_reference(hid_t d_dset_id, std::vector<std::string>& v_str, int64_t nelms,
                                      const std::vector<int64_t>& offset, const std::vector<int64_t> &step) const;
 
-    bool m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id);
 
     void m_intern_plain_array_data(char *convbuf,hid_t memtype);
     void m_array_of_atomic(hid_t, hid_t,int64_t ,const int64_t *,const int64_t *,const int64_t *);

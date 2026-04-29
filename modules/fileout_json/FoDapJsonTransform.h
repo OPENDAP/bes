@@ -44,7 +44,7 @@ class Array;
 class BESDataHandlerInterface;
 
 /**
- * Used to transform a DDS into a w10n JSON metadata or w10n JSON data document.
+ * Used to transform a DDS into a DAP JSON metadata or w10n JSON data document.
  * The output is written to a local file whose name is passed as a parameter
  * to the constructor.
  */

@@ -58,16 +58,16 @@ private:
     static std::unique_ptr<ObjMemCache> dds_cache;
 
     static bool d_use_object_cache;
-    static unsigned int d_object_cache_entries;
+    static int d_object_cache_entries;
     static double d_object_cache_purge_level;
 
 
     static void get_dmrpp_from_container_or_cache(BESContainer *container, libdap::DMR *dmr);
     template <class T> static void get_dds_from_dmr_or_cache(BESContainer *container, T *bdds);
 
-    // Allocate a new DMZ for each request? This should work, but may result in more
+    // Allocate a new DMZ for each request? That should work, but may result in more
     // cycling of data in and out of memory. The shared_ptr<> will be passed into
-    // instances of BaseType and used from withing the specialized read methods.
+    // instances of BaseType and used from within the specialized read methods.
     // jhrg 11/3/21
     static std::shared_ptr<DMZ> dmz;
 
@@ -78,7 +78,8 @@ public:
     static CurlHandlePool *curl_handle_pool;
 
     static bool d_use_compute_threads;
-    static unsigned int d_max_compute_threads;
+    static unsigned long d_max_compute_threads;
+    static unsigned long d_default_max_compute_threads;
 
     static unsigned long long d_contiguous_concurrent_threshold;
 

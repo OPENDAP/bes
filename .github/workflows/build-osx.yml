@@ -1,0 +1,171 @@
+# Build the bes for the same architecture as OPeNDAP developer
+# machines, to ensure code changes won't break local development
+name: OSX CI
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - main
+      - /^(.*-test-deploy)$/
+    paths-ignore:
+      - ".vscode/**"
+      - "*.md"
+      - "Dockerfile"
+      - "README*"
+      - "docs/**"
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - ".vscode/**"
+      - "*.md"
+      - "Dockerfile"
+      - "README*"
+      - "docs/**"
+
+concurrency:
+  # Cancel intermediate builds only on pull requests
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+
+jobs:
+  build:
+    # Run on pushes or non-draft PRs
+    if: (github.event_name == 'push') || (github.event.pull_request.draft == false) || (github.event_name == 'workflow_dispatch')
+    name: Build on ${{ matrix.runs-on }}
+    runs-on: ${{ matrix.runs-on }}
+    env:
+      CONFIGURE_OPTIONS: "--disable-ncml --without-gdal"
+      CMAC_ID: "${{ secrets.AWS_GHA_BES_ID }}"
+      CMAC_ACCESS_KEY: "${{ secrets.AWS_GHA_BES_SECRET_KEY }}"
+      CMAC_URL: "https://s3.amazonaws.com/cloudydap/"
+      CMAC_REGION: "us-east-1"
+      CMAC_ON: "yes"
+      LDFLAGS: "-L/opt/homebrew/opt/bison/lib -L/opt/homebrew/opt/jpeg/lib -L/opt/homebrew/opt/openssl/lib"
+      CPPFLAGS: "-I/opt/homebrew/opt/jpeg/include -I/opt/homebrew/opt/openssl/include"
+      TESTSUITEFLAGS: "-j16"
+      CCACHE_DIR: "$HOME/.ccache"
+      CCACHE_MAXSIZE: "750M"
+      CC: "ccache clang"
+      CXX: "ccache clang++"
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on:
+          # See https://github.com/actions/runner-images/blob/main/images/macos/macos-13-Readme.md for pre-installed software
+          - macos-15
+          - macos-15-intel
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Cache ccache
+        uses: actions/cache@v4
+        with:
+          path: ~/.ccache
+          key: ${{ runner.os }}-${{ matrix.runs-on }}-ccache-${{ hashFiles('libdap4-snapshot', '.github/workflows/build-osx.yml') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.runs-on }}-ccache-
+      - name: Install system dependencies
+        run: |
+          brew install bison \
+                       ccache \
+                       jpeg \
+                       cppunit \
+                       autoconf \
+                       automake \
+                       libgeotiff \
+                       libtool \
+                       groff \
+                       openssl
+        shell: bash
+      - name: Install hyrax-dependencies
+        run: |
+          aws s3 cp "s3://opendap.github.actions.build/hyrax-dependencies-${{ matrix.runs-on }}.tgz" $HOME
+          tar -C $HOME -xzvf $HOME/hyrax-dependencies-${{ matrix.runs-on }}.tgz
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_GHA_BES_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_GHA_BES_SECRET_KEY }}
+      - name: Update PATH
+        run: |
+          export prefix="$HOME/install"
+          {
+            echo "$prefix/bin"
+            echo "$prefix/deps/bin"
+            echo "/opt/homebrew/opt/bison/bin"
+            echo "/opt/homebrew/opt/jpeg/bin"
+          } >> "$GITHUB_PATH"
+          echo "prefix: $prefix"
+          echo "Configured entries in GITHUB_PATH:"
+          cat "$GITHUB_PATH"
+          ls $prefix
+        shell: bash
+      - name: Restore libdap install cache
+        id: cache-libdap
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/install/bin
+            ~/install/include
+            ~/install/lib
+            ~/install/share
+          key: ${{ runner.os }}-${{ matrix.runs-on }}-libdap-${{ hashFiles('libdap4-snapshot', '.github/workflows/build-osx.yml') }}
+      - name: Build and install libdap
+        run: |
+          # In the future, consider moving this to the libdap repo...
+          set -x
+          export prefix="$HOME/install"
+          ccache --set-config=max_size="$CCACHE_MAXSIZE"
+          ccache --show-stats || true
+          if [[ "${{ steps.cache-libdap.outputs.cache-hit }}" == "true" ]] && [[ -x "$prefix/bin/dap-config" ]]; then
+            echo "Using cached libdap install from $prefix"
+            "$prefix/bin/dap-config" --version || true
+            exit 0
+          fi
+          git clone https://github.com/opendap/libdap4
+          cd libdap4
+          autoreconf -fiv
+          ./configure --prefix=$prefix --enable-developer
+          make -j16
+          make install
+          ccache --show-stats || true
+          ls $prefix
+        shell: bash
+      - name: Configure bes build
+        run: |
+          set -x
+          export prefix="$HOME/install"
+          ccache --set-config=max_size="$CCACHE_MAXSIZE"
+          ccache --show-stats || true
+          pwd
+          autoreconf --force --install --verbose
+          ./configure --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer $CONFIGURE_OPTIONS
+          set +x
+        shell: bash
+      - name: Build and test bes
+        id: build-and-test
+        run: |
+          set -x
+          export prefix="$HOME/install"
+          export LD_LIBRARY_PATH="$prefix/deps/lib:$LD_LIBRARY_PATH"
+          make -j16
+          make install
+          besctl start
+          make check -j16
+          besctl stop
+          ccache --show-stats || true
+          set +x
+        shell: bash
+        continue-on-error: true
+      - name: Post failure logs to aws
+        if: steps.build-and-test.outcome == 'failure'
+        run: |
+          sh ./.github/scripts/upload-test-results.sh
+          # Because previous job failed, we need to re-throw failure
+          # now that logs are uploaded
+          exit 1
+        shell: bash
+        env:
+          GHA_RUNNER_LABEL: ${{ matrix.runs-on }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_GHA_BES_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_GHA_BES_SECRET_KEY }}

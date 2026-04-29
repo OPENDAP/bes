@@ -270,7 +270,7 @@ int main(int argc, char*argv[])
             cerr << "##### BES DEBUG is ON" << endl;
             break;
         case 'h': {     // help - show test names
-            std::cerr << "Usage: W10nTest has the following tests:" << std::endl;
+            std::cerr << "Usage: ShowPathInfoTest  has the following tests:" << std::endl;
             const std::vector<CppUnit::Test*> &tests = ShowPathInfoTest::suite()->getTests();
             unsigned int prefix_len = ShowPathInfoTest::suite()->getName().append("::").size();
             for (std::vector<CppUnit::Test*>::const_iterator i = tests.begin(), e = tests.end(); i != e; ++i) {
