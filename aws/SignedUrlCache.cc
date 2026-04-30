@@ -93,7 +93,7 @@ bool SignedUrlCache::is_timestamp_after_now(std::string const &timestamp_str) {
     std::tm timestamp_time = {};
     auto time_parse_result = strptime(effective_timestamp_str.c_str(), "%F %T%z", &timestamp_time);
     if (time_parse_result == nullptr) {
-        INFO_LOG(prolog + string("PRE-DEPRECATION WARNING - Retrieved s3 credentials timestamp was not able to be parsed - " + timestamp_str));
+        INFO_LOG(prolog + string("SERVICE CHAIN WARNING - s3 credentials timestamp was not parseable - " + timestamp_str));
         return false;
     }
     auto timestamp_time_point = std::chrono::system_clock::from_time_t(std::mktime(&timestamp_time));
@@ -253,7 +253,7 @@ std::pair<std::string, std::string> SignedUrlCache::retrieve_cached_signed_url_c
     auto it_s3_url = d_href_to_s3_cache.find(key_href_url);
     auto it_s3credentials_url = d_href_to_s3credentials_cache.find(key_href_url);
     if (it_s3_url == d_href_to_s3_cache.end() || it_s3credentials_url == d_href_to_s3credentials_cache.end() ) {
-        INFO_LOG(prolog + "No url available for TEA s3credentials endpoint.");
+        INFO_LOG(prolog + "SERVICE CHAIN WARNING - No url available for TEA s3credentials endpoint.");
         return std::pair<std::string, std::string>("", "");
     }
     return std::pair<std::string, std::string>(it_s3_url->second, it_s3credentials_url->second);
@@ -346,13 +346,8 @@ SignedUrlCache *SignedUrlCache::TheCache() {
     // Create a local static object the first time the function is called
     static SignedUrlCache instance;
 
-    // Initialize the aws library (must only be once in application!)
+    // Initialize the aws library (as per SDK, must only occur once in application!)
     bes::AWS_SDK::aws_library_initialize();
-
-    // TODO: do i need a corresponding 
-    // bes::AWS_SDK::aws_library_shutdown();
-    // in the destructor??
-
     return &instance;
 }
 
@@ -399,7 +394,7 @@ uint64_t SignedUrlCache::num_seconds_until_expiration(const string &credentials_
     std::tm timestamp_time = {};
     auto time_parse_result = strptime(effective_timestamp_str.c_str(), "%F %T%z", &timestamp_time);
     if (time_parse_result == nullptr) {
-        INFO_LOG(prolog + string("PRE-DEPRECATION WARNING - Retrieved s3 credentials timestamp was not able to be parsed - " + credentials_expiration_datetime));
+        INFO_LOG(prolog + string("SERVICE CHAIN WARNING - s3 credentials timestamp was not parseable - " + credentials_expiration_datetime));
         return 0;
     }
     auto timestamp_time_point = std::chrono::system_clock::from_time_t(std::mktime(&timestamp_time));
