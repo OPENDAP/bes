@@ -69,7 +69,7 @@ public:
         DBG(cerr << prolog << "Using BES configuration: " << bes_conf << endl);
         TheBESKeys::ConfigFile = bes_conf;
 
-        // Reset to same starting point every time 
+        // Reset to same starting point every time
         // (It's a singleton so resetting it is important for testing determinism)
         SignedUrlCache *theCache = SignedUrlCache::TheCache();
         theCache->d_enabled = -1;
@@ -121,7 +121,7 @@ public:
             pair<string, shared_ptr<http::EffectiveUrl>>(input_url->str(), output_url));
         CPPUNIT_ASSERT_MESSAGE("Cache contains single item", SignedUrlCache::TheCache()->d_signed_urls.size() == 1);
 
-        // When the cache is disabled, we return a nullptr---always. 
+        // When the cache is disabled, we return a nullptr---always.
         // (In comparison, the EffectiveUrlCache creates an EffectiveUrl around the raw input url)
         auto result_when_disabled = SignedUrlCache::TheCache()->get_signed_url(input_url);
         CPPUNIT_ASSERT_MESSAGE("When cache is disabled, nullptr is returned", result_when_disabled == nullptr);
@@ -147,7 +147,7 @@ public:
             CPPUNIT_ASSERT_MESSAGE("When key matches skip regex, value is not cached", SignedUrlCache::TheCache()->d_signed_urls.empty());
             CPPUNIT_ASSERT_MESSAGE("When key matches skip regex, nullptr is returned", result_url == nullptr);
 
-            // Similarly, skipped even when that url has been previously 
+            // Similarly, skipped even when that url has been previously
             // added to the cache somehow
             auto output_url = make_shared<http::EffectiveUrl>("http://started_here.com?signed-now");
             SignedUrlCache::TheCache()->d_signed_urls.insert(
@@ -296,7 +296,7 @@ public:
 
     void get_s3credentials_from_endpoint_test() {
         SignedUrlCache *theCache = SignedUrlCache::TheCache();
-        
+
         CPPUNIT_ASSERT_MESSAGE("Credentials cache is empty", theCache->d_s3credentials_cache.empty());
 
         auto result_bad = theCache->get_s3credentials_from_endpoint("http://badurl");
@@ -379,10 +379,10 @@ CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
     CPPUNIT_TEST(retrieve_cached_signed_url_components_test);
     CPPUNIT_TEST(get_s3credentials_from_endpoint_test);
 
-    // // ...and, specifically, the signing itself: 
-    // // TODO-future: will add/update these tests once signing behavior is implemented
-    // // - sign_url
-    // // - get_signed_url
+    // ...and, specifically, the signing itself:
+    // TODO-future: will add/update these tests once signing behavior is implemented
+    // - sign_url_with_sts_credentials
+    // - get_signed_url
 
     // Last but not least, test those helper functions
     CPPUNIT_TEST(split_s3_url_test);

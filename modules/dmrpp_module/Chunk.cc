@@ -28,7 +28,6 @@
 
 #include <zlib.h>
 
-#include "aws/AWS_SDK.h"
 #include <BESDebug.h>
 #include <BESLog.h>
 #include <BESInternalError.h>
@@ -1364,17 +1363,11 @@ std::shared_ptr<http::url> Chunk::get_data_url() const {
         return d_data_url;
     }
 
-    std::shared_ptr<http::EffectiveUrl> url;
-    bes::AWS_SDK aws_sdk;
-    auto region = aws_sdk.get_aws_region_of_running_application();
-    if (region == "us-west-2") {
-        url = SignedUrlCache::TheCache()->get_signed_url(d_data_url);
+    std::shared_ptr<http::EffectiveUrl> url = SignedUrlCache::TheCache()->get_signed_url(d_data_url);
 
-        if (url == nullptr) {
-            INFO_LOG(prolog + "SERVICE CHAIN WARNING - Failed to generate presigned url; falling back to TEA requests - " + d_data_url->get_url_no_query());
-        }
-    }
-
+    // If the url signing fails for any reason---nonexistant or bad short-term credentials, being
+    // called from a region other than us-west-2, etc---it will return a nullptr, so that we can fall
+    // back on using the TEA service to sign our urls
     if (url == nullptr) {
         url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url);
     }

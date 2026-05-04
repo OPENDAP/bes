@@ -79,9 +79,9 @@ private:
 
     static std::pair<std::string, std::string> split_s3_url(std::string const &s3_url);
     static uint64_t num_seconds_until_expiration(const std::string &credentials_expiration_datetime, const std::chrono::system_clock::time_point current_time=std::chrono::system_clock::now());
-    std::shared_ptr<http::EffectiveUrl> sign_url(std::string const &s3_url,
-                                                 std::shared_ptr<S3AccessKeyTuple> const s3_access_key_tuple,
-                                                 std::string aws_region="us-west-2");
+    std::shared_ptr<http::EffectiveUrl> sign_url_with_sts_credentials(std::string const &s3_url,
+                                                                      std::shared_ptr<S3AccessKeyTuple> const  s3_access_key_tuple,
+                                                                      std::string aws_region="us-west-2");
     std::shared_ptr<http::EffectiveUrl> get_cached_signed_url(std::string const &url_key);
 
     void set_skip_regex();

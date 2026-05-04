@@ -505,9 +505,9 @@ NgapApi::DataAccessUrls NgapApi::convert_ngap_resty_path_to_data_access_urls(con
     tie(data_access_url, data_s3_url, s3credentials_url) = get_urls_from_granules_umm_json_v1_4(restified_path, cmr_json_string);
 
     if (data_s3_url.empty() || s3credentials_url.empty()) {
-        // Eventually we'll be removing the non-s3 access; we need to know about any unsupported cases before that happens.
+        // Eventually we may remove the non-s3 access; we want to know about any unsupported cases before that happens.
         // Add a log warning that can be searched.
-        INFO_LOG(prolog + string("SERVICE CHAIN WARNING - Data s3 url or s3credentials not found - ") + cmr_query_url);
+        INFO_LOG(prolog + string("SERVICE CHAIN WARNING - Data s3 url and/or s3credentials url not found - ") + cmr_query_url + " s3 url: " + data_s3_url + " s3credentials url: " + s3credentials_url);
     }
 
     // Check for existing .dmrpp and remove it if found at the end of the url. - kln 6/6/25
