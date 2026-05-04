@@ -161,7 +161,7 @@ public:
     virtual void set_up_all_direct_io_flags_phase_2(libdap::DMR *dmr);
     virtual void set_up_direct_io_flag_phase_2(libdap::D4Group *group);
     virtual void set_up_direct_io_flag_phase_2(libdap::D4Group *group, libdap::BaseType *btp);
-    virtual bool has_unlimited_dim(libdap::D4Group *group);
+    virtual bool has_unlimited_dim(libdap::D4Group *group, libdap::Array *ar);
 
 
     virtual void load_attributes(libdap::BaseType *btp);
