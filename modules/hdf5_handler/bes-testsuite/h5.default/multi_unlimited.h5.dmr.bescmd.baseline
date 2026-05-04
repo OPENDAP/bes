@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="multi_unlimited.h5">
+    <Dimension name="dim1" size="1"/>
+    <Int32 name="dim1">
+        <Dim name="/dim1"/>
+    </Int32>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>dim1</Value>
+        </Attribute>
+    </Attribute>
+    <Group name="Product">
+        <Dimension name="dim2" size="2"/>
+        <Int32 name="dim2">
+            <Dim name="/Product/dim2"/>
+        </Int32>
+        <Attribute name="DODS_EXTRA" type="Container">
+            <Attribute name="Unlimited_Dimension" type="String">
+                <Value>dim2</Value>
+            </Attribute>
+        </Attribute>
+        <Group name="Support_data">
+            <Dimension name="dim3" size="3"/>
+            <Int32 name="dim3">
+                <Dim name="/Product/Support_data/dim3"/>
+            </Int32>
+            <Int32 name="var">
+                <Dim name="/dim1"/>
+                <Dim name="/Product/dim2"/>
+                <Dim name="/Product/Support_data/dim3"/>
+                <Map name="/dim1"/>
+                <Map name="/Product/dim2"/>
+                <Map name="/Product/Support_data/dim3"/>
+            </Int32>
+            <Attribute name="DODS_EXTRA" type="Container">
+                <Attribute name="Unlimited_Dimension" type="String">
+                    <Value>dim3</Value>
+                </Attribute>
+            </Attribute>
+        </Group>
+    </Group>
+</Dataset>
