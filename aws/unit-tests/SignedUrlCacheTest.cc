@@ -110,6 +110,23 @@ public:
     }
 
     void is_cache_disabled_test() {
+        CPPUNIT_ASSERT_MESSAGE("Cache should not yet be initialized to enabled or disabled", SignedUrlCache::TheCache()->d_enabled == -1);
+
+        CPPUNIT_ASSERT_MESSAGE("Checking if the cache is enabled should initialize it to enabled or disabled, based on bes.conf and the aws region", SignedUrlCache::TheCache()->is_enabled() != -1);
+
+        CPPUNIT_ASSERT_MESSAGE("Current region is `" + std::to_string(SignedUrlCache::TheCache()->d_enabled) + "`", false);
+
+        // TODO - when in valid region
+        // ...respects settings for true
+        // ...respects settings for false
+
+        // TODO - when in invalid region
+        // ...respects settings for true
+        // ...respects settings for false
+
+    }
+
+    void handle_cache_enabled_disabled_test() {
         DBG(cerr << prolog << "SignedUrlCache::TheCache()->is_enabled(): "
                  << (SignedUrlCache::TheCache()->is_enabled() ? "true" : "false") << endl);
         CPPUNIT_ASSERT_MESSAGE("Cache is disabled", !SignedUrlCache::TheCache()->is_enabled());
@@ -367,6 +384,7 @@ CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
     // Test behavior analogous to that of the EffectiveUrlCache:
     CPPUNIT_TEST(get_cached_signed_url_test);
     CPPUNIT_TEST(is_cache_disabled_test);
+    CPPUNIT_TEST(handle_cache_enabled_disabled_test);
     CPPUNIT_TEST(set_skip_regex_test);
     CPPUNIT_TEST(dump_test);
 
