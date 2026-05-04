@@ -42,6 +42,8 @@ namespace bes
         bool d_is_global_s3_client_initialized = false;
         static Aws::SDKOptions options;
 
+        const Aws::String d_aws_region_of_running_application = Aws::Client::ClientConfiguration().region;
+
         static Aws::S3::S3Client make_s3_client(const std::string &region,
                                                 const std::string &aws_key,
                                                 const std::string &aws_secret_key,
@@ -76,6 +78,9 @@ namespace bes
         Aws::String s3_generate_presigned_object_url(const Aws::String &bucket_name,
                                                      const Aws::String &key,
                                                      uint64_t expiration_seconds) override;
+        Aws::String get_aws_region_of_running_application() const {
+            return d_aws_region_of_running_application;
+        }
     };
 }
 #endif // AWS_SDK_H

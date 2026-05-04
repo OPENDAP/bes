@@ -28,6 +28,7 @@
 
 #include <zlib.h>
 
+#include "aws/AWS_SDK.h"
 #include <BESDebug.h>
 #include <BESLog.h>
 #include <BESInternalError.h>
@@ -1359,17 +1360,25 @@ string Chunk::to_string() const {
 std::shared_ptr<http::url> Chunk::get_data_url() const {
 
     // The d_data_url may be nullptr(fillvalue case). 
-    if (d_data_url == nullptr) 
+    if (d_data_url == nullptr) {
         return d_data_url;
+    }
 
-    std::shared_ptr<http::EffectiveUrl> url = SignedUrlCache::TheCache()->get_signed_url(d_data_url);
+    std::shared_ptr<http::EffectiveUrl> url;
+    bes::AWS_SDK aws_sdk;
+    auto region = aws_sdk.get_aws_region_of_running_application();
+    if (region == "us-west-2") {
+        url = SignedUrlCache::TheCache()->get_signed_url(d_data_url);
+
+        if (url == nullptr) {
+            INFO_LOG(prolog + "SERVICE CHAIN WARNING - Failed to generate presigned url; falling back to TEA requests - " + d_data_url->get_url_no_query());
+        }
+    }
 
     if (url == nullptr) {
-        INFO_LOG(prolog + "SERVICE CHAIN WARNING - Failed to generate presigned url; falling back to TEA requests - " + d_data_url->get_url_no_query()); //TODO: only warn IF presigned url was attempted
-
         url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url);
     }
-    // BESDEBUG(MODULE, prolog << "Using data_url: " << url->get_url_no_query() << endl);
+    BESDEBUG(MODULE, prolog << "Using data_url: " << url->get_url_no_query() << endl);
 
 #if ENABLE_TRACKING_QUERY_PARAMETER
     //A conditional call to void Chunk::add_tracking_query_param()
