@@ -38,8 +38,8 @@ namespace bes
 {
     class AWS_SDK : public IAWS_SDK
     {
-        Aws::S3::S3Client d_s3_client;
-        bool d_is_s3_client_initialized = false;
+        Aws::S3::S3Client d_global_s3_client;
+        bool d_is_global_s3_client_initialized = false;
         static Aws::SDKOptions options;
 
         static Aws::S3::S3Client make_s3_client(const std::string &region,
@@ -47,7 +47,7 @@ namespace bes
                                                 const std::string &aws_secret_key,
                                                 const std::string &aws_session_token);
 
-        void throw_if_s3_client_uninitialized() const; // throws BESInternalFatalError
+        void throw_if_global_s3_client_uninitialized() const; // throws BESInternalFatalError
 
         friend class AWS_SDK_Test;
 
