@@ -135,3 +135,7 @@ AT_BESCMD_H5_BESCONF_RESPONSE_TEST([h5.nasa.default.dap4/VNP18A2.A2022034.h09v05
 
 #atl06 DAP4 map element tests
 AT_BESCMD_H5_BESCONF_RESPONSE_TEST([h5.nasa.default.dap4/atl06.h5.dmr.bescmd],[bes.default.conf])
+
+#atl02 multiple unlimited dimensions under different groups
+AT_BESCMD_H5_BESCONF_RESPONSE_TEST([h5.nasa.default.dap4/atl02.h5.dmr.bescmd],[bes.default.conf])
+
