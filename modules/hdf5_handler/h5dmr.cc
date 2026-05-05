@@ -676,7 +676,16 @@ void add_unlimited_dimension_info(libdap::D4Group *d4_grp) {
                         break;
                     
                     }
-                    temp_grp = dynamic_cast<D4Group*>(temp_grp->get_ancestor());
+                    // Previously we use libdap's get_ancestor() and it causes infinite loops for the cases 
+                    // when a variable has mulitple unlimited dimensions and some dimensions are defined under
+                    // ancestor groups. See https://github.com/OPENDAP/bes/issues/1338 for the detailed info.
+                    // However, even applied James' fix, the code still doesn't behave as expected. So we 
+                    // use another way to traverse each ancestor group. KY 2026-05-01
+                    
+                    if(temp_grp->get_parent())
+                        temp_grp = static_cast<D4Group*>(temp_grp->get_parent());
+                    else
+                        temp_grp = nullptr;
                 }
                 unlimited_dimpaths.insert(dim_path);
             }
