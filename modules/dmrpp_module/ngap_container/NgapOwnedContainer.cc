@@ -40,6 +40,7 @@
 #include "BESDebug.h"
 #include "BESForbiddenError.h"
 #include "BESLog.h"
+#include "BESNotFoundError.h"
 #include "BESStopWatch.h"
 #include "BESSyntaxUserError.h"
 #include "BESUtil.h"
@@ -558,30 +559,25 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
         return true;
     }
 
-    // If the server is set up to try the OPeNDAP bucket, look there first if the path starts with
-    // "source/". jhrg 3/10/26
+    // If the server is set up to try the OPeNDAP bucket, look there first...
     if (NgapOwnedContainer::d_support_source_prefix && get_real_name().find("source/") == 0) {
         // If we get the DMR++ from the OPeNDAP bucket, set dmrpp_read to true so
         // we don't also try the DAAC bucket.
         dmrpp_read_from_opendap_bucket(dmrpp_string);
-
     }
-    // Try the DAAC bucket if either the OPeNDAP bucket is not used or the container real name
-    // does not start with 'source/'. jhrg 3/10/26
-    // TODO: add other prefixes (whichever supported)
-    else if (get_real_name().find("collections/") == 0) {
+    // ...or try a DAAC bucket, if indicated by the path prefix...
+    else if (get_real_name().find("collections/") == 0 {
         dmrpp_read_from_daac_bucket(dmrpp_string);
     }
-    // If the URL path starts with neither 'source' nor 'collections' and local files are tested,
-    // try to read from the local file system. jhrg 3/10/26else if
+    // ...or try to read from the local file system, if supported.
     else if (NgapOwnedContainer::d_enable_dmrpp_local_files_for_testing) {
         dmrpp_read_from_local_path(dmrpp_string);
     }
-    // else {
-    //     // TODO: log that no matching url was found AND we can't read it locally
-    //     return false;
-    // }
+    else {
+        throw BESNotFoundError("Unable to formulate DMR++ URI for `" + get_real_name() + "`", __FILE__, __LINE__);
+    }
 
+    // In all cases, ending up with an empty dmr++ indicates that something has gone horribly wrong, either during caching or (more likely) at the dmr++ generation stage 
     if (dmrpp_string.empty()) {
         throw BESInternalError("Expected a non-empty dmrpp_string for `" + get_real_name() + "`", __FILE__, __LINE__);
     }

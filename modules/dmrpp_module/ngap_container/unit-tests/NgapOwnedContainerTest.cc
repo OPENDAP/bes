@@ -31,6 +31,7 @@
 #include "BESNotFoundError.h"
 #include "BESSyntaxUserError.h"
 #include "BESUtil.h"
+#include "HttpError.h"
 #include "TheBESKeys.h"
 
 #include "NgapOwnedContainer.h"
@@ -403,12 +404,22 @@ public:
     void test_get_dmrpp_from_cache_or_remote_source_no_uri() {
         TEST_NAME;
         NgapOwnedContainer container;
-        container.set_real_name("/TODO/path-to-real-collection");
-
         string dmrpp_string = "";
+
+        container.set_real_name("this/is/not/a/recognized/path/format");
         CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw when container name cannot be mapped to DMR++ URI",
                                      container.get_dmrpp_from_cache_or_remote_source(dmrpp_string),
                                      BESNotFoundError);
+
+        container.set_real_name("collections/foo/granules/bar.nc");
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should find a DMR++ URI that it attempts to fetch from a DAAC, such that it does not throw a BESNotFoundError. It should later throw an error only when failing to fetch the (nonexistant) DMR++.",
+                                     container.get_dmrpp_from_cache_or_remote_source(dmrpp_string),
+                                     http::HttpError);
+
+        container.set_real_name("providers/HIP/collections/HIP/granules/HOORAY.nc");
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should find a DMR++ URI that it attempts to fetch from a DAAC, such that it does not throw a BESNotFoundError. It should later throw an error only when failing to fetch the (nonexistant) DMR++.",
+                                     container.get_dmrpp_from_cache_or_remote_source(dmrpp_string),
+                                     http::HttpError);
     }
 
     void test_access() {
