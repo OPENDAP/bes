@@ -458,6 +458,15 @@ std::shared_ptr<http::EffectiveUrl> SignedUrlCache::sign_url_with_sts_credential
 }
 
 /**
+ * @brief Return if the current aws region of the running application matches the pre-defined supported region
+ */
+const bool SignedUrlCache::is_cache_supported_within_current_aws_region() {
+    bes::AWS_SDK aws_sdk;
+    auto region = aws_sdk.get_aws_region_of_running_application();
+    return region == d_aws_region_in_which_direct_copy_is_supported;
+}
+
+/**
  * @brief Return if the cache is enabled, which is set in the bes.conf file
  * @note Follows the same settings (and relies on the same bes.conf key) as the EffectiveUrlsCache
  * @note Will always be disabled when run outside a region supported by ngap direct object access, as such copy is always disallowed and therefore signed urls will always result in 400 errors when used to copy objects.
@@ -467,15 +476,12 @@ bool SignedUrlCache::is_enabled() {
     // Once we confirm a supported aws region and then check for its enablement in TheBESKeys
     // The value will be 0 (false) or 1 (true) and TheBESKeys will not be checked again.
     if (d_enabled < 0) {
-        bes::AWS_SDK aws_sdk;
-        std::string supported_aws_region = "us-west-2";
-        auto region = aws_sdk.get_aws_region_of_running_application();
-        if (region == supported_aws_region) {
+        if (is_cache_supported_within_current_aws_region()) {
             string value = TheBESKeys::TheKeys()->read_string_key(HTTP_CACHE_EFFECTIVE_URLS_KEY, "false");
             d_enabled = BESUtil::lowercase(value) == "true";
         } else {
             d_enabled = false;
-            INFO_LOG(prolog + "SERVICE CHAIN WARNING - Direct s3 access via presigned urls is not supported for services running in aws region " + region + ".");
+            INFO_LOG(prolog + "SERVICE CHAIN WARNING - Direct s3 access via presigned urls is not supported for services running in current aws region. Supported region:" + d_aws_region_in_which_direct_copy_is_supported);
         }
     }
     BESDEBUG(MODULE, prolog << "d_enabled: " << (d_enabled ? "true" : "false") << endl);

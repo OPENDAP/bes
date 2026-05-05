@@ -29,6 +29,7 @@
 
 #include <unistd.h>
 
+#include "AWS_SDK.h"
 #include "BESError.h"
 #include "BESDebug.h"
 #include "BESUtil.h"
@@ -109,24 +110,38 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Non-url key returns nullptr", result2 == nullptr);
     }
 
-    void is_cache_disabled_test() {
+    void is_cache_enabled_test() {
         CPPUNIT_ASSERT_MESSAGE("Cache should not yet be initialized to enabled or disabled", SignedUrlCache::TheCache()->d_enabled == -1);
 
-        CPPUNIT_ASSERT_MESSAGE("Checking if the cache is enabled should initialize it to enabled or disabled, based on bes.conf and the aws region", SignedUrlCache::TheCache()->is_enabled() != -1);
-
-        CPPUNIT_ASSERT_MESSAGE("Current region is `" + std::to_string(SignedUrlCache::TheCache()->d_enabled) + "`", false);
-
-        // TODO - when in valid region
-        // ...respects settings for true
-        // ...respects settings for false
-
-        // TODO - when in invalid region
-        // ...respects settings for true
-        // ...respects settings for false
-
+        CPPUNIT_ASSERT_MESSAGE("Checking if the cache is enabled should initialize it to enabled or disabled, based on bes.conf and if the application is running from a supported aws region", SignedUrlCache::TheCache()->is_enabled() != -1);
     }
 
-    void handle_cache_enabled_disabled_test() {
+    void is_cache_supported_within_current_aws_region_test() {
+        // Force region to be supported, for the sake of testing
+        bes::AWS_SDK aws_sdk;
+        SignedUrlCache::TheCache()->d_aws_region_in_which_direct_copy_is_supported = aws_sdk.get_aws_region_of_running_application();
+
+        CPPUNIT_ASSERT_MESSAGE("SignedUrlCache is in supported region when the current default aws region is equivalent to the supported region", SignedUrlCache::TheCache()->is_cache_supported_within_current_aws_region());
+        TheBESKeys::TheKeys()->set_key(HTTP_CACHE_EFFECTIVE_URLS_KEY, "true");
+        SignedUrlCache::TheCache()->d_enabled = -1; // ...reset the cache enabled state...
+        CPPUNIT_ASSERT_MESSAGE("When the current aws region is supported and the cache is allowed in the configuration, the cache is enabled", SignedUrlCache::TheCache()->is_enabled());
+
+        TheBESKeys::TheKeys()->set_key(HTTP_CACHE_EFFECTIVE_URLS_KEY, "false");
+        SignedUrlCache::TheCache()->d_enabled = -1; // ...reset the cache enabled state...
+        CPPUNIT_ASSERT_MESSAGE("When the current aws region is supported but the cache is disallowed in the configuration, the cache is not enabled", !SignedUrlCache::TheCache()->is_enabled());
+
+        SignedUrlCache::TheCache()->d_aws_region_in_which_direct_copy_is_supported = "foo";
+        TheBESKeys::TheKeys()->set_key(HTTP_CACHE_EFFECTIVE_URLS_KEY, "true");
+        SignedUrlCache::TheCache()->d_enabled = -1; // ...reset the cache enabled state...
+        CPPUNIT_ASSERT_MESSAGE("SignedUrlCache is never enabled when not in its supported region", !SignedUrlCache::TheCache()->is_cache_supported_within_current_aws_region());
+        CPPUNIT_ASSERT_MESSAGE("SignedUrlCache is not enabled when not in its supported region, even if the cache is enabled in the configuration", !SignedUrlCache::TheCache()->is_enabled());
+
+        TheBESKeys::TheKeys()->set_key(HTTP_CACHE_EFFECTIVE_URLS_KEY, "false");
+        SignedUrlCache::TheCache()->d_enabled = -1; // ...reset the cache enabled state...
+        CPPUNIT_ASSERT_MESSAGE("SignedUrlCache is not enabled when not in its supported region, when the cache is disabled in the configuration", !SignedUrlCache::TheCache()->is_enabled());
+    }
+
+    void cache_enabled_disabled_test() {
         DBG(cerr << prolog << "SignedUrlCache::TheCache()->is_enabled(): "
                  << (SignedUrlCache::TheCache()->is_enabled() ? "true" : "false") << endl);
         CPPUNIT_ASSERT_MESSAGE("Cache is disabled", !SignedUrlCache::TheCache()->is_enabled());
@@ -383,8 +398,9 @@ CPPUNIT_TEST_SUITE(SignedUrlCacheTest);
 
     // Test behavior analogous to that of the EffectiveUrlCache:
     CPPUNIT_TEST(get_cached_signed_url_test);
-    CPPUNIT_TEST(is_cache_disabled_test);
-    CPPUNIT_TEST(handle_cache_enabled_disabled_test);
+    CPPUNIT_TEST(is_cache_enabled_test);
+    CPPUNIT_TEST(is_cache_supported_within_current_aws_region_test);
+    CPPUNIT_TEST(cache_enabled_disabled_test);
     CPPUNIT_TEST(set_skip_regex_test);
     CPPUNIT_TEST(dump_test);
 

@@ -46,7 +46,7 @@ namespace bes {
 
 /**
  * This is a singleton class. It is used to associate a URL with its "pre-signed" AWS s3 URL. This means that
- * a URL is signed locally rather than sent through a potentially large number of external redirect actions, as 
+ * a URL is signed locally rather than sent through a potentially large number of external redirect actions, as
  * in EffectiveUrlCache.h. This url location plus the requisite AWS signature headers, from which the requested bytes
  * are transmitted, is termed the "effective url" and is stored in an in memory cache (std::map) so that later
  * requests may skip the external signing service and just get required bytes from the actual source.
@@ -71,11 +71,17 @@ private:
     std::map<std::string, std::shared_ptr<S3AccessKeyTuple>> d_s3credentials_cache;
     std::shared_ptr<S3AccessKeyTuple> retrieve_cached_s3credentials(std::string const &url_key);
     static bool is_timestamp_after_now(std::string const &timestamp);
+    const bool is_cache_supported_within_current_aws_region();
 
     // URLs that match are not cached.
     std::unique_ptr<BESRegex> d_skip_regex = nullptr;
 
     int d_enabled = -1;
+
+    // The SignedUrlCache is used to generate urls that enable direct copy, and is therefore
+    // only enabled within a supported aws region (i.e., the region that supports such
+    // direct copy).
+    std::string d_aws_region_in_which_direct_copy_is_supported = "us-west-2";
 
     static std::pair<std::string, std::string> split_s3_url(std::string const &s3_url);
     static uint64_t num_seconds_until_expiration(const std::string &credentials_expiration_datetime, const std::chrono::system_clock::time_point current_time=std::chrono::system_clock::now());
