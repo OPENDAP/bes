@@ -28,6 +28,7 @@
 #include "BESContextManager.h"
 #include "BESError.h"
 #include "BESInternalError.h"
+#include "BESNotFoundError.h"
 #include "BESSyntaxUserError.h"
 #include "BESUtil.h"
 #include "TheBESKeys.h"
@@ -386,6 +387,30 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the cached value", !cached_value.empty());
     }
 
+    void test_get_dmrpp_from_cache_or_remote_source_empty_dmrpp() {
+        TEST_NAME;
+        string dmrpp_string = "";
+        NgapOwnedContainer container;
+        container.set_real_name("/data/dmrpp/empty.h5");
+        container.put_item_in_dmrpp_cache(dmrpp_string);
+
+        string retrieved_dmrpp_string = "";
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw when the resultant dmrpp_string is empty",
+                                     container.get_dmrpp_from_cache_or_remote_source(retrieved_dmrpp_string),
+                                     BESError);
+    }
+
+    void test_get_dmrpp_from_cache_or_remote_source_no_uri() {
+        TEST_NAME;
+        NgapOwnedContainer container;
+        container.set_real_name("/TODO/path-to-real-collection");
+
+        string dmrpp_string = "";
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw when container name cannot be mapped to DMR++ URI",
+                                     container.get_dmrpp_from_cache_or_remote_source(dmrpp_string),
+                                     BESNotFoundError);
+    }
+
     void test_access() {
         TEST_NAME;
 
@@ -546,6 +571,8 @@ public:
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_cache_consistency);
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_test_both_caches);
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_test_cache_use);
+    CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_empty_dmrpp);
+    CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_no_uri);
 
     CPPUNIT_TEST(test_access);
     CPPUNIT_TEST(test_alt_access);
