@@ -101,6 +101,7 @@ $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/NSIDC/ATL06_202
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/NSIDC/ATL08_20181014084920_02400109_003_01.h5
 $GET https:/test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/NSIDC/ATL13_20190330212241_00250301_002_01.h5
 $GET https:/test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/NSIDC/ATL02_20221231235632_01741814_006_01.h5
+$GET https:/test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/NSIDC/ATL02_20221231235632_01741814_006_01.h5_dio.dmrpp
 
 #daymet, large variable
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/ORNL/daymet_v4_daily_na_prcp_2010.nc.h5
