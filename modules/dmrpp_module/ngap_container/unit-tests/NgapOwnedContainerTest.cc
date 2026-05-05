@@ -397,7 +397,7 @@ public:
         string retrieved_dmrpp_string = "";
         CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw when the resultant dmrpp_string is empty",
                                      container.get_dmrpp_from_cache_or_remote_source(retrieved_dmrpp_string),
-                                     BESError);
+                                     BESInternalError);
     }
 
     void test_get_dmrpp_from_cache_or_remote_source_no_uri() {
