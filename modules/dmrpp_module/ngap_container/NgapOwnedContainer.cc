@@ -566,7 +566,7 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
         dmrpp_read_from_opendap_bucket(dmrpp_string);
     }
     // ...or try a DAAC bucket, if indicated by the path prefix...
-    else if (get_real_name().find("collections/") == 0 {
+    else if (get_real_name().find("collections/") == 0 || get_real_name().find("providers/") == 0) {
         dmrpp_read_from_daac_bucket(dmrpp_string);
     }
     // ...or try to read from the local file system, if supported.
@@ -577,7 +577,7 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
         throw BESNotFoundError("Unable to formulate DMR++ URI for `" + get_real_name() + "`", __FILE__, __LINE__);
     }
 
-    // In all cases, ending up with an empty dmr++ indicates that something has gone horribly wrong, either during caching or (more likely) at the dmr++ generation stage 
+    // In all cases, ending up with an empty dmr++ indicates that something has gone horribly wrong, either during caching or (more likely) at the dmr++ generation stage
     if (dmrpp_string.empty()) {
         throw BESInternalError("Expected a non-empty dmrpp_string for `" + get_real_name() + "`", __FILE__, __LINE__);
     }

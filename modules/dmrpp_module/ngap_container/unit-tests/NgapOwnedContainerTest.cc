@@ -415,11 +415,29 @@ public:
         CPPUNIT_ASSERT_THROW_MESSAGE("The function should find a DMR++ URI that it attempts to fetch from a DAAC, such that it does not throw a BESNotFoundError. It should later throw an error only when failing to fetch the (nonexistant) DMR++.",
                                      container.get_dmrpp_from_cache_or_remote_source(dmrpp_string),
                                      http::HttpError);
+        }
 
-        container.set_real_name("providers/HIP/collections/HIP/granules/HOORAY.nc");
-        CPPUNIT_ASSERT_THROW_MESSAGE("The function should find a DMR++ URI that it attempts to fetch from a DAAC, such that it does not throw a BESNotFoundError. It should later throw an error only when failing to fetch the (nonexistant) DMR++.",
+    void test_get_dmrpp_from_cache_or_remote_source_legacy_cmr_query_format() {
+        // NB: This test may be a little flakey; if the CMR is down, we'll get an HTTP error. If we get as far as an HTTP error, the test has successfully passed.
+        NgapOwnedContainer container;
+        string dmrpp_string = "";
+
+        container.set_real_name("providers/POCLOUD/collections/ECCO Ocean Temperature and Salinity - Monthly Mean llc90 Grid (Version 4 Release 4)/granules/OCEAN_TEMPERATURE_SALINITY_mon_mean_2017-12_ECCO_V4r4_native_llc0090");
+        CPPUNIT_ASSERT_MESSAGE("DMR++ should be retrieved for legacy URL `" + container.get_real_name() + "`", 
+                               container.get_dmrpp_from_cache_or_remote_source(dmrpp_string));
+        CPPUNIT_ASSERT_MESSAGE("Retrieved dmrpp_string for legacy URL should not be empty", 
+                               !dmrpp_string.empty());
+
+        // This test should pass as does the previous test, but due to url encoding of spaces in cmr for some legacy urls, this request fails.
+        // Filed as HYRAX-
+        dmrpp_string = "";
+        container.set_real_name("providers/POCLOUD/collections/ECCO%20Ocean%20Temperature%20and%20Salinity%20-%20Monthly%20Mean%20llc90%20Grid%20(Version%204%20Release%204)/granules/OCEAN_TEMPERATURE_SALINITY_mon_mean_2017-12_ECCO_V4r4_native_llc0090");
+        CPPUNIT_ASSERT_THROW_MESSAGE("DMR++ retrieval will throw due to HYRAX-2148, even though ultimately it should succeed for legacy URL `" + container.get_real_name() + "`",
                                      container.get_dmrpp_from_cache_or_remote_source(dmrpp_string),
-                                     http::HttpError);
+                                     BESNotFoundError
+                                    );
+        CPPUNIT_ASSERT_MESSAGE("Retrieved dmrpp_string should be empty due to HYRAX-2148, even though ultimately this legacy URL should *not* be empty",
+                              dmrpp_string.empty());
     }
 
     void test_access() {
@@ -584,6 +602,7 @@ public:
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_test_cache_use);
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_empty_dmrpp);
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_no_uri);
+    CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_legacy_cmr_query_format);
 
     CPPUNIT_TEST(test_access);
     CPPUNIT_TEST(test_alt_access);
