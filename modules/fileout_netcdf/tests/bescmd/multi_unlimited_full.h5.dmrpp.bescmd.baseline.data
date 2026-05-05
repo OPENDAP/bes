@@ -1,0 +1,58 @@
+netcdf test {
+dimensions:
+	d1 = UNLIMITED ; // (1 currently)
+variables:
+	int d1(d1) ;
+
+// global attributes:
+		:DODS_EXTRA.Unlimited_Dimension = "d1" ;
+		:build_dmrpp_metadata.created = "removed date-time" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.21.1" ;
+		:build_dmrpp_metadata.bes = "3.21.1" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -f /Users/myang6/work/opendap/atl-dio-issue/bes/modules/hdf5_handler/data/src/multi_unlimited_full.h5 -r multi_unlimited_full.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M" ;
+		:history = "removed date-timex multi_unlimited_full.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"multi_unlimited_full.h5.dmrpp\"}]}]" ;
+data:
+
+ d1 = 0 ;
+
+group: g1 {
+  dimensions:
+  	d2 = UNLIMITED ; // (2 currently)
+  variables:
+  	int d2(d2) ;
+
+  // group attributes:
+  		:DODS_EXTRA.Unlimited_Dimension = "d2" ;
+  data:
+
+   d2 = 0, 1 ;
+
+  group: g2 {
+    dimensions:
+    	d3 = UNLIMITED ; // (3 currently)
+    	dim1 = 1 ;
+    	dim2 = 2 ;
+    	dim3 = 3 ;
+    variables:
+    	int d3(d3) ;
+    	int var(d1, d2, d3) ;
+    	int var_no_dimnames(dim1, dim2, dim3) ;
+
+    // group attributes:
+    		:DODS_EXTRA.Unlimited_Dimension = "d3" ;
+    data:
+
+     d3 = 0, 1, 2 ;
+
+     var =
+  {{0, 1, 2},
+  {3, 4, 5}} ;
+
+     var_no_dimnames =
+  0, 1, 2,
+  3, 4, 5 ;
+    } // group g2
+  } // group g1
+}
