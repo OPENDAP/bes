@@ -436,12 +436,6 @@ public:
             container.set_real_name("providers/POCLOUD/collections/ECCO%20Ocean%20Temperature%20and%20Salinity%20-%20Monthly%20Mean%20llc90%20Grid%20(Version%204%20Release%204)/granules/OCEAN_TEMPERATURE_SALINITY_mon_mean_2017-12_ECCO_V4r4_native_llc0090");
             string dmrpp_string = "";
             container.get_dmrpp_from_cache_or_remote_source(dmrpp_string);
-        } catch (const BESNotFoundError &e) {
-            // Due to url encoding of spaces in CMR for some legacy urls
-            // this request currently fails before even
-            // attempting to fetch the DMR++. Filed as HYRAX-2148.
-            // When HYRAX-2148 is addressed, this BESNotFoundError block can be
-            // removed.
         } catch (const http::HttpError &e) {
             // If we fail with an HttpError, that's fine---we're already past the "DRM++ URI generation" we cared about.
             // The downstream HTTP request to FETCH the DMR++ may fail, depending on the credentials of the test runner and the
