@@ -439,7 +439,6 @@ void HDFCFUtil::LatLon2DSubset (T * outlatlon,
                                 const int32 * step)
 {
 
-    T (*templatlonptr)[majordim][minordim] = (T *) latlon;
     int i;
     int j; 
     int k;
@@ -463,7 +462,7 @@ void HDFCFUtil::LatLon2DSubset (T * outlatlon,
 
     for (i = 0; i < count[0]; i++) {
         for (j = 0; j < count[1]; j++) {
-            outlatlon[k] = (*templatlonptr)[dim0index[i]][dim1index[j]];
+            outlatlon[k] = latlon[dim0index[i] * minordim + dim1index[j]];
             k++;
 
         }
@@ -3954,5 +3953,4 @@ void HDFCFUtil::read_sp_sds_dds_cache(FILE* dds_file,libdap::DDS * dds_ptr,
 
     dds_ptr->set_dataset_name(basename(hdf4_filename));
 }
-
 

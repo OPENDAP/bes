@@ -47,7 +47,7 @@ class HDFSPArray_RealField:public libdap::Array
         int32 sdfd;
         int32 fieldref;
         int32 dtype;
-        SPType sptype;
+        SPType sptype __attribute__((unused));
         std::string fieldname;
         std::vector<int32>dimsizes;
         void write_data_to_cache(int32,const std::string&,short,const std::vector<char>&, int);

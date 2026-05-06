@@ -4191,8 +4191,7 @@ static void build_descriptions(DDS & dds, DAS & das,
 // correctly by the hdf eos attribute parser (see AddHDFAttr() further down
 // in this file). 10/29/2001 jhrg
 
-struct accum_attr
-    :public binary_function < hdf_genvec &, hdf_attr, hdf_genvec & > {
+struct accum_attr {
 
     string d_named;
 
@@ -4220,7 +4219,7 @@ struct accum_attr
     }
 };
 
-struct is_named:public unary_function < hdf_attr, bool > {
+struct is_named {
     string d_named;
 
     explicit is_named(const string & named):d_named(named) {

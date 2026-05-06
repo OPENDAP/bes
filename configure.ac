@@ -56,6 +56,11 @@ AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 
 AM_INIT_AUTOMAKE([1.10 tar-pax])
+AC_CANONICAL_HOST
+AS_CASE([$host],
+    [*darwin*],
+    [AS_IF([test -z "$lt_cv_sys_max_cmd_len"],
+        [lt_cv_sys_max_cmd_len=196608])])
 LT_INIT
 
 AC_DEFINE_UNQUOTED(CVER, "$PACKAGE_VERSION", [Client version number])
@@ -64,7 +69,6 @@ AC_SUBST(CVER)
 dnl flags for the compilers and linkers - set these before locating the
 dnl actual tools since some of the AC_PROG macros set these 'flag variables'
 dnl to default values otherwise.
-AC_CANONICAL_HOST
 AC_SUBST(host)
 
 dnl Moved this out of the AWS-specific checks. jhrg 10/16/25
@@ -361,19 +365,20 @@ AC_FUNC_STRTOD
 AC_FUNC_VPRINTF
 
 OPENSSL_LIBS=-lcrypto
-
-AC_SUBST([OPENSSL_LIBS])
-
-OPENSSL_INC=-I/usr/local/opt/openssl/include
-OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
+OPENSSL_INC=
+OPENSSL_LDFLAGS=
 
 AC_CHECK_HEADER([openssl/sha.h], [], [openssl_found=false])
 
-AS_IF([test ! $openssl_found],
-    [
-    AC_SUBST([OPENSSL_INC])
-    AC_SUBST([OPENSSL_LDFLAGS])
-    ])
+AS_IF([test "x$openssl_found" = xfalse],
+    [AS_IF([test -d /usr/local/opt/openssl/include],
+        [OPENSSL_INC=-I/usr/local/opt/openssl/include])
+     AS_IF([test -d /usr/local/opt/openssl/lib],
+        [OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib])])
+
+AC_SUBST([OPENSSL_LIBS])
+AC_SUBST([OPENSSL_INC])
+AC_SUBST([OPENSSL_LDFLAGS])
 
 BES_OLD_LIBS=$LIBS
 dnl z and bz2 library?
@@ -560,16 +565,16 @@ AS_IF([test -n "$deps_libdir"],
         [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,$deps_libdir"
          AS_IF([test -n "$deps_libdir64"], [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,$deps_libdir64"])
          AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,'\$ORIGIN'"])
-    AC_MSG_NOTICE([Set AM_LDFLAGS to $AM_LDFLAGS])
+    AC_MSG_NOTICE([Set Automake linker flags to $AM_LDFLAGS])
     AC_SUBST([AM_LDFLAGS])])
 
-BES_DISPATCH_LIB="-L\$(top_builddir)/dispatch -lbes_dispatch"
+BES_DISPATCH_LIB="\$(abs_top_builddir)/dispatch/libbes_dispatch.la"
 AC_SUBST(BES_DISPATCH_LIB)
-BES_XML_CMD_LIB="-L\$(top_builddir)/xmlcommand -lbes_xml_command"
+BES_XML_CMD_LIB="\$(abs_top_builddir)/xmlcommand/libbes_xml_command.la"
 AC_SUBST(BES_XML_CMD_LIB)
-BES_PPT_LIB="-L\$(top_builddir)/ppt -lbes_ppt"
+BES_PPT_LIB="\$(abs_top_builddir)/ppt/libbes_ppt.la"
 AC_SUBST(BES_PPT_LIB)
-BES_DAP_LIB="-L\$(top_builddir)/dap -ldap_module"
+BES_DAP_LIB="\$(abs_top_builddir)/dap/libdap_module.la"
 AC_SUBST(BES_DAP_LIB)
 
 dnl This enables code to link with the dap_module without a warning. Use this not
@@ -580,7 +585,7 @@ AC_SUBST(BES_DAP_LIB_LDFLAGS)
 
 dnl jhrg 6/2/23 BES_EXTRA_LIBS="$LIBS $openssl_libs"
 dnl AC_SUBST(BES_EXTRA_LIBS)
-BES_HTTP_LIB="-L\$(top_builddir)/http -lbes_http"
+BES_HTTP_LIB="\$(abs_top_builddir)/http/libbes_http.la"
 AC_SUBST(BES_HTTP_LIB)
 
 dnl These tests are for the dependencies of specific handlers. Added jhrg 11/17/13

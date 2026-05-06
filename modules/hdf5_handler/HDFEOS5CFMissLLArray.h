@@ -76,7 +76,7 @@ class HDFEOS5CFMissLLArray:public HDF5BaseArray {
     private:
         int rank;
         std::string filename;
-        hid_t  fileid;
+        hid_t  fileid __attribute__((unused));
         std::string varname;
         CVType cvartype;
         float point_lower;
@@ -94,4 +94,3 @@ class HDFEOS5CFMissLLArray:public HDF5BaseArray {
 };
 
 #endif                          // _HDFEOS5CFMISSLLARRAY_H
-
