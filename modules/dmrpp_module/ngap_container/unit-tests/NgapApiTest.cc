@@ -90,18 +90,13 @@ public:
 
     static void compare_results(const string &granule_name, const string &data_access_url,
                                 const string &expected_data_access_url) {
-        if (debug) cerr << prolog << "TEST: Is the URL longer than the granule name? " << endl;
-        CPPUNIT_ASSERT(data_access_url.size() > granule_name.size());
+        CPPUNIT_ASSERT_MESSAGE("URL should be longer than the granule name", data_access_url.size() > granule_name.size());
 
-        if (debug) cerr << prolog << "TEST: Does the URL end with the granule name? " << endl;
-        const bool endsWithGranuleName = data_access_url.substr(data_access_url.size() - granule_name.size(),
-                                                                granule_name.size()) == granule_name;
-        CPPUNIT_ASSERT(endsWithGranuleName == true);
+        CPPUNIT_ASSERT_MESSAGE("URL should end with the granule name", data_access_url.substr(data_access_url.size() - granule_name.size(),
+                                                                granule_name.size()) == granule_name);
 
-        if (debug) cerr << prolog << "TEST: Does the returned URL match the expected URL? " << endl;
-        if (debug) cerr << prolog << "CMR returned DataAccessURL: " << data_access_url << endl;
-        if (debug) cerr << prolog << "The expected DataAccessURL: " << expected_data_access_url << endl;
-        CPPUNIT_ASSERT(expected_data_access_url == data_access_url);
+        CPPUNIT_ASSERT_MESSAGE("URL should match the expected URL\n\t- Expected: " + expected_data_access_url + "\n\t- Actual: " + data_access_url,
+                               expected_data_access_url == data_access_url);
     }
 
     /**
@@ -125,9 +120,8 @@ public:
         );
         try {
             const string cmr_query_url = NgapApi::build_cmr_query_url(resty_path);
-            DBG(cerr << prolog << "expected_cmr_url: " << expected_cmr_url << endl);
-            DBG(cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl);
-            CPPUNIT_ASSERT(cmr_query_url == expected_cmr_url);
+            CPPUNIT_ASSERT_MESSAGE("Returned URL should match the expected URL for input `" + resty_path + "`\n\t- Expected: " + expected_cmr_url + "\n\t- Actual: " + cmr_query_url,
+                                   cmr_query_url == expected_cmr_url);
         }
         catch (const BESError &e) {
             stringstream msg;
@@ -158,9 +152,8 @@ public:
         try {
             string cmr_query_url;
             cmr_query_url = NgapApi::build_cmr_query_url(resty_path);
-            DBG(cerr << prolog << "expected_cmr_url: " << expected_cmr_url << endl);
-            DBG(cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl);
-            CPPUNIT_ASSERT(cmr_query_url == expected_cmr_url);
+            CPPUNIT_ASSERT_MESSAGE("Returned URL should match the expected URL for input `" + resty_path + "`\n\t- Expected: " + expected_cmr_url + "\n\t- Actual: " + cmr_query_url,
+                                   cmr_query_url == expected_cmr_url);
         }
         catch (const BESError &e) {
             stringstream msg;
@@ -190,9 +183,8 @@ public:
         try {
             string cmr_query_url;
             cmr_query_url = NgapApi::build_cmr_query_url(resty_path);
-            DBG(cerr << prolog << "expected_cmr_url: " << expected_cmr_url << endl);
-            DBG(cerr << prolog << "   cmr_query_url: " << cmr_query_url << endl);
-            CPPUNIT_ASSERT(cmr_query_url == expected_cmr_url);
+            CPPUNIT_ASSERT_MESSAGE("Returned URL should match the expected URL for input `" + resty_path + "`\n\t- Expected: " + expected_cmr_url + "\n\t- Actual: " + cmr_query_url,
+                                   cmr_query_url == expected_cmr_url);
         }
         catch (const BESError &e) {
             stringstream msg;
@@ -283,7 +275,7 @@ public:
         signed_url.set_ingest_time(then);
         const bool is_expired = signed_url.is_expired();
 
-        CPPUNIT_ASSERT(is_expired == true);
+        CPPUNIT_ASSERT_MESSAGE("Signed url should be expired", is_expired == true);
         DBG(cerr << prolog << "END" << endl);
     }
 
