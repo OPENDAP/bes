@@ -149,13 +149,19 @@ string NgapApi::build_cmr_query_url_old_rpath_format(const string &restified_pat
         // This easy-handle is only created so we can use the curl_easy_escape() on the token values
         CURL *ceh = curl_easy_init();
         char *esc_url_content;
+        CURL *ceh_unesc = curl_easy_init();
+        char *unesc_url_content;
+        int unesc_outlength = 0;
 
         // Add provider
-        esc_url_content = curl_easy_escape(ceh, provider.c_str(), provider.size());
+        unesc_url_content = curl_easy_unescape(ceh_unesc, provider.c_str(), provider.size(), &unesc_outlength);
+        esc_url_content = curl_easy_escape(ceh, unesc_url_content, unesc_outlength);
         cmr_url += string(CMR_PROVIDER).append("=").append(esc_url_content).append("&");
+        curl_free(unesc_url_content);
         curl_free(esc_url_content);
 
-        esc_url_content = curl_easy_escape(ceh, collection.c_str(), collection.size());
+        unesc_url_content = curl_easy_unescape(ceh_unesc, collection.c_str(), collection.size(), &unesc_outlength);
+        esc_url_content = curl_easy_escape(ceh, unesc_url_content, unesc_outlength);
         if (use_collection_concept_id) {
             // Add collection_concept_id
             cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(esc_url_content).append("&");
@@ -164,12 +170,16 @@ string NgapApi::build_cmr_query_url_old_rpath_format(const string &restified_pat
             cmr_url += string(CMR_ENTRY_TITLE).append("=").append(esc_url_content).append("&");
 
         }
+        curl_free(unesc_url_content);
         curl_free(esc_url_content);
 
-        esc_url_content = curl_easy_escape(ceh, granule.c_str(), granule.size());
+        unesc_url_content = curl_easy_unescape(ceh_unesc, granule.c_str(), granule.size(), &unesc_outlength);
+        esc_url_content = curl_easy_escape(ceh, unesc_url_content, unesc_outlength);
         cmr_url += string(CMR_GRANULE_UR).append("=").append(esc_url_content);
+        curl_free(unesc_url_content);
         curl_free(esc_url_content);
 
+        curl_easy_cleanup(ceh_unesc);
         curl_easy_cleanup(ceh);
     }
 
