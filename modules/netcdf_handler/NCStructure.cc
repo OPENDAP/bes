@@ -85,7 +85,7 @@ NCStructure::operator=(const NCStructure &rhs)
 /** When flattening a Structure, make sure to add an attribute to the
     new variables that indicate they are the product of translation. */
 
-class AddAttribute: public unary_function<BaseType *, void> {
+class AddAttribute {
 
 public:
     AddAttribute() {}
@@ -270,5 +270,4 @@ bool NCStructure::read()
 
     return true;
 }
-
 

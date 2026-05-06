@@ -256,8 +256,9 @@ bool GDALRequestHandler::gdal_build_dmr_using_dds(BESDataHandlerInterface &dhi)
 
     GDALDatasetH hDS = GDALOpen(filename.c_str(), GA_ReadOnly);
 
-    if (hDS == NULL)
+    if (hDS == NULL) {
         throw Error(string(CPLGetLastErrorMsg()));
+    }
 
 	try {
 		gdal_read_dataset_variables(&dds, hDS, filename,true);

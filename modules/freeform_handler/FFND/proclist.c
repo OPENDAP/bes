@@ -1341,7 +1341,7 @@ int btype_to_btype(void *src_value, FF_TYPES_t src_type, void *dest_value, FF_TY
 			break;
 			
 			case FFV_INT32:
-				if (big_var < FFV_INT32_MIN || big_var > FFV_INT32_MAX)
+				if (big_var < (big_var_type)FFV_INT32_MIN || big_var > (big_var_type)FFV_INT32_MAX)
 				{
 					error = ERR_OUT_OF_RANGE;
 
@@ -1352,7 +1352,7 @@ int btype_to_btype(void *src_value, FF_TYPES_t src_type, void *dest_value, FF_TY
 			break;
 			
 			case FFV_UINT32:
-				if (big_var < FFV_UINT32_MIN || big_var > FFV_UINT32_MAX)
+				if (big_var < (big_var_type)FFV_UINT32_MIN || big_var > (big_var_type)FFV_UINT32_MAX)
 				{
 					error = ERR_OUT_OF_RANGE;
 
@@ -1856,4 +1856,3 @@ int initialize_middle_data
 
 	return(error_return);
 }
-

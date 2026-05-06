@@ -57,8 +57,8 @@ public:
 	BESDap4ResponseHandler(const std::string &name);
 	virtual ~BESDap4ResponseHandler();
 
-	virtual void execute(BESDataHandlerInterface &dhi);
-	virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+	void execute(BESDataHandlerInterface &dhi) override;
+	void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;
 
 	/**
 	 * @brief Is the BES.Use.Dmrpp key set in the bes.conf?

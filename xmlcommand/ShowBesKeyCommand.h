@@ -44,9 +44,9 @@ public:
     {
     }
 
-    virtual void parse_request(xmlNode *node);
+    void parse_request(xmlNode *node) override;
 
-    virtual bool has_response()
+    bool has_response() override
     {
         return true;
     }

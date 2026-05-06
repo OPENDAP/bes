@@ -55,7 +55,7 @@ public:
 
     ~DDSMemCacheTest() override = default;
 
-    void setUp()
+    void setUp() override
     {
         DBG2(cerr << "setUp() - BEGIN" << endl);
 
@@ -80,7 +80,7 @@ public:
         DBG2(cerr << "setUp() - END" << endl);
     }
 
-    void tearDown()
+    void tearDown() override
     {
         delete dds_cache;
         delete dds;
