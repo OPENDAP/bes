@@ -224,9 +224,9 @@ public:
     /**
      * This test exercises the legacy 3 component restified path model
      * /providers/<provider_id>/collections/<entry_title>/granules/<granule_ur>
-     * when url is pre-encoded
+     * when url is pre-encoded (fully or partially)
      */
-    static void resty_path_to_cmr_query_test_url_pre_encoded() {
+    static void resty_path_to_cmr_query_test_legacy_url_pre_encoded() {
         const string expected_cmr_url(
             "https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4"
             "?" CMR_PROVIDER "=POCLOUD"
@@ -483,7 +483,7 @@ public:
     CPPUNIT_TEST (resty_path_to_cmr_query_test_02);
     CPPUNIT_TEST (resty_path_to_cmr_query_test_03);
     CPPUNIT_TEST (resty_path_to_cmr_query_test_04);
-    CPPUNIT_TEST (resty_path_to_cmr_query_test_url_pre_encoded);
+    CPPUNIT_TEST (resty_path_to_cmr_query_test_legacy_url_pre_encoded);
     CPPUNIT_TEST (signed_url_is_expired_test);
 
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_no_hits);

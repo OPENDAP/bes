@@ -147,40 +147,38 @@ string NgapApi::build_cmr_query_url_old_rpath_format(const string &restified_pat
     string cmr_url = get_cmr_search_endpoint_url() + "?";
     {
         // This easy-handle is only created so we can use the curl_easy_escape() on the token values
-        CURL *ceh = curl_easy_init();
-        char *esc_url_content;
-        CURL *ceh_unesc = curl_easy_init();
-        char *unesc_url_content;
-        int unesc_outlength = 0;
+        CURL *curl_handler = curl_easy_init();
+        char *unescaped_url_content;
+        int unescaped_output_length = 0;
+        char *escaped_url_content;
 
         // Add provider
-        unesc_url_content = curl_easy_unescape(ceh_unesc, provider.c_str(), provider.size(), &unesc_outlength);
-        esc_url_content = curl_easy_escape(ceh, unesc_url_content, unesc_outlength);
-        cmr_url += string(CMR_PROVIDER).append("=").append(esc_url_content).append("&");
-        curl_free(unesc_url_content);
-        curl_free(esc_url_content);
+        unescaped_url_content = curl_easy_unescape(curl_handler, provider.c_str(), provider.size(), &unescaped_output_length);
+        escaped_url_content = curl_easy_escape(curl_handler, unescaped_url_content, unescaped_output_length);
+        cmr_url += string(CMR_PROVIDER).append("=").append(escaped_url_content).append("&");
+        curl_free(unescaped_url_content);
+        curl_free(escaped_url_content);
 
-        unesc_url_content = curl_easy_unescape(ceh_unesc, collection.c_str(), collection.size(), &unesc_outlength);
-        esc_url_content = curl_easy_escape(ceh, unesc_url_content, unesc_outlength);
+        unescaped_url_content = curl_easy_unescape(curl_handler, collection.c_str(), collection.size(), &unescaped_output_length);
+        escaped_url_content = curl_easy_escape(curl_handler, unescaped_url_content, unescaped_output_length);
         if (use_collection_concept_id) {
             // Add collection_concept_id
-            cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(esc_url_content).append("&");
+            cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(escaped_url_content).append("&");
         } else {
             // Add entry_title
-            cmr_url += string(CMR_ENTRY_TITLE).append("=").append(esc_url_content).append("&");
+            cmr_url += string(CMR_ENTRY_TITLE).append("=").append(escaped_url_content).append("&");
 
         }
-        curl_free(unesc_url_content);
-        curl_free(esc_url_content);
+        curl_free(unescaped_url_content);
+        curl_free(escaped_url_content);
 
-        unesc_url_content = curl_easy_unescape(ceh_unesc, granule.c_str(), granule.size(), &unesc_outlength);
-        esc_url_content = curl_easy_escape(ceh, unesc_url_content, unesc_outlength);
-        cmr_url += string(CMR_GRANULE_UR).append("=").append(esc_url_content);
-        curl_free(unesc_url_content);
-        curl_free(esc_url_content);
+        unescaped_url_content = curl_easy_unescape(curl_handler, granule.c_str(), granule.size(), &unescaped_output_length);
+        escaped_url_content = curl_easy_escape(curl_handler, unescaped_url_content, unescaped_output_length);
+        cmr_url += string(CMR_GRANULE_UR).append("=").append(escaped_url_content);
+        curl_free(unescaped_url_content);
+        curl_free(escaped_url_content);
 
-        curl_easy_cleanup(ceh_unesc);
-        curl_easy_cleanup(ceh);
+        curl_easy_cleanup(curl_handler);
     }
 
     return cmr_url;
@@ -271,18 +269,18 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
 
     {
         // This easy-handle is only created so we can use the curl_easy_escape() on the token values
-        CURL *ceh = curl_easy_init();
-        char *esc_url_content;
+        CURL *curl_handler = curl_easy_init();
+        char *escaped_url_content;
 
-        esc_url_content = curl_easy_escape(ceh, collection_name.c_str(), collection_name.size());
-        cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(esc_url_content).append("&");
-        curl_free(esc_url_content);
+        escaped_url_content = curl_easy_escape(curl_handler, collection_name.c_str(), collection_name.size());
+        cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(escaped_url_content).append("&");
+        curl_free(escaped_url_content);
 
-        esc_url_content = curl_easy_escape(ceh, granule_name.c_str(), granule_name.size());
-        cmr_url += string(CMR_GRANULE_UR).append("=").append(esc_url_content);
-        curl_free(esc_url_content);
+        escaped_url_content = curl_easy_escape(curl_handler, granule_name.c_str(), granule_name.size());
+        cmr_url += string(CMR_GRANULE_UR).append("=").append(escaped_url_content);
+        curl_free(escaped_url_content);
 
-        curl_easy_cleanup(ceh);
+        curl_easy_cleanup(curl_handler);
     }
 
     return cmr_url;
