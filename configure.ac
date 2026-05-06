@@ -76,6 +76,44 @@ AS_CASE([$host],
     [AM_CONDITIONAL([DARWIN], [false])
      AC_MSG_NOTICE([OSX not found, may assume Linux in places.])])
 
+dnl On macOS, ld warns for nonexistent -L search paths reported by dependency
+dnl discovery tools such as pkg-config and *-config scripts.
+dnl These are used below when setting the libdap and gridfields paths. jhrg 5/6/26
+bes_prune_missing_L_paths()
+{
+    bes_pruned_L_paths=
+    for bes_arg
+    do
+        case $bes_arg in
+        -L*)
+            bes_dir=`echo "x$bes_arg" | sed 's/^x-L//'`
+            AS_IF([test -d "$bes_dir"], [bes_pruned_L_paths="$bes_pruned_L_paths $bes_arg"])
+            ;;
+        *)
+            bes_pruned_L_paths="$bes_pruned_L_paths $bes_arg"
+            ;;
+        esac
+    done
+    echo "$bes_pruned_L_paths"
+}
+
+dnl Libtool still defaults an unset MACOSX_DEPLOYMENT_TARGET to 10.0 in the
+dnl generated libtool script, which adds deprecated -bind_at_load for C++ links.
+dnl Preserve explicit user targets, but make the unset default new enough to skip it.
+AC_CONFIG_COMMANDS([fix-libtool-darwin],
+[
+case $host in
+*-darwin*)
+    if test -f libtool; then
+        sed 's/MACOSX_DEPLOYMENT_TARGET-10\.0/MACOSX_DEPLOYMENT_TARGET-10.4/g' libtool > libtool.tmp \
+            && mv libtool.tmp libtool \
+            && chmod +x libtool
+    fi
+    ;;
+esac
+],
+[host=$host])
+
 dnl This is the default. If the caller uses --enable-developer, that option
 dnl will override these values
 cxx_debug_flags=
@@ -408,6 +446,14 @@ dnl jhrg 10/14/15 BES_CHECK_OPENSSL
 dnl BES_CHECK_KERBEROS
 
 AC_CHECK_LIBDAP([3.18.0], [AM_CONDITIONAL([LIBDAP], [true])], [AM_CONDITIONAL([LIBDAP], [false])])
+AS_CASE([$host],
+    [*darwin*],
+    [DAP_LIBS=`bes_prune_missing_L_paths $DAP_LIBS`
+     DAP_CLIENT_LIBS=`bes_prune_missing_L_paths $DAP_CLIENT_LIBS`
+     DAP_SERVER_LIBS=`bes_prune_missing_L_paths $DAP_SERVER_LIBS`
+     DAP_STATIC_LIBS=`bes_prune_missing_L_paths $DAP_STATIC_LIBS`
+     DAP_CLIENT_STATIC_LIBS=`bes_prune_missing_L_paths $DAP_CLIENT_STATIC_LIBS`
+     DAP_SERVER_STATIC_LIBS=`bes_prune_missing_L_paths $DAP_SERVER_STATIC_LIBS`])
 AC_MSG_CHECKING([on libdap])
 AM_COND_IF([LIBDAP], [AC_MSG_RESULT([yes])], [AC_MSG_ERROR([Could not find libdap.])])
 
@@ -1094,6 +1140,10 @@ AS_IF([test "x$libgf_ok" = "xno" -a "x$enable_gridfields" = "xyes"],
 AC_SUBST([GF_LIBS])
 AC_SUBST([GF_CFLAGS])
 AC_SUBST([GF_PATH])
+
+AS_CASE([$host],
+    [*darwin*],
+    [GF_LIBS=`bes_prune_missing_L_paths $GF_LIBS`])
 
 if test "$libgf_ok" = "yes"
 then
