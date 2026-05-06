@@ -147,20 +147,20 @@ string NgapApi::build_cmr_query_url_old_rpath_format(const string &restified_pat
     string cmr_url = get_cmr_search_endpoint_url() + "?";
     {
         // This easy-handle is only created so we can use the curl_easy_escape() on the token values
-        CURL *curl_handler = curl_easy_init();
+        CURL *ceh = curl_easy_init();
         char *unescaped_url_content;
         int unescaped_output_length = 0;
         char *escaped_url_content;
 
         // Add provider
-        unescaped_url_content = curl_easy_unescape(curl_handler, provider.c_str(), provider.size(), &unescaped_output_length);
-        escaped_url_content = curl_easy_escape(curl_handler, unescaped_url_content, unescaped_output_length);
+        unescaped_url_content = curl_easy_unescape(ceh, provider.c_str(), static_cast<int>(provider.size()), &unescaped_output_length);
+        escaped_url_content = curl_easy_escape(ceh, unescaped_url_content, unescaped_output_length);
         cmr_url += string(CMR_PROVIDER).append("=").append(escaped_url_content).append("&");
         curl_free(unescaped_url_content);
         curl_free(escaped_url_content);
 
-        unescaped_url_content = curl_easy_unescape(curl_handler, collection.c_str(), collection.size(), &unescaped_output_length);
-        escaped_url_content = curl_easy_escape(curl_handler, unescaped_url_content, unescaped_output_length);
+        unescaped_url_content = curl_easy_unescape(ceh, collection.c_str(), static_cast<int>(collection.size()), &unescaped_output_length);
+        escaped_url_content = curl_easy_escape(ceh, unescaped_url_content, unescaped_output_length);
         if (use_collection_concept_id) {
             // Add collection_concept_id
             cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(escaped_url_content).append("&");
@@ -172,13 +172,13 @@ string NgapApi::build_cmr_query_url_old_rpath_format(const string &restified_pat
         curl_free(unescaped_url_content);
         curl_free(escaped_url_content);
 
-        unescaped_url_content = curl_easy_unescape(curl_handler, granule.c_str(), granule.size(), &unescaped_output_length);
-        escaped_url_content = curl_easy_escape(curl_handler, unescaped_url_content, unescaped_output_length);
+        unescaped_url_content = curl_easy_unescape(ceh, granule.c_str(), static_cast<int>(granule.size()), &unescaped_output_length);
+        escaped_url_content = curl_easy_escape(ceh, unescaped_url_content, unescaped_output_length);
         cmr_url += string(CMR_GRANULE_UR).append("=").append(escaped_url_content);
         curl_free(unescaped_url_content);
         curl_free(escaped_url_content);
 
-        curl_easy_cleanup(curl_handler);
+        curl_easy_cleanup(ceh);
     }
 
     return cmr_url;
@@ -269,18 +269,18 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
 
     {
         // This easy-handle is only created so we can use the curl_easy_escape() on the token values
-        CURL *curl_handler = curl_easy_init();
+        CURL *ceh = curl_easy_init();
         char *escaped_url_content;
 
-        escaped_url_content = curl_easy_escape(curl_handler, collection_name.c_str(), collection_name.size());
+        escaped_url_content = curl_easy_escape(ceh, collection_name.c_str(), static_cast<int>(collection_name.size()));
         cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(escaped_url_content).append("&");
         curl_free(escaped_url_content);
 
-        escaped_url_content = curl_easy_escape(curl_handler, granule_name.c_str(), granule_name.size());
+        escaped_url_content = curl_easy_escape(ceh, granule_name.c_str(), static_cast<int>(granule_name.size()));
         cmr_url += string(CMR_GRANULE_UR).append("=").append(escaped_url_content);
         curl_free(escaped_url_content);
 
-        curl_easy_cleanup(curl_handler);
+        curl_easy_cleanup(ceh);
     }
 
     return cmr_url;
