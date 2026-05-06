@@ -58,6 +58,8 @@ private:
     }
 
 protected:
+    using BESContainer::_duplicate;
+
     void _duplicate(GatewayContainer &copy_to);
 
 public:
@@ -67,11 +69,11 @@ public:
 
     virtual ~GatewayContainer();
 
-    virtual BESContainer * ptr_duplicate();
+    BESContainer * ptr_duplicate() override;
 
-    virtual std::string access();
+    std::string access() override;
 
-    virtual bool release();
+    bool release() override;
 
     void dump(std::ostream &strm) const override;
 };
