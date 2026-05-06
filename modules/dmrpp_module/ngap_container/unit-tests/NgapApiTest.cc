@@ -229,6 +229,31 @@ public:
         }
     }
 
+    /**
+     * This test exercises the legacy 3 component restified path model
+     * /providers/<provider_id>/collections/<entry_title>/granules/<granule_ur>
+     * when url is pre-encoded
+     */
+    static void resty_path_to_cmr_query_test_url_pre_encoded() {
+        const string expected_cmr_url(
+            "https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4"
+            "?" CMR_PROVIDER "=POCLOUD"
+            "&" CMR_ENTRY_TITLE
+            "=ECCO%20Ocean%20Temperature%20and%20Salinity%20-%20Monthly%20Mean%20llc90%20Grid%20%28Version%204%20Release%204%29"
+            "&" CMR_GRANULE_UR "=OCEAN_TEMPERATURE_SALINITY_mon_mean_2017-12_ECCO_V4r4_native_llc0090"
+        );
+
+        const string resty_path = "providers/POCLOUD/collections/ECCO Ocean Temperature and Salinity - Monthly Mean llc90 Grid (Version 4 Release 4)/granules/OCEAN_TEMPERATURE_SALINITY_mon_mean_2017-12_ECCO_V4r4_native_llc0090";
+        const string cmr_query_url = NgapApi::build_cmr_query_url(resty_path);
+        CPPUNIT_ASSERT_MESSAGE("CMR query for path `" + resty_path + "` should be `" + expected_cmr_url + "`, was `" + cmr_query_url + "`",
+                               cmr_query_url == expected_cmr_url);
+
+        const string resty_path_url_encoded = "providers/POCLOUD/collections/ECCO%20Ocean%20Temperature%20and%20Salinity%20-%20Monthly%20Mean%20llc90%20Grid%20(Version%204%20Release%204)/granules/OCEAN_TEMPERATURE_SALINITY_mon_mean_2017-12_ECCO_V4r4_native_llc0090";
+        const string cmr_query_url_encoded = NgapApi::build_cmr_query_url(resty_path_url_encoded);
+        CPPUNIT_ASSERT_MESSAGE("CMR query for pre-url-encoded path `" + resty_path_url_encoded + "` should be `" + expected_cmr_url + "`, was `" + cmr_query_url_encoded + "`",
+                               cmr_query_url_encoded == expected_cmr_url);
+    }
+
     void signed_url_is_expired_test() {
         DBG(cerr << prolog << "BEGIN" << endl);
         string signed_url_str;
@@ -466,6 +491,7 @@ public:
     CPPUNIT_TEST (resty_path_to_cmr_query_test_02);
     CPPUNIT_TEST (resty_path_to_cmr_query_test_03);
     CPPUNIT_TEST (resty_path_to_cmr_query_test_04);
+    CPPUNIT_TEST (resty_path_to_cmr_query_test_url_pre_encoded);
     CPPUNIT_TEST (signed_url_is_expired_test);
 
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_no_hits);
