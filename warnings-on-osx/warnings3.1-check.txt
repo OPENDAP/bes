@@ -1,0 +1,171 @@
+
+build_dmrpp_util_test.cc:262:113: warning: equality comparison result unused [-Wunused-comparison]
+  262 |                                get_fill_value_test_helper(fill_value_file, "/chunks_fill_notdefined", __func__) == "-99", BESInternalError);
+      |                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/opt/homebrew/Cellar/cppunit/1.15.1/include/cppunit/TestAssert.h:541:10: note: expanded from macro 'CPPUNIT_ASSERT_THROW_MESSAGE'
+  541 |          expression;                                                          \
+      |          ^~~~~~~~~~
+DMZTest.cc:96:10: warning: private field 'd_show_doc' is not used [-Wunused-private-field]
+   96 |     bool d_show_doc = false;
+      |          ^
+1 warning generated.
+1 warning generated.
+....
+----------------------------------------------------------------------
+Ran 4 tests in 2.451s
+
+OK
+FoCovJsonTest.cc:781:39: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  781 |         libdap::dods_float64 oneDdata[dim1Size];
+      |                                       ^~~~~~~~
+FoCovJsonTest.cc:781:39: note: read of non-const variable 'dim1Size' is not allowed in a constant expression
+FoCovJsonTest.cc:779:13: note: declared here
+  779 |         int dim1Size = 2;
+      |             ^
+FoCovJsonTest.cc:796:39: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  796 |         libdap::dods_float64 twoDdata[totalSize];
+      |                                       ^~~~~~~~~
+FoCovJsonTest.cc:796:39: note: read of non-const variable 'totalSize' is not allowed in a constant expression
+FoCovJsonTest.cc:795:13: note: declared here
+  795 |         int totalSize = dim1Size * dim2Size;
+      |             ^
+FoCovJsonTest.cc:811:40: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  811 |         libdap::dods_uint32 uint32data[totalSize];
+      |                                        ^~~~~~~~~
+FoCovJsonTest.cc:811:40: note: read of non-const variable 'totalSize' is not allowed in a constant expression
+FoCovJsonTest.cc:795:13: note: declared here
+  795 |         int totalSize = dim1Size * dim2Size;
+      |             ^
+FoCovJsonTest.cc:829:41: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  829 |         libdap::dods_float64 threeDdata[totalSize];
+      |                                         ^~~~~~~~~
+FoCovJsonTest.cc:829:41: note: read of non-const variable 'totalSize' is not allowed in a constant expression
+FoCovJsonTest.cc:795:13: note: declared here
+  795 |         int totalSize = dim1Size * dim2Size;
+      |             ^
+FoCovJsonTest.cc:902:39: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  902 |         libdap::dods_float64 testData[totalSize];
+      |                                       ^~~~~~~~~
+FoCovJsonTest.cc:902:39: note: read of non-const variable 'totalSize' is not allowed in a constant expression
+FoCovJsonTest.cc:795:13: note: declared here
+  795 |         int totalSize = dim1Size * dim2Size;
+      |             ^
+FoCovJsonTest.cc:903:38: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  903 |         libdap::dods_float64 latData[latSize];
+      |                                      ^~~~~~~
+FoCovJsonTest.cc:903:38: note: read of non-const variable 'latSize' is not allowed in a constant expression
+FoCovJsonTest.cc:899:13: note: declared here
+  899 |         int latSize = 18;
+      |             ^
+FoCovJsonTest.cc:904:38: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  904 |         libdap::dods_float64 lngData[lngSize];
+      |                                      ^~~~~~~
+FoCovJsonTest.cc:904:38: note: read of non-const variable 'lngSize' is not allowed in a constant expression
+FoCovJsonTest.cc:898:13: note: declared here
+  898 |         int lngSize = 36;
+      |             ^
+FoCovJsonTest.cc:905:39: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  905 |         libdap::dods_float64 timeData[timeSize];
+      |                                       ^~~~~~~~
+FoCovJsonTest.cc:905:39: note: read of non-const variable 'timeSize' is not allowed in a constant expression
+FoCovJsonTest.cc:900:13: note: declared here
+  900 |         int timeSize = 9;
+      |             ^
+8 warnings generated.
+libtool: [31mwarning[0m: [1mLinking the executable HttpdDirScraperTest against the loadable module[0m
+libtool: [31mwarning[0m: [1mlibdap_module.so is not portable![0m
+libtool: [31mwarning[0m: [1mlib libdap_module.so is a module, not a shared library[0m
+FoJsonTest.cc:518:39: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  518 |         libdap::dods_float64 oneDdata[dim1Size];
+      |                                       ^~~~~~~~
+FoJsonTest.cc:518:39: note: read of non-const variable 'dim1Size' is not allowed in a constant expression
+FoJsonTest.cc:516:13: note: declared here
+  516 |         int dim1Size = 2;
+      |             ^
+FoJsonTest.cc:532:39: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  532 |         libdap::dods_float64 twoDdata[totalSize];
+      |                                       ^~~~~~~~~
+FoJsonTest.cc:532:39: note: read of non-const variable 'totalSize' is not allowed in a constant expression
+FoJsonTest.cc:531:13: note: declared here
+  531 |         int totalSize = dim1Size * dim2Size;
+      |             ^
+FoJsonTest.cc:546:40: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  546 |         libdap::dods_uint32 uint32data[totalSize];
+      |                                        ^~~~~~~~~
+FoJsonTest.cc:546:40: note: read of non-const variable 'totalSize' is not allowed in a constant expression
+FoJsonTest.cc:531:13: note: declared here
+  531 |         int totalSize = dim1Size * dim2Size;
+      |             ^
+FoJsonTest.cc:564:41: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  564 |         libdap::dods_float64 threeDdata[totalSize];
+      |                                         ^~~~~~~~~
+FoJsonTest.cc:564:41: note: read of non-const variable 'totalSize' is not allowed in a constant expression
+FoJsonTest.cc:531:13: note: declared here
+  531 |         int totalSize = dim1Size * dim2Size;
+      |             ^
+FoJsonTest.cc:632:39: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  632 |         libdap::dods_float64 testData[totalSize];
+      |                                       ^~~~~~~~~
+FoJsonTest.cc:632:39: note: read of non-const variable 'totalSize' is not allowed in a constant expression
+FoJsonTest.cc:531:13: note: declared here
+  531 |         int totalSize = dim1Size * dim2Size;
+      |             ^
+FoJsonTest.cc:633:38: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  633 |         libdap::dods_float64 latData[latSize];
+      |                                      ^~~~~~~
+FoJsonTest.cc:633:38: note: read of non-const variable 'latSize' is not allowed in a constant expression
+FoJsonTest.cc:630:13: note: declared here
+  630 |         int latSize = 18;
+      |             ^
+FoJsonTest.cc:634:38: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  634 |         libdap::dods_float64 lngData[lngSize];
+      |                                      ^~~~~~~
+FoJsonTest.cc:634:38: note: read of non-const variable 'lngSize' is not allowed in a constant expression
+FoJsonTest.cc:629:13: note: declared here
+  629 |         int lngSize = 36;
+      |             ^
+7 warnings generated.
+NDimArrayTest.cc:93:28: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+   93 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                            ^~~~~~~~~~~~~~~~~~~~~
+NDimArrayTest.cc:93:33: note: virtual function called on object 'test' whose dynamic type is not constant
+   93 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                                 ^
+NDimArrayTest.cc:93:59: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+   93 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                                                           ^~~~~~~~~~~~~~~~~~~~~
+NDimArrayTest.cc:93:64: note: virtual function called on object 'test' whose dynamic type is not constant
+   93 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                                                                ^
+NDimArrayTest.cc:93:88: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+   93 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                                                                                        ^~~~~~~~~~~~~~~~~~~~~
+NDimArrayTest.cc:93:93: note: virtual function called on object 'test' whose dynamic type is not constant
+   93 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                                                                                             ^
+NDimArrayTest.cc:131:28: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  131 |         dods_float64 stuff[lastDimSize];
+      |                            ^~~~~~~~~~~
+NDimArrayTest.cc:131:28: note: read of non-const variable 'lastDimSize' is not allowed in a constant expression
+NDimArrayTest.cc:122:23: note: declared here
+  122 |         unsigned long lastDimSize = nda.getLastDimensionElementCount();
+      |                       ^
+NDimArrayTest.cc:166:28: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  166 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                            ^~~~~~~~~~~~~~~~~~~~~
+NDimArrayTest.cc:166:33: note: virtual function called on object 'test' whose dynamic type is not constant
+  166 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                                 ^
+NDimArrayTest.cc:166:59: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  166 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                                                           ^~~~~~~~~~~~~~~~~~~~~
+NDimArrayTest.cc:166:64: note: virtual function called on object 'test' whose dynamic type is not constant
+  166 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                                                                ^
+NDimArrayTest.cc:166:88: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  166 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                                                                                        ^~~~~~~~~~~~~~~~~~~~~
+NDimArrayTest.cc:166:93: note: virtual function called on object 'test' whose dynamic type is not constant
+  166 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                                                                                             ^
+7 warnings generated.

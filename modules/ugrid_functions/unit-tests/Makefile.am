@@ -73,8 +73,10 @@ check-local:
 	@echo ""
 endif
 
+STATIC_UGRID_FUNCTIONS_MODULE = ../.libs/libugrid_functions.a
+
 NDimArrayTest_SOURCES =  NDimArrayTest.cc
-NDimArrayTest_LDADD = ../NDimensionalArray.o $(LIBADD)
+NDimArrayTest_LDADD = $(STATIC_UGRID_FUNCTIONS_MODULE) $(LIBADD)
 
 BindTest_SOURCES = BindTest.cc
 BindTest_LDADD = $(LIBADD)
@@ -84,4 +86,3 @@ GFTests_LDADD = $(LIBADD)
 
 possibly_lost_SOURCES = possibly_lost.cc
 possibly_lost_LDADD = $(LIBADD)
-

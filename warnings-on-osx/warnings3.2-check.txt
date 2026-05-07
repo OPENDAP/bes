@@ -1,0 +1,12 @@
+/bin/sh: bescmdln: command not found
+rm: ./mds/*: No such file or directory
+make[3]: [check-local] Error 1 (ignored)
+ls: dap_cache/: No such file or directory
+ls: dap_cache/: No such file or directory
+ls: dap_cache/: No such file or directory
+ls: dap_cache/: No such file or directory
+....
+----------------------------------------------------------------------
+Ran 4 tests in 2.538s
+
+OK
