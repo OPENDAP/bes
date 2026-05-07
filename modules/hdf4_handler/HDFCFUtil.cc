@@ -431,7 +431,7 @@ HDFCFUtil::obtain_type_size(int32 type)
 // Somehow this function doesn't work. Now it is not used. Still keep it here for the future investigation.
 template < typename T >
 void HDFCFUtil::LatLon2DSubset (T * outlatlon,
-                                int majordim,
+                                int /*majordim - unused*/,
                                 int minordim,
                                 T * latlon,
                                 const int32 * offset,
