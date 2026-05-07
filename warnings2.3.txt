@@ -1,0 +1,154 @@
+lex.gse.cc:1381:38: warning: comparison of integers of different signs: 'yy_size_t' (aka 'unsigned long') and 'int' [-Wsign-compare]
+ 1381 |         if (((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
+      |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1 warning generated.
+ld: warning: duplicate -rpath '@loader_path' ignored
+ld: warning: ignoring duplicate libraries: '-lc++'
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[2](BitShiftNameEncoding.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[3](EmbeddedLevelNameEncoding.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[5](HtmRange.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[7](HtmRangeMultiLevel.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[9](Htmio.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[10](HstmRange.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[11](NameEncoding.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[12](RangeConvex.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[13](SkipList.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[14](SkipListElement.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[15](SpatialConstraint.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[16](SpatialDomain.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[17](SpatialEdge.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[18](SpatialException.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[19](SpatialGeneral.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[20](SpatialIndex.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[21](SpatialInterface.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[23](SpatialVector.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[24](SpatialPolygon.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[25](SpatialRotation.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[26](STARE.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[27](SpatialRange.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[28](TemporalIndex.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[29](TemporalWordFormat1.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[30](VarStr.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[31](erfa.c.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: building for macOS-26.0, but linking with dylib '@rpath/libopenjp2.7.dylib' which was built for newer version 26.3
+hdfeos.yy:115.1-21: warning: deprecated directive, use ‘%define api.prefix {hdfeos}’ [-Wdeprecated]
+ %name-prefix "hdfeos"
+ ^~~~~~~~~~~~~~~~~~~~~
+hdfeos.yy:115.1-21: warning: deprecated directive, use ‘%define api.prefix {hdfeos}’ [-Wdeprecated]
+ %name-prefix "hdfeos"
+ ^~~~~~~~~~~~~~~~~~~~~
+hdfeos.yy: warning: fix-its can be applied.  Rerun with option '--update'. [-Wother]
+hdfeos.yy: warning: fix-its can be applied.  Rerun with option '--update'. [-Wother]
+hdfeos.yy:34:9: warning: 'YYDEBUG' macro redefined [-Wmacro-redefined]
+   34 | #define YYDEBUG 0
+      |         ^
+hdfeos.tab.cc:103:10: note: previous definition is here
+  103 | # define YYDEBUG 1
+      |          ^
+In file included from hdfeos.yy:53:
+/Users/jimg/src/opendap/hyrax/build/include/libdap/parser.h:43:9: warning: 'YYDEBUG' macro redefined [-Wmacro-redefined]
+   43 | #define YYDEBUG 1
+      |         ^
+hdfeos.yy:34:9: note: previous definition is here
+   34 | #define YYDEBUG 0
+      |         ^
+hdfeos.yy:448:1: warning: function 'build_fqn' is not needed and will not be emitted [-Wunneeded-internal-declaration]
+  448 | build_fqn(AttrTable *at, string fqn)
+      | ^~~~~~~~~
+In file included from hdfeos.lex:65:
+hdfeos.yy:34:9: warning: 'YYDEBUG' macro redefined [-Wmacro-redefined]
+   34 | #define YYDEBUG 0
+      |         ^
+/Users/jimg/src/opendap/hyrax/build/include/libdap/parser.h:43:9: note: previous definition is here
+   43 | #define YYDEBUG 1
+      |         ^
+3 warnings generated.
+lex.hdfeos.cc:1646:16: warning: function 'yyinput' is not needed and will not be emitted [-Wunneeded-internal-declaration]
+ 1646 |     static int yyinput (void)
+      |                ^~~~~~~
+2 warnings generated.
+he5dds.yy:70.1-21: warning: deprecated directive, use ‘%define api.prefix {he5dds}’he5dds.yy:70.1-21: warning: deprecated directive, use ‘%define api.prefix {he5dds}’ [-Wdeprecated]
+ [-Wdeprecated] %name-prefix "he5dds"
+he5das.yy:90 ^.1~
+~~he5das.yy-21: ~warning: ~~~~ %name-prdeprecated directive, use ‘%define api.prefix {he5das}’ [-Wdeprecated]
+~~:90e %fix "he5d~~~~~~.1-21: warning: deprecated directive, use ‘%define api.prefix {he5das}’ [-Wdeprecated]
+name-~~~~
+prefix "he5das"
+ ^~~~~~~~~~~~~ds"
+~~  ^~~~~~~~~~%name-~~~prefix "h~~e5das"
+ ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+~~~~~~
+he5das.yy: warning: fix-its can be applied.  Rerun with option '--update'. [-Wother]
+he5das.yy: warning: fix-its can be applied.  Rerun with option '--update'. [-Wother]
+he5dds.yy: warning: fix-its can be applied.  Rerun with option '--update'. [-Wother]
+he5dds.yy: warning: fix-its can be applied.  Rerun with option '--update'. [-Wother]
+he5das.yy:33:9: warning: 'YYDEBUG' macro redefined [-Wmacro-redefined]
+   33 | #define YYDEBUG 0
+      |         ^
+he5das.tab.cc:103:10: note: previous definition is here
+  103 | # define YYDEBUG 1
+      |          ^
+In file included from heos5cfdap.cc:65:
+he5das.yy:33:9: warning: 'YYDEBUG' macro redefined [-Wmacro-redefined]
+   33 | #define YYDEBUG 0
+      |         ^
+/Users/jimg/src/opendap/hyrax/build/include/libdap/parser.h:43:9: note: previous definition is here
+   43 | #define YYDEBUG 1
+      |         ^
+he5dds.yy:29:9: warning: 'YYDEBUG' macro redefined [-Wmacro-redefined]
+   29 | #define YYDEBUG 0
+      |         ^
+he5dds.tab.cc:103:10: note: previous definition is here
+  103 | # define YYDEBUG 1
+      |          ^
+In file included from he5dds.lex:15:
+he5dds.yy:29:9: warning: 'YYDEBUG' macro redefined [-Wmacro-redefined]
+   29 | #define YYDEBUG 0
+      |         ^
+./he5dds.tab.hh:41:10: note: previous definition is here
+   41 | # define YYDEBUG 1
+      |          ^
+In file included from he5das.yy:62:
+/Users/jimg/src/opendap/hyrax/build/include/libdap/parser.h:43:9: warning: 'YYDEBUG' macro redefined [-Wmacro-redefined]
+   43 | #define YYDEBUG 1
+      |         ^
+he5das.yy:33:9: note: previous definition is here
+   33 | #define YYDEBUG 0
+      |         ^
+In file included from he5das.lex:67:
+he5das.yy:33:9: warning: 'YYDEBUG' macro redefined [-Wmacro-redefined]
+   33 | #define YYDEBUG 0
+      |         ^
+/Users/jimg/src/opendap/hyrax/build/include/libdap/parser.h:43:9: note: previous definition is here
+   43 | #define YYDEBUG 1
+      |         ^
+he5das.tab.cc:1621:25: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+ 1621 |       yyerror (arg, YY_("syntax error"));
+      |                         ^
+he5das.tab.cc:1765:21: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+ 1765 |   yyerror (arg, YY_("memory exhausted"));
+      |                     ^
+1 warning generated.
+4 warnings generated.
+lex.he5das.cc:1708:16: warning: function 'yyinput' is not needed and will not be emitted [-Wunneeded-internal-declaration]
+ 1708 |     static int yyinput (void)
+      |                ^~~~~~~
+2 warnings generated.
+he5dds.tab.cc:2157:31: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+ 2157 |       yyerror (he5parser, YY_("syntax error"));
+      |                               ^
+he5dds.tab.cc:2301:27: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+ 2301 |   yyerror (he5parser, YY_("memory exhausted"));
+      |                           ^
+lex.he5dds.cc:1869:17: warning: unused function 'yyunput' [-Wunused-function]
+ 1869 |     static void yyunput (int c, char * yy_bp )
+      |                 ^~~~~~~
+lex.he5dds.cc:1910:16: warning: function 'yyinput' is not needed and will not be emitted [-Wunneeded-internal-declaration]
+ 1910 |     static int yyinput (void)
+      |                ^~~~~~~
+3 warnings generated.
+3 warnings generated.
+ld: warning: duplicate -rpath '@loader_path' ignored
+ld: warning: ignoring duplicate libraries: '-lc++'
+ld: warning: building for macOS-26.0, but linking with dylib '@rpath/libopenjp2.7.dylib' which was built for newer version 26.3

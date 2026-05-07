@@ -1,0 +1,1216 @@
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+In file included from CSVModule.cc:55:
+./CSVRequestHandler.h:60:7: warning: 'add_attributes' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   60 |         void add_attributes(BESDataHandlerInterface &dhi);
+      |              ^
+../../dispatch/BESRequestHandler.h:104:18: note: overridden virtual function is here
+  104 |     virtual void add_attributes(BESDataHandlerInterface &);
+      |                  ^
+In file included from CSVModule.cc:56:
+./CSVModule.h:48:15: warning: 'initialize' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   48 |         virtual void initialize(const std::string &modname);
+      |                      ^
+../../dispatch/BESAbstractModule.h:45:18: note: overridden virtual function is here
+   45 |     virtual void initialize(const std::string &modname) = 0;
+      |                  ^
+In file included from CSVModule.cc:56:
+./CSVModule.h:49:15: warning: 'terminate' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   49 |         virtual void terminate(const std::string &modname);
+      |                      ^
+../../dispatch/BESAbstractModule.h:46:18: note: overridden virtual function is here
+   46 |     virtual void terminate(const std::string &modname) = 0;
+      |                  ^
+In file included from CSVRequestHandler.cc:68:
+./CSVRequestHandler.h:60:7: warning: 'add_attributes' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   60 |         void add_attributes(BESDataHandlerInterface &dhi);
+      |              ^
+../../dispatch/BESRequestHandler.h:104:18: note: overridden virtual function is here
+  104 |     virtual void add_attributes(BESDataHandlerInterface &);
+      |                  ^
+3 warnings generated.
+1 warning generated.
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+proclist.c:1344:46: warning: implicit conversion from 'long' to 'big_var_type' (aka 'double') changes value from 9223372036854775807 to 9223372036854775808 [-Wimplicit-const-int-float-conversion]
+ 1344 |                                 if (big_var < FFV_INT32_MIN || big_var > FFV_INT32_MAX)
+      |                                                                        ~ ^~~~~~~~~~~~~
+./freeform.h:451:26: note: expanded from macro 'FFV_INT32_MAX'
+  451 | #define FFV_INT32_MAX    LONG_MAX
+      |                          ^~~~~~~~
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/include/limits.h:51:19: note: expanded from macro 'LONG_MAX'
+   51 | #define LONG_MAX  __LONG_MAX__
+      |                   ^~~~~~~~~~~~
+<built-in>:63:22: note: expanded from macro '__LONG_MAX__'
+   63 | #define __LONG_MAX__ 9223372036854775807L
+      |                      ^~~~~~~~~~~~~~~~~~~~
+proclist.c:1355:47: warning: implicit conversion from 'unsigned long' to 'big_var_type' (aka 'double') changes value from 18446744073709551615 to 18446744073709551616 [-Wimplicit-const-int-float-conversion]
+ 1355 |                                 if (big_var < FFV_UINT32_MIN || big_var > FFV_UINT32_MAX)
+      |                                                                         ~ ^~~~~~~~~~~~~~
+./freeform.h:453:25: note: expanded from macro 'FFV_UINT32_MAX'
+  453 | #define FFV_UINT32_MAX  ULONG_MAX
+      |                         ^~~~~~~~~
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/21/include/limits.h:65:37: note: expanded from macro 'ULONG_MAX'
+   65 | #define ULONG_MAX (__LONG_MAX__ *2UL+1UL)
+      |                    ~~~~~~~~~~~~~~~~~^~~~
+2 warnings generated.
+In file included from FFModule.cc:46:
+./FFModule.h:45:15: warning: 'initialize' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   45 |         virtual void initialize(const std::string &modname);
+      |                      ^
+../../dispatch/BESAbstractModule.h:45:18: note: overridden virtual function is here
+   45 |     virtual void initialize(const std::string &modname) = 0;
+      |                  ^
+In file included from FFModule.cc:46:
+./FFModule.h:46:15: warning: 'terminate' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   46 |         virtual void terminate(const std::string &modname);
+      |                      ^
+../../dispatch/BESAbstractModule.h:46:18: note: overridden virtual function is here
+   46 |     virtual void terminate(const std::string &modname) = 0;
+      |                  ^
+2 warnings generated.
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+lex.gse.cc:1381:38: warning: comparison of integers of different signs: 'yy_size_t' (aka 'unsigned long') and 'int' [-Wsign-compare]
+ 1381 |         if (((yy_n_chars) + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
+      |              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~  ^ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+1 warning generated.
+In file included from DapFunctions.cc:54:
+./DapFunctions.h:40:18: warning: 'initialize' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   40 |     virtual void initialize(const std::string &modname);
+      |                  ^
+../../dispatch/BESAbstractModule.h:45:18: note: overridden virtual function is here
+   45 |     virtual void initialize(const std::string &modname) = 0;
+      |                  ^
+In file included from DapFunctions.cc:54:
+./DapFunctions.h:41:18: warning: 'terminate' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   41 |     virtual void terminate(const std::string &modname);
+      |                  ^
+../../dispatch/BESAbstractModule.h:46:18: note: overridden virtual function is here
+   46 |     virtual void terminate(const std::string &modname) = 0;
+      |                  ^
+2 warnings generated.
+ld: warning: duplicate -rpath '@loader_path' ignored
+ld: warning: ignoring duplicate libraries: '-lc++'
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[2](BitShiftNameEncoding.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[3](EmbeddedLevelNameEncoding.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[5](HtmRange.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[7](HtmRangeMultiLevel.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[9](Htmio.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[10](HstmRange.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[11](NameEncoding.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[12](RangeConvex.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[13](SkipList.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[14](SkipListElement.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[15](SpatialConstraint.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[16](SpatialDomain.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[17](SpatialEdge.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[18](SpatialException.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[19](SpatialGeneral.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[20](SpatialIndex.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[21](SpatialInterface.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[23](SpatialVector.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[24](SpatialPolygon.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[25](SpatialRotation.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[26](STARE.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[27](SpatialRange.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[28](TemporalIndex.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[29](TemporalWordFormat1.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[30](VarStr.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[31](erfa.c.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: building for macOS-26.0, but linking with dylib '@rpath/libopenjp2.7.dylib' which was built for newer version 26.3
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+In file included from BESAsciiModule.cc:36:
+./BESAsciiModule.h:45:15: warning: 'initialize' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   45 |         virtual void initialize(const std::string &modname);
+      |                      ^
+../../dispatch/BESAbstractModule.h:45:18: note: overridden virtual function is here
+   45 |     virtual void initialize(const std::string &modname) = 0;
+      |                  ^
+In file included from BESAsciiModule.cc:36:
+./BESAsciiModule.h:46:15: warning: 'terminate' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   46 |         virtual void terminate(const std::string &modname);
+      |                      ^
+../../dispatch/BESAbstractModule.h:46:18: note: overridden virtual function is here
+   46 |     virtual void terminate(const std::string &modname) = 0;
+      |                  ^
+get_ascii_dap4.cc:434:2: warning: misleading indentation; statement is not part of the previous 'for' [-Wmisleading-indentation]
+  434 |         for (Constructor::Vars_iter i = group->var_begin(), e = group->var_end(); i != e; ++i) {
+      |         ^
+get_ascii_dap4.cc:424:5: note: previous statement is here
+  424 |     for (D4Group::groupsIter g = group->grp_begin(), e = group->grp_end(); g != e; ++g)
+      |     ^
+2 warnings generated.
+1 warning generated.
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+In file included from CmrContainerStorage.cc:34:
+./CmrContainerStorage.h:54:18: warning: 'add_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   54 |     virtual void add_container(const std::string &s_name, const std::string &r_name, const std::string &type);
+      |                  ^
+../../dispatch/BESContainerStorageVolatile.h:74:10: note: overridden virtual function is here
+   74 |     void add_container(const std::string &sym_name, const std::string &real_name, const std::string &type) override;
+      |          ^
+In file included from CmrModule.cc:58:
+./CmrModule.h:48:15: warning: 'initialize' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   48 |         virtual void initialize(const std::string &modname);
+      |                      ^
+../../dispatch/BESAbstractModule.h:45:18: note: overridden virtual function is here
+   45 |     virtual void initialize(const std::string &modname) = 0;
+      |                  ^
+In file included from CmrModule.cc:58:
+./CmrModule.h:49:15: warning: 'terminate' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   49 |         virtual void terminate(const std::string &modname);
+      |                      ^
+../../dispatch/BESAbstractModule.h:46:18: note: overridden virtual function is here
+   46 |     virtual void terminate(const std::string &modname) = 0;
+      |                  ^
+In file included from CmrModule.cc:60:
+./CmrContainerStorage.h:54:18: warning: 'add_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   54 |     virtual void add_container(const std::string &s_name, const std::string &r_name, const std::string &type);
+      |                  ^
+../../dispatch/BESContainerStorageVolatile.h:74:10: note: overridden virtual function is here
+   74 |     void add_container(const std::string &sym_name, const std::string &real_name, const std::string &type) override;
+      |          ^
+In file included from GranuleUMM.cc:37:
+../../nlohmann/json.hppIn file included from :24314:35: warning: identifier '_json' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]Collection.cc:8:
+../../nlohmann/json.hpp:24314:35: warning: identifier '_json' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24314 | inline nlohmann::json operator "" _json(const char* s, std::size_t n)
+       |                       ~~~~~~~~~~~~^~~~~
+       |                       operator""_json
+
+ 24314 | inline nlohmann::json operator "" _json(const char* s, std::size_t n)
+       |                       ~~~~~~~~~~~~^~~~~
+       |                       operator""_json
+In file included from Provider.cc:29:
+../../nlohmann/json.hpp:24314:35: warning: identifier '_json' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24314 | inline nlohmann::json operator "" _json(const char* s, std::size_t n)
+       |                       ~~~~~~~~~~~~^~~~~
+       |                       operator""_json
+In file included from JsonUtils.cc:28:
+../../nlohmann/json.hpp:24314:35: warning: identifier '_json' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24314 | inline nlohmann::json operator "" _json(const char* s, std::size_t n)
+       |                       ~~~~~~~~~~~~^~~~~
+       |                       operator""_json
+../../nlohmann/json.hpp:24322:49: warning: identifier '_json_pointer' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24322 | inline nlohmann::json::json_pointer operator "" _json_pointer(const char* s, std::size_t n)
+       |                                     ~~~~~~~~~~~~^~~~~~~~~~~~~
+       |                                     operator""_json_pointer
+../../nlohmann/json.hpp:24386:58: warning: identifier '_json' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24386 |     using nlohmann::literals::json_literals::operator "" _json; // NOLINT(misc-unused-using-decls,google-global-names-in-headers)
+       |                                              ~~~~~~~~~~~~^~~~~
+       |                                              operator""_json
+../../nlohmann/json.hpp:24322:49: warning: identifier '_json_pointer' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24322 | inline nlohmann::json::json_pointer operator "" _json_pointer(const char* s, std::size_t n)
+       |                                     ~~~~~~~~~~~~^~~~~~~~~~~~~
+       |                                     operator""_json_pointer
+../../nlohmann/json.hpp:24386:58: warning: identifier '_json' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24386 |     using nlohmann::literals::json_literals::operator "" _json; // NOLINT(misc-unused-using-decls,google-global-names-in-headers)
+       |                                              ~~~~~~~~~~~~^~~~~
+       |                                              operator""_json
+In file included from CmrApi.cc:37:
+../../nlohmann/json.hpp:24314:35: warning: identifier '_json' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24314 | inline nlohmann::json operator "" _json(const char* s, std::size_t n)
+       |                       ~~~~~~~~~~~~^~~~~
+       |                       operator""_json
+../../nlohmann/json.hpp:24322:49: warning: identifier '_json_pointer' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24322 | inline nlohmann::json::json_pointer operator "" _json_pointer(const char* s, std::size_t n)
+       |                                     ~~~~~~~~~~~~^~~~~~~~~~~~~
+       |                                     operator""_json_pointer
+../../nlohmann/json.hpp:24387:58: warning: identifier '_json_pointer' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24387 |     using nlohmann::literals::json_literals::operator "" _json_pointer; //NOLINT(misc-unused-using-decls,google-global-names-in-headers)
+       |                                              ~~~~~~~~~~~~^~~~~~~~~~~~~
+       |                                              operator""_json_pointer
+../../nlohmann/json.hpp:24322:49: warning: identifier '_json_pointer' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24322 | inline nlohmann::json::json_pointer operator "" _json_pointer(const char* s, std::size_t n)
+       |                                     ~~~~~~~~~~~~^~~~~~~~~~~~~
+       |                                     operator""_json_pointer
+../../nlohmann/json.hpp:24386:58: warning: identifier '_json' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24386 |     using nlohmann::literals::json_literals::operator "" _json; // NOLINT(misc-unused-using-decls,google-global-names-in-headers)
+       |                                              ~~~~~~~~~~~~^~~~~
+       |                                              operator""_json
+In file included from CmrContainerStorage.cc:35:
+In file included from ./CmrContainer.h:39:
+In file included from ./Granule.h:36:
+../../nlohmann/json.hpp:24314:35: warning: identifier '_json' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24314 | inline nlohmann::json operator "" _json(const char* s, std::size_t n)
+       |                       ~~~~~~~~~~~~^~~~~
+       |                       operator""_json
+../../nlohmann/json.hpp:24386:58: warning: identifier '_json' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24386 |     using nlohmann::literals::json_literals::operator "" _json; // NOLINT(misc-unused-using-decls,google-global-names-in-../../nlohmann/json.hpp:24387:58: warning: identifier '_json_pointer' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24387 |     using nlohmann::literals::json_literals::operator "" _json_pointer; //NOLINT(misc-unused-using-decls,google-global-names-in-headers)
+       |                                              ~~~~~~~~~~~~^~~~~~~~~~~~~
+       |                                              operator""_json_pointer
+headers)
+       |                                              ~~~~~~~~~~~~^~~~~
+       |                                              operator""_json
+../../nlohmann/json.hpp:24387:58: warning: identifier '_json_pointer' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24387 |     using nlohmann::literals::json_literals::operator "" _json_pointer; //NOLINT(misc-unused-using-decls,google-global-names-in-headers)
+       |                                              ~~~~~~~~~~~~^~~~~~~~~~~~~
+       |                                              operator""_json_pointer
+../../nlohmann/json.hpp:24387:58: warning: identifier '_json_pointer' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24387 |     using nlohmann::literals::json_literals::operator "" _json_pointer; //NOLINT(misc-unused-using-decls,google-global-names-in-headers)
+       |                                              ~~~~~~~~~~~~^~~~~~~~~~~~~
+       |                                              operator""_json_pointer
+3 warnings generated.
+../../nlohmann/json.hpp:24322:49: warning: identifier '_json_pointer' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24322 | inline nlohmann::json::json_pointer operator "" _json_pointer(const char* s, std::size_t n)
+       |                                     ~~~~~~~~~~~~^~~~~~~~~~~~~
+       |                                     operator""_json_pointer
+../../nlohmann/json.hpp:24386:58: warning: identifier '_json' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24386 |     using nlohmann::literals::json_literals::operator "" _json; // NOLINT(misc-unused-using-decls,google-global-names-in-headers)
+       |                                              ~~~~~~~~~~~~^~~~~
+       |                                              operator""_json
+../../nlohmann/json.hpp:24322:49: warning: identifier '_json_pointer' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24322 | inline nlohmann::json::json_pointer operator "" _json_pointer(const char* s, std::size_t n)
+       |                                     ~~~~~~~~~~~~^~~~~~~~~~~~~
+       |                                     operator""_json_pointer
+../../nlohmann/json.hpp:24386:58: warning: identifier '_json' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24386 |     using nlohmann::literals::json_literals::operator "" _json; // NOLINT(misc-unused-using-decls,google-global-names-in-headers)
+       |                                              ~~~~~~~~~~~~^~~~~
+       |                                              operator""_json
+In file included from Granule.cc:36:
+In file included from ./JsonUtils.h:37:
+../../nlohmann/json.hpp:24314:35: warning: identifier '_json' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24314 | inline nlohmann::json operator "" _json(const char* s, std::size_t n)
+       |                       ~~~~~~~~~~~~^~~~~
+       |                       operator""_json
+../../nlohmann/json.hpp:24387:58: warning: identifier '_json_pointer' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24387 |     using nlohmann::literals::json_literals::operator "" _json_pointer; //NOLINT(misc-unused-using-decls,google-global-names-in-headers)
+       |                                              ~~~~~~~~~~~~^~~~~~~~~~~~~
+       |                                              operator""_json_pointer
+../../nlohmann/json.hpp:24387:58: warning: identifier '_json_pointer' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24387 |     using nlohmann::literals::json_literals::operator "" _json_pointer; //NOLINT(misc-unused-using-decls,google-global-names-in-headers)
+       |                                              ~~~~~~~~~~~~^~~~~~~~~~~~~
+       |                                              operator""_json_pointer
+In file included from CmrContainer.cc:42:
+In file included from ./CmrContainer.h:39:
+In file included from ./Granule.h:36:
+../../nlohmann/json.hpp:24314:35: warning: identifier '_json' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24314 | inline nlohmann::json operator "" _json(const char* s, std::size_t n)
+       |                       ~~~~~~~~~~~~^~~~~
+       |                       operator""_json
+In file included from CmrContainerStorage.cc:35:
+./CmrContainer.h:63:10: warning: 'cmr::CmrContainer::_duplicate' hides overloaded virtual function [-Woverloaded-virtual]
+   63 |     void _duplicate(CmrContainer &copy_to);
+      |          ^
+../../dispatch/BESContainer.h:82:18: note: hidden overloaded virtual function 'BESContainer::_duplicate' declared here: type mismatch at 1st parameter ('BESContainer &' vs 'CmrContainer &')
+   82 |     virtual void _duplicate(BESContainer &copy_to);
+      |                  ^
+../../nlohmann/json.hpp:24322:49: warning: identifier '_json_pointer' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24322 | inline nlohmann::json::json_pointer operator "" _json_pointer(const char* s, std::size_t n)
+       |                                     ~~~~~~~~~~~~^~~~~~~~~~~~~
+       |                                     operator""_json_pointer
+../../nlohmann/json.hpp:24386:58: warning: identifier '_json' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24386 |     using nlohmann::literals::json_literals::operator "" _json; // NOLINT(misc-unused-using-decls,google-global-names-in-headers)
+       |                                              ~~~~~~~~~~~~^~~~~
+       |                                              operator""_json
+../../nlohmann/json.hpp:24387:58: warning: identifier '_json_pointer' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24387 |     using nlohmann::literals::json_literals::operator "" _json_pointer; //NOLINT(misc-unused-using-decls,google-global-names-in-headers)
+       |                                              ~~~~~~~~~~~~^~~~~~~~~~~~~
+       |                                              operator""_json_pointer
+../../nlohmann/json.hpp:24322:49: warning: identifier '_json_pointer' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24322 | inline nlohmann::json::json_pointer operator "" _json_pointer(const char* s, std::size_t n)
+       |                                     ~~~~~~~~~~~~^~~~~~~~~~~~~
+       |                                     operator""_json_pointer
+../../nlohmann/json.hpp:24386:58: warning: identifier '_json' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24386 |     using nlohmann::literals::json_literals::operator "" _json; // NOLINT(misc-unused-using-decls,google-global-names-in-headers)
+       |                                              ~~~~~~~~~~~~^~~~~
+       |                                              operator""_json
+../../nlohmann/json.hpp:24387:58: warning: identifier '_json_pointer' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24387 |     using nlohmann::literals::json_literals::operator "" _json_pointer; //NOLINT(misc-unused-using-decls,google-global-names-in-headers)
+       |                                              ~~~~~~~~~~~~^~~~~~~~~~~~~
+       |                                              operator""_json_pointer
+In file included from CmrCatalog.cc:65:
+In file included from ./CmrApi.h:40:
+../../nlohmann/json.hpp:24314:35: warning: identifier '_json' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24314 | inline nlohmann::json operator "" _json(const char* s, std::size_t n)
+       |                       ~~~~~~~~~~~~^~~~~
+       |                       operator""_json
+In file included from CmrContainer.cc:42:
+./CmrContainer.h:63:10: warning: 'cmr::CmrContainer::_duplicate' hides overloaded virtual function [-Woverloaded-virtual]
+   63 |     void _duplicate(CmrContainer &copy_to);
+      |          ^
+../../dispatch/BESContainer.h:82:18: note: hidden overloaded virtual function 'BESContainer::_duplicate' declared here: type mismatch at 1st parameter ('BESContainer &' vs 'CmrContainer &')
+   82 |     virtual void _duplicate(BESContainer &copy_to);
+      |                  ^
+../../nlohmann/json.hpp:24322:49: warning: identifier '_json_pointer' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24322 | inline nlohmann::json::json_pointer operator "" _json_pointer(const char* s, std::size_t n)
+       |                                     ~~~~~~~~~~~~^~~~~~~~~~~~~
+       |                                     operator""_json_pointer
+../../nlohmann/json.hpp:24386:58: warning: identifier '_json' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24386 |     using nlohmann::literals::json_literals::operator "" _json; // NOLINT(misc-unused-using-decls,google-global-names-in-headers)
+       |                                              ~~~~~~~~~~~~^~~~~
+       |                                              operator""_json
+../../nlohmann/json.hpp:24387:58: warning: identifier '_json_pointer' preceded by whitespace in a literal operator declaration is deprecated [-Wdeprecated-literal-operator]
+ 24387 |     using nlohmann::literals::json_literals::operator "" _json_pointer; //NOLINT(misc-unused-using-decls,google-global-names-in-headers)
+       |                                              ~~~~~~~~~~~~^~~~~~~~~~~~~
+       |                                              operator""_json_pointer
+6 warnings generated.
+4 warnings generated.
+4 warnings generated.
+4 warnings generated.
+5 warnings generated.
+4 warnings generated.
+4 warnings generated.
+4 warnings generated.
+4 warnings generated.
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/deps/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+annot.cc:231:14: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  231 |     char buf[ann_length+1];
+      |              ^~~~~~~~~~~~
+annot.cc:231:14: note: read of non-const variable 'ann_length' is not allowed in a constant expression
+annot.cc:230:11: note: declared here
+  230 |     int32 ann_length = ANannlen(_ann_id) ;
+      |           ^
+sds.cc:480:33: warning: 'unary_function<array_ce, bool>' is deprecated [-Wdeprecated-declarations]
+  480 | class ce_name_match:public std::unary_function < array_ce, bool > {
+      |                                 ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_function.h:23:8: note: 'unary_function<array_ce, bool>' has been explicitly marked deprecated here
+   23 | struct _LIBCPP_DEPRECATED_IN_CXX11 unary_function {
+      |        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:569:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+  569 | #    define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+      |                                         ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:554:49: note: expanded from macro '_LIBCPP_DEPRECATED'
+  554 | #      define _LIBCPP_DEPRECATED __attribute__((__deprecated__))
+      |                                                 ^
+1 warning generated.
+1 warning generated.
+hdfeos.yy:115.1-21: warning: deprecated directive, use ‘%define api.prefix {hdfeos}’ [-Wdeprecated]
+ %name-prefix "hdfeos"
+ ^~~~~~~~~~~~~~~~~~~~~
+hdfeos.yy:115.1-21: warning: deprecated directive, use ‘%define api.prefix {hdfeos}’ [-Wdeprecated]
+ %name-prefix "hdfeos"
+ ^~~~~~~~~~~~~~~~~~~~~
+hdfeos.yy: warning: fix-its can be applied.  Rerun with option '--update'. [-Wother]
+hdfeos.yy: warning: fix-its can be applied.  Rerun with option '--update'. [-Wother]
+HDFDMRArray_EOS2LL.cc:364:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  364 |     int dim0index[dim0count];
+      |                   ^~~~~~~~~
+HDFDMRArray_EOS2LL.cc:364:19: note: read of non-const variable 'dim0count' is not allowed in a constant expression
+HDFDMRArray_EOS2LL.cc:362:9: note: declared here
+  362 |     int dim0count = count[0];
+      |         ^
+HDFDMRArray_EOS2LL.cc:365:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  365 |     int dim1index[dim1count];
+      |                   ^~~~~~~~~
+HDFDMRArray_EOS2LL.cc:365:19: note: read of non-const variable 'dim1count' is not allowed in a constant expression
+HDFDMRArray_EOS2LL.cc:363:9: note: declared here
+  363 |     int dim1count = count[1];
+      |         ^
+HDFDMRArray_EOS2LL.cc:364:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  364 |     int dim0index[dim0count];
+      |                   ^~~~~~~~~
+HDFDMRArray_EOS2LL.cc:214:13: note: in instantiation of function template specialization 'HDFDMRArray_EOS2LL::LatLon2DSubset<double>' requested here
+  214 |             LatLon2DSubset(out_lat_subset.data(),xdim,lat.data(),offset.data(),count.data(),step.data());
+      |             ^
+HDFDMRArray_EOS2LL.cc:364:19: note: read of non-const variable 'dim0count' is not allowed in a constant expression
+  364 |     int dim0index[dim0count];
+      |                   ^
+HDFDMRArray_EOS2LL.cc:362:9: note: declared here
+  362 |     int dim0count = count[0];
+      |         ^
+HDFDMRArray_EOS2LL.cc:365:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  365 |     int dim1index[dim1count];
+      |                   ^~~~~~~~~
+HDFDMRArray_EOS2LL.cc:365:19: note: read of non-const variable 'dim1count' is not allowed in a constant expression
+HDFDMRArray_EOS2LL.cc:363:9: note: declared here
+  363 |     int dim1count = count[1];
+      |         ^
+HDFCFUtil.cc:442:34: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  442 |     T (*templatlonptr)[majordim][minordim] = (T *) latlon;
+      |                                  ^~~~~~~~
+HDFCFUtil.cc:442:34: note: function parameter 'minordim' with unknown value cannot be used in a constant expression
+HDFCFUtil.cc:435:37: note: declared here
+  435 |                                 int minordim,
+      |                                     ^
+HDFCFUtil.cc:442:24: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  442 |     T (*templatlonptr)[majordim][minordim] = (T *) latlon;
+      |                        ^~~~~~~~
+HDFCFUtil.cc:442:24: note: function parameter 'majordim' with unknown value cannot be used in a constant expression
+HDFCFUtil.cc:434:37: note: declared here
+  434 |                                 int majordim,
+      |                                     ^
+4 warnings generated.
+2 warnings generated.
+HDFSPArrayGeoField.cc:1176:27: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+ 1176 |     float32 val[count[0]][count[1]];
+      |                           ^~~~~~~~
+HDFSPArrayGeoField.cc:1176:27: note: function parameter 'count' with unknown value cannot be used in a constant expression
+HDFSPArrayGeoField.cc:1170:67: note: declared here
+ 1170 | HDFSPArrayGeoField::readcersavgid2 (const int *offset, const int *count, const int *step,
+      |                                                                   ^
+HDFSPArrayGeoField.cc:1176:17: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+ 1176 |     float32 val[count[0]][count[1]];
+      |                 ^~~~~~~~
+HDFSPArrayGeoField.cc:1176:17: note: function parameter 'count' with unknown value cannot be used in a constant expression
+HDFSPArrayGeoField.cc:1170:67: note: declared here
+ 1170 | HDFSPArrayGeoField::readcersavgid2 (const int *offset, const int *count, const int *step,
+      |                                                                   ^
+HDFEOS2Array_RealField.cc:137:24: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  137 |         int32 tmp_dims[rank];
+      |                        ^~~~
+HDFEOS2Array_RealField.cc:137:24: note: implicit use of 'this' pointer is only allowed within the evaluation of a call to a 'constexpr' member function
+HDFEOS2Array_RealField.cc:278:20: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  278 |     int32 tmp_dims[rank];
+      |                    ^~~~
+HDFEOS2Array_RealField.cc:278:20: note: implicit use of 'this' pointer is only allowed within the evaluation of a call to a 'constexpr' member function
+In file included from HDFSPArray_RealField.cc:7:
+./HDFSPArray_RealField.h:50:16: warning: private field 'sptype' is not used [-Wunused-private-field]
+   50 |         SPType sptype;
+      |                ^
+HDFEOS2Array_RealField.cc:1565:20: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+ 1565 |     int32 tmp_dims[rank];
+      |                    ^~~~
+HDFEOS2Array_RealField.cc:1565:20: note: implicit use of 'this' pointer is only allowed within the evaluation of a call to a 'constexpr' member function
+HDFEOS2ArrayGridGeoField.cc:1600:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+ 1600 |     int dim0index[dim0count];
+      |                   ^~~~~~~~~
+HDFEOS2ArrayGridGeoField.cc:1600:19: note: read of non-const variable 'dim0count' is not allowed in a constant expression
+HDFEOS2ArrayGridGeoField.cc:1598:9: note: declared here
+ 1598 |     int dim0count = count[0];
+      |         ^
+HDFEOS2ArrayGridGeoField.cc:1601:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+ 1601 |     int dim1index[dim1count];
+      |                   ^~~~~~~~~
+HDFEOS2ArrayGridGeoField.cc:1601:19: note: read of non-const variable 'dim1count' is not allowed in a constant expression
+HDFEOS2ArrayGridGeoField.cc:1599:9: note: declared here
+ 1599 |     int dim1count = count[1];
+      |         ^
+HDFEOS2ArrayGridGeoField.cc:1955:15: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+ 1955 |     int32 dim[MAXNDIM];
+      |               ^~~~~~~
+HDFEOS2ArrayGridGeoField.cc:1955:15: note: read of non-const variable 'MAXNDIM' is not allowed in a constant expression
+HDFEOS2ArrayGridGeoField.cc:1954:9: note: declared here
+ 1954 |     int MAXNDIM = 10;
+      |         ^
+HDFEOS2CFStrField.cc:127:20: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  127 |     int32 tmp_dims[rank+1];
+      |                    ^~~~~~
+HDFEOS2CFStrField.cc:127:20: note: implicit use of 'this' pointer is only allowed within the evaluation of a call to a 'constexpr' member function
+HDFEOS2ArrayGridGeoField.cc:2100:21: warning: misleading indentation; statement is not part of the previous 'for' [-Wmisleading-indentation]
+ 2100 |                     set_value ((dods_float64 *) latlon.data(), nelms); //(180*xdim*ydim)); //nelms);
+      |                     ^
+HDFEOS2ArrayGridGeoField.cc:2086:17: note: previous statement is here
+ 2086 |                 for(j=s2; j<e2; j+=step[1])//j=0; j<xdim; j++)
+      |                 ^
+1 warning generated.
+2 warnings generated.
+1 warning generated.
+HDFEOS2ArraySwathDimMapField.cc:1035:20: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+ 1035 |     int32 tmp_dims[rank];
+      |                    ^~~~
+HDFEOS2ArraySwathDimMapField.cc:1035:20: note: implicit use of 'this' pointer is only allowed within the evaluation of a call to a 'constexpr' member function
+HDFEOS2ArraySwathGeoDimMapExtraField.cc:135:20: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  135 |     int32 tmp_dims[rank];
+      |                    ^~~~
+HDFEOS2ArraySwathGeoDimMapExtraField.cc:135:20: note: implicit use of 'this' pointer is only allowed within the evaluation of a call to a 'constexpr' member function
+HDFEOS2ArrayGridGeoField.cc:1600:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+ 1600 |     int dim0index[dim0count];
+      |                   ^~~~~~~~~
+HDFEOS2ArrayGridGeoField.cc:1502:17: note: in instantiation of function template specialization 'HDFEOS2ArrayGridGeoField::LatLon2DSubset<double>' requested here
+ 1502 |                 LatLon2DSubset(temp_lat.data(),ydim,xdim,lat.data(),temp_offset,temp_count,temp_step);
+      |                 ^
+HDFEOS2ArrayGridGeoField.cc:1600:19: note: read of non-const variable 'dim0count' is not allowed in a constant expression
+ 1600 |     int dim0index[dim0count];
+      |                   ^
+HDFEOS2ArrayGridGeoField.cc:1598:9: note: declared here
+ 1598 |     int dim0count = count[0];
+      |         ^
+HDFEOS2ArrayGridGeoField.cc:1601:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+ 1601 |     int dim1index[dim1count];
+      |                   ^~~~~~~~~
+HDFEOS2ArrayGridGeoField.cc:1601:19: note: read of non-const variable 'dim1count' is not allowed in a constant expression
+HDFEOS2ArrayGridGeoField.cc:1599:9: note: declared here
+ 1599 |     int dim1count = count[1];
+      |         ^
+HDFEOS2ArraySwathDimMapField.cc:1264:20: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+ 1264 |     int32 tmp_dims[rank];
+      |                    ^~~~
+HDFEOS2ArraySwathDimMapField.cc:1264:20: note: implicit use of 'this' pointer is only allowed within the evaluation of a call to a 'constexpr' member function
+3 warnings generated.
+6 warnings generated.
+1 warning generated.
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:528:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  528 |     int dim0index[dim0count];
+      |                   ^~~~~~~~~
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:528:19: note: read of non-const variable 'dim0count' is not allowed in a constant expression
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:525:9: note: declared here
+  525 |     int dim0count = count[0];
+      |         ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:529:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  529 |     int dim1index[dim1count];
+      |                   ^~~~~~~~~
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:529:19: note: read of non-const variable 'dim1count' is not allowed in a constant expression
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:526:9: note: declared here
+  526 |     int dim1count = count[1];
+      |         ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:528:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  528 |     int dim0index[dim0count];
+      |                   ^~~~~~~~~
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:181:17: note: in instantiation of function template specialization 'HDFEOS2ArraySwathGeoMultiDimMapField::Field2DSubset<signed char>' requested here
+  181 |                 Field2DSubset (val8.data(), newdims[0], newdims[1],total_val8.data(),
+      |                 ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:528:19: note: read of non-const variable 'dim0count' is not allowed in a constant expression
+  528 |     int dim0index[dim0count];
+      |                   ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:525:9: note: declared here
+  525 |     int dim0count = count[0];
+      |         ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:529:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  529 |     int dim1index[dim1count];
+      |                   ^~~~~~~~~
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:529:19: note: read of non-const variable 'dim1count' is not allowed in a constant expression
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:526:9: note: declared here
+  526 |     int dim1count = count[1];
+      |         ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:528:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  528 |     int dim0index[dim0count];
+      |                   ^~~~~~~~~
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:213:17: note: in instantiation of function template specialization 'HDFEOS2ArraySwathGeoMultiDimMapField::Field2DSubset<unsigned char>' requested here
+  213 |                 Field2DSubset (val_uint8.data(), newdims[0], newdims[1],total_val_uint8.data(),
+      |                 ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:528:19: note: read of non-const variable 'dim0count' is not allowed in a constant expression
+  528 |     int dim0index[dim0count];
+      |                   ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:525:9: note: declared here
+  525 |     int dim0count = count[0];
+      |         ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:529:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  529 |     int dim1index[dim1count];
+      |                   ^~~~~~~~~
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:529:19: note: read of non-const variable 'dim1count' is not allowed in a constant expression
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:526:9: note: declared here
+  526 |     int dim1count = count[1];
+      |         ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:528:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  528 |     int dim0index[dim0count];
+      |                   ^~~~~~~~~
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:250:17: note: in instantiation of function template specialization 'HDFEOS2ArraySwathGeoMultiDimMapField::Field2DSubset<short>' requested here
+  250 |                 Field2DSubset (val_int16.data(), newdims[0], newdims[1],total_val_int16.data(),
+      |                 ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:528:19: note: read of non-const variable 'dim0count' is not allowed in a constant expression
+  528 |     int dim0index[dim0count];
+      |                   ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:525:9: note: declared here
+  525 |     int dim0count = count[0];
+      |         ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:529:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  529 |     int dim1index[dim1count];
+      |                   ^~~~~~~~~
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:529:19: note: read of non-const variable 'dim1count' is not allowed in a constant expression
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:526:9: note: declared here
+  526 |     int dim1count = count[1];
+      |         ^
+2 warnings generated.
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:528:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  528 |     int dim0index[dim0count];
+      |                   ^~~~~~~~~
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:286:17: note: in instantiation of function template specialization 'HDFEOS2ArraySwathGeoMultiDimMapField::Field2DSubset<unsigned short>' requested here
+  286 |                 Field2DSubset (val_uint16.data(), newdims[0], newdims[1],total_val_uint16.data(),
+      |                 ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:528:19: note: read of non-const variable 'dim0count' is not allowed in a constant expression
+  528 |     int dim0index[dim0count];
+      |                   ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:525:9: note: declared here
+  525 |     int dim0count = count[0];
+      |         ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:529:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  529 |     int dim1index[dim1count];
+      |                   ^~~~~~~~~
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:529:19: note: read of non-const variable 'dim1count' is not allowed in a constant expression
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:526:9: note: declared here
+  526 |     int dim1count = count[1];
+      |         ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:528:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  528 |     int dim0index[dim0count];
+      |                   ^~~~~~~~~
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:323:17: note: in instantiation of function template specialization 'HDFEOS2ArraySwathGeoMultiDimMapField::Field2DSubset<int>' requested here
+  323 |                 Field2DSubset (val_int32.data(), newdims[0], newdims[1],total_val_int32.data(),
+      |                 ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:528:19: note: read of non-const variable 'dim0count' is not allowed in a constant expression
+  528 |     int dim0index[dim0count];
+      |                   ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:525:9: note: declared here
+  525 |     int dim0count = count[0];
+      |         ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:529:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  529 |     int dim1index[dim1count];
+      |                   ^~~~~~~~~
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:529:19: note: read of non-const variable 'dim1count' is not allowed in a constant expression
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:526:9: note: declared here
+  526 |     int dim1count = count[1];
+      |         ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:528:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  528 |     int dim0index[dim0count];
+      |                   ^~~~~~~~~
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:359:17: note: in instantiation of function template specialization 'HDFEOS2ArraySwathGeoMultiDimMapField::Field2DSubset<unsigned int>' requested here
+  359 |                 Field2DSubset (val_uint32.data(), newdims[0], newdims[1],total_val_uint32.data(),
+      |                 ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:528:19: note: read of non-const variable 'dim0count' is not allowed in a constant expression
+  528 |     int dim0index[dim0count];
+      |                   ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:525:9: note: declared here
+  525 |     int dim0count = count[0];
+      |         ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:529:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  529 |     int dim1index[dim1count];
+      |                   ^~~~~~~~~
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:529:19: note: read of non-const variable 'dim1count' is not allowed in a constant expression
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:526:9: note: declared here
+  526 |     int dim1count = count[1];
+      |         ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:528:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  528 |     int dim0index[dim0count];
+      |                   ^~~~~~~~~
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:394:17: note: in instantiation of function template specialization 'HDFEOS2ArraySwathGeoMultiDimMapField::Field2DSubset<float>' requested here
+  394 |                 Field2DSubset (val_f32.data(), newdims[0], newdims[1],total_val_f32.data(),
+      |                 ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:528:19: note: read of non-const variable 'dim0count' is not allowed in a constant expression
+  528 |     int dim0index[dim0count];
+      |                   ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:525:9: note: declared here
+  525 |     int dim0count = count[0];
+      |         ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:529:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  529 |     int dim1index[dim1count];
+      |                   ^~~~~~~~~
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:529:19: note: read of non-const variable 'dim1count' is not allowed in a constant expression
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:526:9: note: declared here
+  526 |     int dim1count = count[1];
+      |         ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:528:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  528 |     int dim0index[dim0count];
+      |                   ^~~~~~~~~
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:428:17: note: in instantiation of function template specialization 'HDFEOS2ArraySwathGeoMultiDimMapField::Field2DSubset<double>' requested here
+  428 |                 Field2DSubset (val_f64.data(), newdims[0], newdims[1],total_val_f64.data(),
+      |                 ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:528:19: note: read of non-const variable 'dim0count' is not allowed in a constant expression
+  528 |     int dim0index[dim0count];
+      |                   ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:525:9: note: declared here
+  525 |     int dim0count = count[0];
+      |         ^
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:529:19: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  529 |     int dim1index[dim1count];
+      |                   ^~~~~~~~~
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:529:19: note: read of non-const variable 'dim1count' is not allowed in a constant expression
+HDFEOS2ArraySwathGeoMultiDimMapField.cc:526:9: note: declared here
+  526 |     int dim1count = count[1];
+      |         ^
+In file included from HDFEOS2GeoCF1D.cc:8:
+./HDFEOS2GeoCF1D.h:34:13: warning: private field 'proj_code' is not used [-Wunused-private-field]
+   34 |         int proj_code;
+      |             ^
+1 warning generated.
+18 warnings generated.
+hdfeos.yy:34:9: warning: 'YYDEBUG' macro redefined [-Wmacro-redefined]
+   34 | #define YYDEBUG 0
+      |         ^
+hdfeos.tab.cc:103:10: note: previous definition is here
+  103 | # define YYDEBUG 1
+      |          ^
+In file included from hdfeos.yy:53:
+/Users/jimg/src/opendap/hyrax/build/include/libdap/parser.h:43:9: warning: 'YYDEBUG' macro redefined [-Wmacro-redefined]
+   43 | #define YYDEBUG 1
+      |         ^
+hdfeos.yy:34:9: note: previous definition is here
+   34 | #define YYDEBUG 0
+      |         ^
+In file included from hdfeos.lex:65:
+hdfeos.yy:34:9: warning: 'YYDEBUG' macro redefined [-Wmacro-redefined]
+   34 | #define YYDEBUG 0
+      |         ^
+/Users/jimg/src/opendap/hyrax/build/include/libdap/parser.h:43:9: note: previous definition is here
+   43 | #define YYDEBUG 1
+      |         ^
+hdfeos.yy:448:1: warning: function 'build_fqn' is not needed and will not be emitted [-Wunneeded-internal-declaration]
+  448 | build_fqn(AttrTable *at, string fqn)
+      | ^~~~~~~~~
+hdfdesc.cc:4195:13: warning: 'binary_function<hdf_genvec &, hdf_attr, hdf_genvec &>' is deprecated [-Wdeprecated-declarations]
+ 4195 |     :public binary_function < hdf_genvec &, hdf_attr, hdf_genvec & > {
+      |             ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/binary_function.h:24:8: note: 'binary_function<hdf_genvec &, hdf_attr, hdf_genvec &>' has been explicitly marked deprecated here
+   24 | struct _LIBCPP_DEPRECATED_IN_CXX11 binary_function {
+      |        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:569:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+  569 | #    define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+      |                                         ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:554:49: note: expanded from macro '_LIBCPP_DEPRECATED'
+  554 | #      define _LIBCPP_DEPRECATED __attribute__((__deprecated__))
+      |                                                 ^
+hdfdesc.cc:4223:24: warning: 'unary_function<hdf_attr, bool>' is deprecated [-Wdeprecated-declarations]
+ 4223 | struct is_named:public unary_function < hdf_attr, bool > {
+      |                        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_function.h:23:8: note: 'unary_function<hdf_attr, bool>' has been explicitly marked deprecated here
+   23 | struct _LIBCPP_DEPRECATED_IN_CXX11 unary_function {
+      |        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:569:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+  569 | #    define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+      |                                         ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:554:49: note: expanded from macro '_LIBCPP_DEPRECATED'
+  554 | #      define _LIBCPP_DEPRECATED __attribute__((__deprecated__))
+      |                                                 ^
+3 warnings generated.
+lex.hdfeos.cc:1646:16: warning: function 'yyinput' is not needed and will not be emitted [-Wunneeded-internal-declaration]
+ 1646 |     static int yyinput (void)
+      |                ^~~~~~~
+2 warnings generated.
+2 warnings generated.
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+he5dds.yy:70.1-21: warning: deprecated directive, use ‘%define api.prefix {he5dds}’ [-Wdeprecated]
+he5das.yy:90.1-21: he5das.yy:90.1-21 %nahe5dds.yy:70: warning: deprecated directive, use ‘%define api.prefix {he5das}’ [-Wdeprecated]
+warning: deprecated directive, use ‘%define api.prefix {he5das}’ [-Wdeprecated]
+me-prefix  %n %name-prefixam"h.1ee -21: warning: 5dds"hedeprecated directive, use ‘%define api.prefix {he5dds}’ [-Wdeprecated]
+-p5das"
+ref ^~~~~~~~ix "he5~~~~~~~da"
+~~~~ ^~ %na~~me-s"
+~~~ ^~~~~~~~~
+pref~~ix "he5~~~~~~~~~dds"
+ ^~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~
+he5das.yy: warning: fix-its can be applied.  Rerun with option '--update'. [-Wother]
+he5das.yy: warning: fix-its can be applied.  Rerun with option '--update'. [-Wother]
+he5dds.yy: warning: fix-its can be applied.  Rerun with option '--update'. [-Wother]
+he5dds.yy: warning: fix-its can be applied.  Rerun with option '--update'. [-Wother]
+ranlib: warning: 'libGctp.a(br_gctp.o)' has no symbols
+ranlib: warning: 'libGctp.a(br_gctp.o)' has no symbols
+In file included from HDF5CFGeoCF1D.cc:7:
+./HDF5CFGeoCF1D.h:36:24: warning: private field 'proj_code' is not used [-Wunused-private-field]
+   36 |         EOS5GridPCType proj_code;
+      |                        ^
+1 warning generated.
+In file included from HDF5GMCFSpecialCVArray.cc:37:
+./HDF5GMCFSpecialCVArray.h:56:16: warning: private field 'dtype' is not used [-Wunused-private-field]
+   56 |     H5DataType dtype;
+      |                ^
+./HDF5GMCFSpecialCVArray.h:60:12: warning: private field 'cvartype' is not used [-Wunused-private-field]
+   60 |     CVType cvartype = CV_UNSUPPORTED;
+      |            ^
+In file included from HDFEOS5CFMissLLArray.cc:39:
+./HDFEOS5CFMissLLArray.h:79:16: warning: private field 'fileid' is not used [-Wunused-private-field]
+   79 |         hid_t  fileid;
+      |                ^
+2 warnings generated.
+1 warning generated.
+he5das.yy:33:9: warning: 'YYDEBUG' macro redefined [-Wmacro-redefined]
+   33 | #define YYDEBUG 0
+      |         ^
+he5das.tab.cc:103:10: note: previous definition is here
+  103 | # define YYDEBUG 1
+      |          ^
+he5dds.yy:29:9: warning: 'YYDEBUG' macro redefined [-Wmacro-redefined]
+   29 | #define YYDEBUG 0
+      |         ^
+he5dds.tab.cc:103:10: note: previous definition is here
+  103 | # define YYDEBUG 1
+      |          ^
+In file included from heos5cfdap.cc:65:
+he5das.yy:33:9: warning: 'YYDEBUG' macro redefined [-Wmacro-redefined]
+   33 | #define YYDEBUG 0
+      |         ^
+/Users/jimg/src/opendap/hyrax/build/include/libdap/parser.h:43:9: note: previous definition is here
+   43 | #define YYDEBUG 1
+      |         ^
+heos5cfdap.cc:1038:27: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+ 1038 |     EOS5Metadata metatype[nelems];
+      |                           ^~~~~~
+heos5cfdap.cc:1038:27: note: read of non-const variable 'nelems' is not allowed in a constant expression
+heos5cfdap.cc:990:13: note: declared here
+  990 |     hsize_t nelems = 0;
+      |             ^
+In file included from he5dds.lex:15:
+he5dds.yy:29:9: warning: 'YYDEBUG' macro redefined [-Wmacro-redefined]
+   29 | #define YYDEBUG 0
+      |         ^
+./he5dds.tab.hh:41:10: note: previous definition is here
+   41 | # define YYDEBUG 1
+      |          ^
+In file included from he5das.yy:62:
+/Users/jimg/src/opendap/hyrax/build/include/libdap/parser.h:43:9: warning: 'YYDEBUG' macro redefined [-Wmacro-redefined]
+   43 | #define YYDEBUG 1
+      |         ^
+he5das.yy:33:9: note: previous definition is here
+   33 | #define YYDEBUG 0
+      |         ^
+HDF5GMCF.cc:2002:17: warning: variable 'num_g2d_rank' set but not used [-Wunused-but-set-variable]
+ 2002 |             int num_g2d_rank = 0;
+      |                 ^
+he5das.tab.cc:1621:25: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+ 1621 |       yyerror (arg, YY_("syntax error"));
+      |                         ^
+he5das.tab.cc:1765:21: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+ 1765 |   yyerror (arg, YY_("memory exhausted"));
+      |                     ^
+he5dds.tab.cc:2157:31: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+ 2157 |       yyerror (he5parser, YY_("syntax error"));
+      |                               ^
+he5dds.tab.cc:2301:27: warning: ISO C++11 does not allow conversion from string literal to 'char *' [-Wwritable-strings]
+ 2301 |   yyerror (he5parser, YY_("memory exhausted"));
+      |                           ^
+In file included from he5das.lex:67:
+he5das.yy:33:9: warning: 'YYDEBUG' macro redefined [-Wmacro-redefined]
+   33 | #define YYDEBUG 0
+      |         ^
+/Users/jimg/src/opendap/hyrax/build/include/libdap/parser.h:43:9: note: previous definition is here
+   43 | #define YYDEBUG 1
+      |         ^
+4 warnings generated.
+3 warnings generated.
+lex.he5das.cc:1708:16: warning: function 'yyinput' is not needed and will not be emitted [-Wunneeded-internal-declaration]
+ 1708 |     static int yyinput (void)
+      |                ^~~~~~~
+2 warnings generated.
+lex.he5dds.cc:1869:17: warning: unused function 'yyunput' [-Wunused-function]
+ 1869 |     static void yyunput (int c, char * yy_bp )
+      |                 ^~~~~~~
+lex.he5dds.cc:1910:16: warning: function 'yyinput' is not needed and will not be emitted [-Wunneeded-internal-declaration]
+ 1910 |     static int yyinput (void)
+      |                ^~~~~~~
+3 warnings generated.
+2 warnings generated.
+1 warning generated.
+libtool: [31mwarning[0m: [1mLinking the shared library libhdf5_module.la against the static library gctp/src/libGctp.a is not portable![0m
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ranlib: warning: archive member 'libGctp.a' not a mach-o file
+In file included from ReturnAsDmrppTransmitter.cc:37:
+In file included from ../../../modules/dmrpp_module/ngap_container/NgapOwnedContainer.h:34:
+../../../dispatch/FileCache.h:510:50: warning: comparison of integers of different signs: 'ssize_t' (aka 'long') and 'size_type' (aka 'unsigned long') [-Wsign-compare]
+  510 |         if (write(fd, data.c_str(), data.size()) != data.size()) {
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~
+1 warning generated.
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: -bind_at_load is deprecated on macOS
+NCStructure.cc:88:28: warning: 'unary_function<libdap::BaseType *, void>' is deprecated [-Wdeprecated-declarations]
+   88 | class AddAttribute: public unary_function<BaseType *, void> {
+      |                            ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_function.h:23:8: note: 'unary_function<libdap::BaseType *, void>' has been explicitly marked deprecated here
+   23 | struct _LIBCPP_DEPRECATED_IN_CXX11 unary_function {
+      |        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:569:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+  569 | #    define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+      |                                         ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:554:49: note: expanded from macro '_LIBCPP_DEPRECATED'
+  554 | #      define _LIBCPP_DEPRECATED __attribute__((__deprecated__))
+      |                                                 ^
+1 warning generated.
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+FONcAttributes.cc:264:17: warning: 6 enumeration values not handled in switch: 'Attr_int8', 'Attr_uint8', 'Attr_int64'... [-Wswitch]
+  264 |         switch (attrType) {
+      |                 ^~~~~~~~
+FONcAttributes.cc:264:17: note: add missing switch cases
+  264 |         switch (attrType) {
+      |                 ^
+1 warning generated.
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+simpleT00.cc:36:10: warning: variable 'dods_response' set but not used [-Wunused-but-set-variable]
+   36 |     bool dods_response = false; // write either a .dods or a netcdf file
+      |          ^
+1 warning generated.
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ranlib: warning: 'libfocovjson_module.a(StreamString.o)' has no symbols
+ranlib: warning: 'libfocovjson_module.a(StreamString.o)' has no symbols
+In file included from HttpdCatalogContainerStorage.cc:30:
+./HttpdCatalogContainerStorage.h:53:18: warning: 'add_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   53 |     virtual void add_container(const std::string &s_name, const std::string &r_name, const std::string &type);
+      |                  ^
+../../dispatch/BESContainerStorageVolatile.h:74:10: note: overridden virtual function is here
+   74 |     void add_container(const std::string &sym_name, const std::string &real_name, const std::string &type) override;
+      |          ^
+In file included from HttpdCatalogContainer.cc:33:
+./HttpdCatalogContainer.h:59:10: warning: 'httpd_catalog::HttpdCatalogContainer::_duplicate' hides overloaded virtual function [-Woverloaded-virtual]
+   59 |     void _duplicate(HttpdCatalogContainer &In file included from HttpdCatalogContainerStorage.cc:31:
+./HttpdCatalogContainer.h:59:copy_to);
+      |          ^
+10: warning: 'httpd_catalog::HttpdCatalogContainer::_duplicate' hides overloaded virtual function [-Woverloaded-virtual]
+../../dispatch/BESContainer.h   59:82:18: note: hidden overloaded virtual function 'BESContainer::_duplicate' declared here: type mismatch at 1st parameter ('BESContainer &' vs 'HttpdCatalogContainer &')
+ |     void _duplicate(Htt   82 |     virtual void _duplicate(BESContainer &copy_to);
+      |                  ^
+pdCatalogContainer &copy_to);
+      |          ^
+../../dispatch/BESContainer.h:82:18: note: hidden overloaded virtual function 'BESContainer::_duplicate' declared here: type mismatch at 1st parameter ('BESContainer &' vs 'HttpdCatalogContainer &')
+   82 |     virtual void _duplicate(BESContainer &copy_to);
+      |                  ^
+In file included from HttpdCatalogContainer.cc:34:
+./HttpdCatalog.h:62:31: warning: 'show_catalog' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   62 |     virtual BESCatalogEntry * show_catalog(const std::string &container, BESCatalogEntry */*entry*/){
+      |                               ^
+../../dispatch/BESCatalog.h:100:30: note: overridden virtual function is here
+  100 |     virtual BESCatalogEntry *show_catalog(const std::string &container, BESCatalogEntry *entry) = 0;
+      |                              ^
+In file included from HttpdCatalogContainer.cc:34:
+./HttpdCatalog.h:69:25: warning: 'get_root' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   69 |     virtual std::string get_root() const { return ""; }
+      |                         ^
+../../dispatch/BESCatalog.h:110:25: note: overridden virtual function is here
+  110 |     virtual std::string get_root() const = 0;
+      |                         ^
+In file included from HttpdCatalogContainer.cc:34:
+./HttpdCatalog.h:74:18: warning: 'get_site_map' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   74 |     virtual void get_site_map(
+      |                  ^
+../../dispatch/BESCatalog.h:116:18: note: overridden virtual function is here
+  116 |     virtual void get_site_map(const std::string &prefix, const std::string &node_suffix, const std::string &leaf_suffix,
+      |                  ^
+In file included from HttpdCatalogContainer.cc:34:
+./HttpdCatalog.h:83:31: warning: 'get_node' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   83 |     virtual bes::CatalogNode *get_node(const std::string &path) const;
+      |                               ^
+../../dispatch/BESCatalog.h:114:31: note: overridden virtual function is here
+  114 |     virtual bes::CatalogNode *get_node(const std::string &path) const = 0;
+      |                               ^
+In file included from HttpdCatalogModule.cc:44:
+./HttpdCatalogModule.h:43:15: warning: 'initialize' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   43 |         virtual void initialize(const std::string &modname);
+      |                      ^
+../../dispatch/BESAbstractModule.h:45:18: note: overridden virtual function is here
+   45 |     virtual void initialize(const std::string &modname) = 0;
+      |                  ^
+In file included from HttpdCatalogModule.cc:44:
+./HttpdCatalogModule.h:44:15: warning: 'terminate' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   44 |         virtual void terminate(const std::string &modname);
+      |                      ^
+../../dispatch/BESAbstractModule.h:46:18: note: overridden virtual function is here
+   46 |     virtual void terminate(const std::string &modname) = 0;
+      |                  ^
+In file included from HttpdCatalogModule.cc:45:
+./HttpdCatalogContainerStorage.h:53:18: warning: 'add_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   53 |     virtual void add_container(const std::string &s_name, const std::string &r_name, const std::string &type);
+      |                  ^
+../../dispatch/BESContainerStorageVolatile.h:74:10: note: overridden virtual function is here
+   74 |     void add_container(const std::string &sym_name, const std::string &real_name, const std::string &type) override;
+      |          ^
+In file included from HttpdCatalogModule.cc:46:
+./HttpdCatalog.h:62:31: warning: 'show_catalog' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   62 |     virtual BESCatalogEntry * show_catalog(const std::string &container, BESCatalogEntry */*entry*/){
+      |                               ^
+../../dispatch/BESCatalog.h:100:30: note: overridden virtual function is here
+  100 |     virtual BESCatalogEntry *show_catalog(const std::string &container, BESCatalogEntry *entry) = 0;
+      |                              ^
+In file included from HttpdCatalogModule.cc:46:
+./HttpdCatalog.h:69:25: warning: 'get_root' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   69 |     virtual std::string get_root() const { return ""; }
+      |                         ^
+../../dispatch/BESCatalog.h:110:25: note: overridden virtual function is here
+  110 |     virtual std::string get_root() const = 0;
+      |                         ^
+In file included from HttpdCatalogModule.cc:46:
+./HttpdCatalog.h:74:18: warning: 'get_site_map' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   74 |     virtual void get_site_map(
+      |                  ^
+../../dispatch/BESCatalog.h:116:18: note: overridden virtual function is here
+  116 |     virtual void get_site_map(const std::string &prefix, const std::string &node_suffix, const std::string &leaf_suffix,
+      |                  ^
+In file included from HttpdCatalogModule.cc:46:
+./HttpdCatalog.h:83:31: warning: 'get_node' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   83 |     virtual bes::CatalogNode *get_node(const std::string &path) const;
+      |                               ^
+../../dispatch/BESCatalog.h:114:31: note: overridden virtual function is here
+  114 |     virtual bes::CatalogNode *get_node(const std::string &path) const = 0;
+      |                               ^
+In file included from HttpdDirScraper.cc:42:
+In file included from ./HttpdDirScraper.h:33:
+./HttpdCatalog.h:62:31: warning: 'show_catalog' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   62 |     virtual BESCatalogEntry * show_catalog(const std::string &container, BESCatalogEntry */*entry*/){
+      |                               ^
+../../dispatch/BESCatalog.h:100:30: note: overridden virtual function is here
+  100 |     virtual BESCatalogEntry *show_catalog(const std::string &container, BESCatalogEntry *entry) = 0;
+      |                              ^
+In file included from HttpdDirScraper.cc:42:
+In file included from ./HttpdDirScraper.h:33:
+./HttpdCatalog.h:69:25: warning: 'get_root' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   69 |     virtual std::string get_root() const { return ""; }
+      |                         ^
+../../dispatch/BESCatalog.h:110:25: note: overridden virtual function is here
+  110 |     virtual std::string get_root() const = 0;
+      |                         ^
+In file included from HttpdDirScraper.cc:42:
+In file included from ./HttpdDirScraper.h:33:
+./HttpdCatalog.h:74:18: warning: 'get_site_map' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   74 |     virtual void get_site_map(
+      |                  ^
+../../dispatch/BESCatalog.h:116:18: note: overridden virtual function is here
+  116 |     virtual void get_site_map(const std::string &prefix, const std::string &node_suffix, const std::string &leaf_suffix,
+      |                  ^
+In file included from HttpdDirScraper.cc:42:
+In file included from ./HttpdDirScraper.h:33:
+./HttpdCatalog.h:83:31: warning: 'get_node' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   83 |     virtual bes::CatalogNode *get_node(const std::string &path) const;
+      |                               ^
+../../dispatch/BESCatalog.h:114:31: note: overridden virtual function is here
+  114 |     virtual bes::CatalogNode *get_node(const std::string &path) const = 0;
+      |                               ^
+In file included from HttpdCatalog.cc:64:
+./HttpdCatalog.h:62:31: warning: 'show_catalog' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   62 |     virtual BESCatalogEntry * show_catalog(const std::string &container, BESCatalogEntry */*entry*/){
+      |                               ^
+../../dispatch/BESCatalog.h:100:30: note: overridden virtual function is here
+  100 |     virtual BESCatalogEntry *show_catalog(const std::string &container, BESCatalogEntry *entry) = 0;
+      |                              ^
+In file included from HttpdCatalog.cc:64:
+./HttpdCatalog.h:69:25: warning: 'get_root' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   69 |     virtual std::string get_root() const { return ""; }
+      |                         ^
+../../dispatch/BESCatalog.h:110:25: note: overridden virtual function is here
+  110 |     virtual std::string get_root() const = 0;
+      |                         ^
+In file included from HttpdCatalog.cc:64:
+./HttpdCatalog.h:74:18: warning: 'get_site_map' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   74 |     virtual void get_site_map(
+      |                  ^
+../../dispatch/BESCatalog.h:116:18: note: overridden virtual function is here
+  116 |     virtual void get_site_map(const std::string &prefix, const std::string &node_suffix, const std::string &leaf_suffix,
+      |                  ^
+In file included from HttpdCatalog.cc:64:
+./HttpdCatalog.h:83:31: warning: 'get_node' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   83 |     virtual bes::CatalogNode *get_node(const std::string &path) const;
+      |                               ^
+../../dispatch/BESCatalog.h:114:31: note: overridden virtual function is here
+  114 |     virtual bes::CatalogNode *get_node(const std::string &path) const = 0;
+      |                               ^
+2 warnings generated.
+7 warnings generated.
+5 warnings generated.
+4 warnings generated.
+4 warnings generated.
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+In file included from S3ContainerStorage.cc:31:
+./S3Container.h:53:10: warning: 's3::S3Container::_duplicate' hides overloaded virtual function [-Woverloaded-virtual]
+   53 |     void _duplicate(S3Container &copy_to);
+      |          ^
+../../dispatch/BESContainer.h:82:18: note: hidden overloaded virtual function 'BESContainer::_duplicate' declared here: type mismatch at 1st parameter ('BESContainer &' vs 'S3Container &')
+   82 |     virtual void _duplicate(BESContainer &copy_to);
+      |                  ^
+In file included from S3Container.cc:45:
+./S3Container.h:53:10: warning: 's3::S3Container::_duplicate' hides overloaded virtual function [-Woverloaded-virtual]
+   53 |     void _duplicate(S3Container &copy_to);
+      |          ^
+../../dispatch/BESContainer.h:82:18: note: hidden overloaded virtual function 'BESContainer::_duplicate' declared here: type mismatch at 1st parameter ('BESContainer &' vs 'S3Container &')
+   82 |     virtual void _duplicate(BESContainer &copy_to);
+      |                  ^
+1 warning generated.
+1 warning generated.
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ranlib: warning: 'libfojson_module.a(StreamString.o)' has no symbols
+ranlib: warning: 'libfojson_module.a(StreamString.o)' has no symbols
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+XDArray.cc:131:33: warning: 'unary_function<libdap::Array::dimension &, void>' is deprecated [-Wdeprecated-declarations]
+  131 | class PrintArrayDimXML : public unary_function<Array::dimension&, void>
+      |                                 ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_function.h:23:8: note: 'unary_function<libdap::Array::dimension &, void>' has been explicitly marked deprecated here
+   23 | struct _LIBCPP_DEPRECATED_IN_CXX11 unary_function {
+      |        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:569:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+  569 | #    define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+      |                                         ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:554:49: note: expanded from macro '_LIBCPP_DEPRECATED'
+  554 | #      define _LIBCPP_DEPRECATED __attribute__((__deprecated__))
+      |                                                 ^
+1 warning generated.
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+In file included from GDALModule.cc:43:
+./GDALModule.h:40:18: warning: 'initialize' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   40 |     virtual void initialize(const std::string &modname);
+      |                  ^
+../../dispatch/BESAbstractModule.h:45:18: note: overridden virtual function is here
+   45 |     virtual void initialize(const std::string &modname) = 0;
+      |                  ^
+In file included from GDALModule.cc:43:
+./GDALModule.h:41:18: warning: 'terminate' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   41 |     virtual void terminate(const std::string &modname);
+      |                  ^
+../../dispatch/BESAbstractModule.h:46:18: note: overridden virtual function is here
+   46 |     virtual void terminate(const std::string &modname) = 0;
+      |                  ^
+GDALRequestHandler.cc:262:2: warning: misleading indentation; statement is not part of the previous 'if' [-Wmisleading-indentation]
+  262 |         try {
+      |         ^
+GDALRequestHandler.cc:259:5: note: previous statement is here
+  259 |     if (hDS == NULL)
+      |     ^
+2 warnings generated.
+1 warning generated.
+ld: warning: duplicate -rpath '@loader_path' ignored
+ld: warning: ignoring duplicate libraries: '-lc++'
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: building for macOS-26.0, but linking with dylib '@rpath/libopenjp2.7.dylib' which was built for newer version 26.3
+In file included from UgridFunctions.cc:31:
+./UgridFunctions.h:40:18: warning: 'initialize' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   40 |     virtual void initialize(const std::string &modname);
+      |                  ^
+../../dispatch/BESAbstractModule.h:45:18: note: overridden virtual function is here
+   45 |     virtual void initialize(const std::string &modname) = 0;
+      |                  ^
+In file included from UgridFunctions.cc:31:
+./UgridFunctions.h:41:18: warning: 'terminate' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   41 |     virtual void terminate(const std::string &modname);
+      |                  ^
+../../dispatch/BESAbstractModule.h:46:18: note: overridden virtual function is here
+   46 |     virtual void terminate(const std::string &modname) = 0;
+      |                  ^
+2 warnings generated.
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/deps/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found

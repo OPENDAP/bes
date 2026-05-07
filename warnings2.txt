@@ -1,0 +1,680 @@
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+awsv4.cc:82:5: warning: 'SHA256_Init' is deprecated [-Wdeprecated-declarations]
+   82 |     SHA256_Init(&sha256);
+      |     ^
+/opt/homebrew/include/openssl/sha.h:73:1: note: 'SHA256_Init' has been explicitly marked deprecated here
+   73 | OSSL_DEPRECATEDIN_3_0 int SHA256_Init(SHA256_CTX *c);
+      | ^
+/opt/homebrew/include/openssl/macros.h:229:31: note: expanded from macro 'OSSL_DEPRECATEDIN_3_0'
+  229 | #define OSSL_DEPRECATEDIN_3_0 OSSL_DEPRECATED(3.0)
+      |                               ^
+/opt/homebrew/include/openssl/macros.h:61:47: note: expanded from macro 'OSSL_DEPRECATED'
+   61 | #define OSSL_DEPRECATED(since) __attribute__((deprecated))
+      |                                               ^
+awsv4.cc:83:5: warning: 'SHA256_Update' is deprecated [-Wdeprecated-declarations]
+   83 |     SHA256_Update(&sha256, (const unsigned char *) str.c_str(), str.size());
+      |     ^
+/opt/homebrew/include/openssl/sha.h:74:1: note: 'SHA256_Update' has been explicitly marked deprecated here
+   74 | OSSL_DEPRECATEDIN_3_0 int SHA256_Update(SHA256_CTX *c,
+      | ^
+/opt/homebrew/include/openssl/macros.h:229:31: note: expanded from macro 'OSSL_DEPRECATEDIN_3_0'
+  229 | #define OSSL_DEPRECATEDIN_3_0 OSSL_DEPRECATED(3.0)
+      |                               ^
+/opt/homebrew/include/openssl/macros.h:61:47: note: expanded from macro 'OSSL_DEPRECATED'
+   61 | #define OSSL_DEPRECATED(since) __attribute__((deprecated))
+      |                                               ^
+awsv4.cc:84:5: warning: 'SHA256_Final' is deprecated [-Wdeprecated-declarations]
+   84 |     SHA256_Final(hashOut, &sha256);
+      |     ^
+/opt/homebrew/include/openssl/sha.h:76:1: note: 'SHA256_Final' has been explicitly marked deprecated here
+   76 | OSSL_DEPRECATEDIN_3_0 int SHA256_Final(unsigned char *md, SHA256_CTX *c);
+      | ^
+/opt/homebrew/include/openssl/macros.h:229:31: note: expanded from macro 'OSSL_DEPRECATEDIN_3_0'
+  229 | #define OSSL_DEPRECATEDIN_3_0 OSSL_DEPRECATED(3.0)
+      |                               ^
+/opt/homebrew/include/openssl/macros.h:61:47: note: expanded from macro 'OSSL_DEPRECATED'
+   61 | #define OSSL_DEPRECATED(since) __attribute__((deprecated))
+      |                                               ^
+3 warnings generated.
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+In file included from BESDap4ResponseHandler.cc:29:
+./BESDap4ResponseHandler.h:60:15: warning: 'execute' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   60 |         virtual void execute(BESDataHandlerInterface &dhi);
+      |                      ^
+../dispatch/BESResponseHandler.h:132:18: note: overridden virtual function is here
+  132 |     virtual void execute(BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDap4ResponseHandler.cc:29:
+./BESDap4ResponseHandler.h:61:15: warning: 'transmit' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   61 |         virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+      |                      ^
+../dispatch/BESResponseHandler.h:145:18: note: overridden virtual function is here
+  145 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDASResponseHandler.cc:39:
+./BESDASResponseHandler.h:55:18: warning: 'execute' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   55 |     virtual void execute(BESDataHandlerInterface &dhi);
+      |                  ^
+../dispatch/BESResponseHandler.h:132:18: note: overridden virtual function is here
+  132 |     virtual void execute(BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDASResponseHandler.cc:39:
+./BESDASResponseHandler.h:56:18: warning: 'transmit' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   56 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+      |                  ^
+../dispatch/BESResponseHandler.h:145:18: note: overridden virtual function is here
+  145 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDap4ResponseHandler.cc:30:
+./BESDMRResponse.h:58:15: warning: 'set_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   58 |         virtual void set_container(const std::string &cn);
+      |                      ^
+./BESDapResponse.h:85:18: note: overridden virtual function is here
+   85 |     virtual void set_container(const std::string &cn) = 0;
+      |                  ^
+In file included from BESDap4ResponseHandler.cc:30:
+./BESDMRResponse.h:59:15: warning: 'clear_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   59 |         virtual void clear_container();
+      |                      ^
+./BESDapResponse.h:86:18: note: overridden virtual function is here
+   86 |     virtual void clear_container() = 0;
+      |                  ^
+In file included from BESDASResponseHandler.cc:40:
+./BESDASResponse.h:54:18: warning: 'set_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   54 |     virtual void set_container(const std::string &cn);
+      |                  ^
+./BESDapResponse.h:85:18: note: overridden virtual function is here
+   85 |     virtual void set_container(const std::string &cn) = 0;
+      |                  ^
+In file included from BESDASResponseHandler.cc:40:
+./BESDASResponse.h:55:18: warning: 'clear_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   55 |     virtual void clear_container();
+      |                  ^
+./BESDapResponse.h:86:18: note: overridden virtual function is here
+   86 |     virtual void clear_container() = 0;
+      |                  ^
+In file included from BESDDSResponseHandler.cc:39:
+./BESDDSResponseHandler.h:59:18: warning: 'execute' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   59 |     virtual void execute(BESDataHandlerInterface &dhi);
+      |                  ^
+../dispatch/BESResponseHandler.h:132:18: note: overridden virtual function is here
+  132 |     virtual void execute(BESDataHandlerInterfaceIn file included from BESDDXResponseHandler.cc:39:
+./GlobalMetadataStore.h:132:36: warning: 'unary_function<libdap::DapObj *, void>' is deprecated [-Wdeprecated-declarations]
+  132 |     struct StreamDAP : public std::unary_function<libdap::DapObj*, void> {
+      |                                    ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_function.h:23:8: note: 'unary_function<libdap::DapObj *, void>' has been explicitly marked deprecated here
+   23 | struct _LIBCPP_DEPRECATED_IN_CXX11 unary_function {
+      |        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:569:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+  569 | #    de &dhi) = 0;
+      |                  ^
+In file included from BESDDSResponseHandler.cc:39:
+./BESDDSResponseHandler.h:60:18: warning: 'transmit' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   60 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+      |                  ^
+../dispatch/BESResponseHandler.h:145:18: note: overridden virtual function is here
+  145 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+fine _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+      |                                         ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:554:49: note: expanded from macro '_LIBCPP_DEPRECATED'
+  554 | #      define _LIBCPP_DEPRECATED __attribute__((__deprecated__))
+      |                                                 ^
+In file included from BESDDXResponseHandler.cc:39:
+./GlobalMetadataStore.h:In file included from 193:38: warning: 'unary_function<std::string, bool>' is deprecated [-Wdeprecated-declarations]
+  193 |     struct MDSReadLock : public std::unary_function<std::string, bool> {
+      |                                      ^
+BESDapModule.cc:46:
+./BESDASResponseHandler.h:55:18: warning: 'execute' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   55 |     virtual void ex/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_function.hecute(BESDataHandlerInterf:23:8: note: 'unary_function<std::string, bool>' has been explicitly marked deprecated here
+   23 | struct _LIBCPP_DEPRECATED_IN_CXX11 unary_function {
+      |        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:569:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+  569 | #    define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+      |                                         ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:554:49: note: expanded from macro '_LIBCPP_DEPRECATED'
+  554 | #      define _LIBCPP_DEPRECATED __attribute__((__deprecated__))
+      |                                                 ^
+ace &dhi);
+      |                  ^
+../dispatch/BESResponseHandler.h:132:18: note: overridden virtual function is here
+  132 |     virtual void execute(BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDapModule.cc:46:
+./BESDASResponseHandler.h:56:18: warning: 'transmit' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   56 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+      |                  ^
+../dispatch/BESResponseHandler.h:145:18: note: overridden virtual function is here
+  145 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDapModule.cc:47:
+./BESDDSResponseHandler.hIn file included from BESDDXResponseHandler.cc:40:
+./BESDDXResponseHandler.h:58:18: warning: 'execute' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   58 |     virtual void execute(BESDataHandlerInterface &dhi);
+      |                  ^
+../dispatch/BESResponseHandler.h:132:18: note: overridden virtual function is here
+  132 |     virtual void execute(BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDDXResponseHandler.cc:40:
+./BESDDXResponseHandler.h:59:18: warning: 'transmit' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   59 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+      |                  ^
+../dispatch/BESResponseHandler.h:145:18: note: overridden virtual function is here
+  145 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+:59:18: warning: 'execute' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   59 |     virtual void execute(BESDataHandlerInterface &dhi);
+      |                  ^
+../dispatch/BESResponseHandler.h:132:18: note: overridden virtual function is here
+  132 |     virtual void execute(BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDapModule.cc:47:
+./BESDDSResponseHandler.h:60:18: warning: 'transmit' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   60 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+      |                  ^
+../dispatch/BESResponseHandler.h:145:18: note: overridden virtual function is here
+  145 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDapModule.cc:48:
+./BESDataResponseHandler.h:65:18: warning: 'execute' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   65 |     virtual void execute(BESDataHandlerInterface &dhi);
+      |                  ^
+../dispatch/BESResponseHandler.h:132:18: note: overridden virtual function is here
+  132 |     virtual void execute(BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDapModule.cc:48:
+./BESDataResponseHandler.h:66:18: warning: 'transmit' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   66 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+      |                  ^
+../dispatch/BESResponseHandler.h:145:18: note: overridden virtual function is here
+  145 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDapModule.cc:49:
+./BESDDXResponseHandler.h:58:18: warning: 'execute' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   58 |     virtual void execute(BESDataHandlerInterface &dhi);
+      |                  ^
+../dispatch/BESResponseHandler.h:132:18: note: overridden virtual function is here
+  132 |     virtual void execute(BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDapModule.cc:49:
+./BESDDXResponseHandler.h:59:18: warning: 'transmit' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   59 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+      |                  ^
+../dispatch/BESResponseHandler.h:145:18: note: overridden virtual function is here
+  145 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDapModule.cc:51:
+./BESDMRResponseHandler.h:55:15: warning: 'execute' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   55 |         virtual void execute(BESDataHandlerInterface &dhi);
+      |                      ^
+../dispatch/BESResponseHandler.h:132:18: note: overridden virtual function is here
+  132 |     virtual void execute(BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDapModule.cc:51:
+./BESDMRResponseHandler.h:56:15: warning: 'transmit' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   56 |         virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+      |                      ^
+../dispatch/BESResponseHandler.h:145:18: note: overridden virtual function is here
+  145 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDapModule.cc:52:
+./BESDap4ResponseHandler.h:60:15: warning: 'execute' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   60 |         virtual void execute(BESDataHandlerInterface &dhi);
+      |                      ^
+../dispatch/BESResponseHandler.h:132:18: note: overridden virtual function is here
+  132 |     virtual void execute(BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDapModule.cc:52:
+./BESDap4ResponseHandler.h:61:15: warning: 'transmit' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   61 |         virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+      |                      ^
+../dispatch/BESResponseHandler.h:145:18: note: overridden virtual function is here
+  145 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDDXResponseHandler.cc:41:
+./BESDDSResponse.h:62:18: warning: 'set_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   62 |     virtual void set_container(const std::string &cn);
+      |                  ^
+./BESDapResponse.h:85:18: note: overridden virtual function is here
+   85 |     virtual void set_container(const std::string &cn) = 0;
+      |                  ^
+In file included from BESDDXResponseHandler.cc:41:
+./BESDDSResponse.h:63:18: warning: 'clear_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   63 |     virtual void clear_container();
+      |                  ^
+./BESDapResponse.h:86:18: note: overridden virtual function is here
+   86 |     virtual void clear_container() = 0;
+      |                  ^
+In file included from BESDDSResponseHandler.cc:40:
+./BESDDSResponse.h:62:18: warning: 'set_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   62 |     virtual void set_container(const std::string &cn);
+      |                  ^
+./BESDapResponse.h:85:18: note: overridden virtual function is here
+   85 |     virtual void set_container(const std::string &cn) = 0;
+      |                  ^
+In file included from BESDDSResponseHandler.cc:40:
+./BESDDSResponse.h:63:18: warning: 'clear_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   63 |     virtual void clear_container();
+      |                  ^
+./BESDapResponse.h:86:18: note: overridden virtual function is here
+   86 |     virtual void clear_container() = 0;
+      |                  ^
+In file included from BESDDSResponse.cc:35:
+./BESDDSResponse.h:62:18: warning: 'set_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   62 |     virtual void set_container(const std::string &cn);
+      |                  ^
+./BESDapResponse.h:85:18: note: overridden virtual function is here
+   85 |     virtual void set_container(const std::string &cn) = 0;
+      |                  ^
+In file included from BESDDSResponse.cc:35:
+./BESDDSResponse.h:63:18: warning: 'clear_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   63 |     virtual void clear_container();
+      |                  ^
+./BESDapResponse.h:86:18: note: overridden virtual function is here
+   86 |     virtual void clear_container() = 0;
+      |                  ^
+In file included from BESDapTransmit.cc:47:
+./BESDASResponse.h:54:18: warning: 'set_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   54 |     virtual void set_container(const std::string &cn);
+      |                  ^
+./BESDapResponse.h:85:18: note: overridden virtual function is here
+   85 |     virtual void set_container(const std::string &cn) = 0;
+      |                  ^
+In file included from BESDapTransmit.cc:47:
+./BESDASResponse.h:55:18: warning: 'clear_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   55 |     virtual void clear_container();
+      |                  ^
+./BESDapResponse.h:86:18: note: overridden virtual function is here
+   86 |     virtual void clear_container() = 0;
+      |                  ^
+In file included from BESDapTransmit.cc:48:
+./BESDDSResponse.h:62:18: warning: 'set_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   62 |     virtual void set_container(const std::string &cn);
+      |                  ^
+./BESDapResponse.h:85:18: note: overridden virtual function is here
+   85 |     virtual void set_container(const std::string &cn) = 0;
+      |                  ^
+In file included from BESDapTransmit.cc:48:
+./BESDDSResponse.h:63:18: warning: 'clear_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   63 |     virtual void clear_container();
+      |                  ^
+./BESDapResponse.h:86:18: note: overridden virtual function is here
+   86 |     virtual void clear_container() = 0;
+      |                  ^
+In file included from BESDapTransmit.cc:51:
+./BESDMRResponse.h:58:15: warning: 'set_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   58 |         virtual void set_container(const std::string &cn);
+      |                      ^
+./BESDapResponse.h:85:18: note: overridden virtual function is here
+   85 |     virtual void set_container(const std::string &cn) = 0;
+      |                  ^
+In file included from BESDapTransmit.cc:51:
+./BESDMRResponse.h:59:15: warning: 'clear_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   59 |         virtual void clear_container();
+      |                      ^
+./BESDapResponse.h:86:18: note: overridden virtual function is here
+   86 |     virtual void clear_container() = 0;
+      |                  ^
+In file included from BESDASResponse.cc:35:
+./BESDASResponse.h:54:18: warning: 'set_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   54 |     virtual void set_container(const std::string &cn);
+      |                  ^
+./BESDapResponse.h:85:18: note: overridden virtual function is here
+   85 |     virtual void set_container(const std::string &cn) = 0;
+      |                  ^
+In file included from BESDASResponse.cc:35:
+./BESDASResponse.h:55:18: warning: 'clear_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   55 |     virtual void clear_container();
+      |                  ^
+./BESDapResponse.h:86:18: note: overridden virtual function is here
+   86 |     virtual void clear_container() = 0;
+      |                  ^
+In file included from BESDataResponseHandler.cc:38:
+./BESDataResponseHandler.h:65:In file included from BESDap4ResponseHandler.cc:38:
+./GlobalMetadataStore.h:132:36: warning: 'unary_function<libdap::DapObj *, void>' is deprecated [-Wdeprecated-declarations]
+  132 |     struct StreamDAP : public std::unary_function<libdap::DapObj*, void> {
+      |                                    ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_function.h:23:8: note: 'unary_function<libdap::DapObj *, void>' has been explicitly marked deprecated here
+   23 | struct _LIBCPP_DEPRECATED_IN_CXX11 unary_function {
+      |        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:569:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+  569 | #    define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+      |                                         ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:554:49: note: expanded from macro '_LIBCPP_DEPRECATED'
+  554 | #      define _LIBCPP_DEPRECATED __attribute__((__deprecated__))
+      |                                                 ^
+In file included from BESDap4ResponseHandler.cc:38:
+./GlobalMetadataStore.h:193:38: warning: 'unary_function<std::string, bool>' is deprecated [-Wdeprecated-declarations]
+  193 |     struct MDSReadLock : public std::unary_function<std::string, bool> {
+      |                                      ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_function.h:23:8: note: 'unary_function<std::string, bool>' has been explicitly marked deprecated here
+   23 | struct _LIBCPP_DEPRECATED_IN_CXX11 unary_function {
+      |        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:569:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+  569 | #    define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+      |                                         ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:554:49: note: expanded from macro '_LIBCPP_DEPRECATED'
+  554 | #      define _LIBCPP_DEPRECATED __attribute__((__deprecated__))
+      |                                                 ^
+In file included from BESDASResponseHandler.cc:45:
+./GlobalMetadataStore.h:132:36: warning: 'unary_function<libdap::DapObj *, void>' is deprecated [-Wdeprecated-declarations]
+  132 |     struct StreamDAP : public std::unary_function<libdap::DapObj*, void> {
+      |                                    ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_function.h:23:8: note: 'unary_function<libdap::DapObj *, void>' has been explicitly marked deprecated here
+   23 | struct _LIBCPP_DEPRECATED_IN_CXX11 unary_function {
+      |        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:569:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+  569 | #    define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+      |                                         ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:554:49: note: expanded from macro '_LIBCPP_DEPRECATED'
+  554 | #      define _LIBCPP_DEPRECATED __attribute__((__deprecated__))
+      |                                                 ^
+In file included from BESDASResponseHandler.cc:45:
+./GlobalMetadataStore.h:193:38: warning: 'unary_function<std::string, bool>' is deprecated [-Wdeprecated-declarations]
+  193 |     struct MDSReadLock : public std::unary_function<std::string, bool> {
+      |                                      ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_function.h:23:8: note: 'unary_function<std::string, bool>' has been explicitly marked deprecated here
+   23 | struct _LIBCPP_DEPRECATED_IN_CXX11 unary_function {
+      |        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:569:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+  569 | #    define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+      |                                         ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:554:49: note: expanded from macro '_LIBCPP_DEPRECATED'
+  554 | #      define _LIBCPP_DEPRECATED __attribute__((__deprecated__))
+      |                                                 ^
+In file included from BESDDSResponseHandler.cc:46:
+./GlobalMetadataStore.h:132:36: warning: 'unary_function<libdap::DapObj *, void>' is deprecated [-Wdeprecated-declarations]
+  132 |     struct StreamDAP : public std::unary_f18: warning: 'execute' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   65 |     virtual void execute(BESDataHandlerInterface &dhi);
+      |                  ^
+../dispatch/BESResponseHandler.h:132:18: note: overridden virtual function is here
+  132 |     virtual void execute(BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDataResponseHandler.cc:38:
+./BESDataResponseHandler.h:66:18: warning: 'transmit' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   66 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+      |                  ^
+../dispatch/BESResponseHandler.h:145:18: note: overridden virtual function is here
+  145 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+unction<libdap::DapObj*, void> {
+      |                                    ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_function.h:23:8: note: 'unary_function<libdap::DapObj *, void>' has been explicitly marked deprecated here
+   23 | struct _LIBCPP_DEPRECATED_IN_CXX11 unary_function {
+      |        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:569:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+  569 | #    define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+      |                                         ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:554:49: note: expanded from macro '_LIBCPP_DEPRECATED'
+  554 | #      define _LIBCPP_DEPRECATED __attribute__((__deprecated__))
+      |                                                 ^
+In file included from BESDDSResponseHandler.cc:46:
+./GlobalMetadataStore.h:193:38: warning: 'unary_function<std::string, bool>' is deprecated [-Wdeprecated-declarations]
+  193 |     struct MDSReadLock : public std::unary_function<std::string, bool> {
+      |                                      ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_function.h:23:8: note: 'unary_function<std::string, bool>' has been explicitly marked deprecated here
+   23 | struct _LIBCPP_DEPRECATED_IN_CXX11 unary_function {
+      |        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:569:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+  569 | #    define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+      |                                         ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:554:49: note: expanded from macro '_LIBCPP_DEPRECATED'
+  554 | #      define _LIBCPP_DEPRECATED __attribute__((__deprecated__))
+      |                                                 ^
+In file included from BESDMRResponseHandler.cc:35:
+./BESDMRResponseHandler.h:55:15: warning: 'execute' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   55 |         virtual void execute(BESDataHandlerInterface &dhi);
+      |                      ^
+../dispatch/BESResponseHandler.h:132:18: note: overridden virtual function is here
+  132 |     virtual void execute(BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDMRResponseHandler.cc:35:
+./BESDMRResponseHandler.h:56:15: warning: 'transmit' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   56 |         virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+      |                      ^
+../dispatch/BESResponseHandler.h:145:18: note: overridden virtual function is here
+  145 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDapModule.cc:74:
+./ShowPathInfoResponseHandler.h:61:18: warning: 'execute' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   61 |     virtual void execute(BESDataHandlerInterface &dhi);
+      |                  ^
+../dispatch/BESResponseHandler.h:132:18: note: overridden virtual function is here
+  132 |     virtual void execute(BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDapModule.cc:74:
+./ShowPathInfoResponseHandler.h:62:18: warning: 'transmit' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   62 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+      |                  ^
+../dispatch/BESResponseHandler.h:145:18: note: overridden virtual function is here
+  145 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from BESDMRResponse.cc:27:
+./BESDMRResponse.h:58:15: warning: 'set_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   58 |         virtual void set_container(const std::string &cn);
+      |                      ^
+./BESDapResponse.h:85:18: note: overridden virtual function is here
+   85 |     virtual void set_container(const std::string &cn) = 0;
+      |                  ^
+In file included from BESDMRResponse.cc:27:
+./BESDMRResponse.h:59:15: warning: 'clear_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   59 |         virtual void clear_container();
+      |                      ^
+./BESDapResponse.h:86:18: note: overridden virtual function is here
+   86 |     virtual void clear_container() = 0;
+      |                  ^
+2 warnings generated.
+In file included from BESDMRResponseHandler.cc:36:
+./BESDMRResponse.h:58:15: warning: 'set_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   58 |         virtual void set_container(const std::string &cn);
+      |                      ^
+./BESDapResponse.h:85:18: note: overridden virtual function is here
+   85 |     virtual void set_container(const std::string &cn) = 0;
+      |                  ^
+In file included from BESDMRResponseHandler.cc:36:
+./BESDMRResponse.h:59:15: warning: 'clear_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   59 |         virtual void clear_container();
+      |                      ^
+./BESDapResponse.h:86:18: note: overridden virtual function is here
+   86 |     virtual void clear_container() = 0;
+      |                  ^
+6 warnings generated.
+In file included from BESDataResponseHandler.cc:49:
+./GlobalMetadataStore.h:132:36: warning: 'unary_function<libdap::DapObj *, void>' is deprecated [-Wdeprecated-declarations]
+  132 |     struct StreamDAP : public std::unary_function<libdap::DapObj*, void> {
+      |                                    ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_function.h:23:8: note: 'unary_function<libdap::DapObj *, void>' has been explicitly marked deprecated here
+   23 | struct _LIBCPP_DEPRECATED_IN_CXX11 unary_function {
+      |        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:569:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+  569 | #    define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+      |                                         ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:554:49: note: expanded from macro '_LIBCPP_DEPRECATED'
+  554 | #      define _LIBCPP_DEPRECATED __attribute__((__deprecated__))
+      |                                                 ^
+In file included from BESDataResponseHandler.cc:49:
+./GlobalMetadataStore.h:193:38: warning: 'unary_function<std::string, bool>' is deprecated [-Wdeprecated-declarations]
+  193 |     struct MDSReadLock : public std::unary_function<std::string, bool> {
+      |                                      ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_function.h:23:8: note: 'unary_function<std::string, bool>' has been explicitly marked deprecated here
+   23 | struct _LIBCPP_DEPRECATED_IN_CXX11 unary_function {
+      |        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:569:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+  569 | #    define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+      |                                         ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:554:49: note: expanded from macro '_LIBCPP_DEPRECATED'
+  554 | #      define _LIBCPP_DEPRECATED __attribute__((__deprecated__))
+      |                                                 ^
+2 warnings generated.
+In file included from BESDMRResponseHandler.cc:41:
+./GlobalMetadataStore.h:132:36: warning: 'unary_function<libdap::DapObj *, void>' is deprecated [-Wdeprecated-declarations]
+  132 |     struct StreamDAP : public std::unary_function<libdap::DapObj*, void> {
+      |                                    ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_function.h:23:8: note: 'unary_function<libdap::DapObj *, void>' has been explicitly marked deprecated here
+   23 | struct _LIBCPP_DEPRECATED_IN_CXX11 unary_function {
+      |        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:569:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+  569 | #    define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+      |                                         ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:554:49: note: expanded from macro '_LIBCPP_DEPRECATED'
+  554 | #      define _LIBCPP_DEPRECATED __attribute__((__deprecated__))
+      |                                                 ^
+In file included from BESDMRResponseHandler.cc:41:
+./GlobalMetadataStore.h:193:38: warning: 'unary_function<std::string, bool>' is deprecated [-Wdeprecated-declarations]
+  193 |     struct MDSReadLock : public std::unary_function<std::string, bool> {
+      |                                      ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_function.h:23:8: note: 'unary_function<std::string, bool>' has been explicitly marked deprecated here
+   23 | struct _LIBCPP_DEPRECATED_IN_CXX11 unary_function {
+      |        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:569:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+  569 | #    define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+      |                                         ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:554:49: note: expanded from macro '_LIBCPP_DEPRECATED'
+  554 | #      define _LIBCPP_DEPRECATED __attribute__((__deprecated__))
+      |                                                 ^
+6 warnings generated.
+In file included from BESDapResponseBuilder.cc:105:
+./BESDDSResponse.h:62:18: warning: 'set_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   62 |     virtual void set_container(const std::string &cn);
+      |                  ^
+./BESDapResponse.h:85:18: note: overridden virtual function is here
+   85 |     virtual void set_container(const std::string &cn) = 0;
+      |                  ^
+In file included from BESDapResponseBuilder.cc:105:
+./BESDDSResponse.h:63:18: warning: 'clear_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   63 |     virtual void clear_container();
+      |                  ^
+./BESDapResponse.h:86:18: note: overridden virtual function is here
+   86 |     virtual void clear_container() = 0;
+      |                  ^
+In file included from BESDapResponseBuilder.cc:107:
+./BESDMRResponse.h:58:15: warning: 'set_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   58 |         virtual void set_container(const std::string &cn);
+      |                      ^
+./BESDapResponse.h:85:18: note: overridden virtual function is here
+   85 |     virtual void set_container(const std::string &cn) = 0;
+      |                  ^
+In file included from BESDapResponseBuilder.cc:107:
+./BESDMRResponse.h:59:15: warning: 'clear_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   59 |         virtual void clear_container();
+      |                      ^
+./BESDapResponse.h:86:18: note: overridden virtual function is here
+   86 |     virtual void clear_container() = 0;
+      |                  ^
+2 warnings generated.
+6 warnings generated.
+6 warnings generated.
+14 warnings generated.
+BESStoredDapResultCache.cc:422:24: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  422 |             char chunk[chunk_size];
+      |                        ^~~~~~~~~~
+BESStoredDapResultCache.cc:422:24: note: read of non-const variable 'chunk_size' is not allowed in a constant expression
+BESStoredDapResultCache.cc:410:17: note: declared here
+  410 |             int chunk_size = cis.read_next_chunk();
+      |                 ^
+6 warnings generated.
+4 warnings generated.
+6 warnings generated.
+1 warning generated.
+4 warnings generated.
+In file included from ShowPathInfoResponseHandler.cc:41:
+./ShowPathInfoResponseHandler.h:61:18: warning: 'execute' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   61 |     virtual void execute(BESDataHandlerInterface &dhi);
+      |                  ^
+../dispatch/BESResponseHandler.h:132:18: note: overridden virtual function is here
+  132 |     virtual void execute(BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from ShowPathInfoResponseHandler.cc:41:
+./ShowPathInfoResponseHandler.h:62:18: warning: 'transmit' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   62 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+      |                  ^
+../dispatch/BESResponseHandler.h:145:18: note: overridden virtual function is here
+  145 |     virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) = 0;
+      |                  ^
+In file included from GlobalMetadataStore.cc:65:
+./GlobalMetadataStore.h:132:36: warning: 'unary_function<libdap::DapObj *, void>' is deprecated [-Wdeprecated-declarations]
+  132 |     struct StreamDAP : public std::unary_function<libdap::DapObj*, void> {
+      |                                    ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_function.h:23:8: note: 'unary_function<libdap::DapObj *, void>' has been explicitly marked deprecated here
+   23 | struct _LIBCPP_DEPRECATED_IN_CXX11 unary_function {
+      |        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:569:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+  569 | #    define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+      |                                         ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:554:49: note: expanded from macro '_LIBCPP_DEPRECATED'
+  554 | #      define _LIBCPP_DEPRECATED __attribute__((__deprecated__))
+      |                                                 ^
+In file included from GlobalMetadataStore.cc:65:
+./GlobalMetadataStore.h:193:38: warning: 'unary_function<std::string, bool>' is deprecated [-Wdeprecated-declarations]
+  193 |     struct MDSReadLock : public std::unary_function<std::string, bool> {
+      |                                      ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/unary_function.h:23:8: note: 'unary_function<std::string, bool>' has been explicitly marked deprecated here
+   23 | struct _LIBCPP_DEPRECATED_IN_CXX11 unary_function {
+      |        ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:569:41: note: expanded from macro '_LIBCPP_DEPRECATED_IN_CXX11'
+  569 | #    define _LIBCPP_DEPRECATED_IN_CXX11 _LIBCPP_DEPRECATED
+      |                                         ^
+/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__config:554:49: note: expanded from macro '_LIBCPP_DEPRECATED'
+  554 | #      define _LIBCPP_DEPRECATED __attribute__((__deprecated__))
+      |                                                 ^
+2 warnings generated.
+2 warnings generated.
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+In file included from DapRequestHandler.cc:36:
+../dap/BESDDSResponse.h:62:18: warning: 'set_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   62 |     virtual void set_container(const std::string &cn);
+      |                  ^
+../dap/BESDapResponse.h:85:18: note: overridden virtual function is here
+   85 |     virtual void set_container(const std::string &cn) = 0;
+      |                  ^
+In file included from DapRequestHandler.cc:36:
+../dap/BESDDSResponse.h:63:18: warning: 'clear_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   63 |     virtual void clear_container();
+      |                  ^
+../dap/BESDapResponse.h:86:18: note: overridden virtual function is here
+   86 |     virtual void clear_container() = 0;
+      |                  ^
+In file included from DapRequestHandler.cc:37:
+../dap/BESDASResponse.h:54:18: warning: 'set_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   54 |     virtual void set_container(const std::string &cn);
+      |                  ^
+../dap/BESDapResponse.h:85:18: note: overridden virtual function is here
+   85 |     virtual void set_container(const std::string &cn) = 0;
+      |                  ^
+In file included from DapRequestHandler.cc:37:
+../dap/BESDASResponse.h:55:18: warning: 'clear_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   55 |     virtual void clear_container();
+      |                  ^
+../dap/BESDapResponse.h:86:18: note: overridden virtual function is here
+   86 |     virtual void clear_container() = 0;
+      |                  ^
+In file included from DapRequestHandler.cc:38:
+../dap/BESDMRResponse.h:58:15: warning: 'set_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   58 |         virtual void set_container(const std::string &cn);
+      |                      ^
+../dap/BESDapResponse.h:85:18: note: overridden virtual function is here
+   85 |     virtual void set_container(const std::string &cn) = 0;
+      |                  ^
+In file included from DapRequestHandler.cc:38:
+../dap/BESDMRResponse.h:59:15: warning: 'clear_container' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   59 |         virtual void clear_container();
+      |                      ^
+../dap/BESDapResponse.h:86:18: note: overridden virtual function is here
+   86 |     virtual void clear_container() = 0;
+      |                  ^
+6 warnings generated.
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
