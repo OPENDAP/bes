@@ -1597,8 +1597,8 @@ HDFEOS2ArrayGridGeoField::LatLon2DSubset (T * outlatlon, int /*majordim */,
     // Find the correct index
     int dim0count = count[0];
     int dim1count = count[1];
-    int dim0index[dim0count];
-    int dim1index[dim1count];
+    vector<int> dim0index(dim0count);
+    vector<int> dim1index(dim1count);
 
     for (i = 0; i < count[0]; i++)	// count[0] is the least changing dimension 
         dim0index[i] = offset[0] + i * step[0];
@@ -1951,7 +1951,7 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, const int *start, con
     if (r!=0)
         throw BESInternalError("GDprojinfo doesn't return the correct values",__FILE__, __LINE__);
 
-    int MAXNDIM = 10;
+    const int MAXNDIM = 10;
     int32 dim[MAXNDIM];
     char dimlist[STRLEN];
     r = GDinqdims(gridid, dimlist, dim);
@@ -2082,10 +2082,9 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, const int *start, con
             int e2=s2+count[1]*step[1];
             int s3=start[2];
             int e3=s3+count[2]*step[2];
-            for(i=s1; i<e1; i+=step[0]) //i = 1; i<180+1; i++)
-                for(j=s2; j<e2; j+=step[1])//j=0; j<xdim; j++)
-                    for(k=s3; k<e3; k+=step[2])//k=0; k<ydim; k++)
-            {
+            for(i=s1; i<e1; i+=step[0]) { //i = 1; i<180+1; i++)
+                for(j=s2; j<e2; j+=step[1]) { //j=0; j<xdim; j++)
+                    for(k=s3; k<e3; k+=step[2]) { //k=0; k<ydim; k++)
                         b = i;
                         l = j;
                         s = k;
@@ -2096,8 +2095,10 @@ HDFEOS2ArrayGridGeoField::CalculateSOMLatLon(int32 gridid, const int *start, con
                         else
                             latlon[npts] = lon_r*R2D;
                         npts++;
+                    }
+                }
             }
-                    set_value ((dods_float64 *) latlon.data(), nelms); //(180*xdim*ydim)); //nelms);
+            set_value ((dods_float64 *) latlon.data(), nelms); //(180*xdim*ydim)); //nelms);
         }
     } 
 }
@@ -2279,4 +2280,3 @@ HDFEOS2ArrayGridGeoField::CalculateLAMAZLatLon(int32 gridid, int gf_fieldtype, f
 
 }
 #endif
-

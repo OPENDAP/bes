@@ -361,8 +361,8 @@ HDFDMRArray_EOS2LL::LatLon2DSubset (T * outlatlon,
     // Find the correct index
     int dim0count = count[0];
     int dim1count = count[1];
-    int dim0index[dim0count];
-    int dim1index[dim1count];
+    vector<int> dim0index(dim0count);
+    vector<int> dim1index(dim1count);
             
     for (i = 0; i < count[0]; i++)      // count[0] is the least changing dimension
         dim0index[i] = offset[0] + i * step[0];
@@ -383,6 +383,5 @@ HDFDMRArray_EOS2LL::LatLon2DSubset (T * outlatlon,
         }
     }
 }
-
 
 

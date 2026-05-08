@@ -7,6 +7,8 @@
 autom4te.cache
 /bes-*
 .idea/
+.agents
+**/AGENTS.md
 .vscode/*.json
 bes_VERSION
 cookies

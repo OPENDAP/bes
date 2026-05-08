@@ -1,0 +1,19 @@
+This directory contains warning logs captured from successive macOS builds of BES and
+its test suite.
+
+The builds used the standard developer-mode autotools configuration:
+
+    autoreconf --force --install --verbose
+    ./configure --prefix="$prefix" --with-dependencies="$prefix/deps" --enable-developer
+    make
+    make check
+
+The files are checked in intentionally as temporary files since the warning cleanup spans 
+multiple tickets. 
+
+File names record cleanup iterations. Files with "-check" contain warnings or
+diagnostics observed while running the test suite; the others come from build
+output.
+
+When the persistent-warning cleanup is complete, summarize the remaining findings
+in a report or ticket, then remove this directory.

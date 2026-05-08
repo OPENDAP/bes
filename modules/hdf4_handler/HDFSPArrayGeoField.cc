@@ -1173,7 +1173,7 @@ HDFSPArrayGeoField::readcersavgid2 (const int *offset, const int *count, const i
 
     const int dimsize0 = 180;
     const int dimsize1 = 360;
-    float32 val[count[0]][count[1]];
+    vector<float32> val(count[0] * count[1]);
     float32 orival[dimsize0][dimsize1];
 
     // Following CERES Nested grid
@@ -1186,7 +1186,7 @@ HDFSPArrayGeoField::readcersavgid2 (const int *offset, const int *count, const i
 
         for (int i = 0; i < count[0]; i++) {
             for (int j = 0; j < count[1]; j++) {
-                val[i][j] =
+                val[i * count[1] + j] =
                         orival[offset[0] + step[0] * i][offset[1] + step[1] * j];
             }
         }
@@ -1297,12 +1297,12 @@ HDFSPArrayGeoField::readcersavgid2 (const int *offset, const int *count, const i
 
         for (i = 0; i < count[0]; i++) {
             for (j = 0; j < count[1]; j++) {
-                val[i][j] =
+                val[i * count[1] + j] =
                     orival[offset[0] + step[0] * i][offset[1] + step[1] * j];
             }
         }
     }
-    set_value ((dods_float32 *) (&val[0][0]), nelms);
+    set_value ((dods_float32 *) val.data(), nelms);
 
 }
 
@@ -1755,4 +1755,3 @@ void HDFSPArrayGeoField::LatLon2DSubset (T * outlatlon,
         }
     }
 }
-

@@ -228,11 +228,11 @@ hdfistream_annot & hdfistream_annot::operator>>(string & an)
 
     int32 _ann_id = _an_ids[_index];
     int32 ann_length = ANannlen(_ann_id) ;
-    char buf[ann_length+1];
-    if (ANreadann(_ann_id, buf, ann_length+1) < 0)
+    vector<char> buf(ann_length + 1);
+    if (ANreadann(_ann_id, buf.data(), ann_length + 1) < 0)
         THROW(hcerr_annread);
     buf[ann_length] = '\0';
-    an = buf;
+    an = buf.data();
     seek_next();
 
     return *this;
