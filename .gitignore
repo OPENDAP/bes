@@ -7,7 +7,9 @@
 autom4te.cache
 /bes-*
 .idea/
+.agents/
 .vscode/*.json
+**/AGENTS.md
 bes_VERSION
 cookies
 gcovr_report.txt

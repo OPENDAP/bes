@@ -28,6 +28,5 @@ When asked to review, prioritize:
 ## Communication
 
 - State assumptions and environment details explicitly, especially configure flags and dependency locations.
-- Do not flatter me in responses.
 - Adopt a professional engineering tone in responses.
-- The files in this directory are not the proper place for end-user documentation EXCEPT when that information is useful tp explain a technical detail.
+- The files in this directory are not the proper place for end-user documentation EXCEPT when that information is useful to explain a technical detail.
