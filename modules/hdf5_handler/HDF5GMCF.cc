@@ -1999,7 +1999,6 @@ cerr<<"struct lat lon names are " <<(*ivs).name1 <<" and " << (*ivs).name2 <<end
         if(latloncv_candidate_pairs.empty() == false) {
             int num_1d_rank = 0;
             int num_2d_rank = 0;
-            int num_g2d_rank = 0;
             vector<struct Name_Size_2Pairs> temp_1d_latlon_pairs;
             for(const auto &llcv_p:latloncv_candidate_pairs) {
                 if(1 == llcv_p.rank) {
@@ -2008,8 +2007,6 @@ cerr<<"struct lat lon names are " <<(*ivs).name1 <<" and " << (*ivs).name2 <<end
                 }
                 else if(2 == llcv_p.rank)
                     num_2d_rank++;
-                else if(llcv_p.rank >2) 
-                    num_g2d_rank++;
             }
  
             // This is the GENERAL_LATLON_COOR_ATTR case.

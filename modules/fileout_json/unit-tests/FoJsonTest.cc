@@ -28,6 +28,7 @@
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <math.h>       /* atan */
+#include <vector>
 
 #include <unistd.h>
 #include <libdap/DataDDS.h>
@@ -515,12 +516,12 @@ CPPUNIT_TEST_SUITE( FoJsonTest );
 
         int dim1Size = 2;
         double pi = atan(1) * 4;
-        libdap::dods_float64 oneDdata[dim1Size];
+        std::vector<libdap::dods_float64> oneDdata(dim1Size);
         for (long i = 0; i < dim1Size; i++)
             oneDdata[i] = pi * (i * 0.1);
 
         oneDArrayF64.append_dim(dim1Size, "dim1");
-        oneDArrayF64.set_value(oneDdata, dim1Size);
+        oneDArrayF64.set_value(oneDdata.data(), dim1Size);
         oneDArrayF64.set_send_p(true);
         dds->add_var(&oneDArrayF64);
 
@@ -529,13 +530,13 @@ CPPUNIT_TEST_SUITE( FoJsonTest );
 
         int dim2Size = 4;
         int totalSize = dim1Size * dim2Size;
-        libdap::dods_float64 twoDdata[totalSize];
+        std::vector<libdap::dods_float64> twoDdata(totalSize);
         for (long i = 0; i < totalSize; i++)
             twoDdata[i] = pi * (i * 0.01);
 
         twoDArrayF64.append_dim(dim1Size, "dim1");
         twoDArrayF64.append_dim(dim2Size, "dim2");
-        twoDArrayF64.set_value(twoDdata, totalSize);
+        twoDArrayF64.set_value(twoDdata.data(), totalSize);
         twoDArrayF64.set_send_p(true);
         dds->add_var(&twoDArrayF64);
 
@@ -543,7 +544,7 @@ CPPUNIT_TEST_SUITE( FoJsonTest );
         libdap::Array twoDArrayUI32("twoDArrayUI32", &tmplt4);
 
         totalSize = dim1Size * dim2Size;
-        libdap::dods_uint32 uint32data[totalSize];
+        std::vector<libdap::dods_uint32> uint32data(totalSize);
         unsigned int val = 0;
         for (long i = 0; i < totalSize; i++) {
             val = i + val;
@@ -552,7 +553,7 @@ CPPUNIT_TEST_SUITE( FoJsonTest );
 
         twoDArrayUI32.append_dim(dim1Size, "dim1");
         twoDArrayUI32.append_dim(dim2Size, "dim2");
-        twoDArrayUI32.set_value(uint32data, totalSize);
+        twoDArrayUI32.set_value(uint32data.data(), totalSize);
         twoDArrayUI32.set_send_p(true);
         dds->add_var(&twoDArrayUI32);
 
@@ -561,14 +562,14 @@ CPPUNIT_TEST_SUITE( FoJsonTest );
 
         int dim3Size = 5;
         totalSize = dim1Size * dim2Size * dim3Size;
-        libdap::dods_float64 threeDdata[totalSize];
+        std::vector<libdap::dods_float64> threeDdata(totalSize);
         for (long i = 0; i < totalSize; i++)
             threeDdata[i] = pi * (i * 0.001);
 
         threeDArrayF64.append_dim(dim1Size, "dim1");
         threeDArrayF64.append_dim(dim2Size, "dim2");
         threeDArrayF64.append_dim(dim3Size, "dim3");
-        threeDArrayF64.set_value(threeDdata, totalSize);
+        threeDArrayF64.set_value(threeDdata.data(), totalSize);
         threeDArrayF64.set_send_p(true);
         dds->add_var(&threeDArrayF64);
 
@@ -629,9 +630,9 @@ CPPUNIT_TEST_SUITE( FoJsonTest );
         int lngSize = 36;
         int latSize = 18;
         totalSize = lngSize * latSize;
-        libdap::dods_float64 testData[totalSize];
-        libdap::dods_float64 latData[latSize];
-        libdap::dods_float64 lngData[lngSize];
+        std::vector<libdap::dods_float64> testData(totalSize);
+        std::vector<libdap::dods_float64> latData(latSize);
+        std::vector<libdap::dods_float64> lngData(lngSize);
         //unsigned int val = 0;
         //for(long i=0; i<totalSize ;i++){
         //	sstData[i] = pi * (i * 0.01);
@@ -647,18 +648,18 @@ CPPUNIT_TEST_SUITE( FoJsonTest );
         }
         sstArray.append_dim(lngSize, "longitude");
         sstArray.append_dim(latSize, "latitude");
-        sstArray.set_value(testData, totalSize);  // creates space and uses memcopy to transfer values.
+        sstArray.set_value(testData.data(), totalSize);  // creates space and uses memcopy to transfer values.
         sstArray.set_send_p(true);
         grid.add_var(&sstArray, libdap::array); // add a copy
 
         lngArray.append_dim(lngSize, "longitude");
-        lngArray.set_value(lngData, lngSize);  // creates space and uses memcopy to transfer values.
+        lngArray.set_value(lngData.data(), lngSize);  // creates space and uses memcopy to transfer values.
         lngArray.set_send_p(true);
         //grid.add_var(&lngArray, maps);   // add a copy
         grid.add_map(&lngArray, true);
 
         latArray.append_dim(latSize, "latitude");
-        latArray.set_value(latData, latSize);  // creates space and uses memcopy to transfer values.
+        latArray.set_value(latData.data(), latSize);  // creates space and uses memcopy to transfer values.
         latArray.set_send_p(true);
         //grid.add_var(&latArray, maps);   // add a copy
         grid.add_map(&latArray, true);
@@ -726,4 +727,3 @@ int main(int argc, char*argv[])
 
     return wasSuccessful ? 0 : 1;
 }
-

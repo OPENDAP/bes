@@ -5,8 +5,11 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = -I$(top_srcdir)  -I$(top_srcdir)/modules -I$(top_srcdir)/modules/httpd_catalog_module \
 -I$(top_srcdir)/dispatch -I$(top_srcdir)/http -I$(top_srcdir)/dap $(DAP_CFLAGS)
 
+STATIC_DAP_MODULE = $(top_builddir)/dap/.libs/libdap_module.a
+STATIC_HTTPD_CATALOG_MODULE = ../.libs/libhttpd_catalog_module.a
+
 # Added -lz for ubuntu
-LIBADD = -L../../../dispatch/.libs -lbes_dispatch $(BES_DISPATCH_LIB) $(BES_DAP_LIB) $(BES_HTTP_LIB) \
+LIBADD = -L../../../dispatch/.libs -lbes_dispatch $(BES_DISPATCH_LIB) $(STATIC_DAP_MODULE) $(BES_HTTP_LIB) \
 $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) -lz
 
 # jhrg 6/2/23 $(BES_EXTRA_LIBS)
@@ -100,9 +103,6 @@ endif
 clean-local:
 	test ! -d $(builddir)/static-cache || rm -rf $(builddir)/static-cache
 
-OBJS = ../HttpdDirScraper.o ../HttpdCatalog.o
-
 HttpdDirScraperTest_SOURCES = HttpdDirScraperTest.cc
-HttpdDirScraperTest_LDADD = $(OBJS) $(LIBADD)
-
+HttpdDirScraperTest_LDADD = $(STATIC_HTTPD_CATALOG_MODULE) $(LIBADD)
 

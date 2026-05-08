@@ -1035,7 +1035,7 @@ void read_ecs_metadata(hid_t s_file_id,
 
     // Define an EOSMetadata array that can describe the metadata type for each object
     // We initialize the value to OtherMeta.
-    EOS5Metadata metatype[nelems];
+    vector<EOS5Metadata> metatype(nelems);
 
     for (unsigned int i =0; i<nelems; i++) 
         metatype[i] = OtherMeta;
