@@ -45,7 +45,9 @@
         "libdap",
         "ncml",
         "NDAP",
+        "nlohmann",
         "OPENDAP",
+        "rapidjson",
         "xfail"
     ]
 }
