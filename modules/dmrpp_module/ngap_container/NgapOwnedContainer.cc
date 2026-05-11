@@ -405,8 +405,8 @@ bool NgapOwnedContainer::get_daac_content_filters(const NgapApi::DataAccessUrls 
                                                   map<string, string, std::less<>> &content_filters) {
     string data_url;
     string data_s3_url;
-    string s3credentials_url;
-    tie(data_url, data_s3_url, s3credentials_url) = data_urls;
+    string tea_endpoint_url;
+    tie(data_url, data_s3_url, tea_endpoint_url) = data_urls;
     // data_url was get_real_name(). jhrg 8/9/24
 
     if (NgapOwnedContainer::d_inject_data_url) {
@@ -417,15 +417,15 @@ bool NgapOwnedContainer::get_daac_content_filters(const NgapApi::DataAccessUrls 
 
         /*
         Desired output string:
-        dmrpp:href=\"<data_url>\" dmrpp:s3=\"<data_s3_url>\" dmrpp:s3credentials=\"<s3credentials_url>\"
+        dmrpp:href=\"<data_url>\" dmrpp:s3=\"<data_s3_url>\" dmrpp:s3credentials=\"<tea_endpoint_url>\"
         dmrpp:trust=\"true\"
         */
         string data_access_urls("href=\"" + data_url + "\" dmrpp:s3=\"" + data_s3_url + "\" dmrpp:s3credentials=\"" +
-                                s3credentials_url + "\" " + trusted_url_hack);
+                                tea_endpoint_url + "\" " + trusted_url_hack);
 
         // Same as above, but with a special suffix on each data url
         string missing_data_access_urls("href=\"" + data_url + "_mvs.h5\" dmrpp:s3=\"" + data_s3_url +
-                                        "_mvs.h5\" dmrpp:s3credentials=\"" + s3credentials_url + "\" " +
+                                        "_mvs.h5\" dmrpp:s3credentials=\"" + tea_endpoint_url + "\" " +
                                         trusted_url_hack);
 
         content_filters.clear();
@@ -692,7 +692,7 @@ string NgapOwnedContainer::alt_access() {
     // To sign urls locally, we need access to the credential info that has been previously
     // injected into the dmrpp. Extract that now, in preparation for upcoming url signing.
     auto urls = extract_s3_data_urls_from_dmrpp(dmrpp_string);
-    SignedUrlCache::TheCache()->cache_signed_url_components(get<0>(urls), get<1>(urls), get<2>(urls));
+    SignedUrlCache::TheCache()->cache_prerequisites_for_url_signing(get<0>(urls), get<1>(urls), get<2>(urls));
 
     set_attributes("as-string");    // This means access() returns a string. jhrg 10/19/23
 

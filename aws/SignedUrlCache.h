@@ -45,8 +45,8 @@ namespace http {
 namespace bes {
 
 /**
- * This is a singleton class. It is used to associate a URL with its "pre-signed" AWS s3 URL. This means that
- * a URL is signed locally rather than sent through a potentially large number of external redirect actions, as
+ * This is a singleton class. It is used to associate a URL with its presigned AWS s3 URL, where
+ * the URL is signed locally rather than sent through a potentially large number of external redirect actions as
  * in EffectiveUrlCache.h. This url location plus the requisite AWS signature headers, from which the requested bytes
  * are transmitted, is termed the "effective url" and is stored in an in memory cache (std::map) so that later
  * requests may skip the external signing service and just get required bytes from the actual source.
@@ -60,16 +60,16 @@ private:
 
     std::mutex d_cache_lock_mutex;
 
-    std::map<std::string, std::shared_ptr<http::EffectiveUrl>> d_signed_urls;
+    std::map<std::string, std::shared_ptr<http::EffectiveUrl>> d_presigned_s3_urls_cache;
 
-    std::map<std::string, std::string> d_href_to_s3credentials_cache;
-    std::map<std::string, std::string> d_href_to_s3_cache;
+    std::map<std::string, std::string> d_href_to_tea_endpoint_cache;
+    std::map<std::string, std::string> d_href_to_s3_uri_cache;
 
-    std::shared_ptr<S3AccessKeyTuple> get_s3credentials_from_endpoint(std::string const &s3credentials_url);
-    static std::shared_ptr<S3AccessKeyTuple> extract_s3_credentials_from_response_json(std::string const &s3credentials_json_string);
+    std::map<std::string, std::shared_ptr<S3AccessKeyTuple>> d_tea_endpoint_sts_credentials_cache;
+    static std::shared_ptr<S3AccessKeyTuple> extract_sts_credentials_from_json_response(std::string const &s3credentials_json_string);
+    std::shared_ptr<S3AccessKeyTuple> cache_sts_credentials_from_tea_endpoint(std::string const &tea_endpoint_url);
+    std::shared_ptr<S3AccessKeyTuple> retrieve_cached_sts_credentials(std::string const &tea_endpoint_url_key);
 
-    std::map<std::string, std::shared_ptr<S3AccessKeyTuple>> d_s3credentials_cache;
-    std::shared_ptr<S3AccessKeyTuple> retrieve_cached_s3credentials(std::string const &url_key);
     static bool is_timestamp_after_now(std::string const &timestamp);
     const bool is_cache_supported_within_current_aws_region();
 
@@ -83,12 +83,13 @@ private:
     // direct copy).
     std::string d_aws_region_in_which_direct_copy_is_supported = "us-west-2";
 
-    static std::pair<std::string, std::string> split_s3_url(std::string const &s3_url);
-    static uint64_t num_seconds_until_expiration(const std::string &credentials_expiration_datetime, const std::chrono::system_clock::time_point current_time=std::chrono::system_clock::now());
-    std::shared_ptr<http::EffectiveUrl> sign_url_with_sts_credentials(std::string const &s3_url,
-                                                                      std::shared_ptr<S3AccessKeyTuple> const  s3_access_key_tuple,
-                                                                      std::string aws_region="us-west-2");
-    std::shared_ptr<http::EffectiveUrl> get_cached_signed_url(std::string const &url_key);
+    static std::pair<std::string, std::string> split_s3_uri(std::string const &s3_uri);
+    static uint64_t num_seconds_until_expiration(
+        const std::string &credentials_expiration_datetime,
+        const std::chrono::system_clock::time_point current_time = std::chrono::system_clock::now());
+    std::shared_ptr<http::EffectiveUrl> sign_s3_uri_with_sts_credentials(std::string const &s3_uri,
+                                                                         std::shared_ptr<S3AccessKeyTuple> const s3_access_key_tuple);
+    std::shared_ptr<http::EffectiveUrl> get_cached_presigned_s3_url(std::string const &url_key);
 
     void set_skip_regex();
 
@@ -114,20 +115,16 @@ public:
 
     ~SignedUrlCache() override = default;
 
-    void cache_signed_url_components(const std::string &key_href_url, const std::string &s3_url, const std::string &s3credentials_url);
-    std::pair<std::string, std::string> retrieve_cached_signed_url_components(const std::string &key_href_url) const;
-    std::shared_ptr<http::EffectiveUrl> get_signed_url(std::shared_ptr<http::url> source_url);
+    void cache_prerequisites_for_url_signing(const std::string &key_href_url, const std::string &s3_uri,
+                                             const std::string &tea_endpoint_url);
+    std::pair<std::string, std::string> retrieve_cached_prerequisites_for_url_signing(const std::string &key_href_url) const;
+
+    std::shared_ptr<http::EffectiveUrl> get_presigned_s3_url(std::shared_ptr<http::url> source_url);
 
     void dump(std::ostream &strm) const override;
-
-    std::string dump() const {
-        std::stringstream sstrm;
-        dump(sstrm);
-        return sstrm.str();
-    }
+    std::string dump() const;
 };
 
 } // namespace bes
 
 #endif // _bes_aws_SignedUrlCache_h_
-
