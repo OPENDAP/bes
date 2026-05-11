@@ -282,6 +282,8 @@ parser.add_argument("-s", "--system_conf", action='store_true',
                     help='Use the BES configuration provided by the current System. The HDF5 file should be under the appropriate data directory. Check -v for details.')
 parser.add_argument("-u", "--data_url",
                     help='Optional parameter: the value of attribute dmrpp:href in the dmrpp file. If not provided, OPeNDAP_DMRpp_DATA_ACCESS_URL will be used by system.')
+parser.add_argument("-L", "--vlen_in_sidecar", action='store_true',
+                    help='Optional parameter: store the variable length data in the side car file. If not provided, variable length data will be saved in the dmrpp file.')
 parser.add_argument("-v","--verbosity", action='store_true',
                     help='Detailed description message and other information.' )
 parser.add_argument("-o","--out_conf", 
@@ -396,7 +398,11 @@ hdf5_url = "OPeNDAP_DMRpp_DATA_ACCESS_URL"
 if (args.data_url is not None):
     hdf5_url = args.data_url
 
-ret = subprocess.run(["build_dmrpp", "-f", hdf5_full_path, "-r", hdf5_dmr_name, "-u", hdf5_url, "-M"],
+if (args.vlen_in_sidecar is True): 
+    ret = subprocess.run(["build_dmrpp", "-f", hdf5_full_path, "-r", hdf5_dmr_name, "-u", hdf5_url, "-M","-L"],
+                         stdout=subprocess.PIPE, universal_newlines=True)
+else:
+    ret = subprocess.run(["build_dmrpp", "-f", hdf5_full_path, "-r", hdf5_dmr_name, "-u", hdf5_url, "-M"],
                          stdout=subprocess.PIPE, universal_newlines=True)
 if ret.returncode != 0:
     print("build_dmrpp fails to generate the HDF5 dmrpp file. ")
