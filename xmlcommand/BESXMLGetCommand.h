@@ -53,15 +53,15 @@ public:
     {
     }
 
-    virtual void parse_request(xmlNode *node);
-    virtual BESDataHandlerInterface &get_xmlcmd_dhi();
+    void parse_request(xmlNode *node) override;
+    BESDataHandlerInterface &get_xmlcmd_dhi() override;
 
-    virtual bool has_response()
+    bool has_response() override
     {
         return true;
     }
 
-    virtual void prep_request();
+    void prep_request() override;
 
     void dump(std::ostream &strm) const override;
 
@@ -69,4 +69,3 @@ public:
 };
 
 #endif // A_BESXMLGetCommand_h
-

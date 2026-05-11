@@ -32,12 +32,12 @@ libfocovjson_module_la_LDFLAGS = -avoid-version -module
 libfocovjson_module_la_LIBADD = $(LIBADD)
 
 FOCOVJSON_SRC = FoCovJsonRequestHandler.cc FoCovJsonModule.cc FoDapCovJsonTransmitter.cc FoDapCovJsonTransform.cc \
-	StreamString.cc focovjson_utils.cc
+	focovjson_utils.cc
 
 FOCOVJSON_HDR = FoCovJsonRequestHandler.h FoCovJsonModule.h FoDapCovJsonTransmitter.h FoDapCovJsonTransform.h \
 	StreamString.h focovjson_utils.h
 
-EXTRA_DIST = data focovjson.conf.in
+EXTRA_DIST = data focovjson.conf.in StreamString.cc
 
 CLEANFILES = *~ focovjson.conf
 

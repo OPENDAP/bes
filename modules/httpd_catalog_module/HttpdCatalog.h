@@ -59,28 +59,28 @@ public:
     /**
      * @Deprecated
      */
-    virtual BESCatalogEntry * show_catalog(const std::string &container, BESCatalogEntry */*entry*/){
+    BESCatalogEntry * show_catalog(const std::string &container, BESCatalogEntry */*entry*/) override {
         throw BESInternalError("The HttpdCatalog::show_catalog() method is not supported. (container: '" + container + "')",__FILE__,__LINE__);
     }
 
     /**
      * This is a meaningless method for a remote catalog so it returns empty string
      */
-    virtual std::string get_root() const { return ""; }
+    std::string get_root() const override { return ""; }
 
     /**
      * Maybe someday...
      */
-    virtual void get_site_map(
+    void get_site_map(
         const std::string &/*prefix*/,
         const std::string &/*node_suffix*/,
         const std::string &/*leaf_suffix*/,
 		std::ostream &/*out*/,
-        const std::string &/*path = "/"*/) const {
+        const std::string &/*path = "/"*/) const override {
         BESDEBUG(MODULE, "The HttpdCatalog::get_site_map() method is not currently supported. SKIPPING. file: " << __FILE__ << " line: "  << __LINE__ << std::endl);
     }
 
-    virtual bes::CatalogNode *get_node(const std::string &path) const;
+    bes::CatalogNode *get_node(const std::string &path) const override;
 
     virtual std::string path_to_access_url(const std::string &path) const;
 
@@ -90,4 +90,3 @@ public:
 } // namespace httpd_catalog
 
 #endif // _HttpdCatalog_h_
-

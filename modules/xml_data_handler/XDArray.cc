@@ -128,7 +128,7 @@ void XDArray::print_xml_data(XMLWriter *writer, bool /*show_type*/) throw(Intern
     }
 }
 
-class PrintArrayDimXML : public unary_function<Array::dimension&, void>
+class PrintArrayDimXML
 {
     XMLWriter *d_writer;
     bool d_constrained;

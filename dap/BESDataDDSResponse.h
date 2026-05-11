@@ -61,10 +61,10 @@ public:
 
     virtual ~BESDataDDSResponse();
 
-    virtual void set_container(const std::string &cn);
-    virtual void clear_container();
+    void set_container(const std::string &cn) override;
+    void clear_container() override;
 
-    virtual void dump(std::ostream & strm) const;
+    void dump(std::ostream & strm) const override;
 
     /**
      * Set the response object's DDS. The caller should probably
@@ -90,4 +90,3 @@ public:
 };
 
 #endif // I_BESDataDDSResponse
-

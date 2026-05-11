@@ -58,8 +58,8 @@ public:
     ShowPathInfoResponseHandler(const std::string &name);
     virtual ~ShowPathInfoResponseHandler(void);
 
-    virtual void execute(BESDataHandlerInterface &dhi);
-    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+    void execute(BESDataHandlerInterface &dhi) override;
+    void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;
 
     void dump(std::ostream &strm) const override;
 
@@ -67,4 +67,3 @@ public:
 };
 
 #endif // I_ShowPathInfoResponseHandler_h
-

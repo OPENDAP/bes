@@ -35,9 +35,9 @@ public:
     XMLSetContextsCommand(const BESDataHandlerInterface &base_dhi) : BESXMLCommand(base_dhi) { }
     virtual ~XMLSetContextsCommand() { }
 
-    virtual void parse_request(xmlNode *node);
+    void parse_request(xmlNode *node) override;
 
-    virtual bool has_response() {
+    bool has_response() override {
         return false;
     }
 
@@ -49,4 +49,3 @@ public:
 } // namespace bes
 
 #endif // XMLSetContextsCommand_h
-

@@ -33,7 +33,7 @@ class HDF5CFGeoCF1D:public HDF5BaseArray
     private:
 
         // Projection code, this is not currently used. It may be used as other projections are supported.
-        EOS5GridPCType proj_code;
+        EOS5GridPCType proj_code __attribute__((unused));
  
         // Start value
         double svalue;

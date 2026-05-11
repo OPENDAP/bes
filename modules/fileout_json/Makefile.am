@@ -31,12 +31,12 @@ libfojson_module_la_LDFLAGS = -avoid-version -module
 libfojson_module_la_LIBADD = $(LIBADD)
 
 FOJSON_SRC = FoInstanceJsonTransform.cc FoInstanceJsonTransmitter.cc FoJsonRequestHandler.cc FoJsonModule.cc \
-	FoDapJsonTransmitter.cc FoDapJsonTransform.cc StreamString.cc fojson_utils.cc
+	FoDapJsonTransmitter.cc FoDapJsonTransform.cc fojson_utils.cc
 
 FOJSON_HDR = FoInstanceJsonTransform.h FoInstanceJsonTransmitter.h FoJsonRequestHandler.h FoJsonModule.h \
 	FoDapJsonTransmitter.h FoDapJsonTransform.h StreamString.h fojson_utils.h
 
-EXTRA_DIST = data fojson.conf.in
+EXTRA_DIST = data fojson.conf.in StreamString.cc
 
 CLEANFILES = *~ fojson.conf
 
@@ -50,5 +50,4 @@ C4_DIR=./cccc
 .PHONY: cccc
 cccc:	
 	cccc --outdir=$(C4_DIR) $(FONC_SRC) $(FONC_HDR)
-
 

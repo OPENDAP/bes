@@ -1,0 +1,518 @@
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+XmlInterfaceTest.cc:51:73: warning: extra ';' inside a class [-Wextra-semi]
+   51 |     string d_commands_dir = BESUtil::assemblePath(TEST_SRC_DIR, "cmd"); ;
+      |                                                                         ^
+1 warning generated.
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+/bin/sh: bescmdln: command not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: building for macOS-26.0, but linking with dylib '@rpath/libaws-crt-cpp.dylib' which was built for newer version 26.3
+ld: warning: building for macOS-26.0, but linking with dylib '@rpath/libaws-cpp-sdk-s3.dylib' which was built for newer version 26.3
+ld: warning: building for macOS-26.0, but linking with dylib '@rpath/libaws-cpp-sdk-core.dylib' which was built for newer version 26.3
+ld: warning: building for macOS-26.0, but linking with dylib '@rpath/libaws-c-http.1.0.0.dylib' which was built for newer version 26.3
+ld: warning: building for macOS-26.0, but linking with dylib '@rpath/libaws-c-io.1.0.0.dylib' which was built for newer version 26.3
+ld: warning: building for macOS-26.0, but linking with dylib '@rpath/libaws-c-auth.1.0.0.dylib' which was built for newer version 26.3
+ld: warning: building for macOS-26.0, but linking with dylib '@rpath/libaws-c-cal.1.0.0.dylib' which was built for newer version 26.3
+ld: warning: building for macOS-26.0, but linking with dylib '@rpath/libaws-c-compression.1.0.0.dylib' which was built for newer version 26.3
+ld: warning: building for macOS-26.0, but linking with dylib '@rpath/libaws-c-event-stream.1.0.0.dylib' which was built for newer version 26.3
+ld: warning: building for macOS-26.0, but linking with dylib '@rpath/libaws-c-mqtt.1.0.0.dylib' which was built for newer version 26.3
+ld: warning: building for macOS-26.0, but linking with dylib '@rpath/libaws-c-s3.0unstable.dylib' which was built for newer version 26.3
+ld: warning: building for macOS-26.0, but linking with dylib '@rpath/libaws-c-sdkutils.1.0.0.dylib' which was built for newer version 26.3
+ld: warning: building for macOS-26.0, but linking with dylib '@rpath/libaws-c-common.1.dylib' which was built for newer version 26.3
+ObjMemCacheTest.cc:58:10: warning: 'setUp' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   58 |     void setUp()
+      |          ^
+/opt/homebrew/Cellar/cppunit/1.15.1/include/cppunit/TestFixture.h:89:16: note: overridden virtual function is here
+   89 |   virtual void setUp() {};
+      |                ^
+ObjMemCacheTest.cc:83:10: warning: 'tearDown' overrides a member function but is not marked 'override' [-Winconsistent-missing-override]
+   83 |     void tearDown()
+      |          ^
+/opt/homebrew/Cellar/cppunit/1.15.1/include/cppunit/TestFixture.h:92:16: note: overridden virtual function is here
+   92 |   virtual void tearDown() {};
+      |                ^
+GlobalMetadataStoreTest.cc:408:58: warning: unknown escape sequence '\.' [-Wunknown-escape-sequence]
+  408 |         std::regex dmr_version_regex("dmrVersion=\"[0-9]+\.[0-9]+\"");
+      |                                                          ^~
+DapUtilsTest.cc:255:14: warning: unused variable 'is_dap2' [-Wunused-variable]
+  255 |         bool is_dap2 = false;
+      |              ^~~~~~~
+GlobalMetadataStoreTest.cc:2049:59: warning: unknown escape sequence '\.' [-Wunknown-escape-sequence]
+ 2049 |          std::regex dmr_version_regex("dmrVersion=\"[0-9]+\.[0-9]+\"");
+      |                                                           ^~
+2 warnings generated.
+1 warning generated.
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+2 warnings generated.
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+rm: ./mds/*: No such file or directory
+make[3]: [check-local] Error 1 (ignored)
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/deps/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/deps/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/deps/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/deps/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/deps/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/deps/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/deps/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/deps/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/deps/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/deps/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/deps/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/deps/lib64' not found
+ls: dap_cache/: No such file or directory
+ls: dap_cache/: No such file or directory
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[2](BitShiftNameEncoding.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[3](EmbeddedLevelNameEncoding.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[5](HtmRange.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[7](HtmRangeMultiLevel.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[9](Htmio.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[10](HstmRange.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[11](NameEncoding.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[12](RangeConvex.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[13](SkipList.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[14](SkipListElement.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[15](SpatialConstraint.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[16](SpatialDomain.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[17](SpatialEdge.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[18](SpatialException.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[19](SpatialGeneral.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[20](SpatialIndex.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[21](SpatialInterface.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[23](SpatialVector.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[24](SpatialPolygon.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[25](SpatialRotation.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[26](STARE.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[27](SpatialRange.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[28](TemporalIndex.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[29](TemporalWordFormat1.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[30](VarStr.cpp.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ld: warning: object file (/Users/jimg/src/opendap/hyrax/build/deps/lib/libSTARE.a[31](erfa.c.o)) was built for newer 'macOS' version (26.3) than being linked (26.0)
+ls: dap_cache/: No such file or directory
+ls: dap_cache/: No such file or directory
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+build_dmrpp_util_test.cc:262:113: warning: equality comparison result unused [-Wunused-comparison]
+  262 |                                get_fill_value_test_helper(fill_value_file, "/chunks_fill_notdefined", __func__) == "-99", BESInternalError);
+      |                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+/opt/homebrew/Cellar/cppunit/1.15.1/include/cppunit/TestAssert.h:541:10: note: expanded from macro 'CPPUNIT_ASSERT_THROW_MESSAGE'
+  541 |          expression;                                                          \
+      |          ^~~~~~~~~~
+1 warning generated.
+DMZTest.cc:96:10: warning: private field 'd_show_doc' is not used [-Wunused-private-field]
+   96 |     bool d_show_doc = false;
+      |          ^
+1 warning generated.
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+....
+----------------------------------------------------------------------
+Ran 4 tests in 2.783s
+
+OK
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+FoCovJsonTest.cc:781:39: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  781 |         libdap::dods_float64 oneDdata[dim1Size];
+      |                                       ^~~~~~~~
+FoCovJsonTest.cc:781:39: note: read of non-const variable 'dim1Size' is not allowed in a constant expression
+FoCovJsonTest.cc:779:13: note: declared here
+  779 |         int dim1Size = 2;
+      |             ^
+FoCovJsonTest.cc:796:39: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  796 |         libdap::dods_float64 twoDdata[totalSize];
+      |                                       ^~~~~~~~~
+FoCovJsonTest.cc:796:39: note: read of non-const variable 'totalSize' is not allowed in a constant expression
+FoCovJsonTest.cc:795:13: note: declared here
+  795 |         int totalSize = dim1Size * dim2Size;
+      |             ^
+FoCovJsonTest.cc:811:40: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  811 |         libdap::dods_uint32 uint32data[totalSize];
+      |                                        ^~~~~~~~~
+FoCovJsonTest.cc:811:40: note: read of non-const variable 'totalSize' is not allowed in a constant expression
+FoCovJsonTest.cc:795:13: note: declared here
+  795 |         int totalSize = dim1Size * dim2Size;
+      |             ^
+FoCovJsonTest.cc:829:41: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  829 |         libdap::dods_float64 threeDdata[totalSize];
+      |                                         ^~~~~~~~~
+FoCovJsonTest.cc:829:41: note: read of non-const variable 'totalSize' is not allowed in a constant expression
+FoCovJsonTest.cc:795:13: note: declared here
+  795 |         int totalSize = dim1Size * dim2Size;
+      |             ^
+FoCovJsonTest.cc:902:39: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  902 |         libdap::dods_float64 testData[totalSize];
+      |                                       ^~~~~~~~~
+FoCovJsonTest.cc:902:39: note: read of non-const variable 'totalSize' is not allowed in a constant expression
+FoCovJsonTest.cc:795:13: note: declared here
+  795 |         int totalSize = dim1Size * dim2Size;
+      |             ^
+FoCovJsonTest.cc:903:38: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  903 |         libdap::dods_float64 latData[latSize];
+      |                                      ^~~~~~~
+FoCovJsonTest.cc:903:38: note: read of non-const variable 'latSize' is not allowed in a constant expression
+FoCovJsonTest.cc:899:13: note: declared here
+  899 |         int latSize = 18;
+      |             ^
+FoCovJsonTest.cc:904:38: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  904 |         libdap::dods_float64 lngData[lngSize];
+      |                                      ^~~~~~~
+FoCovJsonTest.cc:904:38: note: read of non-const variable 'lngSize' is not allowed in a constant expression
+FoCovJsonTest.cc:898:13: note: declared here
+  898 |         int lngSize = 36;
+      |             ^
+FoCovJsonTest.cc:905:39: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  905 |         libdap::dods_float64 timeData[timeSize];
+      |                                       ^~~~~~~~
+FoCovJsonTest.cc:905:39: note: read of non-const variable 'timeSize' is not allowed in a constant expression
+FoCovJsonTest.cc:900:13: note: declared here
+  900 |         int timeSize = 9;
+      |             ^
+8 warnings generated.
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+libtool: [31mwarning[0m: [1mLinking the executable HttpdDirScraperTest against the loadable module[0m
+libtool: [31mwarning[0m: [1mlibdap_module.so is not portable![0m
+libtool: [31mwarning[0m: [1mlib libdap_module.so is a module, not a shared library[0m
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '../dispatch' not found
+ld: warning: search path '/usr/local/opt/openssl/lib' not found
+FoJsonTest.cc:518:39: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  518 |         libdap::dods_float64 oneDdata[dim1Size];
+      |                                       ^~~~~~~~
+FoJsonTest.cc:518:39: note: read of non-const variable 'dim1Size' is not allowed in a constant expression
+FoJsonTest.cc:516:13: note: declared here
+  516 |         int dim1Size = 2;
+      |             ^
+FoJsonTest.cc:532:39: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  532 |         libdap::dods_float64 twoDdata[totalSize];
+      |                                       ^~~~~~~~~
+FoJsonTest.cc:532:39: note: read of non-const variable 'totalSize' is not allowed in a constant expression
+FoJsonTest.cc:531:13: note: declared here
+  531 |         int totalSize = dim1Size * dim2Size;
+      |             ^
+FoJsonTest.cc:546:40: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  546 |         libdap::dods_uint32 uint32data[totalSize];
+      |                                        ^~~~~~~~~
+FoJsonTest.cc:546:40: note: read of non-const variable 'totalSize' is not allowed in a constant expression
+FoJsonTest.cc:531:13: note: declared here
+  531 |         int totalSize = dim1Size * dim2Size;
+      |             ^
+FoJsonTest.cc:564:41: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  564 |         libdap::dods_float64 threeDdata[totalSize];
+      |                                         ^~~~~~~~~
+FoJsonTest.cc:564:41: note: read of non-const variable 'totalSize' is not allowed in a constant expression
+FoJsonTest.cc:531:13: note: declared here
+  531 |         int totalSize = dim1Size * dim2Size;
+      |             ^
+FoJsonTest.cc:632:39: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  632 |         libdap::dods_float64 testData[totalSize];
+      |                                       ^~~~~~~~~
+FoJsonTest.cc:632:39: note: read of non-const variable 'totalSize' is not allowed in a constant expression
+FoJsonTest.cc:531:13: note: declared here
+  531 |         int totalSize = dim1Size * dim2Size;
+      |             ^
+FoJsonTest.cc:633:38: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  633 |         libdap::dods_float64 latData[latSize];
+      |                                      ^~~~~~~
+FoJsonTest.cc:633:38: note: read of non-const variable 'latSize' is not allowed in a constant expression
+FoJsonTest.cc:630:13: note: declared here
+  630 |         int latSize = 18;
+      |             ^
+FoJsonTest.cc:634:38: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  634 |         libdap::dods_float64 lngData[lngSize];
+      |                                      ^~~~~~~
+FoJsonTest.cc:634:38: note: read of non-const variable 'lngSize' is not allowed in a constant expression
+FoJsonTest.cc:629:13: note: declared here
+  629 |         int lngSize = 36;
+      |             ^
+7 warnings generated.
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ERROR: All 23 tests were run,
+3 failed unexpectedly.
+make[4]: *** [check-local] Error 1
+make[3]: *** [check-am] Error 2
+make[3]: Target `check' not remade because of errors.
+make[2]: *** [check-recursive] Error 1
+make[2]: Target `check' not remade because of errors.
+NDimArrayTest.cc:93:28: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+   93 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                            ^~~~~~~~~~~~~~~~~~~~~
+NDimArrayTest.cc:93:33: note: virtual function called on object 'test' whose dynamic type is not constant
+   93 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                                 ^
+NDimArrayTest.cc:93:59: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+   93 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                                                           ^~~~~~~~~~~~~~~~~~~~~
+NDimArrayTest.cc:93:64: note: virtual function called on object 'test' whose dynamic type is not constant
+   93 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                                                                ^
+NDimArrayTest.cc:93:88: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+   93 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                                                                                        ^~~~~~~~~~~~~~~~~~~~~
+NDimArrayTest.cc:93:93: note: virtual function called on object 'test' whose dynamic type is not constant
+   93 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                                                                                             ^
+NDimArrayTest.cc:131:28: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  131 |         dods_float64 stuff[lastDimSize];
+      |                            ^~~~~~~~~~~
+NDimArrayTest.cc:131:28: note: read of non-const variable 'lastDimSize' is not allowed in a constant expression
+NDimArrayTest.cc:122:23: note: declared here
+  122 |         unsigned long lastDimSize = nda.getLastDimensionElementCount();
+      |                       ^
+NDimArrayTest.cc:166:28: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  166 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                            ^~~~~~~~~~~~~~~~~~~~~
+NDimArrayTest.cc:166:33: note: virtual function called on object 'test' whose dynamic type is not constant
+  166 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                                 ^
+NDimArrayTest.cc:166:59: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  166 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                                                           ^~~~~~~~~~~~~~~~~~~~~
+NDimArrayTest.cc:166:64: note: virtual function called on object 'test' whose dynamic type is not constant
+  166 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                                                                ^
+NDimArrayTest.cc:166:88: warning: variable length arrays in C++ are a Clang extension [-Wvla-cxx-extension]
+  166 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                                                                                        ^~~~~~~~~~~~~~~~~~~~~
+NDimArrayTest.cc:166:93: note: virtual function called on object 'test' whose dynamic type is not constant
+  166 |         unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
+      |                                                                                             ^
+7 warnings generated.
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/deps/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/deps/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/deps/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+ld: warning: -bind_at_load is deprecated on macOS
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/deps/lib64' not found
+ld: warning: search path '/Users/jimg/src/opendap/hyrax/build/lib64' not found
+make[1]: *** [check-recursive] Error 1
+make[1]: Target `check' not remade because of errors.
+make: *** [check-recursive] Error 1
+make: Target `check' not remade because of errors.

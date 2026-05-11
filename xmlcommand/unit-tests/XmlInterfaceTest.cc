@@ -48,7 +48,7 @@ using namespace std;
 class XmlInterfaceTest : public CppUnit::TestFixture {
 
 public:
-    string d_commands_dir = BESUtil::assemblePath(TEST_SRC_DIR, "cmd"); ;
+    string d_commands_dir = BESUtil::assemblePath(TEST_SRC_DIR, "cmd");
 
     // Called once before everything gets tested
     XmlInterfaceTest() = default;

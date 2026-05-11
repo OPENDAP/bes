@@ -46,6 +46,7 @@ namespace s3 {
  */
 
 class S3Container: public BESContainer {
+    using BESContainer::_duplicate;
 
     std::shared_ptr<http::RemoteResource> d_dmrpp_rresource = nullptr;
 

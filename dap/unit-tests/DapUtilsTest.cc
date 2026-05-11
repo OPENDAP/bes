@@ -252,8 +252,6 @@ public:
     {
         uint64_t max_response_size_bytes;
         uint64_t max_var_size_bytes;
-        bool is_dap2 = false;
-
         dap_utils::get_max_sizes_bytes(max_response_size_bytes, max_var_size_bytes, true);
         DBG( cerr << prolog << "max_response_size_bytes: " << max_response_size_bytes << "\n");
         DBG( cerr << prolog << "     max_var_size_bytes: " << max_var_size_bytes << "\n");
@@ -680,4 +678,3 @@ int main(int argc, char *argv[]) {
     string bes_debug="cerr,bes,dap_utils,dap_utils_verbose,context";
     return bes_run_tests<dap_utils::DapUtilsTest>(argc, argv, bes_debug) ? 0 : 1;
 }
-

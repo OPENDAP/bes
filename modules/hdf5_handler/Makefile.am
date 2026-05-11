@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 M_NAME=hdf5_handler
 M_VER=1.16.9
 
-GCTP_LIBS=gctp/src/libGctp.a
+GCTP_LIBS=gctp/src/libGctp.la
 GCTP_CPPFLAGS=-I gctp/include
 
 AM_YFLAGS = -d -v
@@ -211,4 +211,3 @@ pkg-dmg: pkg-main
 	-rm -rf @PACKAGE@-@PACKAGE_VERSION@
 
 pkg: pkg-main 
-

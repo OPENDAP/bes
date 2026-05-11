@@ -405,7 +405,7 @@ public:
 
     void removeDMRVersion(string& str)
     {
-        std::regex dmr_version_regex("dmrVersion=\"[0-9]+\.[0-9]+\"");
+        std::regex dmr_version_regex("dmrVersion=\"[0-9]+\\.[0-9]+\"");
         str = std::regex_replace(str, dmr_version_regex, "dmrVersion=\"removed\"");
     }
 
@@ -2046,7 +2046,7 @@ public:
          CPPUNIT_ASSERT(access(baseline_name.c_str(), R_OK) == 0);
 
          // Strip out dmr version
-         std::regex dmr_version_regex("dmrVersion=\"[0-9]+\.[0-9]+\"");
+         std::regex dmr_version_regex("dmrVersion=\"[0-9]+\\.[0-9]+\"");
          auto stripped_input = std::regex_replace(oss.str(), dmr_version_regex, "dmrVersion=\"removed\"");
 
          string insert_xml_base_baseline = read_test_baseline(baseline_name);

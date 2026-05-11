@@ -60,6 +60,8 @@ private:
     }
 
 protected:
+    using BESContainer::_duplicate;
+
     void _duplicate(CmrContainer &copy_to);
 
 public:

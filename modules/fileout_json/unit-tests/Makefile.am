@@ -68,7 +68,7 @@ check-local:
 	@echo ""
 endif
 
-OBJS = ../FoDapJsonTransform.o ../fojson_utils.o ../FoInstanceJsonTransform.o 
+STATIC_FOJSON_MODULE = ../.libs/libfojson_module.a
 
 FoJsonTest_SOURCES = FoJsonTest.cc
-FoJsonTest_LDADD = $(OBJS) $(LIBADD)
+FoJsonTest_LDADD = $(STATIC_FOJSON_MODULE) $(LIBADD)

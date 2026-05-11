@@ -38,6 +38,7 @@
 #include "NDimensionalArray.h"
 
 #include <unistd.h>
+#include <vector>
 
 static bool debug = false;
 
@@ -90,8 +91,9 @@ CPPUNIT_TEST_SUITE( NDimArrayTest );
         test.append_dim(1081, "dim2");
         test.append_dim(1000, "dim3");
 
-        unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
-        vector<unsigned int> shape(test.dimensions(true));
+        const unsigned int dimensions = test.dimensions(true);
+        vector<unsigned int> start(dimensions), stride(dimensions), stop(dimensions);
+        vector<unsigned int> shape(dimensions);
 
         start[0] = 0;
         stride[0] = 1;
@@ -128,14 +130,14 @@ CPPUNIT_TEST_SUITE( NDimArrayTest );
         location[1] = 1;
 
         double pi = std::atan(1) * 4;
-        dods_float64 stuff[lastDimSize];
+        vector<dods_float64> stuff(lastDimSize);
         for (unsigned long i = 0; i < lastDimSize; i++)
             stuff[i] = pi;
 
         DBG(
             cerr << " setLastDimesnionHyperSlab_test() - setting slab values to " << libdap::double_to_string(pi)
                 << endl);
-        nda.setLastDimensionHyperSlab(&location, stuff, nda.getLastDimensionElementCount());
+        nda.setLastDimensionHyperSlab(&location, stuff.data(), nda.getLastDimensionElementCount());
 
         dods_float64 *slab;
         unsigned int slabElementCount = 0;
@@ -163,8 +165,9 @@ CPPUNIT_TEST_SUITE( NDimArrayTest );
         test.append_dim(1081, "dim2");
         test.append_dim(1000, "dim3");
 
-        unsigned int start[test.dimensions(true)], stride[test.dimensions(true)], stop[test.dimensions(true)];
-        vector<unsigned int> shape(test.dimensions(true));
+        const unsigned int dimensions = test.dimensions(true);
+        vector<unsigned int> start(dimensions), stride(dimensions), stop(dimensions);
+        vector<unsigned int> shape(dimensions);
 
         start[0] = 0;
         stride[0] = 1;
