@@ -33,15 +33,11 @@ using namespace libdap;
 int main(int argc, char **argv)
 {
     bool debug = false;
-    bool dods_response = false; // write either a .dods or a netcdf file
     if (argc > 1) {
         for (int i = 0; i < argc; i++) {
             string arg = argv[i];
             if (arg == "debug") {
                 debug = true;
-            }
-            else if (arg == "dods") {
-                dods_response = true;
             }
         }
     }
@@ -106,4 +102,3 @@ int main(int argc, char **argv)
 
     return 0;
 }
-

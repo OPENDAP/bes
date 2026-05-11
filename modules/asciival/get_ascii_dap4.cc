@@ -421,8 +421,9 @@ static void print_values_as_ascii(D4Opaque *v, bool print_name, ostream &strm, C
 
 static void print_values_as_ascii(D4Group *group, bool print_name, ostream &strm, Crc32 &checksum)
 {
-    for (D4Group::groupsIter g = group->grp_begin(), e = group->grp_end(); g != e; ++g)
-    	print_values_as_ascii(*g, print_name, strm, checksum);
+    for (D4Group::groupsIter g = group->grp_begin(), e = group->grp_end(); g != e; ++g) {
+        print_values_as_ascii(*g, print_name, strm, checksum);
+    }
 
     // Specialize how the top-level variables in any Group are sent; include
     // a checksum for them. A subset operation might make an interior set of

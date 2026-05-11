@@ -52,8 +52,8 @@ public:
     BESDASResponseHandler(const std::string &name);
     virtual ~BESDASResponseHandler();
 
-    virtual void execute(BESDataHandlerInterface &dhi);
-    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+    void execute(BESDataHandlerInterface &dhi) override;
+    void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;
 
     void dump(std::ostream &strm) const override;
 
@@ -61,4 +61,3 @@ public:
 };
 
 #endif // I_BESDASResponseHandler_h
-

@@ -50,7 +50,7 @@ public:
     HttpdCatalogContainerStorage(const std::string &n);
     virtual ~HttpdCatalogContainerStorage();
 
-    virtual void add_container(const std::string &s_name, const std::string &r_name, const std::string &type);
+    void add_container(const std::string &s_name, const std::string &r_name, const std::string &type) override;
 
     void dump(std::ostream &strm) const override;
 };

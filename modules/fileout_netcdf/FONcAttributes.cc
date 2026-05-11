@@ -461,6 +461,11 @@ void FONcAttributes::add_attributes_worker(int ncid, int varid, const string &va
                 FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
             }
                 break;
+            default: {
+                string err = (string) "File out netcdf, unsupported attribute type for classic model: " + new_name;
+                FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+            }
+                break;
         }
     }
 }
@@ -1622,4 +1627,3 @@ switch (attrType) {
 }
 
 #endif
-

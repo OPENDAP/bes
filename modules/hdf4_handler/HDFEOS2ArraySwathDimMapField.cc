@@ -1032,7 +1032,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
     char  tmp_dimlist[1024];
 
     // field dimension sizes
-    int32 tmp_dims[rank];
+    vector<int32> tmp_dims(rank);
 
     // field data type
     int32 field_dtype = 0;
@@ -1043,7 +1043,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_scale_comp(int32 swathid,
     // Obtain the field info. We mainly need the datatype information 
     // to allocate the buffer to store the data
     r = fieldinfofunc (swathid, const_cast < char *>(fieldname.c_str ()),
-        &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
+        &tmp_rank, tmp_dims.data(), &field_dtype, tmp_dimlist);
     if (r != 0) {
         string msg = "Field " + fieldname + " information cannot be obtained.";
         throw BESInternalError(msg,__FILE__,__LINE__);
@@ -1261,7 +1261,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_disable_scale_comp(int32 swathid,
     char  tmp_dimlist[1024];
 
     // field dimension sizes
-    int32 tmp_dims[rank];
+    vector<int32> tmp_dims(rank);
 
     // field data type
     int32 field_dtype = 0;
@@ -1272,7 +1272,7 @@ HDFEOS2ArraySwathDimMapField::write_dap_data_disable_scale_comp(int32 swathid,
     // Obtain the field info. We mainly need the datatype information 
     // to allocate the buffer to store the data
     r = fieldinfofunc (swathid, const_cast < char *>(fieldname.c_str ()),
-        &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
+        &tmp_rank, tmp_dims.data(), &field_dtype, tmp_dimlist);
     if (r != 0) {
         string msg = "Field " + fieldname + " information cannot be obtained.";
         throw BESInternalError(msg,__FILE__,__LINE__);

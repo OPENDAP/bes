@@ -31,7 +31,7 @@ class HDFEOS2GeoCF1D:public libdap::Array
     private:
 
         // Projection code, currently not used.
-        int proj_code;
+        int proj_code __attribute__((unused));
  
         // Start value
         double svalue;

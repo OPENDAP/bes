@@ -129,15 +129,15 @@ protected:
      * SYMMETRIC_ADD_RESPONSES controls if this feature is on or not; currently it
      * is turned off.
      */
-    struct StreamDAP : public std::unary_function<libdap::DapObj*, void> {
-        libdap::DDS *d_dds;
-        libdap::DMR *d_dmr;
+    struct StreamDAP {
+        libdap::DDS *d_dds = nullptr;
+        libdap::DMR *d_dmr = nullptr;
 
-        StreamDAP() : d_dds(0), d_dmr(0) {
+        StreamDAP() {
             throw BESInternalFatalError("Unknown DAP object type.", __FILE__, __LINE__);
         }
-        StreamDAP(libdap::DDS *dds) : d_dds(dds), d_dmr(0) { }
-        StreamDAP(libdap::DMR *dmr) : d_dds(0), d_dmr(dmr) { }
+        StreamDAP(libdap::DDS *dds) : d_dds(dds) { }
+        StreamDAP(libdap::DMR *dmr) : d_dmr(dmr) { }
 
         virtual void operator()(std::ostream &os) = 0;
     };
@@ -190,7 +190,7 @@ public:
      * in this code, then only a GlobalMetadataStore, and not the subclass,
      * will be used to unlock the item.
      */
-    struct MDSReadLock : public std::unary_function<std::string, bool> {
+    struct MDSReadLock {
         std::string name;
         bool locked;
         GlobalMetadataStore *mds;

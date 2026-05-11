@@ -38,7 +38,7 @@
         {
             "label": "autotools: build",
             "type": "shell",
-            "command": "make -j",
+            "command": "make -j${config:nproc}",
             "problemMatcher": [
                 "$gcc"
             ],
@@ -50,7 +50,7 @@
         {
             "label": "autotools: check",
             "type": "shell",
-            "command": "make -j check",
+            "command": "make -j${config:nproc} check",
             "problemMatcher": [
                 "$gcc"
             ],
@@ -82,7 +82,7 @@
         {
             "label": "autotools: compile_commands",
             "type": "shell",
-            "command": "make clean && bear -- make -j -k && bear --append -- make -j -k check",
+            "command": "make clean && bear -- make -j${config:nproc} -k && bear --append -- make -j${config:nproc} -k check",
             "problemMatcher": [
                 "$gcc"
             ],
@@ -124,7 +124,7 @@
             },
             "label": "autotools: build dmrpp module",
             "type": "shell",
-            "command": "make -j",
+            "command": "make -j${config:nproc}",
             "problemMatcher": [
                 "$gcc"
             ],

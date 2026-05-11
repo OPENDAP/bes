@@ -477,7 +477,7 @@ hdfistream_sds & hdfistream_sds::operator>>(hdf_sds & hs)
 
 // Functor to help look for a particular map's ce in the vector of array_ce
 // objects.
-class ce_name_match:public std::unary_function < array_ce, bool > {
+class ce_name_match {
     string name;
   public:
     explicit ce_name_match(const string & n):name(n) {

@@ -51,8 +51,8 @@ public:
     }
     virtual ~BESDASResponse();
 
-    virtual void set_container(const std::string &cn);
-    virtual void clear_container();
+    void set_container(const std::string &cn) override;
+    void clear_container() override;
 
     void dump(std::ostream &strm) const override;
 
@@ -67,4 +67,3 @@ public:
 };
 
 #endif // I_BESDASResponse
-

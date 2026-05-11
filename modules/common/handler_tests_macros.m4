@@ -551,9 +551,11 @@ m4_define([AT_BESCMD_GDAL_BINARY_FILE_RESPONSE_TEST], [dnl
         AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input > tmp], [0], [stdout])
         GET_GDAL_INFO([tmp])
 
-        # For these binary response, the GET_GDAL_INFO() macro normalizes the output. No
-        # need to check for special 'm_proc' baselines. jhrg 2/3/26
-        AT_CHECK([diff -b $baseline tmp], [ignore], )
+        # Some Apple silicon GDAL builds emit values like '-0.000' where Intel/Linux
+        # builds emit '0.000'. Use the optional processor-specific baseline when present.
+        AS_IF([ test "x$(uname -m)" = "xarm64" -a -f $baseline.m_proc],
+            [ AT_CHECK([diff -b $baseline.m_proc tmp], [ignore], ) ],
+            [ AT_CHECK([diff -b $baseline tmp], [ignore], ) ])
     ])
 
     AT_CLEANUP

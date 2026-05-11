@@ -56,7 +56,7 @@ public:
      * @param dhi structure that holds request and response information
      * @throws BESSyntaxUserError if no context name was given object
      */
-    virtual void execute(BESDataHandlerInterface &/*dhi*/) {
+    void execute(BESDataHandlerInterface &/*dhi*/) override {
         // This would be used in the transmit() method below to send a response back to the
         // BES's client, if this command returned data. Since it does not, this can be NULL
         // and the transmit() method can be a no-op. jhrg 2/8/18
@@ -71,9 +71,9 @@ public:
      * @param transmitter object that knows how to transmit specific basic types
      * @param dhi structure that holds the request and response information
      */
-    virtual void transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/) { }
+    void transmit(BESTransmitter */*transmitter*/, BESDataHandlerInterface &/*dhi*/) override { }
 
-    virtual void dump(std::ostream &strm) const {
+    void dump(std::ostream &strm) const override {
         strm << BESIndent::LMarg << "NullResponseHandler::dump - (" << (void *) this << ")" << std::endl;
         BESIndent::Indent();
         BESResponseHandler::dump(strm);
@@ -91,4 +91,3 @@ public:
 }   // namespace bes
 
 #endif // NullResponseHandler_h
-

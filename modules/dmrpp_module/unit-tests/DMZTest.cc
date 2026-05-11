@@ -93,7 +93,6 @@ private:
     const string acos_l2 = string(TEST_SRC_DIR).append("/input-files/acos_L2s_110419_43_Production_v110110_L2s2800_r01_PolB_110430192739.h5.dmrpp");
     const string test_compress_doc_01 = string(TEST_SRC_DIR).append("/input-files/test_compress_doc.xml");
 
-    bool d_show_doc = false;
     string hr="# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --";
 
 public:
