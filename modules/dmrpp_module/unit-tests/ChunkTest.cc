@@ -115,8 +115,8 @@ public:
         }
         catch(BESError &e) {
             DBG(cerr << "Caught a BESError: " << e.get_verbose_message() << endl);
-            // CPPUNIT_ASSERT_MESSAGE("The message should not contain a token",
-            //                       e.get_verbose_message().find("aws-token") == string::npos);
+            CPPUNIT_ASSERT_MESSAGE("The message should not contain a token",
+                                  e.get_verbose_message().find("aws-token") == string::npos);
             CPPUNIT_ASSERT("Correctly caught a BESError");
         }
     }
@@ -139,8 +139,8 @@ public:
         }
         catch(BESError &e) {
             DBG(cerr << "Caught a BESError: " << e.get_verbose_message() << endl);
-            // CPPUNIT_ASSERT_MESSAGE("The message should not contain a token",
-            //                       e.get_verbose_message().find("aws-token") == string::npos);
+            CPPUNIT_ASSERT_MESSAGE("The message should not contain a token",
+                                  e.get_verbose_message().find("aws-token") == string::npos);
             CPPUNIT_ASSERT("Correctly caught a BESError");
         }
     }
@@ -157,8 +157,8 @@ public:
         }
         catch(BESError &e) {
             DBG(cerr << "Caught a BESError: " << e.get_verbose_message() << endl);
-            // CPPUNIT_ASSERT_MESSAGE("The message should not contain a token",
-            //                       e.get_verbose_message().find("aws-token") == string::npos);
+            CPPUNIT_ASSERT_MESSAGE("The message should not contain a token",
+                                  e.get_verbose_message().find("aws-token") == string::npos);
             CPPUNIT_ASSERT("Correctly caught a BESError");
         }
     }
@@ -179,8 +179,8 @@ public:
         }
         catch(BESError &e) {
             DBG(cerr << "Caught a BESError: " << e.get_verbose_message() << endl);
-            // CPPUNIT_ASSERT_MESSAGE("The message should not contain a token",
-            //                       e.get_verbose_message().find("aws-token") == string::npos);
+            CPPUNIT_ASSERT_MESSAGE("The message should not contain a token",
+                                  e.get_verbose_message().find("aws-token") == string::npos);
             CPPUNIT_ASSERT("Correctly caught a BESError");
         }
     }
