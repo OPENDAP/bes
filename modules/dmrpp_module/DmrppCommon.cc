@@ -42,10 +42,11 @@
 #include <libdap/XMLWriter.h>
 #include <libdap/util.h>
 
-
+#if 0
 #define PUGIXML_NO_XPATH
 #define PUGIXML_HEADER_ONLY
 #include <pugixml.hpp>
+#endif
 
 #include "url_impl.h"
 #include "BESIndent.h"
