@@ -62,7 +62,7 @@ void usage() {
         -c: The BES configuration file used to create the DMR file
         -M: Add production metadata to the built DMR++
         -D: Disable Direct IO feature
-        -L: Save variable length data in the sidecar file
+        -L: Save variable length data in a side car file
         -h: Show this help
         -v: Verbose HDF5 errors
         -V: Show build versions for components that make up the program
