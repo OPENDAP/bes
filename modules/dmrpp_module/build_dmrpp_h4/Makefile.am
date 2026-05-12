@@ -19,7 +19,6 @@ AM_CPPFLAGS = $(HDF4_CFLAGS) $(HDFEOS2_CPPFLAGS) -I$(top_srcdir) -I$(top_srcdir)
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
 AM_CXXFLAGS=
-AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
 bin_PROGRAMS = build_dmrpp_h4
@@ -39,7 +38,7 @@ HDR = build_dmrpp_util_h4.h ../Chunk.h ../DMRpp.h ../DMZ.h ../DmrppArray.h ../Dm
     ../DmrppRequestHandler.h ../CurlHandlePool.h ../vlsa_util.h ../byteswap_compat.h ../float_byteswap.h
 
 build_dmrpp_h4_CPPFLAGS = $(AM_CPPFLAGS)
-build_dmrpp_h4_LDFLAGS = $(HDFEOS2_LDFLAGS) $(HDF4_LDFLAGS) $(BES_DAP_LIB_LDFLAGS)
+build_dmrpp_h4_LDFLAGS = $(AM_LDFLAGS) $(HDFEOS2_LDFLAGS) $(HDF4_LDFLAGS) $(BES_DAP_LIB_LDFLAGS)
 build_dmrpp_h4_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) -L$(builddir)/../ngap_container -lngap \
 $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) \
 $(BYTESWAP_LIBS) $(HDFEOS2_LIBS) $(HDF4_LIBS)
@@ -58,5 +57,3 @@ C4_DIR=./cccc
 .PHONY: cccc
 cccc:	
 	cccc --outdir=$(C4_DIR) $(CMR_SRC) $(CMR_HDR)
-
-
