@@ -30,8 +30,7 @@ AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
 BUILT_SOURCES = $(GRAM_SRCS)
 
-AM_CXXFLAGS=
-AM_LDFLAGS =
+AM_CXXFLAGS = $(CXXFLAGS)
 include $(top_srcdir)/coverage.mk
 
 SUBDIRS = gctp . bes-testsuite 
