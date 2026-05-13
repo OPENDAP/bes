@@ -86,6 +86,10 @@ void Get_structure_array_type(libdap::Structure *structure_ptr, hid_t memb_type,
 void handle_vlen_int_float(libdap::D4Group *d4_grp, hid_t pid, const std::string &vname, const std::string &var_path,
                            const std::string &filename, hid_t dset_id);
 
+void handle_vlen_int_float_index(libdap::D4Group *d4_grp,  const std::string &vname, const std::string &var_path,
+                                 const std::vector<string> & dimnames, const std::string &filename);
+
+
 bool check_dimscale(hid_t fid);
 bool has_dimscale_attr(hid_t dataset);
 void obtain_dimname_hardlinks(hid_t file_id, hid_t ref_dset, vector<link_info_t>& hdf5_hls, std::string & trim_objname);

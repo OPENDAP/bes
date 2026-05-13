@@ -3694,6 +3694,9 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
     delete bt;
 
     // We need to create another variable to store the index of the vlen 
+    handle_vlen_int_float_index(d4_grp, vname, var_path, dimnames,filename);
+
+#if 0
     string vname_idx = vname + "_vlen_index";
     auto hdf5_int32 = make_unique<HDF5Int32>(vname_idx,var_path,filename);
     
@@ -3730,6 +3733,7 @@ void handle_vlen_int_float(D4Group *d4_grp, hid_t pid, const string &vname, cons
     new_var_index->attributes()->add_attribute_nocopy(vlen_index_d4_attr_unique.release());
 
     d4_grp->add_var_nocopy(new_var_index);
+#endif
 
 }
         
@@ -4701,3 +4705,46 @@ void obtain_eos5_vars_missing_dims(hid_t pid, const char *gname, const vector<ch
         
 }
 
+void handle_vlen_int_float_index(libdap::D4Group *d4_grp,  const std::string &vname, const std::string &var_path,
+                                 const std::vector<string> & dimnames, const std::string &filename) {
+
+    string vname_idx = vname + "_vlen_index";
+    auto hdf5_int32 = make_unique<HDF5Int32>(vname_idx,var_path,filename);
+    
+    auto ar_index_unique = make_unique<HDF5VlenAtomicArray>(vname_idx, filename, hdf5_int32.get(),true);
+    HDF5Array *ar_index = ar_index_unique.get();
+
+    // set number of elements and variable name values.
+    // This essentially stores in the struct.
+    ar_index->set_varpath(var_path);
+    if (dimnames.empty()==false) { 
+        for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++) {
+            if (dimnames[dim_index].empty() == false)
+                ar_index->append_dim_ll(dt_inst.size[dim_index], dimnames[dim_index]);
+            else
+                ar_index->append_dim_ll(dt_inst.size[dim_index]);
+        }
+ 
+    }
+    else {
+        for (int dim_index = 0; dim_index < dt_inst.ndims; dim_index++)
+            ar_index->append_dim_ll(dt_inst.size[dim_index]);
+    }
+  
+    // We need to transform dimension info. to DAP4 group
+    BaseType *new_var_index = nullptr;
+    new_var_index = ar_index->h5dims_transform_to_dap4(d4_grp,dt_inst.dimnames_path);
+
+    // clear DAP4 dimnames_path vector
+    dt_inst.dimnames_path.clear();
+
+    auto vlen_index_d4_attr_unique = make_unique<D4Attribute>("orig_datatype",attr_str_c);
+    auto vlen_index_d4_attr = vlen_index_d4_attr_unique.get();
+    vlen_index_d4_attr->add_value("VLEN_INDEX");
+    new_var_index->attributes()->add_attribute_nocopy(vlen_index_d4_attr_unique.release());
+
+    d4_grp->add_var_nocopy(new_var_index);
+
+
+
+}
