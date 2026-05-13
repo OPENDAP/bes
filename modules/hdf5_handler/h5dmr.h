@@ -256,6 +256,7 @@ bool obtain_eos5_grp_dim(const std::string & varname, const std::unordered_map<s
 
 void obtain_eos5_missing_dims(hid_t fileid, const eos5_dim_info_t &, unordered_set<string>& eos5_missing_dim_names);
 void loop_all_variables_for_missing_dim_names(hid_t pid,const char *gname, const eos5_dim_info_t &eos5_dim_info, unordered_set<string>& eos5_missing_dim_names);
+void add_eos5_missing_dims(libdap::D4Group * d4g, const string&h5_grp_full_path, unordered_set<string> & eos5_missing_dim_names, eos5_dim_info_t & eos5_dim_info);
 
 void add_possible_eos5_grid_vars(libdap::D4Group*,  eos5_dim_info_t &);
 void add_eos5_grid_vars_geo(libdap::D4Group* d4_grp,  const eos5_grid_info_t & eg_info);
@@ -278,6 +279,7 @@ void make_attributes_to_cf(libdap::BaseType *, const eos5_dim_info_t &eos5_dim_i
 // Handle unlimited dimension
 void add_unlimited_dimension_info(libdap::D4Group *d4_grp);
 
-/// Remove unlimited dimensions if the key is set to false
+// Remove unlimited dimensions if the key is set to false
 void remove_unlimited_dimension_info(libdap::D4Group *d4_grp);
+
 #endif

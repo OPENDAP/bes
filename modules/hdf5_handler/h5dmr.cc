@@ -456,6 +456,8 @@ void handle_child_grp(hid_t file_id, hid_t pid, const char *gname,
             // If this is eos5 and is using dim. scale and has missing dimensions, 
             // we will check if we should add the missing dimensions to this group.
             if (is_eos5 && use_dimscale && eos5_missing_dim_names.empty() == false) {
+                add_eos5_missing_dims(tem_d4_cgroup, full_grp_path_name, eos5_missing_dim_names, eos5_dim_info);
+#if 0
                 auto temp_eos5_missing_dim_names = eos5_missing_dim_names;
                 for (const auto &eos5_missing_dim_name:temp_eos5_missing_dim_names) {
 
@@ -487,6 +489,7 @@ void handle_child_grp(hid_t file_id, hid_t pid, const char *gname,
                         }
                     }
                 }
+#endif
             }
         
             // Add this new DAP4 group
@@ -4519,4 +4522,40 @@ attr_info_dimscale(hid_t loc_id, const char *name, const H5A_info_t *ainfo, void
     return 0;
 }
 
+void add_eos5_missing_dims(D4Group * d4g, const string&h5_grp_full_path, unordered_set<string> & eos5_missing_dim_names, eos5_dim_info_t & eos5_dim_info) {
 
+    auto temp_eos5_missing_dim_names = eos5_missing_dim_names;
+    for (const auto &eos5_missing_dim_name:temp_eos5_missing_dim_names) {
+  
+        // eos5_missing_dim_name contains the full path of the missing dimensions. We only need to retrieve the grp path.
+        string missing_grp_path = HDF5CFUtil::obtain_string_before_lastslash(eos5_missing_dim_name);
+  
+        // We find the group.
+        if (missing_grp_path == h5_grp_full_path) {
+  
+            string missing_grp_dim_name = HDF5CFUtil::obtain_string_after_lastslash(eos5_missing_dim_name);
+            // Note: full_grp_path_name has a "/" at the end. However the grppath in the eos5dim_info removes the "/".
+            string temp_grppath = h5_grp_full_path.substr(0,h5_grp_full_path.size()-1);
+  
+            // Obtain all the dimensions for this HDF-EOS5 group.
+            if(eos5_dim_info.grppath_to_dims.find(temp_grppath)!=eos5_dim_info.grppath_to_dims.end()) {
+                vector<HE5Dim> grp_eos5_dim = eos5_dim_info.grppath_to_dims[temp_grppath];
+                
+                D4Dimensions *d4_dims = d4g->dims();
+                for (unsigned grp_dim_idx = 0; grp_dim_idx < grp_eos5_dim.size(); grp_dim_idx++) {
+                    if (grp_eos5_dim[grp_dim_idx].name == eos5_missing_dim_name){
+                        //No need to check if the new dimension exists since we just created the group. Will see.
+                        auto d4_dim_unique =
+                            make_unique<D4Dimension>(missing_grp_dim_name, grp_eos5_dim[grp_dim_idx].size);
+                        d4_dims->add_dim_nocopy(d4_dim_unique.release());  
+                    }
+                }
+                // This missing dimension has been taken care, we should remove it from our set.
+                eos5_missing_dim_names.erase(eos5_missing_dim_name);
+            }
+        }
+    }
+ 
+
+
+}
