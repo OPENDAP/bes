@@ -53,7 +53,7 @@ void usage() {
 
     build_dmrpp -V: Show build versions for components that make up the program
 
-    build_dmrpp -f <data file> -r <dmr file> [-u <href url>] [-c <bes conf file>] [-M] [-D] [-v] [-d]
+    build_dmrpp -f <data file> -r <dmr file> [-u <href url>] [-c <bes conf file>] [-M] [-D] [-L] [-v] [-d] 
 
     options:
         -f: HDF5 file to build DMR++ from
@@ -62,6 +62,7 @@ void usage() {
         -c: The BES configuration file used to create the DMR file
         -M: Add production metadata to the built DMR++
         -D: Disable Direct IO feature
+        -L: Save variable length data in a side car file
         -h: Show this help
         -v: Verbose HDF5 errors
         -V: Show build versions for components that make up the program
@@ -84,9 +85,10 @@ int main(int argc, char *argv[]) {
     string bes_conf_file_used_to_create_dmr;
     bool add_production_metadata = false;
     bool disable_dio = false;
+    bool vlen_in_sc = false;
 
     int option_char;
-    while ((option_char = getopt(argc, argv, "c:f:r:u:dhvVMD")) != -1) {
+    while ((option_char = getopt(argc, argv, "c:f:r:u:dhvVMDL")) != -1) {
         switch (option_char) {
             case 'V':
                 cerr << basename(argv[0]) << "-" << CVER << " (bes-"<< CVER << ", " << libdap_name() << "-"
@@ -129,6 +131,10 @@ int main(int argc, char *argv[]) {
                 disable_dio = true;
                 break;
 
+            case 'L':
+                vlen_in_sc = true;
+                break;
+
             default:
                 break;
         }
@@ -152,6 +158,7 @@ int main(int argc, char *argv[]) {
                 add_production_metadata,
                 bes_conf_file_used_to_create_dmr,
                 disable_dio,
+                vlen_in_sc,
                 argc,  argv);
     }
     catch (const BESError &e) {
