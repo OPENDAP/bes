@@ -119,7 +119,7 @@ void depth_first(hid_t pid, const char *gname, DAS & das)
 
         // Obtain the object type
         H5O_info_t oinfo;
-        if (H5OGET_INFO_BY_IDX(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oinfo, H5P_DEFAULT) < 0) {
+        if (H5Oget_info_by_idx3(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oinfo, H5O_INFO_BASIC, H5P_DEFAULT) < 0) {
             string msg = "Cannot obtain the object info ";
             msg += gname;
             throw BESInternalError(msg,__FILE__, __LINE__);
@@ -590,7 +590,7 @@ string get_hardlink(hid_t pgroup, const string & oname)
 
     // Get the object info
     H5O_info_t obj_info;
-    if (H5OGET_INFO(pgroup, &obj_info) < 0) { 
+    if (H5Oget_info3(pgroup, &obj_info, H5O_INFO_BASIC) < 0) { 
         string msg = "H5OGET_INFO() failed.";
         throw BESInternalError(msg,__FILE__,__LINE__);
     }

@@ -163,8 +163,7 @@ bool breadth_first(hid_t file_id, hid_t pid, const char *gname,
 
         // Obtain the object type, such as group or dataset. 
         H5O_info_t oinfo;
-        if (H5OGET_INFO_BY_IDX(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
-                              i, &oinfo, H5P_DEFAULT) <0 ) {
+        if (H5Oget_info_by_idx3(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oinfo, H5O_INFO_BASIC, H5P_DEFAULT) < 0) {
             string msg = "h5_dmr handler: Error obtaining the info for the object";
             msg += string(oname.begin(),oname.end());
             msg += ".";
@@ -219,9 +218,7 @@ bool breadth_first(hid_t file_id, hid_t pid, const char *gname,
 
         // Obtain the object type, such as group or dataset. 
         H5O_info_t oinfo;
-
-        if (H5OGET_INFO_BY_IDX(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
-                              i, &oinfo, H5P_DEFAULT) < 0 ) {
+        if (H5Oget_info_by_idx3(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oinfo, H5O_INFO_BASIC, H5P_DEFAULT) < 0) {
             string msg = "h5_dmr handler: Error obtaining the info for the object in the breadth_first.";
             throw BESInternalError(msg,__FILE__, __LINE__);
         }
@@ -1289,7 +1286,7 @@ string get_hardlink_dmr( hid_t h5obj_id, const string & oname) {
 
     // Get the object info
     H5O_info_t obj_info;
-    if (H5OGET_INFO(h5obj_id, &obj_info) <0) {
+    if (H5Oget_info3(h5obj_id, &obj_info, H5O_INFO_BASIC) < 0) {
         string msg = "H5OGET_INFO() failed for variable " + oname + ".";
         throw BESInternalError(msg,__FILE__,__LINE__);
     }
@@ -1448,8 +1445,7 @@ void obtain_struct_metadata_info(hid_t ecs_grp_id, vector<string> &s_oname, vect
 
         // Obtain the object type
         H5O_info_t oinfo;
-        if (H5OGET_INFO_BY_IDX(ecs_grp_id, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
-                               i, &oinfo, H5P_DEFAULT) < 0) {
+        if (H5Oget_info_by_idx3(ecs_grp_id, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oinfo, H5O_INFO_BASIC, H5P_DEFAULT) < 0) {
             string msg = "Cannot obtain the object info ";
             msg += ecs_group;
             msg += ".";
