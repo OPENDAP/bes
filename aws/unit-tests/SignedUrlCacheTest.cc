@@ -395,7 +395,76 @@ public:
     }
 
     void get_presigned_s3_url_test() {
-        // TODO-HR
+        SignedUrlCache *theCache = SignedUrlCache::TheCache();
+        // Force region to be supported, for the sake of testing
+        bes::AWS_SDK aws_sdk;
+        SignedUrlCache::TheCache()->d_aws_region_in_which_direct_copy_is_supported =
+            aws_sdk.get_aws_region_of_running_application();
+        std::shared_ptr<http::url> test_url = make_shared<http::url>("https://www.this-is-a-test.com");
+
+        CPPUNIT_ASSERT_MESSAGE("When cache is disabled, return nullptr output without throwing error",
+                               !theCache->get_presigned_s3_url(test_url));
+
+        // The cache is disabled in bes.conf, so we need to turn it on.
+        SignedUrlCache::TheCache()->d_enabled = true;
+
+        CPPUNIT_ASSERT_MESSAGE("For invalid input, return nullptr output without throwing error",
+                               !theCache->get_presigned_s3_url(nullptr));
+
+        CPPUNIT_ASSERT_MESSAGE(
+            "When no credentials available for the input, return nullptr output without throwing error",
+            !theCache->get_presigned_s3_url(test_url));
+
+        // Let's fake some pre-cached s3 credentials to test a GOOD response
+        theCache->d_href_to_s3_uri_cache.insert(pair<string, string>(test_url->str(), "s3://foo/bar"));
+        theCache->d_href_to_tea_endpoint_cache.insert(pair<string, string>(test_url->str(), "fake-tea-endpoint-name"));
+        auto fake_sts_creds =
+            make_shared<SignedUrlCache::S3AccessKeyTuple>("a man", "a plan", "a canal", "3035-07-16 02:20:33+00:00");
+        theCache->d_tea_endpoint_sts_credentials_cache.insert(
+            pair<string, shared_ptr<SignedUrlCache::S3AccessKeyTuple>>("fake-tea-endpoint-name", fake_sts_creds));
+        CPPUNIT_ASSERT_MESSAGE("Signed URL cache should be empty before any valid responses",
+                               theCache->d_presigned_s3_urls_cache.size() == 0);
+
+        auto result = theCache->get_presigned_s3_url(test_url);
+        CPPUNIT_ASSERT_MESSAGE("When credentials available for a url, return signed url", !result->str().empty());
+        CPPUNIT_ASSERT_MESSAGE("Generated signed url should have been cached",
+                               theCache->d_presigned_s3_urls_cache.size() == 1);
+        CPPUNIT_ASSERT_MESSAGE("When url has been precached, return it",
+                               theCache->get_presigned_s3_url(test_url)->str() == result->str());
+        CPPUNIT_ASSERT_MESSAGE("Generated signed url should have been cached",
+                               theCache->d_presigned_s3_urls_cache.size() == 1);
+
+        // Update request in the cache to be expired, so that we can see that the updated url is cached in its place
+        auto new_key = make_shared<http::url>("https://www.this-is-a-test.com");
+        std::string cached_presigned_url =
+            "https://foo.s3.us-east-1.amazonaws.com/"
+            "bar?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=a%20man%2F20260514%2Fus-east-1%2Fs3%2Faws4_request&"
+            "X-Amz-Date=20260514T221009Z&X-Amz-Expires=31846277424&X-Amz-Security-Token=a%20canal&X-Amz-SignedHeaders="
+            "host&X-Amz-Signature=99d4cae916dc174f8f36e1e5ddb881f19ff32f84e24e4021deefc8d783c1e40f";
+        theCache->d_presigned_s3_urls_cache[new_key->str()] = make_shared<http::EffectiveUrl>(cached_presigned_url);
+        CPPUNIT_ASSERT_MESSAGE("When signed url has been precached, return cached value",
+                               theCache->get_presigned_s3_url(new_key)->str() == cached_presigned_url);
+        std::string expired_cached_url =
+            "https://foo.s3.us-east-1.amazonaws.com/"
+            "bar?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=a%20man%2F20260514%2Fus-east-1%2Fs3%2Faws4_request&"
+            "X-Amz-Date=20200621T161744Z&X-Amz-Expires=86400&X-Amz-Security-Token=a%20canal&X-Amz-SignedHeaders="
+            "host&X-Amz-Signature=99d4cae916dc174f8f36e1e5ddb881f19ff32f84e24e4021deefc8d783c1e40f";
+        theCache->d_presigned_s3_urls_cache[new_key->str()] = make_shared<http::EffectiveUrl>(expired_cached_url);
+        // CPPUNIT_ASSERT_MESSAGE("Wat", theCache->get_presigned_s3_url(new_key));
+        auto regenerated_url = theCache->get_presigned_s3_url(new_key);
+        CPPUNIT_ASSERT_MESSAGE("When cached url has expired, regenerate it on request " + regenerated_url->str(),
+                               regenerated_url->str() != expired_cached_url);
+
+        // Set up valid credentials for a bad request url, so that we can see that the request still fails
+        std::shared_ptr<http::url> bad_request_key(new http::url("not-a-url"));
+        theCache->d_href_to_s3_uri_cache.insert(pair<string, string>(bad_request_key->str(), "s3://foo/bar"));
+        theCache->d_href_to_tea_endpoint_cache.insert(
+            pair<string, string>(bad_request_key->str(), "fake-tea-endpoint-name-2"));
+        theCache->d_tea_endpoint_sts_credentials_cache.insert(
+            pair<string, shared_ptr<SignedUrlCache::S3AccessKeyTuple>>("fake-tea-endpoint-name-2", fake_sts_creds));
+        CPPUNIT_ASSERT_MESSAGE(
+            "When credentials available for input that is not a url, return nullptr output without throwing error",
+            !theCache->get_presigned_s3_url(bad_request_key));
     }
 
     void split_s3_url_test() {

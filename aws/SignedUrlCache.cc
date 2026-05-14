@@ -148,6 +148,11 @@ shared_ptr<http::EffectiveUrl> SignedUrlCache::get_presigned_s3_url(shared_ptr<h
         return nullptr;
     }
 
+    if (source_url == nullptr) {
+        BESDEBUG(MODULE, prolog << "END Not a valid request, SKIPPING." << endl);
+        return nullptr;
+    }
+
     // if it's not an HTTP url there is nothing to sign or cache.
     if (source_url->str().find(HTTP_PROTOCOL) != 0 && source_url->str().find(HTTPS_PROTOCOL) != 0) {
         BESDEBUG(MODULE, prolog << "END Not an HTTP request, SKIPPING." << endl);
