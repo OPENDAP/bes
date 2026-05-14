@@ -114,9 +114,10 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Cache should not yet be initialized to enabled or disabled",
                                SignedUrlCache::TheCache()->d_enabled == -1);
 
+        SignedUrlCache::TheCache()->is_enabled();
         CPPUNIT_ASSERT_MESSAGE("Checking if the cache is enabled should initialize it to enabled or disabled, based on "
                                "bes.conf and if the application is running from a supported aws region",
-                               SignedUrlCache::TheCache()->is_enabled() != -1);
+                               SignedUrlCache::TheCache()->d_enabled != -1);
     }
 
     void is_cache_supported_within_current_aws_region_test() {
@@ -372,7 +373,25 @@ public:
     }
 
     void sign_s3_uri_with_sts_credentials_test() {
-        // TODO-HR
+        SignedUrlCache *theCache = SignedUrlCache::TheCache();
+        auto s3_access_key_tuple =
+            make_shared<SignedUrlCache::S3AccessKeyTuple>("a man", "a plan", "a canal", "3035-07-16 02:20:33+00:00");
+
+        CPPUNIT_ASSERT_MESSAGE("Empty uri does not return a signed url but does not throw error",
+                               !theCache->sign_s3_uri_with_sts_credentials("", s3_access_key_tuple));
+        CPPUNIT_ASSERT_MESSAGE("Invalid s3 uri does not return a signed url but does not throw error",
+                               !theCache->sign_s3_uri_with_sts_credentials("foo", s3_access_key_tuple));
+        auto output = theCache->sign_s3_uri_with_sts_credentials("s3://bucket/key", s3_access_key_tuple);
+        CPPUNIT_ASSERT_MESSAGE("Valid object should return a signed url, regardless of validity of credentials",
+                               !output->str().empty());
+
+        auto output2 = theCache->sign_s3_uri_with_sts_credentials("s3://bucket/key", s3_access_key_tuple);
+        CPPUNIT_ASSERT_MESSAGE("Resigned object with same STS credentials should yield identical output:\n\t" +
+                                   output->str() + "\n\n\t" + output2->str(),
+                               output->str() == output2->str());
+
+        CPPUNIT_ASSERT_MESSAGE("Missing credentials does not return a signed url but does not error",
+                               !theCache->sign_s3_uri_with_sts_credentials("s3://bucket/key", nullptr));
     }
 
     void get_presigned_s3_url_test() {
@@ -476,6 +495,4 @@ CPPUNIT_TEST_SUITE_REGISTRATION(SignedUrlCacheTest);
 
 } // namespace bes
 
-int main(int argc, char *argv[]) {
-    return bes_run_tests<bes::SignedUrlCacheTest>(argc, argv, "cerr,bes,http") ? 0 : 1;
-}
+int main(int argc, char *argv[]) { return bes_run_tests<bes::SignedUrlCacheTest>(argc, argv, "cerr,bes,http") ? 0 : 1; }

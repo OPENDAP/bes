@@ -412,6 +412,12 @@ uint64_t SignedUrlCache::num_seconds_until_expiration(const string &credentials_
  */
 std::shared_ptr<http::EffectiveUrl> SignedUrlCache::sign_s3_uri_with_sts_credentials(std::string const &s3_uri,
                                                                                      std::shared_ptr<S3AccessKeyTuple> const s3_access_key_tuple) {
+
+    if (s3_access_key_tuple == nullptr) {
+        INFO_LOG(prolog + "SERVICE CHAIN WARNING - Failed to generate signed url due to missing s3credentials -  " + s3_uri);
+        return nullptr;
+    }
+                                                                       
     bes::AWS_SDK aws_sdk;
     string id = get<0>(*s3_access_key_tuple);
     string secret = get<1>(*s3_access_key_tuple);
