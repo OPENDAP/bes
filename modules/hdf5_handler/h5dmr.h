@@ -165,6 +165,7 @@ void obtain_dimnames(libdap::D4Group *d4_grp, hid_t file_id, hid_t pid, hid_t ds
 void obtain_dimnames_internal(libdap::D4Group *d4_grp, hid_t file_id, hid_t pid, hid_t dset,int ndims, DS_t *dt_inst_ptr,std::vector<link_info_t> & hdf5_hls,
                               bool is_eos5, const string &dimlist_name, const eos5_dim_info_t &);
 
+void obtain_eos5_dimnames_internal(DS_t *dt_inst_ptr,const eos5_dim_info_t &eos5_dim_info, const string& trim_objname, bool is_eos5_missing_dimscale, int dim_index);
 std::string obtain_dimname_deref(hid_t ref_dset, const DS_t *dt_inst_ptr);
 std::string obtain_dimname_dap4(libdap::D4Group *d4_grp, hid_t pid, hid_t oid, size_t dim_size);
 bool is_dap4_dimension_name(hid_t pid, hid_t old, const string &temp_dim_path);
@@ -282,5 +283,8 @@ void add_unlimited_dimension_info(libdap::D4Group *d4_grp);
 
 // Remove unlimited dimensions if the key is set to false
 void remove_unlimited_dimension_info(libdap::D4Group *d4_grp);
+
+// Obtain the HDF5 unlimited dimension information (used by get_dataset_dmr())
+void obtain_hdf5_unlimited_dimension_info(DS_t *dt_inst_ptr, const vector<hsize_t>&maxsize);
 
 #endif

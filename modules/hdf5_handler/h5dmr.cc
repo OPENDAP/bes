@@ -3913,6 +3913,7 @@ void get_dataset_dmr(D4Group *d4_grp, hid_t file_id, hid_t pid, const string &dn
     for (int j = 0; j < ndims; j++) 
         (*dt_inst_ptr).size[j] = size[j];
 
+#if 0
     // Add unlimited dimension information
     bool has_unlimited_dim = false;
     for (const auto&max_s:maxsize) {
@@ -3931,6 +3932,8 @@ void get_dataset_dmr(D4Group *d4_grp, hid_t file_id, hid_t pid, const string &dn
                 (*dt_inst_ptr).unlimited_dims.push_back(false);
         }
     }
+#endif
+    obtain_hdf5_unlimited_dimension_info(dt_inst_ptr, maxsize);
 
     // For DAP4 when dimension scales are used.
     if (true == use_dimscale)
@@ -3956,6 +3959,26 @@ void get_dataset_dmr(D4Group *d4_grp, hid_t file_id, hid_t pid, const string &dn
  
 }
 
+void obtain_hdf5_unlimited_dimension_info(DS_t *dt_inst_ptr, const vector<hsize_t>&maxsize) {
+
+    bool has_unlimited_dim = false;
+    for (const auto&max_s:maxsize) {
+        if (max_s == H5S_UNLIMITED) {
+            has_unlimited_dim = true;
+            break;
+        }
+    }
+
+    if (has_unlimited_dim) {
+        for (const auto&max_s:maxsize) {
+            if (max_s == H5S_UNLIMITED) {
+                (*dt_inst_ptr).unlimited_dims.push_back(true);
+            }
+            else 
+                (*dt_inst_ptr).unlimited_dims.push_back(false);
+        }
+    }
+}
 
 // This function will retrieve the dimension names for all dimensions in this variable. The variable is
 // represented as the HDF5 dataset id dset. 
@@ -4159,7 +4182,8 @@ void obtain_dimnames_internal(D4Group *d4_grp, hid_t file_id, hid_t pid, hid_t d
             // If this is an HDF-EOS5 file and it is using the dimension scales, we need to change the
             // non-alphanumeric/underscore characters inside the path and the name to underscore.
             if (is_eos5) {
-
+                obtain_eos5_dimnames_internal(dt_inst_ptr,eos5_dim_info,trim_objname,is_eos5_missing_dimscale,i);
+#if 0
                 // Here we come to patch the missing eos5 dimension scale case. This is the data producer's bug.
                 // However, we are paid to carry out the service. 
                 if (is_eos5_missing_dimscale) {
@@ -4190,6 +4214,7 @@ void obtain_dimnames_internal(D4Group *d4_grp, hid_t file_id, hid_t pid, hid_t d
                     dt_inst_ptr->dimnames.push_back(temp_dim_name);
                     dt_inst_ptr->dimnames_path.push_back(temp_dim_path);
                 }
+#endif
             }
             else {
                 dt_inst_ptr->dimnames.push_back(trim_objname.substr(trim_objname.find_last_of("/")+1));
@@ -4429,6 +4454,43 @@ string obtain_dim_via_hdf5_group(hid_t pid, hid_t oid,const string &full_path) {
     BESDEBUG("h5","dim_path before exiting obtain_dim_via_hdf5_group: " << dim_path <<endl);
     return dim_path;
 }
+
+void obtain_eos5_dimnames_internal(DS_t *dt_inst_ptr,const eos5_dim_info_t &eos5_dim_info, const string& trim_objname, bool is_eos5_missing_dimscale, int dim_index) {
+
+    // Here we come to patch the missing eos5 dimension scale case. This is the data producer's bug.
+    // However, we are paid to carry out the service. 
+    if (is_eos5_missing_dimscale) {
+        // Retrieve the dimension name from eos5_dim_info
+        auto var_full_path= string(dt_inst_ptr->name);
+        eos5_dim_info_t temp_eos5_dim_info = eos5_dim_info;
+        auto temp_eos5_varpath_to_dims = temp_eos5_dim_info.varpath_to_dims;
+        if (temp_eos5_varpath_to_dims.find(var_full_path)!=temp_eos5_varpath_to_dims.end()) {
+            if (temp_eos5_varpath_to_dims[var_full_path].size()>dim_index) {
+                string temp_dim_path = (temp_eos5_varpath_to_dims[var_full_path])[dim_index];
+                string temp_dim_name = temp_dim_path.substr(temp_dim_path.find_last_of("/")+1);
+                dt_inst_ptr->dimnames.push_back(temp_dim_name);
+                dt_inst_ptr->dimnames_path.push_back(temp_dim_path);
+            }
+            else { // TODO: add phony dim later. Now throw an error.
+                throw BESInternalError("Cannot find eos5 dimension from the eos5 file to fill in the dimension.",__FILE__, __LINE__);
+            }
+        }
+        else { // TODO: add phony dim later. Now throw an error.
+            throw BESInternalError("Cannot find eos5 dimension from the eos5 file to fill in the dimension.",__FILE__, __LINE__);
+        }
+        
+    }
+    else {
+        string temp_orig_dim_name = trim_objname.substr(trim_objname.find_last_of("/")+1);
+        string temp_dim_name = handle_string_special_characters(temp_orig_dim_name);
+        string temp_dim_path = handle_string_special_characters_in_path(trim_objname);
+        dt_inst_ptr->dimnames.push_back(temp_dim_name);
+        dt_inst_ptr->dimnames_path.push_back(temp_dim_path);
+    }
+}
+ 
+
+
 ///////////////////////////////////////////////////////////////////////////////
 /// \fn attr_info(hid_t loc_id, const char* name, const H5A_info_t* void*opdata)
 ///
