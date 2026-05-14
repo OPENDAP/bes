@@ -50,8 +50,8 @@ public:
     SetContextsResponseHandler(const std::string &name): BESResponseHandler(name) { }
     virtual ~SetContextsResponseHandler(void) { }
 
-    virtual void execute(BESDataHandlerInterface &dhi);
-    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+    void execute(BESDataHandlerInterface &dhi) override;
+    void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;
 
     void dump(std::ostream &strm) const override;
 
@@ -63,4 +63,3 @@ public:
 }   // namespace bes
 
 #endif // SetContextsResponseHandler_h
-

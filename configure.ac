@@ -56,6 +56,11 @@ AC_CONFIG_AUX_DIR([conf])
 AC_CONFIG_MACRO_DIR([conf])
 
 AM_INIT_AUTOMAKE([1.10 tar-pax])
+AC_CANONICAL_HOST
+AS_CASE([$host],
+    [*darwin*],
+    [AS_IF([test -z "$lt_cv_sys_max_cmd_len"],
+        [lt_cv_sys_max_cmd_len=196608])])
 LT_INIT
 
 AC_DEFINE_UNQUOTED(CVER, "$PACKAGE_VERSION", [Client version number])
@@ -64,7 +69,6 @@ AC_SUBST(CVER)
 dnl flags for the compilers and linkers - set these before locating the
 dnl actual tools since some of the AC_PROG macros set these 'flag variables'
 dnl to default values otherwise.
-AC_CANONICAL_HOST
 AC_SUBST(host)
 
 dnl Moved this out of the AWS-specific checks. jhrg 10/16/25
@@ -75,6 +79,44 @@ AS_CASE([$host],
                  AC_MSG_NOTICE([OSX found.])],
     [AM_CONDITIONAL([DARWIN], [false])
      AC_MSG_NOTICE([OSX not found, may assume Linux in places.])])
+
+dnl On macOS, ld warns for nonexistent -L search paths reported by dependency
+dnl discovery tools such as pkg-config and *-config scripts.
+dnl These are used below when setting the libdap and gridfields paths. jhrg 5/6/26
+bes_prune_missing_L_paths()
+{
+    bes_pruned_L_paths=
+    for bes_arg
+    do
+        case $bes_arg in
+        -L*)
+            bes_dir=`echo "x$bes_arg" | sed 's/^x-L//'`
+            AS_IF([test -d "$bes_dir"], [bes_pruned_L_paths="$bes_pruned_L_paths $bes_arg"])
+            ;;
+        *)
+            bes_pruned_L_paths="$bes_pruned_L_paths $bes_arg"
+            ;;
+        esac
+    done
+    echo "$bes_pruned_L_paths"
+}
+
+dnl Libtool still defaults an unset MACOSX_DEPLOYMENT_TARGET to 10.0 in the
+dnl generated libtool script, which adds deprecated -bind_at_load for C++ links.
+dnl Preserve explicit user targets, but make the unset default new enough to skip it.
+AC_CONFIG_COMMANDS([fix-libtool-darwin],
+[
+case $host in
+*-darwin*)
+    if test -f libtool; then
+        sed 's/MACOSX_DEPLOYMENT_TARGET-10\.0/MACOSX_DEPLOYMENT_TARGET-10.4/g' libtool > libtool.tmp \
+            && mv libtool.tmp libtool \
+            && chmod +x libtool
+    fi
+    ;;
+esac
+],
+[host=$host])
 
 dnl This is the default. If the caller uses --enable-developer, that option
 dnl will override these values
@@ -323,19 +365,20 @@ AC_FUNC_STRTOD
 AC_FUNC_VPRINTF
 
 OPENSSL_LIBS=-lcrypto
-
-AC_SUBST([OPENSSL_LIBS])
-
-OPENSSL_INC=-I/usr/local/opt/openssl/include
-OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
+OPENSSL_INC=
+OPENSSL_LDFLAGS=
 
 AC_CHECK_HEADER([openssl/sha.h], [], [openssl_found=false])
 
-AS_IF([test ! $openssl_found],
-    [
-    AC_SUBST([OPENSSL_INC])
-    AC_SUBST([OPENSSL_LDFLAGS])
-    ])
+AS_IF([test "x$openssl_found" = xfalse],
+    [AS_IF([test -d /usr/local/opt/openssl/include],
+        [OPENSSL_INC=-I/usr/local/opt/openssl/include])
+     AS_IF([test -d /usr/local/opt/openssl/lib],
+        [OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib])])
+
+AC_SUBST([OPENSSL_LIBS])
+AC_SUBST([OPENSSL_INC])
+AC_SUBST([OPENSSL_LDFLAGS])
 
 BES_OLD_LIBS=$LIBS
 dnl z and bz2 library?
@@ -408,6 +451,14 @@ dnl jhrg 10/14/15 BES_CHECK_OPENSSL
 dnl BES_CHECK_KERBEROS
 
 AC_CHECK_LIBDAP([3.18.0], [AM_CONDITIONAL([LIBDAP], [true])], [AM_CONDITIONAL([LIBDAP], [false])])
+AS_CASE([$host],
+    [*darwin*],
+    [DAP_LIBS=`bes_prune_missing_L_paths $DAP_LIBS`
+     DAP_CLIENT_LIBS=`bes_prune_missing_L_paths $DAP_CLIENT_LIBS`
+     DAP_SERVER_LIBS=`bes_prune_missing_L_paths $DAP_SERVER_LIBS`
+     DAP_STATIC_LIBS=`bes_prune_missing_L_paths $DAP_STATIC_LIBS`
+     DAP_CLIENT_STATIC_LIBS=`bes_prune_missing_L_paths $DAP_CLIENT_STATIC_LIBS`
+     DAP_SERVER_STATIC_LIBS=`bes_prune_missing_L_paths $DAP_SERVER_STATIC_LIBS`])
 AC_MSG_CHECKING([on libdap])
 AM_COND_IF([LIBDAP], [AC_MSG_RESULT([yes])], [AC_MSG_ERROR([Could not find libdap.])])
 
@@ -514,16 +565,16 @@ AS_IF([test -n "$deps_libdir"],
         [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,$deps_libdir"
          AS_IF([test -n "$deps_libdir64"], [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,$deps_libdir64"])
          AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,'\$ORIGIN'"])
-    AC_MSG_NOTICE([Set AM_LDFLAGS to $AM_LDFLAGS])
+    AC_MSG_NOTICE([Set Automake linker flags to $AM_LDFLAGS])
     AC_SUBST([AM_LDFLAGS])])
 
-BES_DISPATCH_LIB="-L\$(top_builddir)/dispatch -lbes_dispatch"
+BES_DISPATCH_LIB="\$(abs_top_builddir)/dispatch/libbes_dispatch.la"
 AC_SUBST(BES_DISPATCH_LIB)
-BES_XML_CMD_LIB="-L\$(top_builddir)/xmlcommand -lbes_xml_command"
+BES_XML_CMD_LIB="\$(abs_top_builddir)/xmlcommand/libbes_xml_command.la"
 AC_SUBST(BES_XML_CMD_LIB)
-BES_PPT_LIB="-L\$(top_builddir)/ppt -lbes_ppt"
+BES_PPT_LIB="\$(abs_top_builddir)/ppt/libbes_ppt.la"
 AC_SUBST(BES_PPT_LIB)
-BES_DAP_LIB="-L\$(top_builddir)/dap -ldap_module"
+BES_DAP_LIB="\$(abs_top_builddir)/dap/libdap_module.la"
 AC_SUBST(BES_DAP_LIB)
 
 dnl This enables code to link with the dap_module without a warning. Use this not
@@ -534,7 +585,7 @@ AC_SUBST(BES_DAP_LIB_LDFLAGS)
 
 dnl jhrg 6/2/23 BES_EXTRA_LIBS="$LIBS $openssl_libs"
 dnl AC_SUBST(BES_EXTRA_LIBS)
-BES_HTTP_LIB="-L\$(top_builddir)/http -lbes_http"
+BES_HTTP_LIB="\$(abs_top_builddir)/http/libbes_http.la"
 AC_SUBST(BES_HTTP_LIB)
 
 dnl These tests are for the dependencies of specific handlers. Added jhrg 11/17/13
@@ -1096,6 +1147,10 @@ AC_SUBST([GF_LIBS])
 AC_SUBST([GF_CFLAGS])
 AC_SUBST([GF_PATH])
 
+AS_CASE([$host],
+    [*darwin*],
+    [GF_LIBS=`bes_prune_missing_L_paths $GF_LIBS`])
+
 if test "$libgf_ok" = "yes"
 then
     echo "Set gridfields CFLAGS to $GF_CFLAGS"
@@ -1375,12 +1430,7 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     modules/ugrid_functions/Makefile 
     modules/ugrid_functions/unit-tests/Makefile
     modules/ugrid_functions/tests/Makefile 
-    modules/ugrid_functions/tests/atlocal
-        
-    modules/w10n_handler/Makefile 
-    modules/w10n_handler/unit-tests/Makefile
-    modules/w10n_handler/tests/Makefile 
-    modules/w10n_handler/tests/atlocal])
+    modules/ugrid_functions/tests/atlocal])
 
     dnl Move these into the autotest.at files using an autotest option.
     AC_CONFIG_FILES([modules/xml_data_handler/tests/generate_metadata_baseline.sh],
@@ -1421,7 +1471,6 @@ AM_COND_IF([DAP_BUILTIN_MODULES],
     AC_CONFIG_TESTDIR(modules/gdal_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/ncml_module/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/ugrid_functions/tests, [standalone])
-    AC_CONFIG_TESTDIR(modules/w10n_handler/tests, [standalone])
 
     AC_CONFIG_TESTDIR(modules/functions/tests, [standalone])
     AC_CONFIG_TESTDIR(modules/functions/stare/tests, [standalone])

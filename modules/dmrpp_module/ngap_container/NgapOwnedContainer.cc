@@ -40,6 +40,7 @@
 #include "BESDebug.h"
 #include "BESForbiddenError.h"
 #include "BESLog.h"
+#include "BESNotFoundError.h"
 #include "BESStopWatch.h"
 #include "BESSyntaxUserError.h"
 #include "BESUtil.h"
@@ -404,8 +405,8 @@ bool NgapOwnedContainer::get_daac_content_filters(const NgapApi::DataAccessUrls 
                                                   map<string, string, std::less<>> &content_filters) {
     string data_url;
     string data_s3_url;
-    string s3credentials_url;
-    tie(data_url, data_s3_url, s3credentials_url) = data_urls;
+    string tea_endpoint_url;
+    tie(data_url, data_s3_url, tea_endpoint_url) = data_urls;
     // data_url was get_real_name(). jhrg 8/9/24
 
     if (NgapOwnedContainer::d_inject_data_url) {
@@ -416,15 +417,15 @@ bool NgapOwnedContainer::get_daac_content_filters(const NgapApi::DataAccessUrls 
 
         /*
         Desired output string:
-        dmrpp:href=\"<data_url>\" dmrpp:s3=\"<data_s3_url>\" dmrpp:s3credentials=\"<s3credentials_url>\"
+        dmrpp:href=\"<data_url>\" dmrpp:s3=\"<data_s3_url>\" dmrpp:s3credentials=\"<tea_endpoint_url>\"
         dmrpp:trust=\"true\"
         */
         string data_access_urls("href=\"" + data_url + "\" dmrpp:s3=\"" + data_s3_url + "\" dmrpp:s3credentials=\"" +
-                                s3credentials_url + "\" " + trusted_url_hack);
+                                tea_endpoint_url + "\" " + trusted_url_hack);
 
         // Same as above, but with a special suffix on each data url
         string missing_data_access_urls("href=\"" + data_url + "_mvs.h5\" dmrpp:s3=\"" + data_s3_url +
-                                        "_mvs.h5\" dmrpp:s3credentials=\"" + s3credentials_url + "\" " +
+                                        "_mvs.h5\" dmrpp:s3credentials=\"" + tea_endpoint_url + "\" " +
                                         trusted_url_hack);
 
         content_filters.clear();
@@ -545,7 +546,7 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
  * @brief Get the DMR++ from a remote source or a cache
  *
  * This method will try to read a DMR++ from an S3 bucket if that DMR++ cannot be found in the
- * DMR++ cache. If the DMR++ cannot be read from a S3 bucket, it will throw an exception. The
+ * DMR++ cache. If the DMR++ cannot be read from a S3 bucket or is empty, it will throw an exception. The
  * method returns false if the DMR++ was read but for some reason could not be cached.
  *
  * @param dmrpp_string Value-result parameter that will contain the DMR++ as a string
@@ -555,32 +556,41 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
  * Note that if this methods cannot get the DMR++ from the remote source, it will throw an exception.
  *
  * @exception http::HttpError if there is a problem making the remote request if one is needed.
+ * @exception bes::BESNotFoundError if the container's name cannot be parsed into a DMR++ URI
+ * @exception bes::BESInternalError if the resultant DMR++ is empty
  */
 bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_string) const {
     BES_MODULE_TIMING(prolog + get_real_name());
 
     // If the DMR++ is cached, return it. NB: This cache holds OPeNDAP- and DAAC-owned DMR++ documents.
     if (NgapOwnedContainer::d_use_dmrpp_cache && get_item_from_dmrpp_cache(dmrpp_string)) {
+        if (dmrpp_string.empty()) {
+            throw BESInternalError("Expected a non-empty cached dmrpp_string for `" + get_real_name() + "`", __FILE__, __LINE__);
+        }
         return true;
-    } else {
-        // If the server is set up to try the OPeNDAP bucket, look there first if the path starts with
-        // "source/". jhrg 3/10/26
-        if (NgapOwnedContainer::d_support_source_prefix && get_real_name().find("source/") == 0) {
-            // If we get the DMR++ from the OPeNDAP bucket, set dmrpp_read to true so
-            // we don't also try the DAAC bucket.
-            dmrpp_read_from_opendap_bucket(dmrpp_string);
+    }
 
-        }
-        // Try the DAAC bucket if either the OPeNDAP bucket is not used or the container real name
-        // does not start with 'source/'. jhrg 3/10/26
-        else if (get_real_name().find("collections/") == 0) {
-            dmrpp_read_from_daac_bucket(dmrpp_string);
-        }
-        // If the URL path starts with neither 'source' nor 'collections' and local files are tested,
-        // try to read from the local file system. jhrg 3/10/26else if
-        else if (NgapOwnedContainer::d_enable_dmrpp_local_files_for_testing) {
-            dmrpp_read_from_local_path(dmrpp_string);
-        }
+    // If the server is set up to try the OPeNDAP bucket, look there first...
+    if (NgapOwnedContainer::d_support_source_prefix && get_real_name().find("source/") == 0) {
+        // If we get the DMR++ from the OPeNDAP bucket, set dmrpp_read to true so
+        // we don't also try the DAAC bucket.
+        dmrpp_read_from_opendap_bucket(dmrpp_string);
+    }
+    // ...or try a DAAC bucket, if indicated by the path prefix...
+    else if (get_real_name().find("collections/") == 0 || get_real_name().find("providers/") == 0) {
+        dmrpp_read_from_daac_bucket(dmrpp_string);
+    }
+    // ...or try to read from the local file system, if supported.
+    else if (NgapOwnedContainer::d_enable_dmrpp_local_files_for_testing) {
+        dmrpp_read_from_local_path(dmrpp_string);
+    }
+    else {
+        throw BESNotFoundError("Unable to formulate DMR++ URI for `" + get_real_name() + "`", __FILE__, __LINE__);
+    }
+
+    // In all cases, ending up with an empty dmr++ indicates that something has gone horribly wrong, either during caching or (more likely) at the dmr++ generation stage
+    if (dmrpp_string.empty()) {
+        throw BESInternalError("Expected a non-empty dmrpp_string for `" + get_real_name() + "`", __FILE__, __LINE__);
     }
 
     // if we get here, the DMR++ has been pulled over the network. Put it in both caches.
@@ -682,7 +692,7 @@ string NgapOwnedContainer::alt_access() {
     // To sign urls locally, we need access to the credential info that has been previously
     // injected into the dmrpp. Extract that now, in preparation for upcoming url signing.
     auto urls = extract_s3_data_urls_from_dmrpp(dmrpp_string);
-    SignedUrlCache::TheCache()->cache_signed_url_components(get<0>(urls), get<1>(urls), get<2>(urls));
+    SignedUrlCache::TheCache()->cache_prerequisites_for_url_signing(get<0>(urls), get<1>(urls), get<2>(urls));
 
     set_attributes("as-string");    // This means access() returns a string. jhrg 10/19/23
 

@@ -6,8 +6,10 @@
 .dir
 autom4te.cache
 /bes-*
-docs
 .idea/
+.agents
+**/AGENTS.md
+.vscode/*.json
 bes_VERSION
 cookies
 gcovr_report.txt
@@ -176,5 +178,3 @@ timing/*/*.dtps
 /.scannerwork/
 /bw-output/
 
-## IDE configuration
-.vscode/**

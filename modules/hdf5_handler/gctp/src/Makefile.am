@@ -2,7 +2,7 @@
 
 # Library to build
 # Added 'noinst' to suppress installation of this library. jhrg 5/25/17
-noinst_LIBRARIES = libGctp.a
+noinst_LTLIBRARIES = libGctp.la
 
 # Include the libGCTP include directory
 AM_CPPFLAGS = -I$(srcdir)/../include/
@@ -16,8 +16,8 @@ AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
 # Library source files
-libGctp_a_SOURCES = gctp.c alberfor.c alberinv.c alconfor.c alconinv.c      \
-          azimfor.c aziminv.c bceafor.c bceainv.c br_gctp.c ceafor.c         \
+libGctp_la_SOURCES = gctp.c alberfor.c alberinv.c alconfor.c alconinv.c      \
+          azimfor.c aziminv.c bceafor.c bceainv.c ceafor.c         \
           ceainv.c cproj.c eqconfor.c eqconinv.c equifor.c equiinv.c         \
           for_init.c gnomfor.c gnominv.c goodfor.c goodinv.c gvnspfor.c      \
           gvnspinv.c hamfor.c haminv.c imolwfor.c imolwinv.c inv_init.c      \
@@ -30,3 +30,6 @@ libGctp_a_SOURCES = gctp.c alberfor.c alberinv.c alconfor.c alconinv.c      \
           utmfor.c utminv.c vandgfor.c vandginv.c wivfor.c wivinv.c          \
           wviifor.c wviiinv.c
 
+if !DARWIN
+libGctp_la_SOURCES += br_gctp.c
+endif

@@ -148,27 +148,35 @@ string NgapApi::build_cmr_query_url_old_rpath_format(const string &restified_pat
     {
         // This easy-handle is only created so we can use the curl_easy_escape() on the token values
         CURL *ceh = curl_easy_init();
-        char *esc_url_content;
+        char *unescaped_url_content;
+        int unescaped_output_length = 0;
+        char *escaped_url_content;
 
         // Add provider
-        esc_url_content = curl_easy_escape(ceh, provider.c_str(), provider.size());
-        cmr_url += string(CMR_PROVIDER).append("=").append(esc_url_content).append("&");
-        curl_free(esc_url_content);
+        unescaped_url_content = curl_easy_unescape(ceh, provider.c_str(), static_cast<int>(provider.size()), &unescaped_output_length);
+        escaped_url_content = curl_easy_escape(ceh, unescaped_url_content, unescaped_output_length);
+        cmr_url += string(CMR_PROVIDER).append("=").append(escaped_url_content).append("&");
+        curl_free(unescaped_url_content);
+        curl_free(escaped_url_content);
 
-        esc_url_content = curl_easy_escape(ceh, collection.c_str(), collection.size());
+        unescaped_url_content = curl_easy_unescape(ceh, collection.c_str(), static_cast<int>(collection.size()), &unescaped_output_length);
+        escaped_url_content = curl_easy_escape(ceh, unescaped_url_content, unescaped_output_length);
         if (use_collection_concept_id) {
             // Add collection_concept_id
-            cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(esc_url_content).append("&");
+            cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(escaped_url_content).append("&");
         } else {
             // Add entry_title
-            cmr_url += string(CMR_ENTRY_TITLE).append("=").append(esc_url_content).append("&");
+            cmr_url += string(CMR_ENTRY_TITLE).append("=").append(escaped_url_content).append("&");
 
         }
-        curl_free(esc_url_content);
+        curl_free(unescaped_url_content);
+        curl_free(escaped_url_content);
 
-        esc_url_content = curl_easy_escape(ceh, granule.c_str(), granule.size());
-        cmr_url += string(CMR_GRANULE_UR).append("=").append(esc_url_content);
-        curl_free(esc_url_content);
+        unescaped_url_content = curl_easy_unescape(ceh, granule.c_str(), static_cast<int>(granule.size()), &unescaped_output_length);
+        escaped_url_content = curl_easy_escape(ceh, unescaped_url_content, unescaped_output_length);
+        cmr_url += string(CMR_GRANULE_UR).append("=").append(escaped_url_content);
+        curl_free(unescaped_url_content);
+        curl_free(escaped_url_content);
 
         curl_easy_cleanup(ceh);
     }
@@ -262,15 +270,15 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
     {
         // This easy-handle is only created so we can use the curl_easy_escape() on the token values
         CURL *ceh = curl_easy_init();
-        char *esc_url_content;
+        char *escaped_url_content;
 
-        esc_url_content = curl_easy_escape(ceh, collection_name.c_str(), collection_name.size());
-        cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(esc_url_content).append("&");
-        curl_free(esc_url_content);
+        escaped_url_content = curl_easy_escape(ceh, collection_name.c_str(), static_cast<int>(collection_name.size()));
+        cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(escaped_url_content).append("&");
+        curl_free(escaped_url_content);
 
-        esc_url_content = curl_easy_escape(ceh, granule_name.c_str(), granule_name.size());
-        cmr_url += string(CMR_GRANULE_UR).append("=").append(esc_url_content);
-        curl_free(esc_url_content);
+        escaped_url_content = curl_easy_escape(ceh, granule_name.c_str(), static_cast<int>(granule_name.size()));
+        cmr_url += string(CMR_GRANULE_UR).append("=").append(escaped_url_content);
+        curl_free(escaped_url_content);
 
         curl_easy_cleanup(ceh);
     }
@@ -433,7 +441,7 @@ NgapApi::DataAccessUrls NgapApi::get_urls_from_granules_umm_json_v1_4(const std:
     // The first element of 'items' is now vetted so that we know it's an array of 'RelatedUrls'.
     string data_http_url;
     string data_s3_url;
-    string s3credentials_url;
+    string tea_endpoint_url;
     for (rapidjson::SizeType i = 0; i < related_urls.Size(); i++) {
         if (data_http_url.empty()) {
             data_http_url = get_data_http_url(related_urls[i]);
@@ -441,10 +449,10 @@ NgapApi::DataAccessUrls NgapApi::get_urls_from_granules_umm_json_v1_4(const std:
         if (data_s3_url.empty()) {
             data_s3_url = get_data_s3_url(related_urls[i]);
         }
-        if (s3credentials_url.empty()) {
-            s3credentials_url = get_s3credentials_url(related_urls[i]);
+        if (tea_endpoint_url.empty()) {
+            tea_endpoint_url = get_s3credentials_url(related_urls[i]);
         }
-        if (!data_http_url.empty() && !data_s3_url.empty() && !s3credentials_url.empty()) {
+        if (!data_http_url.empty() && !data_s3_url.empty() && !tea_endpoint_url.empty()) {
             break;
         }
     }
@@ -452,7 +460,7 @@ NgapApi::DataAccessUrls NgapApi::get_urls_from_granules_umm_json_v1_4(const std:
     // If we have enough information to get data later, our work here is done
     // For now, all we care about is a non-empty data_http_url. In the future this will likely change.
     if (!data_http_url.empty()) {
-        return std::make_tuple(data_http_url, data_s3_url, s3credentials_url);
+        return std::make_tuple(data_http_url, data_s3_url, tea_endpoint_url);
     }
 
     // If no valid related-URL is found, it's an error.
@@ -501,13 +509,13 @@ NgapApi::DataAccessUrls NgapApi::convert_ngap_resty_path_to_data_access_urls(con
         throw;
     }
 
-    string data_access_url, data_s3_url, s3credentials_url;
-    tie(data_access_url, data_s3_url, s3credentials_url) = get_urls_from_granules_umm_json_v1_4(restified_path, cmr_json_string);
+    string data_access_url, data_s3_url, tea_endpoint_url;
+    tie(data_access_url, data_s3_url, tea_endpoint_url) = get_urls_from_granules_umm_json_v1_4(restified_path, cmr_json_string);
 
-    if (data_s3_url.empty() || s3credentials_url.empty()) {
-        // Eventually we'll be removing the non-s3 access; we need to know about any unsupported cases before that happens.
+    if (data_s3_url.empty() || tea_endpoint_url.empty()) {
+        // Eventually we may remove the non-s3 access; we want to know about any unsupported cases before that happens.
         // Add a log warning that can be searched.
-        INFO_LOG(prolog + string("PRE-DEPRECATION WARNING - Data s3 url or s3credentials not found - ") + cmr_query_url);
+        INFO_LOG(prolog + string("SERVICE CHAIN WARNING - Data s3 url and/or s3credentials url not found - ") + cmr_query_url + " s3 url: " + data_s3_url + " s3credentials url: " + tea_endpoint_url);
     }
 
     // Check for existing .dmrpp and remove it if found at the end of the url. - kln 6/6/25
@@ -522,9 +530,9 @@ NgapApi::DataAccessUrls NgapApi::convert_ngap_resty_path_to_data_access_urls(con
         data_s3_url.erase(data_access_url.size() - suffix.size());
     }
 
-    BESDEBUG(MODULE, prolog << "END (data_access_url: " << data_access_url << ", data_s3_url: " << data_s3_url << ", s3credentials_url: " << s3credentials_url << ")" << endl);
+    BESDEBUG(MODULE, prolog << "END (data_access_url: " << data_access_url << ", data_s3_url: " << data_s3_url << ", tea_endpoint_url: " << tea_endpoint_url << ")" << endl);
 
-    return std::make_tuple(data_access_url, data_s3_url, s3credentials_url);
+    return std::make_tuple(data_access_url, data_s3_url, tea_endpoint_url);
 }
 
 } // namespace ngap

@@ -41,6 +41,7 @@
 #include <iostream>
 #include <sstream>
 
+#include <openssl/evp.h>
 #include <openssl/sha.h>
 #include <openssl/hmac.h>
 
@@ -78,13 +79,24 @@ std::string join(const std::vector<std::string> &ss, const std::string &delim) {
 std::string sha256_base16(const std::string &str) {
 
     unsigned char hashOut[SHA256_DIGEST_LENGTH];
-    SHA256_CTX sha256;
-    SHA256_Init(&sha256);
-    SHA256_Update(&sha256, (const unsigned char *) str.c_str(), str.size());
-    SHA256_Final(hashOut, &sha256);
+    unsigned int hash_length = 0;
+
+    EVP_MD_CTX *sha256 = EVP_MD_CTX_new();
+    if (!sha256) {
+        throw BESInternalError(prolog + "Failed to allocate an EVP_MD_CTX for SHA-256.", __FILE__, __LINE__);
+    }
+
+    if (EVP_DigestInit_ex(sha256, EVP_sha256(), nullptr) != 1
+        || EVP_DigestUpdate(sha256, str.data(), str.size()) != 1
+        || EVP_DigestFinal_ex(sha256, hashOut, &hash_length) != 1) {
+        EVP_MD_CTX_free(sha256);
+        throw BESInternalError(prolog + "Failed to compute a SHA-256 digest.", __FILE__, __LINE__);
+    }
+
+    EVP_MD_CTX_free(sha256);
 
     char outputBuffer[SHA256_DIGEST_STRING_LENGTH + 1];
-    for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
+    for (unsigned int i = 0; i < hash_length; i++) {
         snprintf(outputBuffer + (i * 2), 3, "%02x", hashOut[i]);
     }
     outputBuffer[SHA256_DIGEST_STRING_LENGTH] = 0;

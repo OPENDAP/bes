@@ -307,7 +307,10 @@ void DMZ::process_dataset(DMR *dmr, const xml_node &xml_root) {
             dmr->set_dap_version(attr.value());
         }
         else if (is_eq(attr.name(), "dmrVersion")) {
-            dmr->set_dmr_version(attr.value());
+            // dmr->set_dmr_version(attr.value());
+            // We set this to 1.0 because there are documents with a 2.0
+            // in the system but they should have been 1.0 all along
+            dmr->set_dmr_version("1.0");
         }
         else if (is_eq(attr.name(), "base")) {
             dmr->set_request_xml_base(attr.value());
@@ -1045,7 +1048,7 @@ void DMZ::set_up_direct_io_flag_phase_2(D4Group * grp, BaseType *btp) {
     bool chunk_less_dim = true;
     if (chunk_dim_sizes.size() == dim_sizes.size()) {
         for (unsigned int i = 0; i < dim_sizes.size(); i++) {
-            if (chunk_dim_sizes[i] > dim_sizes[i]  && has_unlimited_dim(grp)==false) {
+            if (chunk_dim_sizes[i] > dim_sizes[i]  && has_unlimited_dim(grp,t_a)==false) {
                 chunk_less_dim = false;
                 break;
             }
@@ -1101,9 +1104,18 @@ void DMZ::set_up_direct_io_flag_phase_2(D4Group * grp, BaseType *btp) {
     t_a->set_dio_flag();
 }
 
-bool DMZ::has_unlimited_dim(libdap::D4Group *group) {
+bool DMZ::has_unlimited_dim(D4Group *group, Array *ar) {
 
     bool ret_value = false;
+
+    // A variable can be unlimited but doesn't have a dimension name. We cannot support the DIO for this case.
+    Array::Dim_iter dim_i = ar->dim_begin();
+    Array::Dim_iter dim_e = ar->dim_end();
+    for (; dim_i != dim_e; dim_i++) {
+        if ((dim_i->name).empty())
+            return ret_value;
+    }
+
     D4Group *temp_grp = group;
 
     // Notice: this method only needs to be called when the chunk size is greater than the

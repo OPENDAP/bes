@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="2.0" name="multi_unlimited_no_dim_names.h5" dmrpp:href="data/multi_unlimited_no_dim_names.h5" dmrpp:version="3.21.1">
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2026-05-04T20:23:12Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/atl-dio-issue/bes/modules/hdf5_handler/data/src/multi_unlimited_no_dim_names.h5 -r multi_unlimited_no_dim_names.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+        </Attribute>
+    </Attribute>
+    <Group name="g1">
+        <Group name="g2">
+            <Int32 name="var_no_dimnames">
+                <Dim size="1"/>
+                <Dim size="2"/>
+                <Dim size="3"/>
+                <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="0" byteOrder="LE">
+                    <dmrpp:chunkDimensionSizes>2 2 3</dmrpp:chunkDimensionSizes>
+                    <dmrpp:chunk offset="6600" nBytes="26" chunkPositionInArray="[0,0,0]"/>
+                </dmrpp:chunks>
+            </Int32>
+        </Group>
+    </Group>
+</Dataset>

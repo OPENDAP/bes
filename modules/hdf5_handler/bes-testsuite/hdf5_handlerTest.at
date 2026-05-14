@@ -745,4 +745,10 @@ AT_BESCMD_H5_BESCONF2_RESPONSE_TEST([h5.default/swath_wrong_dim_rp.h5.dmr.bescmd
 AT_BESCMD_H5_BESCONF_RESPONSE_TEST([h5.default/nc4_group_atomic_puredim_2d_unlimited.h5.dmr.bescmd],[bes.default.conf])
 #AT_BESCMD_H5_BESCONF_DAP4DATA_TEST([h5.default/nc4_group_atomic_puredim_2d_unlimited.h5.dap.bescmd])
 
+# Fast search dimension name tests
+AT_BESCMD_H5_BESCONF_RESPONSE_TEST([h5.default/nc4_group_atomic_2.h5.dmr.bescmd],[bes.default.conf])
+AT_BESCMD_H5_BESCONF_RESPONSE_TEST([h5.default/nc4_group_atomic_3.h5.dmr.bescmd],[bes.default.conf])
+AT_BESCMD_H5_BESCONF_RESPONSE_TEST([h5.default/nc4_group_atomic_4.h5.dmr.bescmd],[bes.default.conf])
 
+# 3-D unlimited dimensions and the dimensions are under different groups
+AT_BESCMD_H5_BESCONF_RESPONSE_TEST([h5.default/multi_unlimited.h5.dmr.bescmd],[bes.default.conf])

@@ -143,7 +143,7 @@ bool HDF5Array::read()
     if (get_dap_type(dtype_id,is_dap4()) == "Url") {
         bool ret_ref = false;
         try {
-	    ret_ref = m_array_of_reference(dset_id,dtype_id);
+	    ret_ref = m_array_of_reference(dset_id);
             H5Tclose(dtype_id);
             H5Dclose(dset_id);
             H5Fclose(file_id);
@@ -585,51 +585,6 @@ void HDF5Array:: m_array_of_structure_catch_close_hdf5_ids(hid_t memb_id, char *
     H5Tclose(dtypeid);
 }
 
-// Haven't checked the codes and comments
-// Haven't added the close handles routines for error handlings yet. KY 2011-11-18
-bool HDF5Array::m_array_of_reference(hid_t dset_id,hid_t dtype_id)
-{
-
-#if (H5_VERS_MAJOR == 1 && (H5_VERS_MINOR == 10 || H5_VERS_MINOR == 8 || H5_VERS_MINOR == 6))
-    hid_t d_dset_id = dset_id;
-
-	vector<int64_t> offset(d_num_dim);
-	vector<int64_t> count(d_num_dim);
-	vector<int64_t> step(d_num_dim);
-
-	int64_t nelms = format_constraint(offset.data(), step.data(), count.data());
-	vector<string> v_str(nelms);
-
-	BESDEBUG("h5", "=read() URL type is detected. "
-		<< "nelms=" << nelms << " full_size=" << d_num_elm << endl);
-
-	// Handle regional reference.
-	if (H5Tequal(dtype_id, H5T_STD_REF_DSETREG) < 0) { 
-            string msg = "H5Tequal() failed for the reference type variable " + var_path + ".";
-	    throw BESInternalError(msg,__FILE__,__LINE__);
-	}
-
-	if (H5Tequal(dtype_id, H5T_STD_REF_DSETREG) > 0)
-        m_array_of_region_reference(d_dset_id,v_str, nelms, offset, step);
-
-	// Handle object reference.
-	if (H5Tequal(dtype_id, H5T_STD_REF_OBJ) < 0) {
-            string msg = "H5Tequal() failed for the reference type variable " + var_path + ".";
-	    throw BESInternalError(msg,__FILE__,__LINE__);
-        }
-
-	if (H5Tequal(dtype_id, H5T_STD_REF_OBJ) > 0)
-        m_array_of_object_reference( d_dset_id,  v_str, nelms,offset,step);
-
-	set_value_ll(v_str.data(), nelms);
-	return false;
-
-#else
-    return m_array_of_reference_new_h5_apis(dset_id,dtype_id);
-
-#endif
-}
-
 void HDF5Array:: m_array_of_region_reference(hid_t d_dset_id, vector<string>& v_str,
                                              int64_t nelms, const vector<int64_t>& offset,
                                              const vector<int64_t> &step) {
@@ -766,18 +721,11 @@ void HDF5Array:: m_array_of_region_reference_hyperslab_selection(hid_t space_id,
     BESDEBUG("h5", "=read() Slabs selected." << endl);
     BESDEBUG("h5", "=read() nblock is " << H5Sget_select_hyper_nblocks(space_id) << endl);
 
-#if (H5_VERS_MAJOR == 1 && H5_VERS_MINOR == 8)
-    if (H5Sget_select_bounds(space_id, start.data(), end.data()) < 0) { 
-        string msg = "H5Sget_select_bounds() failed for region reference variable "+var_path + ".";
-        throw BESInternalError(msg,__FILE__,__LINE__);
-    }
-#else
     if (H5Sget_regular_hyperslab(space_id, start.data(), stride.data(), s_count.data(),
                                  block.data()) < 0) {
         string msg = "H5Sget_regular_hyperslab() failed for region reference variable "+var_path + ".";
         throw BESInternalError(msg,__FILE__,__LINE__);
     }
-#endif
 
     for (int j = 0; j < ndim; j++) {
         ostringstream oss;
@@ -837,14 +785,8 @@ void HDF5Array:: m_array_of_object_reference(hid_t d_dset_id, vector<string>& v_
     }
 }
 
-bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
+bool HDF5Array::m_array_of_reference(hid_t dset_id) {
 
-#if (H5_VERS_MAJOR == 1 && (H5_VERS_MINOR == 10 || H5_VERS_MINOR == 8 || H5_VERS_MINOR == 6))
-    throw BESInternalError(
-       "The HDF5 handler compiled with earlier version (<=110)of the HDF5 library should not call method that uses new reference APIs",__FILE__,__LINE__);
-    return false;
-#else
-    
     H5R_ref_t *rbuf = nullptr;
     hid_t  mem_space_id = 0;
     hid_t  file_space_id;
@@ -1082,7 +1024,6 @@ bool HDF5Array::m_array_of_reference_new_h5_apis(hid_t dset_id,hid_t dtype_id) {
         H5Sclose(file_space_id);
 	throw;
     }
-#endif
 } 
 
 

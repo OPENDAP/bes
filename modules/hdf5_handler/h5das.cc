@@ -600,22 +600,14 @@ string get_hardlink(hid_t pgroup, const string & oname)
     // hard link points to. 
 
     if (obj_info.rc > 1) {
-        string objno;
 
-#if (H5_VERS_MAJOR == 1 && ((H5_VERS_MINOR == 12) || (H5_VERS_MINOR == 13) || (H5_VERS_MINOR ==14)))
-        char *obj_tok_str = nullptr;
-        if(H5Otoken_to_str(pgroup, &(obj_info.token), &obj_tok_str) <0) {
-            string msg = "H5Otoken_to_str failed.";
-            throw BESInternalError(msg,__FILE__,__LINE__);
-        } 
-        objno.assign(obj_tok_str,obj_tok_str+strlen(obj_tok_str));
-        H5free_memory(obj_tok_str);
-#else
-        ostringstream oss;
-        oss << hex << obj_info.addr;
-        objno = oss.str();
-#endif
-
+        haddr_t obj_addr;
+        if (H5VLnative_token_to_addr(pgroup,obj_info.token, &obj_addr)) {
+            string msg = "h5_das get_hardlink: Error obtaining the address for the object.";
+            throw BESInternalError(msg,__FILE__, __LINE__);
+        }
+        
+        string objno = to_string(obj_addr);
 
         BESDEBUG("h5", "=get_hardlink() objno=" << objno << endl);
 

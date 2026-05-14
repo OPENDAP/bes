@@ -43,22 +43,6 @@ using std::map;
 bool FoCovJsonRequestHandler::_may_ignore_z_axis   = true;
 bool FoCovJsonRequestHandler::_simple_geo   = true;
 
-// Borrow from the HDF5 handler
-bool FoCovJsonRequestHandler::obtain_beskeys_info(const string & key, bool &has_key) {
-
-    bool ret_value = false;
-    string doset ="";
-    TheBESKeys::TheKeys()->get_value( key, doset, has_key ) ;
-    if(has_key) {
-        const string dosettrue ="true";
-        const string dosetyes = "yes";
-        doset = BESUtil::lowercase(doset) ;
-        ret_value = (dosettrue == doset  || dosetyes == doset);
-    }
-    return ret_value;
-
-}
-
 /** @brief Constructor for FileOut Coverage JSON module
  *
  * This constructor adds functions to add to the build of a help request
@@ -73,10 +57,10 @@ FoCovJsonRequestHandler::FoCovJsonRequestHandler(const string &name) :
     add_handler( HELP_RESPONSE, FoCovJsonRequestHandler::build_help);
     add_handler( VERS_RESPONSE, FoCovJsonRequestHandler::build_version);
     bool has_key = false;
-    bool key_value = obtain_beskeys_info("FoCovJson.MAY_IGNORE_Z_AXIS",has_key);
+    bool key_value = TheBESKeys::read_bool_key("FoCovJson.MAY_IGNORE_Z_AXIS",has_key);
     if (has_key) 
         _may_ignore_z_axis = key_value;   
-    key_value = obtain_beskeys_info("FoCovJson.SIMPLE_GEO",has_key);
+    key_value = TheBESKeys::read_bool_key("FoCovJson.SIMPLE_GEO",has_key);
     if (has_key) 
         _simple_geo = key_value;  
 

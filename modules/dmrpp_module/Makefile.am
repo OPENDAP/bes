@@ -8,11 +8,6 @@ AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(t
     -I$(top_srcdir)/aws
 AM_CXXFLAGS = -Wno-vla-extension -Wno-inconsistent-missing-override
 
-# FIXME Remove this hack. Set these with configure. jhrg 11/25/19
-OPENSSL_LIBS=-lcrypto
-OPENSSL_INC=-I/usr/local/opt/openssl/include
-OPENSSL_LDFLAGS=-L/usr/local/opt/openssl/lib
-
 AM_CPPFLAGS += $(OPENSSL_INC)
 
 # Set the module version here, in the spec file and in configure.ac

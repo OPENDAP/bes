@@ -56,6 +56,8 @@ private:
     }
 
 protected:
+    using BESContainer::_duplicate;
+
     void _duplicate(HttpdCatalogContainer &copy_to);
 
 public:

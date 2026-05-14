@@ -124,11 +124,11 @@ HDFEOS2CFStrField::read ()
     intn r = 0;
     int32 tmp_rank = 0;
     char tmp_dimlist[1024];
-    int32 tmp_dims[rank+1];
+    vector<int32> tmp_dims(rank + 1);
     int32 field_dtype = 0;
 
     r = fieldinfofunc (gsid, const_cast < char *>(varname.c_str ()),
-                &tmp_rank, tmp_dims, &field_dtype, tmp_dimlist);
+                &tmp_rank, tmp_dims.data(), &field_dtype, tmp_dimlist);
     if (r != 0) {
         detachfunc(gsid);
         if (false == check_pass_fileid_key)

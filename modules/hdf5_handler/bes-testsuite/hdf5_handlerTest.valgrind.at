@@ -17,10 +17,7 @@ m4_define([_AT_BESCMD_TEST],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 > $2|| true], [], [stdout], [stderr])
-
 AT_CHECK([valgrind --trace-children=yes --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 || true], [], [stdout], [stderr])
-AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CHECK([cat valgrind.txt >> /tmp/h5.cf.dmr.valgrind.log], [], [ignore],[],[])
 AT_CLEANUP])
 
@@ -29,10 +26,8 @@ m4_define([_AT_BESCMD_BINARYDATA_TEST],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 | getdap -M - >$2|| true], [], [stdout], [stderr])
 
 AT_CHECK([valgrind --trace-children=yes --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 | getdap -M - || true], [], [stdout], [stderr])
-AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CHECK([cat valgrind.txt >> /tmp/h5.cf.dmr.valgrind.log], [], [ignore],[],[])
 AT_CLEANUP])
 
@@ -41,10 +36,8 @@ m4_define([_AT_BESCMD_DAP4DATA_TEST],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 | getdap4 -C -D -M - > $2|| true], [], [stdout], [stderr])
 
 AT_CHECK([valgrind --trace-children=yes --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 | getdap4 -C -D -M - || true], [], [stdout], [stderr])
-AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CHECK([cat valgrind.txt >> /tmp/h5.cf.dmr.valgrind.log], [], [ignore],[],[])
 AT_CLEANUP])
 
@@ -56,9 +49,7 @@ m4_define([_AT_BESCMD_TEST_OS],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 > $2|| true], [], [stdout], [stderr])
 AT_CHECK([valgrind --trace-children=yes --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.cfdmr.conf -i $1 || true], [], [stdout], [stderr])
-AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [],[],[])
 AT_CHECK([cat valgrind.txt >> /tmp/h5.cf.dmr.valgrind.log], [], [ignore],[],[])
 AT_XFAIL_IF([grep -q "darwin" <<< AT_PACKAGE_HOST])
 AT_CLEANUP])
@@ -96,10 +87,8 @@ m4_define([_AT_BESCMD_TEST_DEFAULT],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 > $2|| true], [], [stdout], [stderr])
 
 AT_CHECK([valgrind --trace-children=yes --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.default.conf -i $1 || true], [], [stdout], [stderr])
-AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CHECK([cat valgrind.txt >> /tmp/h5.cf.dmr.valgrind.log], [], [ignore],[],[])
 AT_CLEANUP])
 
@@ -108,10 +97,7 @@ m4_define([_AT_BESCMD_BINARYDATA_TEST_DEFAULT],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap -M - >$2|| true], [], [stdout], [stderr])
-
 AT_CHECK([valgrind --trace-children=yes --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap -M - || true], [], [stdout], [stderr])
-AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CHECK([cat valgrind.txt >> /tmp/h5.cf.dmr.valgrind.log], [], [ignore],[],[])
 AT_CLEANUP])
 
@@ -120,10 +106,7 @@ m4_define([_AT_BESCMD_DAP4DATA_TEST_DEFAULT],
 AT_KEYWORDS([bescmd])
 
 # Use the following AT_CHECK to generate baseline file.
-#AT_CHECK([besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap4 -C -D -M - > $2|| true], [], [stdout], [stderr])
-
 AT_CHECK([valgrind --trace-children=yes --leak-check=full --log-file=valgrind.txt besstandalone -c $abs_builddir/bes.default.conf -i $1 | getdap4 -C -D -M - || true], [], [stdout], [stderr])
-AT_CHECK([diff -b -B $2 stdout || diff -b -B $2 stderr], [], [ignore],[],[])
 AT_CHECK([cat valgrind.txt >> /tmp/h5.cf.dmr.valgrind.log], [], [ignore],[],[])
 AT_CLEANUP])
 
@@ -813,9 +796,13 @@ AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([t_enum2n_array.h5.dap.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([vlen.h5.dmr.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([vlen_dim.h5.dmr.bescmd])
 AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([vlen.h5.dap.bescmd])
-AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([vlen_dim.h5.dap_ce.bescmd])
 AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_atomic_puredim_2d_unlimited.h5.dmr.bescmd])
+AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([vlen_dim.h5.dap_ce.bescmd])
 #AT_BESCMD_DAP4DATA_RESPONSE_TEST_DEFAULT([nc4_group_atomic_puredim_2d_unlimited.h5.dap.bescmd])
 
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_atomic_2.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_atomic_3.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([nc4_group_atomic_4.h5.dmr.bescmd])
+AT_BESCMD_RESPONSE_TEST_DEFAULT([multi_unlimited.h5.dmr.bescmd])
 
 

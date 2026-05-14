@@ -37,11 +37,10 @@ public:
     virtual ~GDALModule()
     {
     }
-    virtual void initialize(const std::string &modname);
-    virtual void terminate(const std::string &modname);
+    void initialize(const std::string &modname) override;
+    void terminate(const std::string &modname) override;
 
     void dump(std::ostream &strm) const override;
 };
 
 #endif // A_GDALModule_H
-

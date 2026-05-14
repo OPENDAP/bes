@@ -33,15 +33,15 @@
 #include <string>
 
 #include "AWS_SDK.h"
-#include "TheBESKeys.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 #include "BESUtil.h"
 #include "CurlUtils.h"
+#include "EffectiveUrl.h"
 #include "HttpError.h"
 #include "HttpNames.h"
-#include "EffectiveUrl.h"
 #include "SignedUrlCache.h"
+#include "TheBESKeys.h"
 
 #include <aws/core/Aws.h>
 #include <aws/core/auth/AWSCredentialsProvider.h>
@@ -60,14 +60,14 @@ constexpr auto MODULE_DUMPER = "euc:dump";
 namespace bes {
 
 /**
- * @brief Get the cached signed URL.
- * @param url_key Key to a cached signed URL.
+ * @brief Get the cached presigned URL.
+ * @param url_key Key to a cached presigned URL.
  * @note This method is not, itself, thread safe.
  */
-shared_ptr <http::EffectiveUrl> SignedUrlCache::get_cached_signed_url(string const &url_key) {
+shared_ptr<http::EffectiveUrl> SignedUrlCache::get_cached_presigned_s3_url(string const &url_key) {
     shared_ptr<http::EffectiveUrl> signed_url(nullptr);
-    auto it = d_signed_urls.find(url_key);
-    if (it != d_signed_urls.end()) {
+    auto it = d_presigned_s3_urls_cache.find(url_key);
+    if (it != d_presigned_s3_urls_cache.end()) {
         signed_url = (*it).second;
     }
     return signed_url;
@@ -75,7 +75,8 @@ shared_ptr <http::EffectiveUrl> SignedUrlCache::get_cached_signed_url(string con
 
 /**
  * @brief Return true if the input occurred before the current time, false otherwise
- * @param timestamp_str Timestamp must be formatted as returned by AWS endpoint, YYYY-MM-DD HH:mm:dd+timezone, where timezone is formatted `HH:MM`, e.g. `1980-07-16 18:40:58+00:00`
+ * @param timestamp_str Timestamp must be formatted as returned by AWS endpoint, YYYY-MM-DD HH:mm:dd+timezone, where
+ * timezone is formatted `HH:MM`, e.g. `1980-07-16 18:40:58+00:00`
  * @note Return false if `timestamp_str` is not a valid timestamp string.
  */
 bool SignedUrlCache::is_timestamp_after_now(std::string const &timestamp_str) {
@@ -93,7 +94,8 @@ bool SignedUrlCache::is_timestamp_after_now(std::string const &timestamp_str) {
     std::tm timestamp_time = {};
     auto time_parse_result = strptime(effective_timestamp_str.c_str(), "%F %T%z", &timestamp_time);
     if (time_parse_result == nullptr) {
-        INFO_LOG(prolog + string("PRE-DEPRECATION WARNING - Retrieved s3 credentials timestamp was not able to be parsed - " + timestamp_str));
+        INFO_LOG(prolog +
+                 string("SERVICE CHAIN WARNING - s3 credentials timestamp was not parseable - " + timestamp_str));
         return false;
     }
     auto timestamp_time_point = std::chrono::system_clock::from_time_t(std::mktime(&timestamp_time));
@@ -102,19 +104,20 @@ bool SignedUrlCache::is_timestamp_after_now(std::string const &timestamp_str) {
 }
 
 /**
- * @brief Get the cached signed URL.
- * @param url_key Key to a cached signed URL.
+ * @brief Get the cached STS credentials for a given TEA endpoint URL.
+ * @param tea_endpoint_url_key URL to a TEA endpoint.
  * @note This method is not, itself, thread safe.
  */
-shared_ptr<SignedUrlCache::S3AccessKeyTuple> SignedUrlCache::retrieve_cached_s3credentials(string const &url_key) {
+shared_ptr<SignedUrlCache::S3AccessKeyTuple>
+SignedUrlCache::retrieve_cached_sts_credentials(string const &tea_endpoint_url_key) {
     shared_ptr<S3AccessKeyTuple> s3_access_key_tuple(nullptr);
-    auto it = d_s3credentials_cache.find(url_key);
-    if (it != d_s3credentials_cache.end()) {
+    auto it = d_tea_endpoint_sts_credentials_cache.find(tea_endpoint_url_key);
+    if (it != d_tea_endpoint_sts_credentials_cache.end()) {
         // Is it expired? If so, erase it!
         auto timestamp_str = get<3>(*(it->second));
         if (!is_timestamp_after_now(timestamp_str)) {
             // Expired!
-            d_s3credentials_cache.erase(it);
+            d_tea_endpoint_sts_credentials_cache.erase(it);
         } else {
             s3_access_key_tuple = it->second;
         }
@@ -123,21 +126,21 @@ shared_ptr<SignedUrlCache::S3AccessKeyTuple> SignedUrlCache::retrieve_cached_s3c
 }
 
 /**
- * Find the terminal (effective) url for the source_url. If the source_url matches the
+ * Generate a the terminal (effective) presigned url for the source_url. If the source_url matches the
  * skip_regex then it will not be cached.
  *
  * Unlike EffectiveUrlCache, return nullptr instead of making a new EffectiveUrl(source_url)
- * if unable to construct a signed url.
+ * when unable to construct a signed url for any reason.
  *
  * @param source_url
- * @returns The signed effective URL, nullptr if none able to be created 
-*/
-shared_ptr <http::EffectiveUrl> SignedUrlCache::get_signed_url(shared_ptr <http::url> source_url) {
+ * @returns The presigned effective URL, nullptr if none able to be created
+ */
+shared_ptr<http::EffectiveUrl> SignedUrlCache::get_presigned_s3_url(shared_ptr<http::url> source_url) {
 
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url->str() << endl);
     BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
 
-    // Lock access to the cache, the d_signed_urls map. Released when the lock goes out of scope.
+    // Lock access to the cache, the d_presigned_s3_urls_cache map. Released when the lock goes out of scope.
     std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
 
     if (!is_enabled()) {
@@ -145,7 +148,12 @@ shared_ptr <http::EffectiveUrl> SignedUrlCache::get_signed_url(shared_ptr <http:
         return nullptr;
     }
 
-    // if it's not an HTTP url there is nothing to cache.
+    if (source_url == nullptr) {
+        BESDEBUG(MODULE, prolog << "END Not a valid request, SKIPPING." << endl);
+        return nullptr;
+    }
+
+    // if it's not an HTTP url there is nothing to sign or cache.
     if (source_url->str().find(HTTP_PROTOCOL) != 0 && source_url->str().find(HTTPS_PROTOCOL) != 0) {
         BESDEBUG(MODULE, prolog << "END Not an HTTP request, SKIPPING." << endl);
         return nullptr;
@@ -157,11 +165,16 @@ shared_ptr <http::EffectiveUrl> SignedUrlCache::get_signed_url(shared_ptr <http:
 
     if (d_skip_regex) {
         size_t match_length = 0;
-        match_length = d_skip_regex->match(source_url->str().c_str(), (int) source_url->str().size());
+        match_length = d_skip_regex->match(source_url->str().c_str(), (int)source_url->str().size());
         if (match_length == source_url->str().size()) {
             BESDEBUG(MODULE, prolog << "END Candidate url matches the "
-                                       "no_redirects_regex_pattern [" << d_skip_regex->pattern() <<
-                                    "][match_length=" << match_length << "] SKIPPING." << endl);
+                                       "no_redirects_regex_pattern ["
+                                    << d_skip_regex->pattern() << "][match_length=" << match_length << "] SKIPPING."
+                                    << endl);
+            INFO_LOG(prolog +
+                     "SERVICE CHAIN WARNING - Failed to generate presigned url because url matches the "
+                     "no_redirects_regex_pattern -  " +
+                     source_url->get_url_no_query());
             return nullptr;
         }
         BESDEBUG(MODULE, prolog << "Candidate url: '" << source_url->str()
@@ -171,54 +184,64 @@ shared_ptr <http::EffectiveUrl> SignedUrlCache::get_signed_url(shared_ptr <http:
         BESDEBUG(MODULE, prolog << "The cache_effective_urls_skip_regex() was NOT SET " << endl);
     }
 
-    shared_ptr<http::EffectiveUrl> signed_url = get_cached_signed_url(source_url->str());
+    shared_ptr<http::EffectiveUrl> signed_url = get_cached_presigned_s3_url(source_url->str());
     bool retrieve_and_cache = !signed_url || signed_url->is_expired();
 
     // It not found or expired, (re)load.
     if (retrieve_and_cache) {
         BESDEBUG(MODULE, prolog << "Acquiring signed URL for  " << source_url->str() << endl);
         {
-            BES_STOPWATCH_START(MODULE_TIMER, prolog + "Retrieve and cache signed url for source url: " + source_url->str());
+            BES_STOPWATCH_START(MODULE_TIMER,
+                                prolog + "Retrieve and cache signed url for source url: " + source_url->str());
 
             // 1. Get requisite s3 data urls...
-            string s3_url;
-            string s3credentials_url;
-            tie(s3_url, s3credentials_url) = retrieve_cached_signed_url_components(source_url->str());
-            if (s3_url.empty() || s3credentials_url.empty()) {
+            string s3_uri;
+            string tea_endpoint_url;
+            tie(s3_uri, tea_endpoint_url) = retrieve_cached_prerequisites_for_url_signing(source_url->str());
+            if (s3_uri.empty() || tea_endpoint_url.empty()) {
+                INFO_LOG(prolog +
+                         "SERVICE CHAIN WARNING - Cannot generate signed url due to lack of valid s3credentials "
+                         "endpoint or s3_uri -  " +
+                         source_url->get_url_no_query());
                 return nullptr;
             }
 
-            // 2. Get unexpired access credentials from cache or s3credentials endpoint...
-            auto s3_access_key_tuple = retrieve_cached_s3credentials(s3credentials_url);
+            // 2. ...get unexpired access credentials from cache or s3credentials endpoint...
+            auto s3_access_key_tuple = retrieve_cached_sts_credentials(tea_endpoint_url);
             if (!s3_access_key_tuple) {
-                s3_access_key_tuple = get_s3credentials_from_endpoint(s3credentials_url);
+                s3_access_key_tuple = cache_sts_credentials_from_tea_endpoint(tea_endpoint_url);
             }
             if (!s3_access_key_tuple) {
+                INFO_LOG(prolog +
+                         "SERVICE CHAIN WARNING - Cannot generate signed url due to error when acquiring s3credentials "
+                         "from endpoint -  " +
+                         source_url->get_url_no_query());
                 return nullptr;
             }
 
-            // 3: ...and use them to create a signed url
-            signed_url = sign_url(s3_url, s3_access_key_tuple);
+            // 3: ...and use them to create a signed url!
+            signed_url = sign_s3_uri_with_sts_credentials(s3_uri, s3_access_key_tuple);
             if (!signed_url) {
+                // Not logging a warning here, as a detailed warning will have already been
+                // logged during failed signing.
                 return nullptr;
             }
-            d_signed_urls[source_url->str()] = signed_url;
+            d_presigned_s3_urls_cache[source_url->str()] = signed_url;
         }
         BESDEBUG(MODULE, prolog << "   source_url: " << source_url->str() << " ("
                                 << (source_url->is_trusted() ? "" : "NOT ") << "trusted)" << endl);
         BESDEBUG(MODULE, prolog << "signed_url: " << signed_url->dump() << " ("
                                 << (source_url->is_trusted() ? "" : "NOT ") << "trusted)" << endl);
 
-
-        BESDEBUG(MODULE, prolog << "Updated record for " << source_url->str() << " cache size: "
-                                << d_signed_urls.size() << endl);
+        BESDEBUG(MODULE, prolog << "Updated record for " << source_url->str()
+                                << " cache size: " << d_presigned_s3_urls_cache.size() << endl);
 
         // Since we don't want there to be a concurrency issue when we release the lock, we don't
         // return the instance of shared_ptr<EffectiveUrl> that we placed in the cache. Rather
         // we make a clone and return that. It will have its own lifecycle independent of
         // the instance we placed in the cache - it can be modified and the one in the cache
         // is unchanged. Trusted state was established from source_url when signed_url was
-        // created in sign_url()
+        // created
         signed_url = make_shared<http::EffectiveUrl>(signed_url, true);
     } else {
         // Here we have a !expired instance of a shared_ptr<EffectiveUrl> retrieved from the cache.
@@ -233,74 +256,79 @@ shared_ptr <http::EffectiveUrl> SignedUrlCache::get_signed_url(shared_ptr <http:
 }
 
 /**
- * @brief Store each `s3_url` and `s3credentials_url` for key `key_href_url`
+ * @brief Store each `s3_uri` and `tea_endpoint_url` for key `key_href_url`
  * @note Does not cache anything if any of the three inputs are empty
  */
-void SignedUrlCache::cache_signed_url_components(const std::string &key_href_url, const std::string &s3_url, const std::string &s3credentials_url) {
-    if (key_href_url.empty() || s3_url.empty() || s3credentials_url.empty() ) {
-        // Don't cache either if any is empty.
+void SignedUrlCache::cache_prerequisites_for_url_signing(const std::string &key_href_url, const std::string &s3_uri,
+                                                         const std::string &tea_endpoint_url) {
+    if (key_href_url.empty() || s3_uri.empty() || tea_endpoint_url.empty()) {
+        // Don't cache if any field is empty.
         return;
     }
-    d_href_to_s3_cache[key_href_url] = s3_url;
-    d_href_to_s3credentials_cache[key_href_url] = s3credentials_url;
+    d_href_to_s3_uri_cache[key_href_url] = s3_uri;
+    d_href_to_tea_endpoint_cache[key_href_url] = tea_endpoint_url;
 }
 
 /**
- * @brief Return pair of (s3_url, s3credentials_url) cached for key_href_url
+ * @brief Return pair of (s3_uri, tea_endpoint_url) cached for key_href_url
  * @note If key_href_url not in cache, returns pair of empty strings
  */
-std::pair<std::string, std::string> SignedUrlCache::retrieve_cached_signed_url_components(const std::string &key_href_url) const {
-    auto it_s3_url = d_href_to_s3_cache.find(key_href_url);
-    auto it_s3credentials_url = d_href_to_s3credentials_cache.find(key_href_url);
-    if (it_s3_url == d_href_to_s3_cache.end() || it_s3credentials_url == d_href_to_s3credentials_cache.end() ) {
-        INFO_LOG(prolog + "No url available for TEA s3credentials endpoint.");
+std::pair<std::string, std::string>
+SignedUrlCache::retrieve_cached_prerequisites_for_url_signing(const std::string &key_href_url) const {
+    auto it_s3_uri = d_href_to_s3_uri_cache.find(key_href_url);
+    auto it_s3credentials_url = d_href_to_tea_endpoint_cache.find(key_href_url);
+    if (it_s3_uri == d_href_to_s3_uri_cache.end() || it_s3credentials_url == d_href_to_tea_endpoint_cache.end()) {
+        INFO_LOG(prolog + "SERVICE CHAIN WARNING - No url available for TEA s3credentials endpoint.");
         return std::pair<std::string, std::string>("", "");
     }
-    return std::pair<std::string, std::string>(it_s3_url->second, it_s3credentials_url->second);
+    return std::pair<std::string, std::string>(it_s3_uri->second, it_s3credentials_url->second);
 }
 
 /**
- * @brief Return credentials tuple for given endpoint url `s3credentials_url`, stores credentials for endpoint in `d_s3credentials_cache`
+ * @brief Return credentials tuple for given endpoint url `tea_endpoint_url`, stores credentials for endpoint in
+ * `d_tea_endpoint_sts_credentials_cache`
  * @note If credential retrieval fails at any point, returns nullptr and does not cache results
  */
-shared_ptr<SignedUrlCache::S3AccessKeyTuple> SignedUrlCache::get_s3credentials_from_endpoint(std::string const &s3credentials_url) {
+shared_ptr<SignedUrlCache::S3AccessKeyTuple>
+SignedUrlCache::cache_sts_credentials_from_tea_endpoint(std::string const &tea_endpoint_url) {
     // 1. Get the credentials from TEA
     std::string s3credentials_json_string;
     try {
-        BES_PROFILE_TIMING(string("Request s3 credentials from TEA - ") + s3credentials_url);
+        BES_PROFILE_TIMING(string("Request s3 credentials from TEA - ") + tea_endpoint_url);
 
         // Note: this http_get call internally adds edl auth headers, if available
-        curl::http_get(s3credentials_url, s3credentials_json_string);
-    }
-    catch (http::HttpError &http_error) {
-        string err_msg = prolog + "Encountered an error while "
-                         "attempting to retrieve s3 credentials from TEA. " + http_error.get_message();
+        curl::http_get(tea_endpoint_url, s3credentials_json_string);
+    } catch (http::HttpError &http_error) {
+        string err_msg = prolog +
+                         "Encountered an error while "
+                         "attempting to retrieve s3 credentials from TEA. " +
+                         http_error.get_message();
         INFO_LOG(err_msg);
         return nullptr;
     }
     if (s3credentials_json_string.empty()) {
-        string err_msg = prolog + "Unable to retrieve s3 credentials from TEA endpoint " + s3credentials_url;
+        string err_msg = prolog + "Unable to retrieve s3 credentials from TEA endpoint " + tea_endpoint_url;
         INFO_LOG(err_msg);
         return nullptr;
     }
 
     // 2. Parse the response to pull out the credentials
-    auto credentials = extract_s3_credentials_from_response_json(s3credentials_json_string);
+    auto credentials = extract_sts_credentials_from_json_response(s3credentials_json_string);
     if (credentials) {
         // Store credentials if any were retrieved
-        d_s3credentials_cache[s3credentials_url] = credentials;
+        d_tea_endpoint_sts_credentials_cache[tea_endpoint_url] = credentials;
     }
     return credentials;
 }
 
-
 /**
  * @brief Extract credentials tuple from json response returned from an s3credentials endpoint
- * @note Returns nullptr if input is not valid json or does not contain one of the four requisite 
+ * @note Returns nullptr if input is not valid json or does not contain one of the four requisite
  *  strings: `accessKeyId`, `secretAccessKey`, `sessionToken`, or `expiration`
  * @note Lightly adapted from get_urls_from_granules_umm_json_v1_4
  */
-std::shared_ptr<SignedUrlCache::S3AccessKeyTuple> SignedUrlCache::extract_s3_credentials_from_response_json(std::string const &s3credentials_json_string) {
+std::shared_ptr<SignedUrlCache::S3AccessKeyTuple>
+SignedUrlCache::extract_sts_credentials_from_json_response(std::string const &s3credentials_json_string) {
     rapidjson::Document s3credentials_response;
     s3credentials_response.Parse(s3credentials_json_string.c_str());
 
@@ -336,56 +364,49 @@ std::shared_ptr<SignedUrlCache::S3AccessKeyTuple> SignedUrlCache::extract_s3_cre
     if (access_key_id.empty() || secret_access_key.empty() || session_token.empty() || expiration.empty()) {
         return nullptr;
     }
-    return make_shared<SignedUrlCache::S3AccessKeyTuple>(access_key_id,
-                                                         secret_access_key,
-                                                         session_token,
-                                                         expiration);
+    return make_shared<SignedUrlCache::S3AccessKeyTuple>(access_key_id, secret_access_key, session_token, expiration);
 }
 
 SignedUrlCache *SignedUrlCache::TheCache() {
     // Create a local static object the first time the function is called
     static SignedUrlCache instance;
 
-    // Initialize the aws library (must only be once in application!)
+    // Initialize the aws library (as per SDK, must only occur once in application!)
     bes::AWS_SDK::aws_library_initialize();
-
-    // TODO: do i need a corresponding 
-    // bes::AWS_SDK::aws_library_shutdown();
-    // in the destructor??
-
     return &instance;
 }
 
-
 /**
- * @brief Split `s3_url` into bucket, object strings
+ * @brief Split `s3_uri` into bucket, object strings
  */
-std::pair<std::string, std::string> SignedUrlCache::split_s3_url(std::string const &s3_url) {
+std::pair<std::string, std::string> SignedUrlCache::split_s3_uri(std::string const &s3_uri) {
 
-    // Safety first (even though if we were missing the s3:// prefix, s3_url wouldn't have been extracted from the cmr result in the first place....)
-    if (s3_url.size() < 6 || s3_url.find("s3://") != 0) {
+    // Safety first (even though if we were missing the s3:// prefix, s3_uri wouldn't have been extracted from the cmr
+    // result in the first place....)
+    if (s3_uri.size() < 6 || s3_uri.find("s3://") != 0) {
         return std::pair<std::string, std::string>("", "");
     }
 
-    // Get the bucket name by removing prefix "s3://" (which must exist or the path 
+    // Get the bucket name by removing prefix "s3://" (which must exist or the path
     // wouldn't have been extracted from cmr) and including everything up to the first slash
-    std::string bucket = s3_url.substr(5, s3_url.substr(5).find("/"));
+    std::string bucket = s3_uri.substr(5, s3_uri.substr(5).find("/"));
 
     // The object name is everything after the bucket name, not including the first "/"
-    std::string object = s3_url.substr(s3_url.find(bucket) + 1 + bucket.size());
+    std::string object = s3_uri.substr(s3_uri.find(bucket) + 1 + bucket.size());
 
     return std::pair<std::string, std::string>(bucket, object);
 }
 
-
 /**
  * @brief Return difference between expiration time and now, if expiration is in future; 0 otherwise
- * @param credentials_expiration_datetime Timestamp must be formatted as returned by AWS endpoint, YYYY-MM-DD HH:mm:dd+timezone, where timezone is formatted `HH:MM`, e.g. `1980-07-16 18:40:58+00:00`
+ * @param credentials_expiration_datetime Timestamp must be formatted as returned by AWS endpoint, YYYY-MM-DD
+ * HH:mm:dd+timezone, where timezone is formatted `HH:MM`, e.g. `1980-07-16 18:40:58+00:00`
  * @note Return 0 if `timestamp_str` is not a valid timestamp string.
  * @note Shares code with `is_timestamp_after_now`, could maybe converge
  * @param current_time Exposed as parameter to aid in testing; defaults to now()
  */
-uint64_t SignedUrlCache::num_seconds_until_expiration(const string &credentials_expiration_datetime, const chrono::system_clock::time_point current_time) {
+uint64_t SignedUrlCache::num_seconds_until_expiration(const string &credentials_expiration_datetime,
+                                                      const chrono::system_clock::time_point current_time) {
     auto now_secs = std::chrono::time_point_cast<std::chrono::seconds>(current_time);
 
     auto effective_timestamp_str = credentials_expiration_datetime;
@@ -399,7 +420,8 @@ uint64_t SignedUrlCache::num_seconds_until_expiration(const string &credentials_
     std::tm timestamp_time = {};
     auto time_parse_result = strptime(effective_timestamp_str.c_str(), "%F %T%z", &timestamp_time);
     if (time_parse_result == nullptr) {
-        INFO_LOG(prolog + string("PRE-DEPRECATION WARNING - Retrieved s3 credentials timestamp was not able to be parsed - " + credentials_expiration_datetime));
+        INFO_LOG(prolog + string("SERVICE CHAIN WARNING - s3 credentials timestamp was not parseable - " +
+                                 credentials_expiration_datetime));
         return 0;
     }
     auto timestamp_time_point = std::chrono::system_clock::from_time_t(std::mktime(&timestamp_time));
@@ -408,12 +430,17 @@ uint64_t SignedUrlCache::num_seconds_until_expiration(const string &credentials_
 }
 
 /**
- * @brief Sign `s3_url` with aws credentials in `s3_access_key_tuple`, or nullptr if any part of signing process fails
+ * @brief Sign `s3_uri` with aws credentials in `s3_access_key_tuple`, or nullptr if any part of signing process fails
  */
-std::shared_ptr<http::EffectiveUrl> SignedUrlCache::sign_url(std::string const &s3_url, 
-                                                             std::shared_ptr<S3AccessKeyTuple> const s3_access_key_tuple,
-                                                             std::string aws_region) {
-    
+std::shared_ptr<http::EffectiveUrl>
+SignedUrlCache::sign_s3_uri_with_sts_credentials(std::string const &s3_uri,
+                                                 std::shared_ptr<S3AccessKeyTuple> const s3_access_key_tuple) {
+
+    if (s3_access_key_tuple == nullptr) {
+        INFO_LOG(prolog + "SERVICE CHAIN WARNING - Failed to generate signed url due to missing s3credentials -  " +
+                 s3_uri);
+        return nullptr;
+    }
 
     bes::AWS_SDK aws_sdk;
     string id = get<0>(*s3_access_key_tuple);
@@ -422,55 +449,73 @@ std::shared_ptr<http::EffectiveUrl> SignedUrlCache::sign_url(std::string const &
     string expiration = get<3>(*s3_access_key_tuple);
     auto expiration_seconds = num_seconds_until_expiration(get<3>(*s3_access_key_tuple));
     if (expiration_seconds == 0) {
-        // No point in creating a url that is already expired!!
+        // NB: We should never hit this error, as we intentionally check expiration upstream
+        // But in case we DO end up here, we want to know about it
+        INFO_LOG(prolog + "SERVICE CHAIN WARNING - Failed to generate signed url due to expired s3credentials -  " +
+                 s3_uri);
         return nullptr;
     }
 
     string bucket;
     string object;
-    tie(bucket, object) = split_s3_url(s3_url);
+    tie(bucket, object) = split_s3_uri(s3_uri);
     if (bucket.empty() || object.empty()) {
+        INFO_LOG(
+            prolog +
+            "SERVICE CHAIN WARNING - Failed to generate signed url due to either an empty bucket or object string -  " +
+            s3_uri);
         return nullptr;
     }
 
-    // TODO: pull following lines into a `s3_generate_presigned_object_url_with_credentials` function
-    // Instead of using (or updating) the default aws sdk credentials, we want to use temporary 
-    // credentials returned from TEA.
-    Aws::Auth::AWSCredentials credentials(id, secret, token); //TODO: add expiration
+    // Use temporary credentials returned from given TEA s3credentials endpoint,
+    // which are AWS Security Token Service (STS) credentials
+    Aws::Auth::AWSCredentials credentials(id, secret, token);
     Aws::Client::ClientConfiguration config;
-    config.region = aws_region;
+    config.region = d_aws_region_in_which_direct_copy_is_supported;
     Aws::S3::S3Client s3_client(credentials, nullptr, config);
 
     // Use that info to generate our signed url!
-    // Can this fail? If the aws library isn't initialized, it could throw a
-    // BESInternalFatalError, but the library is initialized in the constructor of SignedUrlCache,
-    // so if we're here it MUST be initialized.
-    // It seems like the internal signing function doesn't otherwise throw.
-    Aws::String presigned_url = s3_client.GeneratePresignedUrl(
-        bucket,
-        object,
-        Aws::Http::HttpMethod::HTTP_GET, 
-        expiration_seconds
-    );
+    // Internal signing function won't throw unless uninitialized, which happens in SignedUrlCache constructor
+    Aws::String signed_url =
+        s3_client.GeneratePresignedUrl(bucket, object, Aws::Http::HttpMethod::HTTP_GET, expiration_seconds);
 
-    // TODO: attempt domain swapping?
-    // string presigned_url_with_prefix = std::regex_replace(presigned_url,
-    //     std::regex("https://ornl-cumulus-prod-protected.s3.us-west-2.amazonaws.com"),
-    //     "https://d3o6w55j8uz1ro.cloudfront.net/s3-d0f68fa49c8cba12794bb586349f2341/ornl-cumulus-prod-protected.s3.us-west-2.amazonaws.com");
+    if (signed_url.empty()) {
+        // NB: It would be very surprising to end up here, but if we do, we want to know about it
+        INFO_LOG(prolog + "SERVICE CHAIN WARNING - Failed to generate signed url - " + s3_uri);
+    }
+    return make_shared<http::EffectiveUrl>(signed_url);
+}
 
-    return make_shared<http::EffectiveUrl>(presigned_url);
+/**
+ * @brief Return if the current aws region of the running application matches the pre-defined supported region
+ */
+const bool SignedUrlCache::is_cache_supported_within_current_aws_region() {
+    bes::AWS_SDK aws_sdk;
+    auto region = aws_sdk.get_aws_region_of_running_application();
+    return region == d_aws_region_in_which_direct_copy_is_supported;
 }
 
 /**
  * @brief Return if the cache is enabled, which is set in the bes.conf file
  * @note Follows the same settings (and relies on the same bes.conf key) as the EffectiveUrlsCache
+ * @note Will always be disabled when run outside a region supported by ngap direct object access, as such copy is
+ * always disallowed and therefore presigned urls will always result in 400 errors when used to copy objects.
  */
 bool SignedUrlCache::is_enabled() {
-    // The first time here, the value of d_enabled is -1. Once we check for it in TheBESKeys
+    // The first time here, the value of d_enabled is -1.
+    // Once we confirm a supported aws region and then check for its enablement in TheBESKeys
     // The value will be 0 (false) or 1 (true) and TheBESKeys will not be checked again.
     if (d_enabled < 0) {
-        string value = TheBESKeys::TheKeys()->read_string_key(HTTP_CACHE_EFFECTIVE_URLS_KEY, "false");
-        d_enabled = BESUtil::lowercase(value) == "true";
+        if (is_cache_supported_within_current_aws_region()) {
+            string value = TheBESKeys::TheKeys()->read_string_key(HTTP_CACHE_EFFECTIVE_URLS_KEY, "false");
+            d_enabled = BESUtil::lowercase(value) == "true";
+        } else {
+            d_enabled = false;
+            INFO_LOG(prolog +
+                     "SERVICE CHAIN WARNING - Direct s3 access via presigned urls is not supported for services "
+                     "running in current aws region. Supported region:" +
+                     d_aws_region_in_which_direct_copy_is_supported);
+        }
     }
     BESDEBUG(MODULE, prolog << "d_enabled: " << (d_enabled ? "true" : "false") << endl);
     return d_enabled;
@@ -492,28 +537,37 @@ void SignedUrlCache::set_skip_regex() {
 }
 
 /**
+ * @brief dumps information about this object into string
+ */
+std::string SignedUrlCache::dump() const {
+    std::stringstream sstrm;
+    dump(sstrm);
+    return sstrm.str();
+}
+
+/**
  * @brief dumps information about this object
  * @param strm C++ i/o stream to dump the information to
  */
 void SignedUrlCache::dump(ostream &strm) const {
-    strm << BESIndent::LMarg << prolog << "(this: " << (void *) this << ")" << endl;
+    strm << BESIndent::LMarg << prolog << "(this: " << (void *)this << ")" << endl;
     BESIndent::Indent();
     strm << BESIndent::LMarg << "d_skip_regex: " << (d_skip_regex ? d_skip_regex->pattern() : "WAS NOT SET") << endl;
-    if (!d_signed_urls.empty()) {
-        strm << BESIndent::LMarg << "signed url list:" << endl;
+    if (!d_presigned_s3_urls_cache.empty()) {
+        strm << BESIndent::LMarg << "presigned url list:" << endl;
         BESIndent::Indent();
-        for (auto const &i: d_signed_urls) {
+        for (auto const &i : d_presigned_s3_urls_cache) {
             strm << BESIndent::LMarg << i.first << " --> " << i.second->str() << "\n";
         }
         BESIndent::UnIndent();
     } else {
-        strm << BESIndent::LMarg << "signed url list: EMPTY" << endl;
+        strm << BESIndent::LMarg << "presigned url list: EMPTY" << endl;
     }
 
-    if (!d_href_to_s3credentials_cache.empty()) {
+    if (!d_href_to_tea_endpoint_cache.empty()) {
         strm << BESIndent::LMarg << "href-to-s3credentials list:" << endl;
         BESIndent::Indent();
-        for (auto const &i: d_href_to_s3credentials_cache) {
+        for (auto const &i : d_href_to_tea_endpoint_cache) {
             strm << BESIndent::LMarg << i.first << " --> " << i.second << "\n";
         }
         BESIndent::UnIndent();
@@ -521,10 +575,10 @@ void SignedUrlCache::dump(ostream &strm) const {
         strm << BESIndent::LMarg << "href-to-s3credentials list: EMPTY" << endl;
     }
 
-    if (!d_href_to_s3_cache.empty()) {
+    if (!d_href_to_s3_uri_cache.empty()) {
         strm << BESIndent::LMarg << "href-to-s3url list:" << endl;
         BESIndent::Indent();
-        for (auto const &i: d_href_to_s3_cache) {
+        for (auto const &i : d_href_to_s3_uri_cache) {
             strm << BESIndent::LMarg << i.first << " --> " << i.second << "\n";
         }
         BESIndent::UnIndent();
@@ -532,10 +586,10 @@ void SignedUrlCache::dump(ostream &strm) const {
         strm << BESIndent::LMarg << "href-to-s3url list: EMPTY" << endl;
     }
 
-    if (!d_s3credentials_cache.empty()) {
+    if (!d_tea_endpoint_sts_credentials_cache.empty()) {
         strm << BESIndent::LMarg << "s3 credentials list:" << endl;
         BESIndent::Indent();
-        for (auto const &i: d_s3credentials_cache) {
+        for (auto const &i : d_tea_endpoint_sts_credentials_cache) {
             strm << BESIndent::LMarg << i.first << " --> Expires: " << get<3>(*(i.second)) << "\n";
         }
         BESIndent::UnIndent();

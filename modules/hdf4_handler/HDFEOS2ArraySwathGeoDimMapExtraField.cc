@@ -132,12 +132,12 @@ HDFEOS2ArraySwathGeoDimMapExtraField::read ()
 
 
     int32 tmp_rank = 0;
-    int32 tmp_dims[rank];
+    vector<int32> tmp_dims(rank);
     char tmp_dimlist[1024];
     int32 type = 0;
     intn r = -1;
     r = fieldinfofunc (swathid, const_cast < char *>(fieldname.c_str ()),
-                       &tmp_rank, tmp_dims, &type, tmp_dimlist);
+                       &tmp_rank, tmp_dims.data(), &type, tmp_dimlist);
     if (r != 0) {
         detachfunc (swathid);
         closefunc (fileid);

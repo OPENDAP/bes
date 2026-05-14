@@ -162,7 +162,7 @@ public:
         return true;
     }
 
-    static void test_throw_if_s3_client_uninitialized() {
+    static void test_throw_if_global_s3_client_uninitialized() {
         AWS_SDK aws_sdk;
         CPPUNIT_ASSERT_THROW_MESSAGE("s3 client must be initialized",
                                         aws_sdk.s3_head_exists("foo", "bar"), BESInternalFatalError);
@@ -337,7 +337,7 @@ public:
 
     CPPUNIT_TEST_SUITE(AWS_SDK_Test);
 
-        CPPUNIT_TEST(test_throw_if_s3_client_uninitialized);
+        CPPUNIT_TEST(test_throw_if_global_s3_client_uninitialized);
 
         // All tests that require aws credentials belong here, so that
         // if the tests are run without credentials a warning will be

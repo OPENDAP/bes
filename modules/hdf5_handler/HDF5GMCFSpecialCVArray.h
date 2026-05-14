@@ -53,11 +53,11 @@ public:
     bool read() override;
 
 private:
-    H5DataType dtype;
+    H5DataType dtype __attribute__((unused));
     int64_t tnumelm;
     std::string varname;
     H5GCFProduct product_type;
-    CVType cvartype = CV_UNSUPPORTED;
+    CVType cvartype __attribute__((unused)) = CV_UNSUPPORTED;
 
     // GPM version 3.0 nlayer values are from the document https://storm.pps.eosdis.nasa.gov/storm/filespec.GPM.V1.pdf
     void obtain_gpm_l3_layer(int64_t, const std::vector<int64_t>&, const std::vector<int64_t>&, const std::vector<int64_t>& );
@@ -75,4 +75,3 @@ private:
 };
 
 #endif                          // _HDF5GMCFSpecialCVARRAY_H
-

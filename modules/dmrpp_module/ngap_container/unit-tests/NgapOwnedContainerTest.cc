@@ -28,8 +28,10 @@
 #include "BESContextManager.h"
 #include "BESError.h"
 #include "BESInternalError.h"
+#include "BESNotFoundError.h"
 #include "BESSyntaxUserError.h"
 #include "BESUtil.h"
+#include "HttpError.h"
 #include "TheBESKeys.h"
 
 #include "NgapOwnedContainer.h"
@@ -386,6 +388,63 @@ public:
         CPPUNIT_ASSERT_MESSAGE("The DMR++ should be in the cached value", !cached_value.empty());
     }
 
+    void test_get_dmrpp_from_cache_or_remote_source_empty_dmrpp() {
+        TEST_NAME;
+        string dmrpp_string = "";
+        NgapOwnedContainer container;
+        container.set_real_name("/data/dmrpp/empty.h5");
+        container.put_item_in_dmrpp_cache(dmrpp_string);
+
+        string retrieved_dmrpp_string = "";
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw when the resultant dmrpp_string is empty",
+                                     container.get_dmrpp_from_cache_or_remote_source(retrieved_dmrpp_string),
+                                     BESInternalError);
+    }
+
+    void test_get_dmrpp_from_cache_or_remote_source_no_uri() {
+        TEST_NAME;
+        NgapOwnedContainer container;
+        string dmrpp_string = "";
+
+        container.set_real_name("this/is/not/a/recognized/path/format");
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should throw when container name cannot be mapped to DMR++ URI",
+                                     container.get_dmrpp_from_cache_or_remote_source(dmrpp_string),
+                                     BESNotFoundError);
+
+        container.set_real_name("collections/foo/granules/bar.nc");
+        CPPUNIT_ASSERT_THROW_MESSAGE("The function should find a DMR++ URI that it attempts to fetch from a DAAC, such that it does not throw a BESNotFoundError. It should later throw an error only when failing to fetch the (nonexistant) DMR++.",
+                                     container.get_dmrpp_from_cache_or_remote_source(dmrpp_string),
+                                     http::HttpError);
+        }
+
+    void test_get_dmrpp_from_cache_or_remote_source_legacy_cmr_query_format() {
+        NgapOwnedContainer container;
+
+        try {
+            container.set_real_name("providers/POCLOUD/collections/ECCO Ocean Temperature and Salinity - Monthly Mean llc90 Grid (Version 4 Release 4)/granules/OCEAN_TEMPERATURE_SALINITY_mon_mean_2017-12_ECCO_V4r4_native_llc0090");
+            string dmrpp_string = "";
+            container.get_dmrpp_from_cache_or_remote_source(dmrpp_string);
+        } catch (const http::HttpError &e) {
+            // If we fail with an HttpError, that's fine---we're already past the "DRM++ URI generation" we cared about.
+            // The downstream HTTP request to FETCH the DMR++ may fail, depending on the credentials of the test runner and the
+            // current CMR status. This is fine!
+        } catch (std::exception &e) {
+            CPPUNIT_FAIL("DMR++ URI generation should succeed for legacy URL containing url encoding`" + container.get_real_name() + "`. Error message: " + std::string(e.what()));
+        }
+
+        try {
+            container.set_real_name("providers/POCLOUD/collections/ECCO%20Ocean%20Temperature%20and%20Salinity%20-%20Monthly%20Mean%20llc90%20Grid%20(Version%204%20Release%204)/granules/OCEAN_TEMPERATURE_SALINITY_mon_mean_2017-12_ECCO_V4r4_native_llc0090");
+            string dmrpp_string = "";
+            container.get_dmrpp_from_cache_or_remote_source(dmrpp_string);
+        } catch (const http::HttpError &e) {
+            // If we fail with an HttpError, that's fine---we're already past the "DRM++ URI generation" we cared about.
+            // The downstream HTTP request to FETCH the DMR++ may fail, depending on the credentials of the test runner and the
+            // current CMR status. This is fine!
+        } catch (std::exception &e) {
+            CPPUNIT_FAIL("DMR++ URI generation should succeed for legacy URL containing url encoding`" + container.get_real_name() + "`. Error message: " + std::string(e.what()));
+        }
+    }
+
     void test_access() {
         TEST_NAME;
 
@@ -546,6 +605,9 @@ public:
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_cache_consistency);
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_test_both_caches);
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_test_cache_use);
+    CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_empty_dmrpp);
+    CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_no_uri);
+    CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_legacy_cmr_query_format);
 
     CPPUNIT_TEST(test_access);
     CPPUNIT_TEST(test_alt_access);

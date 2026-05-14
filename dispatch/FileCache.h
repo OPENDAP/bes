@@ -507,7 +507,8 @@ public:
         // Here we might use st_blocks and st_blksize if that will speed up the transfer.
         // This is likely to matter only for large files (where large means...?). jhrg 11/02/23
 
-        if (write(fd, data.c_str(), data.size()) != data.size()) {
+        const ssize_t bytes_written = write(fd, data.c_str(), data.size());
+        if (bytes_written < 0 || static_cast<std::string::size_type>(bytes_written) != data.size()) {
             ERROR("Error writing to data to cache file: " + key + " " + get_errno());
             return false;
         }

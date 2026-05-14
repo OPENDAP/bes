@@ -988,19 +988,6 @@ void GMFile::Add_UseDimscale_Var_Dim_Names_Mea_SeaWiFS_Ozone(const Var *var,cons
             // The above code works with dereferencing references generated with new H5R(H5R_ref_t) APIs with 1.12 and 1.13.
             // However, in case this h5rdeference2 API stops working with new APIs, the following #if 0 #endif block is a 
             // way to handle this issue.
-#if 0
-     
-            rbuf =((hobj_ref_t*)vl_ref[0].p)[0];
-            H5E_BEGIN_TRY {
-                dset1 =  H5Rdereference2(attr_id,H5P_DEFAULT,H5R_OBJECT,&ds_ref_buf);
-            } H5E_END_TRY;
-
-            H5R_ref_t new_rbuf =((H5R_ref_t*)vlbuf[vlbuf_index].p)[0];
-            if ((ref_dset = H5Ropen_object((H5R_ref_t *)&new_rbuf, H5P_DEFAULT, H5P_DEFAULT))<0)
-                throw2("Cannot dereference from the DIMENSION_LIST attribute  for the variable ",var->name);
-            H5Rdestroy(&new_rbuf);
-
-#endif
             if ((objnamelen= H5Iget_name(ref_dset,nullptr,0))<=0) 
                 throw2("Cannot obtain the dataset name dereferenced from the DIMENSION_LIST attribute  for the variable ",var->name);
             objname.resize(objnamelen+1);
@@ -2012,7 +1999,6 @@ cerr<<"struct lat lon names are " <<(*ivs).name1 <<" and " << (*ivs).name2 <<end
         if(latloncv_candidate_pairs.empty() == false) {
             int num_1d_rank = 0;
             int num_2d_rank = 0;
-            int num_g2d_rank = 0;
             vector<struct Name_Size_2Pairs> temp_1d_latlon_pairs;
             for(const auto &llcv_p:latloncv_candidate_pairs) {
                 if(1 == llcv_p.rank) {
@@ -2021,8 +2007,6 @@ cerr<<"struct lat lon names are " <<(*ivs).name1 <<" and " << (*ivs).name2 <<end
                 }
                 else if(2 == llcv_p.rank)
                     num_2d_rank++;
-                else if(llcv_p.rank >2) 
-                    num_g2d_rank++;
             }
  
             // This is the GENERAL_LATLON_COOR_ATTR case.

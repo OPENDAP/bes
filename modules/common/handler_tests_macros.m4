@@ -551,9 +551,11 @@ m4_define([AT_BESCMD_GDAL_BINARY_FILE_RESPONSE_TEST], [dnl
         AT_CHECK([besstandalone -c $abs_builddir/bes.conf -i $input > tmp], [0], [stdout])
         GET_GDAL_INFO([tmp])
 
-        # For these binary response, the GET_GDAL_INFO() macro normalizes the output. No
-        # need to check for special 'm_proc' baselines. jhrg 2/3/26
-        AT_CHECK([diff -b $baseline tmp], [ignore], )
+        # Some Apple silicon GDAL builds emit values like '-0.000' where Intel/Linux
+        # builds emit '0.000'. Use the optional processor-specific baseline when present.
+        AS_IF([ test "x$(uname -m)" = "xarm64" -a -f $baseline.m_proc],
+            [ AT_CHECK([diff -b $baseline.m_proc tmp], [ignore], ) ],
+            [ AT_CHECK([diff -b $baseline tmp], [ignore], ) ])
     ])
 
     AT_CLEANUP
@@ -761,11 +763,11 @@ dnl jhrg 12/29/21
 
 m4_define([REMOVE_VERSIONS], [dnl
   awk '{
-    gsub(/<Value>[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?<\/Value>/, "<Value>removed_version</Value>");
-    gsub(/<Value>[[a-zA-Z._]+]-[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?<\/Value>/, "<Value>removed_version</Value>");
-    gsub(/[[0-9]+]\.[[0-9]+]\.[[0-9]+]-[[0-9]+]/, "removed_version");
-    gsub(/dmrpp:version="[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?"/, "dmrpp:version=\"removed\"");
-    gsub(/dmrVersion="[[0-9]+]\.[[0-9]+]"/, "dmrVersion=\"removed\"");
+    gsub(/<Value>[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?(-test-deploy)?<\/Value>/, "<Value>removed_version</Value>");
+    gsub(/<Value>[[a-zA-Z._]+]-[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?(-test-deploy)?<\/Value>/, "<Value>removed_version</Value>");
+    gsub(/[[0-9]+]\.[[0-9]+]\.[[0-9]+]-[[0-9]+](-test-deploy)?/, "removed_version");
+    gsub(/dmrpp:version="[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?(-test-deploy)?"/, "dmrpp:version=\"removed\"");
+    gsub(/dmrVersion="[[0-9]+]\.[[0-9]+](-test-deploy)?"/, "dmrVersion=\"removed\"");
     print
   }' < $1 > $1.awk
   mv $1.awk $1
@@ -830,6 +832,15 @@ m4_define([PRINT_DAP4_DATA_RESPONSE], [dnl
     getdap4 -C -D -M -s $1 > $1.txt
     mv $1.txt $1
 ])
+
+dnl This macro is similar to the PRINT_DAP4_DATA_RESPONSE,but without the -C option for getdap4.
+dnl KY 4/20/26
+ 
+m4_define([PRINT_NC_DAP4_DATA_RESPONSE], [dnl
+    getdap4 -D -M -s $1 > $1.txt
+    mv $1.txt $1
+])
+
 
 dnl Filter these from the gdalinfo output since they vary by gdal version
 dnl Upper Left  (  21.0000000,  89.0000000) ( 21d 0' 0.00"E, 89d 0' 0.00"N)

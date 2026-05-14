@@ -1,8 +1,8 @@
 // -*- mode: c++; c-basic-offset:4 -*-
 //
-// W10NResponseHandler.h
+// GatewayPathInfoResponseHandler.h
 //
-// This file is part of BES w10n handler
+// This file is part of BES gateway_module
 //
 // Copyright (c) 2015v OPeNDAP, Inc.
 // Author: Nathan Potter <ndp@opendap.org>
@@ -56,8 +56,8 @@ public:
     GatewayPathInfoResponseHandler(const std::string &name);
     virtual ~GatewayPathInfoResponseHandler(void);
 
-    virtual void execute(BESDataHandlerInterface &dhi);
-    virtual void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi);
+    void execute(BESDataHandlerInterface &dhi) override;
+    void transmit(BESTransmitter *transmitter, BESDataHandlerInterface &dhi) override;
 
     void dump(std::ostream &strm) const override;
 
@@ -65,4 +65,3 @@ public:
 };
 
 #endif // I_GatewayPathInfoResponseHandler_h
-

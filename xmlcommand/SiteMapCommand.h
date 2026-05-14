@@ -62,10 +62,10 @@ public:
     {
     }
 
-    virtual void parse_request(xmlNode *node);
+    void parse_request(xmlNode *node) override;
 
     /// @brief This command does not return a response, unless its an error
-    virtual bool has_response()
+    bool has_response() override
     {
         return true;
     }
@@ -76,4 +76,3 @@ public:
 };
 
 #endif // A_SiteMapCommand_h
-

@@ -119,7 +119,7 @@ void process_s3_error_response(const shared_ptr<http::url> &data_url, const stri
     if (code == "AccessDenied") {
         stringstream msg;
         msg << prolog << "ACCESS DENIED - The underlying object store has refused access to: "
-            << data_url->str() << " Object Store Message: "
+            << data_url->get_url_no_query() << " Object Store Message: "
             << message;
         BESDEBUG(MODULE, msg.str() << endl);
         VERBOSE(msg.str());
@@ -127,7 +127,7 @@ void process_s3_error_response(const shared_ptr<http::url> &data_url, const stri
     }
     else {
         stringstream msg;
-        msg << prolog << "The underlying object store returned an error. " << "(Tried: " << data_url->str() << ") Object Store Message: " << message;
+        msg << prolog << "The underlying object store returned an error. " << "(Tried: " << data_url->get_url_no_query() << ") Object Store Message: " << message;
         BESDEBUG(MODULE, msg.str() << endl);
         VERBOSE(msg.str());
         throw BESInternalError(msg.str(), __FILE__, __LINE__);
@@ -1349,8 +1349,8 @@ string Chunk::to_string() const {
  * This method returns the data URL for this chunk. If the data URL is not
  * set, it returns nullptr.
  *
- * @note The call to get_signed_url() will first attempt to create a locally-signed url via SignedUrlCache::; if
- * that fails, it will fall through to calling EffectiveUrlCache::get_signed_url()
+ * @note The call to get_presigned_s3_url() will first attempt to create a locally-signed url via SignedUrlCache::; if
+ * that fails, it will fall through to calling EffectiveUrlCache::get_presigned_s3_url()
  * which will call CurlUtils.cc get_redirect_url() which will call gru_mk_attempt() and
  * will look for an HTTP 302 response and return the redirect URL in that response.
  *
@@ -1359,15 +1359,19 @@ string Chunk::to_string() const {
 std::shared_ptr<http::url> Chunk::get_data_url() const {
 
     // The d_data_url may be nullptr(fillvalue case). 
-    if (d_data_url == nullptr) 
+    if (d_data_url == nullptr) {
         return d_data_url;
+    }
 
-    std::shared_ptr<http::EffectiveUrl> url = SignedUrlCache::TheCache()->get_signed_url(d_data_url);
+    std::shared_ptr<http::EffectiveUrl> url = SignedUrlCache::TheCache()->get_presigned_s3_url(d_data_url);
 
+    // If the url signing fails for any reason---nonexistant or bad short-term credentials, being
+    // called from a region other than us-west-2, etc---it will return a nullptr, so that we can fall
+    // back on using the TEA service to sign our urls
     if (url == nullptr) {
         url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url);
     }
-    // BESDEBUG(MODULE, prolog << "Using data_url: " << url->get_url_no_query() << endl);
+    BESDEBUG(MODULE, prolog << "Using data_url: " << url->get_url_no_query() << endl);
 
 #if ENABLE_TRACKING_QUERY_PARAMETER
     //A conditional call to void Chunk::add_tracking_query_param()
