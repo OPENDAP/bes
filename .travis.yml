@@ -131,7 +131,6 @@ before_script:
 
 stages:
   - name: build-and-test
-    # if: branch = never
   - name: build-docker
   - name: scan
     if:  branch = master
@@ -154,30 +153,30 @@ jobs:
         - echo "LD_LIBRARY_PATH - $LD_LIBRARY_PATH" >&2
         - make -j16 && make install && besctl start && make check -j16 && besctl stop
 
-    # - stage: build-and-test
-    #   name: "distcheck"
-    #   script:
-    #     - export BES_BUILD=distcheck
-    #     - autoreconf --force --install --verbose
-    #     - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-    #     - make distcheck -j16 GZIP_ENV=--fast
-
-    # - stage: build-and-test
-    #   name: "dist"
-    #   script:
-    #     - export BES_BUILD=srcdist
-    #     - autoreconf --force --install --verbose
-    #     - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
-    #     - make dist -j7
-    #     # Make both a bes-<version>-<build num> and bes-snapshot tar.gz. This will simplify
-    #     # other operations that use the bes source code. Note that the VERSION file holds a
-    #     # string that is the version number that is set by the configure script and the build
-    #     # number passed into configure when it is run. jhrg 3/23/21
-    #     - SOURCE_VERSION=$(cat bes_VERSION)
-    #     - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
-    #     - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
+    - stage: build-and-test
+      name: "distcheck"
+      script:
+        - export BES_BUILD=distcheck
+        - autoreconf --force --install --verbose
+        - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+        - make distcheck -j16 GZIP_ENV=--fast
 
     - stage: build-and-test
+      name: "dist"
+      script:
+        - export BES_BUILD=srcdist
+        - autoreconf --force --install --verbose
+        - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
+        - make dist -j7
+        # Make both a bes-<version>-<build num> and bes-snapshot tar.gz. This will simplify
+        # other operations that use the bes source code. Note that the VERSION file holds a
+        # string that is the version number that is set by the configure script and the build
+        # number passed into configure when it is run. jhrg 3/23/21
+        - SOURCE_VERSION=$(cat bes_VERSION)
+        - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
+        - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
+
+    - stage: build-docker
       name: "Build docker image bes_core:-el8"
       script:
         - set -e
@@ -207,7 +206,7 @@ jobs:
         #   echo $DOCKER_HUB_PWSD | docker login -u $DOCKER_HUB_UID --password-stdin
         #   docker push ${DEBUGGING_TAG}
 
-    - stage: build-and-test
+    - stage: build-docker
       name: "Build docker image bes_core:-el9"
       script:
         - set -e
