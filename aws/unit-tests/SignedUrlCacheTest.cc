@@ -388,7 +388,7 @@ public:
         auto output2 = theCache->sign_s3_uri_with_sts_credentials("s3://bucket/key", s3_access_key_tuple);
         CPPUNIT_ASSERT_MESSAGE("Resigned object with same STS credentials should yield identical output:\n\t" +
                                    output->str() + "\n\n\t" + output2->str(),
-                               output->str() == output2->str());
+                               output != nullptr && output2 != nullptr && output->str() == output2->str());
 
         CPPUNIT_ASSERT_MESSAGE("Missing credentials does not return a signed url but does not error",
                                !theCache->sign_s3_uri_with_sts_credentials("s3://bucket/key", nullptr));
@@ -426,7 +426,7 @@ public:
                                theCache->d_presigned_s3_urls_cache.size() == 0);
 
         auto result = theCache->get_presigned_s3_url(test_url);
-        CPPUNIT_ASSERT_MESSAGE("When credentials available for a url, return signed url", !result->str().empty());
+        CPPUNIT_ASSERT_MESSAGE("When credentials available for a url, return signed url", result != nullptr && !result->str().empty());
         CPPUNIT_ASSERT_MESSAGE("Generated signed url should have been cached",
                                theCache->d_presigned_s3_urls_cache.size() == 1);
         CPPUNIT_ASSERT_MESSAGE("When url has been precached, return it",
