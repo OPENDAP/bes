@@ -6,7 +6,7 @@ AM_CPPFLAGS = $(DAP_CFLAGS) -I$(top_srcdir)/modules/functions/stare -I$(top_srcd
     -I$(STARE_INC) -I$(prefix)/deps/include $(NC_CPPFLAGS)
 # Added  -Wno-deprecated to suppress warnings about auto_ptr<>. jhrg 11/7/19
 
-AM_CXXFLAGS = -Wno-deprecated -Wno-vla-extension -Wno-c++14-extensions
+AM_CXXFLAGS = $(CXXFLAGS) -Wno-deprecated -Wno-vla-extension -Wno-c++14-extensions
 
 # AM_LDADD =  $(DAP_CLIENT_LIBS) -L$(abs_top_builddir)/dispatch -lbes_dispatch $(H5_LDFLAGS) $(H5_LIBS) \
 #    $(STARE_LDFLAGS) $(STARE_LIBS) $(NC_LDFLAGS) $(NC_LIBS)
@@ -21,7 +21,6 @@ endif
 # debugging. Set CXXFLAGS to this in the nightly build using export ...
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 
-AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
 # Old programs used at the start of the STARE project. jhrg 8/20/20
