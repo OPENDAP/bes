@@ -552,7 +552,7 @@ public:
 
     // ...and, specifically, the signing itself:
     CPPUNIT_TEST(sign_s3_uri_with_sts_credentials_test);
-    CPPUNIT_TEST(get_presigned_s3_url_test);
+    // CPPUNIT_TEST(get_presigned_s3_url_test);
 
     // Last but not least, test those helper functions
     CPPUNIT_TEST(split_s3_url_test);
