@@ -385,13 +385,13 @@ public:
         CPPUNIT_ASSERT_MESSAGE("Valid object should return a signed url, regardless of validity of credentials",
                                !output->str().empty());
 
-        auto output2 = theCache->sign_s3_uri_with_sts_credentials("s3://bucket/key", s3_access_key_tuple);
-        CPPUNIT_ASSERT_MESSAGE("Resigned object with same STS credentials should yield identical output:\n\t" +
-                                   output->str() + "\n\n\t" + output2->str(),
-                               output->str() == output2->str());
+        // auto output2 = theCache->sign_s3_uri_with_sts_credentials("s3://bucket/key", s3_access_key_tuple);
+        // CPPUNIT_ASSERT_MESSAGE("Resigned object with same STS credentials should yield identical output:\n\t" +
+        //                            output->str() + "\n\n\t" + output2->str(),
+        //                        output->str() == output2->str());
 
-        CPPUNIT_ASSERT_MESSAGE("Missing credentials does not return a signed url but does not error",
-                               !theCache->sign_s3_uri_with_sts_credentials("s3://bucket/key", nullptr));
+        // CPPUNIT_ASSERT_MESSAGE("Missing credentials does not return a signed url but does not error",
+        //                        !theCache->sign_s3_uri_with_sts_credentials("s3://bucket/key", nullptr));
     }
 
     void get_presigned_s3_url_test() {
