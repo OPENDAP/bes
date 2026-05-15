@@ -441,6 +441,10 @@ SignedUrlCache::sign_s3_uri_with_sts_credentials(std::string const &s3_uri,
                  s3_uri);
         return nullptr;
     }
+    if (s3_uri.empty()) {
+        INFO_LOG(prolog + "SERVICE CHAIN WARNING - Failed to generate signed url due to missing s3_uri");
+        return nullptr;
+    }
 
     bes::AWS_SDK aws_sdk;
     string id = get<0>(*s3_access_key_tuple);
