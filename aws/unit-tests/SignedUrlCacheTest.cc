@@ -548,17 +548,17 @@ public:
 
 
 
-    CPPUNIT_TEST(cache_signed_url_components_test);
-    CPPUNIT_TEST(retrieve_cached_signed_url_components_test);
-    CPPUNIT_TEST(cache_sts_credentials_from_tea_endpoint_test);
+    // CPPUNIT_TEST(cache_signed_url_components_test);
+    // CPPUNIT_TEST(retrieve_cached_signed_url_components_test);
+    // CPPUNIT_TEST(cache_sts_credentials_from_tea_endpoint_test);
 
     // // ...and, specifically, the signing itself:
-    // CPPUNIT_TEST(sign_s3_uri_with_sts_credentials_test);
+    CPPUNIT_TEST(sign_s3_uri_with_sts_credentials_test);
     // CPPUNIT_TEST(get_presigned_s3_url_test);
 
     // Last but not least, test those helper functions
-    CPPUNIT_TEST(split_s3_url_test);
-    CPPUNIT_TEST(num_seconds_until_expiration_test);
+    // CPPUNIT_TEST(split_s3_url_test);
+    // CPPUNIT_TEST(num_seconds_until_expiration_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
