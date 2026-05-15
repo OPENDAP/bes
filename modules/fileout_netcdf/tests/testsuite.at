@@ -342,6 +342,10 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/compound_array_fix_vlen_s
 #Via dmrpp module
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/vlen.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/vlen_dim.h5.dmrpp.bescmd)
+
+#Via dmrpp module with sidecar
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/vlen_sidecar.h5.dmrpp.bescmd)
+
 #Via hdf5 handler
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/vlen.h5.bescmd)
 
