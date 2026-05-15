@@ -11,7 +11,7 @@ AM_CPPFLAGS = -I$(aws_prefix)/include -I$(top_srcdir) -I$(top_srcdir)/aws -I$(to
 # to, but before we had configure.ac set to include the the deps lib dir
 # we used special code just for the AWS library. I'll keep that for now.
 # jhrg 1/7/26
-AM_LDFLAGS = -L$(aws_libdir)
+AM_LDFLAGS += -L$(aws_libdir)
 
 # This should be 'AM_LDADD' but for some reason the check_PROGRAMS variable doesn't work
 # like bin_PROGRAMS.
