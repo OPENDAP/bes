@@ -379,8 +379,8 @@ public:
 
         CPPUNIT_ASSERT_MESSAGE("Empty uri does not return a signed url but does not throw error",
                                !theCache->sign_s3_uri_with_sts_credentials("", s3_access_key_tuple));
-        // CPPUNIT_ASSERT_MESSAGE("Invalid s3 uri does not return a signed url but does not throw error",
-        //                        !theCache->sign_s3_uri_with_sts_credentials("foo", s3_access_key_tuple));
+        CPPUNIT_ASSERT_MESSAGE("Invalid s3 uri does not return a signed url but does not throw error",
+                               !theCache->sign_s3_uri_with_sts_credentials("foo", s3_access_key_tuple));
         // auto output = theCache->sign_s3_uri_with_sts_credentials("s3://bucket/key", s3_access_key_tuple);
         // CPPUNIT_ASSERT_MESSAGE("Valid object should return a signed url, regardless of validity of credentials",
         //                        !output->str().empty());
