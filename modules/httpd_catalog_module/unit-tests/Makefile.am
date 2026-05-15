@@ -24,7 +24,7 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 
 AM_CXXFLAGS=
-AM_LDFLAGS =
+
 include $(top_srcdir)/coverage.mk
 
 DISTCLEANFILES = test_config.h *.Po

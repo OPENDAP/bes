@@ -2,7 +2,7 @@
 AUTOMAKE_OPTIONS = foreign 
 
 AM_CPPFLAGS = -I$(top_srcdir)
-AM_CXXFLAGS =
+AM_CXXFLAGS = $(CXXFLAGS)
 
 BES_CONF_IN = bes.conf.in
 

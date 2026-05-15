@@ -7,7 +7,7 @@ AUTOMAKE_OPTIONS = foreign subdir-objects
 AM_CPPFLAGS = -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch -I$(top_srcdir)/http \
     -I$(top_srcdir)/modules/dmrpp_module/ngap_container
 
-AM_CXXFLAGS =
+AM_CXXFLAGS = $(CXXFLAGS)
 # Preserve configure-provided dependency rpath flags, then add DMR++ flags.
 AM_LDFLAGS += $(DMRPP_LDFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)

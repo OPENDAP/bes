@@ -18,7 +18,7 @@ LIBADD = $(GF_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(BES_HTTP_LIB)
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -Wcast-align
 
 AM_CXXFLAGS=
-AM_LDFLAGS =
+
 include $(top_srcdir)/coverage.mk
 
 SUBDIRS =  . unit-tests tests

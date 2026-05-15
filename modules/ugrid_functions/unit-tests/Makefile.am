@@ -28,7 +28,7 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -Wcast-align
 
 AM_CXXFLAGS=
-AM_LDFLAGS =
+
 include $(top_srcdir)/coverage.mk
 
 # This determines what gets built by make check
