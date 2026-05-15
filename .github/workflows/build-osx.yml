@@ -81,7 +81,7 @@ jobs:
         shell: bash
       - name: Install hyrax-dependencies
         run: |
-          aws s3 cp "s3://opendap.github.actions.build/hyrax-dependencies-${{ matrix.runs-on }}-756.tgz" $HOME
+          aws s3 cp "s3://opendap.github.actions.build/hyrax-dependencies-${{ matrix.runs-on }}-185.tgz" $HOME
           tar -C $HOME -xzvf $HOME/hyrax-dependencies-${{ matrix.runs-on }}-756.tgz
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_GHA_BES_ID }}
