@@ -386,7 +386,7 @@ public:
 
         // Test intermediate reasons that this has failed...
         CPPUNIT_ASSERT_MESSAGE("Token hasn't expired...",
-                               theCache->num_seconds_until_expiration(get<3>(*s3_access_key_tuple) > 0); 
+                               theCache->num_seconds_until_expiration(get<3>(*s3_access_key_tuple)) > 0);
 
         CPPUNIT_ASSERT_MESSAGE("Valid object should return a signed url, regardless of validity of credentials",
                                output != nullptr && !output->str().empty());
