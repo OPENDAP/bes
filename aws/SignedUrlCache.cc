@@ -464,10 +464,10 @@ SignedUrlCache::sign_s3_uri_with_sts_credentials(std::string const &s3_uri,
     string object;
     tie(bucket, object) = split_s3_uri(s3_uri);
     if (bucket.empty() || object.empty()) {
-        INFO_LOG(
-            prolog +
-            "SERVICE CHAIN WARNING - Failed to generate signed url due to either an empty bucket or object string -  " +
-            s3_uri);
+        INFO_LOG(prolog +
+                 "SERVICE CHAIN WARNING - Failed to generate signed url due to either an empty bucket or object string "
+                 "for s3_uri " +
+                 s3_uri);
         return nullptr;
     }
 
