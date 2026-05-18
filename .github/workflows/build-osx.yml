@@ -31,7 +31,7 @@ concurrency:
 jobs:
   build:
     # Run on pushes or non-draft PRs
-    # if: (github.event_name == 'push') || (github.event.pull_request.draft == false) || (github.event_name == 'workflow_dispatch')
+    if: (github.event_name == 'push') || (github.event.pull_request.draft == false) || (github.event_name == 'workflow_dispatch')
     name: Build on ${{ matrix.runs-on }}
     runs-on: ${{ matrix.runs-on }}
     env:
@@ -81,7 +81,7 @@ jobs:
         shell: bash
       - name: Install hyrax-dependencies
         run: |
-          aws s3 cp "s3://opendap.github.actions.build/hyrax-dependencies-${{ matrix.runs-on }}-185.tgz" $HOME
+          aws s3 cp "s3://opendap.github.actions.build/hyrax-dependencies-${{ matrix.runs-on }}.tgz" $HOME
           tar -C $HOME -xzvf $HOME/hyrax-dependencies-${{ matrix.runs-on }}-185.tgz
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_GHA_BES_ID }}
