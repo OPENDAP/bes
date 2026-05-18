@@ -62,6 +62,12 @@ class TemporaryFileTest : public CppUnit::TestFixture {
 #else
     static constexpr size_t TEMP_NAME_BUFFER_SIZE = 4096;
 #endif
+    // These are used to wait for the child process in the sigpipe_test
+    // and multifile_sigpipe_test. The combination means that the code will
+    // wait up to 5 seconds for the child to create the temp file but 
+    // will check (poll) every 10ms to see if the file is ready. This test not
+    // only failing often, but it took too long because we used sleep() to
+    // wait for the child. jhrg 5/18/26
     static constexpr useconds_t READY_WAIT_USEC = 10000;
     static constexpr unsigned int READY_WAIT_ATTEMPTS = 500;
 
@@ -78,8 +84,11 @@ class TemporaryFileTest : public CppUnit::TestFixture {
     }
 
     static SharedTempName *map_shared_temp_name() {
-        void *mapping = mmap(nullptr, sizeof(SharedTempName), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1,
-                             0);
+        // using nullptr (0) for the address means the kernel will choose the address. 
+        // fd == -1 is important with MAP_ANONYMOUS for compatibility. This call is asking
+        // the OS to allocate anonymous memory for the shared structure. jhrg 5/18/26
+        void *mapping = mmap(nullptr, sizeof(SharedTempName), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS,
+                             /* fd */ -1, /* offset */0);
         CPPUNIT_ASSERT_MESSAGE("mmap() failed for shared temporary filename, errno: " + to_string(errno),
                                mapping != MAP_FAILED);
 
@@ -95,7 +104,7 @@ class TemporaryFileTest : public CppUnit::TestFixture {
                                tmp_file_name.size() < TEMP_NAME_BUFFER_SIZE);
 
         size_t copied = tmp_file_name.copy(shared_name.name, TEMP_NAME_BUFFER_SIZE - 1, 0);
-        shared_name.name[copied] = '\0';
+        shared_name.name[copied] = '\0';    // null terminate! jhrg
     }
 
     static bool wait_for_temp_name(const SharedTempName &shared_name) {
