@@ -375,7 +375,7 @@ public:
     void sign_s3_uri_with_sts_credentials_test() {
         SignedUrlCache *theCache = SignedUrlCache::TheCache();
         auto s3_access_key_tuple =
-            make_shared<SignedUrlCache::S3AccessKeyTuple>("a man", "a plan", "a canal", "3035-07-16 02:20:33+00:00");
+            make_shared<SignedUrlCache::S3AccessKeyTuple>("a man", "a plan", "a canal", "2126-07-16 18:40:58+04:00");
 
         CPPUNIT_ASSERT_MESSAGE("Empty uri does not return a signed url but does not throw error",
                                !theCache->sign_s3_uri_with_sts_credentials("", s3_access_key_tuple));
@@ -420,7 +420,7 @@ public:
         theCache->d_href_to_s3_uri_cache.insert(pair<string, string>(test_url->str(), "s3://foo/bar"));
         theCache->d_href_to_tea_endpoint_cache.insert(pair<string, string>(test_url->str(), "fake-tea-endpoint-name"));
         auto fake_sts_creds =
-            make_shared<SignedUrlCache::S3AccessKeyTuple>("a man", "a plan", "a canal", "3035-07-16 02:20:33+00:00");
+            make_shared<SignedUrlCache::S3AccessKeyTuple>("a man", "a plan", "a canal", "2126-07-16 18:40:58+04:00");
         theCache->d_tea_endpoint_sts_credentials_cache.insert(
             pair<string, shared_ptr<SignedUrlCache::S3AccessKeyTuple>>("fake-tea-endpoint-name", fake_sts_creds));
         CPPUNIT_ASSERT_MESSAGE("Signed URL cache should be empty before any valid responses",
