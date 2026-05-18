@@ -37,7 +37,7 @@ function loggy(){
     echo  "$@" | awk '{ print "# "$0;}'  >&2
 }
 
-HYRAX_DEPENDENCIES_TARBALL="hyrax-dependencies-${OS}.tgz"
+HYRAX_DEPENDENCIES_TARBALL="hyrax-dependencies-${OS}-756.tgz"
 LIBDAP_RPM_FILENAME="libdap-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
 LIBDAP_DEVEL_RPM_FILENAME="libdap-devel-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
 DOCKER_DEV_FLAGS=${DOCKER_DEV_FLAGS:-""}
