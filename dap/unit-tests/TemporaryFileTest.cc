@@ -65,6 +65,8 @@ class TemporaryFileTest : public CppUnit::TestFixture {
     static constexpr useconds_t READY_WAIT_USEC = 10000;
     static constexpr unsigned int READY_WAIT_ATTEMPTS = 500;
 
+    // This struct is a cheap way to move the temp file name between parent and child processes
+    // without resorting to hacks like sleep(). jhrg 5/18/26
     struct SharedTempName {
         volatile sig_atomic_t ready;
         char name[TEMP_NAME_BUFFER_SIZE];
@@ -87,6 +89,7 @@ class TemporaryFileTest : public CppUnit::TestFixture {
         return shared_name;
     }
 
+    // These two helper methods manipulate the shared name in the struct above.
     static void copy_temp_name(SharedTempName &shared_name, const string &tmp_file_name) {
         CPPUNIT_ASSERT_MESSAGE("Temporary file path is too long for the shared test buffer: " + tmp_file_name,
                                tmp_file_name.size() < TEMP_NAME_BUFFER_SIZE);
@@ -107,6 +110,7 @@ class TemporaryFileTest : public CppUnit::TestFixture {
         return false;
     }
 
+    // These helpers wrap system calls and report their errors as asserts. jhrg 5/18/26
     static void signal_child(pid_t pid, int sig, const string &context) {
         int result = kill(pid, sig);
         int saved_errno = errno;
@@ -350,7 +354,7 @@ public:
             // wait for the child process to catch the signal, remove the temp file and exit.
             int status = wait_for_child(pid);
             DBG(cerr << __func__ << "-PARENT() - Child exited at this point,  status: " << status << endl);
-            CPPUNIT_ASSERT_MESSAGE("The child process should exit with a status of SIGPIPE, was: " + to_string(status), status == SIGPIPE);
+            assert_sigpipe_exit(status);
 
             // Is it STILL there? Better not be...
             CPPUNIT_ASSERT_MESSAGE("The file " + string(glob_name->name) + " should be deleted.",
@@ -417,7 +421,8 @@ public:
             }
 
             for (const auto &name: glob_name) {
-                 CPPUNIT_ASSERT_MESSAGE("The file " + string(name->name) + " should be present.", file_present(name->name));
+                 CPPUNIT_ASSERT_MESSAGE("The file " + string(name->name) + " should be present.",
+                                        file_present(name->name));
             }
 
             // Send the child process the signal
@@ -427,11 +432,12 @@ public:
             // wait for the child process to exit.
             int status = wait_for_child(pid);
             DBG(cerr << __func__ << "-PARENT() - Child exited at this point,  status: " << status << endl);
-            CPPUNIT_ASSERT_MESSAGE("The child process should exit with a status of SIGPIPE, was: " + to_string(status), status == SIGPIPE);
+            assert_sigpipe_exit(status);
 
 
             for (const auto &name: glob_name) {
-                CPPUNIT_ASSERT_MESSAGE("The file " + string(name->name) + " should not be present.", !file_present(name->name));
+                CPPUNIT_ASSERT_MESSAGE("The file " + string(name->name) + " should not be present.",
+                                       !file_present(name->name));
                 DBG(cerr << __func__ << "-PARENT() - Temporary File: '" << name->name
                          << "' was successfully removed. woot." << endl);
             }
