@@ -30,8 +30,7 @@ AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
 BUILT_SOURCES = $(GRAM_SRCS)
 
-AM_CXXFLAGS=
-AM_LDFLAGS =
+AM_CXXFLAGS = $(CXXFLAGS)
 include $(top_srcdir)/coverage.mk
 
 SUBDIRS = gctp . bes-testsuite 
@@ -77,7 +76,7 @@ SERVER_HDR = HDF5RequestHandler.h HDF5Module.h HDF5_DDS.h HDF5_DMR.h HDF5_DataMe
 
 libhdf5_module_la_SOURCES = $(HDF5DTYPE_SRCS) $(HDF5_SRCS) $(HDF5CFDTYPE_SRCS) $(HDF5CF_SRCS) $(SERVER_SRC) $(HDF5CFDTYPE_HDRS) $(HDF5CF_HDRS) $(HDF5DTYPE_HDRS) $(HDF5_HDRS) $(SERVER_HDR)
 # libhdf5_module_la_CPPFLAGS = $(BES_CPPFLAGS)
-libhdf5_module_la_LDFLAGS = -avoid-version -module 
+libhdf5_module_la_LDFLAGS = $(AM_LDFLAGS) -avoid-version -module 
 libhdf5_module_la_LIBADD = $(LIBADD)
 
 EXTRA_DIST = he5das.yy he5dds.yy he5das.lex he5dds.lex OSX_Resources \

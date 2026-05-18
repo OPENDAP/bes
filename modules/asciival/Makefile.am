@@ -21,7 +21,7 @@ AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 CXXFLAGS_DEBUG = -g3 -O0 -Wall 
 
 AM_CXXFLAGS=
-AM_LDFLAGS =
+
 include $(top_srcdir)/coverage.mk
 
 SUBDIRS = . unit-tests tests

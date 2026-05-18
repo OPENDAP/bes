@@ -5,7 +5,7 @@
 AUTOMAKE_OPTIONS = foreign
 
 AM_CPPFLAGS = $(GDAL_CFLAGS) $(DAP_CFLAGS) -I$(top_srcdir) -I$(top_srcdir)/dap -I$(top_srcdir)/dispatch
-AM_CXXFLAGS =
+AM_CXXFLAGS = $(CXXFLAGS)
 AM_LDFLAGS = $(GDAL_LDFLAGS)
 LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 

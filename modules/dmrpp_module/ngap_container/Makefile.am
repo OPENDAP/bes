@@ -12,7 +12,6 @@ AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(t
 LIBADD =
 
 AM_CXXFLAGS=
-AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
 SUBDIRS = . unit-tests
@@ -41,5 +40,3 @@ C4_DIR=./cccc
 .PHONY: cccc
 cccc:	
 	cccc --outdir=$(C4_DIR) $(NGAP_SRC) $(NGAP_HDR)
-
-
