@@ -24,7 +24,10 @@
 
 #include "config.h"
 
+#include <cerrno>
+#include <climits>
 #include <csignal>
+#include <cstddef>
 #include <cstdlib>
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -54,9 +57,61 @@ class TemporaryFileTest : public CppUnit::TestFixture {
     const string TEMP_FILE_PREFIX = "tmpf_test";
     const string BES_CONF_FILE = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
 
+#ifdef PATH_MAX
+    static constexpr size_t TEMP_NAME_BUFFER_SIZE = PATH_MAX;
+#else
+    static constexpr size_t TEMP_NAME_BUFFER_SIZE = 4096;
+#endif
+    static constexpr useconds_t READY_WAIT_USEC = 10000;
+    static constexpr unsigned int READY_WAIT_ATTEMPTS = 500;
+
+    struct SharedTempName {
+        volatile sig_atomic_t ready;
+        char name[TEMP_NAME_BUFFER_SIZE];
+    };
+
     static bool file_present(const string &file_name) {
         struct stat buf{};
         return (stat(file_name.c_str(), &buf) == 0);
+    }
+
+    static SharedTempName *map_shared_temp_name() {
+        void *mapping = mmap(nullptr, sizeof(SharedTempName), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1,
+                             0);
+        CPPUNIT_ASSERT_MESSAGE("mmap() failed for shared temporary filename, errno: " + to_string(errno),
+                               mapping != MAP_FAILED);
+
+        auto *shared_name = static_cast<SharedTempName *>(mapping);
+        shared_name->ready = 0;
+        shared_name->name[0] = '\0';
+        return shared_name;
+    }
+
+    static void copy_temp_name(SharedTempName &shared_name, const string &tmp_file_name) {
+        CPPUNIT_ASSERT_MESSAGE("Temporary file path is too long for the shared test buffer: " + tmp_file_name,
+                               tmp_file_name.size() < TEMP_NAME_BUFFER_SIZE);
+
+        size_t copied = tmp_file_name.copy(shared_name.name, TEMP_NAME_BUFFER_SIZE - 1, 0);
+        shared_name.name[copied] = '\0';
+    }
+
+    static bool wait_for_temp_name(const SharedTempName &shared_name) {
+        for (unsigned int attempt = 0; attempt < READY_WAIT_ATTEMPTS; ++attempt) {
+            if (shared_name.ready) {
+                return true;
+            }
+
+            usleep(READY_WAIT_USEC);
+        }
+
+        return false;
+    }
+
+    static void assert_sigpipe_exit(int status) {
+        CPPUNIT_ASSERT_MESSAGE("The child process should have exited because of a signal; status: " + to_string(status),
+                               WIFSIGNALED(status));
+        CPPUNIT_ASSERT_MESSAGE("The child process should exit with SIGPIPE; status: " + to_string(status),
+                               WTERMSIG(status) == SIGPIPE);
     }
 
 public:
