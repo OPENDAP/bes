@@ -107,6 +107,31 @@ class TemporaryFileTest : public CppUnit::TestFixture {
         return false;
     }
 
+    static void signal_child(pid_t pid, int sig, const string &context) {
+        int result = kill(pid, sig);
+        int saved_errno = errno;
+        CPPUNIT_ASSERT_MESSAGE(context + ": kill() failed for pid " + to_string(pid) + ", errno: "
+                               + to_string(saved_errno), result == 0);
+    }
+
+    static int wait_for_child(pid_t pid) {
+        int status = 0;
+        pid_t child_pid = waitpid(pid, &status, 0);
+        int saved_errno = errno;
+        CPPUNIT_ASSERT_MESSAGE("waitpid() failed for pid " + to_string(pid) + ", errno: " + to_string(saved_errno),
+                               child_pid != -1);
+        CPPUNIT_ASSERT_MESSAGE("waitpid() returned unexpected pid " + to_string(child_pid) + ", expected "
+                               + to_string(pid), child_pid == pid);
+        return status;
+    }
+
+    static void unmap_shared_temp_name(SharedTempName *shared_name) {
+        int result = munmap(shared_name, sizeof(SharedTempName));
+        int saved_errno = errno;
+        CPPUNIT_ASSERT_MESSAGE("munmap() failed for shared temporary filename, errno: " + to_string(saved_errno),
+                               result == 0);
+    }
+
     static void assert_sigpipe_exit(int status) {
         CPPUNIT_ASSERT_MESSAGE("The child process should have exited because of a signal; status: " + to_string(status),
                                WIFSIGNALED(status));
@@ -305,13 +330,13 @@ public:
         SharedTempName *glob_name = map_shared_temp_name();
 
         pid_t pid = fork();
-        CPPUNIT_ASSERT(pid >= 0); // Make sure it didn't fail.
+        CPPUNIT_ASSERT_MESSAGE("fork() failed, errno: " + to_string(errno), pid >= 0);
 
         if (pid) {
             if (!wait_for_temp_name(*glob_name)) {
-                kill(pid, SIGKILL);
-                int status;
-                waitpid(pid, &status, 0);
+                signal_child(pid, SIGKILL, "Timed out waiting for child readiness");
+                wait_for_child(pid);
+                unmap_shared_temp_name(glob_name);
                 CPPUNIT_FAIL("Timed out waiting for child process to create the temporary file.");
             }
 
@@ -320,13 +345,11 @@ public:
 
             // Send child the signal
             DBG(cerr << __func__ << "-PARENT() - Sending SIGPIPE to child process." << endl);
-            kill(pid, SIGPIPE);
+            signal_child(pid, SIGPIPE, "Sending SIGPIPE to child");
 
             // wait for the child process to catch the signal, remove the temp file and exit.
-            int status;
-            auto child_pid = waitpid(pid, &status, 0);
+            int status = wait_for_child(pid);
             DBG(cerr << __func__ << "-PARENT() - Child exited at this point,  status: " << status << endl);
-            CPPUNIT_ASSERT_MESSAGE("The child process should have exited.", child_pid == pid);
             CPPUNIT_ASSERT_MESSAGE("The child process should exit with a status of SIGPIPE, was: " + to_string(status), status == SIGPIPE);
 
             // Is it STILL there? Better not be...
@@ -336,7 +359,7 @@ public:
                      << endl);
 
             // Tidy up the shared memory business
-            munmap(glob_name, sizeof(SharedTempName));
+            unmap_shared_temp_name(glob_name);
         }
         else {
             // child
@@ -379,14 +402,16 @@ public:
         glob_name[2] = map_shared_temp_name();
 
         pid_t pid = fork();
-        CPPUNIT_ASSERT(pid >= 0); // Make sure it didn't fail.
+        CPPUNIT_ASSERT_MESSAGE("fork() failed, errno: " + to_string(errno), pid >= 0);
 
         if (pid) {
             for (const auto &name: glob_name) {
                 if (!wait_for_temp_name(*name)) {
-                    kill(pid, SIGKILL);
-                    int status;
-                    waitpid(pid, &status, 0);
+                    signal_child(pid, SIGKILL, "Timed out waiting for child readiness");
+                    wait_for_child(pid);
+                    for (const auto &mapped_name: glob_name) {
+                        unmap_shared_temp_name(mapped_name);
+                    }
                     CPPUNIT_FAIL("Timed out waiting for child process to create all temporary files.");
                 }
             }
@@ -397,13 +422,11 @@ public:
 
             // Send the child process the signal
             DBG(cerr << __func__ << "-PARENT() - Sending SIGPIPE to child process." << endl);
-            kill(pid, SIGPIPE);
+            signal_child(pid, SIGPIPE, "Sending SIGPIPE to child");
 
             // wait for the child process to exit.
-            int status;
-            auto child_pid = waitpid(pid, &status, 0);
+            int status = wait_for_child(pid);
             DBG(cerr << __func__ << "-PARENT() - Child exited at this point,  status: " << status << endl);
-            CPPUNIT_ASSERT_MESSAGE("The child process should have exited.", child_pid == pid);
             CPPUNIT_ASSERT_MESSAGE("The child process should exit with a status of SIGPIPE, was: " + to_string(status), status == SIGPIPE);
 
 
@@ -415,7 +438,7 @@ public:
 
             // Tidy up the shared memory business
             for (const auto &name: glob_name) {
-                munmap(name, sizeof(SharedTempName));
+                unmap_shared_temp_name(name);
             }
         }
         else {
