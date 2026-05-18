@@ -564,7 +564,7 @@ AS_IF([test -n "$deps_libdir"],
 
         [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,$deps_libdir"
          AS_IF([test -n "$deps_libdir64"], [AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,$deps_libdir64"])
-         AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,'\$ORIGIN'"])
+         AM_LDFLAGS="$AM_LDFLAGS -Wl,-rpath,'\$\$ORIGIN'"])
     AC_MSG_NOTICE([Set Automake linker flags to $AM_LDFLAGS])
     AC_SUBST([AM_LDFLAGS])])
 
@@ -830,7 +830,7 @@ AS_IF([test -n "$with_gdal_prefix" -a $with_gdal_prefix = no],
     # Add the OS-specific shared linker syntax for the rpath option. jhrg 4/10/26
     AM_COND_IF([DARWIN],
         [GDAL_LDFLAGS="$GDAL_LDFLAGS -Wl,-rpath,@loader_path"],
-        [GDAL_LDFLAGS="$GDAL_LDFLAGS -Wl,-rpath,'\$ORIGIN'"])
+        [GDAL_LDFLAGS="$GDAL_LDFLAGS -Wl,-rpath,'\$\$ORIGIN'"])
 
     # The newer versions of gdal-config have a --dep-libs option that includes 
     # the libs of the dependencies. We need to use that to get the proj library, 

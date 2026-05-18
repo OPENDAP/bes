@@ -56,6 +56,7 @@
 #include "Base64.h"
 #include "vlsa_util.h"
 
+#define PUGIXML_NO_XPATH
 #define PUGIXML_HEADER_ONLY
 #include <pugixml.hpp>
 

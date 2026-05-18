@@ -23,7 +23,7 @@ lib_besdir=$(libdir)/bes
 lib_bes_LTLIBRARIES = libncml_module.la
 
 AM_CXXFLAGS=
-AM_LDFLAGS =
+
 include $(top_srcdir)/coverage.mk
 
 SUBDIRS = . tests

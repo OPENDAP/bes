@@ -65,11 +65,6 @@
 
 #include "DapUtils.h"
 
-#define PUGIXML_NO_XPATH
-#define PUGIXML_HEADER_ONLY
-
-#include <pugixml.hpp>
-
 #include "DmrppNames.h"
 #include "DmrppTypeFactory.h"
 #include "DmrppRequestHandler.h"

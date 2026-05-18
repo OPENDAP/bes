@@ -13,8 +13,7 @@ if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
 endif
 
-AM_CXXFLAGS=
-AM_LDFLAGS =
+AM_CXXFLAGS = $(CXXFLAGS)
 include $(top_srcdir)/coverage.mk
 
 SUBDIRS = . unit-tests

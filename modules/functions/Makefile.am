@@ -20,7 +20,7 @@ CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Wno-deprecated
 
 # Do not initialize AM_LDFLAGS here so that this code builds using the 
 # -rpath linker options set by configure. jhrg 1/23/26
-AM_CXXFLAGS =
+AM_CXXFLAGS = $(CXXFLAGS)
 include $(top_srcdir)/coverage.mk
 
 if BES_DEVELOPER
