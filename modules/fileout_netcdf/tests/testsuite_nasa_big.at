@@ -39,3 +39,10 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/big_1d_shuf.h5_d
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/d_dset_4d.h5_dio.dmrpp.bescmd)
 
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(nasa-bescmd/MCD43D40.A2025257.061.2025267034627_constraint.hdf.bescmd)
+
+#  big array size test - input from an HDF5 file
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/test_ba_grp_dim_whole.h5.bescmd)
+
+#  big array size test - input from DMRPP files
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/test_ba_grp_dim_whole.cf.dmrpp.bescmd)
+
