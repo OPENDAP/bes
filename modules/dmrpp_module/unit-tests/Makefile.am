@@ -30,7 +30,6 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -Wcast-align
 
 AM_CXXFLAGS = -Wno-vla-extension -Wno-inconsistent-missing-override -Wno-unused-variable
-# AM_LDFLAGS = -L$(aws_libdir) #TODO think about it
 include $(top_srcdir)/coverage.mk
 
 if DARWIN

@@ -24,7 +24,6 @@ AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\"  -DMODULE_VERSION=\"$(M_VER)\"
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align 
 
 # Do not initialize AM_LDFLAGS here; configure may set dependency rpath flags.
-# AM_LDFLAGS = -L$(aws_libdir) TODO MAYBE NEED THIS
 include $(top_srcdir)/coverage.mk
 
 LDADD = $(top_builddir)/aws/libbes_aws.la $(aws_libs)

@@ -19,7 +19,7 @@ AM_CPPFLAGS = $(HDF4_CFLAGS) $(HDFEOS2_CPPFLAGS) -I$(top_srcdir) -I$(top_srcdir)
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
 AM_CXXFLAGS=
-# AM_LDFLAGS = -L$(aws_libdir) TODO-think about this!
+AM_LDFLAGS += -L$(aws_libdir)
 include $(top_srcdir)/coverage.mk
 
 if DARWIN
