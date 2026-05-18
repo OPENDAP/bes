@@ -12,7 +12,7 @@ AM_CPPFLAGS = -I$(srcdir)/../include/
 AM_CFLAGS = -fpic -Wno-implicit-function-declaration
 
 AM_CXXFLAGS=
-AM_LDFLAGS =
+
 include $(top_srcdir)/coverage.mk
 
 # Library source files

@@ -4,7 +4,7 @@ AUTOMAKE_OPTIONS = foreign
 AM_CPPFLAGS = -I$(top_srcdir)
 
 # AM_CPPFLAGS =
-AM_CXXFLAGS =
+AM_CXXFLAGS = $(CXXFLAGS)
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:

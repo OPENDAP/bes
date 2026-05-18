@@ -22,7 +22,6 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 
 AM_CXXFLAGS=
-AM_LDFLAGS =
 include $(top_srcdir)/coverage.mk
 
 DISTCLEANFILES = test_config.h *.Po
@@ -107,4 +106,3 @@ NgapApiTest_LDADD =  $(LIBADD)
 
 NgapOwnedContainerTest_SOURCES = NgapOwnedContainerTest.cc
 NgapOwnedContainerTest_LDADD = $(LIBADD)
-
