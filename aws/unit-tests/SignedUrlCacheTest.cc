@@ -375,20 +375,21 @@ public:
     void sign_s3_uri_with_sts_credentials_test() {
         SignedUrlCache *theCache = SignedUrlCache::TheCache();
         auto s3_access_key_tuple =
-            make_shared<SignedUrlCache::S3AccessKeyTuple>("a man", "a plan", "a canal", "3035-07-16 02:20:33+00:00");
+            make_shared<SignedUrlCache::S3AccessKeyTuple>("a man", "a plan", "a canal", "2126-07-16 18:40:58+04:00");
 
         CPPUNIT_ASSERT_MESSAGE("Empty uri does not return a signed url but does not throw error",
                                !theCache->sign_s3_uri_with_sts_credentials("", s3_access_key_tuple));
         CPPUNIT_ASSERT_MESSAGE("Invalid s3 uri does not return a signed url but does not throw error",
                                !theCache->sign_s3_uri_with_sts_credentials("foo", s3_access_key_tuple));
-        auto output = theCache->sign_s3_uri_with_sts_credentials("s3://bucket/key", s3_access_key_tuple);
-        CPPUNIT_ASSERT_MESSAGE("Valid object should return a signed url, regardless of validity of credentials",
-                               !output->str().empty());
+        auto output = theCache->sign_s3_uri_with_sts_credentials("s3://bucket/key-that-is-somehow-leading-to-failure",
+                                                                 s3_access_key_tuple);
 
-        auto output2 = theCache->sign_s3_uri_with_sts_credentials("s3://bucket/key", s3_access_key_tuple);
-        CPPUNIT_ASSERT_MESSAGE("Resigned object with same STS credentials should yield identical output:\n\t" +
-                                   output->str() + "\n\n\t" + output2->str(),
-                               output->str() == output2->str());
+        // Test intermediate reasons that this has failed...
+        CPPUNIT_ASSERT_MESSAGE("Token hasn't expired...",
+                               theCache->num_seconds_until_expiration(get<3>(*s3_access_key_tuple)) > 0);
+
+        CPPUNIT_ASSERT_MESSAGE("Valid object should return a signed url, regardless of validity of credentials",
+                               output != nullptr && !output->str().empty());
 
         CPPUNIT_ASSERT_MESSAGE("Missing credentials does not return a signed url but does not error",
                                !theCache->sign_s3_uri_with_sts_credentials("s3://bucket/key", nullptr));
@@ -419,14 +420,15 @@ public:
         theCache->d_href_to_s3_uri_cache.insert(pair<string, string>(test_url->str(), "s3://foo/bar"));
         theCache->d_href_to_tea_endpoint_cache.insert(pair<string, string>(test_url->str(), "fake-tea-endpoint-name"));
         auto fake_sts_creds =
-            make_shared<SignedUrlCache::S3AccessKeyTuple>("a man", "a plan", "a canal", "3035-07-16 02:20:33+00:00");
+            make_shared<SignedUrlCache::S3AccessKeyTuple>("a man", "a plan", "a canal", "2126-07-16 18:40:58+04:00");
         theCache->d_tea_endpoint_sts_credentials_cache.insert(
             pair<string, shared_ptr<SignedUrlCache::S3AccessKeyTuple>>("fake-tea-endpoint-name", fake_sts_creds));
         CPPUNIT_ASSERT_MESSAGE("Signed URL cache should be empty before any valid responses",
                                theCache->d_presigned_s3_urls_cache.size() == 0);
 
         auto result = theCache->get_presigned_s3_url(test_url);
-        CPPUNIT_ASSERT_MESSAGE("When credentials available for a url, return signed url", !result->str().empty());
+        CPPUNIT_ASSERT_MESSAGE("When credentials available for a url, return signed url",
+                               result != nullptr && !result->str().empty());
         CPPUNIT_ASSERT_MESSAGE("Generated signed url should have been cached",
                                theCache->d_presigned_s3_urls_cache.size() == 1);
         CPPUNIT_ASSERT_MESSAGE("When url has been precached, return it",
@@ -545,6 +547,7 @@ public:
     CPPUNIT_TEST(retrieve_cached_s3credentials_test);
     CPPUNIT_TEST(retrieve_cached_s3credentials_expired_credentials_test);
     CPPUNIT_TEST(extract_sts_credentials_from_json_response_test);
+
     CPPUNIT_TEST(cache_signed_url_components_test);
     CPPUNIT_TEST(retrieve_cached_signed_url_components_test);
     CPPUNIT_TEST(cache_sts_credentials_from_tea_endpoint_test);

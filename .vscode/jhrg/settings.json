@@ -1,14 +1,14 @@
 {
     // For Hyrax, prefix and PATH need to be set. jhrg 3/11/26
-    "prefix": "/Users/jimg/src/opendap/hyrax/build",
+    "prefix": "/Users/jhrg/src/opendap/hyrax/build",
     "PATH": "${config:prefix}/bin:${config:prefix}/deps/bin:${env:PATH}",
     "nproc": 20,
     // C/C++ extensionsettings. jhrg 3/11/26
     "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
     "C_Cpp.default.compileCommands": "${workspaceFolder}/compile_commands.json",
     "C_Cpp.default.includePath": [
-        "${config:prefix}/include",
-        "${config:prefix}/deps/include",
+        "${config:prefix}/include/**",
+        "${config:prefix}/deps/include/**",
         "${workspaceFolder}/**"
     ],
     "C_Cpp.default.cppStandard": "c++14",
@@ -45,7 +45,9 @@
         "libdap",
         "ncml",
         "NDAP",
+        "nlohmann",
         "OPENDAP",
+        "rapidjson",
         "xfail"
     ]
 }

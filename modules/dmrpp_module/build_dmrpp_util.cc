@@ -1600,8 +1600,11 @@ void process_string_in_structure(hid_t dataset, hid_t type_id, BaseType *btp) {
 }
 
 //Note: the error handling part may be improved in the future.
-bool handle_vlen_float_int_internal(hid_t dset_id, BaseType *btp) {
+bool handle_vlen_float_int_internal(hid_t dset_id, BaseType *btp, bool vlen_in_sc) {
 
+    if (btp->type() == dods_array_c && vlen_in_sc) 
+        return true;
+       
     hid_t vlen_type = H5Dget_type(dset_id);
     hid_t vlen_basetype = H5Tget_super(vlen_type);
     if (H5Tget_class(vlen_basetype) != H5T_INTEGER && H5Tget_class(vlen_basetype) != H5T_FLOAT) {
@@ -1685,18 +1688,22 @@ bool handle_vlen_float_int_internal(hid_t dset_id, BaseType *btp) {
     
 }
 
-bool handle_vlen_float_int(hid_t dataset, BaseType *btp) {
+bool handle_vlen_float_int(hid_t dataset, BaseType *btp, bool vlen_in_sc) {
 
     bool ret_value = false;
     hid_t type_id = H5Dget_type(dataset);
     if (H5Tget_class(type_id) == H5T_VLEN) 
-        ret_value = handle_vlen_float_int_internal(dataset,btp);
+        ret_value = handle_vlen_float_int_internal(dataset,btp,vlen_in_sc);
     H5Tclose(type_id);
     return ret_value;
 }
 
-void handle_vlen_float_int_index(hid_t file, BaseType *btp) {
+void handle_vlen_float_int_index(hid_t file, BaseType *btp, bool vlen_in_sc) {
 
+    // Vlen array index is stored in a side car file.
+    if (btp->type() == dods_array_c && vlen_in_sc) 
+        return;
+    
     string vlen_index_name = btp->FQN();
     size_t vlen_name_pos = vlen_index_name.rfind("_vlen_index");
     if (vlen_name_pos == string::npos) {
@@ -1773,7 +1780,7 @@ void handle_vlen_float_int_index(hid_t file, BaseType *btp) {
  *
  * @exception BESError is thrown on error.
  */
-static void get_variable_chunk_info(hid_t dataset, BaseType *btp, bool disable_dio) {
+static void get_variable_chunk_info(hid_t dataset, BaseType *btp, bool disable_dio, bool vlen_in_sc) {
 
     if(verbose) {
         string type_name = btp->type_name();
@@ -1784,7 +1791,7 @@ static void get_variable_chunk_info(hid_t dataset, BaseType *btp, bool disable_d
         cerr << prolog << "Processing dataset/variable: " << type_name << " " << btp->name() << endl;
     }
 
-    if (true == handle_vlen_float_int(dataset,btp))
+    if (true == handle_vlen_float_int(dataset,btp,vlen_in_sc))
         return;
 
     // Added support for HDF5 Fill Value. jhrg 4/22/22
@@ -2256,7 +2263,7 @@ void mk_nc4_non_coord_candidates(D4Group *group, unordered_set<string> &nc4_non_
  * @param group Read variables from this DAP4 Group. Call with the root Group
  * to process all the variables in the DMR
  */
-void get_chunks_for_all_variables(hid_t file, D4Group *group, bool disable_dio) {
+void get_chunks_for_all_variables(hid_t file, D4Group *group, bool disable_dio, bool vlen_in_sc) {
 
     unordered_set<string> nc4_non_coord_candidate;
     mk_nc4_non_coord_candidates(group,nc4_non_coord_candidate);
@@ -2284,7 +2291,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group, bool disable_dio) 
                 if (!process_variable_length_string_scalar(dataset, btp) && !process_variable_length_string_array(dataset,btp)) {
 
                     VERBOSE(cerr << prolog << "Building chunks for: " << get_type_decl(btp) << endl);
-                    get_variable_chunk_info(dataset, btp, disable_dio);
+                    get_variable_chunk_info(dataset, btp, disable_dio, vlen_in_sc);
 
                     VERBOSE(cerr << prolog << "Annotating String Arrays as needed for: " << get_type_decl(btp) << endl);
                     add_string_array_info(dataset, btp);
@@ -2362,7 +2369,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group, bool disable_dio) 
                     string attr_value = attr->value(0);
                     if (attr_value == "VLEN_INDEX") {
                         // This is a vlen index variable. We need to find the corresponding vlen variable.
-                         handle_vlen_float_int_index(file,btp);
+                         handle_vlen_float_int_index(file,btp,vlen_in_sc);
                     }
                 }
             }
@@ -2397,7 +2404,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group, bool disable_dio) 
 
     // all groups in the group
     for(auto g:group->groups()) {
-        get_chunks_for_all_variables(file, g,disable_dio);
+        get_chunks_for_all_variables(file, g,disable_dio, vlen_in_sc);
     }
 
 }
@@ -2407,7 +2414,7 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group, bool disable_dio) 
  * @param h5_file_name Read information from this file
  * @param dmrpp Dump the chunk information here
  */
-void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp, bool disable_dio)
+void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp, bool disable_dio, bool vlen_in_sc)
 {
     // Open the hdf5 file
     hid_t file = H5Fopen(h5_file_name.c_str(), H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -2419,7 +2426,7 @@ void add_chunk_information(const string &h5_file_name, DMRpp *dmrpp, bool disabl
 
     // iterate over all the variables in the DMR
     try {
-        get_chunks_for_all_variables(file, dmrpp->root(), disable_dio);
+        get_chunks_for_all_variables(file, dmrpp->root(), disable_dio, vlen_in_sc);
         H5Fclose(file);
     }
     catch (...) {
@@ -2684,7 +2691,8 @@ void inject_build_dmrpp_metadata(DMRpp *dmrpp)
  * @param argv The arguments for build_dmrpp.
  */
 void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr_filename, const string &h5_file_fqn,
-        bool add_production_metadata, const string &bes_conf_file_used_to_create_dmr, bool disable_dio, int argc, char *argv[])
+        bool add_production_metadata, const string &bes_conf_file_used_to_create_dmr, bool disable_dio, 
+        bool vlen_in_sc, int argc, char *argv[])
 {
     // Get dmr:
     DMRpp dmrpp;
@@ -2695,7 +2703,7 @@ void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr
     D4ParserSax2 parser;
     parser.intern(in, &dmrpp, false);
 
-    add_chunk_information(h5_file_fqn, &dmrpp, disable_dio);
+    add_chunk_information(h5_file_fqn, &dmrpp, disable_dio, vlen_in_sc);
 
     if (add_production_metadata) {
         inject_build_dmrpp_metadata(argc, argv, bes_conf_file_used_to_create_dmr, &dmrpp);

@@ -42,11 +42,6 @@
 #include <libdap/XMLWriter.h>
 #include <libdap/util.h>
 
-
-#define PUGIXML_NO_XPATH
-#define PUGIXML_HEADER_ONLY
-#include <pugixml.hpp>
-
 #include "url_impl.h"
 #include "BESIndent.h"
 #include "BESDebug.h"

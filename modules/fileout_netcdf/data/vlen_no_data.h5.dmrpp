@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="vlen.h5" dmrpp:href="data/vlen.h5" dmrpp:version="3.21.1">
+    <Int32 name="DS1">
+        <Dim size="2"/>
+        <Dim size="12"/>
+        <Attribute name="orig_datatype" type="String">
+            <Value>VLEN</Value>
+        </Attribute>
+        <Attribute name="vlen_description" type="String">
+            <Value>The original variable-length array data is stored as the regular array data that has an extra dimension. The data gap is filled with 0. The actual length of each original variable-length element is stored in another array. The variable name of this array is DS1_vlen_index.</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="shuffle deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2 12</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="11838" nBytes="29" chunkPositionInArray="[0,0]" href="data/vlen.h5_mvs.h5" />
+        </dmrpp:chunks>
+    </Int32>
+    <Int32 name="DS1_vlen_index">
+        <Dim size="2"/>
+        <Attribute name="orig_datatype" type="String">
+            <Value>VLEN_INDEX</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="shuffle deflate" deflateLevel="4" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="11867" nBytes="12" chunkPositionInArray="[0]" href="data/vlen.h5_mvs.h5" />
+        </dmrpp:chunks>
+    </Int32>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2026-05-12T13:12:49Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/hyrax-2050/bes/modules/dmrpp_module/get_dmrpp/vlen.h5 -r vlen.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M -L</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
