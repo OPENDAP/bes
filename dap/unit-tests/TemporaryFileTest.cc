@@ -24,7 +24,10 @@
 
 #include "config.h"
 
+#include <cerrno>
+#include <climits>
 #include <csignal>
+#include <cstddef>
 #include <cstdlib>
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -54,9 +57,99 @@ class TemporaryFileTest : public CppUnit::TestFixture {
     const string TEMP_FILE_PREFIX = "tmpf_test";
     const string BES_CONF_FILE = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
 
+#ifdef PATH_MAX
+    static constexpr size_t TEMP_NAME_BUFFER_SIZE = PATH_MAX;
+#else
+    static constexpr size_t TEMP_NAME_BUFFER_SIZE = 4096;
+#endif
+    // These are used to wait for the child process in the sigpipe_test
+    // and multifile_sigpipe_test. The combination means that the code will
+    // wait up to 5 seconds for the child to create the temp file but 
+    // will check (poll) every 10ms to see if the file is ready. This test not
+    // only failing often, but it took too long because we used sleep() to
+    // wait for the child. jhrg 5/18/26
+    static constexpr useconds_t READY_WAIT_USEC = 10000;
+    static constexpr unsigned int READY_WAIT_ATTEMPTS = 500;
+
+    // This struct is a cheap way to move the temp file name between parent and child processes
+    // without resorting to hacks like sleep(). jhrg 5/18/26
+    struct SharedTempName {
+        volatile sig_atomic_t ready;
+        char name[TEMP_NAME_BUFFER_SIZE];
+    };
+
     static bool file_present(const string &file_name) {
         struct stat buf{};
         return (stat(file_name.c_str(), &buf) == 0);
+    }
+
+    static SharedTempName *map_shared_temp_name() {
+        // using nullptr (0) for the address means the kernel will choose the address. 
+        // fd == -1 is important with MAP_ANONYMOUS for compatibility. This call is asking
+        // the OS to allocate anonymous memory for the shared structure. jhrg 5/18/26
+        void *mapping = mmap(nullptr, sizeof(SharedTempName), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS,
+                             /* fd */ -1, /* offset */0);
+        CPPUNIT_ASSERT_MESSAGE("mmap() failed for shared temporary filename, errno: " + to_string(errno),
+                               mapping != MAP_FAILED);
+
+        auto *shared_name = static_cast<SharedTempName *>(mapping);
+        shared_name->ready = 0;
+        shared_name->name[0] = '\0';
+        return shared_name;
+    }
+
+    // These two helper methods manipulate the shared name in the struct above.
+    static void copy_temp_name(SharedTempName &shared_name, const string &tmp_file_name) {
+        CPPUNIT_ASSERT_MESSAGE("Temporary file path is too long for the shared test buffer: " + tmp_file_name,
+                               tmp_file_name.size() < TEMP_NAME_BUFFER_SIZE);
+
+        size_t copied = tmp_file_name.copy(shared_name.name, TEMP_NAME_BUFFER_SIZE - 1, 0);
+        shared_name.name[copied] = '\0';    // null terminate! jhrg
+    }
+
+    static bool wait_for_temp_name(const SharedTempName &shared_name) {
+        for (unsigned int attempt = 0; attempt < READY_WAIT_ATTEMPTS; ++attempt) {
+            if (shared_name.ready) {
+                return true;
+            }
+
+            usleep(READY_WAIT_USEC);
+        }
+
+        return false;
+    }
+
+    // These helpers wrap system calls and report their errors as asserts. jhrg 5/18/26
+    static void signal_child(pid_t pid, int sig, const string &context) {
+        int result = kill(pid, sig);
+        int saved_errno = errno;
+        CPPUNIT_ASSERT_MESSAGE(context + ": kill() failed for pid " + to_string(pid) + ", errno: "
+                               + to_string(saved_errno), result == 0);
+    }
+
+    static int wait_for_child(pid_t pid) {
+        int status = 0;
+        pid_t child_pid = waitpid(pid, &status, 0);
+        int saved_errno = errno;
+        CPPUNIT_ASSERT_MESSAGE("waitpid() failed for pid " + to_string(pid) + ", errno: " + to_string(saved_errno),
+                               child_pid != -1);
+        CPPUNIT_ASSERT_MESSAGE("waitpid() returned unexpected pid " + to_string(child_pid) + ", expected "
+                               + to_string(pid), child_pid == pid);
+        return status;
+    }
+
+    static void unmap_shared_temp_name(SharedTempName *shared_name) {
+        int result = munmap(shared_name, sizeof(SharedTempName));
+        int saved_errno = errno;
+        CPPUNIT_ASSERT_MESSAGE("munmap() failed for shared temporary filename, errno: " + to_string(saved_errno),
+                               result == 0);
+    }
+
+    static void assert_sigpipe_exit(int status) {
+        CPPUNIT_ASSERT_MESSAGE("The child process should have exited because of a signal; status: " + to_string(status),
+                               WIFSIGNALED(status));
+        CPPUNIT_ASSERT_MESSAGE("The child process should exit with SIGPIPE; status: " + to_string(status),
+                               WTERMSIG(status) == SIGPIPE);
     }
 
 public:
@@ -247,37 +340,39 @@ public:
     void sigpipe_test() {
         // Because we are going to fork and the child will be making a temp file, we use shared memory to
         // allow the parent to know the resulting file name.
-        char *glob_name;
-        auto name_size = TEMP_FILE_PREFIX.size() + 1;
-        glob_name = (char *) mmap(nullptr, name_size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+        SharedTempName *glob_name = map_shared_temp_name();
 
         pid_t pid = fork();
-        CPPUNIT_ASSERT(pid >= 0); // Make sure it didn't fail.
+        CPPUNIT_ASSERT_MESSAGE("fork() failed, errno: " + to_string(errno), pid >= 0);
 
         if (pid) {
-            // parent - wait for the client to get sorted
-            sleep(1);
+            if (!wait_for_temp_name(*glob_name)) {
+                signal_child(pid, SIGKILL, "Timed out waiting for child readiness");
+                wait_for_child(pid);
+                unmap_shared_temp_name(glob_name);
+                CPPUNIT_FAIL("Timed out waiting for child process to create the temporary file.");
+            }
 
-            CPPUNIT_ASSERT_MESSAGE("The file " + string(glob_name) + " should be present.", file_present(glob_name));
+            CPPUNIT_ASSERT_MESSAGE("The file " + string(glob_name->name) + " should be present.",
+                                   file_present(glob_name->name));
 
             // Send child the signal
             DBG(cerr << __func__ << "-PARENT() - Sending SIGPIPE to child process." << endl);
-            kill(pid, SIGPIPE);
+            signal_child(pid, SIGPIPE, "Sending SIGPIPE to child");
 
             // wait for the child process to catch the signal, remove the temp file and exit.
-            int status;
-            auto child_pid = waitpid(pid, &status, 0);
+            int status = wait_for_child(pid);
             DBG(cerr << __func__ << "-PARENT() - Child exited at this point,  status: " << status << endl);
-            CPPUNIT_ASSERT_MESSAGE("The child process should have exited.", child_pid == pid);
-            CPPUNIT_ASSERT_MESSAGE("The child process should exit with a status of SIGPIPE, was: " + to_string(status), status == SIGPIPE);
+            assert_sigpipe_exit(status);
 
             // Is it STILL there? Better not be...
-            CPPUNIT_ASSERT_MESSAGE("The file " + string(glob_name) + " should be deleted.", !file_present(glob_name));
-            DBG(cerr << __func__ << "-PARENT() - Temporary File: '" << glob_name << "' was successfully removed. woot."
+            CPPUNIT_ASSERT_MESSAGE("The file " + string(glob_name->name) + " should be deleted.",
+                                   !file_present(glob_name->name));
+            DBG(cerr << __func__ << "-PARENT() - Temporary File: '" << glob_name->name << "' was successfully removed. woot."
                      << endl);
 
             // Tidy up the shared memory business
-            munmap(glob_name, name_size);
+            unmap_shared_temp_name(glob_name);
         }
         else {
             // child
@@ -290,10 +385,11 @@ public:
                          << tf.get_fd() << endl);
 
                 // copy the filename into shared memory.
-                tmp_file_name.copy(glob_name, tmp_file_name.size(), 0);
+                copy_temp_name(*glob_name, tmp_file_name);
 
                 // Is it really there? Just sayin'...
                 CPPUNIT_ASSERT(file_present(tmp_file_name));
+                glob_name->ready = 1;
 
                 // Wait for the signal - SIGPIPE should cause the process to exit
                 sleep(100);
@@ -313,43 +409,52 @@ public:
     void multifile_sigpipe_test() {
         // Because we are going to fork and the child will be making a temp file, we use shared memory to
         // allow the parent to know the resulting file names.
-        char *glob_name[3];
-        auto name_size = TEMP_FILE_PREFIX.size() + 1;
-        glob_name[0] = (char *) mmap(nullptr, name_size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-        glob_name[1] = (char *) mmap(nullptr, name_size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
-        glob_name[2] = (char *) mmap(nullptr, name_size, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
+        SharedTempName *glob_name[3];
+        glob_name[0] = map_shared_temp_name();
+        glob_name[1] = map_shared_temp_name();
+        glob_name[2] = map_shared_temp_name();
 
         pid_t pid = fork();
-        CPPUNIT_ASSERT(pid >= 0); // Make sure it didn't fail.
+        CPPUNIT_ASSERT_MESSAGE("fork() failed, errno: " + to_string(errno), pid >= 0);
 
         if (pid) {
-            // parent - wait for the client to get sorted
-            sleep(1);
+            for (const auto &name: glob_name) {
+                if (!wait_for_temp_name(*name)) {
+                    signal_child(pid, SIGKILL, "Timed out waiting for child readiness");
+                    wait_for_child(pid);
+                    for (const auto &mapped_name: glob_name) {
+                        unmap_shared_temp_name(mapped_name);
+                    }
+                    CPPUNIT_FAIL("Timed out waiting for child process to create all temporary files.");
+                }
+            }
 
-            for (const char *name : glob_name) {
-                 CPPUNIT_ASSERT_MESSAGE("The file " + string(name) + " should be present.", file_present(name));
+            for (const auto &name: glob_name) {
+                 CPPUNIT_ASSERT_MESSAGE("The file " + string(name->name) + " should be present.",
+                                        file_present(name->name));
             }
 
             // Send the child process the signal
             DBG(cerr << __func__ << "-PARENT() - Sending SIGPIPE to child process." << endl);
-            kill(pid, SIGPIPE);
+            signal_child(pid, SIGPIPE, "Sending SIGPIPE to child");
 
             // wait for the child process to exit.
-            int status;
-            auto child_pid = waitpid(pid, &status, 0);
+            int status = wait_for_child(pid);
             DBG(cerr << __func__ << "-PARENT() - Child exited at this point,  status: " << status << endl);
-            CPPUNIT_ASSERT_MESSAGE("The child process should have exited.", child_pid == pid);
-            CPPUNIT_ASSERT_MESSAGE("The child process should exit with a status of SIGPIPE, was: " + to_string(status), status == SIGPIPE);
+            assert_sigpipe_exit(status);
 
 
-            for (const char *name : glob_name) {
-                CPPUNIT_ASSERT_MESSAGE("The file " + string(name) + " should not be present.", !file_present(name));
-                DBG(cerr << __func__ << "-PARENT() - Temporary File: '" << name
+            for (const auto &name: glob_name) {
+                CPPUNIT_ASSERT_MESSAGE("The file " + string(name->name) + " should not be present.",
+                                       !file_present(name->name));
+                DBG(cerr << __func__ << "-PARENT() - Temporary File: '" << name->name
                          << "' was successfully removed. woot." << endl);
             }
 
             // Tidy up the shared memory business
-            munmap(glob_name, name_size);
+            for (const auto &name: glob_name) {
+                unmap_shared_temp_name(name);
+            }
         }
         else {
             //child - register a signal handler
@@ -362,9 +467,10 @@ public:
                 DBG(cerr << __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "
                          << tf1.get_fd() << endl);
                 // copy the filename into shared memory.
-                tmp_file_name.copy(glob_name[0], tmp_file_name.size(), 0);
+                copy_temp_name(*glob_name[0], tmp_file_name);
 
                 CPPUNIT_ASSERT_MESSAGE("The file " + tmp_file_name + " should be present.", file_present(tmp_file_name));
+                glob_name[0]->ready = 1;
 
                 // --------- File Two ------------
                 DBG(cerr << __func__ << "-CHILD() - Creating temporary file." << endl);
@@ -373,9 +479,10 @@ public:
                 DBG(cerr << __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "
                          << tf2.get_fd() << endl);
                 // copy the filename into shared memory.
-                tmp_file_name.copy(glob_name[1], tmp_file_name.size(), 0);
+                copy_temp_name(*glob_name[1], tmp_file_name);
 
                 CPPUNIT_ASSERT_MESSAGE("The file " + tmp_file_name + " should be present.", file_present(tmp_file_name));
+                glob_name[1]->ready = 1;
 
                 // --------- File Three ------------
                 DBG(cerr << __func__ << "-CHILD() - Creating temporary file." << endl);
@@ -384,9 +491,10 @@ public:
                 DBG(cerr << __func__ << "-CHILD() - Temp file is: '" << tmp_file_name << "' has been created. fd: "
                          << tf3.get_fd() << endl);
                 // copy the filename into shared memory.
-                tmp_file_name.copy(glob_name[2], tmp_file_name.size(), 0);
+                copy_temp_name(*glob_name[2], tmp_file_name);
 
                 CPPUNIT_ASSERT_MESSAGE("The file " + tmp_file_name + " should be present.", file_present(tmp_file_name));
+                glob_name[2]->ready = 1;
 
                 // Wait for the signal
                 sleep(100);

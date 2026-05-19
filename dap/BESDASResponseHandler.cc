@@ -85,9 +85,7 @@ BESDASResponseHandler::execute( BESDataHandlerInterface &dhi )
     GlobalMetadataStore::MDSReadLock lock;
 
     dhi.first_container();
-    if (mds != nullptr) {
-        lock = mds->is_das_available(*(dhi.container));
-    }
+    if (mds) lock = mds->is_das_available(*(dhi.container));
 
     if (mds && lock()) {
         // send the response
