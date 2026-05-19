@@ -35,7 +35,6 @@
 #include <mutex>
 
 #include "BESObj.h"
-#include "BESRegex.h"   // for std::unique_ptr<BESRegex>
 
 namespace http {
     class EffectiveUrl;
@@ -73,9 +72,6 @@ private:
     static bool is_timestamp_after_now(std::string const &timestamp);
     const bool is_cache_supported_within_current_aws_region();
 
-    // URLs that match are not cached.
-    std::unique_ptr<BESRegex> d_skip_regex = nullptr;
-
     int d_enabled = -1;
 
     // The SignedUrlCache is used to generate urls that enable direct copy, and is therefore
@@ -90,8 +86,6 @@ private:
     std::shared_ptr<http::EffectiveUrl> sign_s3_uri_with_sts_credentials(std::string const &s3_uri,
                                                                          std::shared_ptr<S3AccessKeyTuple> const s3_access_key_tuple);
     std::shared_ptr<http::EffectiveUrl> get_cached_presigned_s3_url(std::string const &url_key);
-
-    void set_skip_regex();
 
     bool is_enabled();
 

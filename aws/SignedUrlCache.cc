@@ -28,7 +28,6 @@
 #include "config.h"
 
 #include <mutex>
-#include <regex>
 #include <sstream>
 #include <string>
 
@@ -126,8 +125,7 @@ SignedUrlCache::retrieve_cached_sts_credentials(string const &tea_endpoint_url_k
 }
 
 /**
- * Generate a the terminal (effective) presigned url for the source_url. If the source_url matches the
- * skip_regex then it will not be cached.
+ * Generate a the terminal (effective) presigned url for the source_url.
  *
  * Unlike EffectiveUrlCache, return nullptr instead of making a new EffectiveUrl(source_url)
  * when unable to construct a signed url for any reason.
@@ -157,31 +155,6 @@ shared_ptr<http::EffectiveUrl> SignedUrlCache::get_presigned_s3_url(shared_ptr<h
     if (source_url->str().find(HTTP_PROTOCOL) != 0 && source_url->str().find(HTTPS_PROTOCOL) != 0) {
         BESDEBUG(MODULE, prolog << "END Not an HTTP request, SKIPPING." << endl);
         return nullptr;
-    }
-
-    if (!d_skip_regex) {
-        set_skip_regex();
-    }
-
-    if (d_skip_regex) {
-        size_t match_length = 0;
-        match_length = d_skip_regex->match(source_url->str().c_str(), (int)source_url->str().size());
-        if (match_length == source_url->str().size()) {
-            BESDEBUG(MODULE, prolog << "END Candidate url matches the "
-                                       "no_redirects_regex_pattern ["
-                                    << d_skip_regex->pattern() << "][match_length=" << match_length << "] SKIPPING."
-                                    << endl);
-            INFO_LOG(prolog +
-                     "SERVICE CHAIN WARNING - Failed to generate presigned url because url matches the "
-                     "no_redirects_regex_pattern -  " +
-                     source_url->get_url_no_query());
-            return nullptr;
-        }
-        BESDEBUG(MODULE, prolog << "Candidate url: '" << source_url->str()
-                                << "' does NOT match the skip_regex pattern [" << d_skip_regex->pattern() << "]"
-                                << endl);
-    } else {
-        BESDEBUG(MODULE, prolog << "The cache_effective_urls_skip_regex() was NOT SET " << endl);
     }
 
     shared_ptr<http::EffectiveUrl> signed_url = get_cached_presigned_s3_url(source_url->str());
@@ -526,21 +499,6 @@ bool SignedUrlCache::is_enabled() {
 }
 
 /**
- * @return Set the regex used to skip cache keys, which is set in the bes.conf file
- * @note Follows the same settings (and relies on the same bes.conf key) as the EffectiveUrlsCache
- */
-void SignedUrlCache::set_skip_regex() {
-    if (!d_skip_regex) {
-        string pattern = TheBESKeys::TheKeys()->read_string_key(HTTP_CACHE_EFFECTIVE_URLS_SKIP_REGEX_KEY, "");
-        if (!pattern.empty()) {
-            d_skip_regex.reset(new BESRegex(pattern.c_str()));
-        }
-        BESDEBUG(MODULE, prolog << "d_skip_regex:  "
-                                << (d_skip_regex ? d_skip_regex->pattern() : "Value has not been set.") << endl);
-    }
-}
-
-/**
  * @brief dumps information about this object into string
  */
 std::string SignedUrlCache::dump() const {
@@ -556,7 +514,6 @@ std::string SignedUrlCache::dump() const {
 void SignedUrlCache::dump(ostream &strm) const {
     strm << BESIndent::LMarg << prolog << "(this: " << (void *)this << ")" << endl;
     BESIndent::Indent();
-    strm << BESIndent::LMarg << "d_skip_regex: " << (d_skip_regex ? d_skip_regex->pattern() : "WAS NOT SET") << endl;
     if (!d_presigned_s3_urls_cache.empty()) {
         strm << BESIndent::LMarg << "presigned url list:" << endl;
         BESIndent::Indent();
