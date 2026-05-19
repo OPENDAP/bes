@@ -95,13 +95,6 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
 
         // Handle coordinate variables
         f->Handle_CVar();
-#if 0
-        // We need to retrieve  coordinate variable attributes for memory cache use.
-        //f->Retrieve_H5_CVar_Supported_Attr_Values(); 
-        //if((HDF5RequestHandler::get_lrdata_mem_cache() != nullptr) || 
-        //   (HDF5RequestHandler::get_srdata_mem_cache() != nullptr)){
-        //    f->Retrieve_H5_Supported_Attr_Values();
-#endif
 
         // Handle special variables
         f->Handle_SpVar();
@@ -143,14 +136,14 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
         // Flatten the object names
         f->Flatten_Obj_Name(include_attr);
 
-        // Handle Object name clashings
+        // Handle object name clashings
         // Only when the check_nameclashing key is turned on or
-        // general product.
+        // this is a general product.
         if(General_Product == product_type ||
            true == HDF5RequestHandler::get_check_name_clashing()) 
            f->Handle_Obj_NameClashing(include_attr);
 
-        // Adjust Dimension name 
+        // Adjust dimension name 
         f->Adjust_Dim_Name();
         if(General_Product == product_type ||
             true == HDF5RequestHandler::get_check_name_clashing()) 
@@ -159,6 +152,7 @@ void map_gmh5_cfdds(DDS &dds, hid_t file_id, const string& filename){
         f->Handle_Hybrid_EOS5();
         if(true == f->Have_Grid_Mapping_Attrs()) 
             f->Handle_Grid_Mapping_Vars();
+
         // Need to handle the "coordinate" attributes when memory cache is turned on.
         if((HDF5RequestHandler::get_lrdata_mem_cache() != nullptr) || 
            (HDF5RequestHandler::get_srdata_mem_cache() != nullptr))
@@ -230,6 +224,7 @@ void map_gmh5_cfdas(DAS &das, hid_t file_id, const string& filename){
             f->Handle_Obj_NameClashing(include_attr);
         if(f->HaveUnlimitedDim() == true) 
             f->Adjust_Dim_Name();
+
         // Handle the "coordinate" attributes.
         if (f->is_special_gpm_l3()==false)
             f->Handle_Coor_Attr();
@@ -398,8 +393,9 @@ void gen_gmh5_cfdds( DDS & dds, HDF5CF:: GMFile *f) {
     }
 
     // We need to remove the unsupported attributes.
-    if(true == dmr_64bit_support) {
-        //STOP: add non-support stuff
+    if (true == dmr_64bit_support) {
+
+        // Remove unsupported datatype
         f->Handle_Unsupported_Dtype(true);
 
         // Remove unsupported dataspace 
@@ -616,7 +612,7 @@ void gen_gmh5_cfdas( DAS & das, HDF5CF:: GMFile *f) {
 
 void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
 
-    BESDEBUG("h5","Coming to GM DDS generation function gen_gmh5_cfdmr()  "<<endl);
+    BESDEBUG("h5","Coming to GM DMR generation function gen_gmh5_cfdmr()  "<<endl);
 
     const vector<HDF5CF::Var *>&      vars  = f->getVars();
     const vector<HDF5CF::GMCVar *>&  cvars  = f->getCVars();
@@ -729,7 +725,16 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
                 if(d4_root->attributes() != nullptr) {
 
                 // TODO: The following lines cause seg. fault in libdap4, needs to investigate
+                // I still find segmentation fault even with the commented code. Something is not right. 
+#if 0
                 //if((d4_root->attributes()->find(dods_extra))==nullptr) 
+                // This also causes the segmentation fault. The find() method may have flaw.
+                d4_attrs = d4_root->attributes();
+                if(d4_attrs->empty()==false) {
+                    if((d4_attrs->find(dods_extra))==nullptr)             
+                    ;
+                } 
+#endif
         
                     string unlimited_dim_names;
         
@@ -1232,7 +1237,7 @@ void update_GPM_special_attrs_cfdmr(libdap::D4Group* d4_root, const vector<HDF5C
 
 void gen_dap_onegmcvar_dmr(D4Group*d4_root,const GMCVar* cvar,const hid_t fileid, const string &filename) {              
 
-    BESDEBUG("h5","Coming to gen_dap_onegmcvar_dds()  "<<endl);
+    BESDEBUG("h5","Coming to gen_dap_onegmcvar_dmr()  "<<endl);
 
     BaseType *bt = nullptr;
 

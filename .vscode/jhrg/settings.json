@@ -3,13 +3,15 @@
     "prefix": "/Users/jhrg/src/opendap/hyrax/build",
     "PATH": "${config:prefix}/bin:${config:prefix}/deps/bin:${env:PATH}",
     "nproc": 20,
+    "HOMEBREW": "/opt/homebrew",
     // C/C++ extensionsettings. jhrg 3/11/26
-    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
-    "C_Cpp.default.compileCommands": "${workspaceFolder}/compile_commands.json",
+    //"C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
+    //"C_Cpp.default.compileCommands": "${workspaceFolder}/compile_commands.json",
     "C_Cpp.default.includePath": [
+        "${workspaceFolder}/**",
         "${config:prefix}/include/**",
         "${config:prefix}/deps/include/**",
-        "${workspaceFolder}/**"
+        "${config:HOMEBREW}/include/**"
     ],
     "C_Cpp.default.cppStandard": "c++14",
     "C_Cpp.default.intelliSenseMode": "macos-clang-arm64",

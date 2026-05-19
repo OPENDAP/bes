@@ -2015,7 +2015,7 @@ void obtain_dimname_hardlinks(hid_t file_id, hid_t ref_dset, vector<link_info_t>
     // If yes, we need to find the hardlink that has the shortest path and at the ancestor group
     // of all links.
     H5O_info_t obj_info;
-    if (H5OGET_INFO(ref_dset, &obj_info) < 0) {
+    if (H5Oget_info3(ref_dset, &obj_info, H5O_INFO_BASIC) < 0) {
         H5Dclose(ref_dset);
         string msg = "Cannot obtain the object info for the dimension variable " + trim_objname;
         throw BESInternalError(msg,__FILE__, __LINE__);
