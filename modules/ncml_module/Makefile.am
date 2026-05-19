@@ -19,10 +19,10 @@ LIBADD = $(ICU_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
-lib_besdir=$(libdir)/bes
+lib_besdir = $(libdir)/bes
 lib_bes_LTLIBRARIES = libncml_module.la
 
-AM_CXXFLAGS=
+AM_CXXFLAGS = $(ICU_CXXFLAGS)
 
 include $(top_srcdir)/coverage.mk
 
@@ -138,7 +138,7 @@ NCML_HDRS = \
 # ICU_CPPFLAGS and ICU_LIBS set from configure.ac check for ICU
 libncml_module_la_SOURCES = $(NCML_SRCS) $(BES_SRCS) $(NCML_HDRS) $(BES_HDRS)
 # libncml_module_la_CPPFLAGS = $(ICU_CPPFLAGS) $(BES_CPPFLAGS) $(DAP_CFLAGS) 
-libncml_module_la_LDFLAGS = -avoid-version -module 
+libncml_module_la_LDFLAGS = $(AM_LDFLAGS)-avoid-version -module 
 libncml_module_la_LIBADD = $(LIBADD)
 #$(DAP_LIBS)
 
@@ -196,4 +196,3 @@ C4_DIR=./cccc
 .PHONY: cccc
 cccc:	
 	cccc --outdir=$(C4_DIR) $(libncml_module_la_SOURCES)
-

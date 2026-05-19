@@ -278,7 +278,8 @@ AC_MSG_CHECKING([Python version 3.9 or greater])
 AM_CONDITIONAL([HAVE_PYTHON_3_9], [test $python_major_version -ge  3 -a $python_minor_version -ge 9])
 AM_COND_IF([HAVE_PYTHON_3_9], [AC_MSG_RESULT([yes])], [AC_MSG_RESULT([no])])
 
-dnl Here we test for both C++11 and 14, but our code nominally requires 14.
+dnl Here we test for C++11, 14, and 17, but our code nominally requires 14.
+dnl Current ICU headers may require C++17, so use C++17 when the compiler supports it.
 dnl We can use the C++11 test and CXX_STD_FLAG to build with 11 if we add a
 dnl compatibility layer for the missing features. jhrg 1/30/23.
 
@@ -287,6 +288,8 @@ CXX_STD_FLAG=""
 CXX_FLAGS_CHECK([--std=c++11], [CXX_STD_FLAG=--std=c++11], [AC_MSG_WARN([C++11 is required but not found.])])
 CXX_FLAGS_CHECK([--std=c++14], [CXX_STD_FLAG=--std=c++14],
     [AC_MSG_WARN([C++14 is required but not found. Using C++11 compatability mode.])])
+CXX_FLAGS_CHECK([--std=c++17], [CXX_STD_FLAG=--std=c++17],
+    [AC_MSG_WARN([C++17 is not available. Using the newest supported C++ standard.])])
 
 AS_IF([test -z "$CXX_STD_FLAG"],
       [AC_MSG_ERROR([Not using modern C++ (C++11 or 14)])],
@@ -1052,7 +1055,7 @@ dnl Note: it also handles --with-icu-prefix=path_to_icu_install
 dnl in case there are multiple icu development environments on the machine
 dnl NOTE: LD_LIBRARY_PATH or DYLD_LIBRARY_PATH may need to be set for this
 dnl to work, however.
-AC_CHECK_ICU([3.6],
+AC_CHECK_ICU([3.6.0],
 	[icu_found=true
 	AC_MSG_NOTICE([ICU_CPPFLAGS=$ICU_CPPFLAGS])
 	AC_MSG_NOTICE([ICU_LIBS=$ICU_LIBS])
@@ -1084,7 +1087,7 @@ AC_ARG_WITH([gridfields],
 		[AC_MSG_NOTICE([Using $withval as the GridFields prefix directory.])
          GF_LIBS="-L$withval/lib -lgridfields"
          GF_CFLAGS="-I$withval/include"
- 	 GF_PATH=$withval
+ 	     GF_PATH=$withval
          AC_DEFINE([GRIDFIELDS],[1],[define if gridfields lib is present])
          libgf_ok="yes"])],
     [ libgf_ok="no" ])

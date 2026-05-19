@@ -10,7 +10,7 @@ BES.UncompressCache.dir=@abs_top_builddir@/modules/ncml_module/tests/cache
 BES.UncompressCache.prefix=uncompress_cache
 BES.UncompressCache.size=500
 
-BES.modules = dap,cmd,nc,h4,h5,gateway,ncml,fonc,ascii,json,dmrpp
+BES.modules = dap,cmd,nc,h4,h5,gateway,ncml,fonc,ascii,json,dmrpp,gdal
 
 BES.module.dap=@abs_top_builddir@/dap/.libs/libdap_module.so
 BES.module.cmd=@abs_top_builddir@/xmlcommand/.libs/libdap_xml_module.so
@@ -23,7 +23,7 @@ BES.module.fonc=@abs_top_builddir@/modules/fileout_netcdf/.libs/libfonc_module.s
 BES.module.ascii=@abs_top_builddir@/modules/asciival/.libs/libascii_module.so
 BES.module.json=@abs_top_builddir@/modules/fileout_json/.libs/libfojson_module.so
 BES.module.dmrpp = @abs_top_builddir@/modules/dmrpp_module/.libs/libdmrpp_module.so
-
+BES.module.gdal = @abs_top_builddir@/modules/gdal_module/.libs/libgdal_module.so
 
 BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/modules/ncml_module
 
@@ -34,16 +34,7 @@ BES.Catalog.catalog.TypeMatch+=ncml:.*.ncml(.bz2|.gz|.Z)?$;
 BES.Catalog.catalog.TypeMatch+=h5:.*.h5(.bz2|.gz|.Z)?$;
 
 BES.Catalog.catalog.TypeMatch += dmrpp:.*.dmrpp$;
-
-# GDAL switches - this was going to be part of an optional GDAL feature,
-# but that did not materialize as a usable thing in the time allowed. jhrg 6/10/22
-#
-# I removed this for now. I don't think we need to test against GeoTIFF
-# data here and there are issues with building GDAL. jhrg 11/25/25
-#
-# BES.modules += gdal
-# BES.module.gdal = @abs_top_builddir@/modules/gdal_module/.libs/libgdal_module.so
-# BES.Catalog.catalog.TypeMatch += gdal:.*.tif(.bz2|.gz|.Z)?$;
+BES.Catalog.catalog.TypeMatch += gdal:.*.tif(.bz2|.gz|.Z)?$;
 
 #-----------------------------------------------------------------------#
 # Gateway module specific parameters
