@@ -18,8 +18,7 @@ LIBADD = $(NC_LDFLAGS) $(NC_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
-AM_CXXFLAGS = -Wno-inconsistent-missing-override
-AM_LDFLAGS =
+AM_CXXFLAGS = $(CXXFLAGS) -Wno-inconsistent-missing-override
 include $(top_srcdir)/coverage.mk
 
 SUBDIRS = . data/build_test_data unit-tests tests
@@ -29,7 +28,7 @@ lib_bes_LTLIBRARIES = libfonc_module.la
 
 libfonc_module_la_SOURCES = $(FONC_SRC) $(FONC_HDR)
 # libfonc_module_la_CPPFLAGS = $(BES_CPPFLAGS)
-libfonc_module_la_LDFLAGS = -avoid-version -module 
+libfonc_module_la_LDFLAGS = $(AM_LDFLAGS)-avoid-version -module 
 libfonc_module_la_LIBADD = $(LIBADD)
 
 FONC_SRC = FONcTransform.cc FONcTransmitter.cc FONcRequestHandler.cc	\

@@ -22,7 +22,6 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 
 AM_CXXFLAGS=
-AM_LDFLAGS = -L$(aws_libdir)
 include $(top_srcdir)/coverage.mk
 
 LDADD_AWS = $(top_builddir)/aws/libbes_aws.la $(aws_libs)
@@ -122,4 +121,3 @@ NgapApiTest_LDADD =  $(LIBADD) $(LDADD_AWS)
 
 NgapOwnedContainerTest_SOURCES = NgapOwnedContainerTest.cc
 NgapOwnedContainerTest_LDADD = $(LIBADD) $(LDADD_AWS)
-

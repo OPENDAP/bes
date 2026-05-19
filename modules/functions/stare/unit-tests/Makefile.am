@@ -24,8 +24,7 @@ endif
 # debugging. Set CXXFLAGS to this in the nightly build using export ...
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align
 
-AM_CXXFLAGS=
-AM_LDFLAGS =
+AM_CXXFLAGS	= $(CXXFLAGS)
 include $(top_srcdir)/coverage.mk
 
 BUILT_SOURCES = test_config.h bes.conf

@@ -30,7 +30,6 @@ endif
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -Wcast-align
 
 AM_CXXFLAGS = -Wno-vla-extension -Wno-inconsistent-missing-override -Wno-unused-variable
-AM_LDFLAGS = -L$(aws_libdir)
 include $(top_srcdir)/coverage.mk
 
 if DARWIN
@@ -142,5 +141,3 @@ build_dmrpp_util_test_LDADD = $(H5_LDFLAGS) $(H5_LIBS) ../.libs/libdmrpp_module.
 
 vlsa_util_test_SOURCES = vlsa_util_test.cc
 vlsa_util_test_LDADD   = ../.libs/libdmrpp_module.a $(LIBADD)
-
-

@@ -13,7 +13,7 @@ AM_CPPFLAGS = -DFREEFORM $(FF_CPPFLAGS)
 CXXFLAGS_DEBUG = -g3 -O0  -Wall -W -Wcast-align -Werror
 
 AM_CXXFLAGS=
-AM_LDFLAGS =
+
 include $(top_srcdir)/coverage.mk
 
 noinst_LTLIBRARIES = libfreeform.la
