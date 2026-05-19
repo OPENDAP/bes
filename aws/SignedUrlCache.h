@@ -2,8 +2,8 @@
 
 // This file is part of the BES aws package, part of the Hyrax data server.
 
-// Copyright (c) 2025 OPeNDAP, Inc.
-// Authors: Nathan Potter <ndp@opendap.org>, Hannah Robertson <hrobertson@opendap.org>
+// Copyright (c) 2026 OPeNDAP, Inc.
+// Authors: Hannah Robertson <hrobertson@opendap.org>
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -22,7 +22,6 @@
 // You can contact OPeNDAP, Inc. at PO Box 112, Saunderstown, RI. 02874-0112.
 
 // Authors:
-//      ndp       Nathan Potter <ndp@opendap.org>
 //      Hannah Robertson <hrobertson@opendap.org>
 
 #ifndef _bes_aws_SignedUrlCache_h_
