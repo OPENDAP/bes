@@ -4667,102 +4667,106 @@ void obtain_eos5_vars_missing_dims(hid_t pid, const char *gname, const vector<ch
     }
 
     // Check if finding the attribute.
-    if (H5T_VLEN == H5Tget_class(atype_id)) { 
-
-        vector<hvl_t> vlbuf;
-        hid_t dspace = H5Dget_space(dataset);
-        if (dspace <0) {
-            H5Dclose(dataset);
-            H5Aclose(attr_id);
-            H5Tclose(atype_id);
-            string msg = "H5Dget_space fails.";
-            throw BESInternalError(msg,__FILE__,__LINE__);
-        }
-        int ndims = H5Sget_simple_extent_ndims(dspace);
-        if (ndims <0) {
-            H5Dclose(dataset);
-            H5Aclose(attr_id);
-            H5Tclose(atype_id);
-            H5Sclose(dspace);
-            string msg = "H5Sget_simple_extent_ndims fails.";
-            throw BESInternalError(msg,__FILE__,__LINE__);
-        }
-
-        vlbuf.resize(ndims);
-        hid_t amemtype_id = H5Tget_native_type(atype_id, H5T_DIR_ASCEND);
-        if (amemtype_id < 0) {
-            H5Dclose(dataset);
-            H5Aclose(attr_id);
-            H5Tclose(atype_id);
-            H5Sclose(dspace);
-            string msg = "Cannot get the memory datatype of the attribute " + dim_attr_name + " in the loop_all_variables_for_missing_dim_names function.";
-            throw BESInternalError(msg,__FILE__, __LINE__);
-
-        }
-
-        if (H5Aread(attr_id,amemtype_id,vlbuf.data()) <0)  {
-            string msg = "Cannot obtain the referenced object in the loop_all_variables_for_missing_dim_names function.";
-            H5Dclose(dataset);
-            H5Aclose(attr_id);
-            H5Tclose(atype_id);
-            H5Tclose(amemtype_id);
-            H5Sclose(dspace);
-            throw BESInternalError(msg,__FILE__, __LINE__);
-        }
-
-        vector<char> objname;
-
-        // The dimension names of variables will be the HDF5 dataset names de-referenced from the DIMENSION_LIST attribute.
-        for (unsigned int j = 0; j < (unsigned int)ndims; j++) {
-
-            if (vlbuf[j].p == nullptr) {
-                unordered_map<string,vector<string>> varpath_to_dims = eos5_dim_info.varpath_to_dims;
-                if (varpath_to_dims.find(full_path_name)!= varpath_to_dims.end()) {
-                    if (varpath_to_dims[full_path_name].size() >j) {
-                        string dim_path = (varpath_to_dims[full_path_name])[j];
-                        eos5_missing_dim_names.insert(dim_path);
-                    }
-                }
-            }
-        }
-
-        // We need to release the memory of the vlen data.
-        if (vlbuf.empty()== false) {
-
-            hid_t aspace_id;
-            if ((aspace_id = H5Aget_space(attr_id)) < 0) {
-                H5Dclose(dataset);
-                H5Aclose(attr_id);
-                H5Tclose(atype_id);
-                H5Tclose(amemtype_id);
-                H5Sclose(dspace);
-                string msg = "Cannot close the HDF5 attribute space successfully for <DIMENSION_LIST> ";
-                throw BESInternalError(msg,__FILE__,__LINE__);
-            }
-
-            if (H5Dvlen_reclaim(amemtype_id,aspace_id,H5P_DEFAULT,(void*)vlbuf.data())<0) {
-                H5Dclose(dataset);
-                H5Aclose(attr_id);
-                H5Tclose(atype_id);
-                H5Tclose(amemtype_id);
-                H5Sclose(dspace);
-                H5Sclose(aspace_id);
-                string msg = "Cannot reclaim the variable length memory in the function obtain_dimnames().";
-                throw BESInternalError(msg,__FILE__,__LINE__);
-            }
-
-            H5Sclose(aspace_id);
-
-        }
-
-        H5Tclose(amemtype_id);
-        H5Sclose(dspace);
-    }
+    if (H5T_VLEN == H5Tget_class(atype_id)) 
+        obtain_eos5_vars_missing_dims_internal(dataset, attr_id, atype_id, full_path_name, eos5_dim_info, eos5_missing_dim_names);
 
     H5Tclose(atype_id);
     H5Aclose(attr_id);
     H5Dclose(dataset);
         
+}
+
+void obtain_eos5_vars_missing_dims_internal(hid_t dataset, hid_t attr_id, hid_t atype_id, const string & full_path_name,  const eos5_dim_info_t &eos5_dim_info, unordered_set<string>& eos5_missing_dim_names) {
+
+    vector<hvl_t> vlbuf;
+    hid_t dspace = H5Dget_space(dataset);
+    if (dspace <0) {
+        H5Dclose(dataset);
+        H5Aclose(attr_id);
+        H5Tclose(atype_id);
+        string msg = "H5Dget_space fails.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
+    int ndims = H5Sget_simple_extent_ndims(dspace);
+    if (ndims <0) {
+        H5Dclose(dataset);
+        H5Aclose(attr_id);
+        H5Tclose(atype_id);
+        H5Sclose(dspace);
+        string msg = "H5Sget_simple_extent_ndims fails.";
+        throw BESInternalError(msg,__FILE__,__LINE__);
+    }
+
+    vlbuf.resize(ndims);
+    hid_t amemtype_id = H5Tget_native_type(atype_id, H5T_DIR_ASCEND);
+    if (amemtype_id < 0) {
+        H5Dclose(dataset);
+        H5Aclose(attr_id);
+        H5Tclose(atype_id);
+        H5Sclose(dspace);
+        string msg = "Cannot get the memory datatype of the attribute in the obtain_eos5_vars_missing_dims_internal function.";
+        throw BESInternalError(msg,__FILE__, __LINE__);
+
+    }
+
+    if (H5Aread(attr_id,amemtype_id,vlbuf.data()) <0)  {
+        string msg = "Cannot obtain the referenced object in the loop_all_variables_for_missing_dim_names function.";
+        H5Dclose(dataset);
+        H5Aclose(attr_id);
+        H5Tclose(atype_id);
+        H5Tclose(amemtype_id);
+        H5Sclose(dspace);
+        throw BESInternalError(msg,__FILE__, __LINE__);
+    }
+
+    vector<char> objname;
+
+    // The dimension names of variables will be the HDF5 dataset names de-referenced from the DIMENSION_LIST attribute.
+    for (unsigned int j = 0; j < (unsigned int)ndims; j++) {
+
+        if (vlbuf[j].p == nullptr) {
+            unordered_map<string,vector<string>> varpath_to_dims = eos5_dim_info.varpath_to_dims;
+            if (varpath_to_dims.find(full_path_name)!= varpath_to_dims.end()) {
+                if (varpath_to_dims[full_path_name].size() >j) {
+                    string dim_path = (varpath_to_dims[full_path_name])[j];
+                    eos5_missing_dim_names.insert(dim_path);
+                }
+            }
+        }
+    }
+
+    // We need to release the memory of the vlen data.
+    if (vlbuf.empty()== false) {
+
+        hid_t aspace_id;
+        if ((aspace_id = H5Aget_space(attr_id)) < 0) {
+            H5Dclose(dataset);
+            H5Aclose(attr_id);
+            H5Tclose(atype_id);
+            H5Tclose(amemtype_id);
+            H5Sclose(dspace);
+            string msg = "Cannot close the HDF5 attribute space successfully for <DIMENSION_LIST> ";
+            throw BESInternalError(msg,__FILE__,__LINE__);
+        }
+
+        if (H5Dvlen_reclaim(amemtype_id,aspace_id,H5P_DEFAULT,(void*)vlbuf.data())<0) {
+            H5Dclose(dataset);
+            H5Aclose(attr_id);
+            H5Tclose(atype_id);
+            H5Tclose(amemtype_id);
+            H5Sclose(dspace);
+            H5Sclose(aspace_id);
+            string msg = "Cannot reclaim the variable length memory in the function obtain_dimnames().";
+            throw BESInternalError(msg,__FILE__,__LINE__);
+        }
+
+        H5Sclose(aspace_id);
+
+    }
+
+    H5Tclose(amemtype_id);
+    H5Sclose(dspace);
+ 
 }
 
 void handle_vlen_int_float_index(libdap::D4Group *d4_grp,  const std::string &vname, const std::string &var_path,
