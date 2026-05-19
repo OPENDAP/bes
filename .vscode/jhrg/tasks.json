@@ -3,8 +3,8 @@
     "options": {
         "cwd": "${workspaceFolder}",
         "env": {
-            "prefix": "/Users/jimg/src/opendap/hyrax/build",
-            "PATH": "/Users/jimg/src/opendap/hyrax/build/bin:/Users/jimg/src/opendap/hyrax/build/deps/bin:${env:PATH}",
+            "prefix": "${config:prefix}",
+            "PATH": "${config:prefix}/bin:${config:prefix}/deps/bin:${env:PATH}",
             "TESTSUITEFLAGS": "--jobs"
         },
         "shell": {

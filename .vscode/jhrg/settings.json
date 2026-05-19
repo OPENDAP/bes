@@ -5,7 +5,7 @@
     "nproc": 20,
     "HOMEBREW": "/opt/homebrew",
     // C/C++ extensionsettings. jhrg 3/11/26
-    "C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
+    //"C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
     //"C_Cpp.default.compileCommands": "${workspaceFolder}/compile_commands.json",
     "C_Cpp.default.includePath": [
         "${workspaceFolder}/**",
