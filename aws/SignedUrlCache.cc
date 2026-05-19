@@ -280,7 +280,7 @@ SignedUrlCache::cache_sts_credentials_from_tea_endpoint(std::string const &tea_e
         return nullptr;
     }
     if (s3credentials_json_string.empty()) {
-        string err_msg = prolog + "Unable to retrieve s3 credentials from TEA endpoint " + tea_endpoint_url;
+        string err_msg = prolog + "SERVICE CHAIN WARNING - Unable to retrieve s3 credentials from TEA endpoint " + tea_endpoint_url;
         INFO_LOG(err_msg);
         return nullptr;
     }
@@ -289,7 +289,10 @@ SignedUrlCache::cache_sts_credentials_from_tea_endpoint(std::string const &tea_e
     auto credentials = extract_sts_credentials_from_json_response(s3credentials_json_string);
     if (credentials) {
         // Store credentials if any were retrieved
+        INFO_LOG(prolog + "Caching STS credentials for TEA endpoint - " + tea_endpoint_url);
         d_tea_endpoint_sts_credentials_cache[tea_endpoint_url] = credentials;
+    } else {
+        INFO_LOG(prolog + "SERVICE CHAIN WARNING - Error extracting STS credentials from TEA endpoint - " + tea_endpoint_url);
     }
     return credentials;
 }
@@ -306,6 +309,7 @@ SignedUrlCache::extract_sts_credentials_from_json_response(std::string const &s3
     s3credentials_response.Parse(s3credentials_json_string.c_str());
 
     if (s3credentials_response.HasParseError()) {
+        INFO_LOG(prolog + "SERVICE CHAIN WARNING - Error when attempting to parse STS response from /s3credentials endpoint");
         return nullptr;
     }
 
@@ -317,21 +321,29 @@ SignedUrlCache::extract_sts_credentials_from_json_response(std::string const &s3
     auto itr = s3credentials_response.FindMember("accessKeyId");
     if (itr != s3credentials_response.MemberEnd() && itr->value.IsString()) {
         access_key_id = itr->value.GetString();
+    } else {
+        INFO_LOG(prolog + "SERVICE CHAIN WARNING - Can't find accessKeyId in STS response");
     }
 
     itr = s3credentials_response.FindMember("secretAccessKey");
     if (itr != s3credentials_response.MemberEnd() && itr->value.IsString()) {
         secret_access_key = itr->value.GetString();
+    } else {
+        INFO_LOG(prolog + "SERVICE CHAIN WARNING - Can't find secretAccessKey in STS response");
     }
 
     itr = s3credentials_response.FindMember("sessionToken");
     if (itr != s3credentials_response.MemberEnd() && itr->value.IsString()) {
         session_token = itr->value.GetString();
+    } else {
+        INFO_LOG(prolog + "SERVICE CHAIN WARNING - Can't find sessionToken in STS response");
     }
 
     itr = s3credentials_response.FindMember("expiration");
     if (itr != s3credentials_response.MemberEnd() && itr->value.IsString()) {
         expiration = itr->value.GetString();
+    } else {
+        INFO_LOG(prolog + "SERVICE CHAIN WARNING - Can't find expiration in STS response");
     }
 
     if (access_key_id.empty() || secret_access_key.empty() || session_token.empty() || expiration.empty()) {
