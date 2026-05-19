@@ -186,7 +186,7 @@ bool grp_has_dset(hid_t fileid, const string & grp_path ) {
 
         // Obtain the object type
         H5O_info_t oinfo;
-        if (H5OGET_INFO_BY_IDX(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oinfo, H5P_DEFAULT) < 0) {
+        if (H5Oget_info_by_idx3(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oinfo, H5O_INFO_BASIC, H5P_DEFAULT) < 0) {
             string msg = "Cannot obtain the object info for the group";
             msg += grp_path;
             throw BESInternalError(msg,__FILE__, __LINE__);

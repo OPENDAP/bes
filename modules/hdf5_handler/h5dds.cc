@@ -149,9 +149,7 @@ bool depth_first(hid_t pid,const  char *gname, DDS & dds, const char *fname)
 
         // Obtain the object type, such as group or dataset. 
         H5O_info_t oinfo;
-
-        if (H5OGET_INFO_BY_IDX(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE,
-                              i, &oinfo, H5P_DEFAULT)<0) {
+        if (H5Oget_info_by_idx3(pid, ".", H5_INDEX_NAME, H5_ITER_NATIVE, i, &oinfo, H5O_INFO_BASIC, H5P_DEFAULT) < 0) {
             string msg = "h5_dds handler: Error obtaining the info for the object";
             msg += string(oname.begin(),oname.end());
             throw BESInternalError(msg,__FILE__, __LINE__);
