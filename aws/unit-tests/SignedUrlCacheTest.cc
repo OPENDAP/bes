@@ -184,36 +184,6 @@ public:
                                result_when_enabled->str() == output_url->str());
     }
 
-    void set_skip_regex_test() {
-        DBG(cerr << prolog << "BEGIN" << endl);
-        try {
-            // The cache is disabled in bes.conf, so we need to turn it on.
-            SignedUrlCache::TheCache()->d_enabled = true;
-
-            // This one does not add the URL or even check it because it _should_ be matching the skip regex
-            // in the bes.conf
-            auto src_url = make_shared<http::url>("https://foobar.com/opendap/data/nc/fnoc1.nc?dap4.ce=u;v");
-            auto result_url = SignedUrlCache::TheCache()->get_presigned_s3_url(src_url);
-            CPPUNIT_ASSERT_MESSAGE("When key matches skip regex, value is not cached",
-                                   SignedUrlCache::TheCache()->d_presigned_s3_urls_cache.empty());
-            CPPUNIT_ASSERT_MESSAGE("When key matches skip regex, nullptr is returned", result_url == nullptr);
-
-            // Similarly, skipped even when that url has been previously
-            // added to the cache somehow
-            auto output_url = make_shared<http::EffectiveUrl>("http://started_here.com?signed-now");
-            SignedUrlCache::TheCache()->d_presigned_s3_urls_cache.insert(
-                pair<string, shared_ptr<http::EffectiveUrl>>(src_url->str(), output_url));
-            auto result_url2 = SignedUrlCache::TheCache()->get_presigned_s3_url(src_url);
-            CPPUNIT_ASSERT_MESSAGE(
-                "When key matches skip regex, even if it exists in the cache, the value is not returned",
-                result_url2 == nullptr);
-        } catch (const BESError &be) {
-            stringstream msg;
-            msg << prolog << "ERROR! Caught BESError. Message: " << be.get_message() << endl;
-            CPPUNIT_FAIL(msg.str());
-        }
-    }
-
     void dump_test() {
         SignedUrlCache *theCache = SignedUrlCache::TheCache();
 
@@ -237,8 +207,7 @@ public:
         // Remove start of string to skip address that varies
         auto result = strm.str().substr(49);
         std::string expected_str =
-            string("d_skip_regex: ") + "\n    presigned url list:" +
-            // "\n        www.foo.com --> http://www.bar.com";
+            string("presigned url list:") +
             "\n        www.a.com --> http://www.time.com" + "\n        www.once.com --> http://www.upon.com" +
             "\n    href-to-s3credentials list:" + "\n        foo --> whee" +
             "\n    href-to-s3url list:" + "\n        yee --> haw" +
@@ -539,7 +508,6 @@ public:
     CPPUNIT_TEST(is_cache_enabled_test);
     CPPUNIT_TEST(is_cache_supported_within_current_aws_region_test);
     CPPUNIT_TEST(cache_enabled_disabled_test);
-    CPPUNIT_TEST(set_skip_regex_test);
     CPPUNIT_TEST(dump_test);
 
     // Test behavior specific to SignedUrlCache:
