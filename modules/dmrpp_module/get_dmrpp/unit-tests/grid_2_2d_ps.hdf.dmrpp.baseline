@@ -75,6 +75,9 @@ END
         <Attribute name="invocation" type="String">
             <Value>build_dmrpp_h4 -f /Users/myang6/work/opendap/hyrax-2043/bes/modules/dmrpp_module/get_dmrpp/unit-tests/grid_2_2d_ps.hdf -r grid_2_2d_ps.hdf.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -D -M</Value>
         </Attribute>
+        <Attribute name="configuration" type="String">
+            <Value>H4.EnableCF=false</Value>
+        </Attribute>
     </Attribute>
     <Group name="NPGrid">
         <Byte name="eos_cf_projection">

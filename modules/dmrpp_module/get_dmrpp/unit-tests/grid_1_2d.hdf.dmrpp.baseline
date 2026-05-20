@@ -51,6 +51,9 @@ END
         <Attribute name="invocation" type="String">
             <Value>build_dmrpp_h4 -f /Users/myang6/work/opendap/2025-summer-work/code-cleanup-testing/hyrax-1628/bes/modules/dmrpp_module/get_dmrpp/unit-tests/grid_1_2d.hdf -r grid_1_2d.hdf.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
         </Attribute>
+        <Attribute name="configuration" type="String">
+            <Value>H4.EnableCF=false</Value>
+        </Attribute>
     </Attribute>
     <Group name="GeoGrid">
         <Float64 name="YDim_GeoGrid">
