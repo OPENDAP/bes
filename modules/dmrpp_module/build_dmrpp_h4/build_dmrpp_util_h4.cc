@@ -1302,8 +1302,52 @@ bool add_missing_sp_latlon(BaseType *btp, const D4Attribute *sp_ll_attr, string 
     da->set_value(ll_value.data(),da->length());
     return true;
 
-
 }
+
+void handle_missing_data(const string& filename, int32 sd_id, int32 file_id, BaseType *btp, D4Attributes *d4_attrs) {
+
+    VERBOSE(cerr<<"Coming to handle missing lat/lon data "<<endl);
+    // Here we will check if the eos_latlon exists. Add dmrpp::missingdata
+    auto attr = d4_attrs->find("eos_latlon");
+    if (attr) {
+        string err_msg;
+        bool ret_value = add_missing_eos_latlon(filename, btp, attr,err_msg);
+        if (ret_value == false) {
+            close_hdf4_file_ids(sd_id,file_id);
+            throw BESInternalError(err_msg,__FILE__,__LINE__);
+        }
+
+    }
+    else { 
+        attr = d4_attrs->find("sp_h4_ll");
+        if (attr) {
+            string err_msg;
+            bool ret_value = add_missing_sp_latlon(btp, attr,err_msg);
+            if (ret_value == false) {
+                close_hdf4_file_ids(sd_id,file_id);
+                throw BESInternalError(err_msg,__FILE__,__LINE__);
+            }
+        }
+        else {
+            attr = d4_attrs->find("eos_cf_grid");
+            if (attr) {
+                string err_msg;
+                bool ret_value = add_missing_cf_grid(filename, btp, attr,err_msg);
+                if (ret_value == false) {
+                    close_hdf4_file_ids(sd_id,file_id);
+                    throw BESInternalError(err_msg,__FILE__,__LINE__);
+                }
+            
+            }
+            else {
+                close_hdf4_file_ids(sd_id,file_id);
+                string error_msg = "Expected to find an attribute that stores either HDF4 SDS reference or HDF4 Vdata reference or eos lat/lon or special HDF4 lat/lon or special cf grid for ";
+                throw BESInternalError(error_msg + btp->name() + " but did not.",__FILE__,__LINE__);
+            }
+        }
+    }        
+}
+
 /**
  * @param filename : File name
  * @param sd_id : HDF4 SD interface ID
@@ -1354,50 +1398,8 @@ bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id,
         if (is_cf)
             is_cf = false;
     }
-    else if (disable_missing_data == false){
-
-        VERBOSE(cerr<<"coming to eos_latlon block"<<endl);
-        // Here we will check if the eos_latlon exists. Add dmrpp::missingdata
-        attr = d4_attrs->find("eos_latlon");
-        if (attr) {
-            string err_msg;
-            bool ret_value = add_missing_eos_latlon(filename, btp, attr,err_msg);
-            if (ret_value == false) {
-                close_hdf4_file_ids(sd_id,file_id);
-                throw BESInternalError(err_msg,__FILE__,__LINE__);
-            }
-
-        }
-        else { 
-            attr = d4_attrs->find("sp_h4_ll");
-            if (attr) {
-                string err_msg;
-                bool ret_value = add_missing_sp_latlon(btp, attr,err_msg);
-                if (ret_value == false) {
-                    close_hdf4_file_ids(sd_id,file_id);
-                    throw BESInternalError(err_msg,__FILE__,__LINE__);
-                }
-            }
-            else {
-                attr = d4_attrs->find("eos_cf_grid");
-                if (attr) {
-                    string err_msg;
-                    bool ret_value = add_missing_cf_grid(filename, btp, attr,err_msg);
-                    if (ret_value == false) {
-                        close_hdf4_file_ids(sd_id,file_id);
-                        throw BESInternalError(err_msg,__FILE__,__LINE__);
-                    }
-                
-                }
-                else {
-                    close_hdf4_file_ids(sd_id,file_id);
-                    string error_msg = "Expected to find an attribute that stores either HDF4 SDS reference or HDF4 Vdata reference or eos lat/lon or special HDF4 lat/lon or special cf grid for ";
-                    throw BESInternalError(error_msg + btp->name() + " but did not.",__FILE__,__LINE__);
-                }
-            }
-            
-        }        
-    }
+    else if (disable_missing_data == false)
+        handle_missing_data(filename, sd_id, file_id, btp, d4_attrs);
 
     return true;
 }
