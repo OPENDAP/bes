@@ -56,6 +56,7 @@
 
 #define ERROR(x) do { cerr << "Internal Error: " << x << " at " << __FILE__ << ":" << __LINE__ << endl; } while(false)
 
+
 /*
  * Hold number of data blocks, offset/length information for SDS objects.
  */
@@ -77,6 +78,7 @@ bool verbose = false;   // Optionally set by build_dmrpp's main().
 #define prolog std::string("build_dmrpp_h4::").append(__func__).append("() - ")
 
 constexpr auto INVOCATION_CONTEXT = "invocation";
+const string DMRPP_METADATA = "build_dmrpp_metadata";
 inline string basename(const string & path) {
 
     // If the filename has a # in it, it's probably been decompressed
@@ -1300,8 +1302,52 @@ bool add_missing_sp_latlon(BaseType *btp, const D4Attribute *sp_ll_attr, string 
     da->set_value(ll_value.data(),da->length());
     return true;
 
-
 }
+
+void handle_missing_data(const string& filename, int32 sd_id, int32 file_id, BaseType *btp, D4Attributes *d4_attrs) {
+
+    VERBOSE(cerr<<"Coming to handle missing lat/lon data "<<endl);
+    // Here we will check if the eos_latlon exists. Add dmrpp::missingdata
+    auto attr = d4_attrs->find("eos_latlon");
+    if (attr) {
+        string err_msg;
+        bool ret_value = add_missing_eos_latlon(filename, btp, attr,err_msg);
+        if (ret_value == false) {
+            close_hdf4_file_ids(sd_id,file_id);
+            throw BESInternalError(err_msg,__FILE__,__LINE__);
+        }
+
+    }
+    else { 
+        attr = d4_attrs->find("sp_h4_ll");
+        if (attr) {
+            string err_msg;
+            bool ret_value = add_missing_sp_latlon(btp, attr,err_msg);
+            if (ret_value == false) {
+                close_hdf4_file_ids(sd_id,file_id);
+                throw BESInternalError(err_msg,__FILE__,__LINE__);
+            }
+        }
+        else {
+            attr = d4_attrs->find("eos_cf_grid");
+            if (attr) {
+                string err_msg;
+                bool ret_value = add_missing_cf_grid(filename, btp, attr,err_msg);
+                if (ret_value == false) {
+                    close_hdf4_file_ids(sd_id,file_id);
+                    throw BESInternalError(err_msg,__FILE__,__LINE__);
+                }
+            
+            }
+            else {
+                close_hdf4_file_ids(sd_id,file_id);
+                string error_msg = "Expected to find an attribute that stores either HDF4 SDS reference or HDF4 Vdata reference or eos lat/lon or special HDF4 lat/lon or special cf grid for ";
+                throw BESInternalError(error_msg + btp->name() + " but did not.",__FILE__,__LINE__);
+            }
+        }
+    }        
+}
+
 /**
  * @param filename : File name
  * @param sd_id : HDF4 SD interface ID
@@ -1310,7 +1356,7 @@ bool add_missing_sp_latlon(BaseType *btp, const D4Attribute *sp_ll_attr, string 
  * @param disable_missing_data flag to disable the generation and storing of the missing data in the dmrpp file
  * @return true if the produced output that seems valid, false otherwise.
  */
-bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id, BaseType *btp, bool disable_missing_data) {
+bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id, BaseType *btp, bool disable_missing_data, bool& is_cf) {
 
     VERBOSE(cerr<<"var name: "<<btp->name() <<endl);
 
@@ -1322,7 +1368,7 @@ bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id,
                                __FILE__, __LINE__);
     }
 
-    // We need to find the object reference number to retrieve the offset and lenght.
+    // We need to find the object reference number to retrieve the offset and length.
     // Currently we only support HDF4 SDS and Vdata. That's the HDF4 objects what NASA HDF4/HDF-EOS2 files contain.
     D4Attribute *attr = d4_attrs->find("dmr_sds_ref");
     int32 obj_ref = 0;
@@ -1349,51 +1395,11 @@ bool get_chunks_for_an_array(const string& filename, int32 sd_id, int32 file_id,
                                    __FILE__, __LINE__);
             }
         }
+        if (is_cf)
+            is_cf = false;
     }
-    else if (disable_missing_data == false){
-
-        VERBOSE(cerr<<"coming to eos_latlon block"<<endl);
-        // Here we will check if the eos_latlon exists. Add dmrpp::missingdata
-        attr = d4_attrs->find("eos_latlon");
-        if (attr) {
-            string err_msg;
-            bool ret_value = add_missing_eos_latlon(filename, btp, attr,err_msg);
-            if (ret_value == false) {
-                close_hdf4_file_ids(sd_id,file_id);
-                throw BESInternalError(err_msg,__FILE__,__LINE__);
-            }
-
-        }
-        else { 
-            attr = d4_attrs->find("sp_h4_ll");
-            if (attr) {
-                string err_msg;
-                bool ret_value = add_missing_sp_latlon(btp, attr,err_msg);
-                if (ret_value == false) {
-                    close_hdf4_file_ids(sd_id,file_id);
-                    throw BESInternalError(err_msg,__FILE__,__LINE__);
-                }
-            }
-            else {
-                attr = d4_attrs->find("eos_cf_grid");
-                if (attr) {
-                    string err_msg;
-                    bool ret_value = add_missing_cf_grid(filename, btp, attr,err_msg);
-                    if (ret_value == false) {
-                        close_hdf4_file_ids(sd_id,file_id);
-                        throw BESInternalError(err_msg,__FILE__,__LINE__);
-                    }
-                
-                }
-                else {
-                    close_hdf4_file_ids(sd_id,file_id);
-                    string error_msg = "Expected to find an attribute that stores either HDF4 SDS reference or HDF4 Vdata reference or eos lat/lon or special HDF4 lat/lon or special cf grid for ";
-                    throw BESInternalError(error_msg + btp->name() + " but did not.",__FILE__,__LINE__);
-                }
-            }
-            
-        }        
-    }
+    else if (disable_missing_data == false)
+        handle_missing_data(filename, sd_id, file_id, btp, d4_attrs);
 
     return true;
 }
@@ -1439,7 +1445,7 @@ bool handle_chunks_for_none_array(BaseType *btp, string &err_msg) {
 }
 
 // Obtain offset/length information for a variable.
-bool get_chunks_for_a_variable(const string& filename,int32 sd_id, int32 file_id, BaseType *btp, bool disable_missing_data) {
+bool get_chunks_for_a_variable(const string& filename,int32 sd_id, int32 file_id, BaseType *btp, bool disable_missing_data, bool& is_cf) {
 
     switch (btp->type()) {
         case dods_structure_c: {
@@ -1454,7 +1460,7 @@ bool get_chunks_for_a_variable(const string& filename,int32 sd_id, int32 file_id
             throw BESInternalError("Grids are not supported by DAP4.", __FILE__, __LINE__);
         }
         case dods_array_c:
-            return get_chunks_for_an_array(filename,sd_id,file_id, btp,disable_missing_data);
+            return get_chunks_for_an_array(filename,sd_id,file_id, btp,disable_missing_data,is_cf);
         default: {
             string err_msg;
             bool ret_value = handle_chunks_for_none_array(btp,err_msg);
@@ -1481,14 +1487,14 @@ bool get_chunks_for_a_variable(const string& filename,int32 sd_id, int32 file_id
  * @param disable_missing_data flag to disable the generation and storing of the missing data in the dmrpp file
  * to process all the variables in the DMR
  */
-void get_chunks_for_all_variables(const string& filename, int32 sd_id, int32 file_id, D4Group *group, bool disable_missing_data) {
+void get_chunks_for_all_variables(const string& filename, int32 sd_id, int32 file_id, D4Group *group, bool disable_missing_data, bool& is_cf) {
 
     // Variables in the group
     for(auto btp : group->variables()) {
         if (btp->type() != dods_group_c) {
             // If this is not a group, it is a variable
             // This is the part where we find out if a variable can be used with DMR++
-            if (!get_chunks_for_a_variable(filename,sd_id,file_id, btp, disable_missing_data)) {
+            if (!get_chunks_for_a_variable(filename,sd_id,file_id, btp, disable_missing_data, is_cf)) {
                 ERROR("Could not include DMR++ metadata for variable " << btp->FQN());
             }
         }
@@ -1497,12 +1503,12 @@ void get_chunks_for_all_variables(const string& filename, int32 sd_id, int32 fil
             auto g = dynamic_cast<D4Group*>(btp);
             if (!g)
                 throw BESInternalError("Expected "  + btp->name() + " to be a D4Group but it is not.", __FILE__, __LINE__);
-            get_chunks_for_all_variables(filename,sd_id,file_id, g, disable_missing_data);
+            get_chunks_for_all_variables(filename,sd_id,file_id, g, disable_missing_data, is_cf);
         }
     }
     // all groups in the group
     for (auto g = group->grp_begin(), ge = group->grp_end(); g != ge; ++g) {
-        get_chunks_for_all_variables(filename,sd_id,file_id, *g, disable_missing_data);
+        get_chunks_for_all_variables(filename,sd_id,file_id, *g, disable_missing_data, is_cf);
     }
 
 }
@@ -1513,7 +1519,7 @@ void get_chunks_for_all_variables(const string& filename, int32 sd_id, int32 fil
  * @param dmrpp Dump the chunk information here
 *  @param disable_missing_data flag to disable the generation and storing of the missing data in the dmrpp file
  */
-void add_chunk_information(const string &h4_file_name, DMRpp *dmrpp, bool disable_missing_data)
+void add_chunk_information(const string &h4_file_name, DMRpp *dmrpp, bool disable_missing_data, bool& is_cf)
 {
     // Open the hdf4 file
     int32 sd_id = SDstart(h4_file_name.c_str(), DFACC_READ);
@@ -1537,7 +1543,7 @@ void add_chunk_information(const string &h4_file_name, DMRpp *dmrpp, bool disabl
     }
  
     // Iterate over all the variables in the DMR
-    get_chunks_for_all_variables(h4_file_name, sd_id, file_id, dmrpp->root(),disable_missing_data);
+    get_chunks_for_all_variables(h4_file_name, sd_id, file_id, dmrpp->root(),disable_missing_data, is_cf);
 
     close_hdf4_file_ids(sd_id,file_id);
 }
@@ -1635,34 +1641,34 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
     dmrpp->set_version(CVER);
 
     // Build the version attributes for the DMR++
-    auto version_unique = make_unique<D4Attribute>("build_dmrpp_metadata", StringToD4AttributeType("container"));
+    auto version_unique = make_unique<D4Attribute>(DMRPP_METADATA, attr_container_c);
     auto version = version_unique.get();
 
-    auto creation_date_unique = make_unique<D4Attribute>("created", StringToD4AttributeType("string")); 
+    auto creation_date_unique = make_unique<D4Attribute>("created", attr_str_c); 
     auto creation_date = creation_date_unique.get();
     creation_date->add_value(what_time_is_it()); 
     version->attributes()->add_attribute_nocopy(creation_date_unique.release()); 
 
-    auto build_dmrpp_version_unique = make_unique<D4Attribute>("build_dmrpp", StringToD4AttributeType("string"));
+    auto build_dmrpp_version_unique = make_unique<D4Attribute>("build_dmrpp", attr_str_c);
     auto build_dmrpp_version = build_dmrpp_version_unique.get();
     build_dmrpp_version->add_value(CVER);
     version->attributes()->add_attribute_nocopy(build_dmrpp_version_unique.release());
 
-    auto bes_version_unique = make_unique<D4Attribute>("bes", StringToD4AttributeType("string"));
+    auto bes_version_unique = make_unique<D4Attribute>("bes", attr_str_c);
     auto bes_version = bes_version_unique.get();
     bes_version->add_value(CVER);
     version->attributes()->add_attribute_nocopy(bes_version_unique.release());
 
     stringstream ldv;
     ldv << libdap_name() << "-" << libdap_version();
-    auto libdap4_version_unique =  make_unique<D4Attribute>("libdap", StringToD4AttributeType("string"));
+    auto libdap4_version_unique =  make_unique<D4Attribute>("libdap", attr_str_c);
     auto libdap4_version = libdap4_version_unique.get();
     libdap4_version->add_value(ldv.str());
     version->attributes()->add_attribute_nocopy(libdap4_version_unique.release());
 
     if(!bes_conf_doc.empty()) {
         // Add the BES configuration used to create the base DMR
-        auto config_unique = make_unique<D4Attribute>("configuration", StringToD4AttributeType("string"));
+        auto config_unique = make_unique<D4Attribute>("configuration", attr_str_c);
         auto config = config_unique.get();
         config->add_value(bes_conf_doc);
         version->attributes()->add_attribute_nocopy(config_unique.release());
@@ -1670,13 +1676,35 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
 
     if(!invocation.empty()) {
         // How was build_dmrpp invoked?
-        auto invoke_unique = make_unique<D4Attribute>("invocation", StringToD4AttributeType("string"));
+        auto invoke_unique = make_unique<D4Attribute>("invocation", attr_str_c);
         auto invoke = invoke_unique.get();
         invoke->add_value(invocation);
         version->attributes()->add_attribute_nocopy(invoke_unique.release());
     }
     // Inject version and configuration attributes into DMR here.
     dmrpp->root()->attributes()->add_attribute_nocopy(version_unique.release());
+}
+
+void inject_simple_configuration_to_version(DMRpp *dmrpp,bool is_cf) {
+
+    auto d4_attrs= dmrpp->root()->attributes();
+    for (D4Attributes::D4AttributesIter ii = d4_attrs->attribute_begin(), ee = d4_attrs->attribute_end();
+         ii != ee; ++ii) {
+        string name = (*ii)->name();
+        if ((*ii)->name() == DMRPP_METADATA && (*ii)->type()== attr_container_c) {
+
+            auto configuration_unique = make_unique<D4Attribute>("configuration", attr_str_c);
+            auto configuration = configuration_unique.get();
+ 
+            if (!is_cf) 
+                configuration->add_value("H4.EnableCF=false");
+            else
+                configuration->add_value("H4.EnableCF=true");
+            (*ii)->attributes()->add_attribute_nocopy(configuration_unique.release());
+            break;
+        }
+    }
+
 }
 
 
@@ -1693,7 +1721,7 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
  * @param dmrpp The DMR++ instance to anontate.
  * @note The DMRpp instance will free all memory allocated by this method.
 */
- void inject_version_and_configuration(int argc, char **argv, const string &bes_conf_file_used_to_create_dmr, DMRpp *dmrpp)
+ void inject_version_and_configuration(int argc, char **argv, const string &bes_conf_file_used_to_create_dmr, DMRpp *dmrpp, bool is_cf)
 {
     string bes_configuration;
     string invocation;
@@ -1706,6 +1734,10 @@ void inject_version_and_configuration_worker( DMRpp *dmrpp, const string &bes_co
     invocation = recreate_cmdln_from_args(argc, argv);
 
     inject_version_and_configuration_worker(dmrpp, bes_configuration, invocation);
+ 
+    // If not providing the configuration file, inject a simple configuration information like H4.EnableCF=false
+    if (bes_conf_file_used_to_create_dmr.empty())
+        inject_simple_configuration_to_version(dmrpp,is_cf);
 
 }
 
@@ -1761,10 +1793,11 @@ void build_dmrpp_from_dmr_file(const string &dmrpp_href_value, const string &dmr
     D4ParserSax2 parser;
     parser.intern(in, &dmrpp, false);
 
-    add_chunk_information(h4_file_fqn, &dmrpp,disable_missing_data);
+    bool is_cf = true;
+    add_chunk_information(h4_file_fqn, &dmrpp, disable_missing_data, is_cf);
         
     if (add_production_metadata) {
-        inject_version_and_configuration(argc,argv,bes_conf_file_used_to_create_dmr,&dmrpp);
+        inject_version_and_configuration(argc,argv,bes_conf_file_used_to_create_dmr,&dmrpp, is_cf);
     }
 
     XMLWriter writer;
