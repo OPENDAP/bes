@@ -37,8 +37,8 @@ class TestSample(unittest.TestCase):
         # stripping as on non-python tests)
         # Although the above statement may be true, 
         # the following two lines may cause IndexError,however, github macOS build keeps throwing errors.
-        dmrpp_lines_after_79.pop(216)
-        baseline_lines_after_79.pop(216)
+        dmrpp_lines_after_79.pop(218)
+        baseline_lines_after_79.pop(218)
 
         self.assertEqual(dmrpp_lines_after_79 ,baseline_lines_after_79)
    
