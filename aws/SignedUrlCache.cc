@@ -128,14 +128,28 @@ SignedUrlCache::retrieve_cached_sts_credentials(string const &tea_endpoint_url_k
  *
  * Unlike EffectiveUrlCache, return nullptr instead of making a new EffectiveUrl(source_url)
  * when unable to construct a signed url for any reason.
+ * If source_url is already signed, do not re-sign or check for expiration
  *
  * @param source_url
- * @returns The presigned effective URL, nullptr if none able to be created
+ * @returns The presigned effective URL, retrieved from cache or freshly signed if the input is an unsigned source_url, nullptr if none able to be created
  */
 shared_ptr<http::EffectiveUrl> SignedUrlCache::get_presigned_s3_url(shared_ptr<http::url> source_url) {
 
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url->str() << endl);
     BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
+
+    if (source_url == nullptr) {
+        BESDEBUG(MODULE, prolog << "END Not a valid request, SKIPPING." << endl);
+        return nullptr;
+    }
+    auto source_url_key = source_url->str();
+
+    // The source_url may already be a signed url---in which case, can return it as is,
+    // inheriting trust from the requesting URL.
+    if (source_url_key.find("X-Amz-Signature=") != string::npos) {
+        BESDEBUG(MODULE, prolog << "INPUT IS ALREADY SIGNED: " << source_url_key << endl);
+        return make_shared<http::EffectiveUrl>(source_url, source_url->is_trusted());
+    }
 
     // Lock access to the cache, the d_presigned_s3_urls_cache map. Released when the lock goes out of scope.
     std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
@@ -145,36 +159,31 @@ shared_ptr<http::EffectiveUrl> SignedUrlCache::get_presigned_s3_url(shared_ptr<h
         return nullptr;
     }
 
-    if (source_url == nullptr) {
-        BESDEBUG(MODULE, prolog << "END Not a valid request, SKIPPING." << endl);
-        return nullptr;
-    }
-
     // if it's not an HTTP url there is nothing to sign or cache.
-    if (source_url->str().find(HTTP_PROTOCOL) != 0 && source_url->str().find(HTTPS_PROTOCOL) != 0) {
+    if (source_url_key.find(HTTP_PROTOCOL) != 0 && source_url_key.find(HTTPS_PROTOCOL) != 0) {
         BESDEBUG(MODULE, prolog << "END Not an HTTP request, SKIPPING." << endl);
         return nullptr;
     }
 
-    shared_ptr<http::EffectiveUrl> signed_url = get_cached_presigned_s3_url(source_url->str());
+    shared_ptr<http::EffectiveUrl> signed_url = get_cached_presigned_s3_url(source_url_key);
     bool retrieve_and_cache = !signed_url || signed_url->is_expired();
 
     // It not found or expired, (re)load.
     if (retrieve_and_cache) {
-        BESDEBUG(MODULE, prolog << "Acquiring signed URL for  " << source_url->str() << endl);
+        BESDEBUG(MODULE, prolog << "Acquiring signed URL for  " << source_url_key << endl);
         {
             BES_STOPWATCH_START(MODULE_TIMER,
-                                prolog + "Retrieve and cache signed url for source url: " + source_url->str());
+                                prolog + "Retrieve and cache signed url for source url: " + source_url_key);
 
             // 1. Get requisite s3 data urls...
             string s3_uri;
             string tea_endpoint_url;
-            tie(s3_uri, tea_endpoint_url) = retrieve_cached_prerequisites_for_url_signing(source_url->str());
+            tie(s3_uri, tea_endpoint_url) = retrieve_cached_prerequisites_for_url_signing(source_url_key);
             if (s3_uri.empty() || tea_endpoint_url.empty()) {
                 INFO_LOG(prolog +
-                         "SERVICE CHAIN WARNING - Cannot generate signed url due to lack of valid s3credentials "
-                         "endpoint or s3_uri -  " +
-                         source_url->get_url_no_query());
+                         "SERVICE CHAIN WARNING - Cannot generate signed url; when retrieved from cache, either or "
+                         "both s3credentials endpoint or s3_uri were empty for source_url_key " +
+                         source_url_key);
                 return nullptr;
             }
 
@@ -185,9 +194,9 @@ shared_ptr<http::EffectiveUrl> SignedUrlCache::get_presigned_s3_url(shared_ptr<h
             }
             if (!s3_access_key_tuple) {
                 INFO_LOG(prolog +
-                         "SERVICE CHAIN WARNING - Cannot generate signed url due to error when acquiring s3credentials "
+                         "SERVICE CHAIN WARNING - Cannot generate signed url due to error acquiring s3credentials "
                          "from endpoint -  " +
-                         source_url->get_url_no_query());
+                         source_url_key);
                 return nullptr;
             }
 
@@ -198,14 +207,16 @@ shared_ptr<http::EffectiveUrl> SignedUrlCache::get_presigned_s3_url(shared_ptr<h
                 // logged during failed signing.
                 return nullptr;
             }
-            d_presigned_s3_urls_cache[source_url->str()] = signed_url;
+            d_presigned_s3_urls_cache[source_url_key] = signed_url;
+
+            BESDEBUG(MODULE, prolog << "   Cached " << source_url_key << " with value " << signed_url->str() << endl);
         }
-        BESDEBUG(MODULE, prolog << "   source_url: " << source_url->str() << " ("
+        BESDEBUG(MODULE, prolog << "   source_url: " << source_url_key << " ("
                                 << (source_url->is_trusted() ? "" : "NOT ") << "trusted)" << endl);
-        BESDEBUG(MODULE, prolog << "signed_url: " << signed_url->dump() << " ("
+        BESDEBUG(MODULE, prolog << "   signed_url: " << signed_url->dump() << " ("
                                 << (source_url->is_trusted() ? "" : "NOT ") << "trusted)" << endl);
 
-        BESDEBUG(MODULE, prolog << "Updated record for " << source_url->str()
+        BESDEBUG(MODULE, prolog << "Updated record for " << source_url_key
                                 << " cache size: " << d_presigned_s3_urls_cache.size() << endl);
 
         // Since we don't want there to be a concurrency issue when we release the lock, we don't
@@ -279,7 +290,8 @@ SignedUrlCache::cache_sts_credentials_from_tea_endpoint(std::string const &tea_e
         return nullptr;
     }
     if (s3credentials_json_string.empty()) {
-        string err_msg = prolog + "SERVICE CHAIN WARNING - Unable to retrieve s3 credentials from TEA endpoint " + tea_endpoint_url;
+        string err_msg =
+            prolog + "SERVICE CHAIN WARNING - Unable to retrieve s3 credentials from TEA endpoint " + tea_endpoint_url;
         INFO_LOG(err_msg);
         return nullptr;
     }
@@ -291,7 +303,8 @@ SignedUrlCache::cache_sts_credentials_from_tea_endpoint(std::string const &tea_e
         INFO_LOG(prolog + "Caching STS credentials for TEA endpoint - " + tea_endpoint_url);
         d_tea_endpoint_sts_credentials_cache[tea_endpoint_url] = credentials;
     } else {
-        INFO_LOG(prolog + "SERVICE CHAIN WARNING - Error extracting STS credentials from TEA endpoint - " + tea_endpoint_url);
+        INFO_LOG(prolog + "SERVICE CHAIN WARNING - Error extracting STS credentials from TEA endpoint - " +
+                 tea_endpoint_url);
     }
     return credentials;
 }
@@ -308,7 +321,8 @@ SignedUrlCache::extract_sts_credentials_from_json_response(std::string const &s3
     s3credentials_response.Parse(s3credentials_json_string.c_str());
 
     if (s3credentials_response.HasParseError()) {
-        INFO_LOG(prolog + "SERVICE CHAIN WARNING - Error when attempting to parse STS response from /s3credentials endpoint");
+        INFO_LOG(prolog +
+                 "SERVICE CHAIN WARNING - Error when attempting to parse STS response from /s3credentials endpoint");
         return nullptr;
     }
 

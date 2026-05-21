@@ -1349,7 +1349,7 @@ string Chunk::to_string() const {
  * This method returns the data URL for this chunk. If the data URL is not
  * set, it returns nullptr.
  *
- * @note The call to get_presigned_s3_url() will first attempt to create a locally-signed url via SignedUrlCache::; if
+ * @note The call to get_presigned_s3_url() will first attempt to create a locally-signed url via SignedUrlCache::get_presigned_s3_url; if
  * that fails, it will fall through to calling EffectiveUrlCache::get_presigned_s3_url()
  * which will call CurlUtils.cc get_redirect_url() which will call gru_mk_attempt() and
  * will look for an HTTP 302 response and return the redirect URL in that response.
