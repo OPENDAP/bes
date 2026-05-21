@@ -1,0 +1,21 @@
+
+
+BES.Catalog.catalog.RootDirectory=@abs_top_srcdir@/aws
+BES.Catalog.catalog.TypeMatch+=nc:.*\.nc(4)?(\.bz2|\.gz|\.Z)?$
+
+BES.LogName = ./bes.log
+
+###############################################################################
+#
+# EffectiveUrlCache(Test) configuration.
+
+# Since many URLs result in a number of time consuming redirects (ex: OAuth2)
+# We cache the "effective URL" for each to improve speed and reduce
+# authentication churn
+Http.cache.effective.urls = false
+
+# But we also know that many URLs (ex: AWS S3) will never redirect so we can
+# skip the caching for those destinations. Any URL matching these patterns will
+# not have ensuing redirects followed and cached.
+Http.cache.effective.urls.skip.regex.pattern = ^https://foobar\.com/.*$
+

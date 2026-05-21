@@ -68,7 +68,7 @@ $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/GESDISC/matched
 
 ## GOSAT/acos
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/GESDISC/acos_L2s_110419_43_Production_v110110_L2s2800_r01_PolB_110430192739.h5
-$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/NASAHDF/oco2_L2StdND_03945a_150330_B6000_150331024816.h5
+$GET http://test.opendap.org/opendap/nasa-hdf/NASAHDF/oco2_L2StdND_03945a_150330_B6000_150331024816.h5
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/GESDISC/oco2_LtCO2_180102_B9003r_180929105747s.nc4.h5
 
 # GSFC
@@ -93,7 +93,7 @@ $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/NSIDC/GLAH13_63
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/PODAAC/Q2011149002900.L2_SCI_V1.0.bz2.0.bz2.0.h5
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/PODAAC/Q20111722011263.L3b_SNSU_EVSCI_V1.2.main.h5
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/PODAAC/Q20103372010343.L3m_7D_SCIB1_V1.0_SSS_1deg.h5
-$GET https://gamma.hdfgroup.org/ftp/pub/outgoing/NASAHDF/Q2012034.L3m_DAY_SCI_V5.0_SSS_1deg.h5
+$GET http://test.opendap.org/opendap/nasa-hdf/NASAHDF/Q2012034.L3m_DAY_SCI_V5.0_SSS_1deg.h5
 
 
 #GESDISC GPM
@@ -155,4 +155,4 @@ $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/others/f16_ssmi
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/NSIDC/SMAP_L3_SM_P_E_20211030_R18240_001.h5
 
 #TROPOMI
-$GET http://test.opendap.org/opendap/GESDISC/S5P_RPRO_L1B_RA_BD5_20180430T001950_20180430T020120_02818_03_020100_20220630T164522.nc.h5
+$GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/GESDISC/S5P_RPRO_L1B_RA_BD5_20180430T001950_20180430T020120_02818_03_020100_20220630T164522.nc.h5

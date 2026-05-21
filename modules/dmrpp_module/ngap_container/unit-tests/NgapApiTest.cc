@@ -368,8 +368,8 @@ public:
         // not a test baseline, but a canned response from LPDAAC
         const string minimal_json = bes::read_test_baseline(string(TEST_SRC_DIR) + "/cmr_json_responses/minimal.json");
 
-        string data_url, data_s3_url, s3credentials_url;
-        tie(data_url, data_s3_url, s3credentials_url) = NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", minimal_json.c_str());
+        string data_url, data_s3_url, tea_endpoint_url;
+        tie(data_url, data_s3_url, tea_endpoint_url) = NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", minimal_json.c_str());
 
         DBG(cerr << prolog << "data_url: " << data_url << endl);
         CPPUNIT_ASSERT_MESSAGE("data_url should not be empty", !data_url.empty());
@@ -382,8 +382,8 @@ public:
         const string cmr_canned_response_lpdaac = bes::read_test_baseline(
             string(TEST_SRC_DIR) + "/cmr_json_responses/ECOv002_L1B_GEO_22172_008_20220604T024955_0700_01.json");
 
-        string data_url, data_s3_url, s3credentials_url;
-        tie(data_url, data_s3_url, s3credentials_url) = NgapApi::get_urls_from_granules_umm_json_v1_4(
+        string data_url, data_s3_url, tea_endpoint_url;
+        tie(data_url, data_s3_url, tea_endpoint_url) = NgapApi::get_urls_from_granules_umm_json_v1_4(
             "placeholder_for_restified_url", cmr_canned_response_lpdaac.c_str());
 
         DBG(cerr << prolog << "data_url: " << data_url << endl);
@@ -397,10 +397,10 @@ public:
         string expected_s3 = "s3://lp-prod-protected/ECO_L1B_GEO.002/ECOv002_L1B_GEO_22172_008_20220604T024955_0700_01/ECOv002_L1B_GEO_22172_008_20220604T024955_0700_01.h5";
         CPPUNIT_ASSERT_MESSAGE("data_s3_url should be '" + expected_s3 + " but was '" + data_s3_url, data_s3_url == expected_s3);
 
-        DBG(cerr << prolog << "s3credentials_url: " << s3credentials_url << endl);
-        CPPUNIT_ASSERT_MESSAGE("s3credentials_url should not be empty", !s3credentials_url.empty());
+        DBG(cerr << prolog << "tea_endpoint_url: " << tea_endpoint_url << endl);
+        CPPUNIT_ASSERT_MESSAGE("tea_endpoint_url should not be empty", !tea_endpoint_url.empty());
         string expected_s3credentials = "https://data.lpdaac.earthdatacloud.nasa.gov/s3credentials";
-        CPPUNIT_ASSERT_MESSAGE("s3credentials_url should be '" + expected_s3credentials + " but was '" + s3credentials_url, s3credentials_url == expected_s3credentials);
+        CPPUNIT_ASSERT_MESSAGE("tea_endpoint_url should be '" + expected_s3credentials + " but was '" + tea_endpoint_url, tea_endpoint_url == expected_s3credentials);
     }
 
     // C2251464384-POCLOUD, cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.json. jhrg 5/22/24
@@ -409,8 +409,8 @@ public:
             string(TEST_SRC_DIR) +
             "/cmr_json_responses/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.json");
 
-        string data_url, data_s3_url, s3credentials_url;
-        tie(data_url, data_s3_url, s3credentials_url) = NgapApi::get_urls_from_granules_umm_json_v1_4(
+        string data_url, data_s3_url, tea_endpoint_url;
+        tie(data_url, data_s3_url, tea_endpoint_url) = NgapApi::get_urls_from_granules_umm_json_v1_4(
             "placeholder_for_restified_url", cmr_canned_response_podaac.c_str());
 
         DBG(cerr << prolog << "data_url: " << data_url << endl);
@@ -424,10 +424,10 @@ public:
         string expected_s3 = "s3://podaac-ops-cumulus-protected/CYGNSS_L1_V2.1/2023/100/cyg04.ddmi.s20230410-000000-e20230410-235959.l1.power-brcs.a21.d21.nc";
         CPPUNIT_ASSERT_MESSAGE("data_s3_url should be '" + expected_s3 + " but was '" + data_s3_url, data_s3_url == expected_s3);
 
-        DBG(cerr << prolog << "s3credentials_url: " << s3credentials_url << endl);
-        CPPUNIT_ASSERT_MESSAGE("s3credentials_url should not be empty", !s3credentials_url.empty());
+        DBG(cerr << prolog << "tea_endpoint_url: " << tea_endpoint_url << endl);
+        CPPUNIT_ASSERT_MESSAGE("tea_endpoint_url should not be empty", !tea_endpoint_url.empty());
         string expected_s3credentials = "https://archive.podaac.earthdata.nasa.gov/s3credentials";
-        CPPUNIT_ASSERT_MESSAGE("s3credentials_url should be '" + expected_s3credentials + " but was '" + s3credentials_url, s3credentials_url == expected_s3credentials);
+        CPPUNIT_ASSERT_MESSAGE("tea_endpoint_url should be '" + expected_s3credentials + " but was '" + tea_endpoint_url, tea_endpoint_url == expected_s3credentials);
     }
 
     /**

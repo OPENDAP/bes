@@ -28,19 +28,19 @@ class TestSample(unittest.TestCase):
         # Since we also add the dmrpp metadata generation information for the HDF4 files,
         # we need to ignore that information when doing comparison.
         with open('grid_2_2d_ps.hdf.dmrpp') as f:
-            dmrpp_lines_after_79 = f.readlines()[79:]
+            dmrpp_lines_after_77 = f.readlines()[77:]
         with open('grid_2_2d_ps.hdf.dmrpp.baseline') as f1:
-            baseline_lines_after_79 = f1.readlines()[79:]
+            baseline_lines_after_77 = f1.readlines()[77:]
 
         # Hacky removal of lines that otherwise show spurious failure
         # due to test brittleness. (Better fix would be to run same version
         # stripping as on non-python tests)
         # Although the above statement may be true, 
         # the following two lines may cause IndexError,however, github macOS build keeps throwing errors.
-        dmrpp_lines_after_79.pop(216)
-        baseline_lines_after_79.pop(216)
+        dmrpp_lines_after_77.pop(221)
+        baseline_lines_after_77.pop(221)
 
-        self.assertEqual(dmrpp_lines_after_79 ,baseline_lines_after_79)
+        self.assertEqual(dmrpp_lines_after_77 ,baseline_lines_after_77)
    
 
     def test_gen_dmrpp_side_car2(self):
