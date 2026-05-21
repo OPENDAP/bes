@@ -47,9 +47,17 @@
 #include "CurlUtils.h"
 #include "HttpError.h"
 #include "TheBESKeys.h"
+#include "BESSyntaxUserError.h"
+#include "BESDebug.h"
+#include "EffectiveUrlCache.h"
+#include "SignedUrlCache.h"
 
 #include "NgapNames.h"
 #include "NgapOwnedContainer.h"
+
+#define PUGIXML_NO_XPATH
+#define PUGIXML_HEADER_ONLY
+#include <pugixml.hpp>
 
 #define prolog std::string("NgapOwnedContainer::").append(__func__).append("() - ")
 
@@ -63,6 +71,9 @@
 
 using namespace std;
 using namespace bes;
+using http::EffectiveUrlCache;
+using bes::SignedUrlCache;
+using namespace pugi;
 
 namespace ngap {
 
@@ -394,8 +405,8 @@ bool NgapOwnedContainer::get_daac_content_filters(const NgapApi::DataAccessUrls 
                                                   map<string, string, std::less<>> &content_filters) {
     string data_url;
     string data_s3_url;
-    string s3credentials_url;
-    tie(data_url, data_s3_url, s3credentials_url) = data_urls;
+    string tea_endpoint_url;
+    tie(data_url, data_s3_url, tea_endpoint_url) = data_urls;
     // data_url was get_real_name(). jhrg 8/9/24
 
     if (NgapOwnedContainer::d_inject_data_url) {
@@ -406,15 +417,15 @@ bool NgapOwnedContainer::get_daac_content_filters(const NgapApi::DataAccessUrls 
 
         /*
         Desired output string:
-        dmrpp:href=\"<data_url>\" dmrpp:s3=\"<data_s3_url>\" dmrpp:s3credentials=\"<s3credentials_url>\"
+        dmrpp:href=\"<data_url>\" dmrpp:s3=\"<data_s3_url>\" dmrpp:s3credentials=\"<tea_endpoint_url>\"
         dmrpp:trust=\"true\"
         */
         string data_access_urls("href=\"" + data_url + "\" dmrpp:s3=\"" + data_s3_url + "\" dmrpp:s3credentials=\"" +
-                                s3credentials_url + "\" " + trusted_url_hack);
+                                tea_endpoint_url + "\" " + trusted_url_hack);
 
         // Same as above, but with a special suffix on each data url
         string missing_data_access_urls("href=\"" + data_url + "_mvs.h5\" dmrpp:s3=\"" + data_s3_url +
-                                        "_mvs.h5\" dmrpp:s3credentials=\"" + s3credentials_url + "\" " +
+                                        "_mvs.h5\" dmrpp:s3credentials=\"" + tea_endpoint_url + "\" " +
                                         trusted_url_hack);
 
         content_filters.clear();
@@ -591,6 +602,58 @@ bool NgapOwnedContainer::get_dmrpp_from_cache_or_remote_source(string &dmrpp_str
     return true;
 }
 
+static inline bool is_eq(const char *value, const char *key) {
+    return strcmp(value, key) == 0;
+}
+
+/**
+ * @brief parse a DMR++ to retrieve the tuple of urls required for NGAP's
+ * S3 data access.
+ *
+ * Implementation adapted from `DMZ::process_dataset`.
+ * @param dmrpp_string DMR++
+ */
+NgapApi::DataAccessUrls NgapOwnedContainer::extract_s3_data_urls_from_dmrpp(const string &dmrpp_string) {
+    // If the dmrpp is invalid, we will have hit a failure before now---so we can assume
+    // it's generally safe---so do basically no additional safety checking
+    string href_attr;
+    string s3_attr;
+    string s3credentials_attr;
+
+    // Load the xml document
+    pugi::xml_document result_xml_doc;
+    pugi::xml_parse_result result = result_xml_doc.load_string(dmrpp_string.c_str(), pugi::parse_default | pugi::parse_ws_pcdata_single);
+    if (!result) {
+        // It would be SO surprising to end up here! Nonetheless, if we do, handle it gracefully.
+        return tie(href_attr, s3_attr, s3credentials_attr);
+    }
+    auto xml_root_node = result_xml_doc.first_child();
+
+    // Pull the expected data values from the xml
+    for (xml_attribute attr = xml_root_node.first_attribute(); attr; attr = attr.next_attribute()) {
+        if (is_eq(attr.name(), "dmrpp:href")) {
+            href_attr = attr.value();
+        }
+        else if (is_eq(attr.name(), "dmrpp:s3")) {
+            s3_attr = attr.value();
+        }
+        else if (is_eq(attr.name(), "dmrpp:s3credentials")) {
+            s3credentials_attr = attr.value();
+        }
+        if (!href_attr.empty() && !s3_attr.empty() && !s3credentials_attr.empty()) {
+            break;
+        }
+    }
+
+    if (s3_attr.empty()) {
+        BESDEBUG(MODULE, prolog << "DMR++ XML dataset element dmrpp:s3 is missing" << endl);
+    }
+    if (s3_attr.empty()) {
+        BESDEBUG(MODULE, prolog << "DMR++ XML dataset element dmrpp:s3credentials is missing" << endl);
+    }
+    return tie(href_attr, s3_attr, s3credentials_attr);
+}
+
 /**
  * @brief Get the DMR++ from a remote source or a local cache
  *
@@ -626,7 +689,12 @@ string NgapOwnedContainer::alt_access() {
     // get the remote DMR++. jhrg 4/29/24
     get_dmrpp_from_cache_or_remote_source(dmrpp_string);
 
-    set_attributes("as-string"); // This means access() returns a string. jhrg 10/19/23
+    // To sign urls locally, we need access to the credential info that has been previously
+    // injected into the dmrpp. Extract that now, in preparation for upcoming url signing.
+    auto urls = extract_s3_data_urls_from_dmrpp(dmrpp_string);
+    SignedUrlCache::TheCache()->cache_prerequisites_for_url_signing(get<0>(urls), get<1>(urls), get<2>(urls));
+
+    set_attributes("as-string");    // This means access() returns a string. jhrg 10/19/23
 
     return dmrpp_string;
 }

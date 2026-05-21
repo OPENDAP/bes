@@ -54,7 +54,10 @@ public:
     std::string get_aws_exception_message() const { return d_aws_exception_message; }
     int get_http_status_code() const { return d_http_status_code; }
 
-    virtual void initialize_s3_client(const std::string &region, const std::string &aws_key, const std::string &aws_secret_key) = 0;
+    virtual void initialize_global_s3_client(const std::string &region,
+                                             const std::string &aws_key,
+                                             const std::string &aws_secret_key,
+                                             const std::string &aws_session_token) = 0;
 
     virtual bool s3_head_exists(const std::string &bucket, const std::string &key) = 0;
     virtual std::string s3_get_as_string(const std::string &bucket, const std::string &key) = 0;

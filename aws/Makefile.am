@@ -7,7 +7,7 @@ AUTOMAKE_OPTIONS = foreign
 
 # Prefer the AWS headers from --with-dependencies over any incidental
 # Homebrew installation that may also be present in CPPFLAGS.
-AM_CPPFLAGS = -I$(aws_prefix)/include -I$(top_srcdir) -I$(top_srcdir)/dispatch
+AM_CPPFLAGS = -I$(aws_prefix)/include -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/http
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
@@ -15,6 +15,8 @@ endif
 
 AM_CXXFLAGS = $(CXXFLAGS)
 include $(top_srcdir)/coverage.mk
+
+LDADD = $(BES_HTTP_LIB)
 
 SUBDIRS = . unit-tests
 
@@ -48,5 +50,7 @@ cccc:
 	-mkdir $(C4_DIR)
 	cccc --outdir=$(C4_DIR) $(SRCS) $(HDRS)
 
-SRCS = AWS_SDK.cc
-HDRS = AWS_SDK.h IAWS_SDK.h
+SRCS = AWS_SDK.cc \
+       SignedUrlCache.cc
+HDRS = AWS_SDK.h IAWS_SDK.h \
+       SignedUrlCache.h

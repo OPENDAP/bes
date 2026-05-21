@@ -38,40 +38,38 @@ namespace bes
 {
     class AWS_SDK : public IAWS_SDK
     {
-        Aws::S3::S3Client d_s3_client;
-        bool d_is_s3_client_initialized = false;
+        Aws::S3::S3Client d_global_s3_client;
+        bool d_is_global_s3_client_initialized = false;
         static Aws::SDKOptions options;
 
-        void throw_if_s3_client_uninitialized() const; // throws BESInternalFatalError
+        const Aws::String d_aws_region_of_running_application = Aws::Client::ClientConfiguration().region;
 
-        static Aws::S3::S3Client get_s3_client(const std::string &region, const std::string &aws_key,
-                                               const std::string &aws_secret_key);
+        static Aws::S3::S3Client make_s3_client(const std::string &region,
+                                                const std::string &aws_key,
+                                                const std::string &aws_secret_key,
+                                                const std::string &aws_session_token);
+
+        void throw_if_global_s3_client_uninitialized() const; // throws BESInternalFatalError
 
         friend class AWS_SDK_Test;
 
     public:
         AWS_SDK() = default;
-        ~AWS_SDK() override = default;
+        ~AWS_SDK() override;
+
         AWS_SDK(const AWS_SDK &) = delete;
         AWS_SDK &operator=(const AWS_SDK &) = delete;
         AWS_SDK(const AWS_SDK &&) = delete;
         AWS_SDK &operator=(const AWS_SDK &&) = delete;
 
-        static void aws_library_initialize()
-        {
-            Aws::InitAPI(options); // Must only be called once, as per AWS SDK
-        }
+        static void aws_library_initialize();
 
-        static void aws_library_shutdown()
-        {
-            Aws::ShutdownAPI(options);
-        }
+        static void aws_library_shutdown();
 
-        void initialize_s3_client(const std::string &region, const std::string &aws_key, const std::string &aws_secret_key) override
-        {
-            d_s3_client = get_s3_client(region, aws_key, aws_secret_key);
-            d_is_s3_client_initialized = true;
-        }
+        void initialize_global_s3_client(const std::string &region,
+                                         const std::string &aws_key,
+                                         const std::string &aws_secret_key,
+                                         const std::string &aws_session_token) override;
 
         bool s3_head_exists(const std::string &bucket, const std::string &key) override;
         std::string s3_get_as_string(const std::string &bucket, const std::string &key) override;
@@ -80,6 +78,9 @@ namespace bes
         Aws::String s3_generate_presigned_object_url(const Aws::String &bucket_name,
                                                      const Aws::String &key,
                                                      uint64_t expiration_seconds) override;
+        Aws::String get_aws_region_of_running_application() const {
+            return d_aws_region_of_running_application;
+        }
     };
 }
 #endif // AWS_SDK_H

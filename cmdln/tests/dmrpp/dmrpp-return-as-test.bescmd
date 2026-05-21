@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="http-nio-8080-exec-6_53" reqUUID="404ee906-edf3-4db2-b578-8e0711f5c53a" clientId="/-0" clientCmdCount="8">
+  <bes:setContext name="bes_timeout">300</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="xml:base">http://localhost:8080/opendap/ngap/collections/C2532426483-ORNL_CLOUD/granules/Daymet_Daily_V4R1.daymet_v4_daily_na_tmax_2010.nc</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+  <bes:setContext name="max_variable_size">0</bes:setContext>
+  <bes:setContainer name="ngapContainer" space="ngap">collections/C2532426483-ORNL_CLOUD/granules/Daymet_Daily_V4R1.daymet_v4_daily_na_tmax_2010.nc</bes:setContainer>
+  <bes:define name="d1" space="default">
+    <bes:container name="ngapContainer" />
+  </bes:define>
+  <bes:get type="dap" definition="d1" returnAs="dmrpp"/>
+</bes:request>

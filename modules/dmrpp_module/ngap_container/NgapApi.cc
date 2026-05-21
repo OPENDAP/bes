@@ -441,7 +441,7 @@ NgapApi::DataAccessUrls NgapApi::get_urls_from_granules_umm_json_v1_4(const std:
     // The first element of 'items' is now vetted so that we know it's an array of 'RelatedUrls'.
     string data_http_url;
     string data_s3_url;
-    string s3credentials_url;
+    string tea_endpoint_url;
     for (rapidjson::SizeType i = 0; i < related_urls.Size(); i++) {
         if (data_http_url.empty()) {
             data_http_url = get_data_http_url(related_urls[i]);
@@ -449,10 +449,10 @@ NgapApi::DataAccessUrls NgapApi::get_urls_from_granules_umm_json_v1_4(const std:
         if (data_s3_url.empty()) {
             data_s3_url = get_data_s3_url(related_urls[i]);
         }
-        if (s3credentials_url.empty()) {
-            s3credentials_url = get_s3credentials_url(related_urls[i]);
+        if (tea_endpoint_url.empty()) {
+            tea_endpoint_url = get_s3credentials_url(related_urls[i]);
         }
-        if (!data_http_url.empty() && !data_s3_url.empty() && !s3credentials_url.empty()) {
+        if (!data_http_url.empty() && !data_s3_url.empty() && !tea_endpoint_url.empty()) {
             break;
         }
     }
@@ -460,7 +460,7 @@ NgapApi::DataAccessUrls NgapApi::get_urls_from_granules_umm_json_v1_4(const std:
     // If we have enough information to get data later, our work here is done
     // For now, all we care about is a non-empty data_http_url. In the future this will likely change.
     if (!data_http_url.empty()) {
-        return std::make_tuple(data_http_url, data_s3_url, s3credentials_url);
+        return std::make_tuple(data_http_url, data_s3_url, tea_endpoint_url);
     }
 
     // If no valid related-URL is found, it's an error.
@@ -509,13 +509,13 @@ NgapApi::DataAccessUrls NgapApi::convert_ngap_resty_path_to_data_access_urls(con
         throw;
     }
 
-    string data_access_url, data_s3_url, s3credentials_url;
-    tie(data_access_url, data_s3_url, s3credentials_url) = get_urls_from_granules_umm_json_v1_4(restified_path, cmr_json_string);
+    string data_access_url, data_s3_url, tea_endpoint_url;
+    tie(data_access_url, data_s3_url, tea_endpoint_url) = get_urls_from_granules_umm_json_v1_4(restified_path, cmr_json_string);
 
-    if (data_s3_url.empty() || s3credentials_url.empty()) {
-        // Eventually we'll be removing the non-s3 access; we need to know about any unsupported cases before that happens.
+    if (data_s3_url.empty() || tea_endpoint_url.empty()) {
+        // Eventually we may remove the non-s3 access; we want to know about any unsupported cases before that happens.
         // Add a log warning that can be searched.
-        BES_PROFILE_TIMING(string("PRE-DEPRECATION WARNING - Data s3 url or s3credentials not found - ") + cmr_query_url);
+        INFO_LOG(prolog + string("SERVICE CHAIN WARNING - Data s3 url and/or s3credentials url not found - ") + cmr_query_url + " s3 url: " + data_s3_url + " s3credentials url: " + tea_endpoint_url);
     }
 
     // Check for existing .dmrpp and remove it if found at the end of the url. - kln 6/6/25
@@ -530,9 +530,9 @@ NgapApi::DataAccessUrls NgapApi::convert_ngap_resty_path_to_data_access_urls(con
         data_s3_url.erase(data_access_url.size() - suffix.size());
     }
 
-    BESDEBUG(MODULE, prolog << "END (data_access_url: " << data_access_url << ", data_s3_url: " << data_s3_url << ", s3credentials_url: " << s3credentials_url << ")" << endl);
+    BESDEBUG(MODULE, prolog << "END (data_access_url: " << data_access_url << ", data_s3_url: " << data_s3_url << ", tea_endpoint_url: " << tea_endpoint_url << ")" << endl);
 
-    return std::make_tuple(data_access_url, data_s3_url, s3credentials_url);
+    return std::make_tuple(data_access_url, data_s3_url, tea_endpoint_url);
 }
 
 } // namespace ngap
