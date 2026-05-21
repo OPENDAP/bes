@@ -1470,92 +1470,6 @@ bool obtain_structure_memb_string_value(hid_t memtype, unsigned int u, size_t st
             H5Tclose(memb_id);
             return false;
         }
-
-#if 0
-        hid_t at_base_type = H5Tget_super(memb_id);
-        size_t at_base_type_size = H5Tget_size(at_base_type);
-        H5T_class_t array_cls = H5Tget_class(at_base_type);
-
-        // Need to retrieve the number of elements of the array
-        // and encode each string with base64 and then separate them 
-        // with ";".
-        // memb_id, obtain the number of dimensions
-        int at_ndims = H5Tget_array_ndims(memb_id);
-        if (at_ndims <= 0) {
-            H5Tclose(at_base_type);
-            H5Tclose(memb_id);
-            err_msg =  "Fail to obtain number of dimensions of the array datatype.";
-            return false;
-            
-        }
-    
-        vector<hsize_t>at_dims_h(at_ndims,0);
-    
-        // Obtain the number of elements for each dims
-        if (H5Tget_array_dims(memb_id,at_dims_h.data())<0) {
-            H5Tclose(at_base_type);
-            H5Tclose(memb_id);
-            err_msg =  "Fail to obtain each imension size of the array datatype.";
-            return false;
-        }
-
-        vector<hsize_t>at_dims_offset(at_ndims,0);                   
-        size_t total_array_nums = 1;
-        for (const auto & ad:at_dims_h)
-            total_array_nums *=ad;
-
-        if (array_cls == H5T_STRING) {
-
-            vector<string> str_val;
-            str_val.resize(total_array_nums);
-            
-            if (H5Tis_variable_str(at_base_type) >0){
-                auto src = (void*)(struct_value.data()+values_offset);
-                auto temp_bp =(char*)src;
-                for (int64_t i = 0;i <total_array_nums; i++){
-                    string tempstrval;
-                    get_vlen_str_data(temp_bp,tempstrval);
-                    str_val[i] = tempstrval;
-                    temp_bp += at_base_type_size;
-                }
-            }
-            else {
-                auto src = (void*)(struct_value.data()+values_offset);
-                vector<char> fix_str_val;
-                fix_str_val.resize(total_array_nums*at_base_type_size);
-                memcpy((void*)fix_str_val.data(),src,total_array_nums*at_base_type_size);
-                string total_in_one_string(fix_str_val.begin(),fix_str_val.end());
-                for (int64_t i = 0; i<total_array_nums;i++)
-                    str_val[i] = total_in_one_string.substr(i*at_base_type_size,at_base_type_size);
-            }
-            vector<string> encoded_str_val;
-            encoded_str_val.resize(str_val.size());
-
-            // Use base64 to encode each string; the string separator is ;
-            for (int i = 0; i < str_val.size(); i++) {
-                  string temp_str = str_val[i];
-                  vector<u_int8_t>temp_val(temp_str.begin(),temp_str.end());
-                  encoded_str_val[i] =  base64::Base64::encode(temp_val.data(), temp_str.size()) + ";";
-           
-            }
-            // TODO: use memcpy or other more efficient method later. We expect the size is not big.
-            for (const auto &es_val:encoded_str_val) {
-                string temp_str = es_val;
-                for(const auto &ts:temp_str) 
-                    encoded_struct_value.push_back(ts);
-            }
-
-        }
-        else { // integer or float array, just obtain the whole value.
-            vector<char> int_float_array;
-            int_float_array.resize(total_array_nums*at_base_type_size);
-            memcpy((void*)int_float_array.data(),struct_value.data()+values_offset,total_array_nums*at_base_type_size);
-            for (const auto &int_float:int_float_array) 
-                encoded_struct_value.push_back(int_float);
-        }
-        H5Tclose(at_base_type);
-
-#endif
     }
     else if (memb_cls == H5T_STRING) {// Scalar string
 
@@ -1619,160 +1533,6 @@ bool obtain_structure_string_value(hid_t memtype, size_t ty_size, hssize_t num_e
             ret_value = obtain_structure_memb_string_value(memtype, u, struct_elem_offset, encoded_struct_value, struct_value, err_msg);
             if (ret_value == false)
                 break;
-               
-#if 0
-            hid_t  memb_id  = -1;
-            H5T_class_t         memb_cls         = H5T_NO_CLASS;
-            size_t              memb_offset      = 0;
-
-            // Get member type ID
-            if((memb_id = H5Tget_member_type(memtype, u)) < 0) {
-                err_msg =  "Fail to obtain the datatype of an HDF5 compound datatype member.";
-                ret_value = false;
-                break;
-            }
-        
-            // Get member type class
-            if((memb_cls = H5Tget_member_class (memtype, u)) < 0) {
-                H5Tclose(memb_id);
-                err_msg =  "Fail to obtain the datatype class of an HDF5 compound datatype member.";
-                ret_value = false;
-                break;
-            }
-
-            size_t memb_size = H5Tget_size(memb_id);
-        
-            // Get member offset,H5Tget_member_offset only fails
-            // when H5Tget_memeber_class fails. Sinc H5Tget_member_class
-            // is checked above. So no need to check the return value.
-            memb_offset= H5Tget_member_offset(memtype,u);
-
-            // Here we have the offset from the original structure variable.
-            values_offset = struct_elem_offset + memb_offset; 
-            if (memb_cls ==  H5T_ARRAY) {
-
-                hid_t at_base_type = H5Tget_super(memb_id);
-                size_t at_base_type_size = H5Tget_size(at_base_type);
-                H5T_class_t array_cls = H5Tget_class(at_base_type);
-
-                // Need to retrieve the number of elements of the array
-                // and encode each string with base64 and then separate them 
-                // with ";".
-                // memb_id, obtain the number of dimensions
-                int at_ndims = H5Tget_array_ndims(memb_id);
-                if (at_ndims <= 0) {
-                    H5Tclose(at_base_type);
-                    H5Tclose(memb_id);
-                    err_msg =  "Fail to obtain number of dimensions of the array datatype.";
-                    ret_value = false;
-                    break;
-                }
-            
-                vector<hsize_t>at_dims_h(at_ndims,0);
-            
-                // Obtain the number of elements for each dims
-                if (H5Tget_array_dims(memb_id,at_dims_h.data())<0) {
-                    H5Tclose(at_base_type);
-                    H5Tclose(memb_id);
-                    err_msg =  "Fail to obtain each imension size of the array datatype.";
-                    ret_value = false;
-                    break;
-                }
-
-                vector<hsize_t>at_dims_offset(at_ndims,0);                   
-                size_t total_array_nums = 1;
-                for (const auto & ad:at_dims_h)
-                    total_array_nums *=ad;
-
-                if (array_cls == H5T_STRING) {
-
-                    vector<string> str_val;
-                    str_val.resize(total_array_nums);
-                    
-                    if (H5Tis_variable_str(at_base_type) >0){
-                        auto src = (void*)(struct_value.data()+values_offset);
-                        auto temp_bp =(char*)src;
-                        for (int64_t i = 0;i <total_array_nums; i++){
-                            string tempstrval;
-                            get_vlen_str_data(temp_bp,tempstrval);
-                            str_val[i] = tempstrval;
-                            temp_bp += at_base_type_size;
-                        }
-                    }
-                    else {
-                        auto src = (void*)(struct_value.data()+values_offset);
-                        vector<char> fix_str_val;
-                        fix_str_val.resize(total_array_nums*at_base_type_size);
-                        memcpy((void*)fix_str_val.data(),src,total_array_nums*at_base_type_size);
-                        string total_in_one_string(fix_str_val.begin(),fix_str_val.end());
-                        for (int64_t i = 0; i<total_array_nums;i++)
-                            str_val[i] = total_in_one_string.substr(i*at_base_type_size,at_base_type_size);
-                    }
-                    vector<string> encoded_str_val;
-                    encoded_str_val.resize(str_val.size());
-
-                    // Use base64 to encode each string; the string separator is ;
-                    for (int i = 0; i < str_val.size(); i++) {
-                          string temp_str = str_val[i];
-                          vector<u_int8_t>temp_val(temp_str.begin(),temp_str.end());
-                          encoded_str_val[i] =  base64::Base64::encode(temp_val.data(), temp_str.size()) + ";";
-                   
-                    }
-                    // TODO: use memcpy or other more efficient method later. We expect the size is not big.
-                    for (const auto &es_val:encoded_str_val) {
-                        string temp_str = es_val;
-                        for(const auto &ts:temp_str) 
-                            encoded_struct_value.push_back(ts);
-                    }
-
-                }
-                else { // integer or float array, just obtain the whole value.
-                    vector<char> int_float_array;
-                    int_float_array.resize(total_array_nums*at_base_type_size);
-                    memcpy((void*)int_float_array.data(),struct_value.data()+values_offset,total_array_nums*at_base_type_size);
-                    for (const auto &int_float:int_float_array) 
-                        encoded_struct_value.push_back(int_float);
-                }
-                H5Tclose(at_base_type);
-
-            }
-            else if (memb_cls == H5T_STRING) {// Scalar string
-
-                string encoded_str;
-
-                if (H5Tis_variable_str(memb_id) >0){
-                    auto src = (void*)(struct_value.data()+values_offset);
-                    auto temp_bp =(char*)src;
-                    string tempstrval;
-                    get_vlen_str_data(temp_bp,tempstrval);
-                    vector<u_int8_t>temp_val(tempstrval.begin(),tempstrval.end());
-                    encoded_str =  base64::Base64::encode(temp_val.data(), tempstrval.size()) + ";";
-
-                }
-                else {
-                    auto src = (void*)(struct_value.data()+values_offset);
-                    vector<char> fix_str_val;
-                    fix_str_val.resize(memb_size);
-                    memcpy((void*)fix_str_val.data(),src,memb_size);
-                    string fix_str_value(fix_str_val.begin(),fix_str_val.end());
-                    vector<u_int8_t>temp_val(fix_str_value.begin(),fix_str_value.end());
-                    encoded_str =  base64::Base64::encode(temp_val.data(), fix_str_value.size()) + ";";
-                }
-                for (const auto &es:encoded_str)
-                        encoded_struct_value.push_back(es);
- 
-            }
-            else {// Scalar int/float
-                vector<char> int_float;
-                int_float.resize(memb_size);
-                memcpy((void*)int_float.data(),struct_value.data()+values_offset,memb_size);
-                    int_float.resize(memb_size);
-                    memcpy((void*)int_float.data(),struct_value.data()+values_offset,memb_size);
-                    for (const auto &int_f:int_float) 
-                        encoded_struct_value.push_back(int_f);
-            }
-
-#endif
         } // end "for(unsigned u = 0)"
 
         if (ret_value == false) 
@@ -2528,11 +2288,6 @@ void handle_missing_data_internal_with_attributes(hid_t file, BaseType *btp, D4A
     if (attr) {
         string attr_value = attr->value(0);
         if (attr_value == "level") {
-            auto dc = dynamic_cast<DmrppCommon *>(btp);
-            if (!dc) {
-                string err_msg = "Expected to find a DmrppCommon instance but did not in get_chunks_for_all_variables().";
-                throw BESInternalError(err_msg, __FILE__, __LINE__);
-            }
             auto da = dynamic_cast<DmrppArray *>(btp);
             if (!da) {
                 string err_msg = "Expected to find a DmrppArray instance but did not in get_chunks_for_all_variables().";
@@ -2599,97 +2354,10 @@ void handle_missing_data(hid_t file, BaseType *btp, bool vlen_in_sc) {
     if (d4_attrs==nullptr)
         return;
     
-    if (d4_attrs->empty() == false) {
+    if (d4_attrs->empty() == false) 
         handle_missing_data_internal_with_attributes(file, btp, d4_attrs, vlen_in_sc);
-#if 0
-        if (btp->type() == dods_byte_c) {
-
-            auto attr = d4_attrs->find("grid_mapping_name");
-        
-            // Since this is just a one-byte variable, we always save the value in the dmrpp file rather than in the missing data side car file.
-            if (attr) {
-     
-                auto db = dynamic_cast<DmrppByte *>(btp);
-                if (!db) { 
-                    string err_msg = "Expected to find a DmrppByte instance but did not.";
-                    throw BESInternalError(err_msg, __FILE__, __LINE__);
-                } 
-                VERBOSE(cerr<<"For none_array cf dummy grid variable: var name: "<<btp->name() <<endl);
-                
-                char buf='p';
-                db->set_missing_data(true);
-                db->set_value((dods_byte)buf);
-                db->set_read_p(true);
-    
-            }
-        }
-        D4Attribute *attr = d4_attrs->find("units");
-        if (attr) {
-            string attr_value = attr->value(0);
-            if (attr_value == "level") {
-                auto dc = dynamic_cast<DmrppCommon *>(btp);
-                if (!dc) {
-                    string err_msg = "Expected to find a DmrppCommon instance but did not in get_chunks_for_all_variables().";
-                    throw BESInternalError(err_msg, __FILE__, __LINE__);
-                }
-                auto da = dynamic_cast<DmrppArray *>(btp);
-                if (!da) {
-                    string err_msg = "Expected to find a DmrppArray instance but did not in get_chunks_for_all_variables().";
-                    throw BESInternalError(err_msg, __FILE__, __LINE__);
-                }
-            
-                if (da->dimensions() ==1 && btp->var()->type() == dods_int32_c){
-        
-                    vector<int> level_value;
-                    level_value.resize((size_t)(da->length()));
-                    for (int32_t i = 0; i <da->length(); i++) 
-                        level_value[i] = i;
-        
-                    da->set_value(level_value.data(),da->length());
-                    da->set_missing_data(true);
-                    da->set_read_p(true);
-                }
-            }
-        }
-        attr = d4_attrs->find("orig_datatype");
-        if (attr) {
-            string attr_value = attr->value(0);
-            if (attr_value == "VLEN_INDEX") {
-                // This is a vlen index variable. We need to find the corresponding vlen variable.
-                 handle_vlen_float_int_index(file,btp,vlen_in_sc);
-            }
-        }
-#endif
-    }
-    else {// The coordinate of the netCDF-4 pure dimension added by HDF5 handler's CF option doesn't have any attribute.
+    else // The coordinate of the netCDF-4 pure dimension added by HDF5 handler's CF option doesn't have any attribute.
         handle_missing_data_internal_without_attributes(btp);
-#if 0
-        // Check if this variable is 1-D floating-point array.
-        if (btp->type() == dods_array_c) {
-
-           auto da = dynamic_cast<DmrppArray *>(btp);
-           if (!da) {
-               string err_msg = "Expected to find a DmrppArray instance but did not in get_chunks_for_all_variables().";
-               throw BESInternalError(err_msg, __FILE__, __LINE__);
-           }
-       
-           if (da->dimensions() ==1 && btp->var()->type() == dods_float32_c){
-   
-               da->set_missing_data(true);
-    
-               vector<float> level_value;
-               level_value.resize((size_t)(da->length()));
-               for (int32_t i = 0; i <da->length(); i++) 
-                   level_value[i] = i;
-   
-               da->set_value(level_value.data(),da->length());
-               da->set_missing_data(true);
-               da->set_read_p(true);
-           }
-           
-        }
-#endif
-    }
 
 }
 /**
@@ -2745,99 +2413,6 @@ void get_chunks_for_all_variables(hid_t file, D4Group *group, bool disable_dio, 
             << "Need to check if we need to embed the data to the dmrpp file." << endl);
 
             handle_missing_data(file, btp, vlen_in_sc);
-#if 0
-            // Currently we only check if this is the artificial coordinate added by the HDF5 handler.
-            D4Attributes *d4_attrs = btp->attributes();
-            if (d4_attrs==nullptr)
-                return;
-            
-            if (d4_attrs->empty() == false) {
-
-                if (btp->type() == dods_byte_c) {
-
-                    auto attr = d4_attrs->find("grid_mapping_name");
-                
-                    // Since this is just a one-byte variable, we always save the value in the dmrpp file rather than in the missing data side car file.
-                    if (attr) {
-             
-                        auto db = dynamic_cast<DmrppByte *>(btp);
-                        if (!db) { 
-                            string err_msg = "Expected to find a DmrppByte instance but did not.";
-                            throw BESInternalError(err_msg, __FILE__, __LINE__);
-                        } 
-                        VERBOSE(cerr<<"For none_array cf dummy grid variable: var name: "<<btp->name() <<endl);
-                        
-                        char buf='p';
-                        db->set_missing_data(true);
-                        db->set_value((dods_byte)buf);
-                        db->set_read_p(true);
-            
-                    }
-                }
-                D4Attribute *attr = d4_attrs->find("units");
-                if (attr) {
-                    string attr_value = attr->value(0);
-                    if (attr_value == "level") {
-                        auto dc = dynamic_cast<DmrppCommon *>(btp);
-                        if (!dc) {
-                            string err_msg = "Expected to find a DmrppCommon instance but did not in get_chunks_for_all_variables().";
-                            throw BESInternalError(err_msg, __FILE__, __LINE__);
-                        }
-                        auto da = dynamic_cast<DmrppArray *>(btp);
-                        if (!da) {
-                            string err_msg = "Expected to find a DmrppArray instance but did not in get_chunks_for_all_variables().";
-                            throw BESInternalError(err_msg, __FILE__, __LINE__);
-                        }
-                    
-                        if (da->dimensions() ==1 && btp->var()->type() == dods_int32_c){
-                
-                            vector<int> level_value;
-                            level_value.resize((size_t)(da->length()));
-                            for (int32_t i = 0; i <da->length(); i++) 
-                                level_value[i] = i;
-                
-                            da->set_value(level_value.data(),da->length());
-                            da->set_missing_data(true);
-                            da->set_read_p(true);
-                        }
-                    }
-                }
-                attr = d4_attrs->find("orig_datatype");
-                if (attr) {
-                    string attr_value = attr->value(0);
-                    if (attr_value == "VLEN_INDEX") {
-                        // This is a vlen index variable. We need to find the corresponding vlen variable.
-                         handle_vlen_float_int_index(file,btp,vlen_in_sc);
-                    }
-                }
-            }
-            else {// The coordinate of the netCDF-4 pure dimension added by HDF5 handler's CF option doesn't have any attribute.
-                // Check if this variable is 1-D floating-point array.
-                if (btp->type() == dods_array_c) {
-
-                   auto da = dynamic_cast<DmrppArray *>(btp);
-                   if (!da) {
-                       string err_msg = "Expected to find a DmrppArray instance but did not in get_chunks_for_all_variables().";
-                       throw BESInternalError(err_msg, __FILE__, __LINE__);
-                   }
-               
-                   if (da->dimensions() ==1 && btp->var()->type() == dods_float32_c){
-           
-                       da->set_missing_data(true);
-            
-                       vector<float> level_value;
-                       level_value.resize((size_t)(da->length()));
-                       for (int32_t i = 0; i <da->length(); i++) 
-                           level_value[i] = i;
-           
-                       da->set_value(level_value.data(),da->length());
-                       da->set_missing_data(true);
-                       da->set_read_p(true);
-                   }
-                   
-                }
-            }
-#endif
         }
     }
 
@@ -3008,25 +2583,30 @@ void inject_build_dmrpp_metadata_worker( DMRpp *dmrpp, const string &bes_conf_do
     dmrpp->set_version(CVER);
 
     // Build the version attributes for the DMR++
-    auto version = new D4Attribute("build_dmrpp_metadata", StringToD4AttributeType("container"));
+    auto version_unique = make_unique<D4Attribute>("build_dmrpp_metadata", attr_container_c);
+    auto version = version_unique.get();
 
-    auto creation_date = new D4Attribute("created", StringToD4AttributeType("string"));
+    auto creation_date_unique = make_unique<D4Attribute>("created", attr_str_c);
+    auto creation_date = creation_date_unique.get();
     creation_date->add_value(what_time_is_it());
-    version->attributes()->add_attribute_nocopy(creation_date);
+    version->attributes()->add_attribute_nocopy(creation_date_unique.release());
 
-    auto build_dmrpp_version = new D4Attribute("build_dmrpp", StringToD4AttributeType("string"));
+    auto build_dmrpp_version_unique = make_unique<D4Attribute>("build_dmrpp", attr_str_c);
+    auto build_dmrpp_version = build_dmrpp_version_unique.get();
     build_dmrpp_version->add_value(CVER);
-    version->attributes()->add_attribute_nocopy(build_dmrpp_version);
+    version->attributes()->add_attribute_nocopy(build_dmrpp_version_unique.release());
 
-    auto bes_version = new D4Attribute("bes", StringToD4AttributeType("string"));
+    auto bes_version_unique = make_unique<D4Attribute>("bes", attr_str_c);
+    auto bes_version = bes_version_unique.get();
     bes_version->add_value(CVER);
-    version->attributes()->add_attribute_nocopy(bes_version);
+    version->attributes()->add_attribute_nocopy(bes_version_unique.release());
 
     stringstream ldv;
     ldv << libdap_name() << "-" << libdap_version();
-    auto libdap4_version =  new D4Attribute("libdap", StringToD4AttributeType("string"));
+    auto libdap4_version_unique =  make_unique<D4Attribute>("libdap", attr_str_c);
+    auto libdap4_version = libdap4_version_unique.get();
     libdap4_version->add_value(ldv.str());
-    version->attributes()->add_attribute_nocopy(libdap4_version);
+    version->attributes()->add_attribute_nocopy(libdap4_version_unique.release());
 
     if(!bes_conf_doc.empty()) {
         stringstream ss(bes_conf_doc);
@@ -3043,19 +2623,21 @@ void inject_build_dmrpp_metadata_worker( DMRpp *dmrpp, const string &bes_conf_do
         }
 
         // Add the BES configuration used to create the base DMR
-        auto config = new D4Attribute("configuration", StringToD4AttributeType("string"));
+        auto config_unique = make_unique<D4Attribute>("configuration", attr_str_c);
+        auto config = config_unique.get();
         config->add_value(new_bes_conf);
-        version->attributes()->add_attribute_nocopy(config);
+        version->attributes()->add_attribute_nocopy(config_unique.release());
     }
 
     if(!invocation.empty()) {
         // How was build_dmrpp invoked?
-        auto invoke = new D4Attribute("invocation", StringToD4AttributeType("string"));
+        auto invoke_unique = make_unique<D4Attribute>("invocation", attr_str_c);
+        auto invoke = invoke_unique.get();
         invoke->add_value(invocation);
-        version->attributes()->add_attribute_nocopy(invoke);
+        version->attributes()->add_attribute_nocopy(invoke_unique.release());
     }
     // Inject version and configuration attributes into DMR here.
-    dmrpp->root()->attributes()->add_attribute_nocopy(version);
+    dmrpp->root()->attributes()->add_attribute_nocopy(version_unique.release());
 }
 
 
