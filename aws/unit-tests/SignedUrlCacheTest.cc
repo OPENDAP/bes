@@ -207,8 +207,8 @@ public:
         // Remove start of string to skip address that varies
         auto result = strm.str().substr(49);
         std::string expected_str =
-            string("presigned url list:") +
-            "\n        www.a.com --> http://www.time.com" + "\n        www.once.com --> http://www.upon.com" +
+            string("presigned url list:") + "\n        www.a.com --> http://www.time.com" +
+            "\n        www.once.com --> http://www.upon.com" +
             "\n    href-to-s3credentials list:" + "\n        foo --> whee" +
             "\n    href-to-s3url list:" + "\n        yee --> haw" +
             "\n    s3 credentials list:" + "\n        palindrome --> Expires: 3035-07-16 02:20:33+00:00\n";
@@ -404,6 +404,10 @@ public:
                                theCache->get_presigned_s3_url(test_url)->str() == result->str());
         CPPUNIT_ASSERT_MESSAGE("Generated signed url should have been cached",
                                theCache->d_presigned_s3_urls_cache.size() == 1);
+
+        auto result_for_signed_input = theCache->get_presigned_s3_url(result);
+        CPPUNIT_ASSERT_MESSAGE("When input url is already signed, return it",
+                               result_for_signed_input != nullptr && result_for_signed_input->str() == result->str());
 
         // Update request in the cache to be expired, so that we can see that the updated url is cached in its place
         auto new_key = make_shared<http::url>("https://www.this-is-a-test.com");
