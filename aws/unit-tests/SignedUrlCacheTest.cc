@@ -288,9 +288,7 @@ public:
 
     void extract_sts_credentials_from_json_response_test_nsidc() {
 
-        // Load slightly modified failing
-        string path = BESUtil::assemblePath(TEST_BUILD_DIR, "mock_s3credentials_nsidc.json");
-        std::ifstream file(path);
+        std::ifstream file((string)TEST_SRC_DIR + "/testdata/mock_s3credentials_nsidc.json");
         std::stringstream buffer;
         buffer << file.rdbuf();
         std::string json_str = buffer.str();
