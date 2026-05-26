@@ -46,6 +46,7 @@
 #include <aws/s3/S3Client.h>
 
 #include "rapidjson/document.h"
+#include <rapidjson/error/en.h>
 
 using namespace std;
 
@@ -131,7 +132,8 @@ SignedUrlCache::retrieve_cached_sts_credentials(string const &tea_endpoint_url_k
  * If source_url is already signed, do not re-sign or check for expiration
  *
  * @param source_url
- * @returns The presigned effective URL, retrieved from cache or freshly signed if the input is an unsigned source_url, nullptr if none able to be created
+ * @returns The presigned effective URL, retrieved from cache or freshly signed if the input is an unsigned source_url,
+ * nullptr if none able to be created
  */
 shared_ptr<http::EffectiveUrl> SignedUrlCache::get_presigned_s3_url(shared_ptr<http::url> source_url) {
 
@@ -319,10 +321,11 @@ std::shared_ptr<SignedUrlCache::S3AccessKeyTuple>
 SignedUrlCache::extract_sts_credentials_from_json_response(std::string const &s3credentials_json_string) {
     rapidjson::Document s3credentials_response;
     s3credentials_response.Parse(s3credentials_json_string.c_str());
-
     if (s3credentials_response.HasParseError()) {
         INFO_LOG(prolog +
-                 "SERVICE CHAIN WARNING - Error when attempting to parse STS response from /s3credentials endpoint");
+                 "SERVICE CHAIN WARNING - Error when attempting to parse STS response from /s3credentials endpoint: " +
+                 GetParseError_En(s3credentials_response.GetParseError()) +
+                 " [offset: " + std::to_string(s3credentials_response.GetErrorOffset()) + "]");
         return nullptr;
     }
 
