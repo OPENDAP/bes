@@ -51,7 +51,9 @@ std::string FONcRequestHandler::temp_dir;
 bool FONcRequestHandler::byte_to_short;
 bool FONcRequestHandler::use_compression;
 bool FONcRequestHandler::use_shuffle;
-bool FONcRequestHandler::no_use_compression_for_float;
+bool FONcRequestHandler::float_write_opt;
+unsigned long long  FONcRequestHandler::float_write_opt_buffer_size;
+float FONcRequestHandler::float_write_opt_comp_ratio;
 unsigned long long  FONcRequestHandler::chunk_size;
 bool FONcRequestHandler::classic_model;
 bool FONcRequestHandler::reduce_dim;
@@ -82,7 +84,10 @@ FONcRequestHandler::FONcRequestHandler( const string &name )
     // Updated calls to use TheBESKeys. kln 04/10/26
     FONcRequestHandler::use_compression = TheBESKeys::read_bool_key(FONC_USE_COMP_KEY, FONC_USE_COMP);
     FONcRequestHandler::use_shuffle = TheBESKeys::read_bool_key(FONC_USE_SHUFFLE_KEY, FONC_USE_SHUFFLE);
-    FONcRequestHandler::no_use_compression_for_float = TheBESKeys::read_bool_key(FONC_NO_COMPRESSION_FLOAT_KEY, FONC_NO_COMPRESSION_FLOAT);
+    FONcRequestHandler::float_write_opt = TheBESKeys::read_bool_key(FONC_FLOAT_WRITE_OPT_KEY, FONC_FLOAT_WRITE_OPT);
+    FONcRequestHandler::float_write_opt_buffer_size = TheBESKeys::read_uint64_key(FONC_FLOAT_WRITE_OPT_KEY, FONC_FLOAT_WRITE_OPT_BUFFER_SIZE);
+    FONcRequestHandler::float_write_opt_comp_ratio = TheBESKeys::read_float_key(FONC_FLOAT_WRITE_OPT_KEY, FONC_FLOAT_WRITE_OPT_COMP_RATIO);
+
     FONcRequestHandler::chunk_size = TheBESKeys::read_ulong_key(FONC_CHUNK_SIZE_KEY, FONC_CHUNK_SIZE);
     FONcRequestHandler::classic_model = TheBESKeys::read_bool_key(FONC_CLASSIC_MODEL_KEY, FONC_CLASSIC_MODEL);
     FONcRequestHandler::reduce_dim = TheBESKeys::read_bool_key(FONC_REDUCE_DIM_KEY, FONC_REDUCE_DIM);

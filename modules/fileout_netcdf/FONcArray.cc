@@ -704,9 +704,11 @@ void FONcArray::define(int ncid) {
                         FONcRequestHandler::use_shuffle)                
                         shuffle = 1;
                     
+                    //FONcRequestHandler::float_write_opt == false ) 
+                    bool enable_float_write_opt = false;
                     if (NC_SHORT == d_array_type || NC_USHORT == d_array_type || NC_INT == d_array_type ||
                         NC_UINT == d_array_type || NC_INT64 == d_array_type || NC_UINT64 == d_array_type ||
-                        FONcRequestHandler::no_use_compression_for_float == false) {               
+                        enable_float_write_opt == false) {
                     
                     int deflate = 1;
                     int deflate_level = 4;
