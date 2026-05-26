@@ -286,6 +286,44 @@ public:
                                    nullptr);
     }
 
+    void extract_sts_credentials_from_json_response_test_nsidc() {
+
+        // Load slightly modified failing
+        string path = BESUtil::assemblePath(TEST_BUILD_DIR, "mock_s3credentials_nsidc.json");
+        std::ifstream file(path);
+        std::stringstream buffer;
+        buffer << file.rdbuf();
+        std::string json_str = buffer.str();
+
+        auto result = SignedUrlCache::extract_sts_credentials_from_json_response(json_str);
+        CPPUNIT_ASSERT_MESSAGE("Valid json should not return nullptr", result != nullptr);
+
+        auto access_key = get<0>(*result);
+        std::string expected_access_key = "NOTaREALtokenObviously";
+        CPPUNIT_ASSERT_MESSAGE("Access key should be " + expected_access_key + " was " + access_key,
+                               expected_access_key == access_key);
+
+        auto secret_access_key = get<1>(*result);
+        std::string expected_secret_access_key = "sGNLIiXUuAlsoNotRealWhee339N";
+        CPPUNIT_ASSERT_MESSAGE("Secret access key should be " + expected_secret_access_key + " was " +
+                                   secret_access_key,
+                               expected_secret_access_key == secret_access_key);
+
+        auto token = get<2>(*result);
+        std::string expected_token =
+            "IQStillNotRealButKeepingExpectedCharactersInR/+XzThisBitHasSomeStuffyj/cgLDbAlsoThisssssss4y5K4BplC5xczsI/"
+            "RWheeLookAtAllThisSecretq+StuffThatIsInHere+ed2/5nButAtLeastItLooksLikeAnOriginalResponse/Or+Something/"
+            "Like+ThatBecauseI+Started+WithARealResponseAndThenSwitchedStuffAround/ButThereAreThisManySlashes/"
+            "and+Also++plusSigns/forsomereason+and/"
+            "luckilythosehandlejustfine+thankYouJson+hereAreSomeEqualsForGoodMeasure==";
+        CPPUNIT_ASSERT_MESSAGE("Token should be " + expected_token + " was " + token, expected_token == token);
+
+        auto expiration = get<3>(*result);
+        std::string expected_expiration = "2026-05-22 16:48:37+00:00";
+        CPPUNIT_ASSERT_MESSAGE("Expiration should be " + expected_expiration + " was " + expiration,
+                               expected_expiration == expiration);
+    }
+
     void cache_signed_url_components_test() {
         SignedUrlCache *theCache = SignedUrlCache::TheCache();
 
@@ -519,6 +557,7 @@ public:
     CPPUNIT_TEST(retrieve_cached_s3credentials_test);
     CPPUNIT_TEST(retrieve_cached_s3credentials_expired_credentials_test);
     CPPUNIT_TEST(extract_sts_credentials_from_json_response_test);
+    CPPUNIT_TEST(extract_sts_credentials_from_json_response_test_nsidc);
 
     CPPUNIT_TEST(cache_signed_url_components_test);
     CPPUNIT_TEST(retrieve_cached_signed_url_components_test);
