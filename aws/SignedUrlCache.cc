@@ -46,7 +46,7 @@
 #include <aws/s3/S3Client.h>
 
 #include "rapidjson/document.h"
-#include <rapidjson/error/en.h>
+#include "rapidjson/error/en.h"
 
 using namespace std;
 
