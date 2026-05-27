@@ -528,6 +528,18 @@ bool FONcArray::is_unlimited_dim(const string &dim_name) const {
     return ret_value;
 }
 
+bool FONcArray:: check_float_write_opt() const {
+
+    if (FONcRequestHandler::float_write_opt == false || d_a->get_dio_flag() || (d_array_type != NC_FLOAT && d_array_type != NC_DOUBLE) )
+        return false;
+    unsigned array_size_in_bytes = d_nelements*d_a->width_ll();
+    if (d_a->get_storage_size_ratio() >1 && d_a->get_storage_size_ratio() < FONcRequestHandler::float_write_opt_comp_ratio && array_size_in_bytes > FONcRequestHandler::float_write_opt_buffer_size)
+        return true;
+    else 
+        return false;
+        
+}
+
 /** @brief define the DAP Array in the netcdf file
  *
  * This includes creating the dimensions, if they haven't already been
@@ -705,7 +717,7 @@ void FONcArray::define(int ncid) {
                         shuffle = 1;
                     
                     //FONcRequestHandler::float_write_opt == false ) 
-                    bool enable_float_write_opt = false;
+                    bool enable_float_write_opt = check_float_write_opt();
                     if (NC_SHORT == d_array_type || NC_USHORT == d_array_type || NC_INT == d_array_type ||
                         NC_UINT == d_array_type || NC_INT64 == d_array_type || NC_UINT64 == d_array_type ||
                         enable_float_write_opt == false) {
