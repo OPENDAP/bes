@@ -115,7 +115,7 @@ SignedUrlCache::retrieve_cached_sts_credentials(string const &tea_endpoint_url_k
         // Is it expired? If so, erase it!
         auto timestamp_str = get<3>(*(it->second));
         if (!is_timestamp_after_now(timestamp_str)) {
-            // Expired!
+            INFO_LOG("Previously cached STS credentials have expired for TEA endpoint " + tea_endpoint_url_key);
             d_tea_endpoint_sts_credentials_cache.erase(it);
         } else {
             s3_access_key_tuple = it->second;
