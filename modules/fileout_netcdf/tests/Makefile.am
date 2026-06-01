@@ -2,15 +2,17 @@
 AUTOMAKE_OPTIONS = foreign
 
 noinst_DATA = bes.conf bes.nc4.conf bes.nc4.grp.conf bes.nc4.cfdmr.conf bes.functions.conf \
-bes.size600.conf bes.size50.conf bes.nc4.grp.disable_dio.conf bes.nc4.grp.reduce_dim.conf bes.h4cf.conf
+bes.size600.conf bes.size50.conf bes.nc4.grp.disable_dio.conf bes.nc4.grp.reduce_dim.conf bes.h4cf.conf \
+bes.nc4.grp.float_write_opt.conf
 
 CLEANFILES = bes.conf bes.nc4.conf bes.nc4.grp.conf bes.nc4.cfdmr.conf bes.functions.conf \
-bes.size600.conf bes.size50.conf bes.nc4.grp.disable_dio.conf bes.nc4.grp.reduce_dim.conf bes.h4cf.conf
+bes.size600.conf bes.size50.conf bes.nc4.grp.disable_dio.conf bes.nc4.grp.reduce_dim.conf bes.h4cf.conf \
+bes.nc4.grp.float_write_opt.conf
 
 EXTRA_DIST = bescmd $(TESTSUITE).at $(TESTSUITE) $(TESTSUITE_FUNC).at $(TESTSUITE_FUNC) \
 atlocal.in bes.conf.in bes.nc4.conf.in bes.nc4.grp.conf.in bes.nc4.cfdmr.conf.in bes.functions.conf.in \
 package.m4 local_handler_tests_macros.m4 bes.size600.conf.in bes.size50.conf.in bes.nc4.grp.disable_dio.conf.in \
-bes.nc4.grp.reduce_dim.conf.in bes.h4cf.conf.in
+bes.nc4.grp.reduce_dim.conf.in bes.h4cf.conf.in bes.nc4.grp.float_write_opt.conf.in
 
 DISTCLEANFILES = atconfig
 
@@ -40,7 +42,10 @@ bes.nc4.grp.disable_dio.conf: $(srcdir)/bes.nc4.grp.disable_dio.conf.in $(top_sr
 
 bes.nc4.grp.reduce_dim.conf: $(srcdir)/bes.nc4.grp.reduce_dim.conf.in $(top_srcdir)/configure.ac
 
+bes.nc4.grp.float_write_opt.conf: $(srcdir)/bes.nc4.grp.float_write_opt.conf.in $(top_srcdir)/configure.ac
+
 bes.h4cf.conf: $(srcdir)/bes.h4cf.conf.in $(top_srcdir)/configure.ac
+
 
 ############## Autotest follows #####################
 

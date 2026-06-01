@@ -43,6 +43,18 @@
 #define FONC_NC3_CLASSIC_FORMAT false
 #define FONC_NC3_CLASSIC_FORMAT_KEY "FONc.NC3ClassicFormat"
 
+#define FONC_FLOAT_WRITE_OPT true
+#define FONC_FLOAT_WRITE_OPT_KEY "FONc.FloatWriteOpt"
+// The default buffer size is 512MB.
+// We intentionally make the buffer size for float_write_opt bigger to make sure we only turn it on if necessary.
+#define FONC_FLOAT_WRITE_OPT_BUFFER_SIZE 536870912 
+#define FONC_FLOAT_WRITE_OPT_BUFFER_SIZE_KEY "FONc.FloatWriteOptBufSize"
+
+#if 0
+// The default compression ratio is 1.3.
+#define FONC_FLOAT_WRITE_OPT_COMP_RATIO 1.3
+#endif
+
 #define FONC_RETURN_AS_NETCDF3 "netcdf"
 #define FONC_RETURN_AS_NETCDF4 "netcdf-4"
 #define FONC_NC4_CLASSIC_MODEL "NC4_CLASSIC_MODEL"

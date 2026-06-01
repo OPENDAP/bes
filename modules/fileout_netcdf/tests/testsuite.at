@@ -506,3 +506,6 @@ AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/FValue_chunks_par
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/FValue_chunks_partial_fill_compress.h5.dmrpp.bescmd],[bes.nc4.grp.conf])
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/FValue_chunks_partial_fill_compress_attr_constraint.h5.dmrpp.bescmd],[bes.nc4.grp.conf])
 
+# The big floating-point array optimization test
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_VAR_PROPERTY([bescmd/t_cf_1dllzs_constraint.h5.dmrpp.bescmd],[bes.nc4.grp.conf],[temp])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_VAR_PROPERTY([bescmd/t_cf_1dllzs_constraint.h5.dmrpp.bescmd],[bes.nc4.grp.float_write_opt.conf],[temp])
