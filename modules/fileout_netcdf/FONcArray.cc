@@ -532,7 +532,7 @@ bool FONcArray:: check_float_write_opt() const {
 
     if (FONcRequestHandler::float_write_opt == false || d_a->get_dio_flag() || (d_array_type != NC_FLOAT && d_array_type != NC_DOUBLE) )
         return false;
-    unsigned array_size_in_bytes = d_nelements*d_a->var()->width_ll();
+    auto array_size_in_bytes = d_nelements*d_a->var()->width_ll();
     // In this version, we don't consider the compression ratio since calculating the compression ratio may hurt the direct chunk IO performance. 
 #if 0
     if (d_a->get_storage_size_ratio() >1 && d_a->get_storage_size_ratio() < FONcRequestHandler::float_write_opt_comp_ratio && array_size_in_bytes > FONcRequestHandler::float_write_opt_buffer_size)
