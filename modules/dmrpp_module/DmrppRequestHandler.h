@@ -100,6 +100,14 @@ public:
 
     static bool is_netcdf4_enhanced_response;
     static bool is_netcdf4_classic_response;
+    // Leave the following variables in case we need to consider the compression ratio for
+    // the fileout netCDF big floating variable write optimization.
+#if 0
+    static bool float_write_opt_fonc;
+    static bool float_write_opt_fonc_no_count_comp;
+    static unsigned long long float_write_opt_fonc_buffer_size;
+    static float float_write_opt_fonc_comp_ratio;
+#endif
     static bool disable_direct_io;
     static bool use_buffer_chunk;
 
