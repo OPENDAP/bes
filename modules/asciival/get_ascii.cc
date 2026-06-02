@@ -156,7 +156,13 @@ basetype_to_asciitype( BaseType *bt )
 	    return new AsciiGrid( dynamic_cast<Grid *>(bt) ) ;
 
     default:
-        throw InternalErr(__FILE__, __LINE__, "Unknown type");
+        string errMsg;
+        if ( bt->is_dap4() )
+            errMsg = "THIS IS A DAP4 DATASET: Use it with the DAP4 API, ASCII output not supported for the type '" + bt->type_name() + "' which this dataset contains.";
+        else
+            errMsg = "ERROR: The BaseType instance '" + bt->name() + "' claims an unrecognized type '" + bt->type_name() + "'.";
+
+        throw InternalErr(__FILE__, __LINE__, errMsg);
     }
 }
 
