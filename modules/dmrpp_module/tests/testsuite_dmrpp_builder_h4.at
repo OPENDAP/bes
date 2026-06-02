@@ -3,6 +3,7 @@
 AT_INIT([bes/modules/dmrpp_module/tests testsuite_dmrpp_builder_h4])
 
 m4_include([../../common/handler_tests_macros.m4])
+m4_include([local_handler_tests_macros.m4])
 
 dnl - writer - h4 tests ------------------------------------------
 
@@ -30,4 +31,6 @@ AT_BUILD_DMRPP_H4_TEST_NO_MISSING_DATA([hdf4_build_dmrpp/no_missing_data/sinusoi
 AT_BUILD_DMRPP_H4_TEST_NO_MISSING_DATA([hdf4_build_dmrpp/no_missing_data/grid_2_2d_ps.hdf])
 #Test -u option, the data location can be added by using -u option.
 AT_BUILD_DMRPP_H4_TEST_U([hdf4_build_dmrpp/add_data_location/SDS_simple_comp.hdf],[https://fake-url/SDS_simple_comp.hdf])
+#Test -M option.
+AT_BUILD_DMRPP_H4_TEST_OPTIONS([hdf4_build_dmrpp/SDS_simple_comp.hdf],[M])
 

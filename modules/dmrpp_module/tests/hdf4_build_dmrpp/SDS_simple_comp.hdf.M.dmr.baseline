@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="removed" name="SDS_simple_comp.hdf" dmrpp:version="removed">
+    <Dimension name="fakeDim0" size="2"/>
+    <Dimension name="fakeDim1" size="4"/>
+    <Int32 name="SDS_simple_comp">
+        <Dim name="/fakeDim0"/>
+        <Dim name="/fakeDim1"/>
+        <Attribute name="dmr_sds_ref" type="Int32">
+            <Value>2</Value>
+        </Attribute>
+        <dmrpp:chunks compressionType="deflate" deflateLevel="1" byteOrder="BE">
+            <dmrpp:chunk offset="2518" nBytes="31" chunkPositionInArray="[0,0]"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>removed date-time</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>removed_version</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>removed_version</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>removed_version</Value>
+        </Attribute>
+        <Attribute name="Removed(invocation)">
+        </Attribute>
+        <Attribute name="configuration" type="String">
+            <Value>H4.EnableCF=false</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
