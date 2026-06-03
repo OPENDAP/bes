@@ -53,6 +53,11 @@ public:
     static bool byte_to_short;
     static bool use_compression;
     static bool use_shuffle;
+    static bool float_write_opt;
+    static unsigned long long float_write_opt_buffer_size;
+#if 0
+    static float float_write_opt_comp_ratio;
+#endif
     static unsigned long long chunk_size;
     static bool classic_model;
     static bool reduce_dim;

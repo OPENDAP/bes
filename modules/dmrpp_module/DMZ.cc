@@ -1104,6 +1104,39 @@ void DMZ::set_up_direct_io_flag_phase_2(D4Group * grp, BaseType *btp) {
     t_a->set_dio_flag();
 }
 
+// The following commented code is for the possible future development to improve 
+// the fileout netCDF big floating-point array write performance. 
+// Ideally we should calculate the compression ratio by obtaining all qualified
+// variable's chunk sizes. However, this is redundant for the direct chunk IO case.
+// So in order not to affect the direct chunk IO performance, we will not implement 
+// this feature now. We will wait and see if there is a need and then take the proper action.
+// KY 2026-05-27
+#if 0
+void DMZ::set_big_float_vars_storage_size_ratio(D4Group *d4g) {
+
+    for (auto i = group->var_begin(), e = group->var_end(); i != e; ++i) {
+        if ((*i)->type() == dods_array_c) {
+            auto d_a = dynamic_cast<Array *>(*i);
+            set_big_float_var_storage_size_ratio(d_a);
+        }
+    }
+
+    for (auto gi = group->grp_begin(), ge = group->grp_end(); gi != ge; ++gi)
+        set_big_float_vars_storage_size_ratio((*gi));
+
+}
+
+void DMZ::set_big_float_var_storage_size_ratio(Array * d_a) {
+
+    if(d_a->var()->type() == dods_float32_c || d_a->var()->type() == dods_float64_c){
+        // We need to check if the buffer size is bigger than the required DMRPP_FLOAT_BUFFER_SIZE_IN_FONC.
+        // if yes, we need to calculate the storage size by adding all the chunk sizes. 
+
+    }
+
+}
+#endif
+
 bool DMZ::has_unlimited_dim(D4Group *group, Array *ar) {
 
     bool ret_value = false;
