@@ -1,0 +1,3 @@
+BES.Include=bes.nc4.grp.conf
+FONc.FloatWriteOpt=true
+FONc.FloatWriteOptBufSize=20

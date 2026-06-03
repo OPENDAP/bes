@@ -125,6 +125,8 @@ private:
     void write_direct_subset_io_data(int ncid);
 
     bool is_unlimited_dim(const string &dim_name) const;
+
+    bool check_float_write_opt() const;
     FONcArray() = default;      // Used in some unit tests
     friend class FONcArrayTest;
 
