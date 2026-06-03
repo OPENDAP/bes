@@ -68,7 +68,7 @@ namespace bes {
 void SignedUrlCache::cache_presigned_s3_url(string const &unsigned_url,
                                             shared_ptr<http::EffectiveUrl> const signed_url) {
     std::string key = append_edl_username_to_key(unsigned_url);
-    INFO_LOG(prolog + "Caching presigned url with key - " + key);
+    BESDEBUG(MODULE, prolog + "Caching presigned url with key " + key);
     d_presigned_s3_urls_cache[key] = signed_url;
 }
 
@@ -80,7 +80,6 @@ void SignedUrlCache::cache_presigned_s3_url(string const &unsigned_url,
 shared_ptr<http::EffectiveUrl> SignedUrlCache::get_cached_presigned_s3_url(string const &url_key) {
     shared_ptr<http::EffectiveUrl> signed_url(nullptr);
     std::string signed_url_key = append_edl_username_to_key(url_key);
-    INFO_LOG(prolog + "URL ATTEMPTED - " + url_key + " - with key - " + signed_url_key);
     auto it = d_presigned_s3_urls_cache.find(signed_url_key);
     if (it != d_presigned_s3_urls_cache.end()) {
         signed_url = (*it).second;
@@ -125,7 +124,6 @@ std::string SignedUrlCache::append_edl_username_to_key(string const &key) {
     if (found && !uid.empty()) {
         return key + ":" + uid;
     }
-
     INFO_LOG(prolog + string("SERVICE CHAIN WARNING - EDL UID missing; using raw key " + key));
     return key;
 }
@@ -139,8 +137,7 @@ std::string SignedUrlCache::append_edl_username_to_key(string const &key) {
 void SignedUrlCache::cache_sts_credentials(string const &tea_endpoint_url,
                                            shared_ptr<S3AccessKeyTuple> const credentials) {
     auto tea_endpoint_url_key = append_edl_username_to_key(tea_endpoint_url);
-    INFO_LOG(prolog + "Caching STS credentials for TEA endpoint - " + tea_endpoint_url + " - with key - " +
-             tea_endpoint_url_key);
+    BESDEBUG(MODULE, prolog + "Caching STS credentials for TEA endpoint; key: " + tea_endpoint_url_key);
     d_tea_endpoint_sts_credentials_cache[tea_endpoint_url_key] = credentials;
 }
 
@@ -326,7 +323,8 @@ SignedUrlCache::get_sts_credentials_from_tea_endpoint(std::string const &tea_end
     try {
         BES_PROFILE_TIMING(string("Request s3 credentials from TEA - ") + tea_endpoint_url);
 
-        // Note: this http_get call internally adds edl auth headers, if available
+        // Note: this http_get call internally adds EDL auth headers, if available. The resultant credentials are
+        // specific to the current EDL user
         curl::http_get(tea_endpoint_url, s3credentials_json_string);
     } catch (http::HttpError &http_error) {
         string err_msg = prolog +
@@ -347,13 +345,7 @@ SignedUrlCache::get_sts_credentials_from_tea_endpoint(std::string const &tea_end
     auto credentials = extract_sts_credentials_from_json_response(s3credentials_json_string);
     if (credentials) {
         // Store credentials if any were retrieved
-        // auto tea_endpoint_url_key = append_edl_username_to_key(tea_endpoint_url);
-        // INFO_LOG(prolog + "Caching STS credentials for TEA endpoint - " + tea_endpoint_url + " - with key - " +
-        //          tea_endpoint_url_key);
-        // d_tea_endpoint_sts_credentials_cache[tea_endpoint_url_key] = credentials;
-
         cache_sts_credentials(tea_endpoint_url, credentials);
-
     } else {
         INFO_LOG(prolog + "SERVICE CHAIN WARNING - Error extracting STS credentials from TEA endpoint - " +
                  tea_endpoint_url);
