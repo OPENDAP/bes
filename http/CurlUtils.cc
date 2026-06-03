@@ -1250,7 +1250,6 @@ void http_get(const string &target_url, string &buf, bool use_raw_url_no_new_hea
 
     try {
         if (!use_raw_url_no_new_headers) {
-            INFO_LOG("DEV NOTE: Adding authorization headers"); // TODO delete
             // Add the authorization headers
             request_headers = add_edl_auth_headers(request_headers);
             request_headers = sign_url_for_s3_if_possible(target_url, request_headers);
@@ -1266,8 +1265,6 @@ void http_get(const string &target_url, string &buf, bool use_raw_url_no_new_hea
                 }
             }
 #endif
-        } else {
-            INFO_LOG("DEV NOTE: NOT adding auth headers, using raw url"); // TODO delete
         }
 
         ceh = curl::init(target_url, request_headers, nullptr);
