@@ -57,9 +57,9 @@ namespace http {
  * @param url_key Key to a cached effective URL.
  * @note This method is not, itself, thread safe.
  */
-shared_ptr <EffectiveUrl> EffectiveUrlCache::get_cached_eurl(string const &key_prefix) {
+shared_ptr <EffectiveUrl> EffectiveUrlCache::get_cached_eurl(string const &url) {
     shared_ptr<EffectiveUrl> effective_url(nullptr);
-    auto url_key = append_edl_username_to_key(key_prefix);
+    auto url_key = append_edl_username_to_key(url);
     auto it = d_effective_urls.find(url_key);
     if (it != d_effective_urls.end()) {
         effective_url = (*it).second;

@@ -63,7 +63,7 @@ private:
 
     int d_enabled = -1;
 
-    std::shared_ptr<EffectiveUrl> get_cached_eurl(std::string const &key_prefix);
+    std::shared_ptr<EffectiveUrl> get_cached_eurl(std::string const &url);
 
     void set_skip_regex();
 
