@@ -31,6 +31,7 @@
 #include <string>
 
 #include "AWS_SDK.h"
+#include "BESContextManager.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 #include "BESUtil.h"
@@ -102,13 +103,29 @@ bool SignedUrlCache::is_timestamp_after_now(std::string const &timestamp_str) {
     return timestamp_secs > now_secs;
 }
 
+std::string SignedUrlCache::append_edl_username_to_key(string const &key) {
+    bool found = false;
+    string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
+    BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
+    if (found && !uid.empty()) {
+        return key + ":" + uid;
+    }
+
+    INFO_LOG(prolog +
+             string("SERVICE CHAIN WARNING - EDL UID missing; using raw key " + key));
+    return key;
+}
+
 /**
  * @brief Get the cached STS credentials for a given TEA endpoint URL.
  * @param tea_endpoint_url_key URL to a TEA endpoint.
  * @note This method is not, itself, thread safe.
  */
 shared_ptr<SignedUrlCache::S3AccessKeyTuple>
-SignedUrlCache::retrieve_cached_sts_credentials(string const &tea_endpoint_url_key) {
+SignedUrlCache::retrieve_cached_sts_credentials(string const &tea_endpoint_url) {
+
+    auto tea_endpoint_url_key = append_edl_username_to_key(tea_endpoint_url);
+
     shared_ptr<S3AccessKeyTuple> s3_access_key_tuple(nullptr);
     auto it = d_tea_endpoint_sts_credentials_cache.find(tea_endpoint_url_key);
     if (it != d_tea_endpoint_sts_credentials_cache.end()) {
@@ -302,8 +319,10 @@ SignedUrlCache::cache_sts_credentials_from_tea_endpoint(std::string const &tea_e
     auto credentials = extract_sts_credentials_from_json_response(s3credentials_json_string);
     if (credentials) {
         // Store credentials if any were retrieved
-        INFO_LOG(prolog + "Caching STS credentials for TEA endpoint - " + tea_endpoint_url);
-        d_tea_endpoint_sts_credentials_cache[tea_endpoint_url] = credentials;
+        auto tea_endpoint_url_key = append_edl_username_to_key(tea_endpoint_url);
+        INFO_LOG(prolog + "Caching STS credentials for TEA endpoint - " + tea_endpoint_url + " - with key - " +
+                 tea_endpoint_url_key);
+        d_tea_endpoint_sts_credentials_cache[tea_endpoint_url_key] = credentials;
     } else {
         INFO_LOG(prolog + "SERVICE CHAIN WARNING - Error extracting STS credentials from TEA endpoint - " +
                  tea_endpoint_url);

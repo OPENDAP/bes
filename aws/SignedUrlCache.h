@@ -63,7 +63,10 @@ private:
     std::map<std::string, std::string> d_href_to_tea_endpoint_cache;
     std::map<std::string, std::string> d_href_to_s3_uri_cache;
 
+
     std::map<std::string, std::shared_ptr<S3AccessKeyTuple>> d_tea_endpoint_sts_credentials_cache;
+    static std::string append_edl_username_to_key(std::string const &key);
+
     static std::shared_ptr<S3AccessKeyTuple> extract_sts_credentials_from_json_response(std::string const &s3credentials_json_string);
     std::shared_ptr<S3AccessKeyTuple> cache_sts_credentials_from_tea_endpoint(std::string const &tea_endpoint_url);
     std::shared_ptr<S3AccessKeyTuple> retrieve_cached_sts_credentials(std::string const &tea_endpoint_url_key);
