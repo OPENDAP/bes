@@ -93,13 +93,15 @@ DDS *datadds_to_ascii_datadds(DDS *dds)
 
     DDS::Vars_iter i = dds->var_begin();
     while (i != dds->var_end()) {
-        BaseType *abt = basetype_to_asciitype(*i);
-        asciidds->add_var_nocopy(abt);
+        if ( (*i)->send_p() ) {
+            BaseType *abt = basetype_to_asciitype(*i);
+            asciidds->add_var_nocopy(abt);
 #if 0
-        // add_var makes a copy of the base type passed to it, so delete
-        // it here
-        delete abt;
+            // add_var makes a copy of the base type passed to it, so delete
+            // it here
+            delete abt;
 #endif
+        }
         ++i;
     }
 
