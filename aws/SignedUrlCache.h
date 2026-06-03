@@ -68,8 +68,11 @@ private:
 
     static std::shared_ptr<S3AccessKeyTuple>
     extract_sts_credentials_from_json_response(std::string const &s3credentials_json_string);
-    std::shared_ptr<S3AccessKeyTuple> cache_sts_credentials_from_tea_endpoint(std::string const &tea_endpoint_url);
-    std::shared_ptr<S3AccessKeyTuple> retrieve_cached_sts_credentials(std::string const &tea_endpoint_url_key);
+    std::shared_ptr<S3AccessKeyTuple> get_sts_credentials_from_tea_endpoint(std::string const &tea_endpoint_url);
+
+    void cache_sts_credentials(std::string const &tea_endpoint_url,
+                               std::shared_ptr<S3AccessKeyTuple> const credentials);
+    std::shared_ptr<S3AccessKeyTuple> get_cached_sts_credentials(std::string const &tea_endpoint_url_key);
 
     static bool is_timestamp_after_now(std::string const &timestamp);
     const bool is_cache_supported_within_current_aws_region();
