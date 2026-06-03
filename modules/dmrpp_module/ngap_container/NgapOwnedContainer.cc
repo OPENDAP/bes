@@ -527,15 +527,18 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
     }
     INFO_LOG(prolog + "Look in the DAAC-bucket for the DMRpp for: " + dmrpp_url_str);
 
-    // To sign urls locally, we need access to the credentials; cache those now
+    // To sign the dmrpp locally, we will need to access the TEA endpoint for generating
+    // EDL-user-specific STS credentials; cache those prerequisites so we'll have access to them
+    // when we attempt to sign...
     SignedUrlCache::TheCache()->cache_prerequisites_for_url_signing(dmrpp_url_str, dmrpp_s3uri_str, get<2>(data_access_urls));
 
+    // ...and sign!
     std::shared_ptr<http::EffectiveUrl> presigned_url = SignedUrlCache::TheCache()->get_presigned_s3_url(make_shared<http::url>(dmrpp_url_str));
 
     try {
-        // If the url signing fails for any reason---nonexistant or bad short-term credentials, being
+        // If the url signing fails for any reason---nonexistent or bad short-term credentials, being
         // called from a region other than us-west-2, etc---it will return a nullptr, so that we can fall
-        // back on using the TEA service to sign our urls
+        // back on using the TEA service to sign our urls through a series of redirects
         if (presigned_url == nullptr) {
             BES_PROFILE_TIMING(string("SERVICE CHAIN WARNING! Falling back to request DMR++ from DAAC bucket - ") + dmrpp_url_str);
             curl::http_get(dmrpp_url_str, dmrpp_string);
@@ -544,7 +547,9 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
             curl::http_get(presigned_url->str(), dmrpp_string, true);
         }
 
-        // filter the DMRPP from the DAAC's bucket to replace the template href with the data_access_urls
+        // filter the DMRPP from the DAAC's bucket to replace the template href with the data_access_urls,
+        // so that downstream users of this fetched [and potentially cached-on-disk] DMR++ will be able
+        // to access (and presign) the granules it references
         map<string, string, std::less<>> content_filters;
         if (!get_daac_content_filters(data_access_urls, content_filters)) {
             throw BESInternalError("Could not build content filters for DMR++", __FILE__, __LINE__);
