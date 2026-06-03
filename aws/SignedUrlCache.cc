@@ -60,13 +60,28 @@ constexpr auto MODULE_DUMPER = "euc:dump";
 namespace bes {
 
 /**
+ * @brief Cache presigned URL with key unsigned_url:edl_userid.
+ * @param unsigned_url Url to be used as cache key prefix
+ * @param signed_url Presigned URL.
+ * @note This method is not, itself, thread safe.
+ */
+void SignedUrlCache::cache_presigned_s3_url(string const &unsigned_url,
+                                            shared_ptr<http::EffectiveUrl> const signed_url) {
+    std::string key = append_edl_username_to_key(unsigned_url);
+    INFO_LOG(prolog + "Caching presigned url with key - " + key);
+    d_presigned_s3_urls_cache[key] = signed_url;
+}
+
+/**
  * @brief Get the cached presigned URL.
  * @param url_key Key to a cached presigned URL.
  * @note This method is not, itself, thread safe.
  */
 shared_ptr<http::EffectiveUrl> SignedUrlCache::get_cached_presigned_s3_url(string const &url_key) {
     shared_ptr<http::EffectiveUrl> signed_url(nullptr);
-    auto it = d_presigned_s3_urls_cache.find(url_key);
+    std::string signed_url_key = append_edl_username_to_key(url_key);
+    INFO_LOG(prolog + "URL ATTEMPTED - " + url_key + " - with key - " + signed_url_key);
+    auto it = d_presigned_s3_urls_cache.find(signed_url_key);
     if (it != d_presigned_s3_urls_cache.end()) {
         signed_url = (*it).second;
     }
@@ -111,8 +126,7 @@ std::string SignedUrlCache::append_edl_username_to_key(string const &key) {
         return key + ":" + uid;
     }
 
-    INFO_LOG(prolog +
-             string("SERVICE CHAIN WARNING - EDL UID missing; using raw key " + key));
+    INFO_LOG(prolog + string("SERVICE CHAIN WARNING - EDL UID missing; using raw key " + key));
     return key;
 }
 
@@ -226,7 +240,7 @@ shared_ptr<http::EffectiveUrl> SignedUrlCache::get_presigned_s3_url(shared_ptr<h
                 // logged during failed signing.
                 return nullptr;
             }
-            d_presigned_s3_urls_cache[source_url_key] = signed_url;
+            cache_presigned_s3_url(source_url_key, signed_url);
 
             BESDEBUG(MODULE, prolog << "   Cached " << source_url_key << " with value " << signed_url->str() << endl);
         }

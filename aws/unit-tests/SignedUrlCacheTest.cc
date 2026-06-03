@@ -99,14 +99,14 @@ public:
         auto input_url = make_shared<http::url>("http://started_here.com");
         auto output_url = make_shared<http::EffectiveUrl>("http://started_here.com?signed-now");
 
-        SignedUrlCache::TheCache()->d_presigned_s3_urls_cache.insert(
-            pair<string, shared_ptr<http::EffectiveUrl>>(input_url->str(), output_url));
+        SignedUrlCache::TheCache()->cache_presigned_s3_url(input_url->str(), output_url);
         auto result = SignedUrlCache::TheCache()->get_presigned_s3_url(input_url);
-        CPPUNIT_ASSERT_MESSAGE("Cached url should be retrievable", result->str() == output_url->str());
+        CPPUNIT_ASSERT_MESSAGE("Cached url should be retrievable",
+                               result != nullptr && result->str() == output_url->str());
 
         std::string non_http_key("foo");
-        SignedUrlCache::TheCache()->d_presigned_s3_urls_cache.insert(
-            pair<string, shared_ptr<http::EffectiveUrl>>(non_http_key, output_url));
+        SignedUrlCache::TheCache()->cache_presigned_s3_url(non_http_key, output_url);
+
         auto result2 = SignedUrlCache::TheCache()->get_presigned_s3_url(make_shared<http::url>(non_http_key));
         CPPUNIT_ASSERT_MESSAGE("Non-url key returns nullptr", result2 == nullptr);
     }
@@ -166,8 +166,8 @@ public:
         auto input_url = make_shared<http::url>("http://started_here.com");
         auto output_url = make_shared<http::EffectiveUrl>("http://started_here.com?signed-now");
 
-        SignedUrlCache::TheCache()->d_presigned_s3_urls_cache.insert(
-            pair<string, shared_ptr<http::EffectiveUrl>>(input_url->str(), output_url));
+        SignedUrlCache::TheCache()->cache_presigned_s3_url(input_url->str(), output_url);
+
         CPPUNIT_ASSERT_MESSAGE("Cache contains single item",
                                SignedUrlCache::TheCache()->d_presigned_s3_urls_cache.size() == 1);
 
@@ -182,17 +182,17 @@ public:
 
         auto result_when_enabled = SignedUrlCache::TheCache()->get_presigned_s3_url(input_url);
         CPPUNIT_ASSERT_MESSAGE("When cache is re-enabled, value is returned",
-                               result_when_enabled->str() == output_url->str());
+                               result_when_enabled != nullptr && result_when_enabled->str() == output_url->str());
     }
 
     void dump_test() {
         SignedUrlCache *theCache = SignedUrlCache::TheCache();
 
         // Add values to each type of subcache
-        theCache->d_presigned_s3_urls_cache.insert(pair<string, shared_ptr<http::EffectiveUrl>>(
-            "www.once.com", make_shared<http::EffectiveUrl>("http://www.upon.com")));
-        theCache->d_presigned_s3_urls_cache.insert(pair<string, shared_ptr<http::EffectiveUrl>>(
-            "www.a.com", make_shared<http::EffectiveUrl>("http://www.time.com")));
+        SignedUrlCache::TheCache()->cache_presigned_s3_url("www.once.com",
+                                                           make_shared<http::EffectiveUrl>("http://www.upon.com"));
+        SignedUrlCache::TheCache()->cache_presigned_s3_url("www.a.com",
+                                                           make_shared<http::EffectiveUrl>("http://www.time.com"));
 
         auto value =
             make_shared<SignedUrlCache::S3AccessKeyTuple>("a man", "a plan", "a canal", "3035-07-16 02:20:33+00:00");
@@ -208,8 +208,8 @@ public:
         // Remove start of string to skip address that varies
         auto result = strm.str().substr(49);
         std::string expected_str =
-            string("presigned url list:") + "\n        www.a.com --> http://www.time.com" +
-            "\n        www.once.com --> http://www.upon.com" +
+            string("presigned url list:") + "\n        www.a.com:test_user --> http://www.time.com" +
+            "\n        www.once.com:test_user --> http://www.upon.com" +
             "\n    href-to-s3credentials list:" + "\n        foo --> whee" +
             "\n    href-to-s3url list:" + "\n        yee --> haw" +
             "\n    s3 credentials list:" + "\n        palindrome --> Expires: 3035-07-16 02:20:33+00:00\n";
@@ -444,7 +444,8 @@ public:
         auto fake_sts_creds =
             make_shared<SignedUrlCache::S3AccessKeyTuple>("a man", "a plan", "a canal", "2126-07-16 18:40:58+04:00");
         theCache->d_tea_endpoint_sts_credentials_cache.insert(
-            pair<string, shared_ptr<SignedUrlCache::S3AccessKeyTuple>>("fake-tea-endpoint-name:test_user", fake_sts_creds));
+            pair<string, shared_ptr<SignedUrlCache::S3AccessKeyTuple>>("fake-tea-endpoint-name:test_user",
+                                                                       fake_sts_creds));
         CPPUNIT_ASSERT_MESSAGE("Signed URL cache should be empty before any valid responses",
                                theCache->d_presigned_s3_urls_cache.size() == 0);
 
@@ -469,7 +470,8 @@ public:
             "bar?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=a%20man%2F20260514%2Fus-east-1%2Fs3%2Faws4_request&"
             "X-Amz-Date=20260514T221009Z&X-Amz-Expires=31846277424&X-Amz-Security-Token=a%20canal&X-Amz-SignedHeaders="
             "host&X-Amz-Signature=99d4cae916dc174f8f36e1e5ddb881f19ff32f84e24e4021deefc8d783c1e40f";
-        theCache->d_presigned_s3_urls_cache[new_key->str()] = make_shared<http::EffectiveUrl>(cached_presigned_url);
+        theCache->d_presigned_s3_urls_cache[new_key->str() + ":test_user"] =
+            make_shared<http::EffectiveUrl>(cached_presigned_url);
         CPPUNIT_ASSERT_MESSAGE("When signed url has been precached, return cached value",
                                theCache->get_presigned_s3_url(new_key)->str() == cached_presigned_url);
         std::string expired_cached_url =
@@ -477,8 +479,8 @@ public:
             "bar?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=a%20man%2F20260514%2Fus-east-1%2Fs3%2Faws4_request&"
             "X-Amz-Date=20200621T161744Z&X-Amz-Expires=86400&X-Amz-Security-Token=a%20canal&X-Amz-SignedHeaders="
             "host&X-Amz-Signature=99d4cae916dc174f8f36e1e5ddb881f19ff32f84e24e4021deefc8d783c1e40f";
-        theCache->d_presigned_s3_urls_cache[new_key->str()] = make_shared<http::EffectiveUrl>(expired_cached_url);
-        // CPPUNIT_ASSERT_MESSAGE("Wat", theCache->get_presigned_s3_url(new_key));
+        theCache->d_presigned_s3_urls_cache[new_key->str() + ":test_user"] =
+            make_shared<http::EffectiveUrl>(expired_cached_url);
         auto regenerated_url = theCache->get_presigned_s3_url(new_key);
         CPPUNIT_ASSERT_MESSAGE("When cached url has expired, regenerate it on request " + regenerated_url->str(),
                                regenerated_url->str() != expired_cached_url);

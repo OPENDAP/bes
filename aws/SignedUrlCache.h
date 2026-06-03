@@ -27,18 +27,18 @@
 #ifndef _bes_aws_SignedUrlCache_h_
 #define _bes_aws_SignedUrlCache_h_ 1
 
-#include <memory>
 #include <map>
-#include <unordered_map>
-#include <string>
+#include <memory>
 #include <mutex>
+#include <string>
+#include <unordered_map>
 
 #include "BESObj.h"
 
 namespace http {
-    class EffectiveUrl;
-    class url;
-}
+class EffectiveUrl;
+class url;
+} // namespace http
 
 namespace bes {
 
@@ -63,11 +63,11 @@ private:
     std::map<std::string, std::string> d_href_to_tea_endpoint_cache;
     std::map<std::string, std::string> d_href_to_s3_uri_cache;
 
-
     std::map<std::string, std::shared_ptr<S3AccessKeyTuple>> d_tea_endpoint_sts_credentials_cache;
     static std::string append_edl_username_to_key(std::string const &key);
 
-    static std::shared_ptr<S3AccessKeyTuple> extract_sts_credentials_from_json_response(std::string const &s3credentials_json_string);
+    static std::shared_ptr<S3AccessKeyTuple>
+    extract_sts_credentials_from_json_response(std::string const &s3credentials_json_string);
     std::shared_ptr<S3AccessKeyTuple> cache_sts_credentials_from_tea_endpoint(std::string const &tea_endpoint_url);
     std::shared_ptr<S3AccessKeyTuple> retrieve_cached_sts_credentials(std::string const &tea_endpoint_url_key);
 
@@ -85,8 +85,10 @@ private:
     static uint64_t num_seconds_until_expiration(
         const std::string &credentials_expiration_datetime,
         const std::chrono::system_clock::time_point current_time = std::chrono::system_clock::now());
-    std::shared_ptr<http::EffectiveUrl> sign_s3_uri_with_sts_credentials(std::string const &s3_uri,
-                                                                         std::shared_ptr<S3AccessKeyTuple> const s3_access_key_tuple);
+    std::shared_ptr<http::EffectiveUrl>
+    sign_s3_uri_with_sts_credentials(std::string const &s3_uri,
+                                     std::shared_ptr<S3AccessKeyTuple> const s3_access_key_tuple);
+    void cache_presigned_s3_url(std::string const &unsigned_url, std::shared_ptr<http::EffectiveUrl> const signed_url);
     std::shared_ptr<http::EffectiveUrl> get_cached_presigned_s3_url(std::string const &url_key);
 
     bool is_enabled();
@@ -113,7 +115,8 @@ public:
 
     void cache_prerequisites_for_url_signing(const std::string &key_href_url, const std::string &s3_uri,
                                              const std::string &tea_endpoint_url);
-    std::pair<std::string, std::string> retrieve_cached_prerequisites_for_url_signing(const std::string &key_href_url) const;
+    std::pair<std::string, std::string>
+    retrieve_cached_prerequisites_for_url_signing(const std::string &key_href_url) const;
 
     std::shared_ptr<http::EffectiveUrl> get_presigned_s3_url(std::shared_ptr<http::url> source_url);
 
