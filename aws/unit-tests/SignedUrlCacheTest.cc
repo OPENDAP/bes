@@ -480,8 +480,7 @@ public:
         theCache->d_href_to_s3_uri_cache.insert(pair<string, string>(bad_request_key->str(), "s3://foo/bar"));
         theCache->d_href_to_tea_endpoint_cache.insert(
             pair<string, string>(bad_request_key->str(), "fake-tea-endpoint-name-2"));
-        theCache->d_tea_endpoint_sts_credentials_cache.insert(
-            pair<string, shared_ptr<SignedUrlCache::S3AccessKeyTuple>>("fake-tea-endpoint-name-2", fake_sts_creds));
+        theCache->cache_sts_credentials("fake-tea-endpoint-name-2", fake_sts_creds);
         CPPUNIT_ASSERT_MESSAGE(
             "When credentials available for input that is not a url, return nullptr output without throwing error",
             !theCache->get_presigned_s3_url(bad_request_key));
