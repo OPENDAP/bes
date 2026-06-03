@@ -117,6 +117,11 @@ bool SignedUrlCache::is_timestamp_after_now(std::string const &timestamp_str) {
     return timestamp_secs > now_secs;
 }
 
+/**
+ * @brief Append the EDL username from the BESContext to key.
+ * @param key Key prefix.
+ * @note This method is not, itself, thread safe.
+ */
 std::string SignedUrlCache::append_edl_username_to_key(string const &key) {
     bool found = false;
     string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
@@ -148,9 +153,7 @@ void SignedUrlCache::cache_sts_credentials(string const &tea_endpoint_url,
  */
 shared_ptr<SignedUrlCache::S3AccessKeyTuple>
 SignedUrlCache::get_cached_sts_credentials(string const &tea_endpoint_url) {
-
     auto tea_endpoint_url_key = append_edl_username_to_key(tea_endpoint_url);
-
     shared_ptr<S3AccessKeyTuple> s3_access_key_tuple(nullptr);
     auto it = d_tea_endpoint_sts_credentials_cache.find(tea_endpoint_url_key);
     if (it != d_tea_endpoint_sts_credentials_cache.end()) {
