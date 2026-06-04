@@ -1229,7 +1229,8 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
 }
 
 /**
- * Dereference the target URL and put the response in buf.
+ * Dereference the target URL and put the response in buf, after first adding
+ * EDL authorization headers.
  *
  * @note The intent here is to read data and store it directly into the string.
  * @see This version has not been tested to show that the new data will be
@@ -1238,9 +1239,11 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
  * @param target_url The URL to dereference.
  * @param buf The string into which to put the response. New data will be
  * appended to this string.
+ * @param use_raw_url_no_new_headers Flag to skip adding additional headers,
+ * e.g., for use with presigned urls
  * @exception Throws when libcurl encounters a problem.
  */
-void http_get(const string &target_url, string &buf) {
+void http_get(const string &target_url, string &buf, bool use_raw_url_no_new_headers) {
     BESDEBUG(MODULE, prolog << "BEGIN\n");
 
     vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
@@ -1249,22 +1252,24 @@ void http_get(const string &target_url, string &buf) {
     curl_slist *request_headers = nullptr;
 
     try {
-        // Add the authorization headers
-        request_headers = add_edl_auth_headers(request_headers);
+        if (!use_raw_url_no_new_headers) {
+            // Add the authorization headers
+            request_headers = add_edl_auth_headers(request_headers);
 
-        request_headers = sign_url_for_s3_if_possible(target_url, request_headers);
-
+            request_headers = sign_url_for_s3_if_possible(target_url, request_headers);
+        
 #ifdef DEVELOPER
-        AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
-        if (credentials) {
-            INFO_LOG(prolog + "Looking for EDL Token for URL: " + target_url );
-            string edl_token = credentials->get("edl_token");
-            if (!edl_token.empty()) {
-                INFO_LOG(prolog + "Using EDL Token for URL: " + target_url + '\n');
-                request_headers = curl::append_http_header(request_headers, "Authorization", edl_token);
+            AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
+            if (credentials) {
+                INFO_LOG(prolog + "Looking for EDL Token for URL: " + target_url );
+                string edl_token = credentials->get("edl_token");
+                if (!edl_token.empty()) {
+                    INFO_LOG(prolog + "Using EDL Token for URL: " + target_url + '\n');
+                    request_headers = curl::append_http_header(request_headers, "Authorization", edl_token);
+                }
             }
-        }
 #endif
+        }
 
         ceh = curl::init(target_url, request_headers, nullptr);
         if (!ceh)

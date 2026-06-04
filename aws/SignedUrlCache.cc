@@ -31,6 +31,7 @@
 #include <string>
 
 #include "AWS_SDK.h"
+#include "BESContextManager.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 #include "BESUtil.h"
@@ -59,13 +60,27 @@ constexpr auto MODULE_DUMPER = "euc:dump";
 namespace bes {
 
 /**
+ * @brief Cache presigned URL with key unsigned_url:edl_userid.
+ * @param unsigned_url Url to be used as cache key prefix
+ * @param signed_url Presigned URL.
+ * @note This method is not, itself, thread safe.
+ */
+void SignedUrlCache::cache_presigned_s3_url(string const &unsigned_url,
+                                            shared_ptr<http::EffectiveUrl> const signed_url) {
+    std::string key = append_edl_username_to_key(unsigned_url);
+    BESDEBUG(MODULE, prolog + "Caching presigned url with key " + key);
+    d_presigned_s3_urls_cache[key] = signed_url;
+}
+
+/**
  * @brief Get the cached presigned URL.
  * @param url_key Key to a cached presigned URL.
  * @note This method is not, itself, thread safe.
  */
 shared_ptr<http::EffectiveUrl> SignedUrlCache::get_cached_presigned_s3_url(string const &url_key) {
     shared_ptr<http::EffectiveUrl> signed_url(nullptr);
-    auto it = d_presigned_s3_urls_cache.find(url_key);
+    std::string signed_url_key = append_edl_username_to_key(url_key);
+    auto it = d_presigned_s3_urls_cache.find(signed_url_key);
     if (it != d_presigned_s3_urls_cache.end()) {
         signed_url = (*it).second;
     }
@@ -103,19 +118,49 @@ bool SignedUrlCache::is_timestamp_after_now(std::string const &timestamp_str) {
 }
 
 /**
+ * @brief Append the EDL username from the BESContext to key.
+ * @param key Key prefix.
+ * @note This method is not, itself, thread safe.
+ */
+std::string SignedUrlCache::append_edl_username_to_key(string const &key) {
+    bool found = false;
+    string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
+    BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
+    if (found && !uid.empty()) {
+        return key + ":" + uid;
+    }
+    INFO_LOG(prolog + string("SERVICE CHAIN WARNING - EDL UID missing; using raw key " + key));
+    return key;
+}
+
+/**
+ * @brief Cache STS credentials with key tea_endpoint_url:edl_userid.
+ * @param tea_endpoint_url Url to be used as cache key prefix
+ * @param credentials Credentials fetched from endpoint.
+ * @note This method is not, itself, thread safe.
+ */
+void SignedUrlCache::cache_sts_credentials(string const &tea_endpoint_url,
+                                           shared_ptr<S3AccessKeyTuple> const credentials) {
+    auto tea_endpoint_url_key = append_edl_username_to_key(tea_endpoint_url);
+    BESDEBUG(MODULE, prolog + "Caching STS credentials for TEA endpoint; key: " + tea_endpoint_url_key);
+    d_tea_endpoint_sts_credentials_cache[tea_endpoint_url_key] = credentials;
+}
+
+/**
  * @brief Get the cached STS credentials for a given TEA endpoint URL.
  * @param tea_endpoint_url_key URL to a TEA endpoint.
  * @note This method is not, itself, thread safe.
  */
 shared_ptr<SignedUrlCache::S3AccessKeyTuple>
-SignedUrlCache::retrieve_cached_sts_credentials(string const &tea_endpoint_url_key) {
+SignedUrlCache::get_cached_sts_credentials(string const &tea_endpoint_url) {
+    auto tea_endpoint_url_key = append_edl_username_to_key(tea_endpoint_url);
     shared_ptr<S3AccessKeyTuple> s3_access_key_tuple(nullptr);
     auto it = d_tea_endpoint_sts_credentials_cache.find(tea_endpoint_url_key);
     if (it != d_tea_endpoint_sts_credentials_cache.end()) {
         // Is it expired? If so, erase it!
         auto timestamp_str = get<3>(*(it->second));
         if (!is_timestamp_after_now(timestamp_str)) {
-            // Expired!
+            INFO_LOG("Previously cached STS credentials have expired for TEA endpoint " + tea_endpoint_url_key);
             d_tea_endpoint_sts_credentials_cache.erase(it);
         } else {
             s3_access_key_tuple = it->second;
@@ -190,9 +235,9 @@ shared_ptr<http::EffectiveUrl> SignedUrlCache::get_presigned_s3_url(shared_ptr<h
             }
 
             // 2. ...get unexpired access credentials from cache or s3credentials endpoint...
-            auto s3_access_key_tuple = retrieve_cached_sts_credentials(tea_endpoint_url);
+            auto s3_access_key_tuple = get_cached_sts_credentials(tea_endpoint_url);
             if (!s3_access_key_tuple) {
-                s3_access_key_tuple = cache_sts_credentials_from_tea_endpoint(tea_endpoint_url);
+                s3_access_key_tuple = get_sts_credentials_from_tea_endpoint(tea_endpoint_url);
             }
             if (!s3_access_key_tuple) {
                 INFO_LOG(prolog +
@@ -209,7 +254,7 @@ shared_ptr<http::EffectiveUrl> SignedUrlCache::get_presigned_s3_url(shared_ptr<h
                 // logged during failed signing.
                 return nullptr;
             }
-            d_presigned_s3_urls_cache[source_url_key] = signed_url;
+            cache_presigned_s3_url(source_url_key, signed_url);
 
             BESDEBUG(MODULE, prolog << "   Cached " << source_url_key << " with value " << signed_url->str() << endl);
         }
@@ -275,13 +320,14 @@ SignedUrlCache::retrieve_cached_prerequisites_for_url_signing(const std::string 
  * @note If credential retrieval fails at any point, returns nullptr and does not cache results
  */
 shared_ptr<SignedUrlCache::S3AccessKeyTuple>
-SignedUrlCache::cache_sts_credentials_from_tea_endpoint(std::string const &tea_endpoint_url) {
+SignedUrlCache::get_sts_credentials_from_tea_endpoint(std::string const &tea_endpoint_url) {
     // 1. Get the credentials from TEA
     std::string s3credentials_json_string;
     try {
         BES_PROFILE_TIMING(string("Request s3 credentials from TEA - ") + tea_endpoint_url);
 
-        // Note: this http_get call internally adds edl auth headers, if available
+        // Note: this http_get call internally adds EDL auth headers, if available. The resultant credentials are
+        // specific to the current EDL user
         curl::http_get(tea_endpoint_url, s3credentials_json_string);
     } catch (http::HttpError &http_error) {
         string err_msg = prolog +
@@ -302,8 +348,7 @@ SignedUrlCache::cache_sts_credentials_from_tea_endpoint(std::string const &tea_e
     auto credentials = extract_sts_credentials_from_json_response(s3credentials_json_string);
     if (credentials) {
         // Store credentials if any were retrieved
-        INFO_LOG(prolog + "Caching STS credentials for TEA endpoint - " + tea_endpoint_url);
-        d_tea_endpoint_sts_credentials_cache[tea_endpoint_url] = credentials;
+        cache_sts_credentials(tea_endpoint_url, credentials);
     } else {
         INFO_LOG(prolog + "SERVICE CHAIN WARNING - Error extracting STS credentials from TEA endpoint - " +
                  tea_endpoint_url);
