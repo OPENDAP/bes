@@ -752,3 +752,13 @@ AT_BESCMD_H5_BESCONF_RESPONSE_TEST([h5.default/nc4_group_atomic_4.h5.dmr.bescmd]
 
 # 3-D unlimited dimensions and the dimensions are under different groups
 AT_BESCMD_H5_BESCONF_RESPONSE_TEST([h5.default/multi_unlimited.h5.dmr.bescmd],[bes.default.conf])
+
+# Repeatable tests
+AT_BESCMD_H5_MULTI_RESPONSE_TEST([h5.default/d_int8.h5.dmr.bescmd],[bes.default.conf], [3])
+AT_BESCMD_H5_MULTI_RESPONSE_TEST([h5.default/d_int8.h5.das.bescmd],[bes.default.conf], [3])
+AT_BESCMD_H5_MULTI_RESPONSE_TEST([h5.default/d_int8.h5.dds.bescmd],[bes.default.conf], [3])
+AT_BESCMD_H5_MULTI_RESPONSE_TEST([h5.cf/grid_1_2d.h5.dmr.bescmd],[bes.conf], [3])
+AT_BESCMD_H5_MULTI_RESPONSE_TEST([h5.cf/grid_1_2d.h5.dds.bescmd],[bes.conf], [3])
+AT_BESCMD_H5_MULTI_RESPONSE_TEST([h5.cf/grid_1_2d.h5.das.bescmd],[bes.conf], [3])
+AT_BESCMD_H5_MULTI_RESPONSE_TEST([h5.cf/t_int64_dap4.h5.dmr.bescmd],[bes.cfdmr.conf], [3])
+AT_BESCMD_H5_MULTI_RESPONSE_TEST([h5.default/SimpleGroup.nc4.h5.dmr.bescmd],[bes.default.conf], [3])

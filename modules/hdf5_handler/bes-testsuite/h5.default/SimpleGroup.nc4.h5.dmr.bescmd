@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="http-nio-8080-exec-46_69" reqUUID="55c21266-c907-4ad3-bddf-9aaf3248dd54" clientId="/-122" clientCmdCount="42">
+  <bes:setContext name="bes_timeout">1800</bes:setContext>
+  <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+  <bes:setContext name="errors">xml</bes:setContext>
+  <bes:setContext name="xml:base">http://ngap-west.opendap.org:8080/opendap/dap4/SimpleGroup.nc4.h5</bes:setContext>
+  <bes:setContext name="max_response_size">0</bes:setContext>
+  <bes:setContext name="max_variable_size">0</bes:setContext>
+  <bes:setContext name="uid">not_logged_in</bes:setContext>
+  <bes:setContext name="dap4_checksums">false</bes:setContext>
+  <bes:setContainer name="catalogContainer" space="catalog">/data/SimpleGroup.nc4.h5</bes:setContainer>
+  <bes:define name="d1" space="default">
+    <bes:container name="catalogContainer" />
+  </bes:define>
+  <bes:get type="dmr" definition="d1"/>
+</bes:request>
+
