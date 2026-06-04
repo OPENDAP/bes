@@ -69,6 +69,7 @@ public:
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
         DBG(cerr << prolog << "Using BES configuration: " << bes_conf << endl);
         TheBESKeys::ConfigFile = bes_conf;
+        BESContextManager::TheManager()->set_context(EDL_UID_KEY, "test_user");
 
         // Reset to same starting point every time
         // (It's a singleton so resetting it is important for testing determinism)
@@ -98,14 +99,14 @@ public:
         auto input_url = make_shared<http::url>("http://started_here.com");
         auto output_url = make_shared<http::EffectiveUrl>("http://started_here.com?signed-now");
 
-        SignedUrlCache::TheCache()->d_presigned_s3_urls_cache.insert(
-            pair<string, shared_ptr<http::EffectiveUrl>>(input_url->str(), output_url));
+        SignedUrlCache::TheCache()->cache_presigned_s3_url(input_url->str(), output_url);
         auto result = SignedUrlCache::TheCache()->get_presigned_s3_url(input_url);
-        CPPUNIT_ASSERT_MESSAGE("Cached url should be retrievable", result->str() == output_url->str());
+        CPPUNIT_ASSERT_MESSAGE("Cached url should be retrievable",
+                               result != nullptr && result->str() == output_url->str());
 
         std::string non_http_key("foo");
-        SignedUrlCache::TheCache()->d_presigned_s3_urls_cache.insert(
-            pair<string, shared_ptr<http::EffectiveUrl>>(non_http_key, output_url));
+        SignedUrlCache::TheCache()->cache_presigned_s3_url(non_http_key, output_url);
+
         auto result2 = SignedUrlCache::TheCache()->get_presigned_s3_url(make_shared<http::url>(non_http_key));
         CPPUNIT_ASSERT_MESSAGE("Non-url key returns nullptr", result2 == nullptr);
     }
@@ -165,8 +166,8 @@ public:
         auto input_url = make_shared<http::url>("http://started_here.com");
         auto output_url = make_shared<http::EffectiveUrl>("http://started_here.com?signed-now");
 
-        SignedUrlCache::TheCache()->d_presigned_s3_urls_cache.insert(
-            pair<string, shared_ptr<http::EffectiveUrl>>(input_url->str(), output_url));
+        SignedUrlCache::TheCache()->cache_presigned_s3_url(input_url->str(), output_url);
+
         CPPUNIT_ASSERT_MESSAGE("Cache contains single item",
                                SignedUrlCache::TheCache()->d_presigned_s3_urls_cache.size() == 1);
 
@@ -181,22 +182,21 @@ public:
 
         auto result_when_enabled = SignedUrlCache::TheCache()->get_presigned_s3_url(input_url);
         CPPUNIT_ASSERT_MESSAGE("When cache is re-enabled, value is returned",
-                               result_when_enabled->str() == output_url->str());
+                               result_when_enabled != nullptr && result_when_enabled->str() == output_url->str());
     }
 
     void dump_test() {
         SignedUrlCache *theCache = SignedUrlCache::TheCache();
 
         // Add values to each type of subcache
-        theCache->d_presigned_s3_urls_cache.insert(pair<string, shared_ptr<http::EffectiveUrl>>(
-            "www.once.com", make_shared<http::EffectiveUrl>("http://www.upon.com")));
-        theCache->d_presigned_s3_urls_cache.insert(pair<string, shared_ptr<http::EffectiveUrl>>(
-            "www.a.com", make_shared<http::EffectiveUrl>("http://www.time.com")));
+        SignedUrlCache::TheCache()->cache_presigned_s3_url("www.once.com",
+                                                           make_shared<http::EffectiveUrl>("http://www.upon.com"));
+        SignedUrlCache::TheCache()->cache_presigned_s3_url("www.a.com",
+                                                           make_shared<http::EffectiveUrl>("http://www.time.com"));
 
         auto value =
             make_shared<SignedUrlCache::S3AccessKeyTuple>("a man", "a plan", "a canal", "3035-07-16 02:20:33+00:00");
-        theCache->d_tea_endpoint_sts_credentials_cache.insert(
-            pair<string, shared_ptr<SignedUrlCache::S3AccessKeyTuple>>("palindrome", value));
+        theCache->cache_sts_credentials("palindrome", value);
 
         theCache->d_href_to_tea_endpoint_cache.insert(pair<string, string>("foo", "whee"));
         theCache->d_href_to_s3_uri_cache.insert(pair<string, string>("yee", "haw"));
@@ -207,11 +207,11 @@ public:
         // Remove start of string to skip address that varies
         auto result = strm.str().substr(49);
         std::string expected_str =
-            string("presigned url list:") + "\n        www.a.com --> http://www.time.com" +
-            "\n        www.once.com --> http://www.upon.com" +
+            string("presigned url list:") + "\n        www.a.com:test_user --> http://www.time.com" +
+            "\n        www.once.com:test_user --> http://www.upon.com" +
             "\n    href-to-s3credentials list:" + "\n        foo --> whee" +
             "\n    href-to-s3url list:" + "\n        yee --> haw" +
-            "\n    s3 credentials list:" + "\n        palindrome --> Expires: 3035-07-16 02:20:33+00:00\n";
+            "\n    s3 credentials list:" + "\n        palindrome:test_user --> Expires: 3035-07-16 02:20:33+00:00\n";
         CPPUNIT_ASSERT_MESSAGE("The dump should contain:\n" + expected_str + "\n\nbut did not; INSTEAD was\n" + result,
                                result.find(expected_str) != std::string::npos);
     }
@@ -229,27 +229,25 @@ public:
     }
 
     void retrieve_cached_s3credentials_test() {
-        std::string key("i_am_a_key");
-        auto result_not_in_cache = SignedUrlCache::TheCache()->retrieve_cached_sts_credentials(key);
+        std::string credentials_endpoint_url = "i_am_an_s3credentials_endpoint";
+        auto result_not_in_cache = SignedUrlCache::TheCache()->get_cached_sts_credentials(credentials_endpoint_url);
         CPPUNIT_ASSERT_MESSAGE("Cache miss should return null", result_not_in_cache == nullptr);
 
         auto value =
             make_shared<SignedUrlCache::S3AccessKeyTuple>("a man", "a plan", "a canal", "2135-07-16 02:20:33+00:00");
-        SignedUrlCache::TheCache()->d_tea_endpoint_sts_credentials_cache.insert(
-            pair<string, shared_ptr<SignedUrlCache::S3AccessKeyTuple>>(key, value));
-        auto result_in_cache = SignedUrlCache::TheCache()->retrieve_cached_sts_credentials(key);
+        SignedUrlCache::TheCache()->cache_sts_credentials(credentials_endpoint_url, value);
+        auto result_in_cache = SignedUrlCache::TheCache()->get_cached_sts_credentials(credentials_endpoint_url);
         CPPUNIT_ASSERT_MESSAGE("Cache hit should successfully retrieve result", result_in_cache == value);
     }
 
     void retrieve_cached_s3credentials_expired_credentials_test() {
-        std::string key("i_am_a_key");
+        std::string credentials_endpoint_url = "i_am_an_s3credentials_endpoint";
         std::string expiration_time("1980-07-16 18:40:58+00:00");
         auto value = make_shared<SignedUrlCache::S3AccessKeyTuple>("https://www.foo", "https://www.bar",
                                                                    "https://www.bat", expiration_time);
-        SignedUrlCache::TheCache()->d_tea_endpoint_sts_credentials_cache.insert(
-            pair<string, shared_ptr<SignedUrlCache::S3AccessKeyTuple>>(key, value));
+        SignedUrlCache::TheCache()->cache_sts_credentials(credentials_endpoint_url, value);
 
-        auto result = SignedUrlCache::TheCache()->retrieve_cached_sts_credentials(key);
+        auto result = SignedUrlCache::TheCache()->get_cached_sts_credentials(credentials_endpoint_url);
         CPPUNIT_ASSERT_MESSAGE("Cached expired result should not be retrieved", result == nullptr);
         CPPUNIT_ASSERT_MESSAGE("Expired result should have been removed from cache",
                                SignedUrlCache::TheCache()->d_tea_endpoint_sts_credentials_cache.empty());
@@ -361,12 +359,25 @@ public:
         CPPUNIT_ASSERT_MESSAGE("If both urls were not cached, no response is returned", retrieved2 == empty_pair);
     }
 
-    void cache_sts_credentials_from_tea_endpoint_test() {
+    void append_edl_username_to_key_test() {
+        SignedUrlCache *theCache = SignedUrlCache::TheCache();
+
+        std::string expected = "foo_url:test_user";
+        auto key = theCache->append_edl_username_to_key("foo_url");
+        CPPUNIT_ASSERT_MESSAGE("EDL user is appended to key; expected " + expected + " got " + key, key == expected);
+
+        BESContextManager::TheManager()->unset_context(EDL_UID_KEY);
+        auto key_no_uid = theCache->append_edl_username_to_key("foo_url");
+        CPPUNIT_ASSERT_MESSAGE("When EDL user is empty, key should be identity; expected foo_url got " + key_no_uid,
+                               key_no_uid == "foo_url");
+    }
+
+    void get_sts_credentials_from_tea_endpoint_test() {
         SignedUrlCache *theCache = SignedUrlCache::TheCache();
 
         CPPUNIT_ASSERT_MESSAGE("Credentials cache is empty", theCache->d_tea_endpoint_sts_credentials_cache.empty());
 
-        auto result_bad = theCache->cache_sts_credentials_from_tea_endpoint("http://badurl");
+        auto result_bad = theCache->get_sts_credentials_from_tea_endpoint("http://badurl");
         CPPUNIT_ASSERT_MESSAGE("After attempting fetch from invalid url, credentials cache is still empty",
                                theCache->d_tea_endpoint_sts_credentials_cache.empty());
         CPPUNIT_ASSERT_MESSAGE("Fetch from invalid url returns nullptr", result_bad == nullptr);
@@ -426,8 +437,7 @@ public:
         theCache->d_href_to_tea_endpoint_cache.insert(pair<string, string>(test_url->str(), "fake-tea-endpoint-name"));
         auto fake_sts_creds =
             make_shared<SignedUrlCache::S3AccessKeyTuple>("a man", "a plan", "a canal", "2126-07-16 18:40:58+04:00");
-        theCache->d_tea_endpoint_sts_credentials_cache.insert(
-            pair<string, shared_ptr<SignedUrlCache::S3AccessKeyTuple>>("fake-tea-endpoint-name", fake_sts_creds));
+        theCache->cache_sts_credentials("fake-tea-endpoint-name", fake_sts_creds);
         CPPUNIT_ASSERT_MESSAGE("Signed URL cache should be empty before any valid responses",
                                theCache->d_presigned_s3_urls_cache.size() == 0);
 
@@ -452,7 +462,7 @@ public:
             "bar?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=a%20man%2F20260514%2Fus-east-1%2Fs3%2Faws4_request&"
             "X-Amz-Date=20260514T221009Z&X-Amz-Expires=31846277424&X-Amz-Security-Token=a%20canal&X-Amz-SignedHeaders="
             "host&X-Amz-Signature=99d4cae916dc174f8f36e1e5ddb881f19ff32f84e24e4021deefc8d783c1e40f";
-        theCache->d_presigned_s3_urls_cache[new_key->str()] = make_shared<http::EffectiveUrl>(cached_presigned_url);
+        theCache->cache_presigned_s3_url(new_key->str(), make_shared<http::EffectiveUrl>(cached_presigned_url));
         CPPUNIT_ASSERT_MESSAGE("When signed url has been precached, return cached value",
                                theCache->get_presigned_s3_url(new_key)->str() == cached_presigned_url);
         std::string expired_cached_url =
@@ -460,8 +470,7 @@ public:
             "bar?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=a%20man%2F20260514%2Fus-east-1%2Fs3%2Faws4_request&"
             "X-Amz-Date=20200621T161744Z&X-Amz-Expires=86400&X-Amz-Security-Token=a%20canal&X-Amz-SignedHeaders="
             "host&X-Amz-Signature=99d4cae916dc174f8f36e1e5ddb881f19ff32f84e24e4021deefc8d783c1e40f";
-        theCache->d_presigned_s3_urls_cache[new_key->str()] = make_shared<http::EffectiveUrl>(expired_cached_url);
-        // CPPUNIT_ASSERT_MESSAGE("Wat", theCache->get_presigned_s3_url(new_key));
+        theCache->cache_presigned_s3_url(new_key->str(), make_shared<http::EffectiveUrl>(expired_cached_url));
         auto regenerated_url = theCache->get_presigned_s3_url(new_key);
         CPPUNIT_ASSERT_MESSAGE("When cached url has expired, regenerate it on request " + regenerated_url->str(),
                                regenerated_url->str() != expired_cached_url);
@@ -471,8 +480,7 @@ public:
         theCache->d_href_to_s3_uri_cache.insert(pair<string, string>(bad_request_key->str(), "s3://foo/bar"));
         theCache->d_href_to_tea_endpoint_cache.insert(
             pair<string, string>(bad_request_key->str(), "fake-tea-endpoint-name-2"));
-        theCache->d_tea_endpoint_sts_credentials_cache.insert(
-            pair<string, shared_ptr<SignedUrlCache::S3AccessKeyTuple>>("fake-tea-endpoint-name-2", fake_sts_creds));
+        theCache->cache_sts_credentials("fake-tea-endpoint-name-2", fake_sts_creds);
         CPPUNIT_ASSERT_MESSAGE(
             "When credentials available for input that is not a url, return nullptr output without throwing error",
             !theCache->get_presigned_s3_url(bad_request_key));
@@ -559,7 +567,8 @@ public:
 
     CPPUNIT_TEST(cache_signed_url_components_test);
     CPPUNIT_TEST(retrieve_cached_signed_url_components_test);
-    CPPUNIT_TEST(cache_sts_credentials_from_tea_endpoint_test);
+    CPPUNIT_TEST(append_edl_username_to_key_test);
+    CPPUNIT_TEST(get_sts_credentials_from_tea_endpoint_test);
 
     // ...and, specifically, the signing itself:
     CPPUNIT_TEST(sign_s3_uri_with_sts_credentials_test);
