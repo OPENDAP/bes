@@ -956,6 +956,7 @@ BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerIn
 
     dds->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
+    dap_utils::throw_for_dap4_typed_vars_or_attrs(dds, __FILE__, __LINE__);
     dap_utils::throw_if_too_big(*dds, __FILE__, __LINE__);
 
 
