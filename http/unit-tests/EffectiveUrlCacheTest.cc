@@ -96,6 +96,7 @@ public:
         DBG(cerr << prolog << "Using BES configuration: " << bes_conf << endl);
         if (Debug) show_file(bes_conf);
         TheBESKeys::ConfigFile = bes_conf;
+        BESContextManager::TheManager()->set_context(EDL_UID_KEY, "test_user");
 
         if (bes_debug) BESDebug::SetUp("cerr,bes,euc,http,curl");
 
@@ -359,6 +360,16 @@ public:
             CPPUNIT_ASSERT(EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
             CPPUNIT_ASSERT(result_url->str() == result_url_str);
             CPPUNIT_ASSERT(!result_url->is_trusted());
+
+            // Test that dump is correct
+            auto strm = std::ostringstream();
+            EffectiveUrlCache::TheCache()->dump(strm);
+            // Remove start of string to skip address that varies
+            auto result = strm.str().substr(49);
+            std::string expected_str =
+                string("   d_skip_regex: \n    effective url list:") + "\n        http://test.opendap.org/data/nothing_is_here.html:test_user --> http://test.opendap.org/data/httpd_catalog/READTHIS";
+            CPPUNIT_ASSERT_MESSAGE("The dump should contain:\n" + expected_str + "\n\nbut did not; INSTEAD was\n" + result,
+                                result.find(expected_str) != std::string::npos);
 
         }
         catch (const BESError &be) {
