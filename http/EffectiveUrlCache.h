@@ -63,11 +63,13 @@ private:
 
     int d_enabled = -1;
 
-    std::shared_ptr<EffectiveUrl> get_cached_eurl(std::string const &url_key);
+    std::shared_ptr<EffectiveUrl> get_cached_eurl(std::string const &url);
 
     void set_skip_regex();
 
     bool is_enabled();
+
+    std::string append_edl_username_to_key(std::string const &key);
 
     friend class EffectiveUrlCacheTest;
 
