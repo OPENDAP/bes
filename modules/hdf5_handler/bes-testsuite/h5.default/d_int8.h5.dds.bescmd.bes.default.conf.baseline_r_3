@@ -1,0 +1,3 @@
+Dataset {
+    Int16 /temp[2][3];
+} d_size8.h5;
