@@ -115,13 +115,6 @@ jobs:
           # In the future, consider moving this to the libdap repo...
           set -x
           export prefix="$HOME/install"
-          # ccache --set-config=max_size="$CCACHE_MAXSIZE"
-          # ccache --show-stats || true
-          # if [[ "${{ steps.cache-libdap.outputs.cache-hit }}" == "true" ]] && [[ -x "$prefix/bin/dap-config" ]]; then
-          #   echo "Using cached libdap install from $prefix"
-          #   "$prefix/bin/dap-config" --version || true
-          #   exit 0
-          # fi
           git clone --depth 1 https://github.com/opendap/libdap4
           cd libdap4
           autoreconf -fiv
