@@ -46,8 +46,8 @@ jobs:
       TESTSUITEFLAGS: "-j16"
       CCACHE_DIR: "$HOME/.ccache"
       CCACHE_MAXSIZE: "750M"
-      CC: "ccache clang"
-      CXX: "ccache clang++"
+      # CC: "ccache clang"
+      # CXX: "ccache clang++"
     strategy:
       fail-fast: false
       matrix:
@@ -144,6 +144,9 @@ jobs:
         shell: bash
       - name: Build and test bes
         id: build-and-test
+        env:
+          CC: "ccache clang"
+          CXX: "ccache clang++"
         run: |
           set -x
           export prefix="$HOME/install"
