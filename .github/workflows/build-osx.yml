@@ -46,8 +46,8 @@ jobs:
       TESTSUITEFLAGS: "-j16"
       CCACHE_DIR: "$HOME/.ccache"
       CCACHE_MAXSIZE: "750M"
-      CC: "ccache clang"
-      CXX: "ccache clang++"
+      # CC: "ccache clang"
+      # CXX: "ccache clang++"
     strategy:
       fail-fast: false
       matrix:
@@ -115,18 +115,11 @@ jobs:
           # In the future, consider moving this to the libdap repo...
           set -x
           export prefix="$HOME/install"
-          ccache --set-config=max_size="$CCACHE_MAXSIZE"
-          ccache --show-stats || true
-          if [[ "${{ steps.cache-libdap.outputs.cache-hit }}" == "true" ]] && [[ -x "$prefix/bin/dap-config" ]]; then
-            echo "Using cached libdap install from $prefix"
-            "$prefix/bin/dap-config" --version || true
-            exit 0
-          fi
-          git clone https://github.com/opendap/libdap4
+          git clone --depth 1 https://github.com/opendap/libdap4
           cd libdap4
           autoreconf -fiv
-          ./configure --prefix=$prefix --enable-developer
-          make -j16
+          ./configure --disable-dependency-tracking --prefix=$prefix --enable-developer
+          make -j8
           make install
           ccache --show-stats || true
           ls $prefix
@@ -144,6 +137,9 @@ jobs:
         shell: bash
       - name: Build and test bes
         id: build-and-test
+        env:
+          CC: "ccache clang"
+          CXX: "ccache clang++"
         run: |
           set -x
           export prefix="$HOME/install"
@@ -151,7 +147,7 @@ jobs:
           make -j16
           make install
           besctl start
-          make check -j16
+          make check -j8
           besctl stop
           ccache --show-stats || true
           set +x
