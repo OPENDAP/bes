@@ -11,12 +11,25 @@ import unittest
 import subprocess
 import filecmp
 import os
+import gen_bescmd_conf
 
 class TestSample(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(self):
+        gen_bescmd_conf.generate_bes_conf()
+        
     def test_gen_dmrpp_side_car(self):
         
         print("Testing grid_2_2d_ps.hdf")
+        subprocess.run(["./gen_dmrpp_side_car", "-i", "grid_2_2d_ps.hdf", "-u", "grid_2_2d_ps.hdf", "-H"])
+        bescmd_name = gen_bescmd_conf.generate_bes_cmd("grid_2_2d_ps.hdf.dmrpp")
+        fonc_name=bescmd_name+"_fonc.nc4"
+        subprocess.run(["besstandalone", "-c", "bes.test.conf", "-i",bescmd_name , "-f", fonc_name])
+        with open('grid_2_2d_ps.hdf.dmrpp_fonc.nc4.header','w') as nc_header_file:
+            subprocess.run(["ncdump", "-h", fonc_name],stdout=nc_header_file)
+        result = filecmp.cmp("grid_2_2d_ps.hdf.dmrpp_fonc.nc4.header","grid_2_2d_ps.hdf.dmrpp_fonc.nc4.header.baseline")
+        self.assertEqual(result ,True )
         subprocess.run(["./gen_dmrpp_side_car", "-i", "grid_2_2d_ps.hdf","-H"])
         if not os.environ.get('PRESERVE_TEST_ASSETS'):
             self.addCleanup(os.remove, "grid_2_2d_ps.hdf.dmrpp")
@@ -104,7 +117,13 @@ class TestSample(unittest.TestCase):
         #baseline_minus_18_lines.pop(62)
 
         self.assertEqual(dmrpp_minus_18_lines ,baseline_minus_18_lines)
- 
+
+    @classmethod
+    def tearDownClass(cls):
+        if os.path.exists("bes.test.conf"):
+            os.remove("bes.test.conf")
+
+
 if __name__ == '__main__':
     unittest.main()
 

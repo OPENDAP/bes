@@ -32,7 +32,9 @@ echo-variables:
 # allow writing to the source directory.
 #
 # I do not understand why the module *.so files are copied. jhrg 8/31/25
-#
+# Answer for the above comments: 
+# The generation of dmr with besstandalone needs to have these modules at this location.
+# KY 2026-06-08
 cp_build_script:
 	if test $(srcdir) != .; then \
 	cp -f `echo $(srcdir) | rev | cut -c 11- | rev`/gen_dmrpp_side_car $(builddir); \
@@ -46,6 +48,7 @@ cp_build_script:
 	cp -f $(abs_top_builddir)/modules/hdf5_handler/.libs/libhdf5_module.so $(builddir); \
 	cp -f $(abs_top_builddir)/modules/hdf4_handler/.libs/libhdf4_module.so $(builddir); \
 	cp -f $(abs_top_builddir)/modules/fileout_netcdf/.libs/libfonc_module.so $(builddir); \
+	cp -f $(abs_top_builddir)/modules/dmrpp_module/.libs/libdmrpp_module.so $(builddir); \
 	cp -f $(abs_top_builddir)/xmlcommand/.libs/libdap_xml_module.so $(builddir); \
 	cp -f $(abs_top_builddir)/dap/.libs/libdap_module.so $(builddir); \
 	else \
@@ -56,6 +59,7 @@ cp_build_script:
 	cp -f $(abs_top_builddir)/modules/hdf5_handler/.libs/libhdf5_module.so $(builddir); \
 	cp -f $(abs_top_builddir)/modules/hdf4_handler/.libs/libhdf4_module.so $(builddir); \
 	cp -f $(abs_top_builddir)/modules/fileout_netcdf/.libs/libfonc_module.so $(builddir); \
+	cp -f $(abs_top_builddir)/modules/dmrpp_module/.libs/libdmrpp_module.so $(builddir); \
 	cp -f $(abs_top_builddir)/xmlcommand/.libs/libdap_xml_module.so $(builddir); \
 	cp -f $(abs_top_builddir)/dap/.libs/libdap_module.so $(builddir); \
 	fi;
@@ -76,6 +80,7 @@ clean-local:
 	rm -f $(builddir)/libhdf5_module.so; \
 	rm -f $(builddir)/libhdf4_module.so; \
 	rm -f $(builddir)/libfonc_module.so; \
+	rm -f $(builddir)/libdmrpp_module.so; \
 	rm -f $(builddir)/libdap_xml_module.so; \
 	rm -f $(builddir)/libdap_module.so; \
 	rm -rf $(builddir)/__pycache__; \
