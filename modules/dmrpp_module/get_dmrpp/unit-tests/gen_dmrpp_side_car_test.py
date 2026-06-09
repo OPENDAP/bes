@@ -30,6 +30,10 @@ class TestSample(unittest.TestCase):
             subprocess.run(["ncdump", "-h", fonc_name],stdout=nc_header_file)
         result = filecmp.cmp("grid_2_2d_ps.hdf.dmrpp_fonc.nc4.header","grid_2_2d_ps.hdf.dmrpp_fonc.nc4.header.baseline")
         self.assertEqual(result ,True )
+        if not os.environ.get('PRESERVE_TEST_ASSETS'):
+            self.addCleanup(os.remove, fonc_name)
+            self.addCleanup(os.remove, bescmd_name)
+            self.addCleanup(os.remove, "grid_2_2d_ps.hdf.dmrpp_fonc.nc4.header")
         subprocess.run(["./gen_dmrpp_side_car", "-i", "grid_2_2d_ps.hdf","-H"])
         if not os.environ.get('PRESERVE_TEST_ASSETS'):
             self.addCleanup(os.remove, "grid_2_2d_ps.hdf.dmrpp")

@@ -69,5 +69,3 @@ def generate_bes_cmd(dmrpp_name):
     return bescmd_name
 
 
-generate_bes_conf()
-generate_bes_cmd("ttt.dmrpp")
