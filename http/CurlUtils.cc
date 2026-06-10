@@ -1265,7 +1265,7 @@ void http_get(const string &target_url, string &buf, bool use_raw_url_no_new_hea
                 string edl_token = credentials->get("edl_token");
                 if (!edl_token.empty()) {
                     INFO_LOG(prolog + "Using EDL Token for URL: " + target_url + '\n');
-                    request_headers = curl::append_http_header(request_headers, "Authorization", edl_token);
+                    request_headers = curl::append_http_header(request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, edl_token);
                 }
             }
 #endif
@@ -1468,23 +1468,23 @@ curl_slist *add_edl_auth_headers(curl_slist *request_headers) {
     bool found;
     string s;
 
-    s = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
+    s = BESContextManager::TheManager()->get_context(UID_CONTEXT_KEY, found);
     if (found && !s.empty()) {
-        request_headers = append_http_header(request_headers, "User-Id", s);
+        request_headers = append_http_header(request_headers, UID_REQUEST_HEADER_KEY, s);
     }
 
-    s = BESContextManager::TheManager()->get_context(EDL_AUTH_TOKEN_KEY, found);
+    s = BESContextManager::TheManager()->get_context(EDL_AUTH_TOKEN_CONTEXT_KEY, found);
     if (found && !s.empty()) {
-        request_headers = append_http_header(request_headers, "Authorization", s);
+        request_headers = append_http_header(request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, s);
     }
 
-    s = BESContextManager::TheManager()->get_context(CMR_CLIENT_ID_CONTEXT_KEY, found);
+    s = BESContextManager::TheManager()->get_context(EDL_CLIENT_APPLICATION_ID_CONTEXT_KEY, found);
     if (found && !s.empty()) {
-        request_headers = append_http_header(request_headers, CMR_CLIENT_ID_KEY, s);
+        request_headers = append_http_header(request_headers, EDL_CLIENT_APPLICATION_ID_REQUEST_HEADER_KEY, s);
     }
 
     // TODO Remove this. See HYRAX-1036. jhrg 11/13/25
-    s = BESContextManager::TheManager()->get_context(EDL_ECHO_TOKEN_KEY, found);
+    s = BESContextManager::TheManager()->get_context(EDL_ECHO_TOKEN_CONTEXT_KEY, found);
     if (found && !s.empty()) {
         request_headers = append_http_header(request_headers, "Echo-Token", s);
     }
@@ -1522,7 +1522,7 @@ sign_s3_url(const string &target_url, AccessCredentials *ac, curl_slist *req_hea
                                                        ac->get(AccessCredentials::REGION_KEY), "s3");
 
     BESDEBUG(MODULE, prolog << "Authorization: " << auth_header << "\n");
-    req_headers = append_http_header(req_headers, "Authorization", auth_header);
+    req_headers = append_http_header(req_headers, AUTHORIZATION_REQUEST_HEADER_KEY, auth_header);
     req_headers = append_http_header(req_headers, "x-amz-content-sha256",
                                      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
     req_headers = append_http_header(req_headers, "x-amz-date", AWSV4::ISO8601_date(request_time));
@@ -1751,7 +1751,7 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
         string edl_token = credentials->get("edl_token");
         if (!edl_token.empty()) {
             INFO_LOG(prolog + "Using EDL Token for URL: " + origin_url->str() + '\n');
-            req_headers = curl::append_http_header(req_headers, "Authorization", edl_token);
+            req_headers = curl::append_http_header(req_headers, AUTHORIZATION_REQUEST_HEADER_KEY, edl_token);
         }
     }
 

@@ -72,8 +72,8 @@ void S3Container::initialize()
         set_container_type(S3_NAME);
 
     bool found;
-    string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
-    BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
+    string uid = BESContextManager::TheManager()->get_context(UID_CONTEXT_KEY, found);
+    BESDEBUG(MODULE, prolog << "UID_CONTEXT_KEY(" << UID_CONTEXT_KEY << "): " << uid << endl);
 
     // Because we know the name is really a URL, then we know the "relative_name" is meaningless
     // So we set it to be the same as "name"
