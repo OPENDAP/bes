@@ -124,8 +124,8 @@ bool SignedUrlCache::is_timestamp_after_now(std::string const &timestamp_str) {
  */
 std::string SignedUrlCache::append_edl_username_to_key(string const &key) {
     bool found = false;
-    string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
-    BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
+    string uid = BESContextManager::TheManager()->get_context(UID_CONTEXT_KEY, found);
+    BESDEBUG(MODULE, prolog << "UID_CONTEXT_KEY(" << UID_CONTEXT_KEY << "): " << uid << endl);
     if (found && !uid.empty()) {
         return key + ":" + uid;
     }

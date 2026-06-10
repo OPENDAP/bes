@@ -69,7 +69,7 @@ public:
         string bes_conf = BESUtil::assemblePath(TEST_BUILD_DIR, "bes.conf");
         DBG(cerr << prolog << "Using BES configuration: " << bes_conf << endl);
         TheBESKeys::ConfigFile = bes_conf;
-        BESContextManager::TheManager()->set_context(EDL_UID_KEY, "test_user");
+        BESContextManager::TheManager()->set_context(UID_CONTEXT_KEY, "test_user");
 
         // Reset to same starting point every time
         // (It's a singleton so resetting it is important for testing determinism)
@@ -83,8 +83,8 @@ public:
         theCache->d_tea_endpoint_sts_credentials_cache.clear();
 
         if (!token.empty()) {
-            DBG(cerr << "Setting BESContext " << EDL_AUTH_TOKEN_KEY << " to: '" << token << "'" << endl);
-            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, token);
+            DBG(cerr << "Setting BESContext " << EDL_AUTH_TOKEN_CONTEXT_KEY << " to: '" << token << "'" << endl);
+            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_CONTEXT_KEY, token);
         }
         DBG(cerr << prolog << "END" << endl);
     }
@@ -366,7 +366,7 @@ public:
         auto key = theCache->append_edl_username_to_key("foo_url");
         CPPUNIT_ASSERT_MESSAGE("EDL user is appended to key; expected " + expected + " got " + key, key == expected);
 
-        BESContextManager::TheManager()->unset_context(EDL_UID_KEY);
+        BESContextManager::TheManager()->unset_context(UID_CONTEXT_KEY);
         auto key_no_uid = theCache->append_edl_username_to_key("foo_url");
         CPPUNIT_ASSERT_MESSAGE("When EDL user is empty, key should be identity; expected foo_url got " + key_no_uid,
                                key_no_uid == "foo_url");

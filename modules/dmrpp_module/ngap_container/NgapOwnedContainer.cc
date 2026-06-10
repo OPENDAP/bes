@@ -234,8 +234,8 @@ NgapApi::DataAccessUrls NgapOwnedContainer::build_data_urls_to_daac_bucket(const
     BES_MODULE_TIMING(prolog + rest_path);
 
     bool found;
-    string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
-    BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
+    string uid = BESContextManager::TheManager()->get_context(UID_CONTEXT_KEY, found);
+    BESDEBUG(MODULE, prolog << "UID_CONTEXT_KEY(" << UID_CONTEXT_KEY << "): " << uid << endl);
 
     NgapApi::DataAccessUrls data_access_urls;
 
