@@ -1483,12 +1483,6 @@ curl_slist *add_edl_auth_headers(curl_slist *request_headers) {
         request_headers = append_http_header(request_headers, CMR_CLIENT_ID_KEY, s);
     }
 
-    // TODO Remove this. See HYRAX-1036. jhrg 11/13/25
-    s = BESContextManager::TheManager()->get_context(EDL_ECHO_TOKEN_KEY, found);
-    if (found && !s.empty()) {
-        request_headers = append_http_header(request_headers, "Echo-Token", s);
-    }
-
     return request_headers;
 }
 

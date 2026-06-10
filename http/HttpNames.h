@@ -72,7 +72,6 @@
 #define HTTP_URL_REFRESH_THRESHOLD 60
 
 #define EDL_AUTH_TOKEN_KEY "edl_auth_token"
-#define EDL_ECHO_TOKEN_KEY "edl_echo_token"
 #define EDL_UID_KEY "uid"
 
 // jhrg 11/13/25
