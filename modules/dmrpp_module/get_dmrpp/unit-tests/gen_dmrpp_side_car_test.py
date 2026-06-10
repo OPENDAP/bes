@@ -11,100 +11,95 @@ import unittest
 import subprocess
 import filecmp
 import os
+import gen_bescmd_conf
 
 class TestSample(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(self):
+        gen_bescmd_conf.generate_bes_conf()
+        
     def test_gen_dmrpp_side_car(self):
         
         print("Testing grid_2_2d_ps.hdf")
-        subprocess.run(["./gen_dmrpp_side_car", "-i", "grid_2_2d_ps.hdf","-H"])
+        subprocess.run(["./gen_dmrpp_side_car", "-i", "grid_2_2d_ps.hdf", "-u", "grid_2_2d_ps.hdf", "-H"])
+        bescmd_name = gen_bescmd_conf.generate_bes_cmd("grid_2_2d_ps.hdf.dmrpp")
+        fonc_name=bescmd_name+"_fonc.nc4"
+        subprocess.run(["besstandalone", "-c", "bes.test.conf", "-i",bescmd_name , "-f", fonc_name])
+        with open('grid_2_2d_ps.hdf.dmrpp_fonc.nc4.header','w') as nc_header_file:
+            subprocess.run(["ncdump", "-h", fonc_name],stdout=nc_header_file)
+        result = filecmp.cmp("grid_2_2d_ps.hdf.dmrpp_fonc.nc4.header","grid_2_2d_ps.hdf.dmrpp_fonc.nc4.header.baseline")
+        self.assertEqual(result ,True )
         if not os.environ.get('PRESERVE_TEST_ASSETS'):
             self.addCleanup(os.remove, "grid_2_2d_ps.hdf.dmrpp")
             self.addCleanup(os.remove, "grid_2_2d_ps.hdf_mvs.h5")
-        
-        #result = filecmp.cmp("grid_2_2d_ps.hdf.dmrpp","grid_2_2d_ps.hdf.dmrpp.baseline")
-        #self.assertEqual(result ,True )
-        
-        # Since we also add the dmrpp metadata generation information for the HDF4 files,
-        # we need to ignore that information when doing comparison.
-        with open('grid_2_2d_ps.hdf.dmrpp') as f:
-            dmrpp_lines_after_77 = f.readlines()[77:]
-        with open('grid_2_2d_ps.hdf.dmrpp.baseline') as f1:
-            baseline_lines_after_77 = f1.readlines()[77:]
-
-        # Hacky removal of lines that otherwise show spurious failure
-        # due to test brittleness. (Better fix would be to run same version
-        # stripping as on non-python tests)
-        # Although the above statement may be true, 
-        # the following two lines may cause IndexError,however, github macOS build keeps throwing errors.
-        dmrpp_lines_after_77.pop(221)
-        baseline_lines_after_77.pop(221)
-
-        self.assertEqual(dmrpp_lines_after_77 ,baseline_lines_after_77)
-   
+            self.addCleanup(os.remove, fonc_name)
+            self.addCleanup(os.remove, bescmd_name)
+            self.addCleanup(os.remove, "grid_2_2d_ps.hdf.dmrpp_fonc.nc4.header")
 
     def test_gen_dmrpp_side_car2(self):
         
         print("Testing grid_2_2d_sin.h5")
-        subprocess.run(["./gen_dmrpp_side_car", "-i", "grid_2_2d_sin.h5"])
+        subprocess.run(["./gen_dmrpp_side_car", "-i", "grid_2_2d_sin.h5", "-u", "grid_2_2d_sin.h5"])
+        bescmd_name = gen_bescmd_conf.generate_bes_cmd("grid_2_2d_sin.h5.dmrpp")
+        fonc_name=bescmd_name+"_fonc.nc4"
+        subprocess.run(["besstandalone", "-c", "bes.test.conf", "-i",bescmd_name , "-f", fonc_name])
+        with open('grid_2_2d_sin.h5.dmrpp_fonc.nc4.header','w') as nc_header_file:
+            subprocess.run(["ncdump", "-h", fonc_name],stdout=nc_header_file)
+        result = filecmp.cmp("grid_2_2d_sin.h5.dmrpp_fonc.nc4.header","grid_2_2d_sin.h5.dmrpp_fonc.nc4.header.baseline")
+        self.assertEqual(result ,True )
         if not os.environ.get('PRESERVE_TEST_ASSETS'):
             self.addCleanup(os.remove, "grid_2_2d_sin.h5.dmrpp")
             self.addCleanup(os.remove, "grid_2_2d_sin.h5_mvs.h5")
-        with open('grid_2_2d_sin.h5.dmrpp') as f:
-            dmrpp_lines_after_19 = f.readlines()[19:]
-        with open('grid_2_2d_sin.h5.dmrpp.baseline') as f1:
-            baseline_lines_after_19 = f1.readlines()[19:]
-
-        # Hacky removal of lines that otherwise show spurious failure
-        # due to test brittleness. (Better fix would be to run same version
-        # stripping as on non-python tests)
-        # The following two lines may cause IndexError and they are not necessary since the testing file should not be changed.
-        # If the testing file is changed, the right way is to update the baseline file.
-        #dmrpp_lines_after_19.pop(221)
-        #baseline_lines_after_19.pop(221)
-
-        self.assertEqual(dmrpp_lines_after_19 ,baseline_lines_after_19)
+            self.addCleanup(os.remove, fonc_name)
+            self.addCleanup(os.remove, bescmd_name)
+            self.addCleanup(os.remove, "grid_2_2d_sin.h5.dmrpp_fonc.nc4.header")
 
     def test_gen_dmrpp_side_car_h4_nsc(self):
         
         print("Testing grid_1_2d.hdf :no side car file")
-        subprocess.run(["./gen_dmrpp_side_car", "-i", "grid_1_2d.hdf","-H","-D"])
+        subprocess.run(["./gen_dmrpp_side_car", "-i", "grid_1_2d.hdf","-H","-D","-u", "grid_1_2d.hdf"])
+        bescmd_name = gen_bescmd_conf.generate_bes_cmd("grid_1_2d.hdf.dmrpp")
+        fonc_name=bescmd_name+"_fonc.nc4"
+        subprocess.run(["besstandalone", "-c", "bes.test.conf", "-i",bescmd_name , "-f", fonc_name])
+        with open('grid_1_2d.hdf.dmrpp_fonc.nc4.data','w') as nc_data_file:
+            subprocess.run(["ncdump", fonc_name],stdout=nc_data_file)
+        result = filecmp.cmp("grid_1_2d.hdf.dmrpp_fonc.nc4.data","grid_1_2d.hdf.dmrpp_fonc.nc4.data.baseline")
+        self.assertEqual(result ,True )
         if not os.environ.get('PRESERVE_TEST_ASSETS'):
             self.addCleanup(os.remove, "grid_1_2d.hdf.dmrpp")
-        
-        # Since we also add the dmrpp metadata generation information for the HDF4 files,
-        # we need to ignore those information when doing comparision.
-        with open('grid_1_2d.hdf.dmrpp') as f:
-            dmrpp_lines_after_54 = f.readlines()[54:]
-        with open('grid_1_2d.hdf.dmrpp.baseline') as f1:
-            baseline_lines_after_54 = f1.readlines()[54:]
-        self.assertEqual(dmrpp_lines_after_54 ,baseline_lines_after_54)
+            self.addCleanup(os.remove, fonc_name)
+            self.addCleanup(os.remove, bescmd_name)
+            self.addCleanup(os.remove, "grid_1_2d.hdf.dmrpp_fonc.nc4.data")
+
+
 
     def test_gen_dmrpp_side_car_h5_cf(self):
         
         print("Testing grid_1_2d.h5 :CF option")
-        subprocess.run(["./gen_dmrpp_side_car", "-i", "grid_1_2d.h5","-c"])
+        subprocess.run(["./gen_dmrpp_side_car", "-i", "grid_1_2d.h5","-c","-u", "grid_1_2d.h5"])
+        bescmd_name = gen_bescmd_conf.generate_bes_cmd("grid_1_2d.h5.dmrpp")
+        fonc_name=bescmd_name+"_fonc.nc4"
+        subprocess.run(["besstandalone", "-c", "bes.test.conf", "-i",bescmd_name , "-f", fonc_name])
+        with open('grid_1_2d.h5.dmrpp_fonc.nc4.data','w') as nc_data_file:
+            subprocess.run(["ncdump", fonc_name],stdout=nc_data_file)
+        result = filecmp.cmp("grid_1_2d.h5.dmrpp_fonc.nc4.data","grid_1_2d.h5.dmrpp_fonc.nc4.data.baseline")
+        self.assertEqual(result ,True )
+ 
         if not os.environ.get('PRESERVE_TEST_ASSETS'):
             self.addCleanup(os.remove, "grid_1_2d.h5.dmrpp")
-        
-        
-        # Since we also add the dmrpp metadata generation informatio for the HDF4 files,
-        # we need to ignore those information when doing comparision.
-        # We also ignore the first two lines to skip comparing dmrpp versions
-        with open('grid_1_2d.h5.dmrpp') as f:
-            dmrpp_minus_18_lines = f.readlines()[2:-18]
-        with open('grid_1_2d.h5.dmrpp.baseline') as f1:
-            baseline_minus_18_lines = f1.readlines()[2:-18]
+            self.addCleanup(os.remove, "grid_1_2d.h5_mvs.h5")
+            self.addCleanup(os.remove, fonc_name)
+            self.addCleanup(os.remove, bescmd_name)
+            self.addCleanup(os.remove, "grid_1_2d.h5.dmrpp_fonc.nc4.data")
 
-        # Hacky removal of lines that otherwise show spurious failure
-        # due to test brittleness. (Better fix would be to run same version
-        # stripping as on non-python tests)
-        # Although the above statement may be true, the following lines may cause IndexError.So comment them out.
-        #dmrpp_minus_18_lines.pop(62)
-        #baseline_minus_18_lines.pop(62)
 
-        self.assertEqual(dmrpp_minus_18_lines ,baseline_minus_18_lines)
- 
+    @classmethod
+    def tearDownClass(cls):
+        if os.path.exists("bes.test.conf"):
+            os.remove("bes.test.conf")
+
+
 if __name__ == '__main__':
     unittest.main()
 

@@ -1,0 +1,91 @@
+netcdf grid_2_2d_ps.hdf.dmrpp_test.bescmd_fonc {
+dimensions:
+	YDim_NPGrid = 5 ;
+	XDim_NPGrid = 4 ;
+	YDim_SPGrid = 4 ;
+	XDim_SPGrid = 3 ;
+
+group: NPGrid {
+  variables:
+  	ubyte eos_cf_projection ;
+  		eos_cf_projection:grid_mapping_name = "polar_stereographic" ;
+  		eos_cf_projection:straight_vertical_longitude_from_pole = -45. ;
+  		eos_cf_projection:standard_parallel = 70. ;
+  		eos_cf_projection:false_easting = 0. ;
+  		eos_cf_projection:false_northing = 0. ;
+  		eos_cf_projection:latitude_of_projection_origin = 90. ;
+  		eos_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
+  		eos_cf_projection:eos_cf_grid_mapping = "NPGrid eos_cf_projection" ;
+  	double XDim_NPGrid(XDim_NPGrid) ;
+  		XDim_NPGrid:standard_name = "projection_x_coordinate" ;
+  		XDim_NPGrid:long_name = "x coordinate of projection " ;
+  		XDim_NPGrid:units = "meter" ;
+  		XDim_NPGrid:_CoordinateAxisType = "GeoX" ;
+  		XDim_NPGrid:eos_cf_grid = "NPGrid XDim" ;
+  	double YDim_NPGrid(YDim_NPGrid) ;
+  		YDim_NPGrid:standard_name = "projection_y_coordinate" ;
+  		YDim_NPGrid:long_name = "y coordinate of projection " ;
+  		YDim_NPGrid:units = "meter" ;
+  		YDim_NPGrid:_CoordinateAxisType = "GeoY" ;
+  		YDim_NPGrid:eos_cf_grid = "NPGrid YDim" ;
+  	double Latitude(YDim_NPGrid, XDim_NPGrid) ;
+  		Latitude:units = "degrees_north" ;
+  		Latitude:eos_latlon = "NPGrid lat" ;
+  	double Longitude(YDim_NPGrid, XDim_NPGrid) ;
+  		Longitude:units = "degrees_east" ;
+  		Longitude:eos_latlon = "NPGrid lon" ;
+
+  group: Data_Fields {
+    variables:
+    	float Temperature(YDim_NPGrid, XDim_NPGrid) ;
+    		Temperature:dmr_sds_ref = 5 ;
+    		Temperature:coordinates = "/NPGrid/Longitude /NPGrid/Latitude" ;
+    		Temperature:grid_mapping = "/NPGrid/eos_cf_projection" ;
+    } // group Data_Fields
+
+  group: Grid_Attributes {
+    } // group Grid_Attributes
+  } // group NPGrid
+
+group: SPGrid {
+  variables:
+  	ubyte eos_cf_projection ;
+  		eos_cf_projection:grid_mapping_name = "polar_stereographic" ;
+  		eos_cf_projection:straight_vertical_longitude_from_pole = 0. ;
+  		eos_cf_projection:standard_parallel = -70. ;
+  		eos_cf_projection:false_easting = 0. ;
+  		eos_cf_projection:false_northing = 0. ;
+  		eos_cf_projection:latitude_of_projection_origin = -90. ;
+  		eos_cf_projection:_CoordinateAxisTypes = "GeoX GeoY" ;
+  		eos_cf_projection:eos_cf_grid_mapping = "SPGrid eos_cf_projection" ;
+  	double XDim_SPGrid(XDim_SPGrid) ;
+  		XDim_SPGrid:standard_name = "projection_x_coordinate" ;
+  		XDim_SPGrid:long_name = "x coordinate of projection " ;
+  		XDim_SPGrid:units = "meter" ;
+  		XDim_SPGrid:_CoordinateAxisType = "GeoX" ;
+  		XDim_SPGrid:eos_cf_grid = "SPGrid XDim" ;
+  	double YDim_SPGrid(YDim_SPGrid) ;
+  		YDim_SPGrid:standard_name = "projection_y_coordinate" ;
+  		YDim_SPGrid:long_name = "y coordinate of projection " ;
+  		YDim_SPGrid:units = "meter" ;
+  		YDim_SPGrid:_CoordinateAxisType = "GeoY" ;
+  		YDim_SPGrid:eos_cf_grid = "SPGrid YDim" ;
+  	double Latitude(YDim_SPGrid, XDim_SPGrid) ;
+  		Latitude:units = "degrees_north" ;
+  		Latitude:eos_latlon = "SPGrid lat" ;
+  	double Longitude(YDim_SPGrid, XDim_SPGrid) ;
+  		Longitude:units = "degrees_east" ;
+  		Longitude:eos_latlon = "SPGrid lon" ;
+
+  group: Data_Fields {
+    variables:
+    	float Temperature(YDim_SPGrid, XDim_SPGrid) ;
+    		Temperature:dmr_sds_ref = 10 ;
+    		Temperature:coordinates = "/SPGrid/Longitude /SPGrid/Latitude" ;
+    		Temperature:grid_mapping = "/SPGrid/eos_cf_projection" ;
+    } // group Data_Fields
+
+  group: Grid_Attributes {
+    } // group Grid_Attributes
+  } // group SPGrid
+}

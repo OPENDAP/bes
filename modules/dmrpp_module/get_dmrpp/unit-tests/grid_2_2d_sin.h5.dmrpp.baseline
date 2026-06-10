@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="grid_2_2d_sin.h5" dmrpp:href="OPeNDAP_DMRpp_DATA_ACCESS_URL" dmrpp:version="3.21.1">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="grid_2_2d_sin.h5" dmrpp:href="grid_2_2d_sin.h5" dmrpp:version="3.21.1">
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="created" type="String">
-            <Value>2026-04-29T18:03:20Z</Value>
+            <Value>2026-06-10T13:31:23Z</Value>
         </Attribute>
         <Attribute name="build_dmrpp" type="String">
             <Value>3.21.1</Value>
@@ -14,7 +14,7 @@
             <Value>libdap-3.21.1</Value>
         </Attribute>
         <Attribute name="invocation" type="String">
-            <Value>build_dmrpp -f /home/rocky/kent/hyrax-2121-test/bes/modules/dmrpp_module/get_dmrpp/unit-tests/grid_2_2d_sin.h5 -r grid_2_2d_sin.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+            <Value>/Users/myang6/work/opendap/hyrax-2180/bes/modules/dmrpp_module/.libs/build_dmrpp -f /Users/myang6/work/opendap/hyrax-2180/bes/modules/dmrpp_module/get_dmrpp/unit-tests/grid_2_2d_sin.h5 -r grid_2_2d_sin.h5.dmr -u grid_2_2d_sin.h5 -M</Value>
         </Attribute>
     </Attribute>
     <Group name="HDFEOS">

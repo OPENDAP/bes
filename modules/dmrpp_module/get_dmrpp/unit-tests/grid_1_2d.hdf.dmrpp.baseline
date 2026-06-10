@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="removed" name="grid_1_2d.hdf" dmrpp:href="OPeNDAP_DMRpp_DATA_ACCESS_URL" dmrpp:version="3.21.1">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="grid_1_2d.hdf" dmrpp:href="grid_1_2d.hdf" dmrpp:version="3.21.1">
     <Dimension name="YDim_GeoGrid" size="4"/>
     <Dimension name="XDim_GeoGrid" size="8"/>
     <Attribute name="HDFEOSVersion" type="String">
@@ -37,7 +37,7 @@ END
     </Attribute>
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="created" type="String">
-            <Value>2025-10-08T18:16:20Z</Value>
+            <Value>2026-06-10T13:31:24Z</Value>
         </Attribute>
         <Attribute name="build_dmrpp" type="String">
             <Value>3.21.1</Value>
@@ -49,7 +49,7 @@ END
             <Value>libdap-3.21.1</Value>
         </Attribute>
         <Attribute name="invocation" type="String">
-            <Value>build_dmrpp_h4 -f /Users/myang6/work/opendap/2025-summer-work/code-cleanup-testing/hyrax-1628/bes/modules/dmrpp_module/get_dmrpp/unit-tests/grid_1_2d.hdf -r grid_1_2d.hdf.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+            <Value>build_dmrpp_h4 -f /Users/myang6/work/opendap/hyrax-2180/bes/modules/dmrpp_module/get_dmrpp/unit-tests/grid_1_2d.hdf -r grid_1_2d.hdf.dmr -u grid_1_2d.hdf -M</Value>
         </Attribute>
         <Attribute name="configuration" type="String">
             <Value>H4.EnableCF=false</Value>
