@@ -96,7 +96,7 @@ public:
         DBG(cerr << prolog << "Using BES configuration: " << bes_conf << endl);
         if (Debug) show_file(bes_conf);
         TheBESKeys::ConfigFile = bes_conf;
-        BESContextManager::TheManager()->set_context(EDL_UID_KEY, "test_user");
+        BESContextManager::TheManager()->set_context(UID_CONTEXT_KEY, "test_user");
 
         if (bes_debug) BESDebug::SetUp("cerr,bes,euc,http,curl");
 
@@ -105,8 +105,8 @@ public:
         theCache->d_effective_urls.clear();
 
         if (!token.empty()) {
-            DBG(cerr << "Setting BESContext " << EDL_AUTH_TOKEN_KEY << " to: '" << token << "'" << endl);
-            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, token);
+            DBG(cerr << "Setting BESContext " << EDL_AUTH_TOKEN_CONTEXT_KEY << " to: '" << token << "'" << endl);
+            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_CONTEXT_KEY, token);
         }
         DBG(cerr << prolog << "END" << endl);
     }

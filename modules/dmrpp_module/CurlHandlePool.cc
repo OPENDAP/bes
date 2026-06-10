@@ -407,7 +407,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
                             "s3");
 
 
-            handle->d_request_headers = curl::append_http_header((curl_slist *) nullptr, "Authorization", auth_header);
+            handle->d_request_headers = curl::append_http_header((curl_slist *) nullptr, AUTHORIZATION_REQUEST_HEADER_KEY, auth_header);
             handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "x-amz-content-sha256",
                                                                  "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
             handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "x-amz-date",
@@ -425,7 +425,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
             string edl_token = credentials->get("edl_token");
             if (!edl_token.empty()) {
                 INFO_LOG(prolog << "Using EDL Token for URL: " << handle->d_url->get_url_no_query() << '\n');
-                handle->d_request_headers = curl::append_http_header(handle->d_request_headers, "Authorization", edl_token);
+                handle->d_request_headers = curl::append_http_header(handle->d_request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, edl_token);
                 res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTPHEADER, handle->d_request_headers);
                 curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_HTTPHEADER", handle->d_errbuf.data(), __FILE__, __LINE__);
             }

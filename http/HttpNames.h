@@ -71,12 +71,14 @@
 #define HTTP_EFFECTIVE_URL_DEFAULT_EXPIRES_INTERVAL 300
 #define HTTP_URL_REFRESH_THRESHOLD 60
 
-#define EDL_AUTH_TOKEN_KEY "edl_auth_token"
-#define EDL_UID_KEY "uid"
+#define EDL_AUTH_TOKEN_CONTEXT_KEY "edl_auth_token"
+#define UID_CONTEXT_KEY "uid"
+#define UID_REQUEST_HEADER_KEY "User-Id"
+#define AUTHORIZATION_REQUEST_HEADER_KEY "Authorization"
 
 // jhrg 11/13/25
-#define CMR_CLIENT_ID_CONTEXT_KEY "edl_client_application_id"
-#define CMR_CLIENT_ID_KEY "Client-Id"
+#define EDL_CLIENT_APPLICATION_ID_CONTEXT_KEY "edl_client_application_id"
+#define EDL_CLIENT_APPLICATION_ID_REQUEST_HEADER_KEY "Client-Id"
 
 #define REMOTE_RESOURCE_TMP_DIR_KEY "Http.RemoteResource.TmpDir"    // default is /tmp/bes_rr_tmp
 #define REMOTE_RESOURCE_DELETE_TMP_FILE "Http.RemoteResource.TmpFile.Delete"    // default is true
