@@ -302,8 +302,10 @@ public:
         DBG(cerr << prolog << "BEGIN\n");
         curl_slist *hdrs = nullptr;
         curl_slist *sl_iter;
+        
         // string tokens[] = {"big_bucky_ball", "itsa_authy_token_time", "its_not_shrew"};
         // BESContextManager::TheManager()->set_context(EDL_UID_KEY, tokens[0]);
+
         string tokens[] = {"itsa_authy_token_time", "its_not_shrew"};
         BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, tokens[0]);
         BESContextManager::TheManager()->set_context(EDL_CLIENT_APPLICATION_ID_CONTEXT_KEY, tokens[1]);
