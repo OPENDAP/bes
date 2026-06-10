@@ -1454,10 +1454,6 @@ curl_slist *append_http_header(curl_slist *slist, const string &header_name, con
  *
  *    Authorization: Bearer edl_access_token
  *
- * - edl_echo_token: This soon to be legacy token is formed from
- *  the edl_auth_token and the server's EDL client_application_id.
- *     Echo-Token: edl_access_token:Client-Id
- *
  * If an aspirational auth header value is missing then that header
  * will not be added to the request_headers list.
  *
@@ -1468,25 +1464,19 @@ curl_slist *add_edl_auth_headers(curl_slist *request_headers) {
     bool found;
     string s;
 
-    s = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
-    if (found && !s.empty()) {
-        request_headers = append_http_header(request_headers, "User-Id", s);
-    }
+    //s = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
+    //if (found && !s.empty()) {
+    //    request_headers = append_http_header(request_headers, "User-Id", s);
+    //}
 
     s = BESContextManager::TheManager()->get_context(EDL_AUTH_TOKEN_KEY, found);
     if (found && !s.empty()) {
         request_headers = append_http_header(request_headers, "Authorization", s);
     }
 
-    s = BESContextManager::TheManager()->get_context(CMR_CLIENT_ID_CONTEXT_KEY, found);
+    s = BESContextManager::TheManager()->get_context(EDL_CLIENT_APPLICATION_ID_CONTEXT_KEY, found);
     if (found && !s.empty()) {
-        request_headers = append_http_header(request_headers, CMR_CLIENT_ID_KEY, s);
-    }
-
-    // TODO Remove this. See HYRAX-1036. jhrg 11/13/25
-    s = BESContextManager::TheManager()->get_context(EDL_ECHO_TOKEN_KEY, found);
-    if (found && !s.empty()) {
-        request_headers = append_http_header(request_headers, "Echo-Token", s);
+        request_headers = append_http_header(request_headers, EDL_CLIENT_APPLICATION_ID_KEY, s);
     }
 
     return request_headers;

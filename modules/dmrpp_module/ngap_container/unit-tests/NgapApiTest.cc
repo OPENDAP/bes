@@ -201,7 +201,7 @@ public:
 
         // Set the context for the client id. jhrg 10/8/25
         const std::string test_client_id = "hyrax-test-client";
-        BESContextManager::TheManager()->set_context(CMR_CLIENT_ID_CONTEXT_KEY, test_client_id);
+        BESContextManager::TheManager()->set_context(EDL_CLIENT_APPLICATION_ID_CONTEXT_KEY, test_client_id);
 
         string resty_path(
             "/collections/C1443727145-LAADS/MOD08_D3.v6.1/granules/MOD08_D3.A2020308.061.2020309092644.hdf.nc");
