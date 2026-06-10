@@ -63,4 +63,13 @@ FONc.ReduceDim=true
 #  See https://bugs.earthdata.nasa.gov/browse/HYRAX-749.  
 # FONc.NC3ClassicFormat=true
 
-
+# Data compression takes much longer time, especially for floating-point array. For some cases,
+# the server time out limit may be reached before the netCDF file is generated. For such a case,
+# the fileout netCDF response will fail. To reduce this risk, by default we turn off the data compression
+# for big size floating-point array. The default value of the size limitation is 512 MB(536870912 bytes).
+# For any floating-point array size that is bigger than this value, the compression is turned off.
+# Note: for some dmrpp optimization such as the direct chunk IO, this limitation is not applied.  
+# Users can change the size by uncommenting the following line and provide the customized size limitation in bytes.
+# FONc.FloatWriteOptBufSize=536870912
+# Users can choose to always compress the data regardless of the array size by uncommenting the following line. 
+# FONc.FloatWriteOpt=false
