@@ -1454,10 +1454,6 @@ curl_slist *append_http_header(curl_slist *slist, const string &header_name, con
  *
  *    Authorization: Bearer edl_access_token
  *
- * - edl_echo_token: This soon to be legacy token is formed from
- *  the edl_auth_token and the server's EDL client_application_id.
- *     Echo-Token: edl_access_token:Client-Id
- *
  * If an aspirational auth header value is missing then that header
  * will not be added to the request_headers list.
  *
