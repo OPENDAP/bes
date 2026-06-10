@@ -3,6 +3,7 @@ AUTOMAKE_OPTIONS = foreign
 # Added NOTPARALLEL because this Makefile.am requires targets to run in a certain
 # order and this makes that requirement explicit. jhrg 8/31/25
 
+# Just comment out this now.
 #.NOTPARALLEL:
 
 HDF_FILES = *.hdf
