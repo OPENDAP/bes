@@ -3,7 +3,7 @@ AUTOMAKE_OPTIONS = foreign
 # Added NOTPARALLEL because this Makefile.am requires targets to run in a certain
 # order and this makes that requirement explicit. jhrg 8/31/25
 
-#.NOTPARALLEL:
+.NOTPARALLEL:
 
 HDF_FILES = *.hdf
 HDF5_FILES = *.h5
@@ -89,4 +89,5 @@ clean-local:
 	rm -f $(builddir)/$(HDF5_FILES); \
 	rm -f $(builddir)/$(PYTHON_FILES); \
 	rm -f $(builddir)/$(BASELINE_FILES); \
+        rm -f $(builddir)/bes.log; \
 	fi;
