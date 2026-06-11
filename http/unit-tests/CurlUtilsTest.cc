@@ -88,9 +88,6 @@ public:
         BESContextManager::TheManager()->unset_context(UID_CONTEXT_KEY);
         BESContextManager::TheManager()->unset_context(EDL_AUTH_TOKEN_CONTEXT_KEY);
         BESContextManager::TheManager()->unset_context(EDL_CLIENT_APPLICATION_ID_CONTEXT_KEY);
-        // TODO Remove this and all instances of EDL_ECHO_TOKEN_CONTEXT_KEY in this test suite.
-        //  See HYRAX-1036. jhrg 11/13/25
-        BESContextManager::TheManager()->unset_context(EDL_ECHO_TOKEN_CONTEXT_KEY);
 
         // We have to remove the cookie file between test invocations.
         // Not doing so can cause the previous test's login success
@@ -308,9 +305,6 @@ public:
         string tokens[] = {"big_bucky_ball", "itsa_authy_token_time", "its_not_shrew"};
         BESContextManager::TheManager()->set_context(UID_CONTEXT_KEY, tokens[0]);
         BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_CONTEXT_KEY, tokens[1]);
-#if 0
-        BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_CONTEXT_KEY, tokens[2]);
-#endif
         BESContextManager::TheManager()->set_context(EDL_CLIENT_APPLICATION_ID_CONTEXT_KEY, tokens[2]);
 
         try {
@@ -635,7 +629,6 @@ public:
                                edl_token};
             BESContextManager::TheManager()->set_context(UID_CONTEXT_KEY, tokens[0]);
             BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_CONTEXT_KEY, tokens[1]);
-            BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_CONTEXT_KEY, tokens[2]);
 
             auto redirect_url = curl::get_redirect_url(source_url);
             DBG(cerr << prolog << "redirect_url: " << redirect_url->str() << "\n");
@@ -678,7 +671,6 @@ public:
                                edl_token};
             BESContextManager::TheManager()->set_context(UID_CONTEXT_KEY, tokens[0]);
             BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_CONTEXT_KEY, tokens[1]);
-            BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_CONTEXT_KEY, tokens[2]);
 
             try {
                 BES_STOPWATCH_START(MODULE, prolog + "Timing");
@@ -730,7 +722,6 @@ public:
                                edl_token};
             BESContextManager::TheManager()->set_context(UID_CONTEXT_KEY, tokens[0]);
             BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_CONTEXT_KEY, tokens[1]);
-            BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_CONTEXT_KEY, tokens[2]);
 
             // What matters here is that we assign cerr to the BESDebug output stream
             DBG(BESDebug::SetUp("cerr,DUMMY_KEY"));

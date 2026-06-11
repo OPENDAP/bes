@@ -101,7 +101,6 @@ public:
         // happen even if exceptions are thrown by the add_edl...() test.
         BESContextManager::TheManager()->unset_context(UID_CONTEXT_KEY);
         BESContextManager::TheManager()->unset_context(EDL_AUTH_TOKEN_CONTEXT_KEY);
-        BESContextManager::TheManager()->unset_context(EDL_ECHO_TOKEN_CONTEXT_KEY);
 
         // We have to remove the cookie file between test invocations.
         // Not doing so can cause the previous test's login success

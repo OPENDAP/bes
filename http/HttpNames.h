@@ -72,7 +72,6 @@
 #define HTTP_URL_REFRESH_THRESHOLD 60
 
 #define EDL_AUTH_TOKEN_CONTEXT_KEY "edl_auth_token"
-#define EDL_ECHO_TOKEN_CONTEXT_KEY "edl_echo_token"
 #define UID_CONTEXT_KEY "uid"
 #define UID_REQUEST_HEADER_KEY "User-Id"
 #define AUTHORIZATION_REQUEST_HEADER_KEY "Authorization"
