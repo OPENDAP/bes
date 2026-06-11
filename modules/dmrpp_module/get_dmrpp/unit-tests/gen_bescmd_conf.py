@@ -1,3 +1,5 @@
+# This script that generates the bes configuration and xml files for testing the gen_dmrpp_side_car.
+# The functions defined in this script are used by the gen_dmrpp_side_car_test.py.
 import os
 import shutil
 import string
@@ -15,6 +17,7 @@ def add_module_path(f_str, conf_mod_name, mod_path):
     temp_text = f_str[:index] + mod_path + f_str[index:]
     return temp_text
 
+# Generate the BES configuration file
 def generate_bes_conf():
     bes_conf_name="bes.test.conf"
     bes_conf_str=r'''BES.LogName=./bes.log
@@ -48,6 +51,7 @@ AllowedHosts+=^https?:\/\/'''
     bc_fid.write(bes_conf_str)
     bc_fid.close()
 
+# Generate the xml file that tells the BES to return the netCDF-4 file.
 def generate_bes_cmd(dmrpp_name):
     bescmd_str_p1 = '''<?xml version="1.0" encoding="UTF-8"?>
 <request reqID="some_unique_value" >
