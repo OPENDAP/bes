@@ -2521,8 +2521,8 @@ void qc_input_file(const string &file_fqn)
         else {
             stringstream msg;
             msg << "The provided file: " << file_fqn << " - ";
-            msg << "is neither an HDF5 or a NetCDF-4 file, currently only HDF5 and NetCDF-4 files ";
-            msg << "are supported for dmr++ production" << endl;
+            msg << "is neither an HDF5 nor a NetCDF-4 file. If the file is an HDF4 file, ";
+            msg << "you can use gen_dmrpp_side_car -i h.hdf -H to generate the dmrpp file." << endl;
             throw BESInternalFatalError(msg.str(), __FILE__, __LINE__);
         }
     }
