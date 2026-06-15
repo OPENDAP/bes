@@ -236,7 +236,10 @@ def main():
                 err_msg += "\n The HDF4 file name is:  " + hdf_full_path
                 print_error(err_msg)
     else:
-        if (args.c is True):
+        if (args.DisableSideCar is True):
+            err_msg = "Currently the dmrpp generation for an HDF5 file with the DisableSideCar option is not supported. "
+            print_error(err_msg)
+        elif (args.c is True):
             if (args.URL is not None):
                 ret = subprocess.run(
                     ["get_dmrpp_h5", "-i", hdf_full_path, "-u", hdf_url, "-C"],
