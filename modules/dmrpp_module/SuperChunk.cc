@@ -26,6 +26,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <sys/time.h>
+#include <unistd.h>
 
 #include "BESDebug.h"
 #include "BESInternalError.h"
@@ -889,7 +891,15 @@ void SuperChunk::process_child_chunks_unconstrained() {
         for (const auto &chunk : d_chunks) {
             chunks_to_process.push(chunk);
         }
+        struct timeval tv,tv2;
+        gettimeofday(&tv,NULL);
         process_chunks_unconstrained_concurrent(d_id, chunks_to_process, chunk_shape, d_parent_array, array_shape);
+        gettimeofday(&tv2,NULL);
+        long seconds = tv2.tv_sec - tv.tv_sec;
+	long useconds = tv2.tv_usec -tv.tv_usec;
+	double elapsed = seconds *1000.0 + useconds/1000.0;
+cerr<<"Execution time: " << elapsed <<" ms"<<endl;
+        
     }
 }
 
