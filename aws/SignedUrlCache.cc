@@ -328,7 +328,7 @@ SignedUrlCache::get_sts_credentials_from_tea_endpoint(std::string const &tea_end
 
         // Note: this http_get call internally adds EDL auth headers, if available. The resultant credentials are
         // specific to the current EDL user
-        curl::http_get(tea_endpoint_url, s3credentials_json_string);
+        curl::http_get(tea_endpoint_url, s3credentials_json_string, true);
     } catch (http::HttpError &http_error) {
         string err_msg = prolog +
                          "Encountered an error while "

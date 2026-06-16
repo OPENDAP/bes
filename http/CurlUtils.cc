@@ -1239,11 +1239,11 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
  * @param target_url The URL to dereference.
  * @param buf The string into which to put the response. New data will be
  * appended to this string.
- * @param use_raw_url_no_new_headers Flag to skip adding additional headers,
- * e.g., for use with presigned urls
+ * @param authenticate When true the request headers and/or query string may be modified
+ * so that the request is "authenticated"
  * @exception Throws when libcurl encounters a problem.
  */
-void http_get(const string &target_url, string &buf, bool use_raw_url_no_new_headers) {
+void http_get(const string &target_url, string &buf, bool authenticate) {
     BESDEBUG(MODULE, prolog << "BEGIN\n");
 
     vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
@@ -1252,7 +1252,7 @@ void http_get(const string &target_url, string &buf, bool use_raw_url_no_new_hea
     curl_slist *request_headers = nullptr;
 
     try {
-        if (!use_raw_url_no_new_headers) {
+        if (authenticate) {
             // Add the authorization headers
             request_headers = add_edl_auth_headers(request_headers);
 
