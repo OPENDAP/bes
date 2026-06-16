@@ -84,13 +84,13 @@ shared_ptr <EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr <url> 
 
     if (!is_enabled()) {
         BESDEBUG(MODULE, prolog << "CACHE IS DISABLED." << endl);
-        return shared_ptr<EffectiveUrl>(new EffectiveUrl(source_url));
+        return std::make_shared<EffectiveUrl>(source_url);
     }
 
     // if it's not an HTTP url there is nothing to cache.
     if (source_url->str().find(HTTP_PROTOCOL) != 0 && source_url->str().find(HTTPS_PROTOCOL) != 0) {
         BESDEBUG(MODULE, prolog << "END Not an HTTP request, SKIPPING." << endl);
-        return shared_ptr<EffectiveUrl>(new EffectiveUrl(source_url));
+        return std::make_shared<EffectiveUrl>(source_url);
     }
 
     if (!d_skip_regex)
@@ -103,7 +103,7 @@ shared_ptr <EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr <url> 
             BESDEBUG(MODULE, prolog << "END Candidate url matches the "
                                        "no_redirects_regex_pattern [" << d_skip_regex->pattern() <<
                                     "][match_length=" << match_length << "] SKIPPING." << endl);
-            return shared_ptr<EffectiveUrl>(new EffectiveUrl(source_url));
+            return std::make_shared<EffectiveUrl>(source_url);
         }
         BESDEBUG(MODULE, prolog << "Candidate url: '" << source_url->str()
                                 << "' does NOT match the skip_regex pattern [" << d_skip_regex->pattern() << "]"
