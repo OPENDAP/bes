@@ -194,7 +194,8 @@ void RemoteResource::set_filename_for_file_url() {
  * When this method returns the RemoteResource object is fully initialized
  * URL contents are available in the temporary file. For file:// URLs this
  * method is a no-op.
- * @param authenticate
+ * @param authenticate When this value is set to true an attempt will be made to add EDL
+ * authentication and/or S3 signing headers to the outgoing request headers
  */
 void RemoteResource::retrieve_resource(const bool authenticate) {
     if (d_initialized) {
@@ -233,9 +234,10 @@ void RemoteResource::retrieve_resource(const bool authenticate) {
  * @note Private
  *
  * @param fd An open file descriptor the is associated with the target file.
- * @param authenticate
+ * @param authenticate When this value is set to true an attempt will be made to add EDL
+ * authentication and/or S3 signing headers to the outgoing request headers
  */
-void RemoteResource::get_url(int fd, bool authenticate) {
+void RemoteResource::get_url(int fd, const bool authenticate) {
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     BES_STOPWATCH_START(MODULE, prolog + "Timing retrieval. Target url: " + d_url->str());

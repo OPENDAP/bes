@@ -1133,7 +1133,8 @@ static void super_easy_perform(CURL *c_handle, int fd) {
  * method returns that the body of the response can be retrieved by reading
  * from this file descriptor.
  * @param http_response_headers Value/result parameter for the HTTP Response Headers.
- * @param authenticate When true attempt to add edl authentication and/or s3 signing headers to the request
+ * @param authenticate When this value is set to true an attempt will be made to add EDL
+ * authentication and/or S3 signing headers to the outgoing request headers
  * @param http_request_headers A pointer to a vector of HTTP request headers. Default is
  * null. These headers will be appended to the list of default headers.
  * @exception Error Thrown if libcurl encounters a problem; the libcurl
