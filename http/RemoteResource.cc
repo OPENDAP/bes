@@ -194,8 +194,9 @@ void RemoteResource::set_filename_for_file_url() {
  * When this method returns the RemoteResource object is fully initialized
  * URL contents are available in the temporary file. For file:// URLs this
  * method is a no-op.
+ * @param authenticate
  */
-void RemoteResource::retrieve_resource() {
+void RemoteResource::retrieve_resource(const bool authenticate) {
     if (d_initialized) {
         return;
     }
@@ -208,7 +209,7 @@ void RemoteResource::retrieve_resource() {
     }
 
     // Get the contents of the URL and put them in the temp file
-    get_url(d_fd);
+    get_url(d_fd, authenticate);
 
     string new_name = d_filename + "_" + d_uid + "#" + d_basename;
     if (rename(d_filename.c_str(), new_name.c_str()) != 0) {
@@ -232,15 +233,16 @@ void RemoteResource::retrieve_resource() {
  * @note Private
  *
  * @param fd An open file descriptor the is associated with the target file.
+ * @param authenticate
  */
-void RemoteResource::get_url(int fd) {
+void RemoteResource::get_url(int fd, bool authenticate) {
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     BES_STOPWATCH_START(MODULE, prolog + "Timing retrieval. Target url: " + d_url->str());
 
     try {
         // Throws an HttpError if there is a curl error.
-        curl::http_get_and_write_resource(d_url, fd, &d_response_headers);
+        curl::http_get_and_write_resource(d_url, fd, &d_response_headers, authenticate);
         BESDEBUG(MODULE, prolog << "Resource " << d_url->str() << " saved to temporary file " << d_filename << endl);
     }
     catch (http::HttpError &http_error) {

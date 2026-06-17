@@ -1133,13 +1133,14 @@ static void super_easy_perform(CURL *c_handle, int fd) {
  * method returns that the body of the response can be retrieved by reading
  * from this file descriptor.
  * @param http_response_headers Value/result parameter for the HTTP Response Headers.
+ * @param authenticate When true attempt to add edl authentication and/or s3 signing headers to the request
  * @param http_request_headers A pointer to a vector of HTTP request headers. Default is
  * null. These headers will be appended to the list of default headers.
  * @exception Error Thrown if libcurl encounters a problem; the libcurl
  * error message is stuffed into the Error object.
  */
 void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, int fd,
-                                 vector <string> *http_response_headers) {
+                                 vector <string> *http_response_headers, const bool authenticate) {
 
     vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
     CURLcode res;
@@ -1157,11 +1158,12 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
     }
 
     try {
-        // Add the EDL authorization headers if the Information is in the BES Context Manager
-        req_headers = add_edl_auth_headers(req_headers);
-        // Add AWS credentials if they're available.
-        req_headers = sign_url_for_s3_if_possible(target_url->str(), req_headers);
-
+        if (authenticate) {
+            // Add the EDL authorization headers if the Information is in the BES Context Manager
+            req_headers = add_edl_auth_headers(req_headers);
+            // Add AWS credentials if they're available.
+            req_headers = sign_url_for_s3_if_possible(target_url->str(), req_headers);
+        }
         // OK! Make the cURL handle
         ceh = init(target_url->str(), req_headers, http_response_headers);
 

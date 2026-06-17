@@ -175,7 +175,7 @@ string S3Container::access()
             d_dmrpp_rresource = std::make_shared<http::RemoteResource>(dmrpp_url);
 
             BES_STOPWATCH_START(MODULE, prolog + "Timing DMR++ retrieval. Target url: " + dmrpp_url->str());
-            d_dmrpp_rresource->retrieve_resource();
+            d_dmrpp_rresource->retrieve_resource(true);
 
             // Substitute the data_access_url and missing_data_access_url in the dmr++ file.
             map<string, string, std::less<>> content_filters;

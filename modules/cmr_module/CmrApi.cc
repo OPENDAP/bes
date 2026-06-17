@@ -425,7 +425,7 @@ void CmrApi::get_years(const string &collection_name, vector<string> &years_resu
 
     BESDEBUG(MODULE, prolog << "CMR Query URL: "<< cmr_query_url.str() << endl);
 
-    const auto &cmr_doc = json.get_as_json(cmr_query_url.str());
+    const auto &cmr_doc = json.get_as_json(cmr_query_url.str(), true);
 
     const auto &year_group = get_year_group(cmr_doc);
     if(year_group[CMR_V2_HAS_CHILDREN_KEY].get<bool>()) {
@@ -459,7 +459,7 @@ CmrApi::get_months(const string &collection_name,
     cmr_query_url << http::url_encode("temporal_facet[0][year]") << "=" << r_year;
     BESDEBUG(MODULE, prolog << "CMR Query URL: "<< cmr_query_url.str() << endl);
 
-    const auto &cmr_doc = json.get_as_json(cmr_query_url.str());
+    const auto &cmr_doc = json.get_as_json(cmr_query_url.str(), true);
     BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << cmr_doc.dump(2) << endl);
 
     const auto &year_group = get_year_group(cmr_doc);
@@ -532,7 +532,7 @@ void CmrApi::get_days(const string &collection_concept_id,
     BESDEBUG(MODULE, prolog << "CMR Query URL: " << cmr_query_url.str() << endl);
 
     JsonUtils json;
-    const auto &cmr_doc = json.get_as_json(cmr_query_url.str());
+    const auto &cmr_doc = json.get_as_json(cmr_query_url.str(), true);
 
     const auto &day_group = get_day_group(r_month, r_year, cmr_doc);
     const auto &days = get_children(day_group);
@@ -632,7 +632,7 @@ void CmrApi::granule_search(const std::string &collection_name,
 
     BESDEBUG(MODULE, prolog << "CMR Granule Search Request Url: " << cmr_query_url.str() << endl);
 
-    cmr_doc = json.get_as_json(cmr_query_url.str());
+    cmr_doc = json.get_as_json(cmr_query_url.str(), true);
     BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << cmr_doc.dump(4) << endl);
 }
 
@@ -668,7 +668,7 @@ const {
 
     BESDEBUG(MODULE, prolog << "CMR Granule Search Request Url: " << cmr_query_url.str() << endl);
 
-    cmr_doc = json.get_as_json(cmr_query_url.str());
+    cmr_doc = json.get_as_json(cmr_query_url.str(), true);
     BESDEBUG(MODULE, prolog << "Got JSON Document: "<< endl << cmr_doc.dump(4) << endl);
 }
 
@@ -779,7 +779,7 @@ void CmrApi::get_providers(vector<unique_ptr<cmr::Provider> > &providers) const
     JsonUtils json;
     BES_STOPWATCH_START(MODULE, prolog + "Timing");
 
-    const auto &cmr_doc = json.get_as_json(d_cmr_providers_search_endpoint_url);
+    const auto &cmr_doc = json.get_as_json(d_cmr_providers_search_endpoint_url, true);
     unsigned int hits = cmr_doc["hits"];
     BESDEBUG(MODULE, prolog << "hits: " << hits << endl);
     if (hits == 0){
@@ -835,7 +835,7 @@ unsigned long int CmrApi::get_opendap_collections_count(const string &provider_i
     cmr_query_url << "?has_opendap_url=true&page_size=0";
     cmr_query_url << "&provider=" << provider_id;
     BESDEBUG(MODULE, prolog << "cmr_query_url: " << cmr_query_url.str() << endl);
-    const auto &cmr_doc = json.get_as_json(cmr_query_url.str());
+    const auto &cmr_doc = json.get_as_json(cmr_query_url.str(), true);
 
     const unsigned long int hits = json.qc_integer(CMR_HITS_KEY,cmr_doc);
     BESDEBUG(MODULE, prolog << CMR_HITS_KEY <<  ": " << hits << endl);
@@ -863,7 +863,7 @@ const {
     string cmr_query_url = cmr_query_url_base + "page_num=" + to_string(page_num);
     BESDEBUG(MODULE, prolog << "cmr_query_url: " << cmr_query_url << endl);
 
-    const auto &cmr_doc = json.get_as_json(cmr_query_url);
+    const auto &cmr_doc = json.get_as_json(cmr_query_url, true);
 
     unsigned int hits = cmr_doc["hits"];
     BESDEBUG(MODULE, prolog << "hits: " << hits << endl);

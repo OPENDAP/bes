@@ -52,14 +52,15 @@ namespace cmr {
  * parser to populate the parameter 'd'
  *
  * @param url The URL of the JSON document to parse.
+ * @param authenticate
  * @return The json document parsed from the source URL response..
  *
  */
-json JsonUtils::get_as_json(const string &url) const
+json JsonUtils::get_as_json(const string &url, bool authenticate) const
 {
     BESDEBUG(MODULE,prolog << "Trying url: " << url << endl);
     http::RemoteResource remoteResource(make_shared<http::url>(url));
-    remoteResource.retrieve_resource();
+    remoteResource.retrieve_resource(authenticate);
     std::ifstream f(remoteResource.get_filename());
     json data = json::parse(f);
     return data;

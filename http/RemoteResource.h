@@ -84,7 +84,7 @@ private:
     std::vector<std::string> d_response_headers; // Response headers
 
     /// write the url content to a file, set the type, and rewind the file descriptor
-    void get_url(int fd);
+    void get_url(int fd, bool authenticate = false);
 
     /// Protect the mkstemp() call
     static std::mutex d_mkstemp_mutex;
@@ -102,7 +102,7 @@ public:
 
     virtual ~RemoteResource();
 
-    void retrieve_resource();
+    void retrieve_resource(bool authenticate = false);
 
     /**
      * Returns the DAP type std::string of the RemoteHttpResource
