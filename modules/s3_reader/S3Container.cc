@@ -174,10 +174,11 @@ string S3Container::access()
             //d_dmrpp_rresource = new http::RemoteResource(dmrpp_url);
             d_dmrpp_rresource = std::make_shared<http::RemoteResource>(dmrpp_url);
 
-            BES_STOPWATCH_START(MODULE, prolog + "Timing DMR++ retrieval. Target url: " + dmrpp_url->str());
 
             curl_slist *req_hdrs = curl::add_edl_auth_headers(nullptr);
             req_hdrs = curl::sign_url_for_s3_if_possible(dmrpp_url->get_url_no_query(), req_hdrs);
+
+            BES_STOPWATCH_START(MODULE, prolog + "Timing DMR++ retrieval. Target url: " + dmrpp_url->str());
             d_dmrpp_rresource->retrieve_resource(req_hdrs);
 
             // Substitute the data_access_url and missing_data_access_url in the dmr++ file.

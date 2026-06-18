@@ -84,7 +84,6 @@ private:
     std::vector<std::string> d_response_headers; // Response headers
 
     /// write the url content to a file, set the type, and rewind the file descriptor
-    void get_url(int fd, bool authenticate = false);
     void get_url(int fd, curl_slist *http_request_headers = nullptr);
 
     /// Protect the mkstemp() call
