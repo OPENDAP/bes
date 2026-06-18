@@ -130,9 +130,9 @@ static string http_code_to_string(long code) {
 }
 
 /**
- * @brief Translate a cURL authentication type value (int) into a human readable string.
+ * @brief Translate a cURL authentication type value (int) into a human-readable string.
  * @param auth_type The cURL authentication type value to convert
- * @return The human readable string associated with auth_type.
+ * @return The human-readable string associated with auth_type.
  */
 static string getCurlAuthTypeName(unsigned long auth_type) {
 
