@@ -93,6 +93,7 @@ void read_data(CURL *c_handle);
 curl_slist *append_http_header(curl_slist *slist, const std::string &header_name, const std::string &value);
 
 curl_slist *add_edl_auth_headers(curl_slist *request_headers);
+curl_slist *sign_url_for_s3_if_possible(const std::string &url, curl_slist *request_headers);
 
 curl_slist *sign_s3_url(const std::string &target_url, http::AccessCredentials *ac, curl_slist *req_headers);
 
