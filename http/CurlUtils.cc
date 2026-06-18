@@ -1437,6 +1437,10 @@ curl_slist *append_http_header(curl_slist *slist, const string &header_name, con
  *
  *    Authorization: Bearer edl_access_token
  *
+ * If an EDL auth token is not located in the BESContextManager,
+ * then the CredentialsManager is checked for an EDL token
+ * associated with the target_url
+ *
  * If an aspirational auth header value is missing then that header
  * will not be added to the request_headers list.
  *
@@ -1457,14 +1461,15 @@ curl_slist *add_edl_auth_headers(const string &target_url, curl_slist *request_h
         request_headers = append_http_header(request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, s);
     }
     else {
+        INFO_LOG(prolog + "An EDL Auth Token was NOT located in the BESContextManager.");
 #ifdef DEVELOPER
-        INFO_LOG(prolog + "No Token found in the BESContextManager. Checking CredentialsManager...");
+        INFO_LOG(prolog + "Checking CredentialsManager... ");
         AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
         if (credentials) {
-            INFO_LOG(prolog + "Looking for EDL Token for URL: " + target_url );
+            INFO_LOG(prolog + "Looking for an EDL Auth Token for URL: " + target_url );
             string edl_token = credentials->get("edl_token");
             if (!edl_token.empty()) {
-                INFO_LOG(prolog + "Using EDL Token for URL: " + target_url + '\n');
+                INFO_LOG(prolog + "Using EDL Auth Token for URL: " + target_url + '\n');
                 request_headers = curl::append_http_header(request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, edl_token);
             }
         }
