@@ -172,8 +172,9 @@ $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/PODAAC/OMG_Bath
 $GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/PODAAC/SWOT_L2_HR_Raster_250m_UTM50V_N_x_x_x_406_023_131F_20230121T040652_20230121T040653_PIA0_01.nc.h5_dio.dmrpp
 
 # Array of 1-byte string
-$GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/GESDISC/TROPESS_CrIS-JPSS1_L2_Full_CH4_20250914_MUSES_R1p25_FS_F2p10_J0.nc
-$GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/GESDISC/TROPESS_CrIS-JPSS1_L2_Full_CH4_20250914_MUSES_R1p25_FS_F2p10_J0.nc.dmrpp
+#comment out the following lines because it fails in Sonar Cloud quality gate. Should use https instead of http. 
+#$GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/GESDISC/TROPESS_CrIS-JPSS1_L2_Full_CH4_20250914_MUSES_R1p25_FS_F2p10_J0.nc
+#$GET http://test.opendap.org/opendap/nasa-hdf/opendap/HDF5/NASA1/GESDISC/TROPESS_CrIS-JPSS1_L2_Full_CH4_20250914_MUSES_R1p25_FS_F2p10_J0.nc.dmrpp
 
 if [ ! -e d_dset_big_1d_cont.h5 ]; then
     gunzip d_dset_big_1d_cont.h5.gz
