@@ -85,6 +85,7 @@ private:
 
     /// write the url content to a file, set the type, and rewind the file descriptor
     void get_url(int fd, bool authenticate = false);
+    void get_url(int fd, curl_slist *http_request_headers = nullptr);
 
     /// Protect the mkstemp() call
     static std::mutex d_mkstemp_mutex;
@@ -102,7 +103,7 @@ public:
 
     virtual ~RemoteResource();
 
-    void retrieve_resource(bool authenticate = false);
+    void retrieve_resource(curl_slist *http_request_headers = nullptr);
 
     /**
      * Returns the DAP type std::string of the RemoteHttpResource

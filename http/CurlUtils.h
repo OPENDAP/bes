@@ -49,8 +49,10 @@ namespace curl {
 
 ///@name Get data from a URL
 ///@{
-void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, int fd,
-                                 std::vector<std::string> *http_response_headers, bool authenticate = false);
+    void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, int fd,
+                                     std::vector<std::string> *http_response_headers, curl_slist *http_request_headers = nullptr);
+    void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, int fd,
+                                     std::vector<std::string> *http_response_headers, bool authenticate=false);
 
 void http_get(const std::string &target_url, std::vector<char> &buf);
 

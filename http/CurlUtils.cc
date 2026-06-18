@@ -1120,6 +1120,7 @@ static void super_easy_perform(CURL *c_handle, int fd) {
     BESDEBUG(MODULE, prolog << "END\n");
 }
 
+
 /**
  *
  * Use libcurl to dereference a URL. Read the information referenced by
@@ -1133,20 +1134,17 @@ static void super_easy_perform(CURL *c_handle, int fd) {
  * method returns that the body of the response can be retrieved by reading
  * from this file descriptor.
  * @param http_response_headers Value/result parameter for the HTTP Response Headers.
- * @param authenticate When this value is set to true an attempt will be made to add EDL
- * authentication and/or S3 signing headers to the outgoing request headers
- * @param http_request_headers A pointer to a vector of HTTP request headers. Default is
+ * @param http_request_headers A pointer to a curl_slist of HTTP request headers. Default is
  * null. These headers will be appended to the list of default headers.
  * @exception Error Thrown if libcurl encounters a problem; the libcurl
  * error message is stuffed into the Error object.
  */
 void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, int fd,
-                                 vector <string> *http_response_headers, const bool authenticate) {
+                                 vector <string> *http_response_headers, curl_slist *http_request_headers) {
 
     vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
     CURLcode res;
     CURL *ceh = nullptr;
-    curl_slist *req_headers = nullptr;
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     // Before we do anything, make sure that the URL is OK to pursue.
@@ -1159,14 +1157,8 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
     }
 
     try {
-        if (authenticate) {
-            // Add the EDL authorization headers if the Information is in the BES Context Manager
-            req_headers = add_edl_auth_headers(req_headers);
-            // Add AWS credentials if they're available.
-            req_headers = sign_url_for_s3_if_possible(target_url->str(), req_headers);
-        }
         // OK! Make the cURL handle
-        ceh = init(target_url->str(), req_headers, http_response_headers);
+        ceh = init(target_url->str(), http_request_headers, http_response_headers);
 
         set_error_buffer(ceh, error_buffer.data());
 
@@ -1184,7 +1176,7 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
 
         // Free the header list
         BESDEBUG(MODULE, prolog << "Cleanup request headers. Calling curl_slist_free_all()." << endl);
-        curl_slist_free_all(req_headers);
+        curl_slist_free_all(http_request_headers);
 
         if (ceh) {
             curl_easy_cleanup(ceh);
@@ -1193,7 +1185,7 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
 
     }
     catch (...) {
-        curl_slist_free_all(req_headers);
+        curl_slist_free_all(http_request_headers);
         if (ceh) {
             curl_easy_cleanup(ceh);
         }

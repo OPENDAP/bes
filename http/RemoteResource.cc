@@ -186,18 +186,16 @@ void RemoteResource::set_filename_for_file_url() {
     BESDEBUG(MODULE, "d_filename: " << d_filename << endl);
 }
 
-/// @}
-
 /**
  * This method will retrieve the remote resource content using HTTP GET.
  *
  * When this method returns the RemoteResource object is fully initialized
  * URL contents are available in the temporary file. For file:// URLs this
  * method is a no-op.
- * @param authenticate When this value is set to true an attempt will be made to add EDL
- * authentication and/or S3 signing headers to the outgoing request headers
+ * @param http_request_headers A pointer to a curl_slist of HTTP request headers. Default is
+ * null. These headers will be appended to the list of default headers.
  */
-void RemoteResource::retrieve_resource(const bool authenticate) {
+void RemoteResource::retrieve_resource(curl_slist *http_request_headers) {
     if (d_initialized) {
         return;
     }
@@ -210,7 +208,7 @@ void RemoteResource::retrieve_resource(const bool authenticate) {
     }
 
     // Get the contents of the URL and put them in the temp file
-    get_url(d_fd, authenticate);
+    get_url(d_fd, http_request_headers);
 
     string new_name = d_filename + "_" + d_uid + "#" + d_basename;
     if (rename(d_filename.c_str(), new_name.c_str()) != 0) {
@@ -223,6 +221,7 @@ void RemoteResource::retrieve_resource(const bool authenticate) {
     d_initialized = true;
 }
 
+
 /**
  *
  * Retrieve the remote resource and write it the the file associated with the open file
@@ -234,17 +233,17 @@ void RemoteResource::retrieve_resource(const bool authenticate) {
  * @note Private
  *
  * @param fd An open file descriptor the is associated with the target file.
- * @param authenticate When this value is set to true an attempt will be made to add EDL
- * authentication and/or S3 signing headers to the outgoing request headers
+ * @param http_request_headers A pointer to a curl_slist of HTTP request headers. Default is
+ * null. These headers will be appended to the list of default headers.
  */
-void RemoteResource::get_url(int fd, const bool authenticate) {
+void RemoteResource::get_url(int fd, curl_slist *http_request_headers) {
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     BES_STOPWATCH_START(MODULE, prolog + "Timing retrieval. Target url: " + d_url->str());
 
     try {
         // Throws an HttpError if there is a curl error.
-        curl::http_get_and_write_resource(d_url, fd, &d_response_headers, authenticate);
+        curl::http_get_and_write_resource(d_url, fd, &d_response_headers, http_request_headers);
         BESDEBUG(MODULE, prolog << "Resource " << d_url->str() << " saved to temporary file " << d_filename << endl);
     }
     catch (http::HttpError &http_error) {
