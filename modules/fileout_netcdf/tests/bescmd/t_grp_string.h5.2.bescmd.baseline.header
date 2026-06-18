@@ -1,22 +1,21 @@
 netcdf test {
 dimensions:
-	dim4 = 4 ;
+	dim3 = 4 ;
 	array_1d_len1 = 8 ;
+	dim4 = 2 ;
 	dim5 = 2 ;
-	dim6 = 2 ;
 	array_2d_len2 = 8 ;
+	dim6 = 1 ;
 	dim7 = 1 ;
-	dim8 = 1 ;
-	array_special_case_len3 = 2 ;
-	scalar_len9 = 31 ;
+	scalar_len8 = 31 ;
 variables:
-	char array_1d(dim4, array_1d_len1) ;
+	char array_1d(dim3, array_1d_len1) ;
 		array_1d:value = "Parting\nis so  \nswe    \n       " ;
-	char array_2d(dim5, dim6, array_2d_len2) ;
+	char array_2d(dim4, dim5, array_2d_len2) ;
 		array_2d:value = "Parting\nis so  \nswe    \n       " ;
-	char array_special_case(dim7, dim8, array_special_case_len3) ;
+	char array_special_case(dim6, dim7) ;
 		array_special_case:value = "A" ;
-	char scalar(scalar_len9) ;
+	char scalar(scalar_len8) ;
 		scalar:value = "Parting is such sweet sorrow." ;
 
 // global attributes:
@@ -25,10 +24,10 @@ variables:
 
 group: g {
   dimensions:
+  	dim10 = 2 ;
   	dim11 = 2 ;
-  	dim12 = 2 ;
-  	array_2d_len10 = 9 ;
+  	array_2d_len9 = 9 ;
   variables:
-  	char array_2d(dim11, dim12, array_2d_len10) ;
+  	char array_2d(dim10, dim11, array_2d_len9) ;
   } // group g
 }
