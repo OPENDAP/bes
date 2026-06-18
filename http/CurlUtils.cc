@@ -571,8 +571,7 @@ string get_range_arg_string(const unsigned long long &offset, const unsigned lon
  * @return The modified list of request headers, if the URL was signed, or the original
  * list of headers if it was not.
  */
-static curl_slist *
-sign_url_for_s3_if_possible(const string &url, curl_slist *request_headers) {
+curl_slist *sign_url_for_s3_if_possible(const string &url, curl_slist *request_headers) {
     // If this is a URL that references an S3 bucket, and there are credentials for the URL,
     // sign the URL.
     if (CredentialsManager::theCM()->size() > 0) {

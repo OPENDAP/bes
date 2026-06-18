@@ -175,6 +175,7 @@ string S3Container::access()
             d_dmrpp_rresource = std::make_shared<http::RemoteResource>(dmrpp_url);
 
 
+            // Add authentication stuff.
             curl_slist *req_hdrs = curl::add_edl_auth_headers(nullptr);
             req_hdrs = curl::sign_url_for_s3_if_possible(dmrpp_url->get_url_no_query(), req_hdrs);
 
