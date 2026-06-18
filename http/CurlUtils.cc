@@ -1248,21 +1248,10 @@ void http_get(const string &target_url, string &buf, bool use_raw_url_no_new_hea
     try {
         if (!use_raw_url_no_new_headers) {
             // Add the authorization headers
-            request_headers = add_edl_auth_headers(request_headers);
+            request_headers = add_edl_auth_headers(target_url, request_headers);
 
             request_headers = sign_url_for_s3_if_possible(target_url, request_headers);
         
-#ifdef DEVELOPER
-            AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
-            if (credentials) {
-                INFO_LOG(prolog + "Looking for EDL Token for URL: " + target_url );
-                string edl_token = credentials->get("edl_token");
-                if (!edl_token.empty()) {
-                    INFO_LOG(prolog + "Using EDL Token for URL: " + target_url + '\n');
-                    request_headers = curl::append_http_header(request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, edl_token);
-                }
-            }
-#endif
         }
 
         ceh = curl::init(target_url, request_headers, nullptr);
@@ -1454,7 +1443,7 @@ curl_slist *append_http_header(curl_slist *slist, const string &header_name, con
  * @param request_headers
  * @return
  */
-curl_slist *add_edl_auth_headers(curl_slist *request_headers) {
+curl_slist *add_edl_auth_headers(const string &target_url, curl_slist *request_headers) {
     bool found;
     string s;
 
@@ -1467,11 +1456,26 @@ curl_slist *add_edl_auth_headers(curl_slist *request_headers) {
     if (found && !s.empty()) {
         request_headers = append_http_header(request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, s);
     }
+    else {
+#ifdef DEVELOPER
+        INFO_LOG(prolog + "No Token found in the BESContextManager. Checking CredentialsManager...");
+        AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
+        if (credentials) {
+            INFO_LOG(prolog + "Looking for EDL Token for URL: " + target_url );
+            string edl_token = credentials->get("edl_token");
+            if (!edl_token.empty()) {
+                INFO_LOG(prolog + "Using EDL Token for URL: " + target_url + '\n');
+                request_headers = curl::append_http_header(request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, edl_token);
+            }
+        }
+#endif
+    }
 
     s = BESContextManager::TheManager()->get_context(EDL_CLIENT_APPLICATION_ID_CONTEXT_KEY, found);
     if (found && !s.empty()) {
         request_headers = append_http_header(request_headers, EDL_CLIENT_APPLICATION_ID_REQUEST_HEADER_KEY, s);
     }
+
 
     return request_headers;
 }
@@ -1723,8 +1727,9 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
     long http_code;
     string redirect_url_str;
 
+    origin_url->get_url_no_query();
     // Add the EDL authorization headers if the Information is in the BES Context Manager
-    req_headers = add_edl_auth_headers(req_headers);
+    req_headers = add_edl_auth_headers(origin_url->get_url_no_query(), req_headers);
     req_headers = sign_url_for_s3_if_possible(origin_url, req_headers);
 
     // FIXME Hackery for DMR++ Ownership POC code - see dmrpp_module CurlHandlePool.cc
