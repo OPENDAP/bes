@@ -114,7 +114,7 @@ const vector <string> http_server_errors = {
 static std::string request_headers_to_string(const curl_slist *request_headers) {
 
     auto current = request_headers;
-    string result = "request_headers[ ";
+    string result = "request_headers[";
     if (current) {
         while (current != nullptr) {
             result += string(current->data);
