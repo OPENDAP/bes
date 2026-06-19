@@ -111,6 +111,23 @@ const vector <string> http_server_errors = {
         "HTTP Version Not Supported."
 };
 
+static std::string request_headers_to_string(const curl_slist *request_headers) {
+
+    auto current = request_headers;
+    string result = "request_headers[ ";
+    if (current) {
+        while (current != nullptr) {
+            result += string(current->data);
+            current = current->next;
+            if (current){result += ", ";}
+        }
+    }
+    else {
+        result += "none";
+    }
+    result += "]";
+    return result;
+}
 /**
  * @brief Translates an HTTP code into an error message.
  *
@@ -407,7 +424,10 @@ static CURL *init(CURL *ceh, const string &target_url, const curl_slist *http_re
     CURLcode res;
 
     if (!ceh)
-        throw BESInternalError("Could not initialize cURL easy handle.", __FILE__, __LINE__);
+        throw BESInternalError("ERROR - Cannot initialize a null valued cURL easy handle.", __FILE__, __LINE__);
+
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+    BESDEBUG(MODULE, prolog << request_headers_to_string(http_request_headers) << endl);
 
     // SET Error Buffer (for use during this setup) ----------------------------------------------------------------
     set_error_buffer(ceh, error_buffer.data());
@@ -530,7 +550,7 @@ static CURL *init(CURL *ceh, const string &target_url, const curl_slist *http_re
     // Configure the proxy for this url (if appropriate).
     curl::configure_curl_handle_for_proxy(ceh, target_url);
 
-    BESDEBUG(MODULE, prolog << "curl: " << (void *) ceh << endl);
+    BESDEBUG(MODULE, prolog << "END (curl: " << (void *) ceh << ")" << endl);
     return ceh;
 }
 
@@ -1119,7 +1139,6 @@ static void super_easy_perform(CURL *c_handle, int fd) {
     BESDEBUG(MODULE, prolog << "END\n");
 }
 
-
 /**
  *
  * Use libcurl to dereference a URL. Read the information referenced by
@@ -1248,10 +1267,21 @@ void http_get(const string &target_url, string &buf, bool use_raw_url_no_new_hea
     try {
         if (!use_raw_url_no_new_headers) {
             // Add the authorization headers
-            request_headers = add_edl_auth_headers(target_url, request_headers);
+            request_headers = add_edl_auth_headers(request_headers);
 
             request_headers = sign_url_for_s3_if_possible(target_url, request_headers);
         
+#ifdef DEVELOPER
+            AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
+            if (credentials) {
+                INFO_LOG(prolog + "Looking for EDL Token for URL: " + target_url );
+                string edl_token = credentials->get("edl_token");
+                if (!edl_token.empty()) {
+                    INFO_LOG(prolog + "Using EDL Token for URL: " + target_url + '\n');
+                    request_headers = curl::append_http_header(request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, edl_token);
+                }
+            }
+#endif
         }
 
         ceh = curl::init(target_url, request_headers, nullptr);
@@ -1447,6 +1477,28 @@ curl_slist *append_http_header(curl_slist *slist, const string &header_name, con
  * @param request_headers
  * @return
  */
+curl_slist *add_edl_auth_headers(curl_slist *request_headers) {
+    bool found;
+    string s;
+
+    s = BESContextManager::TheManager()->get_context(UID_CONTEXT_KEY, found);
+    if (found && !s.empty()) {
+        request_headers = append_http_header(request_headers, UID_REQUEST_HEADER_KEY, s);
+    }
+
+    s = BESContextManager::TheManager()->get_context(EDL_AUTH_TOKEN_CONTEXT_KEY, found);
+    if (found && !s.empty()) {
+        request_headers = append_http_header(request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, s);
+    }
+
+    s = BESContextManager::TheManager()->get_context(EDL_CLIENT_APPLICATION_ID_CONTEXT_KEY, found);
+    if (found && !s.empty()) {
+        request_headers = append_http_header(request_headers, EDL_CLIENT_APPLICATION_ID_REQUEST_HEADER_KEY, s);
+    }
+
+    return request_headers;
+}
+
 curl_slist *add_edl_auth_headers(const string &target_url, curl_slist *request_headers) {
     bool found;
     string s;
@@ -1461,15 +1513,15 @@ curl_slist *add_edl_auth_headers(const string &target_url, curl_slist *request_h
         request_headers = append_http_header(request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, s);
     }
     else {
-        INFO_LOG(prolog + "An EDL Auth Token was NOT located in the BESContextManager.");
 #ifdef DEVELOPER
-        INFO_LOG(prolog + "Checking CredentialsManager... ");
+        BESDEBUG(MODULE, prolog + "An EDL Auth Token was NOT located in the BESContextManager.");
+        BESDEBUG(MODULE, prolog + "Checking CredentialsManager... ");
         AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
         if (credentials) {
-            INFO_LOG(prolog + "Looking for an EDL Auth Token for URL: " + target_url );
+            BESDEBUG(MODULE, prolog + "Looking for an EDL Auth Token for URL: " + target_url );
             string edl_token = credentials->get("edl_token");
             if (!edl_token.empty()) {
-                INFO_LOG(prolog + "Using EDL Auth Token for URL: " + target_url + '\n');
+                BESDEBUG(MODULE, prolog + "Using EDL Auth Token for URL: " + target_url + '\n');
                 request_headers = curl::append_http_header(request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, edl_token);
             }
         }
