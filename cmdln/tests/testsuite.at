@@ -130,8 +130,6 @@ AT_KEYWORDS([dmrpp])
             REMOVE_DATE_TIME([stdout])
             REMOVE_VERSIONS([stdout])
             REMOVE_TEMP_DIR_NAME([stdout])
-            REMOVE_ERROR_FILE([stdout])
-            REMOVE_ERROR_LINE([stdout])
             AS_IF(diff -b -B $baseline stdout,
                   [AT_CHECK([diff -b -B $baseline stdout])],
                   [
