@@ -1270,8 +1270,8 @@ void http_get(const string &target_url, string &buf, bool use_raw_url_no_new_hea
             request_headers = add_edl_auth_headers(request_headers);
 
             request_headers = sign_url_for_s3_if_possible(target_url, request_headers);
-        
-#if 0
+
+#ifdef DEVELOPER
             AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
             if (credentials) {
                 INFO_LOG(prolog + "Looking for EDL Token for URL: " + target_url );
