@@ -46,20 +46,24 @@ using json = nlohmann::json;
 std::string truth(bool t){ if(t){return "true";} return "false"; }
 
 namespace cmr {
+
+
 /**
  * Utilizes the RemoteHttpResource machinery to retrieve the document
  * referenced by the parameter 'url'. Once retrieved the document is fed to the RapidJSON
  * parser to populate the parameter 'd'
  *
  * @param url The URL of the JSON document to parse.
- * @return The json document parsed from the source URL response..
+ * @param http_request_headers A pointer to a curl_slist of HTTP request headers. Default is
+ * null. These headers will be appended to the list of default headers.
+ * @return The json document parsed from the source URL response.
  *
  */
-json JsonUtils::get_as_json(const string &url) const
+json JsonUtils::get_as_json(const string &url, curl_slist *http_request_headers) const
 {
     BESDEBUG(MODULE,prolog << "Trying url: " << url << endl);
     http::RemoteResource remoteResource(make_shared<http::url>(url));
-    remoteResource.retrieve_resource();
+    remoteResource.retrieve_resource(http_request_headers);
     std::ifstream f(remoteResource.get_filename());
     json data = json::parse(f);
     return data;
