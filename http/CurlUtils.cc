@@ -1271,7 +1271,7 @@ void http_get(const string &target_url, string &buf, bool use_raw_url_no_new_hea
 
             request_headers = sign_url_for_s3_if_possible(target_url, request_headers);
         
-#ifdef DEVELOPER
+#if 0
             AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
             if (credentials) {
                 INFO_LOG(prolog + "Looking for EDL Token for URL: " + target_url );
@@ -1511,21 +1511,6 @@ curl_slist *add_edl_auth_headers(const string &target_url, curl_slist *request_h
     s = BESContextManager::TheManager()->get_context(EDL_AUTH_TOKEN_CONTEXT_KEY, found);
     if (found && !s.empty()) {
         request_headers = append_http_header(request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, s);
-    }
-    else {
-#if 0
-        BESDEBUG(MODULE, prolog + "An EDL Auth Token was NOT located in the BESContextManager.");
-        BESDEBUG(MODULE, prolog + "Checking CredentialsManager... ");
-        AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
-        if (credentials) {
-            BESDEBUG(MODULE, prolog + "Looking for an EDL Auth Token for URL: " + target_url );
-            string edl_token = credentials->get("edl_token");
-            if (!edl_token.empty()) {
-                BESDEBUG(MODULE, prolog + "Using EDL Auth Token for URL: " + target_url + '\n');
-                request_headers = curl::append_http_header(request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, edl_token);
-            }
-        }
-#endif
     }
 
     s = BESContextManager::TheManager()->get_context(EDL_CLIENT_APPLICATION_ID_CONTEXT_KEY, found);
