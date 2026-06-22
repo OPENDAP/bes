@@ -12,8 +12,8 @@
             <response_headers/>
             <response_body/>
             <Location>
-                <File>removed file</File>
-                <Line>removed line</Line>
+                removed file
+                removed line
             </Location>
         </BESError>
     </getDAP>
