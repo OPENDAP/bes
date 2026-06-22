@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="t_string_enhanced.h5" dmrpp:href="data/t_string_enhanced.h5" dmrpp:version="3.21.1">
+    <String name="array_1d">
+        <Dim size="4"/>
+        <Attribute name="value" type="String">
+            <Value>Parting</Value>
+            <Value>is so  </Value>
+            <Value>swe    </Value>
+            <Value>       </Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="">
+            <dmrpp:chunk offset="2048" nBytes="28"/>
+        </dmrpp:chunks>
+        <dmrpp:FixedLengthStringArray string_length="7" pad="space_pad"/>
+    </String>
+    <String name="array_2d">
+        <Dim size="2"/>
+        <Dim size="2"/>
+        <Attribute name="value" type="String">
+            <Value>Parting</Value>
+            <Value>is so  </Value>
+            <Value>swe    </Value>
+            <Value>       </Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="">
+            <dmrpp:chunk offset="2105" nBytes="28"/>
+        </dmrpp:chunks>
+        <dmrpp:FixedLengthStringArray string_length="7" pad="space_pad"/>
+    </String>
+    <String name="scalar">
+        <Attribute name="value" type="String">
+            <Value>Parting is such sweet sorrow.</Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="">
+            <dmrpp:chunk offset="2076" nBytes="29"/>
+        </dmrpp:chunks>
+    </String>
+    <String name="array_2d_1_char">
+        <Dim size="2"/>
+        <Dim size="2"/>
+        <dmrpp:chunks fillValue="">
+            <dmrpp:chunk offset="2134" nBytes="4"/>
+        </dmrpp:chunks>
+        <dmrpp:FixedLengthStringArray string_length="1" pad="space_pad"/>
+    </String>
+    <String name="array_special_case">
+        <Dim size="1"/>
+        <Dim size="1"/>
+        <Attribute name="value" type="String">
+            <Value>A</Value>
+        </Attribute>
+        <dmrpp:chunks fillValue="">
+            <dmrpp:chunk offset="2133" nBytes="1"/>
+        </dmrpp:chunks>
+        <dmrpp:FixedLengthStringArray string_length="1" pad="space_pad"/>
+    </String>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2026-06-18T15:08:40Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/hyrax-2191/bes/modules/fileout_netcdf/data/t_string_enhanced.h5 -r t_string_enhanced.h5.dmr -u data/t_string_enhanced.h5 -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

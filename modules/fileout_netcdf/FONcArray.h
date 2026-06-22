@@ -100,13 +100,18 @@ private:
     // if DAP4 dim. is defined
     bool d4_def_dim = false;
 
+
     // For Enum handling
     bool d_is_dap4_enum = false;
     nc_type d_fa_nc_enum_base_type = NC_NAT;
     int d_fa_nc4_enum_type_id = 0;
 
+    // For unlimited dimension handling
     std::vector<std::string>unlimited_dim_names;
 
+
+    // For 1-byte string array handling
+    bool one_byte_string_array = false;
 
     FONcDim * find_dim(const std::vector<std::string> &embed, const std::string &name, int64_t size, bool ignore_size = false);
 

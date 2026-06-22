@@ -101,6 +101,8 @@ dnl t_string is derived from an hdf5 file
 AT_BESCMD_RESPONSE_SCRUB_DATES_TEST(bescmd/t_string.0.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/t_string.1.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/t_string.2.bescmd)
+
+
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/t_wrong_fvalue_type_all_classic.h5.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST(bescmd/t_wrong_fvalue_type_all_classic_dap4.h5.bescmd)
 dnl Tests that require handlers other than dapreader
@@ -186,6 +188,8 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_cf_grp.h5.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/simple_nc4.nc.h5.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_group_scalar.h5.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_grp_string.h5.2.bescmd)
+dnl t_string_enhanced dmrpp that has special mapping for one-character string
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_string_enhanced.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/simple_nc4.nc_constraint.h5.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/simple_nc4.nc_constraint_2.h5.2.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/dim_scale_smix.h5_local_constraint.2.bescmd)
