@@ -120,10 +120,16 @@ AT_KEYWORDS([dmrpp])
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
           [
             AT_CHECK([bescmdln -i $input], [], [stdout])
+            REMOVE_DATE_TIME([stdout])
+            REMOVE_VERSIONS([stdout])
+            REMOVE_TEMP_DIR_NAME([stdout])
             AT_CHECK([mv stdout $baseline.tmp])
           ],
           [
             AT_CHECK([bescmdln -i $input], [], [stdout])
+            REMOVE_DATE_TIME([stdout])
+            REMOVE_VERSIONS([stdout])
+            REMOVE_TEMP_DIR_NAME([stdout])
             AS_IF(diff -b -B $baseline stdout,
                   [AT_CHECK([diff -b -B $baseline stdout])],
                   [
