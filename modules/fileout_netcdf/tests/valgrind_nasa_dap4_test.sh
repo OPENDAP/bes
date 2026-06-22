@@ -61,5 +61,5 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/d_dset_4d.
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/AIRS.2024.01.01.L3.RetStd_IR001.v7.0.7.0.G24002230956.hdf.dmrpp.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/GEDI04.dmrpp.bescmd >nasa_dap4_default_test.nc
 
-
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/TROPESS_CrIS-JPSS1_L2_Full_CH4_20250914_MUSES_R1p25_FS_F2p10_J0.nc.dmrpp.bescmd>nasa_dap4_default_test.nc
 

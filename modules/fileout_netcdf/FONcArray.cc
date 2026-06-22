@@ -178,10 +178,29 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
 
     d_ndims = d_a->dimensions();
     d_actual_ndims = d_ndims; //replace this with _a->dimensions(); below TODO
+
+    size_t char_max_last_dim_length = 0;
     if (d_array_type == NC_CHAR) {
+
+        if (d_is_dap4 || get_eval() == nullptr || get_dds() == nullptr)
+            d_a->intern_data();
+        else
+            d_a->intern_data(*get_eval(), *get_dds());
+
+        // get the data from the dap array
+        int array_length = d_a->length();
+        for (int i = 0; i < array_length; i++) {
+            if (d_a->get_str()[i].size() > char_max_last_dim_length) {
+                char_max_last_dim_length = d_a->get_str()[i].size();
+            }
+        }
+
+        if (char_max_last_dim_length >1)
         // if we have an array of strings then we need to add the string length
         // dimension, so add one more to ndims
-        d_ndims++;
+            d_ndims++;
+        else 
+            one_byte_string_array = true;
     }
 
     // See HYRAX-805. When assigning values using [], set the size using resize
@@ -388,48 +407,37 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
         // This routine is called in the convert(). So it should not called in define().
         // FIXME Patch for HYRAX-1334 jhrg 2/14/24
 
-        if (d_is_dap4 || get_eval() == nullptr || get_dds() == nullptr)
-            d_a->intern_data();
-        else
-            d_a->intern_data(*get_eval(), *get_dds());
+        if (char_max_last_dim_length >1) {
+            char_max_last_dim_length++;
 
-        // get the data from the dap array
-        int array_length = d_a->length();
-        size_t max_length = 0;
-        for (int i = 0; i < array_length; i++) {
-            if (d_a->get_str()[i].size() > max_length) {
-                max_length = d_a->get_str()[i].size();
+            vector<string> empty_embed;
+            string lendim_name;
+            if (is_dap4_group == true) {
+                // Here is a quick implementation. 
+                // We just append the DimNameNum(globally defined)
+                // and then increase the number by 1.
+                ostringstream dim_suffix_strm;
+                dim_suffix_strm << "_len" << FONcDim::DimNameNum + 1;
+                FONcDim::DimNameNum++;
+                lendim_name = d_varname + dim_suffix_strm.str();
+    
             }
+            else
+                lendim_name = d_varname + "_len";
+    
+            FONcDim *use_dim = find_dim(empty_embed, lendim_name, char_max_last_dim_length, true);
+    
+            if (use_dim->size() < static_cast<int>(char_max_last_dim_length)) {
+                use_dim->update_size(char_max_last_dim_length);
+            }
+    
+            d_dim_sizes[d_ndims - 1] = use_dim->size();
+            d_dim_ids[d_ndims - 1] = use_dim->dimid();
+    
+            //DAP4 dimension ID is false.
+            use_d4_dim_ids.push_back(false);
+            d_dims.push_back(use_dim);
         }
-        max_length++;
-
-        vector<string> empty_embed;
-        string lendim_name;
-        if (is_dap4_group == true) {
-            // Here is a quick implementation. 
-            // We just append the DimNameNum(globally defined)
-            // and then increase the number by 1.
-            ostringstream dim_suffix_strm;
-            dim_suffix_strm << "_len" << FONcDim::DimNameNum + 1;
-            FONcDim::DimNameNum++;
-            lendim_name = d_varname + dim_suffix_strm.str();
-
-        }
-        else
-            lendim_name = d_varname + "_len";
-
-        FONcDim *use_dim = find_dim(empty_embed, lendim_name, max_length, true);
-
-        if (use_dim->size() < static_cast<int>(max_length)) {
-            use_dim->update_size(max_length);
-        }
-
-        d_dim_sizes[d_ndims - 1] = use_dim->size();
-        d_dim_ids[d_ndims - 1] = use_dim->dimid();
-
-        //DAP4 dimension ID is false.
-        use_d4_dim_ids.push_back(false);
-        d_dims.push_back(use_dim);
 
         // Adding this fixes the bug reported by GSFC where arrays of strings
         // caused the handler to throw an error stating that 'Bad chunk sizes'
@@ -438,7 +446,8 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
         // in 'chunksizes' was not bumped up. The code below in convert() that
         // set the chunk sizes then tried to access data that had never been set.
         // jhrg 11/25/15
-        d_chunksizes.push_back(max_length <= MAX_CHUNK_SIZE ? max_length : MAX_CHUNK_SIZE);
+        if (char_max_last_dim_length >1)
+            d_chunksizes.push_back(char_max_last_dim_length <= MAX_CHUNK_SIZE ? char_max_last_dim_length : MAX_CHUNK_SIZE);
     }
 
     // If this array has a single dimension, and the name of the array
@@ -1077,18 +1086,37 @@ void FONcArray::write_for_nc3_types(int ncid) {
 
 void FONcArray::write_string_array(int ncid) {
 
+    BESDEBUG("fonc", "write_string_array d_ndims: "<< d_ndims<<endl);
+    BESDEBUG("fonc", "d_dim_sizes size: "<< d_dim_sizes.size() <<endl);
+
+    
+
     vector<size_t> var_count(d_ndims);
     vector<size_t> var_start(d_ndims);
 
     vector<char> text_data;
-    size_t last_dim_size = d_dim_sizes[d_ndims-1];
-    text_data.resize(d_a->length_ll()*last_dim_size);
+
+    // For one-character string 
+    if (one_byte_string_array) {
+        text_data.resize(d_a->length_ll());
+        
+        auto const &d_a_str = d_a->get_str();
+        
+        for (int64_t  i = 0; i <d_a->length_ll();i++) 
+            text_data[i] = (d_a_str[i])[0];
     
-    char * temp_buffer = text_data.data();
-    auto const &d_a_str = d_a->get_str();
-    for (int64_t  i = 0; i <d_a->length_ll();i++) {
-        memcpy(temp_buffer,d_a_str[i].c_str(),d_a_str[i].size()+1);
-        temp_buffer +=last_dim_size;
+    } 
+
+    else {
+        size_t last_dim_size = d_dim_sizes[d_ndims-1];
+        text_data.resize(d_a->length_ll()*last_dim_size);
+        
+        char * temp_buffer = text_data.data();
+        auto const &d_a_str = d_a->get_str();
+        for (int64_t  i = 0; i <d_a->length_ll();i++) {
+            memcpy(temp_buffer,d_a_str[i].c_str(),d_a_str[i].size()+1);
+            temp_buffer +=last_dim_size;
+        }
     }
 
     for (int dim = 0; dim < d_ndims; dim++) {
