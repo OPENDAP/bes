@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<bes:request xmlns:bes="http://xml.opendap.org/ns/bes/1.0#" reqID="http-nio-8080-exec-5_39" reqUUID="bdb6a4ae-cad8-46f4-99bc-e2a5e7e19db6" clientId="/-32" clientCmdCount="0">
+    <bes:setContext name="bes_timeout">300</bes:setContext>
+    <bes:setContext name="dap_explicit_containers">no</bes:setContext>
+    <bes:setContext name="errors">xml</bes:setContext>
+    <bes:setContext name="olfsLog">0:0:0:0:0:0:0:1|&amp;|curl#8#7#1|&amp;|-|&amp;|-|&amp;|1753108750835|&amp;|http-nio-8080-exec-5_39-bdb6a4ae-cad8-46f4-99bc-e2a5e7e19db6|&amp;|HTTP-GET|&amp;|/opendap/hyrax/daymet/daymet_v4_daily_na_tmax_2010.nc.dap|&amp;|dap4.ce=#x#5B0:1:7813#5D##y#5B0:1:8074#5D##lat#5B0:1:8074#5D#5B0:1:7813#5D##lon#5B0:1:8074#5D#5B0:1:7813#5D##time#5B0:1:5#5D##tmax#5B0:1:5#5D#5B0:1:8074#5D#5B0:1:7813#5D</bes:setContext>
+    <bes:setContext name="xml:base">http://localhost:8080/opendap/data/nc/fnoc1.nc</bes:setContext>
+    <bes:setContext name="max_response_size">0</bes:setContext>
+    <bes:setContext name="max_variable_size">0</bes:setContext>
+    <bes:setContext name="uid">not_logged_in</bes:setContext>
+    
+    
+        
+    <bes:setContainer name="catalogContainer" space="catalog">/data/nc/fnoc1.nc</bes:setContainer>
+    <bes:define name="d1" space="default">
+        <!-- bes:container name="catalogContainer"/ -->
+        <bes:container name="catalogContainer">
+            <bes:dap4constraint>/lat</bes:dap4constraint>
+        </bes:container>
+    </bes:define>
+    <bes:get type="dap" definition="d1">
+        <bes:contentStartId>-633a8555:1981a05adc2:-7ddb@opendap.org</bes:contentStartId>
+        <bes:mimeBoundary>Part_2d36333361383535353a31393831613035616463323a2d37646463</bes:mimeBoundary>
+    </bes:get>
+</bes:request>
