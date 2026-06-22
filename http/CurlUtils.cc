@@ -1513,7 +1513,7 @@ curl_slist *add_edl_auth_headers(const string &target_url, curl_slist *request_h
         request_headers = append_http_header(request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, s);
     }
     else {
-#ifdef 0
+#if 0
         BESDEBUG(MODULE, prolog + "An EDL Auth Token was NOT located in the BESContextManager.");
         BESDEBUG(MODULE, prolog + "Checking CredentialsManager... ");
         AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
