@@ -33,7 +33,9 @@
 #define MODULES_CMR_MODULE_RJSONUTILS_H_
 
 #include <string>
-#include <vector>
+
+#include <curl/curl.h>
+
 #include "nlohmann/json.hpp"
 
 namespace cmr {
@@ -43,8 +45,7 @@ class JsonUtils {
 public:
     static std::string typeName(unsigned int t);
 
-    nlohmann::json get_as_json(const std::string &url) const;
-
+    nlohmann::json get_as_json(const std::string &url, curl_slist *http_request_headers = nullptr) const;
 
     const nlohmann::json& qc_get_object(const std::string &key, const nlohmann::json& json_obj) const;
     const nlohmann::json& qc_get_array(const std::string &key, const nlohmann::json& json_obj) const;

@@ -62,12 +62,6 @@ env:
     - TESTSUITEFLAGS=-j7
     # Change this when libdap version numbers change
     - LIBDAP_RPM_VERSION=3.21.1-0
-    # SONAR_LOGIN, made using "travis encrypt --org -r OPENDAP/bes SONAR_LOGIN=335df..."
-    - secure: "TmoFcgeIyAEjFyrlqB6rhdUhDqPJfxVZmT5fewgVHj0xm767VZ6DU21mM6ZHgNGyk99TzX0Gx/dwSqbsUj18hSSAvEa7fJQSKJ5IBJvTeMKhXn1DPPG9VpuZ4ti5afRDiNr6EJKbVxwBTkz+3798S8LajPuXGupYupir8IJQCt8="
-    # SONAR_MODULES_LOGIN, using "travis encrypt --org -r OPENDAP/bes SONAR_MODULES_LOGIN=42ba..."
-    - secure: "V3fMZgzMRRB0xFQMTvXf2fFPHIdwvg2y6bNFKqSGI5HP2sZEtc7XqSC4hjboR9RjnyZY/H1L/EuYQCS45gmJMsmtzo4g1Cn0oTfuPRJzDSi00jRlB1wUl5p1pU0Fdv2ffrGF4m6/SRfYFT0KkR/Tp8hdIoYx5/8R4MajysABMT4="
-    # SONAR_SUBMODULES_LOGIN, using "travis encrypt --org -r OPENDAP/bes SONAR_SUBMODULES_LOGIN=Q4aWrvS..."
-    - secure: "Q4aWrvSlKUY7413FNI6tHlWJdhVtjJxrtSBApJRe5fGTn/HEmod5n3O4o0elFhuYh0O57aYsYclD7t0lriKMPvPdY/s8CFAaIPSANhNRkD44MWYWCPyivl83BBUlhWgkqgWFcCEaTqCpF/8A0HlOF1TsE1KKyQSns7snqgWTfSA="    # AWS_ACCESS_KEY_ID
     # AWS_ACCESS_KEY_ID
     # user == travis-bes
     - secure: "ZfL1IPX5zab1HWkJTlNPHroyUOp2lhAlcCH6UXDEL/yXpKoRCNkSo/CILM20DsjBckGys/7chom6uIoOilLu9Tp/6nPwkYlOe5DjgDt/qqKutclk9QBfrwU7WHRUOiEOESZl3Knd6B+GzuBZe8nrJzJhZWT54VFiOlEAGeIiFwo="
@@ -151,7 +145,7 @@ jobs:
         - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
         - export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
         - echo "LD_LIBRARY_PATH - $LD_LIBRARY_PATH" >&2
-        - make -j16 && make install && besctl start && make check -j16 && besctl stop
+        - make -j16 && make install && besctl start -d cerr,curl,http && make check -j16 && besctl stop
 
     - stage: build-and-test
       name: "distcheck"
@@ -237,7 +231,7 @@ jobs:
       - autoreconf --force --install --verbose
       - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer --enable-coverage
       - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
-      - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.login=$SONAR_LOGIN
+      - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.token=$SONAR_TOKEN
       - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "QUALITY GATE PASS"
 
     - stage: scan
@@ -247,7 +241,7 @@ jobs:
         - autoreconf --force --install --verbose
         - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
         - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
-        - sonar-scanner -Dproject.settings=sonar-bes-modules-1.properties -Dsonar.login=$SONAR_MODULES_LOGIN
+        - sonar-scanner -Dproject.settings=sonar-bes-modules-1.properties -Dsonar.token=$SONAR_TOKEN
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
 
     - stage: scan
@@ -257,7 +251,7 @@ jobs:
         - autoreconf --force --install --verbose
         - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
         - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
-        - sonar-scanner -Dproject.settings=sonar-bes-hdf-handlers.properties -Dsonar.login=$SONAR_SUBMODULES_LOGIN
+        - sonar-scanner -Dproject.settings=sonar-bes-hdf-handlers.properties -Dsonar.token=$SONAR_TOKEN
         # We call the hdf4/5 handlers scan opendap-bes-submodules for historical reasons. jhrg 1/13/22
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-submodules | grep "QUALITY GATE PASS"
 

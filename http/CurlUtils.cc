@@ -111,6 +111,23 @@ const vector <string> http_server_errors = {
         "HTTP Version Not Supported."
 };
 
+static std::string request_headers_to_string(const curl_slist *request_headers) {
+
+    auto current = request_headers;
+    string result = "request_headers[";
+    if (current) {
+        while (current != nullptr) {
+            result += string(current->data);
+            current = current->next;
+            if (current){result += ", ";}
+        }
+    }
+    else {
+        result += "none";
+    }
+    result += "]";
+    return result;
+}
 /**
  * @brief Translates an HTTP code into an error message.
  *
@@ -130,9 +147,9 @@ static string http_code_to_string(long code) {
 }
 
 /**
- * @brief Translate a cURL authentication type value (int) into a human readable string.
+ * @brief Translate a cURL authentication type value (int) into a human-readable string.
  * @param auth_type The cURL authentication type value to convert
- * @return The human readable string associated with auth_type.
+ * @return The human-readable string associated with auth_type.
  */
 static string getCurlAuthTypeName(unsigned long auth_type) {
 
@@ -407,7 +424,10 @@ static CURL *init(CURL *ceh, const string &target_url, const curl_slist *http_re
     CURLcode res;
 
     if (!ceh)
-        throw BESInternalError("Could not initialize cURL easy handle.", __FILE__, __LINE__);
+        throw BESInternalError("ERROR - Cannot initialize a null valued cURL easy handle.", __FILE__, __LINE__);
+
+    BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+    BESDEBUG(MODULE, prolog << request_headers_to_string(http_request_headers) << endl);
 
     // SET Error Buffer (for use during this setup) ----------------------------------------------------------------
     set_error_buffer(ceh, error_buffer.data());
@@ -530,7 +550,7 @@ static CURL *init(CURL *ceh, const string &target_url, const curl_slist *http_re
     // Configure the proxy for this url (if appropriate).
     curl::configure_curl_handle_for_proxy(ceh, target_url);
 
-    BESDEBUG(MODULE, prolog << "curl: " << (void *) ceh << endl);
+    BESDEBUG(MODULE, prolog << "END (curl: " << (void *) ceh << ")" << endl);
     return ceh;
 }
 
@@ -571,8 +591,7 @@ string get_range_arg_string(const unsigned long long &offset, const unsigned lon
  * @return The modified list of request headers, if the URL was signed, or the original
  * list of headers if it was not.
  */
-static curl_slist *
-sign_url_for_s3_if_possible(const string &url, curl_slist *request_headers) {
+curl_slist *sign_url_for_s3_if_possible(const string &url, curl_slist *request_headers) {
     // If this is a URL that references an S3 bucket, and there are credentials for the URL,
     // sign the URL.
     if (CredentialsManager::theCM()->size() > 0) {
@@ -1133,18 +1152,17 @@ static void super_easy_perform(CURL *c_handle, int fd) {
  * method returns that the body of the response can be retrieved by reading
  * from this file descriptor.
  * @param http_response_headers Value/result parameter for the HTTP Response Headers.
- * @param http_request_headers A pointer to a vector of HTTP request headers. Default is
+ * @param http_request_headers A pointer to a curl_slist of HTTP request headers. Default is
  * null. These headers will be appended to the list of default headers.
  * @exception Error Thrown if libcurl encounters a problem; the libcurl
  * error message is stuffed into the Error object.
  */
 void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, int fd,
-                                 vector <string> *http_response_headers) {
+                                 vector <string> *http_response_headers, curl_slist *http_request_headers) {
 
     vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
     CURLcode res;
     CURL *ceh = nullptr;
-    curl_slist *req_headers = nullptr;
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     // Before we do anything, make sure that the URL is OK to pursue.
@@ -1157,13 +1175,8 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
     }
 
     try {
-        // Add the EDL authorization headers if the Information is in the BES Context Manager
-        req_headers = add_edl_auth_headers(req_headers);
-        // Add AWS credentials if they're available.
-        req_headers = sign_url_for_s3_if_possible(target_url->str(), req_headers);
-
         // OK! Make the cURL handle
-        ceh = init(target_url->str(), req_headers, http_response_headers);
+        ceh = init(target_url->str(), http_request_headers, http_response_headers);
 
         set_error_buffer(ceh, error_buffer.data());
 
@@ -1181,7 +1194,7 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
 
         // Free the header list
         BESDEBUG(MODULE, prolog << "Cleanup request headers. Calling curl_slist_free_all()." << endl);
-        curl_slist_free_all(req_headers);
+        curl_slist_free_all(http_request_headers);
 
         if (ceh) {
             curl_easy_cleanup(ceh);
@@ -1190,7 +1203,7 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
 
     }
     catch (...) {
-        curl_slist_free_all(req_headers);
+        curl_slist_free_all(http_request_headers);
         if (ceh) {
             curl_easy_cleanup(ceh);
         }
@@ -1257,7 +1270,7 @@ void http_get(const string &target_url, string &buf, bool use_raw_url_no_new_hea
             request_headers = add_edl_auth_headers(request_headers);
 
             request_headers = sign_url_for_s3_if_possible(target_url, request_headers);
-        
+
 #ifdef DEVELOPER
             AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
             if (credentials) {
@@ -1454,6 +1467,10 @@ curl_slist *append_http_header(curl_slist *slist, const string &header_name, con
  *
  *    Authorization: Bearer edl_access_token
  *
+ * If an EDL auth token is not located in the BESContextManager,
+ * then the CredentialsManager is checked for an EDL token
+ * associated with the target_url
+ *
  * If an aspirational auth header value is missing then that header
  * will not be added to the request_headers list.
  *
@@ -1478,6 +1495,29 @@ curl_slist *add_edl_auth_headers(curl_slist *request_headers) {
     if (found && !s.empty()) {
         request_headers = append_http_header(request_headers, EDL_CLIENT_APPLICATION_ID_REQUEST_HEADER_KEY, s);
     }
+
+    return request_headers;
+}
+
+curl_slist *add_edl_auth_headers(const string &target_url, curl_slist *request_headers) {
+    bool found;
+    string s;
+
+    s = BESContextManager::TheManager()->get_context(UID_CONTEXT_KEY, found);
+    if (found && !s.empty()) {
+        request_headers = append_http_header(request_headers, UID_REQUEST_HEADER_KEY, s);
+    }
+
+    s = BESContextManager::TheManager()->get_context(EDL_AUTH_TOKEN_CONTEXT_KEY, found);
+    if (found && !s.empty()) {
+        request_headers = append_http_header(request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, s);
+    }
+
+    s = BESContextManager::TheManager()->get_context(EDL_CLIENT_APPLICATION_ID_CONTEXT_KEY, found);
+    if (found && !s.empty()) {
+        request_headers = append_http_header(request_headers, EDL_CLIENT_APPLICATION_ID_REQUEST_HEADER_KEY, s);
+    }
+
 
     return request_headers;
 }
@@ -1729,8 +1769,9 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
     long http_code;
     string redirect_url_str;
 
+    origin_url->get_url_no_query();
     // Add the EDL authorization headers if the Information is in the BES Context Manager
-    req_headers = add_edl_auth_headers(req_headers);
+    req_headers = add_edl_auth_headers(origin_url->get_url_no_query(), req_headers);
     req_headers = sign_url_for_s3_if_possible(origin_url, req_headers);
 
     // FIXME Hackery for DMR++ Ownership POC code - see dmrpp_module CurlHandlePool.cc
