@@ -49,14 +49,11 @@ namespace curl {
 
 ///@name Get data from a URL
 ///@{
-    void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, int fd,
-                                     std::vector<std::string> *http_response_headers, curl_slist *http_request_headers = nullptr);
-    void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, int fd,
-                                     std::vector<std::string> *http_response_headers, bool authenticate=false);
-
-void http_get(const std::string &target_url, std::vector<char> &buf);
+void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, int fd,
+                        std::vector<std::string> *http_response_headers, curl_slist *http_request_headers = nullptr);
 
 bool http_head(const std::string &target_url, int tries = 3, unsigned long wait_time_us = 1'000'000);
+
 void http_get(const std::string &target_url, std::string &buf, bool use_raw_url_no_new_headers = false);
 
 void super_easy_perform(CURL *ceh);
