@@ -1240,17 +1240,27 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
     memcpy((void *) (str->data() + current_size), buffer, nbytes);
     return nbytes;
 }
-curl_slist *get_edl_hdr_from_theCM(const string &target_url) {
+
+
+/**
+ * Checks the CredentialsManager to see if the target_url has EDL credentials associated with it.
+ * If found an Authorization header will be added to the request_headers list and the list returned.
+ * @param target_url The URL that will be accessed
+ * @param request_headers The request headers to which an EDL authorization header will be
+ * added if credentials are located for target_url
+ * @return The request headers with the authorization header added if found.
+ */
+curl_slist *add_edl_hdr_from_the_cm(const std::string &target_url, curl_slist *request_headers) {
     AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
     if (credentials) {
         INFO_LOG(prolog + "Looking for EDL Token for URL: " + target_url );
         string edl_token = credentials->get("edl_token");
         if (!edl_token.empty()) {
             INFO_LOG(prolog + "Using EDL Token for URL: " + target_url + '\n');
-            return curl::append_http_header(nullptr, AUTHORIZATION_REQUEST_HEADER_KEY, edl_token);
+            return curl::append_http_header(request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, edl_token);
         }
     }
-    return nullptr;
+    return request_headers;
 }
 
 /**

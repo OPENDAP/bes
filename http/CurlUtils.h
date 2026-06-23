@@ -88,7 +88,7 @@ std::string error_message(CURLcode response_code, const char *error_buf);
 void read_data(CURL *c_handle);
 
 curl_slist *append_http_header(curl_slist *slist, const std::string &header_name, const std::string &value);
-
+curl_slist *add_edl_hdr_from_the_cm(const std::string &target_url, curl_slist *request_headers);
 curl_slist *add_edl_auth_headers(curl_slist *request_headers);
 curl_slist *add_edl_auth_headers(const std::string &target_url, curl_slist *request_headers);
 curl_slist *sign_url_for_s3_if_possible(const std::string &url, curl_slist *request_headers);
