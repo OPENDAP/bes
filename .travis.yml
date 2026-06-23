@@ -185,6 +185,13 @@ jobs:
           export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
           export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
         - ./travis/build-rhel-docker.sh
+        # Note: Create a tmp container mounted at "/scratch".
+        #   Then, pipe the log files into tar and copy them to the tmp dir.
+        #   We want to create the log files here because we can use $SNAPSHOT_IMAGE_TAG
+        - mkdir -p /tmp/bes-docker-logs
+        - docker run --rm -v /tmp/bes-docker-logs:/scratch ${SNAPSHOT_IMAGE_TAG} \
+            sh -c 'tar -czf /tmp/${LOG_FILE_TGZ} find . -name timing -prune -o -name '*.log' -print -o -name '*site_map.txt' -print'
+        - cp /tmp/bes-docker-logs/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz /tmp/
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
         # is built:
@@ -215,6 +222,13 @@ jobs:
           export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
           export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
         - ./travis/build-rhel-docker.sh
+        # Note: Create a tmp container mounted at "/scratch".
+        #   Then, pipe the log files into tar and copy them to the tmp dir.
+        #   We want to create the log files here because we can use $SNAPSHOT_IMAGE_TAG
+        - mkdir -p /tmp/bes-docker-logs
+        - docker run --rm -v /tmp/bes-docker-logs:/scratch ${SNAPSHOT_IMAGE_TAG} \
+            sh -c 'tar -czf /tmp/${LOG_FILE_TGZ} find . -name timing -prune -o -name '*.log' -print -o -name '*site_map.txt' -print'
+        - cp /tmp/bes-docker-logs/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz /tmp/
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
         # is built:
