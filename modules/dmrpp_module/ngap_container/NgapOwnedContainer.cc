@@ -473,7 +473,7 @@ void NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) co
 
     string dmrpp_url_str = build_dmrpp_url_to_owned_bucket(get_real_name());
     INFO_LOG(prolog + "Look in the OPeNDAP-bucket for the DMRpp for: " + dmrpp_url_str);
-    curl::http_get(dmrpp_url_str, dmrpp_string);
+    curl::http_get(dmrpp_url_str, dmrpp_string,nullptr);
     map<string, string, std::less<>> content_filters;
     if (!get_opendap_content_filters(content_filters)) {
         throw BESInternalError("Could not build opendap content filters for DMR++", __FILE__, __LINE__);
@@ -541,10 +541,10 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
         // back on using the TEA service to sign our urls through a series of redirects
         if (presigned_url == nullptr) {
             BES_PROFILE_TIMING(string("SERVICE CHAIN WARNING! Falling back to request DMR++ from DAAC bucket - ") + dmrpp_url_str);
-            curl::http_get(dmrpp_url_str, dmrpp_string);
+            curl::http_get(dmrpp_url_str, dmrpp_string,curl::add_edl_auth_headers(nullptr));
         } else {
             BES_PROFILE_TIMING(string("Request presigned DMRpp from DAAC bucket - ") + presigned_url->str());
-            curl::http_get(presigned_url->str(), dmrpp_string, true);
+            curl::http_get(presigned_url->str(), dmrpp_string, nullptr);
         }
 
         // filter the DMRPP from the DAAC's bucket to replace the template href with the data_access_urls,

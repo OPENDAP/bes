@@ -54,7 +54,7 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
 
 bool http_head(const std::string &target_url, int tries = 3, unsigned long wait_time_us = 1'000'000);
 
-void http_get(const std::string &target_url, std::string &buf, bool use_raw_url_no_new_headers = false);
+void http_get(const std::string &target_url, std::string &buf, curl_slist *http_request_headers = nullptr);
 
 void super_easy_perform(CURL *ceh);
 ///@}

@@ -466,7 +466,7 @@ public:
         const string url = "https://fail.nowhere.com/README";
         string buf;
         DBG(cerr << prolog << "Retrieving " << url << "\n");
-        curl::http_get(url, buf);
+        curl::http_get(url, buf,nullptr);
 
         CPPUNIT_FAIL("Should have thrown an exception.");
     }
@@ -477,7 +477,7 @@ public:
         const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
         string buf;
         DBG(cerr << prolog << "Retrieving " << url << "\n");
-        curl::http_get(url, buf);
+        curl::http_get(url, buf,nullptr);
 
         CPPUNIT_FAIL("Should have thrown an exception.");
     }
@@ -490,7 +490,7 @@ public:
         const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
         string buf;
         DBG(cerr << prolog << "Retrieving " << url << "\n");
-        curl::http_get(url, buf);
+        curl::http_get(url, buf, curl::sign_url_for_s3_if_possible(url,nullptr));
 
         CPPUNIT_FAIL("Should have thrown an exception.");
     }
@@ -509,7 +509,7 @@ public:
                 const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
                 string buf;
                 DBG(cerr << prolog << "Retrieving " << url << "\n");
-                curl::http_get(url, buf);
+                curl::http_get(url, buf,curl::sign_url_for_s3_if_possible(url,nullptr));
                 DBG(cerr << "buf.data() = " << buf.data() << "\n");
                 CPPUNIT_ASSERT_MESSAGE("Should be able to find 'Test data''",
                                        string(buf.data()).find("Test data") == 0);

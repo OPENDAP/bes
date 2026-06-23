@@ -1240,6 +1240,18 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
     memcpy((void *) (str->data() + current_size), buffer, nbytes);
     return nbytes;
 }
+curl_slist *get_edl_hdr_from_theCM(const string &target_url) {
+    AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
+    if (credentials) {
+        INFO_LOG(prolog + "Looking for EDL Token for URL: " + target_url );
+        string edl_token = credentials->get("edl_token");
+        if (!edl_token.empty()) {
+            INFO_LOG(prolog + "Using EDL Token for URL: " + target_url + '\n');
+            return curl::append_http_header(nullptr, AUTHORIZATION_REQUEST_HEADER_KEY, edl_token);
+        }
+    }
+    return nullptr;
+}
 
 /**
  * Dereference the target URL and put the response in buf, after first adding
@@ -1252,39 +1264,19 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
  * @param target_url The URL to dereference.
  * @param buf The string into which to put the response. New data will be
  * appended to this string.
- * @param use_raw_url_no_new_headers Flag to skip adding additional headers,
- * e.g., for use with presigned urls
+ * @param http_request_headers A pointer to a curl_slist of HTTP request headers. Default is
+ * null. These headers will be appended to the list of default headers.
  * @exception Throws when libcurl encounters a problem.
  */
-void http_get(const string &target_url, string &buf, bool use_raw_url_no_new_headers) {
+void http_get(const string &target_url, string &buf, curl_slist *http_request_headers) {
     BESDEBUG(MODULE, prolog << "BEGIN\n");
 
     vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
     CURL *ceh = nullptr;     ///< The libcurl handle object.
     CURLcode res;
-    curl_slist *request_headers = nullptr;
 
     try {
-        if (!use_raw_url_no_new_headers) {
-            // Add the authorization headers
-            request_headers = add_edl_auth_headers(request_headers);
-
-            request_headers = sign_url_for_s3_if_possible(target_url, request_headers);
-
-#ifdef DEVELOPER
-            AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
-            if (credentials) {
-                INFO_LOG(prolog + "Looking for EDL Token for URL: " + target_url );
-                string edl_token = credentials->get("edl_token");
-                if (!edl_token.empty()) {
-                    INFO_LOG(prolog + "Using EDL Token for URL: " + target_url + '\n');
-                    request_headers = curl::append_http_header(request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, edl_token);
-                }
-            }
-#endif
-        }
-
-        ceh = curl::init(target_url, request_headers, nullptr);
+        ceh = curl::init(target_url, http_request_headers, nullptr);
         if (!ceh)
             throw BESInternalError(string("ERROR! Failed to acquire cURL Easy Handle! "), __FILE__, __LINE__);
 
@@ -1306,7 +1298,7 @@ void http_get(const string &target_url, string &buf, bool use_raw_url_no_new_hea
 
         // Free the header list
         BESDEBUG(MODULE, prolog << "Cleanup request headers. Calling curl_slist_free_all()." << endl);
-        curl_slist_free_all(request_headers);
+        curl_slist_free_all(http_request_headers);
 
         if (ceh) {
             curl_easy_cleanup(ceh);
@@ -1314,7 +1306,7 @@ void http_get(const string &target_url, string &buf, bool use_raw_url_no_new_hea
         }
     }
     catch (...) {
-        curl_slist_free_all(request_headers);
+        curl_slist_free_all(http_request_headers);
         if (ceh) {
             curl_easy_cleanup(ceh);
         }
