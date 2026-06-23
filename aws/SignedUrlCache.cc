@@ -326,8 +326,8 @@ SignedUrlCache::get_sts_credentials_from_tea_endpoint(std::string const &tea_end
     try {
         BES_PROFILE_TIMING(string("Request s3 credentials from TEA - ") + tea_endpoint_url);
 
-        // Note: this http_get call internally adds EDL auth headers, if available. The resultant credentials are
-        // specific to the current EDL user
+        // Note: We know that this request is going to TEA so we know that we need to add
+        // the users EDL auth token and such to the request headers.
         curl::http_get(tea_endpoint_url, s3credentials_json_string, curl::add_edl_auth_headers(nullptr));
     } catch (http::HttpError &http_error) {
         string err_msg = prolog +
