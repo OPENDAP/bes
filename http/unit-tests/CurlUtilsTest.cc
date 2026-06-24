@@ -492,7 +492,7 @@ public:
         DBG(cerr << prolog << "Retrieving " << url << "\n");
         curl::http_get(url, buf, curl::sign_url_for_s3_if_possible(url,nullptr));
 
-        CPPUNIT_FAIL("Should have thrown an exception.");
+        CPPUNIT_FAIL("Should have thrown an exception. Returned Content: \n" + buf);
     }
 
     void http_get_test_7() {
