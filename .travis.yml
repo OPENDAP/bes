@@ -190,7 +190,7 @@ jobs:
         #   We want to create the log files here because we can use $SNAPSHOT_IMAGE_TAG
         - |
           docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
-          sh -c 'find . -name timing -prune -o -name "*.log" -print -o -name "*site_map.txt" -print | tar -czf /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz -T -'
+          -c 'find . -name timing -prune -o -name "*.log" -print -o -name "*site_map.txt" -print | tar -czf /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz -T -'
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
         # is built:
@@ -226,8 +226,7 @@ jobs:
         #   We want to create the log files here because we can use $SNAPSHOT_IMAGE_TAG
         - |
           docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
-          sh -c 'find . -name timing -prune -o -name "*.log" -print -o -name "*site_map.txt" -print | tar -czf /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz -T -'
-
+          -c 'find . -name timing -prune -o -name "*.log" -print -o -name "*site_map.txt" -print | tar -czf /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz -T -'
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
         # is built:
