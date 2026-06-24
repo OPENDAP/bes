@@ -1780,7 +1780,7 @@ curl_slist *copy_curl_slist(const curl_slist *source_list) {
 static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
                     const unsigned int attempt,
                     const unsigned int max_attempts,
-                    const curl_slist *http_request_headers,
+                    curl_slist *http_request_headers,
                     shared_ptr <EffectiveUrl> &redirect_url) {
 
     BESDEBUG(MODULE, prolog << " BEGIN This is attempt #" << attempt << " for " << origin_url->str() << "\n");
