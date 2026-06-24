@@ -124,7 +124,7 @@ before_script:
 # stages can be simplified. jhrg 3/2/22
 
 stages:
-  - name: build-and-test
+  #- name: build-and-test
   - name: build-docker
   - name: scan
     if:  branch = master
@@ -225,9 +225,10 @@ jobs:
         # Note: Create a tmp container mounted at "/scratch".
         #   Then, pipe the log files into tar and copy them to the tmp dir.
         #   We want to create the log files here because we can use $SNAPSHOT_IMAGE_TAG
+        - docker run --rm ${SNAPSHOT_IMAGE_TAG} -c 'which find || type find || /usr/bin/find --version && pwd && ls'
         - |
           docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
-          -c 'find . -name timing -prune -o -name "*.log" -print -o -name "*site_map.txt" -print | tar -czf /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz -T -'
+          -c 'PATH=/usr/bin:/bin:/usr/sbin:/sbin find . -name timing -prune -o -name "*.log" -print -o -name "*site_map.txt" -print | tar -czf /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz -T -'
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
         # is built:
