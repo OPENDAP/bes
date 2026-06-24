@@ -194,7 +194,7 @@ void EffectiveUrlCache::set_skip_regex() {
 void EffectiveUrlCache::dump(ostream &strm) const {
     strm << BESIndent::LMarg << prolog << "(this: " << (void *) this << ")" << endl;
     BESIndent::Indent();
-    strm << BESIndent::LMarg << "d_skip_regex: " << (d_skip_regex ? d_skip_regex->pattern() : " WAS NOT SET") << endl;
+    strm << BESIndent::LMarg << "d_skip_regex: " << (d_skip_regex ? d_skip_regex->pattern() : "WAS NOT SET") << endl;
     if (!d_effective_urls.empty()) {
         strm << BESIndent::LMarg << "effective url list:" << endl;
         BESIndent::Indent();
