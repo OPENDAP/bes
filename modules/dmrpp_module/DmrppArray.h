@@ -190,6 +190,15 @@ private:
     bool read_string_array(); // not virtual; this class only. jhrg 11/07/23
     void read_contiguous_string_array(); // not virtual; this class only. jhrg 11/09/23
     void read_chunked_string_array();   // This class only. jhrg 1/29/24
+    void read_chunked_string_array_constrained(); 
+    void insert_chunk_fixed_size_str(unsigned int dim, vector<unsigned long long> *target_element_address,
+                              vector<unsigned long long> *chunk_element_address, shared_ptr<Chunk> chunk,
+                              const vector<unsigned long long> &constrained_array_shape,const vector<string>::iterator &target_index);
+    void insert_chunk_fixed_size_str_unconstrained(unsigned int dim, unsigned long long array_offset,
+                                           unsigned long long chunk_offset, shared_ptr<Chunk> chunk,
+                              const vector<unsigned long long> &array_shape,const vector<unsigned long long> &chunk_shape,
+                              const vector<unsigned long long> chunk_origin, const vector<string>::iterator &target_index);
+
 
     bool use_direct_io_opt();
 

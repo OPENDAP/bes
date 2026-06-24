@@ -3710,12 +3710,7 @@ bool DmrppArray::read_string_array() {
             read_contiguous_string_array();
         }
         else {  // Handle the more complex case where the data is chunked.
-            if (!is_projected()) {
-                read_chunked_string_array();
-            }
-            else {
-                // FIXME read_chunks();
-            }
+            read_chunked_string_array();
         }
     }
     else {
@@ -3894,6 +3889,7 @@ void DmrppArray::read_chunked_string_array()
         // and not the one returned by get_str(). jhrg 1/30/24
         // read_chunks_unconstrained();
 
+#if 0
         queue<shared_ptr<SuperChunk>> super_chunks;
         build_superchunk_queue(super_chunks);
 
@@ -3903,20 +3899,48 @@ void DmrppArray::read_chunked_string_array()
 
             super_chunk->retrieve_data();
         }
+#endif
 
-        // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
         if (!is_projected()) {  // if there is no projection constraint
+
+            queue<shared_ptr<SuperChunk>> super_chunks;
+            build_superchunk_queue(super_chunks);
+    
+            while (!super_chunks.empty()) {
+                auto super_chunk = super_chunks.front();
+                super_chunks.pop();
+    
+                super_chunk->retrieve_data();
+            }
+
             // iterate over the elements in the array to receive the strings and add the values
             vector<unsigned long long> array_shape = get_shape(false);
 
             auto fstr_len = get_fixed_string_length();
-            auto pad_type = get_fixed_length_string_pad();
 
             // FIXME Hack jhrg 1/29/24 get_str().reserve(get_size(false));
             // reserve_value_capacity_ll(get_size(false) * fstr_len);
-            get_str().reserve(get_size(false)* fstr_len);
+            get_str().reserve(get_size(false));
+#if 0
+            auto vector_str_length = (size_t)(get_size(false));
+            get_str().reserve(vector_str_length);
+            for (size_t i = 0; i<vector_str_length; i++)
+                ((get_str())[i]).reserve(fstr_len);
+#endif
 
             for (auto &chunk: get_immutable_chunks()) {
+                // Need to check if filters are applied
+                if (!is_filters_empty())
+                    chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), fstr_len);
+
+                vector<unsigned long long> array_shape = this->get_shape(false);
+                vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
+                vector<unsigned long long> chunk_origin = chunk->get_position_in_array();
+                auto target_index = get_str().begin();
+                insert_chunk_fixed_size_str_unconstrained(0,0,0,chunk,array_shape,chunk_shape,chunk_origin,target_index);
+ 
+                // The following code is right since the chunk buffer may not contiguously cover the vector<string>. 
+#if 0
                 auto buffer = chunk->get_rbuf();
                 const auto buffer_end = chunk->get_rbuf() + chunk->get_size();
 
@@ -3924,9 +3948,15 @@ void DmrppArray::read_chunked_string_array()
                     get_str().emplace_back(ingest_fixed_length_string(buffer, fstr_len, pad_type));
                     buffer += fstr_len;
                 }
+#endif
             }
+            set_read_p(true);
         }
         else {                  // apply the constraint
+
+            // This is so complicated. It deserves its own method.
+            read_chunked_string_array_constrained();
+            
             throw BESInternalError("Reading fixed length string arrays that are constrained is not supported yet.", __FILE__, __LINE__);
 #if 0
             vector<unsigned long long> array_shape = get_shape(false);
@@ -3939,9 +3969,214 @@ void DmrppArray::read_chunked_string_array()
 #endif
         }
 
-        set_read_p(true);
     }
 }
+void DmrppArray::read_chunked_string_array_constrained() {
+
+    unsigned long long sc_count = 0;
+    string sc_id = name() + "-";
+
+    // Initialize queue with the first superchunk
+    queue<shared_ptr<SuperChunk>> super_chunks;
+    auto current_super_chunk = make_shared<SuperChunk>(SuperChunk(sc_id + to_string(sc_count++), this));
+    super_chunks.push(current_super_chunk);
+
+    vector<bool> chunks_needed(get_chunk_count(),false);
+    vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
+    vector<unsigned long long> var_start;
+    vector<unsigned long long> var_stop;
+    vector<unsigned long long> var_stride;
+    int num_dims = obtain_subset_dims(var_start,var_stop,var_stride);
+    for (const auto &chunk: get_immutable_chunks()) {
+        if (true == find_needed_chunks_simple(chunk,chunk_shape,var_start,var_stride,var_stop,num_dims)) {
+            chunks_needed.push_back(true);
+            bool added = current_super_chunk->add_chunk(chunk);
+            if (!added) {
+                current_super_chunk = make_shared<SuperChunk>(SuperChunk(sc_id + to_string(sc_count++), this));
+                super_chunks.push(current_super_chunk);
+                if (!current_super_chunk->add_chunk(chunk)) {
+                    string msg = prolog + "Failed to add Chunk to new SuperChunk. chunk: " + chunk->to_string();
+                    throw BESInternalError(msg, __FILE__, __LINE__);
+                }
+            }
+        }
+    }
+
+    while (!super_chunks.empty()) {
+        auto super_chunk = super_chunks.front();
+        super_chunks.pop();
+        super_chunk->retrieve_data();
+    }
+
+    auto chunks = this->get_chunks();
+    for (unsigned long long i = 0; i < chunks.size(); i++) {
+        if (chunks_needed[i]){
+            if (!is_filters_empty())
+                (chunks[i])->filter_chunk(get_filters(), get_chunk_size_in_elements(), get_fixed_string_length());
+           
+            vector<unsigned long long> constrained_array_shape = this->get_shape(true);
+            vector<unsigned long long> target_element_address = (chunks[i])->get_position_in_array();
+            vector<unsigned long long> chunk_source_address(this->dimensions(), 0);
+            auto target_index = get_str().begin();
+            insert_chunk_fixed_size_str(0,&target_element_address, &chunk_source_address,chunks[i],constrained_array_shape,target_index);
+ 
+        }
+    }
+    set_read_p(true);
+}
+/**
+ * @brief Insert a chunk of fixed-size string into this array(mostly borrowed from insert_chunk().
+ *
+ * This method is called recursively, with successive values of \arg dim, until
+ * dim is equal to the rank of the array (act. rank - 1). The \arg target_element_address
+ * and \arg chunk_element_address are the addresses, in 'element space' of the
+ * location in this array where
+ *
+ * @note Only call this method when it is known that \arg chunk should be inserted
+ * into the array. The chunk must be both read and decompressed.
+ *
+ * @param dim
+ * @param target_element_address
+ * @param chunk_element_address
+ * @param chunk
+ * @param constrained_array_shape
+ */
+void DmrppArray::insert_chunk_fixed_size_str(unsigned int dim, vector<unsigned long long> *target_element_address,
+                              vector<unsigned long long> *chunk_element_address, shared_ptr<Chunk> chunk,
+                              const vector<unsigned long long> &constrained_array_shape,const vector<string>::iterator &target_index ) {
+
+    // The size, in elements, of each of the chunk's dimensions.
+    const vector<unsigned long long> &chunk_shape = get_chunk_dimension_sizes();
+
+    // The chunk's origin point a.k.a. its "position in array".
+    const vector<unsigned long long> &chunk_origin = chunk->get_position_in_array();
+
+    dimension thisDim = this->get_dimension(dim);
+
+    // What's the first element that we are going to access for this dimension of the chunk?
+    unsigned long long chunk_start = get_chunk_start(thisDim, chunk_origin[dim]);
+
+    // Now we figure out the correct last element, based on the subset expression
+    unsigned long long end_element = chunk_origin[dim] + chunk_shape[dim] - 1;
+    if ((unsigned long long)thisDim.stop < end_element) {
+        end_element = thisDim.stop;
+    }
+
+    unsigned long long chunk_end = end_element - chunk_origin[dim];
+
+    unsigned int last_dim = chunk_shape.size() - 1;
+    if (dim == last_dim) {
+        char *source_buffer = chunk->get_rbuf();
+        auto chars_per_string = get_fixed_string_length();;
+        auto pad_type = get_fixed_length_string_pad();
+
+        if (thisDim.stride == 1) {
+            // The start element in this array
+            unsigned long long start_element = chunk_origin[dim] + chunk_start;
+            // Compute how much we are going to copy
+            unsigned long long count = end_element - start_element + 1 ;
+
+            // Compute where we need to put it.
+            // We need to map the target index to constrained array. 
+            // The target_element_address is mapped to the constrained array.
+            
+            (*target_element_address)[dim] = (start_element - thisDim.start); // / thisDim.stride;
+            // Compute where we are going to read it from
+            (*chunk_element_address)[dim] = chunk_start;
+
+            unsigned long long target_fstr_start_index =
+                get_index(*target_element_address, constrained_array_shape);
+            unsigned long long chunk_fstr_start_index = get_index(*chunk_element_address, chunk_shape);
+
+            for (unsigned long long temp_count= 0; temp_count <count; temp_count++) { 
+                vector<string>::iterator temp_str_it = target_index + target_fstr_start_index + temp_count;  
+                unsigned long long source_char = (chunk_fstr_start_index+temp_count) * chars_per_string;
+                get_str().emplace(temp_str_it, ingest_fixed_length_string(source_buffer+source_char,chars_per_string,pad_type));
+#if 0
+            memcpy(target_buffer + target_char_start_index, source_buffer + chunk_char_start_index,
+                   chunk_constrained_inner_dim_bytes);
+#endif
+            }
+        } else {
+            // Stride != 1
+            (*target_element_address)[dim] = (chunk_start + chunk_origin[dim] - thisDim.start) / thisDim.stride;
+            unsigned long long target_fstr_start_index =
+                               get_index(*target_element_address, constrained_array_shape);
+            vector<string>::iterator temp_str_it = target_index + target_fstr_start_index;
+            for (unsigned int chunk_index = chunk_start; chunk_index <= chunk_end; chunk_index += thisDim.stride) {
+                // Compute where we need to put it.
+
+                // Compute where we are going to read it from
+                (*chunk_element_address)[dim] = chunk_index;
+
+                unsigned long long chunk_fstr_start_index = get_index(*chunk_element_address, chunk_shape);
+                unsigned long long source_char = chunk_fstr_start_index * chars_per_string;
+                get_str().emplace(temp_str_it, ingest_fixed_length_string(source_buffer+source_char,chars_per_string,pad_type));
+                temp_str_it++;
+                //memcpy(target_buffer + target_char_start_index, source_buffer + chunk_char_start_index, chars_per_string);
+            }
+        }
+    } else {
+        // Not the last dimension, so we continue to proceed down the Recursion Branch.
+        for (unsigned long long chunk_index = chunk_start; chunk_index <= chunk_end; chunk_index += thisDim.stride) {
+            (*target_element_address)[dim] = (chunk_index + chunk_origin[dim] - thisDim.start) / thisDim.stride;
+            (*chunk_element_address)[dim] = chunk_index;
+
+            // Re-entry here:
+            insert_chunk_fixed_size_str(dim + 1, target_element_address, chunk_element_address, chunk, constrained_array_shape,
+                                        target_index);
+        }
+    }
+}
+
+void DmrppArray::insert_chunk_fixed_size_str_unconstrained(unsigned int dim, unsigned long long array_offset,
+                              unsigned long long chunk_offset, shared_ptr<Chunk> chunk,
+                              const vector<unsigned long long> &array_shape,const vector<unsigned long long> &chunk_shape,
+                              const vector<unsigned long long> chunk_origin, const vector<string>::iterator &target_index )
+{
+
+    dimension thisDim = this->get_dimension(dim);
+    unsigned long long end_element = chunk_origin[dim] + chunk_shape[dim] - 1;
+    if ((unsigned long long)thisDim.stop < end_element) {
+        end_element = thisDim.stop;
+    }
+
+    unsigned long long chunk_end = end_element - chunk_origin[dim];
+
+    unsigned int last_dim = chunk_shape.size() - 1;
+    if (dim == last_dim) {
+        char *source_buffer = chunk->get_rbuf();
+        auto chars_per_string = get_fixed_string_length();;
+        auto pad_type = get_fixed_length_string_pad();
+
+        // This is the last dimension's offset.
+        array_offset += chunk_origin[dim];
+
+        for (unsigned long long temp_count= 0; temp_count <=chunk_end; temp_count++) { 
+                vector<string>::iterator temp_str_it = target_index + array_offset + temp_count;  
+                unsigned long long source_char = (chunk_offset+temp_count) * chars_per_string;
+                get_str().emplace(temp_str_it, ingest_fixed_length_string(source_buffer+source_char,chars_per_string,pad_type));
+        }
+         
+    } else {
+        // Not the last dimension, so we continue to proceed down the Recursion Branch.
+        unsigned long long mc = multiplier(chunk_shape, dim);
+        unsigned long long ma = multiplier(array_shape, dim);
+
+        // Not the last dimension, so we continue to proceed down the Recursion Branch.
+        for (unsigned long long chunk_index = 0 /*chunk_start*/; chunk_index <= chunk_end; ++chunk_index) {
+            unsigned long long next_chunk_offset = chunk_offset + (mc * chunk_index);
+            unsigned long long next_array_offset = array_offset + (ma * (chunk_index + chunk_origin[dim]));
+
+            // Re-entry here:
+            insert_chunk_fixed_size_str_unconstrained(dim + 1, next_array_offset, next_chunk_offset, chunk, array_shape, chunk_shape,
+                                       chunk_origin, target_index);
+        }
+
+    }
+}
+
+
 
 
 } // namespace dmrpp
