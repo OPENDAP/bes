@@ -1756,7 +1756,7 @@ curl_slist *copy_curl_slist(const curl_slist *source_list) {
 
     while (current != nullptr) {
         curl_slist *temp = curl_slist_append(new_list, current->data);
-        if (temp == NULL) {
+        if (temp == nullptr) {
             // Memory allocation failed; free the newly created list to avoid leaks
             curl_slist_free_all(new_list);
             return nullptr;
@@ -1780,7 +1780,7 @@ curl_slist *copy_curl_slist(const curl_slist *source_list) {
 static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
                     const unsigned int attempt,
                     const unsigned int max_attempts,
-                    curl_slist *http_request_headers,
+                    const curl_slist *http_request_headers,
                     shared_ptr <EffectiveUrl> &redirect_url) {
 
     BESDEBUG(MODULE, prolog << " BEGIN This is attempt #" << attempt << " for " << origin_url->str() << "\n");
