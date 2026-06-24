@@ -189,10 +189,10 @@ jobs:
         #   Then, pipe the log files into tar and copy them to the tmp dir.
         #   We want to create the log files here because we can use $SNAPSHOT_IMAGE_TAG
         - docker run --rm ${SNAPSHOT_IMAGE_TAG} -c 'dnf install -y findutils 2>/dev/null && pwd && ls'
-        - docker run --rm ${SNAPSHOT_IMAGE_TAG} -c 'dnf install -y findutils 2>/dev/null && find / -name "*.log" -o -name "*site_map.txt" 2>/dev/null | head -20'
+        - docker run --rm ${SNAPSHOT_IMAGE_TAG} -c '//bin/find / -name "*site_map.txt" 2>/dev/null'
         - |
           docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
-          -c 'dnf install -y findutils 2>/dev/null && find . -name timing -prune -o -name "*.log" -print -o -name "*site_map.txt" -print | tar -czf /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz -T -'
+          -c 'find . -name timing -prune -o -name "*.log" -print -o -name "*site_map.txt" -print | tar -czf /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz -T -'
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
         # is built:
@@ -226,7 +226,7 @@ jobs:
         # Note: Create a tmp container mounted at "/scratch".
         #   Then, pipe the log files into tar and copy them to the tmp dir.
         #   We want to create the log files here because we can use $SNAPSHOT_IMAGE_TAG
-        - docker run --rm ${SNAPSHOT_IMAGE_TAG} -c '//bin/find / -name "*.log" -o -name "*site_map.txt" 2>/dev/null | head -20'
+        - docker run --rm ${SNAPSHOT_IMAGE_TAG} -c '//bin/find / -name "*site_map.txt" 2>/dev/null'
         - |
           docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
           -c 'PATH=/usr/bin:/bin:/usr/sbin:/sbin find . -name timing -prune -o -name "*.log" -print -o -name "*site_map.txt" -print | tar -czf /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz -T -'
