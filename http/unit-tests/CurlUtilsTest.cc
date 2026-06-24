@@ -489,8 +489,9 @@ public:
         setenv("CMAC_REGION", "us-east-1", 1);
         const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
         string buf;
-        DBG(cerr << prolog << "Retrieving " << url << "\n");
-        curl::http_get(url, buf, curl::sign_url_for_s3_if_possible(url,nullptr));
+        DBG(cerr << prolog << "Retrieving (no headers) " << url << "\n");
+        // curl::http_get(url, buf, curl::sign_url_for_s3_if_possible(url,nullptr));
+        curl::http_get(url, buf, nullptr);
 
         CPPUNIT_FAIL("Should have thrown an exception. Returned Content: \n" + buf);
     }
