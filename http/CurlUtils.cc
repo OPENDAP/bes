@@ -1746,16 +1746,41 @@ bool process_get_redirect_http_code(const long http_code,
 }
 
 /**
+ *
+ * @param source_list A pointer to a curl_slist to copy
+ * @return A copy of the source_list
+ */
+curl_slist *copy_curl_slist(const curl_slist *source_list) {
+    curl_slist *new_list = nullptr;
+    const curl_slist *current = source_list;
+
+    while (current != nullptr) {
+        curl_slist *temp = curl_slist_append(new_list, current->data);
+        if (temp == NULL) {
+            // Memory allocation failed; free the newly created list to avoid leaks
+            curl_slist_free_all(new_list);
+            return nullptr;
+        }
+        new_list = temp;
+        current = current->next;
+    }
+
+    return new_list;
+}
+
+/**
  * @brief  Make a single attempt to acquire a redirect response from origin_url
  * @param origin_url The URL to access
  * @param attempt The attempt number of this effort.
  * @param max_attempts The maximum number of attempts allowed.
+ * @param http_request_headers Any request headers required for a successful request. (ex: Authorization)
  * @param redirect_url A returned value parameter to receive the redirect url, if located.
  * @return true if the redirect url was found, false otherwise.
  */
 static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
                     const unsigned int attempt,
                     const unsigned int max_attempts,
+                    curl_slist *http_request_headers,
                     shared_ptr <EffectiveUrl> &redirect_url) {
 
     BESDEBUG(MODULE, prolog << " BEGIN This is attempt #" << attempt << " for " << origin_url->str() << "\n");
@@ -1763,7 +1788,6 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
     bool curl_success = false;
     CURL *ceh = nullptr;
     vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
-    curl_slist *req_headers = nullptr;
 
     vector<string> response_headers;
     string response_body;
@@ -1772,28 +1796,13 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
     string redirect_url_str;
 
     origin_url->get_url_no_query();
-    // Add the EDL authorization headers if the Information is in the BES Context Manager
-    req_headers = add_edl_auth_headers(origin_url->get_url_no_query(), req_headers);
-    req_headers = sign_url_for_s3_if_possible(origin_url, req_headers);
-
-    // FIXME Hackery for DMR++ Ownership POC code - see dmrpp_module CurlHandlePool.cc
-    //  for more info. jhrg 5/24/24
-    AccessCredentials *credentials = CredentialsManager::theCM()->get(origin_url);
-    if (credentials) {
-        INFO_LOG(prolog + "Looking for EDL Token for URL: " + origin_url->str() + '\n');
-        string edl_token = credentials->get("edl_token");
-        if (!edl_token.empty()) {
-            INFO_LOG(prolog + "Using EDL Token for URL: " + origin_url->str() + '\n');
-            req_headers = curl::append_http_header(req_headers, AUTHORIZATION_REQUEST_HEADER_KEY, edl_token);
-        }
-    }
 
     try {
 
         // OK! Make the cURL handle
         ceh = init_no_follow_redirects_handle(
                 origin_url->str(),
-                req_headers,
+                http_request_headers,
                 response_headers,
                 response_body);
 
@@ -1846,7 +1855,7 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
         }
 
         // Free the header list
-        curl_slist_free_all(req_headers);
+        curl_slist_free_all(http_request_headers);
         // clean up cURL handle
         if (ceh) {
             curl_easy_cleanup(ceh);
@@ -1856,7 +1865,7 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
     }
     catch (...) {
         // Free the header list
-        curl_slist_free_all(req_headers);
+        curl_slist_free_all(http_request_headers);
 
         // clean up cURL handle
         if (ceh) {
@@ -1879,10 +1888,10 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
  * an http code of 2xx, 4xx, or 5xx is considered an error.
  *
  * @param origin_url The origin url for the request
- * @param redirect_url Returned value parameter for the redirect url.
- * @return The redirect URL string.
+ * @param http_request_headers Any request headers required for a successful request. (ex: Authorization)
+ * @return A shared_ptr to an EffectiveUrl that represents the redirect URL (aka location).
  */
-std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http::url> &origin_url) {
+std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http::url> &origin_url, curl_slist *http_request_headers) {
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     // Before we do anything, make sure that the URL is OK to pursue.
@@ -1900,9 +1909,17 @@ std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http:
     unsigned int attempt = 0;
     bool success = false;
 
-    while (!success && (attempt < retry_limit)) {
-        attempt++;
-        success = gru_mk_attempt(origin_url, attempt, retry_limit, redirect_url);
+    try {
+        while (!success && (attempt < retry_limit)) {
+            attempt++;
+            auto req_hdrs = copy_curl_slist(http_request_headers);
+            success = gru_mk_attempt(origin_url, attempt, retry_limit, req_hdrs, redirect_url);
+        }
+        curl_slist_free_all(http_request_headers);
+    }
+    catch (...) {
+        curl_slist_free_all(http_request_headers);
+        throw;
     }
     // This is a failsafe test - the gru_mk_attempt)_ should detect the errors and throw an exception
     // if the attempt count exceeds the retry_limit, but if for some reason there's flaw in that

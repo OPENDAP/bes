@@ -122,7 +122,7 @@ shared_ptr <EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr <url> 
             BES_STOPWATCH_START(MODULE_TIMER, prolog + "Retrieve and cache effective url for source url: " + source_url->str());
             try {
                 // This code throws an HttpError exception if there is a problem.
-                effective_url = curl::get_redirect_url(source_url);
+                effective_url = curl::get_redirect_url(source_url,curl::add_edl_auth_headers(nullptr));
             }
             catch (http::HttpError &http_error) {
                 string err_msg = prolog + "Hyrax encountered a Service Chaining Error while "
@@ -194,7 +194,7 @@ void EffectiveUrlCache::set_skip_regex() {
 void EffectiveUrlCache::dump(ostream &strm) const {
     strm << BESIndent::LMarg << prolog << "(this: " << (void *) this << ")" << endl;
     BESIndent::Indent();
-    strm << BESIndent::LMarg << "d_skip_regex: " << (d_skip_regex ? d_skip_regex->pattern() : "WAS NOT SET") << endl;
+    strm << BESIndent::LMarg << "d_skip_regex: " << (d_skip_regex ? d_skip_regex->pattern() : " WAS NOT SET") << endl;
     if (!d_effective_urls.empty()) {
         strm << BESIndent::LMarg << "effective url list:" << endl;
         BESIndent::Indent();

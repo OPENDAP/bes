@@ -59,7 +59,7 @@ void http_get(const std::string &target_url, std::string &buf, curl_slist *http_
 void super_easy_perform(CURL *ceh);
 ///@}
 
-std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http::url> &url);
+std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http::url> &url, curl_slist *http_request_headers = nullptr);
 
 std::string filter_aws_url(const std::string &eff_url);
 
