@@ -146,7 +146,7 @@ string CmrContainer::access() {
         BESDEBUG( MODULE, prolog << "Building new RemoteResource." << endl );
         shared_ptr<http::url> target_url(new http::url(granule_url,true));
         d_remoteResource = new http::RemoteResource(target_url);
-        d_remoteResource->retrieve_resource(curl::add_edl_auth_headers(granule_url, nullptr));
+        d_remoteResource->retrieve_resource(curl::add_edl_auth_headers(nullptr));
     }
     BESDEBUG( MODULE, prolog << "Retrieved RemoteResource." << endl );
 

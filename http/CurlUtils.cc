@@ -1501,28 +1501,6 @@ curl_slist *add_edl_auth_headers(curl_slist *request_headers) {
     return request_headers;
 }
 
-curl_slist *add_edl_auth_headers(const string &target_url, curl_slist *request_headers) {
-    bool found;
-    string s;
-
-    s = BESContextManager::TheManager()->get_context(UID_CONTEXT_KEY, found);
-    if (found && !s.empty()) {
-        request_headers = append_http_header(request_headers, UID_REQUEST_HEADER_KEY, s);
-    }
-
-    s = BESContextManager::TheManager()->get_context(EDL_AUTH_TOKEN_CONTEXT_KEY, found);
-    if (found && !s.empty()) {
-        request_headers = append_http_header(request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, s);
-    }
-
-    s = BESContextManager::TheManager()->get_context(EDL_CLIENT_APPLICATION_ID_CONTEXT_KEY, found);
-    if (found && !s.empty()) {
-        request_headers = append_http_header(request_headers, EDL_CLIENT_APPLICATION_ID_REQUEST_HEADER_KEY, s);
-    }
-
-
-    return request_headers;
-}
 
 /**
  * @brief Sign a URL for S3

@@ -308,7 +308,7 @@ public:
         BESContextManager::TheManager()->set_context(EDL_CLIENT_APPLICATION_ID_CONTEXT_KEY, tokens[2]);
 
         try {
-            hdrs = curl::add_edl_auth_headers("",hdrs);
+            hdrs = curl::add_edl_auth_headers(hdrs);
             sl_iter = hdrs;
             size_t index = 0;
             while (sl_iter) {
