@@ -129,6 +129,9 @@ RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
         exit 1; \
     fi
 
+# Copy the log files so that they can be accessed from outside of this docker build (i.e. Travis)
+COPY --from=builder /bes-test-logs/ /bes-test-logs/
+
 # Duplicated from installation above, this time on a slimmer base image...
 # Install the libdap rpms
 ARG LIBDAP_RPM_FILENAME
