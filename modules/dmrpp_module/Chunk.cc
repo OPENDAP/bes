@@ -1371,7 +1371,7 @@ std::shared_ptr<http::url> Chunk::get_data_url() const {
     // back on using the TEA service to sign our urls
     if (url == nullptr) {
         curl_slist *req_hdrs = nullptr;
-        if (url->is_trusted()) {
+        if (d_data_url->is_trusted()) {
             req_hdrs = curl::add_edl_auth_headers(nullptr);
         }
         url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url, req_hdrs);
