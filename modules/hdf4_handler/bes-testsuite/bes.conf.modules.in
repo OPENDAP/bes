@@ -25,13 +25,6 @@ BES.Catalog.catalog.FollowSymLinks=Yes
 
 BES.ServerPort=10002
 
-BES.ServerSecure=no
-BES.ServerSecurePort=10003
-BES.ServerCertFile=/full/path/to/serverside/certificate/file.pem
-BES.ServerKeyFile=/full/path/to/serverside/key/file.pem
-BES.ClientCertFile=/full/path/to/clientside/certificate/file.pem
-BES.ClientKeyFile=/full/path/to/clientside/key/file.pem
-
 BES.Help.TXT=@pkgdatadir@/bes_help.txt
 BES.Help.HTML=@pkgdatadir@/bes_help.html
 BES.Help.XML=@pkgdatadir@/bes_help.txt

@@ -155,23 +155,6 @@ BES.ServerPort=10022
 
 # BES.DaemonPort=11002
 
-# Security information for this server. ServerSecure specifies whether
-# the server requires authentication by the client using SSL
-# certificates and keys. If ServerSecure is true/yes, then use
-# ServerSecurePort to set the port number and the subsequent six
-# parameters to set the server and client certificate, authentication
-# and key files.
-
-BES.ServerSecure=no
-
-# BES.ServerSecurePort=10003
-# BES.ServerCertFile=/full/path/to/serverside/certificate/file.pem
-# BES.ServerCertAuthFile=/full/path/to/serverside/certificate/authority/file.pem
-# BES.ServerKeyFile=/full/path/to/serverside/key/file.pem
-# BES.ClientCertFile=/full/path/to/clientside/certificate/file.pem
-# BES.ClientCertAuthFile=/full/path/to/clientside/certificate/authority/file.pem
-# BES.ClientKeyFile=/full/path/to/clientside/key/file.pem
-
 # Help file locations, for text, html, and xml versions
 
 BES.Help.TXT=@pkgdatadir@/bes_help.txt
