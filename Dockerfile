@@ -100,15 +100,20 @@ RUN sudo setfacl -R -m u:$BES_USER:rwx $PREFIX/var \
 # ...next, the daemon has to be started as root.
 RUN sudo -s --preserve-env=PATH besctl start
 
+## Mount a directory in this container to a directory in the host here.
+
 # ...now run the tests.
 ARG DIST
 ENV DIST=${DIST:-el8}
-RUN if [ "$DIST" == "el9" ]; then \
+RUN --mount=bind,source=.,target=/tmp \
+    if [ "$DIST" == "el9" ]; then \
         echo "# Warning: Skipping make check because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299"; \
     else \
         make check -j$(nproc --ignore=1); \
+        ## tar the logs here and write that to the container directory mounted on line 103
     fi
-# Copy test logs to a known location for extraction after build
+
+    # Copy test logs to a known location for extraction after build
 RUN mkdir -p ~/bes-test-logs && \
     find . -name "*.log" -o -name "*site_map.txt" | xargs -I{} cp --parents {} /bes-test-logs/ 2>/dev/null || true
 
