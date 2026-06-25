@@ -109,7 +109,7 @@ RUN if [ "$DIST" == "el9" ]; then \
         make check -j$(nproc --ignore=1); \
     fi
 # Copy test logs to a known location for extraction after build
-RUN mkdir -p /bes-test-logs && \
+RUN mkdir -p ~/bes-test-logs && \
     find . -name "*.log" -o -name "*site_map.txt" | xargs -I{} cp --parents {} /bes-test-logs/ 2>/dev/null || true
 
 # ...and turn off the besdaemon. We want to turn this on/off regardless of
@@ -130,7 +130,7 @@ RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
     fi
 
 # Copy the log files so that they can be accessed from outside of this docker build (i.e. Travis)
-COPY --from=builder /bes-test-logs/ /bes-test-logs/
+COPY --from=builder /home/bes_user/bes-test-logs/ /bes-test-logs/
 
 # Duplicated from installation above, this time on a slimmer base image...
 # Install the libdap rpms
