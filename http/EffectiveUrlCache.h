@@ -29,9 +29,10 @@
 
 #include <memory>
 #include <map>
-#include <unordered_map>
 #include <string>
 #include <mutex>
+
+#include <curl/curl.h>
 
 #include "BESObj.h"
 #include "BESRegex.h"   // for std::unique_ptr<BESRegex>

@@ -27,6 +27,7 @@
 #include <cstring>
 
 #include <zlib.h>
+#include <curl/curl.h>
 
 #include <BESDebug.h>
 #include <BESLog.h>
