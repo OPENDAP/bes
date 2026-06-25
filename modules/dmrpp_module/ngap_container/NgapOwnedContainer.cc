@@ -473,6 +473,7 @@ void NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) co
 
     string dmrpp_url_str = build_dmrpp_url_to_owned_bucket(get_real_name());
     INFO_LOG(prolog + "Look in the OPeNDAP-bucket for the DMRpp for: " + dmrpp_url_str);
+    // @TODO - Is this even the right idea to look for S3 creds in CredentialsManager for this call??
     curl::http_get(dmrpp_url_str, dmrpp_string,curl::sign_url_for_s3_if_possible(dmrpp_url_str, nullptr));
     map<string, string, std::less<>> content_filters;
     if (!get_opendap_content_filters(content_filters)) {
