@@ -72,9 +72,10 @@ shared_ptr <EffectiveUrl> EffectiveUrlCache::get_cached_eurl(string const &url) 
  * skip_regex then it will not be cached.
  *
  * @param source_url
+ * @param http_request_headers The http request headers to use when contacting source_url
  * @returns The effective URL
 */
-shared_ptr <EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr <url> source_url) {
+shared_ptr <EffectiveUrl> EffectiveUrlCache::get_effective_url(const shared_ptr <url>& source_url, curl_slist *http_request_headers) {
 
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url->str() << endl);
     BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
@@ -122,7 +123,7 @@ shared_ptr <EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr <url> 
             BES_STOPWATCH_START(MODULE_TIMER, prolog + "Retrieve and cache effective url for source url: " + source_url->str());
             try {
                 // This code throws an HttpError exception if there is a problem.
-                effective_url = curl::get_redirect_url(source_url,curl::add_edl_auth_headers(nullptr));
+                effective_url = curl::get_redirect_url(source_url,http_request_headers);
             }
             catch (http::HttpError &http_error) {
                 string err_msg = prolog + "Hyrax encountered a Service Chaining Error while "

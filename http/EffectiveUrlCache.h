@@ -95,7 +95,7 @@ public:
 
     ~EffectiveUrlCache() override = default;
 
-    std::shared_ptr<EffectiveUrl> get_effective_url(std::shared_ptr<url> source_url);
+    std::shared_ptr<EffectiveUrl> get_effective_url(const std::shared_ptr<url>& source_url, curl_slist *http_request_headers = nullptr);
 
     void dump(std::ostream &strm) const override;
 
