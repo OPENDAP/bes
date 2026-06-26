@@ -108,16 +108,18 @@ RUN if [ "$DIST" == "el9" ]; then \
     else \
         make check -j$(nproc --ignore=1); \
     fi
-# Copy test logs to a known location for extraction after build
-RUN sudo mkdir -p /home/bes_user/bes-test-logs && \
-    sudo chown $BES_USER:$BES_USER /home/bes_user/bes-test-logs && \
-    find . \( -name "*.log" -o -name "*site_map.txt" \) -print | xargs -I{} cp --parents {} /home/bes_user/bes-test-logs/
 
 # ...and turn off the besdaemon. We want to turn this on/off regardless of
 # whether we run the tests
 RUN sudo -s --preserve-env=PATH besctl stop
 
 RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
+
+# Copy test logs to a known location for extraction after build
+RUN sudo mkdir -p /home/bes_user/bes-test-logs && \
+    sudo chown $BES_USER:$BES_USER /home/bes_user/bes-test-logs && \
+    find . \( -name "*.log" -o -name "*site_map.txt" \) -print | \
+    tar -czf /home/bes_user/bes-test-logs/bes-test-logs.tar.gz -T -
 
 #####
 ##### Final layer: libdap + hyrax-dependencies + bes
@@ -131,7 +133,7 @@ RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
     fi
 
 # Copy the log files so that they can be accessed from outside of this docker build (i.e. Travis)
-COPY --from=builder /home/bes_user/bes-test-logs/ /bes-test-logs/
+COPY --from=builder /home/bes_user/bes-test-logs/bes-test-logs.tar.gz /bes-test-logs/bes-test-logs.tar.gz
 
 # Duplicated from installation above, this time on a slimmer base image...
 # Install the libdap rpms
