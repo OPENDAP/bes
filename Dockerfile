@@ -110,7 +110,7 @@ RUN if [ "$DIST" == "el9" ]; then \
     fi
 # Copy test logs to a known location for extraction after build
 RUN sudo mkdir -p /home/bes_user/bes-test-logs && \
-    find . \( -name "*.log" -o -name "*site_map.txt" \) -print && \
+    sudo chown $BES_USER:$BES_USER /home/bes_user/bes-test-logs && \
     find . \( -name "*.log" -o -name "*site_map.txt" \) -print | xargs -I{} cp --parents {} /home/bes_user/bes-test-logs/
 
 # ...and turn off the besdaemon. We want to turn this on/off regardless of
