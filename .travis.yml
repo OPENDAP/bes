@@ -190,7 +190,8 @@ jobs:
         #   We want to create the log files here because we can use $SNAPSHOT_IMAGE_TAG when uploading the results
         - |
           docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
-          -c 'cp /bes-test-logs/bes-test-logs.tar.gz /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz'
+            -c 'cp /bes-test-logs/bes-test-logs.tar.gz "$1"' \
+            sh "/scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
         # DEBUG: Display contents
         - |
           echo "Host /tmp tarball:"

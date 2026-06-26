@@ -11,6 +11,7 @@ then
 
   # Create a tarball for non-docker builds from local files - kln 6/23/26
   if ! test -f /tmp/${LOG_FILE_TGZ}; then
+    echo "Creating tarball of test logs"
     tar -czf /tmp/${LOG_FILE_TGZ} $(find . -name timing -prune -o -name '*.log' -print -o -name '*site_map.txt' -print)
   fi
 
