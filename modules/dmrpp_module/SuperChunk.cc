@@ -757,6 +757,12 @@ BESDEBUG("dmrpp", "SuperChunk read buffer offset: " << d_offset <<" buffer size:
     // have assured this to be true.
     for (const auto &chunk : d_chunks) {
         chunk->set_is_read(true);
+cerr<<"in superchunk: "<<endl;
+char *temp_buf = chunk->get_rbuf();
+for (int i = 0;i<3;i++) {
+cerr<<"buf["<<i<<"]= "<<*temp_buf<<endl;
+temp_buf++;
+}
         chunk->set_bytes_read(chunk->get_size());
     }
 }

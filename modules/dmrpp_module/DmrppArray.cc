@@ -2612,22 +2612,24 @@ bool DmrppArray::read() {
     }
 
     Type var_type = this->var()->type();
-#if 0
+//#if 0
     if ((var_type == dods_str_c || var_type == dods_url_c)) {
         if (is_flsa()) {
             return read_string_array();
         }
     }
-#endif
+//#endif
 
     DmrppArray *array_to_read = this;
 
+#if 0
     if ((var_type == dods_str_c || var_type == dods_url_c)) {
         if (is_flsa()) {
             // For fixed length string we use a proxy array of Byte to retrieve the data.
             array_to_read = get_as_byte_array(*this);
         }       
     }    
+#endif
     try {
         if (BESDebug::IsSet(MODULE)) {
             string msg = array_to_str(*array_to_read, "Reading Data From DmrppArray");
@@ -2706,6 +2708,7 @@ bool DmrppArray::read() {
             }
         }
 
+#if 0
         if ((var_type == dods_str_c || var_type == dods_url_c)) {
             BESDEBUG(MODULE, prolog << "Processing Array of Strings." << endl);
 
@@ -2716,6 +2719,7 @@ bool DmrppArray::read() {
                 throw BESInternalError("Arrays of variable length strings are not yet supported.", __FILE__, __LINE__);
             }
         }
+#endif
 
     } catch (...) {
         if (array_to_read && array_to_read != this) {
@@ -3905,14 +3909,38 @@ void DmrppArray::read_chunked_string_array()
 
             queue<shared_ptr<SuperChunk>> super_chunks;
             build_superchunk_queue(super_chunks);
-    
+             vector<unsigned long long> array_shape = get_shape(false);
+                vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
+                auto target_index = get_str().begin();
+
+            auto fstr_len = get_fixed_string_length();
+
+            // FIXME Hack jhrg 1/29/24 get_str().reserve(get_size(false));
+            // reserve_value_capacity_ll(get_size(false) * fstr_len);
+            get_str().reserve(get_size(false));
+            for(unsigned i = 0; i <get_size(false);i++)
+                (get_str()[i]).reserve(fstr_len+1);
+   
             while (!super_chunks.empty()) {
                 auto super_chunk = super_chunks.front();
                 super_chunks.pop();
     
                 super_chunk->retrieve_data();
+                auto temp_chunks = super_chunk->get_chunks();
+                for (auto &chunk: temp_chunks) {
+                if (!is_filters_empty())
+                    chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), fstr_len);
+
+                vector<unsigned long long> chunk_origin = chunk->get_position_in_array();
+for(const auto & co:chunk_origin)
+cerr<<"chunk_origin: "<<co<<endl;
+                insert_chunk_fixed_size_str_unconstrained(0,0,0,chunk,array_shape,chunk_shape,chunk_origin,target_index);
+ 
+                }
+                
             }
 
+#if 0
             // iterate over the elements in the array to receive the strings and add the values
             vector<unsigned long long> array_shape = get_shape(false);
 
@@ -3921,12 +3949,10 @@ void DmrppArray::read_chunked_string_array()
             // FIXME Hack jhrg 1/29/24 get_str().reserve(get_size(false));
             // reserve_value_capacity_ll(get_size(false) * fstr_len);
             get_str().reserve(get_size(false));
-#if 0
             auto vector_str_length = (size_t)(get_size(false));
             get_str().reserve(vector_str_length);
             for (size_t i = 0; i<vector_str_length; i++)
                 ((get_str())[i]).reserve(fstr_len);
-#endif
 
             for (auto &chunk: get_immutable_chunks()) {
                 // Need to check if filters are applied
@@ -3940,7 +3966,6 @@ void DmrppArray::read_chunked_string_array()
                 insert_chunk_fixed_size_str_unconstrained(0,0,0,chunk,array_shape,chunk_shape,chunk_origin,target_index);
  
                 // The following code is right since the chunk buffer may not contiguously cover the vector<string>. 
-#if 0
                 auto buffer = chunk->get_rbuf();
                 const auto buffer_end = chunk->get_rbuf() + chunk->get_size();
 
@@ -3948,8 +3973,8 @@ void DmrppArray::read_chunked_string_array()
                     get_str().emplace_back(ingest_fixed_length_string(buffer, fstr_len, pad_type));
                     buffer += fstr_len;
                 }
-#endif
             }
+#endif
             set_read_p(true);
         }
         else {                  // apply the constraint
@@ -4135,6 +4160,7 @@ void DmrppArray::insert_chunk_fixed_size_str_unconstrained(unsigned int dim, uns
                               const vector<unsigned long long> chunk_origin, const vector<string>::iterator &target_index )
 {
 
+cerr<<"coming to insert_chunk_fixed_size_str_unconstrained"<<endl;
     dimension thisDim = this->get_dimension(dim);
     unsigned long long end_element = chunk_origin[dim] + chunk_shape[dim] - 1;
     if ((unsigned long long)thisDim.stop < end_element) {
@@ -4146,17 +4172,33 @@ void DmrppArray::insert_chunk_fixed_size_str_unconstrained(unsigned int dim, uns
     unsigned int last_dim = chunk_shape.size() - 1;
     if (dim == last_dim) {
         char *source_buffer = chunk->get_rbuf();
+char *temp_buf = chunk->get_rbuf();
+for (int i = 0;i<3;i++) {
+cerr<<"DA: buf["<<i<<"]= "<<*temp_buf<<endl;
+temp_buf++;
+}
+
         auto chars_per_string = get_fixed_string_length();;
         auto pad_type = get_fixed_length_string_pad();
 
         // This is the last dimension's offset.
         array_offset += chunk_origin[dim];
-
+cerr<<"last_dim: "<<dim <<endl;
+cerr<<"before the for loop: "<<endl;
+cerr<<"chunk_offset: "<<chunk_offset <<endl;
+cerr<<"array_offset: "<<array_offset <<endl;
+cerr<<"chars_per_string: "<<chars_per_string <<endl;
         for (unsigned long long temp_count= 0; temp_count <=chunk_end; temp_count++) { 
                 vector<string>::iterator temp_str_it = target_index + array_offset + temp_count;  
                 unsigned long long source_char = (chunk_offset+temp_count) * chars_per_string;
-                get_str().emplace(temp_str_it, ingest_fixed_length_string(source_buffer+source_char,chars_per_string,pad_type));
+string temp_str = ingest_fixed_length_string(source_buffer+source_char,chars_per_string,pad_type);
+cerr<<"temp_str: "<<temp_str<<endl;
+cerr<<" source_char: "<<source_char <<endl;
+                //get_str().emplace(temp_str_it, ingest_fixed_length_string(source_buffer+source_char,chars_per_string,pad_type));
+                //get_str().emplace(temp_str_it, temp_str);
+                get_str()[array_offset+temp_count]=temp_str;
         }
+cerr<<"end the for loop: "<<endl;
          
     } else {
         // Not the last dimension, so we continue to proceed down the Recursion Branch.
