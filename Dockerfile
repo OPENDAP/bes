@@ -109,8 +109,9 @@ RUN if [ "$DIST" == "el9" ]; then \
         make check -j$(nproc --ignore=1); \
     fi
 # Copy test logs to a known location for extraction after build
-RUN mkdir -p ~/bes-test-logs && \
-    find . -name "*.log" -o -name "*site_map.txt" | xargs -I{} cp --parents {} /bes-test-logs/ 2>/dev/null || true
+RUN sudo mkdir -p /home/bes_user/bes-test-logs && \
+    find . \( -name "*.log" -o -name "*site_map.txt" \) -print && \
+    find . \( -name "*.log" -o -name "*site_map.txt" \) -print | xargs -I{} cp --parents {} /home/bes_user/bes-test-logs/
 
 # ...and turn off the besdaemon. We want to turn this on/off regardless of
 # whether we run the tests
