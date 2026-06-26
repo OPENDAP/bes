@@ -557,7 +557,7 @@ bool SignedUrlCache::is_enabled() {
     // The value will be 0 (false) or 1 (true) and TheBESKeys will not be checked again.
     if (d_enabled < 0) {
         if (is_cache_supported_within_current_aws_region()) {
-            string value = TheBESKeys::TheKeys()->read_string_key(HTTP_CACHE_EFFECTIVE_URLS_KEY, "false");
+            string value = TheBESKeys::TheKeys()->read_string_key(AWS_CACHE_SIGNED_URLS_KEY, "false");
             d_enabled = BESUtil::lowercase(value) == "true";
         } else {
             d_enabled = false;

@@ -130,20 +130,20 @@ public:
         CPPUNIT_ASSERT_MESSAGE("SignedUrlCache is in supported region when the current default aws region is "
                                "equivalent to the supported region",
                                SignedUrlCache::TheCache()->is_cache_supported_within_current_aws_region());
-        TheBESKeys::TheKeys()->set_key(HTTP_CACHE_EFFECTIVE_URLS_KEY, "true");
+        TheBESKeys::TheKeys()->set_key(AWS_CACHE_SIGNED_URLS_KEY, "true");
         SignedUrlCache::TheCache()->d_enabled = -1; // ...reset the cache enabled state...
         CPPUNIT_ASSERT_MESSAGE("When the current aws region is supported and the cache is allowed in the "
                                "configuration, the cache is enabled",
                                SignedUrlCache::TheCache()->is_enabled());
 
-        TheBESKeys::TheKeys()->set_key(HTTP_CACHE_EFFECTIVE_URLS_KEY, "false");
+        TheBESKeys::TheKeys()->set_key(AWS_CACHE_SIGNED_URLS_KEY, "false");
         SignedUrlCache::TheCache()->d_enabled = -1; // ...reset the cache enabled state...
         CPPUNIT_ASSERT_MESSAGE("When the current aws region is supported but the cache is disallowed in the "
                                "configuration, the cache is not enabled",
                                !SignedUrlCache::TheCache()->is_enabled());
 
         SignedUrlCache::TheCache()->d_aws_region_in_which_direct_copy_is_supported = "foo";
-        TheBESKeys::TheKeys()->set_key(HTTP_CACHE_EFFECTIVE_URLS_KEY, "true");
+        TheBESKeys::TheKeys()->set_key(AWS_CACHE_SIGNED_URLS_KEY, "true");
         SignedUrlCache::TheCache()->d_enabled = -1; // ...reset the cache enabled state...
         CPPUNIT_ASSERT_MESSAGE("SignedUrlCache is never enabled when not in its supported region",
                                !SignedUrlCache::TheCache()->is_cache_supported_within_current_aws_region());
@@ -151,7 +151,7 @@ public:
                                "enabled in the configuration",
                                !SignedUrlCache::TheCache()->is_enabled());
 
-        TheBESKeys::TheKeys()->set_key(HTTP_CACHE_EFFECTIVE_URLS_KEY, "false");
+        TheBESKeys::TheKeys()->set_key(AWS_CACHE_SIGNED_URLS_KEY, "false");
         SignedUrlCache::TheCache()->d_enabled = -1; // ...reset the cache enabled state...
         CPPUNIT_ASSERT_MESSAGE("SignedUrlCache is not enabled when not in its supported region, when the cache is "
                                "disabled in the configuration",
