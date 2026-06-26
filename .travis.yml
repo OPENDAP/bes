@@ -124,7 +124,7 @@ before_script:
 # stages can be simplified. jhrg 3/2/22
 
 stages:
-  #- name: build-and-test
+  - name: build-and-test
   - name: build-docker
   - name: scan
     if:  branch = master
@@ -185,19 +185,12 @@ jobs:
           export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
           export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
         - ./travis/build-rhel-docker.sh
-        # Note: Create a tmp container mounted at "/scratch".
-        #   Then, pipe the log files into tar and copy them to the tmp dir.
-        #   We want to create the log files here because we can use $SNAPSHOT_IMAGE_TAG when uploading the results
+        # Note: Take the test log tarball that was created in the Dockerfile and copied to the final mount
+        #   and then run this copy command to copy it into Travis.
+        #   Use "$1" because Single quotes prevent the host shell (Travis) from expanding ${TRAVIS_JOB_NUMBER} before invoking
         - |
           docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
-            -c 'cp /bes-test-logs/bes-test-logs.tar.gz "$1"' \
-            sh "/scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
-        # DEBUG: Display contents
-        - |
-          echo "Host /tmp tarball:"
-          ls -lh /tmp/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz
-          echo "Contents:"
-          tar -tzf /tmp/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz | head -200
+          -c 'cp /bes-test-logs/bes-test-logs.tar.gz "$1"' sh "/scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
         # is built:
@@ -228,12 +221,12 @@ jobs:
           export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
           export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
         - ./travis/build-rhel-docker.sh
-        # Note: Create a tmp container mounted at "/scratch".
-        #   Then, pipe the log files into tar and copy them to the tmp dir.
-        #   We want to create the log files here because we can use $SNAPSHOT_IMAGE_TAG when uploading the results
+          # Note: Take the test log tarball that was created in the Dockerfile and copied to the final mount
+          #   and then run this copy command to copy it into Travis.
+          #   Use "$1" because Single quotes prevent the host shell (Travis) from expanding ${TRAVIS_JOB_NUMBER} before invoking
         - |
           docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
-          -c 'cp /bes-test-logs/bes-test-logs.tar.gz /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz'
+          -c 'cp /bes-test-logs/bes-test-logs.tar.gz "$1"' sh "/scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
         # is built:

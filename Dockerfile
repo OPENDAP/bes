@@ -118,11 +118,9 @@ RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
 # Copy test logs to a known location for extraction after build
 RUN sudo mkdir -p /home/bes_user/bes-test-logs && \
     sudo chown $BES_USER:$BES_USER /home/bes_user/bes-test-logs && \
-    echo "Files being added to bes-test-logs.tar.gz:" && \
-    find . \( -name "*.log" -o -name "*site_map.txt" \) -print | tee /tmp/bes-log-file-list.txt && \
-    tar -czf /home/bes_user/bes-test-logs/bes-test-logs.tar.gz -T /tmp/bes-log-file-list.txt && \
-    echo "Tarball contents:" && \
-    tar -tzf /home/bes_user/bes-test-logs/bes-test-logs.tar.gz | head -200
+    echo "Bundling test logs and site_maps:" && \
+    find . \( -name "*.log" -o -name "*site_map.txt" \) -print > /tmp/bes-log-file-list.txt && \
+    tar -czf /home/bes_user/bes-test-logs/bes-test-logs.tar.gz -T /tmp/bes-log-file-list.txt
 
 #####
 ##### Final layer: libdap + hyrax-dependencies + bes

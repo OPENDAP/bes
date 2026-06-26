@@ -11,8 +11,8 @@ then
 
   # Create a tarball for non-docker builds from local files - kln 6/23/26
   if ! test -f /tmp/${LOG_FILE_TGZ}; then
-    echo "Creating tarball of test logs"
-    tar -czf /tmp/${LOG_FILE_TGZ} $(find . -name timing -prune -o -name '*.log' -print -o -name '*site_map.txt' -print)
+    echo "No tarball found, creating a new tarball of test logs"
+    tar -czf /tmp/${LOG_FILE_TGZ} $(find . \( -name "*.log" -o -name "*site_map.txt" \) -print)
   fi
 
   # using: 'test -z "$AWS_ACCESS_KEY_ID" || ...' keeps after_script from running
