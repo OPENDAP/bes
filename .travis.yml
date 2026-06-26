@@ -191,6 +191,12 @@ jobs:
         - |
           docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
           -c 'cp /bes-test-logs/bes-test-logs.tar.gz /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz'
+        # DEBUG: Display contents
+        - |
+          echo "Host /tmp tarball:"
+          ls -lh /tmp/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz
+          echo "Contents:"
+          tar -tzf /tmp/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz | head -200
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
         # is built:
