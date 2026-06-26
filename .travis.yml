@@ -187,7 +187,7 @@ jobs:
         - ./travis/build-rhel-docker.sh
         # Note: Create a tmp container mounted at "/scratch".
         #   Then, pipe the log files into tar and copy them to the tmp dir.
-        #   We want to create the log files here because we can use $SNAPSHOT_IMAGE_TAG
+        #   We want to create the log files here because we can use $SNAPSHOT_IMAGE_TAG when uploading the results
         - |
           docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
           -c 'tar -czf /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz /bes-test-logs/'
@@ -223,7 +223,7 @@ jobs:
         - ./travis/build-rhel-docker.sh
         # Note: Create a tmp container mounted at "/scratch".
         #   Then, pipe the log files into tar and copy them to the tmp dir.
-        #   We want to create the log files here because we can use $SNAPSHOT_IMAGE_TAG
+        #   We want to create the log files here because we can use $SNAPSHOT_IMAGE_TAG when uploading the results
         - |
           docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
           -c 'tar -czf /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz /bes-test-logs/'
