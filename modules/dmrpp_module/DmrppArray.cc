@@ -3868,9 +3868,9 @@ void DmrppArray::read_contiguous_string_array()
             vector<unsigned long long> subset;
 
             unsigned long long constrained_str_size = get_size(true);
-            get_str().reserve(constrained_str_size);
+            get_str().resize(constrained_str_size);
             for (unsigned long long i = 0; i < constrained_str_size;i++)
-                (get_str())[i].reserve(fstr_len);
+                (get_str())[i].resize(fstr_len);
 
             unsigned long long target_index = 0;
             insert_constrained_contiguous_string(dim_begin(), target_index, subset, array_shape, the_one_chunk->get_rbuf());
@@ -3928,9 +3928,9 @@ void DmrppArray::read_chunked_string_array()
 
             // FIXME Hack jhrg 1/29/24 get_str().reserve(get_size(false));
             // reserve_value_capacity_ll(get_size(false) * fstr_len);
-            get_str().reserve(get_size(false));
+            get_str().resize(get_size(false));
             for(unsigned i = 0; i <get_size(false);i++)
-                (get_str()[i]).reserve(fstr_len);
+                (get_str()[i]).resize(fstr_len);
    
             while (!super_chunks.empty()) {
                 auto super_chunk = super_chunks.front();
@@ -4036,10 +4036,10 @@ void DmrppArray::read_chunked_string_array_constrained() {
     vector<unsigned long long> constrained_array_shape = this->get_shape(true);
     vector<unsigned long long> chunk_source_address(this->dimensions(), 0);
     auto vector_str_length = (size_t)(get_size(true));
-    get_str().reserve(vector_str_length);
+    get_str().resize(vector_str_length);
     auto fstr_len= get_fixed_string_length();;
     for (size_t i = 0; i<vector_str_length; i++)
-        ((get_str())[i]).reserve(fstr_len);
+        ((get_str())[i]).resize(fstr_len);
 
 
     // Now super_chunks only includes the needed chunks. 
