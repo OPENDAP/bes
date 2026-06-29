@@ -41,6 +41,7 @@
 #include "HttpNames.h"
 #include "SignedUrlCache.h"
 #include "TheBESKeys.h"
+#include "BESLog.h"
 
 #include <aws/core/Aws.h>
 #include <aws/core/auth/AWSCredentialsProvider.h>
@@ -194,6 +195,7 @@ shared_ptr<http::EffectiveUrl> SignedUrlCache::get_presigned_s3_url(shared_ptr<h
     // The source_url may already be a signed url---in which case, can return it as is,
     // inheriting trust from the requesting URL.
     if (source_url_key.find("X-Amz-Signature=") != string::npos) {
+        INFO_LOG( prolog +"INPUT IS ALREADY SIGNED: '" + source_url_key+ "'");
         BESDEBUG(MODULE, prolog << "INPUT IS ALREADY SIGNED: " << source_url_key << endl);
         return make_shared<http::EffectiveUrl>(source_url, source_url->is_trusted());
     }
@@ -202,6 +204,7 @@ shared_ptr<http::EffectiveUrl> SignedUrlCache::get_presigned_s3_url(shared_ptr<h
     std::lock_guard<std::mutex> lock_me(d_cache_lock_mutex);
 
     if (!is_enabled()) {
+        INFO_LOG( prolog +"CACHE IS DISABLED + source_url_key");
         BESDEBUG(MODULE, prolog << "CACHE IS DISABLED." << endl);
         return nullptr;
     }
@@ -282,6 +285,7 @@ shared_ptr<http::EffectiveUrl> SignedUrlCache::get_presigned_s3_url(shared_ptr<h
     BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
     BESDEBUG(MODULE, prolog << "END" << endl);
 
+    INFO_LOG( prolog +"SIGNED URL ACQUIRED for: '" + source_url_key+ "'");
     return signed_url;
 }
 
