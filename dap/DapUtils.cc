@@ -307,6 +307,12 @@ uint64_t crsaibv_process_variable(
         }
         else {
             // width_ll() returns the number of bytes needed to hold the data
+cerr<<"var name: "<<var->name() <<endl;
+cerr<<"vsize number of elements: "<<var->length_ll() <<endl;
+if(var->type()==dods_array_c && var->var()->type() == dods_str_c) {
+auto temp_array = dynamic_cast<Array *>(var);
+cerr<<"string size: "<<(temp_array->get_str()).size() <<endl;
+}
             uint64_t vsize = var->width_ll(true);
             response_size += vsize;
 
