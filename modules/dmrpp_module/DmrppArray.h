@@ -107,7 +107,7 @@ private:
                                        std::vector<unsigned long long> &subset_addr,
                                        const std::vector<unsigned long long> &array_shape, char *data, char *dest_buf);
 
-    void insert_constrained_contiguous_string(Dim_iter dim_iter, vector<string>::iterator &target_index,
+    void insert_constrained_contiguous_string(Dim_iter dim_iter, unsigned long long &target_index,
                                               vector<unsigned long long> &subset_addr,
                                               const vector<unsigned long long> &array_shape,
                                               char *src_buf);
@@ -193,7 +193,7 @@ private:
     void read_chunked_string_array_constrained(); 
     void insert_chunk_fixed_size_str(unsigned int dim, vector<unsigned long long> *target_element_address,
                               vector<unsigned long long> *chunk_element_address, shared_ptr<Chunk> chunk,
-                              const vector<unsigned long long> &constrained_array_shape,const vector<string>::iterator &target_index);
+                              const vector<unsigned long long> &constrained_array_shape);
     void insert_chunk_fixed_size_str_unconstrained(unsigned int dim, unsigned long long array_offset,
                                            unsigned long long chunk_offset, shared_ptr<Chunk> chunk,
                               const vector<unsigned long long> &array_shape,const vector<unsigned long long> &chunk_shape,
