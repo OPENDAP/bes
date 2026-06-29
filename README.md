@@ -80,6 +80,7 @@ installed. This directory also contains some documentation files.
   you write your own handlers/modules, et cetera.
 - `_conf_`: Where the automake and autoconf configuration files live.
 - `_docs_`: Where some BES documentation resides.
+- `Dockerfile`: Builds the `bes_core` docker image; see more [below](#dockerfile)
 
 ## Configuration
 The BES configuration is controlled by a set of configuration files. While the complete
@@ -439,6 +440,37 @@ CF options:
 4. Remove the internal reserved netCDF-4 attributes for DAP output.
 5. Make the behavior of the drop long string BES key consistent with the
    current limitation of netCDF Java.
+
+## Dockerfile
+
+The top level [Dockerfile](./Dockerfile) is used to build the `bes_core` image, which is the base for downstream application images built in the [hyrax-docker repo](https://github.com/OPENDAP/hyrax-docker).
+
+This `bes_core` image is built and tagged as part of the CI/CD process in Travis, as defined in the `build-docker` stage of [./.travis.yml](./.travis.yml), which defines some constants and calls script [./travis/build-rhel-docker.sh](./travis/build-rhel-docker.sh).
+
+In that script, external dependencies required by the dockerfile ([libdap RPMs](https://github.com/OPENDAP/libdap4) the [hyrax-dependencies tarball](https://github.com/OPENDAP/hyrax-dependencies)) are downloaded, if not already present in the build environment downloaded previously, and then the image is built.
+
+The image is then pushed to dockerhub in the `deploy` stage, with two tags: `
+- *Build version tag*: `opendap/bes_core:<BES_VERSION>-<DIST>"`
+  - `<BES_VERSION>` is the BES version including the build number for this job, e.g., `3.21.1-481`.
+  - Tag is unique to the build; this image tag will never be overwritten
+  - `<DIST>` is either `el8` or `el9` (at time of writing)
+- *Snapshot tag*: `opendap/bes_core:snapshot-<DIST>`
+  - This tag references the most recent image pushed, so *will* be overwritten.
+  - `<DIST>` is either `el8` or `el9` (at time of writing)
+
+### Dockerfile structure
+
+The Dockerfile uses multi-stage builds to accomplish the dual goals of testing the build and providing a slim resultant image.
+
+There are two stages, which are:
+1. `builder` - in this stage, from a base image with build tooling already installed, we set up a `bes_user` user and user group to be used for running the daemon (in tests); set build configuration flags; install the libdap and hyrax-dependencies dependencies; and build (and installs) the bes. We then set up the besdaemon (needed for testing) and runs the tests.
+  - The base image for this build is defined in the travis configuration (currently: `opendap/rocky8_hyrax_builder:latest` or `opendap/rocky9_hyrax_builder:latest`), and is built [from the hyrax-docker repo](https://github.com/OPENDAP/hyrax-docker/tree/master/utils). It contains utilities and libraries necessary for building and testing bes_core, but unnecessary for the resultant bes_core image.
+  - Caveat: If any of the tests fail, the build will fail without preserving any build logs (as those are generated inside the build itself).
+    - A future improvement could involve adding an additional build stage before running tests, such that if the tests fail, the pre-test build could be tagged and pushed to dockerhub (`opendap/bes_core:<BES_VERSION>-<DIST>-debug`, perhaps?) for manual testing and test inspection without needing to locally rebuild an image.
+
+2. `bes_core` - in this stage, from a slim base image (currently: `rockylinux:8` or `rockylinux:9`), we set up a `bes_user` user and user group to be used for running the daemon (in downstream builds); install the libdap and hyrax-dependencies dependencies; and copy the built bes from the previous stage; update permissions; update paths in the bes.conf for the installation; and set up the besdaemon to start at boot.
+
+While we only currently tag and push this final image, an additional tag and push could be trivially added for the intermediate `builder` image.
 
 ## Copyright Information
 

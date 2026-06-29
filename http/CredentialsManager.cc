@@ -115,7 +115,7 @@ CredentialsManager::add(const std::string &key, AccessCredentials *ac) {
     std::lock_guard<std::recursive_mutex> lock_me(d_lock_mutex);
 
     creds.insert(std::pair<std::string, AccessCredentials *>(key, ac));
-    BESDEBUG(HTTP_MODULE, prolog << "Added AccessCredentials to CredentialsManager.\n");
+    BESDEBUG(HTTP_MODULE, prolog << "Added AccessCredentials to CredentialsManager. key: '" << key << "'\n");
     BESDEBUG(CREDS, prolog << "Credentials: \n" << ac->to_json() << "\n");
 }
 

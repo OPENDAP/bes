@@ -208,10 +208,6 @@ RUN sed -i.dist \
     -e 's:=.*/lib/bes:=/usr/lib/bes:' \
     -e 's:=.*/share/bes:=/usr/share/bes:' \
     -e 's:=.*/share/hyrax:=/usr/share/hyrax:' \
-    -e 's:=/full/path/to/serverside/certificate/file.pem:=/etc/pki/bes/cacerts/file.pem:' \
-    -e 's:=/full/path/to/serverside/key/file.pem:=/etc/pki/bes/public/file.pem:' \
-    -e 's:=/full/path/to/clientside/certificate/file.pem:=/etc/pki/bes/cacerts/file.pem:' \
-    -e 's:=/full/path/to/clientside/key/file.pem:=/etc/pki/bes/public/file.pem:' \
     -e 's:=user_name:='"$BES_USER"':' \
     -e 's:=group_name:='"$BES_USER"':' \
     /etc/bes/bes.conf \
