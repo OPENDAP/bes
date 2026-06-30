@@ -1370,7 +1370,7 @@ std::shared_ptr<http::url> Chunk::get_data_url() const {
     // called from a region other than us-west-2, etc---it will return a nullptr, so that we can fall
     // back on using the TEA service to sign our urls
     if (url == nullptr) {
-        INFO_LOG("Getting signed URL from TEA for url: '" + d_data_url->str() +"'");
+        INFO_LOG(prolog + "Getting signed URL from TEA for url: '" + d_data_url->str() +"'");
         curl_slist *req_hdrs = d_data_url->is_trusted()?curl::add_edl_auth_headers(nullptr):nullptr;
         url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url, req_hdrs);
     }

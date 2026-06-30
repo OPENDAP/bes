@@ -195,7 +195,7 @@ shared_ptr<http::EffectiveUrl> SignedUrlCache::get_presigned_s3_url(shared_ptr<h
     // The source_url may already be a signed url---in which case, can return it as is,
     // inheriting trust from the requesting URL.
     if (source_url_key.find("X-Amz-Signature=") != string::npos) {
-        INFO_LOG( prolog +"INPUT IS ALREADY SIGNED: '" + source_url_key+ "'");
+        INFO_LOG( prolog +"INPUT URL IS ALREADY SIGNED. base: "+ source_url->str().substr(0,source_url->str().find("?")));
         BESDEBUG(MODULE, prolog << "INPUT IS ALREADY SIGNED: " << source_url_key << endl);
         return make_shared<http::EffectiveUrl>(source_url, source_url->is_trusted());
     }
