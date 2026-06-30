@@ -417,7 +417,7 @@ public:
 
         stringstream msg;
         uint64_t response_size = 0;
-        uint64_t expected_response_size = 1016;
+        uint64_t expected_response_size = 752;
         uint64_t max_var_size = 200;
         std::vector<std::string> too_big;
 
@@ -433,7 +433,7 @@ public:
             for(auto entry:too_big){
                 DBG(cerr << prolog << "  " << entry <<  endl);
             }
-            CPPUNIT_ASSERT( too_big.size() == 2 );
+            CPPUNIT_ASSERT( too_big.size() == 1 );
         }
         else {
             CPPUNIT_FAIL("ERROR: No variables were deemed too big!");

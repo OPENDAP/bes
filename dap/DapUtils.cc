@@ -307,7 +307,15 @@ uint64_t crsaibv_process_variable(
         }
         else {
             // width_ll() returns the number of bytes needed to hold the data
-            uint64_t vsize = var->width_ll(true);
+            uint64_t vsize = 0;
+            // If the data type is string, in C++, sizeof(string) is always 24. So the total size for a string array is
+            // always 24 x number of elements of this array, which may cause false positive for the server to issue
+            // an error that the maximum response size is exceeded. To avoid this case, we choose to use the minimal possible string size
+            // for a C string 2: 1 character and 1 terminator. This is also the case for a real NASA file.
+            if (var->type()==dods_array_c && var->var()->type() == dods_str_c)
+                vsize = 2*var->length_ll(); 
+            else
+                vsize = var->width_ll(true);
             response_size += vsize;
 
             BESDEBUG(MODULE_VERBOSE, prolog << "  " << get_dap_decl(var) << "(" << vsize << " bytes)" << endl);
