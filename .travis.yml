@@ -237,8 +237,7 @@ jobs:
           #
           #
           echo "# test logs ####################################################"
-          docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
-          /bin/bash -c "ls -l /bes-test-logs"
+          docker run --rm ${SNAPSHOT_IMAGE_TAG} /bin/bash -c "ls -l /bes-test-logs"
           echo "################################################################"
 
     - stage: scan
