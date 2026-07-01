@@ -122,18 +122,11 @@ RUN sudo mkdir -p /home/bes_user/bes-test-logs && \
     find . \( -name "*.log" -o -name "*site_map.txt" \) -print > /tmp/bes-log-file-list.txt && \
     tar -czf /home/bes_user/bes-test-logs/bes-test-logs.tar.gz -T /tmp/bes-log-file-list.txt
 
-RUN echo "BEFORE ###########################################"\
-    && find . \( -name "*.log" -o -name "*site_map.txt" \) -print >&2 \
-    echo "BEFORE ###########################################"
 
 #####
 ##### Final layer: libdap + hyrax-dependencies + bes
 #####
 FROM ${FINAL_BASE_IMAGE:-rockylinux:8} AS bes_core
-
-RUN echo "AFTER ###########################################"\
-    && find . \( -name "*.log" -o -name "*site_map.txt" \) -print >&2 \
-    echo "AFTER ###########################################"
 
 ARG FINAL_BASE_IMAGE
 RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
@@ -141,7 +134,7 @@ RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
         exit 1; \
     fi
 
-# Copy the log files so that they can be accessed from outside of this docker build (i.e. Travis)
+# Copy the log files so tha t they can be accessed from outside of this docker build (i.e. Travis)
 COPY --from=builder /home/bes_user/bes-test-logs/bes-test-logs.tar.gz /bes-test-logs/bes-test-logs.tar.gz
 
 # Duplicated from installation above, this time on a slimmer base image...
