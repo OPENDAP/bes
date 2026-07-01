@@ -176,7 +176,7 @@ string S3Container::access()
 
 
             // Add authentication stuff.
-            curl_slist *req_hdrs = curl::add_edl_auth_headers(dmrpp_url_str, nullptr);
+            curl_slist *req_hdrs = curl::add_edl_auth_headers(nullptr);
             req_hdrs = curl::sign_url_for_s3_if_possible(dmrpp_url->get_url_no_query(), req_hdrs);
 
             BES_STOPWATCH_START(MODULE, prolog + "Timing DMR++ retrieval. Target url: " + dmrpp_url->str());

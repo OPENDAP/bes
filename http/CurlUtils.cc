@@ -1241,6 +1241,28 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
     return nbytes;
 }
 
+
+/**
+ * Checks the CredentialsManager to see if the target_url has EDL credentials associated with it.
+ * If found an Authorization header will be added to the request_headers list and the list returned.
+ * @param target_url The URL that will be accessed
+ * @param request_headers The request headers to which an EDL authorization header will be
+ * added if credentials are located for target_url
+ * @return The request headers with the authorization header added if found.
+ */
+curl_slist *add_edl_hdr_from_the_cm(const std::string &target_url, curl_slist *request_headers) {
+    AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
+    if (credentials) {
+        INFO_LOG(prolog + "Looking for EDL Token for URL: " + target_url );
+        string edl_token = credentials->get("edl_token");
+        if (!edl_token.empty()) {
+            INFO_LOG(prolog + "Using EDL Token for URL: " + target_url + '\n');
+            return curl::append_http_header(request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, edl_token);
+        }
+    }
+    return request_headers;
+}
+
 /**
  * Dereference the target URL and put the response in buf, after first adding
  * EDL authorization headers.
@@ -1252,39 +1274,19 @@ static size_t string_write_data(void *buffer, size_t size, size_t nmemb, void *d
  * @param target_url The URL to dereference.
  * @param buf The string into which to put the response. New data will be
  * appended to this string.
- * @param use_raw_url_no_new_headers Flag to skip adding additional headers,
- * e.g., for use with presigned urls
+ * @param http_request_headers A pointer to a curl_slist of HTTP request headers. Default is
+ * null. These headers will be appended to the list of default headers.
  * @exception Throws when libcurl encounters a problem.
  */
-void http_get(const string &target_url, string &buf, bool use_raw_url_no_new_headers) {
+void http_get(const string &target_url, string &buf, curl_slist *http_request_headers) {
     BESDEBUG(MODULE, prolog << "BEGIN\n");
 
     vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
     CURL *ceh = nullptr;     ///< The libcurl handle object.
     CURLcode res;
-    curl_slist *request_headers = nullptr;
 
     try {
-        if (!use_raw_url_no_new_headers) {
-            // Add the authorization headers
-            request_headers = add_edl_auth_headers(request_headers);
-
-            request_headers = sign_url_for_s3_if_possible(target_url, request_headers);
-
-#ifdef DEVELOPER
-            AccessCredentials *credentials = CredentialsManager::theCM()->get(target_url);
-            if (credentials) {
-                INFO_LOG(prolog + "Looking for EDL Token for URL: " + target_url );
-                string edl_token = credentials->get("edl_token");
-                if (!edl_token.empty()) {
-                    INFO_LOG(prolog + "Using EDL Token for URL: " + target_url + '\n');
-                    request_headers = curl::append_http_header(request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, edl_token);
-                }
-            }
-#endif
-        }
-
-        ceh = curl::init(target_url, request_headers, nullptr);
+        ceh = curl::init(target_url, http_request_headers, nullptr);
         if (!ceh)
             throw BESInternalError(string("ERROR! Failed to acquire cURL Easy Handle! "), __FILE__, __LINE__);
 
@@ -1306,7 +1308,7 @@ void http_get(const string &target_url, string &buf, bool use_raw_url_no_new_hea
 
         // Free the header list
         BESDEBUG(MODULE, prolog << "Cleanup request headers. Calling curl_slist_free_all()." << endl);
-        curl_slist_free_all(request_headers);
+        curl_slist_free_all(http_request_headers);
 
         if (ceh) {
             curl_easy_cleanup(ceh);
@@ -1314,7 +1316,7 @@ void http_get(const string &target_url, string &buf, bool use_raw_url_no_new_hea
         }
     }
     catch (...) {
-        curl_slist_free_all(request_headers);
+        curl_slist_free_all(http_request_headers);
         if (ceh) {
             curl_easy_cleanup(ceh);
         }
@@ -1499,28 +1501,6 @@ curl_slist *add_edl_auth_headers(curl_slist *request_headers) {
     return request_headers;
 }
 
-curl_slist *add_edl_auth_headers(const string &target_url, curl_slist *request_headers) {
-    bool found;
-    string s;
-
-    s = BESContextManager::TheManager()->get_context(UID_CONTEXT_KEY, found);
-    if (found && !s.empty()) {
-        request_headers = append_http_header(request_headers, UID_REQUEST_HEADER_KEY, s);
-    }
-
-    s = BESContextManager::TheManager()->get_context(EDL_AUTH_TOKEN_CONTEXT_KEY, found);
-    if (found && !s.empty()) {
-        request_headers = append_http_header(request_headers, AUTHORIZATION_REQUEST_HEADER_KEY, s);
-    }
-
-    s = BESContextManager::TheManager()->get_context(EDL_CLIENT_APPLICATION_ID_CONTEXT_KEY, found);
-    if (found && !s.empty()) {
-        request_headers = append_http_header(request_headers, EDL_CLIENT_APPLICATION_ID_REQUEST_HEADER_KEY, s);
-    }
-
-
-    return request_headers;
-}
 
 /**
  * @brief Sign a URL for S3
@@ -1744,16 +1724,41 @@ bool process_get_redirect_http_code(const long http_code,
 }
 
 /**
+ *
+ * @param source_list A pointer to a curl_slist to copy
+ * @return A copy of the source_list
+ */
+curl_slist *copy_curl_slist(const curl_slist *source_list) {
+    curl_slist *new_list = nullptr;
+    const curl_slist *current = source_list;
+
+    while (current != nullptr) {
+        curl_slist *temp = curl_slist_append(new_list, current->data);
+        if (temp == nullptr) {
+            // Memory allocation failed; free the newly created list to avoid leaks
+            curl_slist_free_all(new_list);
+            return nullptr;
+        }
+        new_list = temp;
+        current = current->next;
+    }
+
+    return new_list;
+}
+
+/**
  * @brief  Make a single attempt to acquire a redirect response from origin_url
  * @param origin_url The URL to access
  * @param attempt The attempt number of this effort.
  * @param max_attempts The maximum number of attempts allowed.
+ * @param http_request_headers Any request headers required for a successful request. (ex: Authorization)
  * @param redirect_url A returned value parameter to receive the redirect url, if located.
  * @return true if the redirect url was found, false otherwise.
  */
 static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
                     const unsigned int attempt,
                     const unsigned int max_attempts,
+                    curl_slist *http_request_headers,
                     shared_ptr <EffectiveUrl> &redirect_url) {
 
     BESDEBUG(MODULE, prolog << " BEGIN This is attempt #" << attempt << " for " << origin_url->str() << "\n");
@@ -1761,7 +1766,6 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
     bool curl_success = false;
     CURL *ceh = nullptr;
     vector<char> error_buffer(CURL_ERROR_SIZE, (char) 0);
-    curl_slist *req_headers = nullptr;
 
     vector<string> response_headers;
     string response_body;
@@ -1770,28 +1774,13 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
     string redirect_url_str;
 
     origin_url->get_url_no_query();
-    // Add the EDL authorization headers if the Information is in the BES Context Manager
-    req_headers = add_edl_auth_headers(origin_url->get_url_no_query(), req_headers);
-    req_headers = sign_url_for_s3_if_possible(origin_url, req_headers);
-
-    // FIXME Hackery for DMR++ Ownership POC code - see dmrpp_module CurlHandlePool.cc
-    //  for more info. jhrg 5/24/24
-    AccessCredentials *credentials = CredentialsManager::theCM()->get(origin_url);
-    if (credentials) {
-        INFO_LOG(prolog + "Looking for EDL Token for URL: " + origin_url->str() + '\n');
-        string edl_token = credentials->get("edl_token");
-        if (!edl_token.empty()) {
-            INFO_LOG(prolog + "Using EDL Token for URL: " + origin_url->str() + '\n');
-            req_headers = curl::append_http_header(req_headers, AUTHORIZATION_REQUEST_HEADER_KEY, edl_token);
-        }
-    }
 
     try {
 
         // OK! Make the cURL handle
         ceh = init_no_follow_redirects_handle(
                 origin_url->str(),
-                req_headers,
+                http_request_headers,
                 response_headers,
                 response_body);
 
@@ -1844,7 +1833,7 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
         }
 
         // Free the header list
-        curl_slist_free_all(req_headers);
+        curl_slist_free_all(http_request_headers);
         // clean up cURL handle
         if (ceh) {
             curl_easy_cleanup(ceh);
@@ -1854,7 +1843,7 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
     }
     catch (...) {
         // Free the header list
-        curl_slist_free_all(req_headers);
+        curl_slist_free_all(http_request_headers);
 
         // clean up cURL handle
         if (ceh) {
@@ -1877,10 +1866,10 @@ static bool gru_mk_attempt(const shared_ptr <url> &origin_url,
  * an http code of 2xx, 4xx, or 5xx is considered an error.
  *
  * @param origin_url The origin url for the request
- * @param redirect_url Returned value parameter for the redirect url.
- * @return The redirect URL string.
+ * @param http_request_headers Any request headers required for a successful request. (ex: Authorization)
+ * @return A shared_ptr to an EffectiveUrl that represents the redirect URL (aka location).
  */
-std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http::url> &origin_url) {
+std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http::url> &origin_url, curl_slist *http_request_headers) {
 
     BESDEBUG(MODULE, prolog << "BEGIN" << endl);
     // Before we do anything, make sure that the URL is OK to pursue.
@@ -1898,9 +1887,17 @@ std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http:
     unsigned int attempt = 0;
     bool success = false;
 
-    while (!success && (attempt < retry_limit)) {
-        attempt++;
-        success = gru_mk_attempt(origin_url, attempt, retry_limit, redirect_url);
+    try {
+        while (!success && (attempt < retry_limit)) {
+            attempt++;
+            auto req_hdrs = copy_curl_slist(http_request_headers);
+            success = gru_mk_attempt(origin_url, attempt, retry_limit, req_hdrs, redirect_url);
+        }
+        curl_slist_free_all(http_request_headers);
+    }
+    catch (...) {
+        curl_slist_free_all(http_request_headers);
+        throw;
     }
     // This is a failsafe test - the gru_mk_attempt)_ should detect the errors and throw an exception
     // if the attempt count exceeds the retry_limit, but if for some reason there's flaw in that

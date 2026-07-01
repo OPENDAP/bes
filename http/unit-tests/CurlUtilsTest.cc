@@ -308,7 +308,7 @@ public:
         BESContextManager::TheManager()->set_context(EDL_CLIENT_APPLICATION_ID_CONTEXT_KEY, tokens[2]);
 
         try {
-            hdrs = curl::add_edl_auth_headers("",hdrs);
+            hdrs = curl::add_edl_auth_headers(hdrs);
             sl_iter = hdrs;
             size_t index = 0;
             while (sl_iter) {
@@ -466,7 +466,7 @@ public:
         const string url = "https://fail.nowhere.com/README";
         string buf;
         DBG(cerr << prolog << "Retrieving " << url << "\n");
-        curl::http_get(url, buf);
+        curl::http_get(url, buf,nullptr);
 
         CPPUNIT_FAIL("Should have thrown an exception.");
     }
@@ -477,7 +477,7 @@ public:
         const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
         string buf;
         DBG(cerr << prolog << "Retrieving " << url << "\n");
-        curl::http_get(url, buf);
+        curl::http_get(url, buf,nullptr);
 
         CPPUNIT_FAIL("Should have thrown an exception.");
     }
@@ -489,10 +489,10 @@ public:
         setenv("CMAC_REGION", "us-east-1", 1);
         const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
         string buf;
-        DBG(cerr << prolog << "Retrieving " << url << "\n");
-        curl::http_get(url, buf);
+        DBG(cerr << prolog << "Retrieving (no headers, should throw exception): " << url << "\n");
+        curl::http_get(url, buf, nullptr);
 
-        CPPUNIT_FAIL("Should have thrown an exception.");
+        CPPUNIT_FAIL("Should have thrown an exception. Returned Content: \n" + buf);
     }
 
     void http_get_test_7() {
@@ -509,7 +509,7 @@ public:
                 const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
                 string buf;
                 DBG(cerr << prolog << "Retrieving " << url << "\n");
-                curl::http_get(url, buf);
+                curl::http_get(url, buf,curl::sign_url_for_s3_if_possible(url,nullptr));
                 DBG(cerr << "buf.data() = " << buf.data() << "\n");
                 CPPUNIT_ASSERT_MESSAGE("Should be able to find 'Test data''",
                                        string(buf.data()).find("Test data") == 0);
