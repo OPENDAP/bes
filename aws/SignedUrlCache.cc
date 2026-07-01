@@ -195,7 +195,7 @@ shared_ptr<http::EffectiveUrl> SignedUrlCache::get_presigned_s3_url(shared_ptr<h
     // The source_url may already be a signed url---in which case, can return it as is,
     // inheriting trust from the requesting URL.
     if (source_url_key.find("X-Amz-Signature=") != string::npos) {
-        INFO_LOG( prolog +"INPUT URL IS ALREADY SIGNED. base: "+ source_url->str().substr(0,source_url->str().find("?")));
+        INFO_LOG( prolog +"INPUT URL IS ALREADY SIGNED. base: "+ source_url_key.substr(0,source_url_key.find("?")));
         BESDEBUG(MODULE, prolog << "INPUT IS ALREADY SIGNED: " << source_url_key << endl);
         return make_shared<http::EffectiveUrl>(source_url, source_url->is_trusted());
     }
@@ -561,7 +561,7 @@ bool SignedUrlCache::is_enabled() {
     // The value will be 0 (false) or 1 (true) and TheBESKeys will not be checked again.
     if (d_enabled < 0) {
         if (is_cache_supported_within_current_aws_region()) {
-            string value = TheBESKeys::TheKeys()->read_string_key(AWS_CACHE_SIGNED_URLS_KEY, "false");
+            const string value = TheBESKeys::TheKeys()->read_string_key(AWS_CACHE_SIGNED_URLS_KEY, "false");
             d_enabled = BESUtil::lowercase(value) == "true";
         } else {
             d_enabled = false;
