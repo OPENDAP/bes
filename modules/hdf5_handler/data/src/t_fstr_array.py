@@ -19,6 +19,28 @@ with h5py.File('chunked_fstr.h5', 'w') as f:
 
     dset[:] = data
 
+with h5py.File('chunked_one_fstr.h5', 'w') as f:
+    dset = f.create_dataset(
+        'strings',
+        shape=(5, 5),
+        dtype='S3',
+        chunks=(5, 5)
+    )
+
+    dset[:] = data
+
+with h5py.File('chunked_one_comp_fstr.h5', 'w') as f:
+    dset = f.create_dataset(
+        'strings',
+        shape=(5, 5),
+        dtype='S3',
+        chunks=(5, 5),
+        compression="gzip"
+    )
+
+    dset[:] = data
+
+
 with h5py.File('chunked_comp_fstr.h5', 'w') as f:
     dset = f.create_dataset(
         'strings',
