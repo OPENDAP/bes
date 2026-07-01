@@ -3806,25 +3806,36 @@ void DmrppArray::read_contiguous_string_array()
 
         auto pad_type = get_fixed_length_string_pad();
 
+        vector<unsigned long long> array_shape = get_shape(false);
         // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
         if (!is_projected()) {  // if there is no projection constraint
-            // iterate over the elements in the array to receive the strings and add the values
-            vector<unsigned long long> array_shape = get_shape(false);
+            unsigned long long temp_array_size = get_size(false);
+            get_str().resize(temp_array_size);
+            for (unsigned long long i = 0; i < temp_array_size;i++)
+                (get_str())[i].resize(fstr_len);
 
 
-            // Reserve the memory to store the data.
-            get_str().reserve(get_size(false));
+           // The chunk size can be bigger than the array size  when the dimension is unlimited. 
+            // We need to handle it differently. 
+            if (get_chunk_size_in_elements()>temp_array_size) {
+                vector<unsigned long long> chunk_origin = the_one_chunk->get_position_in_array();
+                insert_chunk_fixed_size_str_unconstrained(0,0,0,the_one_chunk,array_shape,chunk_origin,fstr_len);
+                set_read_p(true);
+                return;
+            }
+
 
             auto buffer = the_one_chunk->get_rbuf();
-            const auto buffer_end = the_one_chunk->get_rbuf() + the_one_chunk->get_size();
+            const auto buffer_end = the_one_chunk->get_rbuf() + fstr_len*temp_array_size;
 
+            unsigned long long temp_count = 0;
             while (buffer < buffer_end) {
-                get_str().emplace_back(ingest_fixed_length_string(buffer, fstr_len, pad_type));
+                (get_str())[temp_count] = ingest_fixed_length_string(buffer, fstr_len, pad_type);
                 buffer += fstr_len;
+                temp_count++;
             }
         }
         else {                  // apply the constraint
-            vector<unsigned long long> array_shape = get_shape(false);
             vector<unsigned long long> subset;
 
             unsigned long long constrained_str_size = get_size(true);
