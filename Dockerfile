@@ -124,7 +124,7 @@ RUN sudo mkdir -p /home/bes_user/bes-test-logs && \
 
 RUN echo "BEFORE ###########################################"\
     && find . \( -name "*.log" -o -name "*site_map.txt" \) -print >&2 \
-    echo "BEFORE ###########################################" \
+    echo "BEFORE ###########################################"
 
 #####
 ##### Final layer: libdap + hyrax-dependencies + bes
@@ -133,7 +133,7 @@ FROM ${FINAL_BASE_IMAGE:-rockylinux:8} AS bes_core
 
 RUN echo "AFTER ###########################################"\
     && find . \( -name "*.log" -o -name "*site_map.txt" \) -print >&2 \
-    echo "AFTER ###########################################" \
+    echo "AFTER ###########################################"
 
 ARG FINAL_BASE_IMAGE
 RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
