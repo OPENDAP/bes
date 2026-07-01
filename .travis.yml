@@ -242,8 +242,8 @@ jobs:
           docker image inspect ${SNAPSHOT_IMAGE_TAG} --format '{{.Architecture}}'
           echo "# test logs in docker image #############################################################"
           docker run --rm --platform linux/amd64 ${SNAPSHOT_IMAGE_TAG} -c "ls -l /bes-test-logs"
-          echo "# test logs on host /tmp ################################################################"
-          ls -l /tmp"
+          echo "# test logs on host /tmp    ################################################################"
+          ls -l /tmp
           echo "#########################################################################################"
 
     - stage: scan
