@@ -4,6 +4,8 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 
 AM_CPPFLAGS = -I$(top_srcdir)/xmlcommand -I$(top_srcdir)/cmdln -I$(top_srcdir)/dispatch $(XML2_CFLAGS)
+AM_CXXFLAGS = $(AM_CXX_FLAGS) 
+AM_LDFLAGS = -L$(top_builddir)/dispatch/.libs -L$(top_builddir)/xmlcommand/.libs $(AM_LD_FLAGS) 
 
 if BES_DEVELOPER
 AM_CPPFLAGS += -DBES_DEVELOPER
@@ -15,7 +17,7 @@ endif
 # will override the values set by configure. In many cases, that's what you want, but
 # here we want besstandalone to link up with the shared dependencies. jhrg 1/8/26
 
-AM_CXXFLAGS=
+AM_CXXFLAGS = $(AM_CXX_FLAGS) 
 include $(top_srcdir)/coverage.mk
 
 EXTRA_DIST = response-split.py
@@ -34,5 +36,6 @@ besstandalone_SOURCES = besstandalone.cc StandAloneApp.cc StandAloneClient.cc \
 
 # This depends on building in bes/cmdln first. It's not a good way to write
 # the Makefile.am, but I cannot get distcheck to work otherwise. jhrg 9/8/23
-besstandalone_LDADD = $(top_builddir)/cmdln/CmdTranslation.o $(top_builddir)/dispatch/libbes_dispatch.la \
-    $(top_builddir)/xmlcommand/libbes_xml_command.la $(READLINE_LIBS) $(XML2_LIBS)
+
+besstandalone_LDADD = $(top_builddir)/cmdln/CmdTranslation.o -lbes_dispatch -lbes_xml_command \
+    $(READLINE_LIBS) $(XML2_LIBS)
