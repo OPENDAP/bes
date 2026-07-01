@@ -3799,11 +3799,11 @@ void DmrppArray::read_contiguous_string_array()
         }
 
         // Need to see if we should handle filters.
+        auto fstr_len = get_fixed_string_length();
         if (!is_filters_empty() && !get_one_chunk_fill_value()) {
-            the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), var()->width());
+            the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), fstr_len);
         }
 
-        auto fstr_len = get_fixed_string_length();
         auto pad_type = get_fixed_length_string_pad();
 
         // The 'the_one_chunk' now holds the data values. Transfer it to the Array.

@@ -384,6 +384,8 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/chunked_fstr.h5.dmrpp_constra
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/chunked_comp_fstr.h5.dmrpp_constrained_simple.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/chunked_comp_fstr.h5.dmrpp_constrained.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/chunked_comp_fstr.h5.dmrpp.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/chunked_one_comp_fstr.h5.dmrpp.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/chunked_one_fstr.h5.dmrpp.dap])
 
 
 # compound datatype array and string basetype tests. 
