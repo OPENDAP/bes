@@ -874,7 +874,7 @@ group: ancillary_data {
     group: effective_cell_delay {
       dimensions:
       	dim91 = 3 ;
-      	cal17_product_len90 = 4 ;
+      	cal17_product_len90 = 81 ;
       variables:
       	char cal17_product(dim91, cal17_product_len90) ;
       		cal17_product:long_name = "CAL Product Name" ;
@@ -1623,7 +1623,7 @@ group: ancillary_data {
       	dim168 = 1 ;
       	dim169 = 1 ;
       	dim170 = 1 ;
-      	cal44_product_len165 = 2 ;
+      	cal44_product_len165 = 81 ;
       	dim171 = 1 ;
       	dim172 = 1 ;
       	dim173 = 1 ;
