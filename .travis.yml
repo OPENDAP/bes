@@ -233,6 +233,13 @@ jobs:
           export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}-${DIST}"
           echo "Tagging image with BES version: ${BUILD_VERSION_TAG}"
           docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
+          #
+          #
+          #
+          echo "# test logs ####################################################"
+          docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
+          /bin/bash -c "ls -l /bes-test-logs"
+          echo "################################################################"
 
     - stage: scan
       name: "scan bes"
