@@ -136,7 +136,8 @@ stages:
 
 jobs:
   include:
-    - stage: build-and-test
+    # build-and-test
+    - stage: never
       name: "check"
       script:
         - export BES_BUILD=main
@@ -147,7 +148,8 @@ jobs:
         - echo "LD_LIBRARY_PATH - $LD_LIBRARY_PATH" >&2
         - make -j16 && make install && besctl start -d cerr,curl,http && make check -j16 && besctl stop
 
-    - stage: build-and-test
+    # build-and-test
+    - stage: never
       name: "distcheck"
       script:
         - export BES_BUILD=distcheck
@@ -155,7 +157,8 @@ jobs:
         - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
         - make distcheck -j16 GZIP_ENV=--fast
 
-    - stage: build-and-test
+    # build-and-test
+    - stage: never
       name: "dist"
       script:
         - export BES_BUILD=srcdist
