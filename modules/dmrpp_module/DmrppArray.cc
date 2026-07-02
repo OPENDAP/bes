@@ -748,7 +748,6 @@ void DmrppArray::build_superchunk_queue(queue<shared_ptr<SuperChunk>> &super_chu
 
     // Initialize queue with the first superchunk
     string temp_sc_id = sc_id + to_string(sc_count);
-    //auto current_super_chunk = make_shared<SuperChunk>(SuperChunk(sc_id + to_string(sc_count++), this));
     auto current_super_chunk = make_shared<SuperChunk>(SuperChunk(temp_sc_id, this));
     sc_count++;
     super_chunks.push(current_super_chunk);
@@ -3872,7 +3871,6 @@ void DmrppArray::read_chunked_string_array_constrained() {
                 temp_sc_id = sc_id + to_string(sc_count);
                 current_super_chunk = make_shared<SuperChunk>(SuperChunk(temp_sc_id, this));
                 sc_count++;
-                //current_super_chunk = make_shared<SuperChunk>(SuperChunk(sc_id + to_string(sc_count++), this));
                 super_chunks.push(current_super_chunk);
                 if (!current_super_chunk->add_chunk(chunk)) {
                     string msg = prolog + "Failed to add Chunk to new SuperChunk. chunk: " + chunk->to_string();
@@ -3954,7 +3952,6 @@ void DmrppArray::insert_chunk_fixed_size_str(unsigned int dim, vector<unsigned l
             unsigned long long chunk_fstr_start_index = get_index(*chunk_element_address, chunk_shape);
 
             for (unsigned long long temp_count= 0; temp_count <count; temp_count++) { 
-                //vector<string>::iterator temp_str_it = target_index + target_fstr_start_index + temp_count;  
                 unsigned long long source_char = (chunk_fstr_start_index+temp_count) * chars_per_string;
                 get_str()[target_fstr_start_index+temp_count] = ingest_fixed_length_string(source_buffer+source_char,chars_per_string,pad_type);
             }
