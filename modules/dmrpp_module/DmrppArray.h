@@ -164,7 +164,6 @@ private:
                                  unsigned long long last_unfilled_chunk_index, vector<unsigned long long> & buf_end_pos_vec) const;
 
     void build_superchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks);
-    void build_superchunk_queue_constrained(queue<shared_ptr<SuperChunk>> &super_chunks);
 
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim);
 
@@ -199,7 +198,7 @@ private:
     void insert_chunk_fixed_size_str_unconstrained(unsigned int dim, unsigned long long array_offset,
                                                    unsigned long long chunk_offset, shared_ptr<Chunk> chunk,
                                                    const vector<unsigned long long> &array_shape,
-                                                   const vector<unsigned long long> chunk_origin,
+                                                   const vector<unsigned long long> &chunk_origin,
                                                    unsigned long long chars_per_string);
 
 

@@ -747,14 +747,19 @@ void DmrppArray::build_superchunk_queue(queue<shared_ptr<SuperChunk>> &super_chu
     string sc_id = name() + "-";
 
     // Initialize queue with the first superchunk
-    auto current_super_chunk = make_shared<SuperChunk>(SuperChunk(sc_id + to_string(sc_count++), this));
+    string temp_sc_id = sc_id + to_string(sc_count);
+    //auto current_super_chunk = make_shared<SuperChunk>(SuperChunk(sc_id + to_string(sc_count++), this));
+    auto current_super_chunk = make_shared<SuperChunk>(SuperChunk(temp_sc_id, this));
+    sc_count++;
     super_chunks.push(current_super_chunk);
 
     // Make the SuperChunks using all the chunks.
     for (const auto &chunk: get_immutable_chunks()) {
         bool added = current_super_chunk->add_chunk(chunk);
         if (!added) {
-            current_super_chunk = make_shared<SuperChunk>(SuperChunk(sc_id + to_string(sc_count++), this));
+            temp_sc_id = sc_id + to_string(sc_count);
+            current_super_chunk = make_shared<SuperChunk>(SuperChunk(temp_sc_id, this));
+            sc_count++;
             super_chunks.push(current_super_chunk);
             if (!current_super_chunk->add_chunk(chunk)) {
                 string msg = prolog + "Failed to add Chunk to new SuperChunk. chunk: " + chunk->to_string();
@@ -763,55 +768,6 @@ void DmrppArray::build_superchunk_queue(queue<shared_ptr<SuperChunk>> &super_chu
         }
     }
 }
-
-/**
- * Populate a Queue with SuperChunks that will transfer all of the constrained for this Array.
- * @param super_chunks Populate this queue.
- * @eception BESInternalError If there are fewer than two chunks, a chunk cannot be added to
- * the queue, or there were no 'needed' chunks.
- */
-void DmrppArray::build_superchunk_queue_constrained(queue<shared_ptr<SuperChunk>> &super_chunks) {
-    if (get_chunk_count() < 2)
-        throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
-
-    // Find all the required chunks to read. I used a queue to preserve the chunk order, which
-    // made using a debugger easier. However, order does not matter, AFAIK.
-
-    unsigned long long sc_count = 0;
-    string sc_id = name() + "-";
-    bool found_needed_chunks = false;
-
-    // Initialize queue with the first superchunk
-    auto current_super_chunk = make_shared<SuperChunk>(SuperChunk(sc_id + to_string(sc_count++), this));
-    super_chunks.push(current_super_chunk);
-
-    // Make the SuperChunks only the needed chunks.
-    // NB: I tried to merge this into the previous method, but the result was messy and we have
-    // enough complexity in this code.
-    for (const auto &chunk: get_immutable_chunks()) {
-        vector<unsigned long long> target_element_address = chunk->get_position_in_array();
-        auto needed = find_needed_chunks(0 /* dimension */, &target_element_address, chunk);
-        if (needed) {
-            found_needed_chunks = true;
-
-            bool added = current_super_chunk->add_chunk(chunk);
-            if (!added) {
-                current_super_chunk = make_shared<SuperChunk>(SuperChunk(sc_id + to_string(sc_count++), this));
-                super_chunks.push(current_super_chunk);
-                if (!current_super_chunk->add_chunk(chunk)) {
-                    string msg = prolog + "Failed to add Chunk to new SuperChunk. chunk: " + chunk->to_string();
-                    throw BESInternalError(msg, __FILE__, __LINE__);
-                }
-            }
-        }
-    }
-
-    if (!found_needed_chunks) {  // Ouch! Something went horribly wrong...
-        throw BESInternalError("ERROR - Failed to locate any chunks that correspond to the requested data.", __FILE__,
-                               __LINE__);
-    }
-}
-
 
 /**
  * @brief Read data for an unconstrained chunked array
@@ -2612,10 +2568,8 @@ bool DmrppArray::read() {
     }
 
     Type var_type = this->var()->type();
-    if ((var_type == dods_str_c || var_type == dods_url_c)) {
-        if (is_flsa()) 
-            return read_string_array();
-    }
+    if ((var_type == dods_str_c || var_type == dods_url_c) && is_flsa()) 
+        return read_string_array();
 
     DmrppArray *array_to_read = this;
 
@@ -3704,6 +3658,8 @@ bool DmrppArray::read_string_array() {
  * @param target_index The index where the next data element will be written.
  * @param subset_addr The index in the source array where the next data element will be read.
  * @param array_shape The shape of the array
+ * @param chars_per_string number of characters in a string
+ * @param pad_type         The string's pad type(space_pad, null_pad or null_term)
  * @param src_buf The buffer containing the data to be copied.
  */
 void DmrppArray::insert_constrained_contiguous_string(Dim_iter dim_iter,
@@ -3713,8 +3669,6 @@ void DmrppArray::insert_constrained_contiguous_string(Dim_iter dim_iter,
                                                       unsigned long long chars_per_string, string_pad_type pad_type,
                                                       char *src_buf)
 {
-    //auto chars_per_string = get_fixed_string_length();
-    //auto pad_type = get_fixed_length_string_pad();
 
     uint64_t start = this->dimension_start_ll(dim_iter, true);
     uint64_t stop = this->dimension_stop_ll(dim_iter, true);
@@ -3741,10 +3695,6 @@ void DmrppArray::insert_constrained_contiguous_string(Dim_iter dim_iter,
                 // Copy a single string.
                 (get_str())[target_index] = ingest_fixed_length_string(src_buf + source_char, chars_per_string, pad_type);
                 target_index++;
-#if 0
-                get_str().emplace(target_index++,
-                                  ingest_fixed_length_string(src_buf + source_char, chars_per_string, pad_type));
-#endif
             }
         }
         else {
@@ -3759,10 +3709,6 @@ void DmrppArray::insert_constrained_contiguous_string(Dim_iter dim_iter,
                 (get_str())[target_index] = ingest_fixed_length_string(src_buf + source_char, chars_per_string, pad_type);
                 target_index++;
 
-#if 0
-                get_str().emplace(target_index++,
-                                  ingest_fixed_length_string(src_buf + source_char, chars_per_string, pad_type));
-#endif
             }
         }
     }
@@ -3814,8 +3760,7 @@ void DmrppArray::read_contiguous_string_array()
             for (unsigned long long i = 0; i < temp_array_size;i++)
                 (get_str())[i].resize(fstr_len);
 
-
-           // The chunk size can be bigger than the array size  when the dimension is unlimited. 
+            // The chunk size can be bigger than the array size  when the dimension is unlimited. 
             // We need to handle it differently. 
             if (get_chunk_size_in_elements()>temp_array_size) {
                 vector<unsigned long long> chunk_origin = the_one_chunk->get_position_in_array();
@@ -3823,7 +3768,6 @@ void DmrppArray::read_contiguous_string_array()
                 set_read_p(true);
                 return;
             }
-
 
             auto buffer = the_one_chunk->get_rbuf();
             const auto buffer_end = the_one_chunk->get_rbuf() + fstr_len*temp_array_size;
@@ -3867,9 +3811,6 @@ void DmrppArray::read_chunked_string_array()
         read_chunks_dio_unconstrained();
     }
     else {
-        // This is where we replicate some of the logic of read_chunks_unconstrained()
-        // but instead, bring the data into the fixed length string array that is returned
-        // by Vector::get_str(). That returned object is a vector<string>.
 
         if (!is_projected()) {  // if there is no projection constraint
 
@@ -3889,7 +3830,7 @@ void DmrppArray::read_chunked_string_array()
     
                 super_chunk->retrieve_data();
                 auto temp_chunks = super_chunk->get_chunks();
-                for (auto &chunk: temp_chunks) {
+                for (const auto &chunk: temp_chunks) {
                     if (!is_filters_empty())
                         chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), fstr_len);
     
@@ -3913,7 +3854,10 @@ void DmrppArray::read_chunked_string_array_constrained() {
 
     // Initialize queue with the first superchunk
     queue<shared_ptr<SuperChunk>> super_chunks;
-    auto current_super_chunk = make_shared<SuperChunk>(SuperChunk(sc_id + to_string(sc_count++), this));
+    string temp_sc_id = sc_id + to_string(sc_count);
+    //auto current_super_chunk = make_shared<SuperChunk>(SuperChunk(sc_id + to_string(sc_count++), this));
+    auto current_super_chunk = make_shared<SuperChunk>(SuperChunk(temp_sc_id, this));
+    sc_count++;
     super_chunks.push(current_super_chunk);
 
     vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
@@ -3925,7 +3869,10 @@ void DmrppArray::read_chunked_string_array_constrained() {
         if (true == find_needed_chunks_simple(chunk,chunk_shape,var_start,var_stride,var_stop,num_dims)) {
             bool added = current_super_chunk->add_chunk(chunk);
             if (!added) {
-                current_super_chunk = make_shared<SuperChunk>(SuperChunk(sc_id + to_string(sc_count++), this));
+                temp_sc_id = sc_id + to_string(sc_count);
+                current_super_chunk = make_shared<SuperChunk>(SuperChunk(temp_sc_id, this));
+                sc_count++;
+                //current_super_chunk = make_shared<SuperChunk>(SuperChunk(sc_id + to_string(sc_count++), this));
                 super_chunks.push(current_super_chunk);
                 if (!current_super_chunk->add_chunk(chunk)) {
                     string msg = prolog + "Failed to add Chunk to new SuperChunk. chunk: " + chunk->to_string();
@@ -3939,7 +3886,7 @@ void DmrppArray::read_chunked_string_array_constrained() {
     vector<unsigned long long> chunk_source_address(this->dimensions(), 0);
     auto vector_str_length = (size_t)(get_size(true));
     get_str().resize(vector_str_length);
-    auto fstr_len= get_fixed_string_length();;
+    auto fstr_len= get_fixed_string_length();
     for (size_t i = 0; i<vector_str_length; i++)
         ((get_str())[i]).resize(fstr_len);
 
@@ -3949,12 +3896,11 @@ void DmrppArray::read_chunked_string_array_constrained() {
         super_chunks.pop();
         super_chunk->retrieve_data();
         auto temp_chunks = super_chunk->get_chunks();
-        for (auto &chunk: temp_chunks) {
+        for (const auto &chunk: temp_chunks) {
             if (!is_filters_empty())
                 chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), fstr_len);
             vector<unsigned long long> target_element_address = chunk->get_position_in_array();
             insert_chunk_fixed_size_str(0,&target_element_address, &chunk_source_address,chunk,constrained_array_shape,fstr_len);
-
         }
     }
     set_read_p(true);
@@ -3984,9 +3930,9 @@ void DmrppArray::insert_chunk_fixed_size_str(unsigned int dim, vector<unsigned l
 
     unsigned long long chunk_end = end_element - chunk_origin[dim];
 
-    unsigned int last_dim = chunk_shape.size() - 1;
+    auto last_dim = (unsigned int)(chunk_shape.size() - 1);
     if (dim == last_dim) {
-        char *source_buffer = chunk->get_rbuf();
+        const char *source_buffer = chunk->get_rbuf();
         auto pad_type = get_fixed_length_string_pad();
 
         if (thisDim.stride == 1) {
@@ -4047,7 +3993,7 @@ void DmrppArray::insert_chunk_fixed_size_str(unsigned int dim, vector<unsigned l
 void DmrppArray::insert_chunk_fixed_size_str_unconstrained(unsigned int dim, unsigned long long array_offset,
                               unsigned long long chunk_offset, shared_ptr<Chunk> chunk,
                               const vector<unsigned long long> &array_shape,
-                              const vector<unsigned long long> chunk_origin,unsigned long long chars_per_string)
+                              const vector<unsigned long long> &chunk_origin,unsigned long long chars_per_string)
 {
 
     vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
@@ -4059,9 +4005,9 @@ void DmrppArray::insert_chunk_fixed_size_str_unconstrained(unsigned int dim, uns
 
     unsigned long long chunk_end = end_element - chunk_origin[dim];
 
-    unsigned int last_dim = chunk_shape.size() - 1;
+    auto last_dim = (unsigned int)(chunk_shape.size() - 1);
     if (dim == last_dim) {
-        char *source_buffer = chunk->get_rbuf();
+        const char *source_buffer = chunk->get_rbuf();
         auto pad_type = get_fixed_length_string_pad();
 
         // This is the last dimension's offset.
@@ -4088,8 +4034,6 @@ void DmrppArray::insert_chunk_fixed_size_str_unconstrained(unsigned int dim, uns
 
     }
 }
-
-
 
 
 } // namespace dmrpp
