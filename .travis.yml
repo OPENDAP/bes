@@ -136,6 +136,7 @@ stages:
 
 jobs:
   include:
+    # build-and-test
     - stage: build-and-test
       name: "check"
       script:
@@ -147,6 +148,7 @@ jobs:
         - echo "LD_LIBRARY_PATH - $LD_LIBRARY_PATH" >&2
         - make -j16 && make install && besctl start -d cerr,curl,http && make check -j16 && besctl stop
 
+    # build-and-test
     - stage: build-and-test
       name: "distcheck"
       script:
@@ -155,6 +157,7 @@ jobs:
         - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
         - make distcheck -j16 GZIP_ENV=--fast
 
+    # build-and-test
     - stage: build-and-test
       name: "dist"
       script:
@@ -185,6 +188,11 @@ jobs:
           export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
           export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
         - ./travis/build-rhel-docker.sh
+        # Note: Take the test log tarball that was created in the Dockerfile and copied to the final mount
+        #   and then run this copy command to copy it into Travis.
+        - |
+          docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
+          -c "cp /bes-test-logs/bes-test-logs.tar.gz /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
         # is built:
@@ -215,6 +223,11 @@ jobs:
           export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
           export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
         - ./travis/build-rhel-docker.sh
+          # Note: Take the test log tarball that was created in the Dockerfile and copied to the final mount
+          #   and then run this copy command to copy it into Travis.
+        - |
+          docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
+          -c "cp /bes-test-logs/bes-test-logs.tar.gz /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
         # is built:
