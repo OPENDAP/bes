@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="cont_fstr.h5" dmrpp:href="data/string_arrays/cont_fstr.h5" dmrpp:version="3.21.1">
+    <String name="strings">
+        <Dim size="5"/>
+        <Dim size="5"/>
+        <dmrpp:chunks fillValue="">
+            <dmrpp:chunk offset="2048" nBytes="75"/>
+        </dmrpp:chunks>
+        <dmrpp:FixedLengthStringArray string_length="3" pad="null_pad"/>
+    </String>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2026-06-29T11:54:50Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/hyrax-1225/bes/modules/dmrpp_module/data/string_arrays/cont_fstr.h5 -r cont_fstr.h5.dmr -u data/string_arrays/cont_fstr.h5 -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

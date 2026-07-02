@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="chunked_one_comp_fstr.h5" dmrpp:href="data/string_arrays/chunked_one_comp_fstr.h5" dmrpp:version="3.21.1">
+    <String name="strings">
+        <Dim size="5"/>
+        <Dim size="5"/>
+        <dmrpp:chunks compressionType="deflate" deflateLevel="4" fillValue="">
+            <dmrpp:chunkDimensionSizes>5 5</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4016" nBytes="76" chunkPositionInArray="[0,0]"/>
+        </dmrpp:chunks>
+        <dmrpp:FixedLengthStringArray string_length="3" pad="null_pad"/>
+    </String>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2026-07-01T13:41:42Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/hyrax-1225/bes/modules/dmrpp_module/data/string_arrays/chunked_one_comp_fstr.h5 -r chunked_one_comp_fstr.h5.dmr -u data/string_arrays/chunked_one_comp_fstr.h5 -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

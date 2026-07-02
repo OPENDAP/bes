@@ -4,9 +4,8 @@ dimensions:
 	columns = 8640 ;
 	rgb = 3 ;
 	eightbitcolor = 256 ;
-	palette_len1 = 2 ;
 variables:
-	char palette(rgb, eightbitcolor, palette_len1) ;
+	char palette(rgb, eightbitcolor) ;
 
 // global attributes:
 		:product_name = "A20030602003090.L3m_MO_AT108_CHL_chlor_a_4km.nc" ;

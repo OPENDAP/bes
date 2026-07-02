@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="cont_fstr.h5">
+    <String name="strings">
+        <Dim size="2"/>
+        <Dim size="3"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </String>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>removed date-time</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>removed_version</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>removed_version</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>removed_version</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/hyrax-1225/bes/modules/dmrpp_module/data/string_arrays/cont_fstr.h5 -r cont_fstr.h5.dmr -u data/string_arrays/cont_fstr.h5 -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
+
+The data:
+String strings[2][3] = {{"pqr", "stu", "vwx"},{"567", "890", "ABC"}};
+

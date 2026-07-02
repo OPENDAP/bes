@@ -182,7 +182,7 @@ valgrind besstandalone -c tests/bes.conf -i tests/bescmd/test_ba_start.dap.bescm
 valgrind besstandalone -c tests/bes.conf -i tests/bescmd/test_ba_stride_stop.dap.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/test_ba_start_dim.dap.bescmd>test.nc
 
-#valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/chunked_string_array_c.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/chunked_string_array_c.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/d_size64_chunk_be.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/d_size8.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compact_example.h5.dmrpp.bescmd>test.nc
