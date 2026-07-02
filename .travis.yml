@@ -137,7 +137,7 @@ stages:
 jobs:
   include:
     # build-and-test
-    - stage: never
+    - stage: build-and-test
       name: "check"
       script:
         - export BES_BUILD=main
@@ -149,7 +149,7 @@ jobs:
         - make -j16 && make install && besctl start -d cerr,curl,http && make check -j16 && besctl stop
 
     # build-and-test
-    - stage: never
+    - stage: build-and-test
       name: "distcheck"
       script:
         - export BES_BUILD=distcheck
@@ -158,7 +158,7 @@ jobs:
         - make distcheck -j16 GZIP_ENV=--fast
 
     # build-and-test
-    - stage: never
+    - stage: build-and-test
       name: "dist"
       script:
         - export BES_BUILD=srcdist
@@ -236,15 +236,6 @@ jobs:
           export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}-${DIST}"
           echo "Tagging image with BES version: ${BUILD_VERSION_TAG}"
           docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
-          #
-          #
-          #
-          docker image inspect ${SNAPSHOT_IMAGE_TAG} --format '{{.Architecture}}'
-          echo "# test logs in docker image #############################################################"
-          docker run --rm ${SNAPSHOT_IMAGE_TAG} -c "ls -l /bes-test-logs"
-          echo "# test logs on host /tmp   ################################################################"
-          ls -l /tmp
-          echo "#########################################################################################"
 
     - stage: scan
       name: "scan bes"
