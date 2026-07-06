@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="daymet_v4_daily_na_tmax_2010.nc" dmrpp:href="https://data.ornldaac.earthdata.nasa.gov/protected/daymet/Daymet_Daily_V4R1/data/daymet_v4_daily_na_tmax_2010.nc" dmrpp:s3="s3://ornl-cumulus-prod-protected/daymet/Daymet_Daily_V4R1/data/daymet_v4_daily_na_tmax_2010.nc" dmrpp:s3credentials="https://data.ornldaac.earthdata.nasa.gov/s3credentials" dmrpp:trust="true" dmrpp:version="3.21.1-367">
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="removed" name="daymet_v4_daily_na_tmax_2010.nc" dmrpp:href="https://data.ornldaac.earthdata.nasa.gov/protected/daymet/Daymet_Daily_V4R1/data/daymet_v4_daily_na_tmax_2010.nc" dmrpp:s3="s3://ornl-cumulus-prod-protected/daymet/Daymet_Daily_V4R1/data/daymet_v4_daily_na_tmax_2010.nc" dmrpp:s3credentials="https://data.ornldaac.earthdata.nasa.gov/s3credentials" dmrpp:trust="true" dmrpp:version="removed_version">
     <Dimension name="y" size="8075"/>
     <Dimension name="x" size="7814"/>
     <Dimension name="time" size="365"/>
@@ -189,7 +189,7 @@
             <Value>standard</Value>
         </Attribute>
         <Attribute name="units" type="String">
-            <Value>days since 1950-01-01 00:00:00</Value>
+            <Value>days since removed date-time</Value>
         </Attribute>
         <Attribute name="bounds" type="String">
             <Value>time_bnds</Value>
@@ -27672,6 +27672,11 @@
             <dmrpp:chunk offset="11631259710" nBytes="10" chunkPositionInArray="[364]"/>
         </dmrpp:chunks>
     </Int16>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>time</Value>
+        </Attribute>
+    </Attribute>
     <Attribute name="start_year" type="Int16">
         <Value>2010</Value>
     </Attribute>
@@ -27695,19 +27700,19 @@
     </Attribute>
     <Attribute name="build_dmrpp_metadata" type="Container">
         <Attribute name="created" type="String">
-            <Value>2025-09-15T19:37:22Z</Value>
+            <Value>removed date-time</Value>
         </Attribute>
         <Attribute name="build_dmrpp" type="String">
-            <Value>3.21.1-367</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="bes" type="String">
-            <Value>3.21.1-367</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="libdap" type="String">
-            <Value>libdap-3.21.1-99</Value>
+            <Value>removed_version</Value>
         </Attribute>
         <Attribute name="invocation" type="String">
-            <Value>build_dmrpp -f /tmp/tmp0tv4iczy/daymet_v4_daily_na_tmax_2010.nc -r daymet_v4_daily_na_tmax_2010.nc.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+            <Value>build_dmrpp -f /tmp/removed-temp-dir-name/daymet_v4_daily_na_tmax_2010.nc -r daymet_v4_daily_na_tmax_2010.nc.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
         </Attribute>
     </Attribute>
 </Dataset>

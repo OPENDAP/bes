@@ -115,6 +115,14 @@ RUN sudo -s --preserve-env=PATH besctl stop
 
 RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
 
+# Copy test logs to a known location for extraction after build
+RUN sudo mkdir -p /home/bes_user/bes-test-logs && \
+    sudo chown $BES_USER:$BES_USER /home/bes_user/bes-test-logs && \
+    echo "Bundling test logs and site_maps:" && \
+    find . \( -name "*.log" -o -name "*site_map.txt" \) -print > /tmp/bes-log-file-list.txt && \
+    tar -czf /home/bes_user/bes-test-logs/bes-test-logs.tar.gz -T /tmp/bes-log-file-list.txt
+
+
 #####
 ##### Final layer: libdap + hyrax-dependencies + bes
 #####
@@ -125,6 +133,9 @@ RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
         echo "Error: Non-empty FINAL_BASE_IMAGE must be specified. Exiting."; \
         exit 1; \
     fi
+
+# Copy the log files so tha t they can be accessed from outside of this docker build (i.e. Travis)
+COPY --from=builder /home/bes_user/bes-test-logs/bes-test-logs.tar.gz /bes-test-logs/bes-test-logs.tar.gz
 
 # Duplicated from installation above, this time on a slimmer base image...
 # Install the libdap rpms
@@ -208,10 +219,6 @@ RUN sed -i.dist \
     -e 's:=.*/lib/bes:=/usr/lib/bes:' \
     -e 's:=.*/share/bes:=/usr/share/bes:' \
     -e 's:=.*/share/hyrax:=/usr/share/hyrax:' \
-    -e 's:=/full/path/to/serverside/certificate/file.pem:=/etc/pki/bes/cacerts/file.pem:' \
-    -e 's:=/full/path/to/serverside/key/file.pem:=/etc/pki/bes/public/file.pem:' \
-    -e 's:=/full/path/to/clientside/certificate/file.pem:=/etc/pki/bes/cacerts/file.pem:' \
-    -e 's:=/full/path/to/clientside/key/file.pem:=/etc/pki/bes/public/file.pem:' \
     -e 's:=user_name:='"$BES_USER"':' \
     -e 's:=group_name:='"$BES_USER"':' \
     /etc/bes/bes.conf \

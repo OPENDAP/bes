@@ -417,11 +417,14 @@ public:
                                      http::HttpError);
         }
 
-    void test_get_dmrpp_from_cache_or_remote_source_legacy_cmr_query_format() {
+    void test_get_dmrpp_from_cache_or_remote_source_legacy_restified_path_format() {
         NgapOwnedContainer container;
 
+        string legacy_cmr_path;
         try {
-            container.set_real_name("providers/POCLOUD/collections/ECCO Ocean Temperature and Salinity - Monthly Mean llc90 Grid (Version 4 Release 4)/granules/OCEAN_TEMPERATURE_SALINITY_mon_mean_2017-12_ECCO_V4r4_native_llc0090");
+            legacy_cmr_path ="providers/POCLOUD/collections/ECCO Ocean Temperature and Salinity - Monthly Mean llc90 Grid (Version 4 Release 4)/granules/OCEAN_TEMPERATURE_SALINITY_mon_mean_2017-12_ECCO_V4r4_native_llc0090";
+            DBG(cerr << prolog + "Testing unescaped legacy restified path: '" + legacy_cmr_path +"'");
+            container.set_real_name(legacy_cmr_path);
             string dmrpp_string = "";
             container.get_dmrpp_from_cache_or_remote_source(dmrpp_string);
         } catch (const http::HttpError &e) {
@@ -433,7 +436,9 @@ public:
         }
 
         try {
-            container.set_real_name("providers/POCLOUD/collections/ECCO%20Ocean%20Temperature%20and%20Salinity%20-%20Monthly%20Mean%20llc90%20Grid%20(Version%204%20Release%204)/granules/OCEAN_TEMPERATURE_SALINITY_mon_mean_2017-12_ECCO_V4r4_native_llc0090");
+            legacy_cmr_path="providers/POCLOUD/collections/ECCO%20Ocean%20Temperature%20and%20Salinity%20-%20Monthly%20Mean%20llc90%20Grid%20(Version%204%20Release%204)/granules/OCEAN_TEMPERATURE_SALINITY_mon_mean_2017-12_ECCO_V4r4_native_llc0090";
+            DBG(cerr << prolog + "Testing escaped legacy restified path: '" + legacy_cmr_path +"'");
+            container.set_real_name(legacy_cmr_path);
             string dmrpp_string = "";
             container.get_dmrpp_from_cache_or_remote_source(dmrpp_string);
         } catch (const http::HttpError &e) {
@@ -607,7 +612,7 @@ public:
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_test_cache_use);
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_empty_dmrpp);
     CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_no_uri);
-    CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_legacy_cmr_query_format);
+    CPPUNIT_TEST(test_get_dmrpp_from_cache_or_remote_source_legacy_restified_path_format);
 
     CPPUNIT_TEST(test_access);
     CPPUNIT_TEST(test_alt_access);

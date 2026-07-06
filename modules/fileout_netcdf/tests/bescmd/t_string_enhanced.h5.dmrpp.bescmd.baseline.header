@@ -1,0 +1,32 @@
+netcdf test {
+dimensions:
+	dim1 = 4 ;
+	array_1d_len = 8 ;
+	dim2 = 2 ;
+	dim3 = 2 ;
+	array_2d_len = 8 ;
+	scalar_len = 30 ;
+	dim4 = 2 ;
+	dim5 = 2 ;
+	dim6 = 1 ;
+	dim7 = 1 ;
+variables:
+	char array_1d(dim1, array_1d_len) ;
+		array_1d:value = "Parting\nis so  \nswe    \n       " ;
+	char array_2d(dim2, dim3, array_2d_len) ;
+		array_2d:value = "Parting\nis so  \nswe    \n       " ;
+	char scalar(scalar_len) ;
+		scalar:value = "Parting is such sweet sorrow." ;
+	char array_2d_1_char(dim4, dim5) ;
+	char array_special_case(dim6, dim7) ;
+		array_special_case:value = "A" ;
+
+// global attributes:
+		:build_dmrpp_metadata.created = "removed date-time" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.21.1" ;
+		:build_dmrpp_metadata.bes = "3.21.1" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -f /Users/myang6/work/opendap/hyrax-2191/bes/modules/fileout_netcdf/data/t_string_enhanced.h5 -r t_string_enhanced.h5.dmr -u data/t_string_enhanced.h5 -M" ;
+		:history = "removed date-timex t_string_enhanced.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"t_string_enhanced.h5.dmrpp\"}]}]" ;
+}

@@ -32,6 +32,7 @@
 #include <string>
 
 #include "TheBESKeys.h"
+#include "BESContextManager.h"
 #include "BESDebug.h"
 #include "BESStopWatch.h"
 #include "BESUtil.h"
@@ -56,8 +57,9 @@ namespace http {
  * @param url_key Key to a cached effective URL.
  * @note This method is not, itself, thread safe.
  */
-shared_ptr <EffectiveUrl> EffectiveUrlCache::get_cached_eurl(string const &url_key) {
+shared_ptr <EffectiveUrl> EffectiveUrlCache::get_cached_eurl(string const &url) {
     shared_ptr<EffectiveUrl> effective_url(nullptr);
+    auto url_key = append_edl_username_to_key(url);
     auto it = d_effective_urls.find(url_key);
     if (it != d_effective_urls.end()) {
         effective_url = (*it).second;
@@ -70,9 +72,10 @@ shared_ptr <EffectiveUrl> EffectiveUrlCache::get_cached_eurl(string const &url_k
  * skip_regex then it will not be cached.
  *
  * @param source_url
+ * @param http_request_headers The http request headers to use when contacting source_url
  * @returns The effective URL
 */
-shared_ptr <EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr <url> source_url) {
+shared_ptr <EffectiveUrl> EffectiveUrlCache::get_effective_url(const shared_ptr <url>& source_url, curl_slist *http_request_headers) {
 
     BESDEBUG(MODULE, prolog << "BEGIN url: " << source_url->str() << endl);
     BESDEBUG(MODULE_DUMPER, prolog << "dump: " << endl << dump() << endl);
@@ -120,7 +123,7 @@ shared_ptr <EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr <url> 
             BES_STOPWATCH_START(MODULE_TIMER, prolog + "Retrieve and cache effective url for source url: " + source_url->str());
             try {
                 // This code throws an HttpError exception if there is a problem.
-                effective_url = curl::get_redirect_url(source_url);
+                effective_url = curl::get_redirect_url(source_url,http_request_headers);
             }
             catch (http::HttpError &http_error) {
                 string err_msg = prolog + "Hyrax encountered a Service Chaining Error while "
@@ -136,7 +139,7 @@ shared_ptr <EffectiveUrl> EffectiveUrlCache::get_effective_url(shared_ptr <url> 
         BESDEBUG(MODULE, prolog << "effective_url: " << effective_url->dump() << " ("
                                 << (source_url->is_trusted() ? "" : "NOT ") << "trusted)" << endl);
 
-        d_effective_urls[source_url->str()] = effective_url;
+        d_effective_urls[append_edl_username_to_key(source_url->str())] = effective_url;
 
         BESDEBUG(MODULE, prolog << "Updated record for " << source_url->str() << " cache size: "
                                 << d_effective_urls.size() << endl);
@@ -204,6 +207,22 @@ void EffectiveUrlCache::dump(ostream &strm) const {
         strm << BESIndent::LMarg << "effective url list: EMPTY" << endl;
     }
     BESIndent::UnIndent();
+}
+
+/**
+ * @brief Append the EDL username from the BESContext to key.
+ * @param key Key prefix.
+ * @note This method is not, itself, thread safe.
+ */
+std::string EffectiveUrlCache::append_edl_username_to_key(string const &key) {
+    bool found = false;
+    string uid = BESContextManager::TheManager()->get_context(UID_CONTEXT_KEY, found);
+    BESDEBUG(MODULE, prolog << "UID_CONTEXT_KEY(" << UID_CONTEXT_KEY << "): " << uid << endl);
+    if (found && !uid.empty()) {
+        return key + ":" + uid;
+    }
+    INFO_LOG(prolog + string("SERVICE CHAIN WARNING - EDL UID missing; using raw key " + key));
+    return key;
 }
 
 } // namespace http

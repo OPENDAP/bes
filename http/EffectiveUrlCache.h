@@ -29,9 +29,10 @@
 
 #include <memory>
 #include <map>
-#include <unordered_map>
 #include <string>
 #include <mutex>
+
+#include <curl/curl.h>
 
 #include "BESObj.h"
 #include "BESRegex.h"   // for std::unique_ptr<BESRegex>
@@ -63,11 +64,13 @@ private:
 
     int d_enabled = -1;
 
-    std::shared_ptr<EffectiveUrl> get_cached_eurl(std::string const &url_key);
+    std::shared_ptr<EffectiveUrl> get_cached_eurl(std::string const &url);
 
     void set_skip_regex();
 
     bool is_enabled();
+
+    std::string append_edl_username_to_key(std::string const &key);
 
     friend class EffectiveUrlCacheTest;
 
@@ -93,7 +96,7 @@ public:
 
     ~EffectiveUrlCache() override = default;
 
-    std::shared_ptr<EffectiveUrl> get_effective_url(std::shared_ptr<url> source_url);
+    std::shared_ptr<EffectiveUrl> get_effective_url(const std::shared_ptr<url>& source_url, curl_slist *http_request_headers = nullptr);
 
     void dump(std::ostream &strm) const override;
 

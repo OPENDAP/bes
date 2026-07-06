@@ -234,8 +234,8 @@ NgapApi::DataAccessUrls NgapOwnedContainer::build_data_urls_to_daac_bucket(const
     BES_MODULE_TIMING(prolog + rest_path);
 
     bool found;
-    string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
-    BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
+    string uid = BESContextManager::TheManager()->get_context(UID_CONTEXT_KEY, found);
+    BESDEBUG(MODULE, prolog << "UID_CONTEXT_KEY(" << UID_CONTEXT_KEY << "): " << uid << endl);
 
     NgapApi::DataAccessUrls data_access_urls;
 
@@ -473,7 +473,8 @@ void NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) co
 
     string dmrpp_url_str = build_dmrpp_url_to_owned_bucket(get_real_name());
     INFO_LOG(prolog + "Look in the OPeNDAP-bucket for the DMRpp for: " + dmrpp_url_str);
-    curl::http_get(dmrpp_url_str, dmrpp_string);
+    // @TODO - Is this even the right idea to look for S3 creds in CredentialsManager for this call??
+    curl::http_get(dmrpp_url_str, dmrpp_string,curl::sign_url_for_s3_if_possible(dmrpp_url_str, nullptr));
     map<string, string, std::less<>> content_filters;
     if (!get_opendap_content_filters(content_filters)) {
         throw BESInternalError("Could not build opendap content filters for DMR++", __FILE__, __LINE__);
@@ -515,20 +516,41 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
     // This code may ask CMR and will throw exceptions that mention CMR on error. jhrg 1/24/25
     auto data_access_urls = build_data_urls_to_daac_bucket(get_real_name());
 
-    // For now, construct `dmrpp_url_str` from the https data url
-    // In future, we'll likely switch to using the s3 data url
+    // Construct `dmrpp_url_str` from the https data url
     string dmrpp_url_str = get<0>(data_access_urls);
-    if (dmrpp_url_str.find(".dmrpp") ==
-        std::string::npos)              // Only add the .dmrpp extension if it is not present kln 5/20/25
+    if (dmrpp_url_str.find(".dmrpp") == std::string::npos) {
+        // Only add the .dmrpp extension if it is not present kln 5/20/25
         dmrpp_url_str.append(".dmrpp"); // This is the URL to the DMR++ in the DAAC-owned bucket. jhrg 8/9/24
+    }
+    string dmrpp_s3uri_str(get<1>(data_access_urls));
+    if (!dmrpp_s3uri_str.empty()) {
+        dmrpp_s3uri_str.append(".dmrpp");
+    }
     INFO_LOG(prolog + "Look in the DAAC-bucket for the DMRpp for: " + dmrpp_url_str);
 
+    // To sign the dmrpp locally, we will need to access the TEA endpoint for generating
+    // EDL-user-specific STS credentials; cache those prerequisites so we'll have access to them
+    // when we attempt to sign...
+    SignedUrlCache::TheCache()->cache_prerequisites_for_url_signing(dmrpp_url_str, dmrpp_s3uri_str, get<2>(data_access_urls));
+
+    // ...and sign!
+    std::shared_ptr<http::EffectiveUrl> presigned_url = SignedUrlCache::TheCache()->get_presigned_s3_url(make_shared<http::url>(dmrpp_url_str));
+
     try {
-        {
-            BES_PROFILE_TIMING(string("Request DMRpp from DAAC bucket - ") + dmrpp_url_str);
-            curl::http_get(dmrpp_url_str, dmrpp_string);
+        // If the url signing fails for any reason---nonexistent or bad short-term credentials, being
+        // called from a region other than us-west-2, etc---it will return a nullptr, so that we can fall
+        // back on using the TEA service to sign our urls through a series of redirects
+        if (presigned_url == nullptr) {
+            BES_PROFILE_TIMING(string("SERVICE CHAIN WARNING! Falling back to request DMR++ from DAAC bucket - ") + dmrpp_url_str);
+            curl::http_get(dmrpp_url_str, dmrpp_string,curl::add_edl_auth_headers(nullptr));
+        } else {
+            BES_PROFILE_TIMING(string("Request presigned DMRpp from DAAC bucket - ") + presigned_url->str());
+            curl::http_get(presigned_url->str(), dmrpp_string, nullptr);
         }
-        // filter the DMRPP from the DAAC's bucket to replace the template href with the data_access_urls
+
+        // filter the DMRPP from the DAAC's bucket to replace the template href with the data_access_urls,
+        // so that downstream users of this fetched [and potentially cached-on-disk] DMR++ will be able
+        // to access (and presign) the granules it references
         map<string, string, std::less<>> content_filters;
         if (!get_daac_content_filters(data_access_urls, content_filters)) {
             throw BESInternalError("Could not build content filters for DMR++", __FILE__, __LINE__);

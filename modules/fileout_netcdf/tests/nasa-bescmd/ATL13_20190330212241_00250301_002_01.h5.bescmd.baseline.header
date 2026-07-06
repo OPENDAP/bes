@@ -53,8 +53,8 @@ netcdf test {
 
 group: orbit_info {
   dimensions:
-  	crossing_time = 4 ;
-  	sc_orient_time = 1 ;
+  	crossing_time = UNLIMITED ; // (4 currently)
+  	sc_orient_time = UNLIMITED ; // (1 currently)
   variables:
   	double crossing_time(crossing_time) ;
   		crossing_time:units = "seconds since 2018-01-01" ;
@@ -119,6 +119,7 @@ group: orbit_info {
   		cycle_number:valid_max = 50b ;
 
   // group attributes:
+  		:DODS_EXTRA.Unlimited_Dimension = "crossing_time\nsc_orient_time" ;
   		:Description = "Contains orbit information." ;
   		:data_rate = "Varies. Data are only provided when one of the stored values (besides time) changes." ;
   } // group orbit_info
@@ -447,8 +448,18 @@ group: METADATA {
 
 group: gt1r {
   dimensions:
-  	delta_time = 24322 ;
+  	delta_time = UNLIMITED ; // (24322 currently)
   variables:
+  	double segment_lon(delta_time) ;
+  		segment_lon:units = "degrees_east" ;
+  		segment_lon:contentType = "physicalMeasurement" ;
+  		segment_lon:long_name = "Longitude" ;
+  		segment_lon:standard_name = "longitude" ;
+  		segment_lon:description = "Longitude of reporting location" ;
+  		segment_lon:source = "section 5.3.5 (A)" ;
+  		segment_lon:coordinates = "delta_time segment_lat" ;
+  		segment_lon:valid_min = -180. ;
+  		segment_lon:valid_max = 180. ;
   	double segment_lat(delta_time) ;
   		segment_lat:units = "degrees_north" ;
   		segment_lat:contentType = "physicalMeasurement" ;
@@ -467,15 +478,6 @@ group: gt1r {
   		delta_time:description = "Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
   		delta_time:source = "ATL03" ;
   		delta_time:coordinates = "segment_lat segment_lon" ;
-  	double sseg_mean_lon(delta_time) ;
-  		sseg_mean_lon:units = "degrees_east" ;
-  		sseg_mean_lon:contentType = "auxiliaryInformation" ;
-  		sseg_mean_lon:long_name = "Short Segment Mean Longitude" ;
-  		sseg_mean_lon:description = "Mean longitude of the signal-qualified photons in a short segment." ;
-  		sseg_mean_lon:source = "Inland Water ATBD" ;
-  		sseg_mean_lon:coordinates = "delta_time" ;
-  		sseg_mean_lon:valid_min = -180. ;
-  		sseg_mean_lon:valid_max = 180. ;
   	int qf_ice(delta_time) ;
   		qf_ice:_FillValue = 2147483647 ;
   		qf_ice:units = "1" ;
@@ -657,24 +659,6 @@ group: gt1r {
   		ice_flag:flag_values = 0b, 1b ;
   		ice_flag:valid_min = 0b ;
   		ice_flag:valid_max = 1b ;
-  	double segment_lon(delta_time) ;
-  		segment_lon:units = "degrees_east" ;
-  		segment_lon:contentType = "physicalMeasurement" ;
-  		segment_lon:long_name = "Longitude" ;
-  		segment_lon:standard_name = "longitude" ;
-  		segment_lon:description = "Longitude of reporting location" ;
-  		segment_lon:source = "section 5.3.5 (A)" ;
-  		segment_lon:coordinates = "delta_time segment_lat" ;
-  		segment_lon:valid_min = -180. ;
-  		segment_lon:valid_max = 180. ;
-  	float ht_ortho(delta_time) ;
-  		ht_ortho:_FillValue = 3.402823e+38f ;
-  		ht_ortho:units = "meters" ;
-  		ht_ortho:contentType = "physicalMeasurement" ;
-  		ht_ortho:long_name = "Orthometric Height" ;
-  		ht_ortho:description = "Orthometric height EGM2008 converted from ellipsoidal height." ;
-  		ht_ortho:source = "section 5.3.5 (A)" ;
-  		ht_ortho:coordinates = "delta_time segment_lat segment_lon" ;
   	short rgt(delta_time) ;
   		rgt:units = "1" ;
   		rgt:contentType = "referenceInformation" ;
@@ -684,6 +668,26 @@ group: gt1r {
   		rgt:coordinates = "delta_time segment_lat segment_lon" ;
   		rgt:valid_min = 1s ;
   		rgt:valid_max = 1387s ;
+  	float ht_ortho(delta_time) ;
+  		ht_ortho:_FillValue = 3.402823e+38f ;
+  		ht_ortho:units = "meters" ;
+  		ht_ortho:contentType = "physicalMeasurement" ;
+  		ht_ortho:long_name = "Orthometric Height" ;
+  		ht_ortho:description = "Orthometric height EGM2008 converted from ellipsoidal height." ;
+  		ht_ortho:source = "section 5.3.5 (A)" ;
+  		ht_ortho:coordinates = "delta_time segment_lat segment_lon" ;
+  	int qf_bias_fit(delta_time) ;
+  		qf_bias_fit:_FillValue = 2147483647 ;
+  		qf_bias_fit:units = "1" ;
+  		qf_bias_fit:contentType = "qualityInformation" ;
+  		qf_bias_fit:long_name = "Height Bias Fit Quality Flag" ;
+  		qf_bias_fit:description = "The height bias fit flag is set based on the value of the goodness of fit bias estimated as the difference between the centroid elevations of the observed surface water histogram and fitted integrated water surface model histogram. The flag values are set as follows: = -3 if H_bias_fit < -0.10 (m); -2 if -0.10 <= H_bias_fit < -0.05;-1 when -0.05 <= H_bias_fit < -0.01; 0 if -0.01 <= H_bias_fit < 0.01 (m); 1 if 0.01 <= H_bias_fit < 0.05; 2 if 0.05 < H_bias_fit < 0.10; 3 if 0.10 <= H_bias_fit; 4 if H_bias_fit is invalid." ;
+  		qf_bias_fit:source = "Inland Water ATBD" ;
+  		qf_bias_fit:coordinates = "delta_time segment_lat segment_lon" ;
+  		qf_bias_fit:flag_meanings = "below_threshold1 below_threshold2 below_threshold3 below_threshold4 below_threshold5 below_threshold6 equal_to_or_above_threshold6 invalid" ;
+  		qf_bias_fit:flag_values = -3, -2, -1, 0, 1, 2, 3, 4 ;
+  		qf_bias_fit:valid_min = -3 ;
+  		qf_bias_fit:valid_max = 4 ;
   	float ht_water_surf(delta_time) ;
   		ht_water_surf:_FillValue = 3.402823e+38f ;
   		ht_water_surf:units = "meters" ;
@@ -732,18 +736,15 @@ group: gt1r {
   		inland_water_body_source:flag_values = 1b, 2b, 3b, 4b, 5b, 6b, 7b, 8b, 9b ;
   		inland_water_body_source:valid_min = 1b ;
   		inland_water_body_source:valid_max = 9b ;
-  	int qf_bias_fit(delta_time) ;
-  		qf_bias_fit:_FillValue = 2147483647 ;
-  		qf_bias_fit:units = "1" ;
-  		qf_bias_fit:contentType = "qualityInformation" ;
-  		qf_bias_fit:long_name = "Height Bias Fit Quality Flag" ;
-  		qf_bias_fit:description = "The height bias fit flag is set based on the value of the goodness of fit bias estimated as the difference between the centroid elevations of the observed surface water histogram and fitted integrated water surface model histogram. The flag values are set as follows: = -3 if H_bias_fit < -0.10 (m); -2 if -0.10 <= H_bias_fit < -0.05;-1 when -0.05 <= H_bias_fit < -0.01; 0 if -0.01 <= H_bias_fit < 0.01 (m); 1 if 0.01 <= H_bias_fit < 0.05; 2 if 0.05 < H_bias_fit < 0.10; 3 if 0.10 <= H_bias_fit; 4 if H_bias_fit is invalid." ;
-  		qf_bias_fit:source = "Inland Water ATBD" ;
-  		qf_bias_fit:coordinates = "delta_time segment_lat segment_lon" ;
-  		qf_bias_fit:flag_meanings = "below_threshold1 below_threshold2 below_threshold3 below_threshold4 below_threshold5 below_threshold6 equal_to_or_above_threshold6 invalid" ;
-  		qf_bias_fit:flag_values = -3, -2, -1, 0, 1, 2, 3, 4 ;
-  		qf_bias_fit:valid_min = -3 ;
-  		qf_bias_fit:valid_max = 4 ;
+  	double sseg_mean_lon(delta_time) ;
+  		sseg_mean_lon:units = "degrees_east" ;
+  		sseg_mean_lon:contentType = "auxiliaryInformation" ;
+  		sseg_mean_lon:long_name = "Short Segment Mean Longitude" ;
+  		sseg_mean_lon:description = "Mean longitude of the signal-qualified photons in a short segment." ;
+  		sseg_mean_lon:source = "Inland Water ATBD" ;
+  		sseg_mean_lon:coordinates = "delta_time" ;
+  		sseg_mean_lon:valid_min = -180. ;
+  		sseg_mean_lon:valid_max = 180. ;
   	byte inland_water_body_size(delta_time) ;
   		inland_water_body_size:_FillValue = 127b ;
   		inland_water_body_size:units = "1" ;
@@ -832,6 +833,7 @@ group: gt1r {
   		segment_dac:coordinates = "delta_time segment_lat segment_lon" ;
 
   // group attributes:
+  		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
   		:Description = "Contains per-beam data products." ;
   		:data_rate = "Data within this group are stored at the inland water short segment rate (/ancillary_data/inland_water/s_seg2)." ;
   		:atlas_pce = "pce1" ;
@@ -844,8 +846,18 @@ group: gt1r {
 
 group: gt2r {
   dimensions:
-  	delta_time = 24346 ;
+  	delta_time = UNLIMITED ; // (24346 currently)
   variables:
+  	double segment_lon(delta_time) ;
+  		segment_lon:units = "degrees_east" ;
+  		segment_lon:contentType = "physicalMeasurement" ;
+  		segment_lon:long_name = "Longitude" ;
+  		segment_lon:standard_name = "longitude" ;
+  		segment_lon:description = "Longitude of reporting location" ;
+  		segment_lon:source = "section 5.3.5 (A)" ;
+  		segment_lon:coordinates = "delta_time segment_lat" ;
+  		segment_lon:valid_min = -180. ;
+  		segment_lon:valid_max = 180. ;
   	double segment_lat(delta_time) ;
   		segment_lat:units = "degrees_north" ;
   		segment_lat:contentType = "physicalMeasurement" ;
@@ -864,15 +876,6 @@ group: gt2r {
   		delta_time:description = "Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
   		delta_time:source = "ATL03" ;
   		delta_time:coordinates = "segment_lat segment_lon" ;
-  	double sseg_mean_lon(delta_time) ;
-  		sseg_mean_lon:units = "degrees_east" ;
-  		sseg_mean_lon:contentType = "auxiliaryInformation" ;
-  		sseg_mean_lon:long_name = "Short Segment Mean Longitude" ;
-  		sseg_mean_lon:description = "Mean longitude of the signal-qualified photons in a short segment." ;
-  		sseg_mean_lon:source = "Inland Water ATBD" ;
-  		sseg_mean_lon:coordinates = "delta_time" ;
-  		sseg_mean_lon:valid_min = -180. ;
-  		sseg_mean_lon:valid_max = 180. ;
   	int qf_ice(delta_time) ;
   		qf_ice:_FillValue = 2147483647 ;
   		qf_ice:units = "1" ;
@@ -1054,24 +1057,6 @@ group: gt2r {
   		ice_flag:flag_values = 0b, 1b ;
   		ice_flag:valid_min = 0b ;
   		ice_flag:valid_max = 1b ;
-  	double segment_lon(delta_time) ;
-  		segment_lon:units = "degrees_east" ;
-  		segment_lon:contentType = "physicalMeasurement" ;
-  		segment_lon:long_name = "Longitude" ;
-  		segment_lon:standard_name = "longitude" ;
-  		segment_lon:description = "Longitude of reporting location" ;
-  		segment_lon:source = "section 5.3.5 (A)" ;
-  		segment_lon:coordinates = "delta_time segment_lat" ;
-  		segment_lon:valid_min = -180. ;
-  		segment_lon:valid_max = 180. ;
-  	float ht_ortho(delta_time) ;
-  		ht_ortho:_FillValue = 3.402823e+38f ;
-  		ht_ortho:units = "meters" ;
-  		ht_ortho:contentType = "physicalMeasurement" ;
-  		ht_ortho:long_name = "Orthometric Height" ;
-  		ht_ortho:description = "Orthometric height EGM2008 converted from ellipsoidal height." ;
-  		ht_ortho:source = "section 5.3.5 (A)" ;
-  		ht_ortho:coordinates = "delta_time segment_lat segment_lon" ;
   	short rgt(delta_time) ;
   		rgt:units = "1" ;
   		rgt:contentType = "referenceInformation" ;
@@ -1081,6 +1066,26 @@ group: gt2r {
   		rgt:coordinates = "delta_time segment_lat segment_lon" ;
   		rgt:valid_min = 1s ;
   		rgt:valid_max = 1387s ;
+  	float ht_ortho(delta_time) ;
+  		ht_ortho:_FillValue = 3.402823e+38f ;
+  		ht_ortho:units = "meters" ;
+  		ht_ortho:contentType = "physicalMeasurement" ;
+  		ht_ortho:long_name = "Orthometric Height" ;
+  		ht_ortho:description = "Orthometric height EGM2008 converted from ellipsoidal height." ;
+  		ht_ortho:source = "section 5.3.5 (A)" ;
+  		ht_ortho:coordinates = "delta_time segment_lat segment_lon" ;
+  	int qf_bias_fit(delta_time) ;
+  		qf_bias_fit:_FillValue = 2147483647 ;
+  		qf_bias_fit:units = "1" ;
+  		qf_bias_fit:contentType = "qualityInformation" ;
+  		qf_bias_fit:long_name = "Height Bias Fit Quality Flag" ;
+  		qf_bias_fit:description = "The height bias fit flag is set based on the value of the goodness of fit bias estimated as the difference between the centroid elevations of the observed surface water histogram and fitted integrated water surface model histogram. The flag values are set as follows: = -3 if H_bias_fit < -0.10 (m); -2 if -0.10 <= H_bias_fit < -0.05;-1 when -0.05 <= H_bias_fit < -0.01; 0 if -0.01 <= H_bias_fit < 0.01 (m); 1 if 0.01 <= H_bias_fit < 0.05; 2 if 0.05 < H_bias_fit < 0.10; 3 if 0.10 <= H_bias_fit; 4 if H_bias_fit is invalid." ;
+  		qf_bias_fit:source = "Inland Water ATBD" ;
+  		qf_bias_fit:coordinates = "delta_time segment_lat segment_lon" ;
+  		qf_bias_fit:flag_meanings = "below_threshold1 below_threshold2 below_threshold3 below_threshold4 below_threshold5 below_threshold6 equal_to_or_above_threshold6 invalid" ;
+  		qf_bias_fit:flag_values = -3, -2, -1, 0, 1, 2, 3, 4 ;
+  		qf_bias_fit:valid_min = -3 ;
+  		qf_bias_fit:valid_max = 4 ;
   	float ht_water_surf(delta_time) ;
   		ht_water_surf:_FillValue = 3.402823e+38f ;
   		ht_water_surf:units = "meters" ;
@@ -1129,18 +1134,15 @@ group: gt2r {
   		inland_water_body_source:flag_values = 1b, 2b, 3b, 4b, 5b, 6b, 7b, 8b, 9b ;
   		inland_water_body_source:valid_min = 1b ;
   		inland_water_body_source:valid_max = 9b ;
-  	int qf_bias_fit(delta_time) ;
-  		qf_bias_fit:_FillValue = 2147483647 ;
-  		qf_bias_fit:units = "1" ;
-  		qf_bias_fit:contentType = "qualityInformation" ;
-  		qf_bias_fit:long_name = "Height Bias Fit Quality Flag" ;
-  		qf_bias_fit:description = "The height bias fit flag is set based on the value of the goodness of fit bias estimated as the difference between the centroid elevations of the observed surface water histogram and fitted integrated water surface model histogram. The flag values are set as follows: = -3 if H_bias_fit < -0.10 (m); -2 if -0.10 <= H_bias_fit < -0.05;-1 when -0.05 <= H_bias_fit < -0.01; 0 if -0.01 <= H_bias_fit < 0.01 (m); 1 if 0.01 <= H_bias_fit < 0.05; 2 if 0.05 < H_bias_fit < 0.10; 3 if 0.10 <= H_bias_fit; 4 if H_bias_fit is invalid." ;
-  		qf_bias_fit:source = "Inland Water ATBD" ;
-  		qf_bias_fit:coordinates = "delta_time segment_lat segment_lon" ;
-  		qf_bias_fit:flag_meanings = "below_threshold1 below_threshold2 below_threshold3 below_threshold4 below_threshold5 below_threshold6 equal_to_or_above_threshold6 invalid" ;
-  		qf_bias_fit:flag_values = -3, -2, -1, 0, 1, 2, 3, 4 ;
-  		qf_bias_fit:valid_min = -3 ;
-  		qf_bias_fit:valid_max = 4 ;
+  	double sseg_mean_lon(delta_time) ;
+  		sseg_mean_lon:units = "degrees_east" ;
+  		sseg_mean_lon:contentType = "auxiliaryInformation" ;
+  		sseg_mean_lon:long_name = "Short Segment Mean Longitude" ;
+  		sseg_mean_lon:description = "Mean longitude of the signal-qualified photons in a short segment." ;
+  		sseg_mean_lon:source = "Inland Water ATBD" ;
+  		sseg_mean_lon:coordinates = "delta_time" ;
+  		sseg_mean_lon:valid_min = -180. ;
+  		sseg_mean_lon:valid_max = 180. ;
   	byte inland_water_body_size(delta_time) ;
   		inland_water_body_size:_FillValue = 127b ;
   		inland_water_body_size:units = "1" ;
@@ -1229,6 +1231,7 @@ group: gt2r {
   		segment_dac:coordinates = "delta_time segment_lat segment_lon" ;
 
   // group attributes:
+  		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
   		:Description = "Contains per-beam data products." ;
   		:data_rate = "Data within this group are stored at the inland water short segment rate (/ancillary_data/inland_water/s_seg2)." ;
   		:atlas_pce = "pce2" ;
@@ -1241,8 +1244,18 @@ group: gt2r {
 
 group: gt1l {
   dimensions:
-  	delta_time = 122161 ;
+  	delta_time = UNLIMITED ; // (122161 currently)
   variables:
+  	double segment_lon(delta_time) ;
+  		segment_lon:units = "degrees_east" ;
+  		segment_lon:contentType = "physicalMeasurement" ;
+  		segment_lon:long_name = "Longitude" ;
+  		segment_lon:standard_name = "longitude" ;
+  		segment_lon:description = "Longitude of reporting location" ;
+  		segment_lon:source = "section 5.3.5 (A)" ;
+  		segment_lon:coordinates = "delta_time segment_lat" ;
+  		segment_lon:valid_min = -180. ;
+  		segment_lon:valid_max = 180. ;
   	double segment_lat(delta_time) ;
   		segment_lat:units = "degrees_north" ;
   		segment_lat:contentType = "physicalMeasurement" ;
@@ -1261,15 +1274,6 @@ group: gt1l {
   		delta_time:description = "Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
   		delta_time:source = "ATL03" ;
   		delta_time:coordinates = "segment_lat segment_lon" ;
-  	double sseg_mean_lon(delta_time) ;
-  		sseg_mean_lon:units = "degrees_east" ;
-  		sseg_mean_lon:contentType = "auxiliaryInformation" ;
-  		sseg_mean_lon:long_name = "Short Segment Mean Longitude" ;
-  		sseg_mean_lon:description = "Mean longitude of the signal-qualified photons in a short segment." ;
-  		sseg_mean_lon:source = "Inland Water ATBD" ;
-  		sseg_mean_lon:coordinates = "delta_time" ;
-  		sseg_mean_lon:valid_min = -180. ;
-  		sseg_mean_lon:valid_max = 180. ;
   	int qf_ice(delta_time) ;
   		qf_ice:_FillValue = 2147483647 ;
   		qf_ice:units = "1" ;
@@ -1451,24 +1455,6 @@ group: gt1l {
   		ice_flag:flag_values = 0b, 1b ;
   		ice_flag:valid_min = 0b ;
   		ice_flag:valid_max = 1b ;
-  	double segment_lon(delta_time) ;
-  		segment_lon:units = "degrees_east" ;
-  		segment_lon:contentType = "physicalMeasurement" ;
-  		segment_lon:long_name = "Longitude" ;
-  		segment_lon:standard_name = "longitude" ;
-  		segment_lon:description = "Longitude of reporting location" ;
-  		segment_lon:source = "section 5.3.5 (A)" ;
-  		segment_lon:coordinates = "delta_time segment_lat" ;
-  		segment_lon:valid_min = -180. ;
-  		segment_lon:valid_max = 180. ;
-  	float ht_ortho(delta_time) ;
-  		ht_ortho:_FillValue = 3.402823e+38f ;
-  		ht_ortho:units = "meters" ;
-  		ht_ortho:contentType = "physicalMeasurement" ;
-  		ht_ortho:long_name = "Orthometric Height" ;
-  		ht_ortho:description = "Orthometric height EGM2008 converted from ellipsoidal height." ;
-  		ht_ortho:source = "section 5.3.5 (A)" ;
-  		ht_ortho:coordinates = "delta_time segment_lat segment_lon" ;
   	short rgt(delta_time) ;
   		rgt:units = "1" ;
   		rgt:contentType = "referenceInformation" ;
@@ -1478,6 +1464,26 @@ group: gt1l {
   		rgt:coordinates = "delta_time segment_lat segment_lon" ;
   		rgt:valid_min = 1s ;
   		rgt:valid_max = 1387s ;
+  	float ht_ortho(delta_time) ;
+  		ht_ortho:_FillValue = 3.402823e+38f ;
+  		ht_ortho:units = "meters" ;
+  		ht_ortho:contentType = "physicalMeasurement" ;
+  		ht_ortho:long_name = "Orthometric Height" ;
+  		ht_ortho:description = "Orthometric height EGM2008 converted from ellipsoidal height." ;
+  		ht_ortho:source = "section 5.3.5 (A)" ;
+  		ht_ortho:coordinates = "delta_time segment_lat segment_lon" ;
+  	int qf_bias_fit(delta_time) ;
+  		qf_bias_fit:_FillValue = 2147483647 ;
+  		qf_bias_fit:units = "1" ;
+  		qf_bias_fit:contentType = "qualityInformation" ;
+  		qf_bias_fit:long_name = "Height Bias Fit Quality Flag" ;
+  		qf_bias_fit:description = "The height bias fit flag is set based on the value of the goodness of fit bias estimated as the difference between the centroid elevations of the observed surface water histogram and fitted integrated water surface model histogram. The flag values are set as follows: = -3 if H_bias_fit < -0.10 (m); -2 if -0.10 <= H_bias_fit < -0.05;-1 when -0.05 <= H_bias_fit < -0.01; 0 if -0.01 <= H_bias_fit < 0.01 (m); 1 if 0.01 <= H_bias_fit < 0.05; 2 if 0.05 < H_bias_fit < 0.10; 3 if 0.10 <= H_bias_fit; 4 if H_bias_fit is invalid." ;
+  		qf_bias_fit:source = "Inland Water ATBD" ;
+  		qf_bias_fit:coordinates = "delta_time segment_lat segment_lon" ;
+  		qf_bias_fit:flag_meanings = "below_threshold1 below_threshold2 below_threshold3 below_threshold4 below_threshold5 below_threshold6 equal_to_or_above_threshold6 invalid" ;
+  		qf_bias_fit:flag_values = -3, -2, -1, 0, 1, 2, 3, 4 ;
+  		qf_bias_fit:valid_min = -3 ;
+  		qf_bias_fit:valid_max = 4 ;
   	float ht_water_surf(delta_time) ;
   		ht_water_surf:_FillValue = 3.402823e+38f ;
   		ht_water_surf:units = "meters" ;
@@ -1526,18 +1532,15 @@ group: gt1l {
   		inland_water_body_source:flag_values = 1b, 2b, 3b, 4b, 5b, 6b, 7b, 8b, 9b ;
   		inland_water_body_source:valid_min = 1b ;
   		inland_water_body_source:valid_max = 9b ;
-  	int qf_bias_fit(delta_time) ;
-  		qf_bias_fit:_FillValue = 2147483647 ;
-  		qf_bias_fit:units = "1" ;
-  		qf_bias_fit:contentType = "qualityInformation" ;
-  		qf_bias_fit:long_name = "Height Bias Fit Quality Flag" ;
-  		qf_bias_fit:description = "The height bias fit flag is set based on the value of the goodness of fit bias estimated as the difference between the centroid elevations of the observed surface water histogram and fitted integrated water surface model histogram. The flag values are set as follows: = -3 if H_bias_fit < -0.10 (m); -2 if -0.10 <= H_bias_fit < -0.05;-1 when -0.05 <= H_bias_fit < -0.01; 0 if -0.01 <= H_bias_fit < 0.01 (m); 1 if 0.01 <= H_bias_fit < 0.05; 2 if 0.05 < H_bias_fit < 0.10; 3 if 0.10 <= H_bias_fit; 4 if H_bias_fit is invalid." ;
-  		qf_bias_fit:source = "Inland Water ATBD" ;
-  		qf_bias_fit:coordinates = "delta_time segment_lat segment_lon" ;
-  		qf_bias_fit:flag_meanings = "below_threshold1 below_threshold2 below_threshold3 below_threshold4 below_threshold5 below_threshold6 equal_to_or_above_threshold6 invalid" ;
-  		qf_bias_fit:flag_values = -3, -2, -1, 0, 1, 2, 3, 4 ;
-  		qf_bias_fit:valid_min = -3 ;
-  		qf_bias_fit:valid_max = 4 ;
+  	double sseg_mean_lon(delta_time) ;
+  		sseg_mean_lon:units = "degrees_east" ;
+  		sseg_mean_lon:contentType = "auxiliaryInformation" ;
+  		sseg_mean_lon:long_name = "Short Segment Mean Longitude" ;
+  		sseg_mean_lon:description = "Mean longitude of the signal-qualified photons in a short segment." ;
+  		sseg_mean_lon:source = "Inland Water ATBD" ;
+  		sseg_mean_lon:coordinates = "delta_time" ;
+  		sseg_mean_lon:valid_min = -180. ;
+  		sseg_mean_lon:valid_max = 180. ;
   	byte inland_water_body_size(delta_time) ;
   		inland_water_body_size:_FillValue = 127b ;
   		inland_water_body_size:units = "1" ;
@@ -1626,6 +1629,7 @@ group: gt1l {
   		segment_dac:coordinates = "delta_time segment_lat segment_lon" ;
 
   // group attributes:
+  		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
   		:Description = "Contains per-beam data products." ;
   		:data_rate = "Data within this group are stored at the inland water short segment rate (/ancillary_data/inland_water/s_seg2)." ;
   		:atlas_pce = "pce1" ;
@@ -1668,8 +1672,18 @@ group: quality_assessment {
 
 group: gt3l {
   dimensions:
-  	delta_time = 121657 ;
+  	delta_time = UNLIMITED ; // (121657 currently)
   variables:
+  	double segment_lon(delta_time) ;
+  		segment_lon:units = "degrees_east" ;
+  		segment_lon:contentType = "physicalMeasurement" ;
+  		segment_lon:long_name = "Longitude" ;
+  		segment_lon:standard_name = "longitude" ;
+  		segment_lon:description = "Longitude of reporting location" ;
+  		segment_lon:source = "section 5.3.5 (A)" ;
+  		segment_lon:coordinates = "delta_time segment_lat" ;
+  		segment_lon:valid_min = -180. ;
+  		segment_lon:valid_max = 180. ;
   	double segment_lat(delta_time) ;
   		segment_lat:units = "degrees_north" ;
   		segment_lat:contentType = "physicalMeasurement" ;
@@ -1688,15 +1702,6 @@ group: gt3l {
   		delta_time:description = "Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
   		delta_time:source = "ATL03" ;
   		delta_time:coordinates = "segment_lat segment_lon" ;
-  	double sseg_mean_lon(delta_time) ;
-  		sseg_mean_lon:units = "degrees_east" ;
-  		sseg_mean_lon:contentType = "auxiliaryInformation" ;
-  		sseg_mean_lon:long_name = "Short Segment Mean Longitude" ;
-  		sseg_mean_lon:description = "Mean longitude of the signal-qualified photons in a short segment." ;
-  		sseg_mean_lon:source = "Inland Water ATBD" ;
-  		sseg_mean_lon:coordinates = "delta_time" ;
-  		sseg_mean_lon:valid_min = -180. ;
-  		sseg_mean_lon:valid_max = 180. ;
   	int qf_ice(delta_time) ;
   		qf_ice:_FillValue = 2147483647 ;
   		qf_ice:units = "1" ;
@@ -1878,24 +1883,6 @@ group: gt3l {
   		ice_flag:flag_values = 0b, 1b ;
   		ice_flag:valid_min = 0b ;
   		ice_flag:valid_max = 1b ;
-  	double segment_lon(delta_time) ;
-  		segment_lon:units = "degrees_east" ;
-  		segment_lon:contentType = "physicalMeasurement" ;
-  		segment_lon:long_name = "Longitude" ;
-  		segment_lon:standard_name = "longitude" ;
-  		segment_lon:description = "Longitude of reporting location" ;
-  		segment_lon:source = "section 5.3.5 (A)" ;
-  		segment_lon:coordinates = "delta_time segment_lat" ;
-  		segment_lon:valid_min = -180. ;
-  		segment_lon:valid_max = 180. ;
-  	float ht_ortho(delta_time) ;
-  		ht_ortho:_FillValue = 3.402823e+38f ;
-  		ht_ortho:units = "meters" ;
-  		ht_ortho:contentType = "physicalMeasurement" ;
-  		ht_ortho:long_name = "Orthometric Height" ;
-  		ht_ortho:description = "Orthometric height EGM2008 converted from ellipsoidal height." ;
-  		ht_ortho:source = "section 5.3.5 (A)" ;
-  		ht_ortho:coordinates = "delta_time segment_lat segment_lon" ;
   	short rgt(delta_time) ;
   		rgt:units = "1" ;
   		rgt:contentType = "referenceInformation" ;
@@ -1905,6 +1892,26 @@ group: gt3l {
   		rgt:coordinates = "delta_time segment_lat segment_lon" ;
   		rgt:valid_min = 1s ;
   		rgt:valid_max = 1387s ;
+  	float ht_ortho(delta_time) ;
+  		ht_ortho:_FillValue = 3.402823e+38f ;
+  		ht_ortho:units = "meters" ;
+  		ht_ortho:contentType = "physicalMeasurement" ;
+  		ht_ortho:long_name = "Orthometric Height" ;
+  		ht_ortho:description = "Orthometric height EGM2008 converted from ellipsoidal height." ;
+  		ht_ortho:source = "section 5.3.5 (A)" ;
+  		ht_ortho:coordinates = "delta_time segment_lat segment_lon" ;
+  	int qf_bias_fit(delta_time) ;
+  		qf_bias_fit:_FillValue = 2147483647 ;
+  		qf_bias_fit:units = "1" ;
+  		qf_bias_fit:contentType = "qualityInformation" ;
+  		qf_bias_fit:long_name = "Height Bias Fit Quality Flag" ;
+  		qf_bias_fit:description = "The height bias fit flag is set based on the value of the goodness of fit bias estimated as the difference between the centroid elevations of the observed surface water histogram and fitted integrated water surface model histogram. The flag values are set as follows: = -3 if H_bias_fit < -0.10 (m); -2 if -0.10 <= H_bias_fit < -0.05;-1 when -0.05 <= H_bias_fit < -0.01; 0 if -0.01 <= H_bias_fit < 0.01 (m); 1 if 0.01 <= H_bias_fit < 0.05; 2 if 0.05 < H_bias_fit < 0.10; 3 if 0.10 <= H_bias_fit; 4 if H_bias_fit is invalid." ;
+  		qf_bias_fit:source = "Inland Water ATBD" ;
+  		qf_bias_fit:coordinates = "delta_time segment_lat segment_lon" ;
+  		qf_bias_fit:flag_meanings = "below_threshold1 below_threshold2 below_threshold3 below_threshold4 below_threshold5 below_threshold6 equal_to_or_above_threshold6 invalid" ;
+  		qf_bias_fit:flag_values = -3, -2, -1, 0, 1, 2, 3, 4 ;
+  		qf_bias_fit:valid_min = -3 ;
+  		qf_bias_fit:valid_max = 4 ;
   	float ht_water_surf(delta_time) ;
   		ht_water_surf:_FillValue = 3.402823e+38f ;
   		ht_water_surf:units = "meters" ;
@@ -1953,18 +1960,15 @@ group: gt3l {
   		inland_water_body_source:flag_values = 1b, 2b, 3b, 4b, 5b, 6b, 7b, 8b, 9b ;
   		inland_water_body_source:valid_min = 1b ;
   		inland_water_body_source:valid_max = 9b ;
-  	int qf_bias_fit(delta_time) ;
-  		qf_bias_fit:_FillValue = 2147483647 ;
-  		qf_bias_fit:units = "1" ;
-  		qf_bias_fit:contentType = "qualityInformation" ;
-  		qf_bias_fit:long_name = "Height Bias Fit Quality Flag" ;
-  		qf_bias_fit:description = "The height bias fit flag is set based on the value of the goodness of fit bias estimated as the difference between the centroid elevations of the observed surface water histogram and fitted integrated water surface model histogram. The flag values are set as follows: = -3 if H_bias_fit < -0.10 (m); -2 if -0.10 <= H_bias_fit < -0.05;-1 when -0.05 <= H_bias_fit < -0.01; 0 if -0.01 <= H_bias_fit < 0.01 (m); 1 if 0.01 <= H_bias_fit < 0.05; 2 if 0.05 < H_bias_fit < 0.10; 3 if 0.10 <= H_bias_fit; 4 if H_bias_fit is invalid." ;
-  		qf_bias_fit:source = "Inland Water ATBD" ;
-  		qf_bias_fit:coordinates = "delta_time segment_lat segment_lon" ;
-  		qf_bias_fit:flag_meanings = "below_threshold1 below_threshold2 below_threshold3 below_threshold4 below_threshold5 below_threshold6 equal_to_or_above_threshold6 invalid" ;
-  		qf_bias_fit:flag_values = -3, -2, -1, 0, 1, 2, 3, 4 ;
-  		qf_bias_fit:valid_min = -3 ;
-  		qf_bias_fit:valid_max = 4 ;
+  	double sseg_mean_lon(delta_time) ;
+  		sseg_mean_lon:units = "degrees_east" ;
+  		sseg_mean_lon:contentType = "auxiliaryInformation" ;
+  		sseg_mean_lon:long_name = "Short Segment Mean Longitude" ;
+  		sseg_mean_lon:description = "Mean longitude of the signal-qualified photons in a short segment." ;
+  		sseg_mean_lon:source = "Inland Water ATBD" ;
+  		sseg_mean_lon:coordinates = "delta_time" ;
+  		sseg_mean_lon:valid_min = -180. ;
+  		sseg_mean_lon:valid_max = 180. ;
   	byte inland_water_body_size(delta_time) ;
   		inland_water_body_size:_FillValue = 127b ;
   		inland_water_body_size:units = "1" ;
@@ -2053,6 +2057,7 @@ group: gt3l {
   		segment_dac:coordinates = "delta_time segment_lat segment_lon" ;
 
   // group attributes:
+  		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
   		:Description = "Contains per-beam data products." ;
   		:data_rate = "Data within this group are stored at the inland water short segment rate (/ancillary_data/inland_water/s_seg2)." ;
   		:atlas_pce = "pce3" ;
@@ -2065,8 +2070,18 @@ group: gt3l {
 
 group: gt2l {
   dimensions:
-  	delta_time = 103275 ;
+  	delta_time = UNLIMITED ; // (103275 currently)
   variables:
+  	double segment_lon(delta_time) ;
+  		segment_lon:units = "degrees_east" ;
+  		segment_lon:contentType = "physicalMeasurement" ;
+  		segment_lon:long_name = "Longitude" ;
+  		segment_lon:standard_name = "longitude" ;
+  		segment_lon:description = "Longitude of reporting location" ;
+  		segment_lon:source = "section 5.3.5 (A)" ;
+  		segment_lon:coordinates = "delta_time segment_lat" ;
+  		segment_lon:valid_min = -180. ;
+  		segment_lon:valid_max = 180. ;
   	double segment_lat(delta_time) ;
   		segment_lat:units = "degrees_north" ;
   		segment_lat:contentType = "physicalMeasurement" ;
@@ -2085,15 +2100,6 @@ group: gt2l {
   		delta_time:description = "Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
   		delta_time:source = "ATL03" ;
   		delta_time:coordinates = "segment_lat segment_lon" ;
-  	double sseg_mean_lon(delta_time) ;
-  		sseg_mean_lon:units = "degrees_east" ;
-  		sseg_mean_lon:contentType = "auxiliaryInformation" ;
-  		sseg_mean_lon:long_name = "Short Segment Mean Longitude" ;
-  		sseg_mean_lon:description = "Mean longitude of the signal-qualified photons in a short segment." ;
-  		sseg_mean_lon:source = "Inland Water ATBD" ;
-  		sseg_mean_lon:coordinates = "delta_time" ;
-  		sseg_mean_lon:valid_min = -180. ;
-  		sseg_mean_lon:valid_max = 180. ;
   	int qf_ice(delta_time) ;
   		qf_ice:_FillValue = 2147483647 ;
   		qf_ice:units = "1" ;
@@ -2275,24 +2281,6 @@ group: gt2l {
   		ice_flag:flag_values = 0b, 1b ;
   		ice_flag:valid_min = 0b ;
   		ice_flag:valid_max = 1b ;
-  	double segment_lon(delta_time) ;
-  		segment_lon:units = "degrees_east" ;
-  		segment_lon:contentType = "physicalMeasurement" ;
-  		segment_lon:long_name = "Longitude" ;
-  		segment_lon:standard_name = "longitude" ;
-  		segment_lon:description = "Longitude of reporting location" ;
-  		segment_lon:source = "section 5.3.5 (A)" ;
-  		segment_lon:coordinates = "delta_time segment_lat" ;
-  		segment_lon:valid_min = -180. ;
-  		segment_lon:valid_max = 180. ;
-  	float ht_ortho(delta_time) ;
-  		ht_ortho:_FillValue = 3.402823e+38f ;
-  		ht_ortho:units = "meters" ;
-  		ht_ortho:contentType = "physicalMeasurement" ;
-  		ht_ortho:long_name = "Orthometric Height" ;
-  		ht_ortho:description = "Orthometric height EGM2008 converted from ellipsoidal height." ;
-  		ht_ortho:source = "section 5.3.5 (A)" ;
-  		ht_ortho:coordinates = "delta_time segment_lat segment_lon" ;
   	short rgt(delta_time) ;
   		rgt:units = "1" ;
   		rgt:contentType = "referenceInformation" ;
@@ -2302,6 +2290,26 @@ group: gt2l {
   		rgt:coordinates = "delta_time segment_lat segment_lon" ;
   		rgt:valid_min = 1s ;
   		rgt:valid_max = 1387s ;
+  	float ht_ortho(delta_time) ;
+  		ht_ortho:_FillValue = 3.402823e+38f ;
+  		ht_ortho:units = "meters" ;
+  		ht_ortho:contentType = "physicalMeasurement" ;
+  		ht_ortho:long_name = "Orthometric Height" ;
+  		ht_ortho:description = "Orthometric height EGM2008 converted from ellipsoidal height." ;
+  		ht_ortho:source = "section 5.3.5 (A)" ;
+  		ht_ortho:coordinates = "delta_time segment_lat segment_lon" ;
+  	int qf_bias_fit(delta_time) ;
+  		qf_bias_fit:_FillValue = 2147483647 ;
+  		qf_bias_fit:units = "1" ;
+  		qf_bias_fit:contentType = "qualityInformation" ;
+  		qf_bias_fit:long_name = "Height Bias Fit Quality Flag" ;
+  		qf_bias_fit:description = "The height bias fit flag is set based on the value of the goodness of fit bias estimated as the difference between the centroid elevations of the observed surface water histogram and fitted integrated water surface model histogram. The flag values are set as follows: = -3 if H_bias_fit < -0.10 (m); -2 if -0.10 <= H_bias_fit < -0.05;-1 when -0.05 <= H_bias_fit < -0.01; 0 if -0.01 <= H_bias_fit < 0.01 (m); 1 if 0.01 <= H_bias_fit < 0.05; 2 if 0.05 < H_bias_fit < 0.10; 3 if 0.10 <= H_bias_fit; 4 if H_bias_fit is invalid." ;
+  		qf_bias_fit:source = "Inland Water ATBD" ;
+  		qf_bias_fit:coordinates = "delta_time segment_lat segment_lon" ;
+  		qf_bias_fit:flag_meanings = "below_threshold1 below_threshold2 below_threshold3 below_threshold4 below_threshold5 below_threshold6 equal_to_or_above_threshold6 invalid" ;
+  		qf_bias_fit:flag_values = -3, -2, -1, 0, 1, 2, 3, 4 ;
+  		qf_bias_fit:valid_min = -3 ;
+  		qf_bias_fit:valid_max = 4 ;
   	float ht_water_surf(delta_time) ;
   		ht_water_surf:_FillValue = 3.402823e+38f ;
   		ht_water_surf:units = "meters" ;
@@ -2350,18 +2358,15 @@ group: gt2l {
   		inland_water_body_source:flag_values = 1b, 2b, 3b, 4b, 5b, 6b, 7b, 8b, 9b ;
   		inland_water_body_source:valid_min = 1b ;
   		inland_water_body_source:valid_max = 9b ;
-  	int qf_bias_fit(delta_time) ;
-  		qf_bias_fit:_FillValue = 2147483647 ;
-  		qf_bias_fit:units = "1" ;
-  		qf_bias_fit:contentType = "qualityInformation" ;
-  		qf_bias_fit:long_name = "Height Bias Fit Quality Flag" ;
-  		qf_bias_fit:description = "The height bias fit flag is set based on the value of the goodness of fit bias estimated as the difference between the centroid elevations of the observed surface water histogram and fitted integrated water surface model histogram. The flag values are set as follows: = -3 if H_bias_fit < -0.10 (m); -2 if -0.10 <= H_bias_fit < -0.05;-1 when -0.05 <= H_bias_fit < -0.01; 0 if -0.01 <= H_bias_fit < 0.01 (m); 1 if 0.01 <= H_bias_fit < 0.05; 2 if 0.05 < H_bias_fit < 0.10; 3 if 0.10 <= H_bias_fit; 4 if H_bias_fit is invalid." ;
-  		qf_bias_fit:source = "Inland Water ATBD" ;
-  		qf_bias_fit:coordinates = "delta_time segment_lat segment_lon" ;
-  		qf_bias_fit:flag_meanings = "below_threshold1 below_threshold2 below_threshold3 below_threshold4 below_threshold5 below_threshold6 equal_to_or_above_threshold6 invalid" ;
-  		qf_bias_fit:flag_values = -3, -2, -1, 0, 1, 2, 3, 4 ;
-  		qf_bias_fit:valid_min = -3 ;
-  		qf_bias_fit:valid_max = 4 ;
+  	double sseg_mean_lon(delta_time) ;
+  		sseg_mean_lon:units = "degrees_east" ;
+  		sseg_mean_lon:contentType = "auxiliaryInformation" ;
+  		sseg_mean_lon:long_name = "Short Segment Mean Longitude" ;
+  		sseg_mean_lon:description = "Mean longitude of the signal-qualified photons in a short segment." ;
+  		sseg_mean_lon:source = "Inland Water ATBD" ;
+  		sseg_mean_lon:coordinates = "delta_time" ;
+  		sseg_mean_lon:valid_min = -180. ;
+  		sseg_mean_lon:valid_max = 180. ;
   	byte inland_water_body_size(delta_time) ;
   		inland_water_body_size:_FillValue = 127b ;
   		inland_water_body_size:units = "1" ;
@@ -2450,6 +2455,7 @@ group: gt2l {
   		segment_dac:coordinates = "delta_time segment_lat segment_lon" ;
 
   // group attributes:
+  		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
   		:Description = "Contains per-beam data products." ;
   		:data_rate = "Data within this group are stored at the inland water short segment rate (/ancillary_data/inland_water/s_seg2)." ;
   		:atlas_pce = "pce2" ;
@@ -2913,8 +2919,18 @@ group: ancillary_data {
 
 group: gt3r {
   dimensions:
-  	delta_time = 24585 ;
+  	delta_time = UNLIMITED ; // (24585 currently)
   variables:
+  	double segment_lon(delta_time) ;
+  		segment_lon:units = "degrees_east" ;
+  		segment_lon:contentType = "physicalMeasurement" ;
+  		segment_lon:long_name = "Longitude" ;
+  		segment_lon:standard_name = "longitude" ;
+  		segment_lon:description = "Longitude of reporting location" ;
+  		segment_lon:source = "section 5.3.5 (A)" ;
+  		segment_lon:coordinates = "delta_time segment_lat" ;
+  		segment_lon:valid_min = -180. ;
+  		segment_lon:valid_max = 180. ;
   	double segment_lat(delta_time) ;
   		segment_lat:units = "degrees_north" ;
   		segment_lat:contentType = "physicalMeasurement" ;
@@ -2933,15 +2949,6 @@ group: gt3r {
   		delta_time:description = "Number of GPS seconds since the ATLAS SDP epoch. The ATLAS Standard Data Products (SDP) epoch offset is defined within /ancillary_data/atlas_sdp_gps_epoch as the number of GPS seconds between the GPS epoch (removed date-time) and the ATLAS SDP epoch. By adding the offset contained within atlas_sdp_gps_epoch to delta time parameters, the time in gps_seconds relative to the GPS epoch can be computed." ;
   		delta_time:source = "ATL03" ;
   		delta_time:coordinates = "segment_lat segment_lon" ;
-  	double sseg_mean_lon(delta_time) ;
-  		sseg_mean_lon:units = "degrees_east" ;
-  		sseg_mean_lon:contentType = "auxiliaryInformation" ;
-  		sseg_mean_lon:long_name = "Short Segment Mean Longitude" ;
-  		sseg_mean_lon:description = "Mean longitude of the signal-qualified photons in a short segment." ;
-  		sseg_mean_lon:source = "Inland Water ATBD" ;
-  		sseg_mean_lon:coordinates = "delta_time" ;
-  		sseg_mean_lon:valid_min = -180. ;
-  		sseg_mean_lon:valid_max = 180. ;
   	int qf_ice(delta_time) ;
   		qf_ice:_FillValue = 2147483647 ;
   		qf_ice:units = "1" ;
@@ -3123,24 +3130,6 @@ group: gt3r {
   		ice_flag:flag_values = 0b, 1b ;
   		ice_flag:valid_min = 0b ;
   		ice_flag:valid_max = 1b ;
-  	double segment_lon(delta_time) ;
-  		segment_lon:units = "degrees_east" ;
-  		segment_lon:contentType = "physicalMeasurement" ;
-  		segment_lon:long_name = "Longitude" ;
-  		segment_lon:standard_name = "longitude" ;
-  		segment_lon:description = "Longitude of reporting location" ;
-  		segment_lon:source = "section 5.3.5 (A)" ;
-  		segment_lon:coordinates = "delta_time segment_lat" ;
-  		segment_lon:valid_min = -180. ;
-  		segment_lon:valid_max = 180. ;
-  	float ht_ortho(delta_time) ;
-  		ht_ortho:_FillValue = 3.402823e+38f ;
-  		ht_ortho:units = "meters" ;
-  		ht_ortho:contentType = "physicalMeasurement" ;
-  		ht_ortho:long_name = "Orthometric Height" ;
-  		ht_ortho:description = "Orthometric height EGM2008 converted from ellipsoidal height." ;
-  		ht_ortho:source = "section 5.3.5 (A)" ;
-  		ht_ortho:coordinates = "delta_time segment_lat segment_lon" ;
   	short rgt(delta_time) ;
   		rgt:units = "1" ;
   		rgt:contentType = "referenceInformation" ;
@@ -3150,6 +3139,26 @@ group: gt3r {
   		rgt:coordinates = "delta_time segment_lat segment_lon" ;
   		rgt:valid_min = 1s ;
   		rgt:valid_max = 1387s ;
+  	float ht_ortho(delta_time) ;
+  		ht_ortho:_FillValue = 3.402823e+38f ;
+  		ht_ortho:units = "meters" ;
+  		ht_ortho:contentType = "physicalMeasurement" ;
+  		ht_ortho:long_name = "Orthometric Height" ;
+  		ht_ortho:description = "Orthometric height EGM2008 converted from ellipsoidal height." ;
+  		ht_ortho:source = "section 5.3.5 (A)" ;
+  		ht_ortho:coordinates = "delta_time segment_lat segment_lon" ;
+  	int qf_bias_fit(delta_time) ;
+  		qf_bias_fit:_FillValue = 2147483647 ;
+  		qf_bias_fit:units = "1" ;
+  		qf_bias_fit:contentType = "qualityInformation" ;
+  		qf_bias_fit:long_name = "Height Bias Fit Quality Flag" ;
+  		qf_bias_fit:description = "The height bias fit flag is set based on the value of the goodness of fit bias estimated as the difference between the centroid elevations of the observed surface water histogram and fitted integrated water surface model histogram. The flag values are set as follows: = -3 if H_bias_fit < -0.10 (m); -2 if -0.10 <= H_bias_fit < -0.05;-1 when -0.05 <= H_bias_fit < -0.01; 0 if -0.01 <= H_bias_fit < 0.01 (m); 1 if 0.01 <= H_bias_fit < 0.05; 2 if 0.05 < H_bias_fit < 0.10; 3 if 0.10 <= H_bias_fit; 4 if H_bias_fit is invalid." ;
+  		qf_bias_fit:source = "Inland Water ATBD" ;
+  		qf_bias_fit:coordinates = "delta_time segment_lat segment_lon" ;
+  		qf_bias_fit:flag_meanings = "below_threshold1 below_threshold2 below_threshold3 below_threshold4 below_threshold5 below_threshold6 equal_to_or_above_threshold6 invalid" ;
+  		qf_bias_fit:flag_values = -3, -2, -1, 0, 1, 2, 3, 4 ;
+  		qf_bias_fit:valid_min = -3 ;
+  		qf_bias_fit:valid_max = 4 ;
   	float ht_water_surf(delta_time) ;
   		ht_water_surf:_FillValue = 3.402823e+38f ;
   		ht_water_surf:units = "meters" ;
@@ -3198,18 +3207,15 @@ group: gt3r {
   		inland_water_body_source:flag_values = 1b, 2b, 3b, 4b, 5b, 6b, 7b, 8b, 9b ;
   		inland_water_body_source:valid_min = 1b ;
   		inland_water_body_source:valid_max = 9b ;
-  	int qf_bias_fit(delta_time) ;
-  		qf_bias_fit:_FillValue = 2147483647 ;
-  		qf_bias_fit:units = "1" ;
-  		qf_bias_fit:contentType = "qualityInformation" ;
-  		qf_bias_fit:long_name = "Height Bias Fit Quality Flag" ;
-  		qf_bias_fit:description = "The height bias fit flag is set based on the value of the goodness of fit bias estimated as the difference between the centroid elevations of the observed surface water histogram and fitted integrated water surface model histogram. The flag values are set as follows: = -3 if H_bias_fit < -0.10 (m); -2 if -0.10 <= H_bias_fit < -0.05;-1 when -0.05 <= H_bias_fit < -0.01; 0 if -0.01 <= H_bias_fit < 0.01 (m); 1 if 0.01 <= H_bias_fit < 0.05; 2 if 0.05 < H_bias_fit < 0.10; 3 if 0.10 <= H_bias_fit; 4 if H_bias_fit is invalid." ;
-  		qf_bias_fit:source = "Inland Water ATBD" ;
-  		qf_bias_fit:coordinates = "delta_time segment_lat segment_lon" ;
-  		qf_bias_fit:flag_meanings = "below_threshold1 below_threshold2 below_threshold3 below_threshold4 below_threshold5 below_threshold6 equal_to_or_above_threshold6 invalid" ;
-  		qf_bias_fit:flag_values = -3, -2, -1, 0, 1, 2, 3, 4 ;
-  		qf_bias_fit:valid_min = -3 ;
-  		qf_bias_fit:valid_max = 4 ;
+  	double sseg_mean_lon(delta_time) ;
+  		sseg_mean_lon:units = "degrees_east" ;
+  		sseg_mean_lon:contentType = "auxiliaryInformation" ;
+  		sseg_mean_lon:long_name = "Short Segment Mean Longitude" ;
+  		sseg_mean_lon:description = "Mean longitude of the signal-qualified photons in a short segment." ;
+  		sseg_mean_lon:source = "Inland Water ATBD" ;
+  		sseg_mean_lon:coordinates = "delta_time" ;
+  		sseg_mean_lon:valid_min = -180. ;
+  		sseg_mean_lon:valid_max = 180. ;
   	byte inland_water_body_size(delta_time) ;
   		inland_water_body_size:_FillValue = 127b ;
   		inland_water_body_size:units = "1" ;
@@ -3298,6 +3304,7 @@ group: gt3r {
   		segment_dac:coordinates = "delta_time segment_lat segment_lon" ;
 
   // group attributes:
+  		:DODS_EXTRA.Unlimited_Dimension = "delta_time" ;
   		:Description = "Contains per-beam data products." ;
   		:data_rate = "Data within this group are stored at the inland water short segment rate (/ancillary_data/inland_water/s_seg2)." ;
   		:atlas_pce = "pce3" ;

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xml:base="http://ngap-west.opendap.org:8080/opendap/dap4/SimpleGroup.nc4.h5" dapVersion="4.0" dmrVersion="1.0" name="SimpleGroup.nc4.h5">
+    <Dimension name="time" size="1"/>
+    <Dimension name="nv" size="2"/>
+    <Dimension name="Z" size="1000"/>
+    <Float32 name="time">
+        <Dim name="/time"/>
+    </Float32>
+    <Float32 name="Z">
+        <Dim name="/Z"/>
+    </Float32>
+    <Float32 name="Pressure">
+        <Dim name="/Z"/>
+        <Map name="/Z"/>
+    </Float32>
+    <Float32 name="time_bnds">
+        <Dim name="/time"/>
+        <Dim name="/nv"/>
+        <Map name="/time"/>
+    </Float32>
+    <Attribute name="description" type="String">
+        <Value>A simple group for testing.</Value>
+    </Attribute>
+    <Group name="SimpleGroup">
+        <Dimension name="Y" size="40"/>
+        <Dimension name="X" size="40"/>
+        <Int16 name="Y">
+            <Dim name="/SimpleGroup/Y"/>
+        </Int16>
+        <Int16 name="X">
+            <Dim name="/SimpleGroup/X"/>
+        </Int16>
+        <Float32 name="Temperature">
+            <Dim name="/time"/>
+            <Dim name="/SimpleGroup/Y"/>
+            <Dim name="/SimpleGroup/X"/>
+            <Map name="/time"/>
+            <Map name="/SimpleGroup/Y"/>
+            <Map name="/SimpleGroup/X"/>
+        </Float32>
+        <Float32 name="Salinity">
+            <Dim name="/time"/>
+            <Dim name="/SimpleGroup/Y"/>
+            <Dim name="/SimpleGroup/X"/>
+            <Map name="/time"/>
+            <Map name="/SimpleGroup/Y"/>
+            <Map name="/SimpleGroup/X"/>
+        </Float32>
+    </Group>
+</Dataset>
+

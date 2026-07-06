@@ -96,6 +96,7 @@ public:
         DBG(cerr << prolog << "Using BES configuration: " << bes_conf << endl);
         if (Debug) show_file(bes_conf);
         TheBESKeys::ConfigFile = bes_conf;
+        BESContextManager::TheManager()->set_context(UID_CONTEXT_KEY, "test_user");
 
         if (bes_debug) BESDebug::SetUp("cerr,bes,euc,http,curl");
 
@@ -104,8 +105,8 @@ public:
         theCache->d_effective_urls.clear();
 
         if (!token.empty()) {
-            DBG(cerr << "Setting BESContext " << EDL_AUTH_TOKEN_KEY << " to: '" << token << "'" << endl);
-            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, token);
+            DBG(cerr << "Setting BESContext " << EDL_AUTH_TOKEN_CONTEXT_KEY << " to: '" << token << "'" << endl);
+            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_CONTEXT_KEY, token);
         }
         DBG(cerr << prolog << "END" << endl);
     }
@@ -332,10 +333,17 @@ public:
                      << (untrusted_src_url->is_trusted() ? "" : "NOT ") << "trusted." << endl);
             DBG(cerr << prolog << "result_url: " << result_url->str() << " is "
                      << (result_url->is_trusted() ? "" : "NOT ") << "trusted." << endl);
+
             DBG(cerr << prolog << "EffectiveUrlCache::TheCache()->d_effective_urls.size(): "
                      << EffectiveUrlCache::TheCache()->d_effective_urls.size() << endl);
             CPPUNIT_ASSERT(EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
+
+            DBG(cerr << prolog << "result_url->str() == result_url_str: " <<
+                (result_url->str() == result_url_str?"true":"false") << "\n");
             CPPUNIT_ASSERT(result_url->str() == result_url_str);
+
+            DBG(cerr << prolog << "result_url->is_trusted(): " <<
+                (result_url->is_trusted()?"true":"false") << endl);
             CPPUNIT_ASSERT(!result_url->is_trusted());
 
             result_url = EffectiveUrlCache::TheCache()->get_effective_url(trusted_src_url);
@@ -343,10 +351,17 @@ public:
                      << (trusted_src_url->is_trusted() ? "" : "NOT ") << "trusted." << endl);
             DBG(cerr << prolog << "result_url: " << result_url->str() << " is "
                      << (result_url->is_trusted() ? "" : "NOT ") << "trusted." << endl);
+
             DBG(cerr << prolog << "EffectiveUrlCache::TheCache()->d_effective_urls.size(): "
                      << EffectiveUrlCache::TheCache()->d_effective_urls.size() << endl);
             CPPUNIT_ASSERT(EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
+
+            DBG(cerr << prolog << "result_url->str() == result_url_str: " <<
+            (result_url->str() == result_url_str?"true":"false") << "\n");
             CPPUNIT_ASSERT(result_url->str() == result_url_str);
+
+            DBG(cerr << prolog << "result_url->is_trusted(): " <<
+                (result_url->is_trusted()?"true":"false") << endl);
             CPPUNIT_ASSERT(result_url->is_trusted());
 
             result_url = EffectiveUrlCache::TheCache()->get_effective_url(untrusted_src_url);
@@ -354,11 +369,33 @@ public:
                      << (untrusted_src_url->is_trusted() ? "" : "NOT ") << "trusted." << endl);
             DBG(cerr << prolog << "result_url: " << result_url->str() << " is "
                      << (result_url->is_trusted() ? "" : "NOT ") << "trusted." << endl);
+
             DBG(cerr << prolog << "EffectiveUrlCache::TheCache()->d_effective_urls.size(): "
                      << EffectiveUrlCache::TheCache()->d_effective_urls.size() << endl);
             CPPUNIT_ASSERT(EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
+
+            DBG(cerr << prolog << "result_url->str() == result_url_str: " <<
+                (result_url->str() == result_url_str?"true":"false") << "\n");
             CPPUNIT_ASSERT(result_url->str() == result_url_str);
+
+            DBG(cerr << prolog << "result_url->is_trusted(): " <<
+               (result_url->is_trusted()?"true":"false") << endl);
             CPPUNIT_ASSERT(!result_url->is_trusted());
+
+            // Test that dump is correct
+            auto result_strm = std::ostringstream();
+            EffectiveUrlCache::TheCache()->dump(result_strm);
+            auto result_str = result_strm.str();
+            DBG(cerr << prolog << "EffectiveUrlCache::TheCache()->dump(): \n" << result_str << "\n" );
+
+            std::string expected_str =
+                string("http://test.opendap.org/data/nothing_is_here.html:test_user --> http://test.opendap.org/data/httpd_catalog/READTHIS");
+
+            DBG(cerr << prolog << "expected_str: '" << expected_str << "'" << endl);
+
+
+            CPPUNIT_ASSERT_MESSAGE("The dump should contain:\n'" + expected_str + "'\n\nbut did not; INSTEAD was\n'" + result_strm.str() + "'",
+                                result_str.find(expected_str) != std::string::npos);
 
         }
         catch (const BESError &be) {

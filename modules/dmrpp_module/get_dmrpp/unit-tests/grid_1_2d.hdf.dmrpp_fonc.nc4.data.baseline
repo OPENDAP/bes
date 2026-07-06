@@ -1,0 +1,36 @@
+netcdf grid_1_2d.hdf.dmrpp_test.bescmd_fonc {
+dimensions:
+	YDim_GeoGrid = 4 ;
+	XDim_GeoGrid = 8 ;
+
+group: GeoGrid {
+  variables:
+  	double YDim_GeoGrid(YDim_GeoGrid) ;
+  		YDim_GeoGrid:units = "degrees_north" ;
+  		YDim_GeoGrid:eos_latlon = "GeoGrid lat" ;
+  	double XDim_GeoGrid(XDim_GeoGrid) ;
+  		XDim_GeoGrid:units = "degrees_east" ;
+  		XDim_GeoGrid:eos_latlon = "GeoGrid lon" ;
+  data:
+
+   YDim_GeoGrid = 3.5, 2.5, 1.5, 0.5 ;
+
+   XDim_GeoGrid = 0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5 ;
+
+  group: Data_Fields {
+    variables:
+    	float temperature(YDim_GeoGrid, XDim_GeoGrid) ;
+    		temperature:dmr_sds_ref = 5 ;
+    data:
+
+     temperature =
+  10, 10, 10, 10, 10, 10, 10, 10,
+  11, 11, 11, 11, 11, 11, 11, 11,
+  12, 12, 12, 12, 12, 12, 12, 12,
+  13, 13, 13, 13, 13, 13, 13, 13 ;
+    } // group Data_Fields
+
+  group: Grid_Attributes {
+    } // group Grid_Attributes
+  } // group GeoGrid
+}

@@ -722,24 +722,10 @@ void gen_gmh5_cfdmr(D4Group* d4_root,const HDF5CF::GMFile *f) {
                 string dods_extra = "DODS_EXTRA";
 
                 // If DODS_EXTRA exists, we will not create the unlimited dimensions. 
-                if(d4_root->attributes() != nullptr) {
-
-                // TODO: The following lines cause seg. fault in libdap4, needs to investigate
-                // I still find segmentation fault even with the commented code. Something is not right. 
-#if 0
-                //if((d4_root->attributes()->find(dods_extra))==nullptr) 
-                // This also causes the segmentation fault. The find() method may have flaw.
-                d4_attrs = d4_root->attributes();
-                if(d4_attrs->empty()==false) {
-                    if((d4_attrs->find(dods_extra))==nullptr)             
-                    ;
-                } 
-#endif
+                if((d4_root->attributes()->find(dods_extra))==nullptr) {
         
                     string unlimited_dim_names;
-        
                     for (const auto &cvar:cvars) {
-            
                         // Check unlimited dimension names.
                         for (const auto& dim:cvar->getDimensions()) {
             

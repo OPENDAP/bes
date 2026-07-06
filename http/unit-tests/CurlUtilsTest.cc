@@ -85,12 +85,9 @@ public:
         // causes other odd behavior in subsequent tests (Forbidden exceptions
         // become SyntaxUser ones). Adding the unset operations here ensures they
         // happen even if exceptions are thrown by the add_edl...() test.
-        BESContextManager::TheManager()->unset_context(EDL_UID_KEY);
-        BESContextManager::TheManager()->unset_context(EDL_AUTH_TOKEN_KEY);
-        BESContextManager::TheManager()->unset_context(CMR_CLIENT_ID_CONTEXT_KEY);
-        // TODO Remove this and all instances of EDL_ECHO_TOKEN_KEY in this test suite.
-        //  See HYRAX-1036. jhrg 11/13/25
-        BESContextManager::TheManager()->unset_context(EDL_ECHO_TOKEN_KEY);
+        BESContextManager::TheManager()->unset_context(UID_CONTEXT_KEY);
+        BESContextManager::TheManager()->unset_context(EDL_AUTH_TOKEN_CONTEXT_KEY);
+        BESContextManager::TheManager()->unset_context(EDL_CLIENT_APPLICATION_ID_CONTEXT_KEY);
 
         // We have to remove the cookie file between test invocations.
         // Not doing so can cause the previous test's login success
@@ -306,12 +303,9 @@ public:
         curl_slist *hdrs = nullptr;
         curl_slist *sl_iter;
         string tokens[] = {"big_bucky_ball", "itsa_authy_token_time", "its_not_shrew"};
-        BESContextManager::TheManager()->set_context(EDL_UID_KEY, tokens[0]);
-        BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, tokens[1]);
-#if 0
-        BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, tokens[2]);
-#endif
-        BESContextManager::TheManager()->set_context(CMR_CLIENT_ID_CONTEXT_KEY, tokens[2]);
+        BESContextManager::TheManager()->set_context(UID_CONTEXT_KEY, tokens[0]);
+        BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_CONTEXT_KEY, tokens[1]);
+        BESContextManager::TheManager()->set_context(EDL_CLIENT_APPLICATION_ID_CONTEXT_KEY, tokens[2]);
 
         try {
             hdrs = curl::add_edl_auth_headers(hdrs);
@@ -472,7 +466,7 @@ public:
         const string url = "https://fail.nowhere.com/README";
         string buf;
         DBG(cerr << prolog << "Retrieving " << url << "\n");
-        curl::http_get(url, buf);
+        curl::http_get(url, buf,nullptr);
 
         CPPUNIT_FAIL("Should have thrown an exception.");
     }
@@ -483,7 +477,7 @@ public:
         const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
         string buf;
         DBG(cerr << prolog << "Retrieving " << url << "\n");
-        curl::http_get(url, buf);
+        curl::http_get(url, buf,nullptr);
 
         CPPUNIT_FAIL("Should have thrown an exception.");
     }
@@ -495,10 +489,10 @@ public:
         setenv("CMAC_REGION", "us-east-1", 1);
         const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
         string buf;
-        DBG(cerr << prolog << "Retrieving " << url << "\n");
-        curl::http_get(url, buf);
+        DBG(cerr << prolog << "Retrieving (no headers, should throw exception): " << url << "\n");
+        curl::http_get(url, buf, nullptr);
 
-        CPPUNIT_FAIL("Should have thrown an exception.");
+        CPPUNIT_FAIL("Should have thrown an exception. Returned Content: \n" + buf);
     }
 
     void http_get_test_7() {
@@ -515,7 +509,7 @@ public:
                 const string url = "https://s3.us-east-1.amazonaws.com/cloudydap/samples/README";
                 string buf;
                 DBG(cerr << prolog << "Retrieving " << url << "\n");
-                curl::http_get(url, buf);
+                curl::http_get(url, buf,curl::sign_url_for_s3_if_possible(url,nullptr));
                 DBG(cerr << "buf.data() = " << buf.data() << "\n");
                 CPPUNIT_ASSERT_MESSAGE("Should be able to find 'Test data''",
                                        string(buf.data()).find("Test data") == 0);
@@ -633,9 +627,8 @@ public:
             string tokens[] = {edl_user,
                                auth_token,
                                edl_token};
-            BESContextManager::TheManager()->set_context(EDL_UID_KEY, tokens[0]);
-            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, tokens[1]);
-            BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, tokens[2]);
+            BESContextManager::TheManager()->set_context(UID_CONTEXT_KEY, tokens[0]);
+            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_CONTEXT_KEY, tokens[1]);
 
             auto redirect_url = curl::get_redirect_url(source_url);
             DBG(cerr << prolog << "redirect_url: " << redirect_url->str() << "\n");
@@ -676,9 +669,8 @@ public:
             string tokens[] = {edl_user,
                                auth_token,
                                edl_token};
-            BESContextManager::TheManager()->set_context(EDL_UID_KEY, tokens[0]);
-            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, tokens[1]);
-            BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, tokens[2]);
+            BESContextManager::TheManager()->set_context(UID_CONTEXT_KEY, tokens[0]);
+            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_CONTEXT_KEY, tokens[1]);
 
             try {
                 BES_STOPWATCH_START(MODULE, prolog + "Timing");
@@ -728,9 +720,8 @@ public:
             string tokens[] = {edl_user,
                                auth_token,
                                edl_token};
-            BESContextManager::TheManager()->set_context(EDL_UID_KEY, tokens[0]);
-            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_KEY, tokens[1]);
-            BESContextManager::TheManager()->set_context(EDL_ECHO_TOKEN_KEY, tokens[2]);
+            BESContextManager::TheManager()->set_context(UID_CONTEXT_KEY, tokens[0]);
+            BESContextManager::TheManager()->set_context(EDL_AUTH_TOKEN_CONTEXT_KEY, tokens[1]);
 
             // What matters here is that we assign cerr to the BESDebug output stream
             DBG(BESDebug::SetUp("cerr,DUMMY_KEY"));

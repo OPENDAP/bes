@@ -72,8 +72,8 @@ void S3Container::initialize()
         set_container_type(S3_NAME);
 
     bool found;
-    string uid = BESContextManager::TheManager()->get_context(EDL_UID_KEY, found);
-    BESDEBUG(MODULE, prolog << "EDL_UID_KEY(" << EDL_UID_KEY << "): " << uid << endl);
+    string uid = BESContextManager::TheManager()->get_context(UID_CONTEXT_KEY, found);
+    BESDEBUG(MODULE, prolog << "UID_CONTEXT_KEY(" << UID_CONTEXT_KEY << "): " << uid << endl);
 
     // Because we know the name is really a URL, then we know the "relative_name" is meaningless
     // So we set it to be the same as "name"
@@ -174,8 +174,13 @@ string S3Container::access()
             //d_dmrpp_rresource = new http::RemoteResource(dmrpp_url);
             d_dmrpp_rresource = std::make_shared<http::RemoteResource>(dmrpp_url);
 
+
+            // Add authentication stuff.
+            curl_slist *req_hdrs = curl::add_edl_auth_headers(nullptr);
+            req_hdrs = curl::sign_url_for_s3_if_possible(dmrpp_url->get_url_no_query(), req_hdrs);
+
             BES_STOPWATCH_START(MODULE, prolog + "Timing DMR++ retrieval. Target url: " + dmrpp_url->str());
-            d_dmrpp_rresource->retrieve_resource();
+            d_dmrpp_rresource->retrieve_resource(req_hdrs);
 
             // Substitute the data_access_url and missing_data_access_url in the dmr++ file.
             map<string, string, std::less<>> content_filters;

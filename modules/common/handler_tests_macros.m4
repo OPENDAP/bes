@@ -748,6 +748,11 @@ m4_define([REMOVE_DATE_TIME], [dnl
     mv $1.sed $1
 ])
 
+m4_define([REMOVE_TEMP_DIR_NAME], [dnl
+    sed -i -e 's@\/tmp\/tmp.\{8\}\/@\/tmp\/removed-temp-dir-name\/@g' $1
+])
+
+
 dnl Given a filename, remove any version string of the form <Value>3.20.9</Value>
 dnl or <Value>libdap-3.20.8</Value> in that file and put "removed_version" in its
 dnl place. This hack keeps the baselines more or less true to form without the

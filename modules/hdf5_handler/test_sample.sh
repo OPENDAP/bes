@@ -11,6 +11,8 @@
 #For the DMRPP module test. This should be done under modules/dmrpp_module,the first two are from the dmrpp_module testsuite.
 #besstandalone  -c tests/bes.conf -i tests/chunked/chunked_fourD.h5.dods | getdap -M -
 #besstandalone  -d"cerr,all" -c tests/bes.conf -i tests/chunked/chunked_fourD.h5.dods | getdap -M -
+#besstandalone -c tests/bes.conf -i tests/string_arrays/t_string_cont.h5.dmrpp.dap | getdap4 -C -D -M -
+
 #GPM test
 #besstandalone  -c tests/bes.conf -i GPMtest.h5.dods | getdap -M -
 #besstandalone  -c tests/bes.conf -i GPM-aggr-test.h5.dods | getdap -M -
@@ -38,4 +40,5 @@
 #besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/d_int.h5.dmr.bescmd
 #besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/nc4_coverage_special.h5.dmr.bescmd
 #valgrind besstandalone -c bes-testsuite/bes.conf -i bes-testsuite/h5.cf/grid_1_2d_int64.h5.dmr.bescmd
+#besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/t_enum_name_scalar.h5.dmr.bescmd -r 3
 besstandalone -c bes-testsuite/bes.default.conf -i bes-testsuite/h5.default/t_enum_name_scalar.h5.dmr.bescmd
