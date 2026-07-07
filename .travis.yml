@@ -187,7 +187,8 @@ jobs:
           export OS=rocky8
           export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
           export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
-        - ./travis/build-rhel-docker.shexport test_status=$?
+        - ./travis/build-rhel-docker.sh
+          export test_status=$?
         # Note: Take the test log tarball that was created in the Dockerfile and copied to the final mount
         #   and then run this copy command to copy it into Travis.
         - set -e
