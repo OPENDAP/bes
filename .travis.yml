@@ -189,8 +189,8 @@ jobs:
         - |
           set +e 
           ./travis/build-rhel-docker.sh
-          export test_status=$?
-          echo "# (In Travis) test_status: $test_status" >&2 
+          export build_status=$?
+          echo "# (In Travis) build_status: $build_status" >&2 
           set -e
         # Note: Take the test log tarball that was created in the Dockerfile and copied to the final mount
         #   and then run this copy command to copy it into Travis.
@@ -199,12 +199,18 @@ jobs:
           echo "# Docker images after './travis/build-rhel-docker.sh' is run." >&2
           docker images >&2
           echo "########################################################################" >&2 
-          echo "# (In Travis) test_status: $test_status" >&2 
-          if [ $test_status -ne 0 ] then
+          echo "# (In Travis) build_status: $build_status" >&2 
+          if [ $build_status -ne 0 ] then
             docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} 
             -c "cp /bes-test-logs/bes-test-logs.tar.gz /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz" 
-            exit $test_status 
           fi
+        # Now we bail out if the build failed.
+        - |
+          if [ $build_status -ne 0 ] then
+            echo "# ERROR - build-rhel-docker.sh failed! build_status: $build_status" >&2 
+            exit $build_status 
+          fi
+
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
         # is built:
