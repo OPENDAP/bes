@@ -109,17 +109,15 @@ RUN if [ "$DIST" == "el9" ]; then \
     else \
       set +e; \
       make check -j$(nproc --ignore=1); \
-      export STATUS=$?; \
-      echo "STATUS: STATUS" >&2; \
-      echo "TEST_STATUS: $TEST_STATUS" >&2; \
+      status=$?; \
+      echo "status: $status" >&2; \
+      echo -n "$status" > /tmp/status ; \
       set -e; \
     fi
 
-RUN echo "TEST_STATUS: $TEST_STATUS" >&2
-RUN echo "STATUS: $STATUS" >&2
 
 # Copy test logs to a known location for extraction after build
-RUN if [ $TEST_STATUS -ne 0 ]; then \
+RUN if [ $(cat /tmp/status) -ne 0 ]; then \
         echo "FAILED: BES Tests" >&2 && \
         sudo mkdir -vp /home/bes_user/bes-test-logs && \
         sudo chown -v $BES_USER:$BES_USER /home/bes_user/bes-test-logs && \
