@@ -110,22 +110,23 @@ RUN if [ "$DIST" == "el9" ]; then \
       set +e; \
       make check -j$(nproc --ignore=1); \
       echo $? > $TEST_STATUS; \
-      echo "BES test_status: $(cat /tmp/test_status)" >&2; \
+      echo "# BES test_status: $(cat /tmp/test_status)" >&2; \
       set -e; \
       if [ $(cat /tmp/test_status) -ne 0 ]; then \
-        echo "FAILED: BES Tests" >&2 && \
+        echo "# FAILED: BES Tests" >&2 && \
         sudo mkdir -vp /home/bes_user/bes-test-logs && \
         sudo chown -v $BES_USER:$BES_USER /home/bes_user/bes-test-logs && \
-        echo "Bundling test logs and site_maps:" >&2 && \
+        echo "# Bundling test logs and site_maps:" >&2 && \
         find . \( -name "*.log" -o -name "*site_map.txt" \) -print > /tmp/bes-log-file-list.txt && \
-        echo "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 && \
-        echo "Test Log Inventory:" >&2 && \
+        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 && \
+        echo "# Test Log Inventory:" >&2 && \
         cat "/tmp/bes-log-file-list.txt" >&2 && \
-        echo "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 && \
-        echo "Making Test Log tarball..." >&2 && \
+        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 && \
+        echo "# Making Test Log tarball..." >&2 && \
         tar -cvzf /home/bes_user/bes-test-logs/bes-test-logs.tar.gz -T /tmp/bes-log-file-list.txt && \
+        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 && \
       else  \
-        echo "PASSED: BES Tests" >&2 ;\
+        echo "# PASSED: BES Tests" >&2 ;\
       fi \
     fi
 
