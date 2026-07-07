@@ -110,6 +110,7 @@ RUN if [ "$DIST" == "el9" ]; then \
       set +e; \
       make check -j$(nproc --ignore=1); \
       export TEST_STATUS=$?; \
+      echo "TEST_STATUS: $TEST_STATUS" >&2; \
       set -e; \
     fi
 
