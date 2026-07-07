@@ -115,12 +115,19 @@ RUN if [ "$DIST" == "el9" ]; then \
 
 # Copy test logs to a known location for extraction after build
 RUN if [ $TEST_STATUS -ne 0 ]; then \
-        sudo mkdir -p /home/bes_user/bes-test-logs && \
-        sudo chown $BES_USER:$BES_USER /home/bes_user/bes-test-logs && \
-        echo "Bundling test logs and site_maps:" && \
+        sudo mkdir -vp /home/bes_user/bes-test-logs && \
+        sudo chown -v $BES_USER:$BES_USER /home/bes_user/bes-test-logs && \
+        echo "Bundling test logs and site_maps:" >&2 && \
         find . \( -name "*.log" -o -name "*site_map.txt" \) -print > /tmp/bes-log-file-list.txt && \
-        tar -czf /home/bes_user/bes-test-logs/bes-test-logs.tar.gz -T /tmp/bes-log-file-list.txt && \
-        exit $TEST_STATUS \
+        echo "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 && \
+        echo "Test Log Inventory:" >&2 && \
+        cat "/tmp/bes-log-file-list.txt" >&2 && \
+        echo "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 && \
+        echo "Making Test Log tarball..." >&2 && \
+        tar -cvzf /home/bes_user/bes-test-logs/bes-test-logs.tar.gz -T /tmp/bes-log-file-list.txt && \
+        exit $TEST_STATUS ;\
+    else  \
+        echo "PASSED: BES Tests" >&2 ;\
     fi
 
 
