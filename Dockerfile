@@ -130,7 +130,11 @@ RUN if [ "$DIST" == "el9" ]; then \
       fi \
     fi
 
-RUN  if [ $(cat /tmp/test_status) -ne 0 ]; then  exit $(cat /tmp/test_status); fi
+RUN test_status="$(cat /tmp/test_status)"; \
+    echo "# test_status: $test_status" >&2 ;\
+    if [ $test_status -ne 0 ]; then  \
+        exit $test_status;  \
+    fi
 
 
 # ...and turn off the besdaemon. We want to turn this on/off regardless of
