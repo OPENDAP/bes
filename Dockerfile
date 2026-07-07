@@ -103,21 +103,15 @@ RUN sudo -s --preserve-env=PATH besctl start
 # ...now run the tests.
 ARG DIST
 ENV DIST=${DIST:-el8}
-ENV TEST_STATUS=0
 RUN if [ "$DIST" == "el9" ]; then \
         echo "# Warning: Skipping make check because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299"; \
     else \
       set +e; \
       make check -j$(nproc --ignore=1); \
-      status=$?; \
-      echo "status: $status" >&2; \
-      echo -n "$status" > /tmp/status ; \
+      test_status=$?; \
+      echo "BES test_status: $test_status" >&2; \
       set -e; \
-    fi
-
-
-# Copy test logs to a known location for extraction after build
-RUN if [ $(cat /tmp/status) -ne 0 ]; then \
+      if [ $test_status -ne 0 ]; then \
         echo "FAILED: BES Tests" >&2 && \
         sudo mkdir -vp /home/bes_user/bes-test-logs && \
         sudo chown -v $BES_USER:$BES_USER /home/bes_user/bes-test-logs && \
@@ -129,9 +123,10 @@ RUN if [ $(cat /tmp/status) -ne 0 ]; then \
         echo "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 && \
         echo "Making Test Log tarball..." >&2 && \
         tar -cvzf /home/bes_user/bes-test-logs/bes-test-logs.tar.gz -T /tmp/bes-log-file-list.txt && \
-        exit $TEST_STATUS ;\
-    else  \
+        exit $test_status ;\
+      else  \
         echo "PASSED: BES Tests" >&2 ;\
+      fi \
     fi
 
 
