@@ -114,7 +114,7 @@ RUN if [ "$DIST" == "el9" ]; then \
       echo "# TEST_STATUS: $(cat $TEST_STATUS)" >&2; \
       echo "# test_status: $test_status" >&2; \
       set -e; \
-      if [ $(cat $test_status) -ne 0 ]; then \
+      if [ $test_status -ne 0 ]; then \
         echo "# FAILED: BES Tests" >&2 && \
         sudo mkdir -vp /home/bes_user/bes-test-logs && \
         sudo chown -v $BES_USER:$BES_USER /home/bes_user/bes-test-logs && \
