@@ -103,15 +103,16 @@ RUN sudo -s --preserve-env=PATH besctl start
 # ...now run the tests.
 ARG DIST
 ENV DIST=${DIST:-el8}
+ENV TEST_STATUS="/tmp/status"
 RUN if [ "$DIST" == "el9" ]; then \
         echo "# Warning: Skipping make check because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299"; \
     else \
       set +e; \
       make check -j$(nproc --ignore=1); \
-      test_status=$?; \
-      echo "BES test_status: $test_status" >&2; \
+      echo $? > $TEST_STATUS; \
+      echo "BES test_status: $(cat /tmp/test_status)" >&2; \
       set -e; \
-      if [ $test_status -ne 0 ]; then \
+      if [ $(cat /tmp/test_status) -ne 0 ]; then \
         echo "FAILED: BES Tests" >&2 && \
         sudo mkdir -vp /home/bes_user/bes-test-logs && \
         sudo chown -v $BES_USER:$BES_USER /home/bes_user/bes-test-logs && \
@@ -123,11 +124,12 @@ RUN if [ "$DIST" == "el9" ]; then \
         echo "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 && \
         echo "Making Test Log tarball..." >&2 && \
         tar -cvzf /home/bes_user/bes-test-logs/bes-test-logs.tar.gz -T /tmp/bes-log-file-list.txt && \
-        exit $test_status ;\
       else  \
         echo "PASSED: BES Tests" >&2 ;\
       fi \
     fi
+
+RUN  if [ $(cat /tmp/test_status) -ne 0 ]; then  exit $(cat /tmp/test_status); fi
 
 
 # ...and turn off the besdaemon. We want to turn this on/off regardless of
