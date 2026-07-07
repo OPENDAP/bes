@@ -109,12 +109,14 @@ RUN if [ "$DIST" == "el9" ]; then \
     else \
       set +e; \
       make check -j$(nproc --ignore=1); \
-      export TEST_STATUS=$?; \
+      export STATUS=$?; \
+      echo "STATUS: STATUS" >&2; \
       echo "TEST_STATUS: $TEST_STATUS" >&2; \
       set -e; \
     fi
 
 RUN echo "TEST_STATUS: $TEST_STATUS" >&2
+RUN echo "STATUS: $STATUS" >&2
 
 # Copy test logs to a known location for extraction after build
 RUN if [ $TEST_STATUS -ne 0 ]; then \
