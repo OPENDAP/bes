@@ -3743,25 +3743,28 @@ void DmrppArray::read_contiguous_string_array()
             throw BESInternalError("Failed to read string array data.",__FILE__,__LINE__);
         }
 
-        // Need to see if we should handle filters.
         auto fstr_len = get_fixed_string_length();
+        auto pad_type = get_fixed_length_string_pad();
+        unsigned long long temp_array_size = get_size(false);
+        unsigned long long chunk_size_in_elements = get_chunk_size_in_elements();
+
+        bool bigger_chunk = (chunk_size_in_elements>temp_array_size);
+        // Need to see if we should handle filters.
         if (!is_filters_empty() && !get_one_chunk_fill_value()) {
-            the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), fstr_len);
+            the_one_chunk->filter_chunk(get_filters(), chunk_size_in_elements, fstr_len);
         }
 
-        auto pad_type = get_fixed_length_string_pad();
 
         vector<unsigned long long> array_shape = get_shape(false);
         // The 'the_one_chunk' now holds the data values. Transfer it to the Array.
         if (!is_projected()) {  // if there is no projection constraint
-            unsigned long long temp_array_size = get_size(false);
             get_str().resize(temp_array_size);
             for (unsigned long long i = 0; i < temp_array_size;i++)
                 (get_str())[i].resize(fstr_len);
 
             // The chunk size can be bigger than the array size  when the dimension is unlimited. 
             // We need to handle it differently. 
-            if (get_chunk_size_in_elements()>temp_array_size) {
+            if (bigger_chunk) {
                 vector<unsigned long long> chunk_origin = the_one_chunk->get_position_in_array();
                 insert_chunk_fixed_size_str_unconstrained(0,0,0,the_one_chunk,array_shape,chunk_origin,fstr_len);
                 set_read_p(true);
@@ -3788,8 +3791,16 @@ void DmrppArray::read_contiguous_string_array()
             for (unsigned long long i = 0; i < constrained_str_size;i++)
                 (get_str())[i].resize(fstr_len);
 
-            unsigned long long target_index = 0;
-            insert_constrained_contiguous_string(dim_begin(), target_index, subset, array_shape, fstr_len, pad_type,the_one_chunk->get_rbuf());
+            if (bigger_chunk) {// Chunk size is bigger than the array size
+                vector<unsigned long long> target_element_address = the_one_chunk->get_position_in_array();
+                vector<unsigned long long> constrained_array_shape = this->get_shape(true);
+                vector<unsigned long long> chunk_source_address(this->dimensions(), 0);
+                insert_chunk_fixed_size_str(0,&target_element_address, &chunk_source_address,the_one_chunk,constrained_array_shape,fstr_len);
+            }
+            else {
+                unsigned long long target_index = 0;
+                insert_constrained_contiguous_string(dim_begin(), target_index, subset, array_shape, fstr_len, pad_type,the_one_chunk->get_rbuf());
+            }
         }
 
         set_read_p(true);
