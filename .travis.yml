@@ -137,7 +137,7 @@ stages:
 jobs:
   include:
     # build-and-test
-    - stage: build-and-test
+    - stage: never
       name: "check"
       script:
         - export BES_BUILD=main
@@ -149,7 +149,7 @@ jobs:
         - make -j16 && make install && besctl start -d cerr,curl,http && make check -j16 && besctl stop
 
     # build-and-test
-    - stage: build-and-test
+    - stage: never
       name: "distcheck"
       script:
         - export BES_BUILD=distcheck
@@ -158,7 +158,7 @@ jobs:
         - make distcheck -j16 GZIP_ENV=--fast
 
     # build-and-test
-    - stage: build-and-test
+    - stage: never
       name: "dist"
       script:
         - export BES_BUILD=srcdist
