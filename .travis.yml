@@ -176,7 +176,6 @@ jobs:
     - stage: build-docker
       name: "Build docker image bes_core:-el8"
       script:
-        - set +e
         - |
           export BES_BUILD=docker-el8
           echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
@@ -187,11 +186,13 @@ jobs:
           export OS=rocky8
           export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
           export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
-        - ./travis/build-rhel-docker.sh
+        - |
+          set +e 
+          ./travis/build-rhel-docker.sh
           export test_status=$?
+          set -e
         # Note: Take the test log tarball that was created in the Dockerfile and copied to the final mount
         #   and then run this copy command to copy it into Travis.
-        - set -e
         - |
           if [ $test_status -ne 0 ] then
             echo "########################################################################" >&2 
