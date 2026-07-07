@@ -190,16 +190,17 @@ jobs:
           set +e 
           ./travis/build-rhel-docker.sh
           export test_status=$?
+          echo "# (In Travis) test_status: $test_status" >&2 
           set -e
         # Note: Take the test log tarball that was created in the Dockerfile and copied to the final mount
         #   and then run this copy command to copy it into Travis.
         - |
+          echo "########################################################################" >&2 
+          echo "# Docker images after './travis/build-rhel-docker.sh' is run." >&2
+          docker images >&2
+          echo "########################################################################" >&2 
           echo "# (In Travis) test_status: $test_status" >&2 
           if [ $test_status -ne 0 ] then
-            echo "########################################################################" >&2 
-            echo "# Docker images after './travis/build-rhel-docker.sh' is run." >&2
-            docker images 
-            echo "########################################################################" >&2 
             docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} 
             -c "cp /bes-test-logs/bes-test-logs.tar.gz /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz" 
             exit $test_status 
