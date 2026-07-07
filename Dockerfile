@@ -103,11 +103,26 @@ RUN sudo -s --preserve-env=PATH besctl start
 # ...now run the tests.
 ARG DIST
 ENV DIST=${DIST:-el8}
+ENV TEST_STATUS=0
 RUN if [ "$DIST" == "el9" ]; then \
         echo "# Warning: Skipping make check because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299"; \
     else \
-        make check -j$(nproc --ignore=1); \
+      set +e; \
+      make check -j$(nproc --ignore=1); \
+      TEST_STATUS=$?; \
+      set -e; \
     fi
+
+# Copy test logs to a known location for extraction after build
+RUN if [ $TEST_STATUS -ne 0 ]; then \
+        sudo mkdir -p /home/bes_user/bes-test-logs && \
+        sudo chown $BES_USER:$BES_USER /home/bes_user/bes-test-logs && \
+        echo "Bundling test logs and site_maps:" && \
+        find . \( -name "*.log" -o -name "*site_map.txt" \) -print > /tmp/bes-log-file-list.txt && \
+        tar -czf /home/bes_user/bes-test-logs/bes-test-logs.tar.gz -T /tmp/bes-log-file-list.txt && \
+        exit $TEST_STATUS \
+    fi
+
 
 # ...and turn off the besdaemon. We want to turn this on/off regardless of
 # whether we run the tests
@@ -115,12 +130,6 @@ RUN sudo -s --preserve-env=PATH besctl stop
 
 RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
 
-# Copy test logs to a known location for extraction after build
-RUN sudo mkdir -p /home/bes_user/bes-test-logs && \
-    sudo chown $BES_USER:$BES_USER /home/bes_user/bes-test-logs && \
-    echo "Bundling test logs and site_maps:" && \
-    find . \( -name "*.log" -o -name "*site_map.txt" \) -print > /tmp/bes-log-file-list.txt && \
-    tar -czf /home/bes_user/bes-test-logs/bes-test-logs.tar.gz -T /tmp/bes-log-file-list.txt
 
 
 #####
