@@ -177,6 +177,16 @@ RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
         exit 1; \
     fi
 
+# Duplicated from installation above, this time on a slimmer base image...
+# Install the libdap rpms
+ARG LIBDAP_RPM_FILENAME
+RUN --mount=from=aws_downloads,target=/tmp_mounted \
+    yum update -y \
+    && dnf install sudo which procps libicu acl chkconfig -y \
+    && echo "Installing libdap snapshot rpms: $LIBDAP_RPM_FILENAME" \
+    && dnf -y install "/tmp_mounted/$LIBDAP_RPM_FILENAME" \
+    && dnf clean all
+
 ENV BES_USER="bes_user"
 ENV USER_ID=101
 ENV PREFIX="/"
@@ -207,15 +217,6 @@ RUN set -e \
     && echo "# ls -l $TEST_LOGS_DIR" >&2 \
     && ls -l "$TEST_LOGS_DIR" >&2
 
-# Duplicated from installation above, this time on a slimmer base image...
-# Install the libdap rpms
-ARG LIBDAP_RPM_FILENAME
-RUN --mount=from=aws_downloads,target=/tmp_mounted \
-    yum update -y \
-    && dnf install sudo which procps libicu acl chkconfig -y \
-    && echo "Installing libdap snapshot rpms: $LIBDAP_RPM_FILENAME" \
-    && dnf -y install "/tmp_mounted/$LIBDAP_RPM_FILENAME" \
-    && dnf clean all
 
 
 # Install the latest hyrax dependencies
