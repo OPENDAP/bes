@@ -104,16 +104,11 @@ RUN sudo -s --preserve-env=PATH besctl start
 ARG DIST
 ENV DIST=${DIST:-el8}
 ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
-RUN set -e \
-    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
-    && echo "# TEST_LOGS_DIR: $TEST_LOGS_DIR" \
-    && mkdir -vp "$TEST_LOGS_DIR" \
-    && chown -v $BES_USER:$BES_USER $TEST_LOGS_DIR
-
-ENV TEST_STATUS_FILE="$TEST_LOGS_DIR/bes-tests-status"
+ENV TEST_STATUS_FILE="${TEST_LOGS_DIR}/bes-tests-status"
 RUN if [ "$DIST" == "el9" ]; then \
         echo "# Warning: Skipping make check because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299"; \
     else \
+        echo "# TEST_STATUS_FILE: ${TEST_STATUS_FILE}" \
         set +e; \
         make check -j$(nproc --ignore=1); \
         test_status=$?; \
@@ -129,15 +124,15 @@ RUN if [ "$DIST" == "el9" ]; then \
     fi
 
 # Always make the test log tarball
-ENV TEST_LOGS_FILE="$TEST_LOGS_DIR/bes-test-logs.tar.gz"
-ENV TEST_LOG_INVENTORY="$TEST_LOGS_DIR/bes-log-file-list.txt"
+ENV TEST_LOGS_FILE="${TEST_LOGS_DIR}/bes-test-logs.tar.gz"
+ENV TEST_LOG_INVENTORY="${TEST_LOGS_DIR}/bes-log-file-list.txt"
 RUN set -e \
     && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
     && echo "#    TEST_LOGS_DIR: $TEST_LOGS_DIR" \
     && echo "#   TEST_LOGS_FILE: $TEST_LOGS_FILE" \
     && echo "# TEST_STATUS_FILE: $TEST_STATUS_FILE" \
-    && mkdir -vp "$TEST_LOGS_DIR" \
-    && chown -v $BES_USER:$BES_USER $TEST_LOGS_DIR \
+    && mkdir -vp "${TEST_LOGS_DIR}" \
+    && chown -v $BES_USER:$BES_USER "${TEST_LOGS_DIR}" \
     && echo "# Bundling test logs and site_maps:" >&2 \
     && find . \( -name "*.log" -o -name "*site_map.txt" \) -print > "$TEST_LOG_INVENTORY" \
     && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
@@ -160,6 +155,9 @@ RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
 
 
 
+########################################################################################################################
+########################################################################################################################
+########################################################################################################################
 #####
 ##### Final layer: libdap + hyrax-dependencies + bes
 #####
@@ -171,17 +169,17 @@ RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
         exit 1; \
     fi
 
-ENV TEST_LOGS_DIR="/home/$BES_USER/bes-test-logs"
-ENV TEST_STATUS_FILE="$TEST_LOGS_DIR/bes-tests-status"
-ENV TEST_LOGS_FILE="$TEST_LOGS_DIR/bes-test-logs.tar.gz"
-ENV TEST_LOG_INVENTORY="$TEST_LOGS_DIR/bes-log-file-list.txt"
+ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
+ENV TEST_STATUS_FILE="${TEST_LOGS_DIR}/bes-tests-status"
+ENV TEST_LOGS_FILE="${TEST_LOGS_DIR}/bes-test-logs.tar.gz"
+ENV TEST_LOG_INVENTORY="${TEST_LOGS_DIR}/bes-log-file-list.txt"
 RUN set -e \
     && echo "# TEST_LOGS_DIR: $TEST_LOGS_DIR" >&2 \
-    && mkdir -vp $TEST_LOGS_DIR >&2
+    && mkdir -vp "$TEST_LOGS_DIR" >&2
 
 # Copy the log files so tha t they can be accessed from outside of this docker build (i.e. Travis)
 COPY --from=builder "$TEST_STATUS_FILE" "$TEST_STATUS_FILE"
-COPY --from=builder "$TEST_LOG_INVENTORY" "$TEST_LOG_INVENTORY"
+COPY --from=builder "$TEST_LOG_INVENTORY" "$TEST_LOG_IßNVENTORY"
 COPY --from=builder "$TEST_LOGS_FILE" "$TEST_LOGS_FILE"
 
 RUN set -e \
