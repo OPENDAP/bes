@@ -113,6 +113,8 @@ RUN if [ "$DIST" == "el9" ]; then \
         make check -j$(nproc --ignore=1); \
         test_status=$?; \
         echo $test_status > $TEST_STATUS_FILE; \
+        echo -n "# TEST_STATUS_FILE: " >&2 \
+        ls -l "$TEST_STATUS_FILE" >&2  \
         echo "# TEST_STATUS: $(cat $TEST_STATUS_FILE)" >&2; \
         echo "# test_status: $test_status" >&2; \
         set -e; \
@@ -173,7 +175,19 @@ ARG FINAL_BASE_IMAGE
 RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
         echo "Error: Non-empty FINAL_BASE_IMAGE must be specified. Exiting."; \
         exit 1; \
-    fi
+    fi \
+
+ENV BES_USER="bes_user"
+ENV USER_ID=101
+ENV PREFIX="/"
+ENV DEPS_PREFIX="/root/install"
+ENV PATH="$PREFIX/bin:$DEPS_PREFIX/deps/bin:$PATH"
+RUN useradd \
+        --user-group \
+        --comment "BES daemon" \
+        --uid ${USER_ID} \
+        $BES_USER \
+    && echo $BES_USER ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$BES_USER
 
 ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
 ENV TEST_STATUS_FILE="${TEST_LOGS_DIR}/bes-tests-status"
@@ -183,10 +197,10 @@ RUN set -e \
     && echo "# TEST_LOGS_DIR: $TEST_LOGS_DIR" >&2 \
     && mkdir -vp "$TEST_LOGS_DIR" >&2
 
-# Copy the log files so tha t they can be accessed from outside of this docker build (i.e. Travis)
-COPY --from=builder "$TEST_STATUS_FILE" "$TEST_STATUS_FILE"
+# Copy the log files so that they can be accessed from outside of this docker build (i.e. Travis)
+COPY --from=builder "$TEST_STATUS_FILE"   "$TEST_STATUS_FILE"
 COPY --from=builder "$TEST_LOG_INVENTORY" "$TEST_LOG_INVENTORY"
-COPY --from=builder "$TEST_LOGS_FILE" "$TEST_LOGS_FILE"
+COPY --from=builder "$TEST_LOGS_FILE"     "$TEST_LOGS_FILE"
 
 RUN set -e \
     && echo "# Checking test log output:" >&2 \
@@ -203,18 +217,6 @@ RUN --mount=from=aws_downloads,target=/tmp_mounted \
     && dnf -y install "/tmp_mounted/$LIBDAP_RPM_FILENAME" \
     && dnf clean all
 
-ENV BES_USER="bes_user"
-ENV USER_ID=101
-ENV PREFIX="/"
-ENV DEPS_PREFIX="/root/install"
-ENV PATH="$PREFIX/bin:$DEPS_PREFIX/deps/bin:$PATH"
-
-RUN useradd \
-        --user-group \
-        --comment "BES daemon" \
-        --uid ${USER_ID} \
-        $BES_USER \
-    && echo $BES_USER ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$BES_USER
 
 # Install the latest hyrax dependencies
 ARG HYRAX_DEPENDENCIES_TARBALL
