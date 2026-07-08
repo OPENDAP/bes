@@ -132,9 +132,11 @@ RUN if [ "$DIST" == "el9" ]; then \
       fi \
     fi
 
-RUN test_status="$(cat $TEST_STATUS)"; \
+RUN --mount=from=/tmp,target=/tmp_mounted \
+    test_status="$(cat $TEST_STATUS)"; \
     echo "# test_status: $test_status" >&2 ;\
     if [ $test_status -ne 0 ]; then  \
+        cp /home/bes_user/bes-test-logs/bes-test-logs.tar.gz "/tmp_mounted/bes-test-logs.tar.gz" \
         exit $test_status;  \
     fi
 
