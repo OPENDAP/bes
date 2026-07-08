@@ -130,7 +130,14 @@ RUN if [ "$DIST" == "el9" ]; then \
       else  \
         echo "# PASSED: BES Tests" >&2 ;\
       fi \
-    fi \
+    fi
+
+# ...and turn off the besdaemon. We want to turn this on/off regardless of
+# whether we run the tests
+RUN sudo -s --preserve-env=PATH besctl stop
+
+RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
+
 
 USER 0
 
@@ -141,16 +148,9 @@ RUN --mount=from=test_logs,target=/tmp_mounted,rw \
     if [ $test_status -ne 0 ]; then  \
         cp /home/bes_user/bes-test-logs/bes-test-logs.tar.gz "/tmp_mounted/bes-test-logs.tar.gz"; \
         exit $test_status;  \
-    fi \
-
-USER $BES_USER
+    fi
 
 
-# ...and turn off the besdaemon. We want to turn this on/off regardless of
-# whether we run the tests
-RUN sudo -s --preserve-env=PATH besctl stop
-
-RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
 
 
 
