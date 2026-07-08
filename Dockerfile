@@ -146,6 +146,7 @@ RUN set -e \
     && ls -l "$TEST_LOGS_FILE" >&2  \
     && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2
 
+
 # ...and turn off the besdaemon. We want to turn this on/off regardless of
 # whether we run the tests
 RUN sudo -s --preserve-env=PATH besctl stop
@@ -153,6 +154,11 @@ RUN sudo -s --preserve-env=PATH besctl stop
 RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
 
 
+RUN set -e \
+    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
+    && echo "ls -l $TEST_LOGS_DIR" \
+    && ls -l "$TEST_LOGS_DIR" \
+    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2
 
 
 ########################################################################################################################
@@ -179,7 +185,7 @@ RUN set -e \
 
 # Copy the log files so tha t they can be accessed from outside of this docker build (i.e. Travis)
 COPY --from=builder "$TEST_STATUS_FILE" "$TEST_STATUS_FILE"
-COPY --from=builder "$TEST_LOG_INVENTORY" "$TEST_LOG_IßNVENTORY"
+COPY --from=builder "$TEST_LOG_INVENTORY" "$TEST_LOG_INVENTORY"
 COPY --from=builder "$TEST_LOGS_FILE" "$TEST_LOGS_FILE"
 
 RUN set -e \
