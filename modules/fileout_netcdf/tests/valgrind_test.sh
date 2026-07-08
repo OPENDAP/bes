@@ -320,39 +320,45 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/One_chunk_shuf_
 valgrind besstandalone -c tests/bes.nc4.grp.disable_dio.conf -i tests/bescmd/One_chunk_shuf_deflate.h5.dmrpp.bescmd>test.nc
 
 #multi-fillvalues
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/multi_fvalue.h5.dmrpp.bescmd
-valgrind besstandalone -c tests/bes.nc4.conf -i tests/bescmd/multi_fvalue_dap2_nc4.h5.escmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/multi_fvalue.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.conf -i tests/bescmd/multi_fvalue_dap2_nc4.h5.bescmd>test.nc
 
 #odd-chunk-sizes
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_odd_chunk_size.h5.dmrpp.bescmd
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_less_odd_chunk_size_comp.h5.dmrpp.bescmd
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_odd_chunk_size_comp_constraint.h5.dmrpp.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_odd_chunk_size.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_less_odd_chunk_size_comp.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_odd_chunk_size_comp_constraint.h5.dmrpp.bescmd>test.nc
 
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_less_odd_chunk_size_constraint.h5.dmrpp.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_less_odd_chunk_size_constraint.h5.dmrpp.bescmd>test.nc
 
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/lnumbers.bin.comprehensive_constraint.dmrpp.bescmd
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_one_bigger_chunk_size.h5.dmrpp.bescmd
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple_bigger_chunk.h5.dmrpp.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/lnumbers.bin.comprehensive_constraint.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_one_bigger_chunk_size.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple_bigger_chunk.h5.dmrpp.bescmd>test.nc
 
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_one_bigger_chunk_size_constraint.h5.dmrpp.bescmd
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple_bigger_chunk_constraint.h5.dmrpp.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_one_bigger_chunk_size_constraint.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/compound_simple_bigger_chunk_constraint.h5.dmrpp.bescmd>test.nc
 
 # One chunk, chunk size is bigger than the array size, data is compressed.
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_one_bigger_chunk_size_comp.h5.dmrpp.bescmd
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_group_atomic_puredim_2d_unlimited_comp.nc.dmrpp.bescmd
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_unlimited_1_big_comp.nc.dmrpp.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_one_bigger_chunk_size_comp.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_group_atomic_puredim_2d_unlimited_comp.nc.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_unlimited_1_big_comp.nc.dmrpp.bescmd>test.nc
 
 # Direct chunk IO for the subset cases.
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint.bescmd
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_2.bescmd
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_3.bescmd
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_4.bescmd
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_2_1.bescmd
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_group_unlimited_comp.h5.dmrpp_constraint.bescmd
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_unlimited_1_big_comp.nc.dmrpp_constraint.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_2.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_3.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_4.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_six_big_chunks_comp.h5.dmrpp_constraint_2_1.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_group_unlimited_comp.h5.dmrpp_constraint.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/nc4_unlimited_1_big_comp.nc.dmrpp_constraint.bescmd>test.nc
 
 # Direct chunk IO for the buffer chunk subset cases.
-valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_odd_chunk_size_comp_dio_constraint.h5.dmrpp.bescmd
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_odd_chunk_size_comp_dio_constraint.h5.dmrpp.bescmd>test.nc
+
+# The string array dmrpp tests
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/special_fixed_str_array.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/special_fixed_str_array.h5.dmrpp_constrained.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/t_big_vl_str_dset2.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/vl_str_array.h5.dmrpp_constrained.bescmd>test.nc
 
 rm -rf test.nc
 rm -rf gr.nc4

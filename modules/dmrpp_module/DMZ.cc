@@ -1701,7 +1701,7 @@ void DMZ::handle_subset_vl_str(DmrppArray *da, libdap::Array::Dim_iter dim_iter,
         else {
             // We are at the last (innermost) dimension, so it's time to copy values.
             subset_pos.push_back(myDimIndex);
-            unsigned int sourceIndex = INDEX_nD_TO_1D(da_dims, subset_pos);
+            unsigned long long  sourceIndex = INDEX_nD_TO_1D(da_dims, subset_pos);
             subset_pos.pop_back();
             subset_str_array.push_back(whole_str_array[sourceIndex]);
         }
