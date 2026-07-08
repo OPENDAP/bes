@@ -43,6 +43,7 @@ LIBDAP_DEVEL_RPM_FILENAME="libdap-devel-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
 DOCKER_DEV_FLAGS=${DOCKER_DEV_FLAGS:-""}
 CONFIGURE_OPTIONS=${CONFIGURE_OPTIONS:-""}
 AWS_DOWNLOADS_DIR="/tmp/dependency_downloads"
+TEST_LOGS_DIR="/tmp/tests"
 
 loggy "#########################################################################"
 loggy "$0 BEGIN"
@@ -66,15 +67,19 @@ loggy "       HYRAX_DEPENDENCIES_TARBALL: '$HYRAX_DEPENDENCIES_TARBALL'"
 loggy "       LIBDAP_RPM_FILENAME: '$LIBDAP_RPM_FILENAME'"
 loggy "       LIBDAP_DEVEL_RPM_FILENAME: '$LIBDAP_DEVEL_RPM_FILENAME'"
 loggy "       AWS_DOWNLOADS_DIR: '$AWS_DOWNLOADS_DIR'"
+loggy "           TEST_LOGS_DIR: '$TEST_LOGS_DIR'"
 loggy ""
 
 set -eux
 
 loggy "Downloading AWS dependencies..."
-mkdir -p $AWS_DOWNLOADS_DIR
+mkdir -vp $AWS_DOWNLOADS_DIR
 [[ -e "$AWS_DOWNLOADS_DIR/$HYRAX_DEPENDENCIES_TARBALL" ]] || aws s3 cp "s3://opendap.travis.build/$HYRAX_DEPENDENCIES_TARBALL" $AWS_DOWNLOADS_DIR
 [[ -e "$AWS_DOWNLOADS_DIR/$LIBDAP_RPM_FILENAME" ]] || aws s3 cp "s3://opendap.travis.build/$LIBDAP_RPM_FILENAME" "$AWS_DOWNLOADS_DIR"
 [[ -e "$AWS_DOWNLOADS_DIR/$LIBDAP_DEVEL_RPM_FILENAME" ]] || aws s3 cp "s3://opendap.travis.build/$LIBDAP_DEVEL_RPM_FILENAME" "$AWS_DOWNLOADS_DIR"
+
+loggy "Creating test logs directory: $TEST_LOGS_DIR"
+mkdir -vp $TEST_LOGS_DIR
 
 loggy "Building the docker image..."
 docker image pull "${BUILDER_BASE_IMAGE}"
@@ -89,7 +94,7 @@ docker build \
     --build-arg BES_BUILD_NUMBER="$BES_BUILD_NUMBER" \
     --tag "${SNAPSHOT_IMAGE_TAG}" \
     --build-context aws_downloads="$AWS_DOWNLOADS_DIR/" \
-    --build-context host_tmp="/tmp/" \
+    --build-context test_logs="$TEST_LOGS_DIR" \
     $DOCKER_DEV_FLAGS \
     -f ${BES_REPO_DIR}/Dockerfile ${BES_REPO_DIR}
 
