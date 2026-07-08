@@ -132,7 +132,7 @@ RUN if [ "$DIST" == "el9" ]; then \
       fi \
     fi \
 
-USER root
+USER 0
 RUN --mount=from=test_logs,target=/tmp_mounted,rw \
     test_status="$(cat $TEST_STATUS)"; \
     echo "# test_status: $test_status" >&2 ;\
