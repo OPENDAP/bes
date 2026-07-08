@@ -34,7 +34,7 @@
 set -eu
 
 function loggy(){
-    echo  "$@" | awk '{ print "# build-rhel-docker - "$0;}'  >&2
+    echo  "$@" | awk '{ print "# build-rhel-docker() - "$0;}'  >&2
 }
 
 HYRAX_DEPENDENCIES_TARBALL="hyrax-dependencies-${OS}.tgz"
@@ -113,6 +113,9 @@ docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
 
 docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
     -c "cp $TEST_LOGS_DIR/bes-tests-status /scratch/bes-tests-status"
+
+loggy "ls -l /scratch"
+loggy "$(ls -l /scratch)"
 
 bes_tests_status=$(cat /scratch/bes-tests-status)
 if [ $bes_tests_status -ne 0 ]
