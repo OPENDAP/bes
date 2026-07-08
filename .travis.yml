@@ -204,7 +204,7 @@ jobs:
           echo "# (In Travis) BUILDER_BASE_IMAGE: $BUILDER_BASE_IMAGE" >&2 
           if [ $build_status -ne 0 ]; then
             ls -l /tmp >&2
-            cp /tmp/bes-test-logs.tar.gz "/scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
+            # cp -v /tmp/bes-test-logs.tar.gz "/scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz" 
             # docker run --rm -v /tmp:/scratch $BUILDER_BASE_IMAGE  -c "ls -l / && cp /tmp/bes-test-logs.tar.gz /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
           fi
         # Now we bail out if the build failed.
