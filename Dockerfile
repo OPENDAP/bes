@@ -175,7 +175,7 @@ ARG FINAL_BASE_IMAGE
 RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
         echo "Error: Non-empty FINAL_BASE_IMAGE must be specified. Exiting."; \
         exit 1; \
-    fi \
+    fi
 
 ENV BES_USER="bes_user"
 ENV USER_ID=101
