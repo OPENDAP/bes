@@ -161,6 +161,12 @@ RUN --mount=from=test_logs_dir,target=/tmp_mounted,rw \
         cp -v "$TEST_LOGS_FILE" "$target_file" >&2 ; \
         echo -n "# target_file: "; \
         ls -l "$target_file" >&2 ; \
+    fi
+
+
+RUN echo "# RUNNING AS USER $UID"; \
+    test_status="$(cat $TEST_STATUS)"; \
+    if [ $test_status -ne 0 ]; then  \
         exit $test_status;  \
     fi
 
