@@ -104,6 +104,10 @@ RUN sudo -s --preserve-env=PATH besctl start
 ARG DIST
 ENV DIST=${DIST:-el8}
 ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
+RUN set -e \
+    && mkdir -vp "${TEST_LOGS_DIR}" \
+    && chown -v $BES_USER:$BES_USER "${TEST_LOGS_DIR}"
+
 ENV TEST_STATUS_FILE="${TEST_LOGS_DIR}/bes-tests-status"
 RUN if [ "$DIST" == "el9" ]; then \
         echo "# Warning: Skipping make check because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299"; \
@@ -133,8 +137,6 @@ RUN set -e \
     && echo "#    TEST_LOGS_DIR: $TEST_LOGS_DIR" \
     && echo "#   TEST_LOGS_FILE: $TEST_LOGS_FILE" \
     && echo "# TEST_STATUS_FILE: $TEST_STATUS_FILE" \
-    && mkdir -vp "${TEST_LOGS_DIR}" \
-    && chown -v $BES_USER:$BES_USER "${TEST_LOGS_DIR}" \
     && echo "# Bundling test logs and site_maps:" >&2 \
     && find . \( -name "*.log" -o -name "*site_map.txt" \) -print > "$TEST_LOG_INVENTORY" \
     && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
@@ -192,6 +194,7 @@ ENV USER_ID=101
 ENV PREFIX="/"
 ENV DEPS_PREFIX="/root/install"
 ENV PATH="$PREFIX/bin:$DEPS_PREFIX/deps/bin:$PATH"
+
 RUN useradd \
         --user-group \
         --comment "BES daemon" \
@@ -216,8 +219,6 @@ RUN set -e \
     && echo "# Checking test log output:" >&2 \
     && echo "# ls -l $TEST_LOGS_DIR" >&2 \
     && ls -l "$TEST_LOGS_DIR" >&2
-
-
 
 # Install the latest hyrax dependencies
 ARG HYRAX_DEPENDENCIES_TARBALL
