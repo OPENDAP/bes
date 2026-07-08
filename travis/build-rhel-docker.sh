@@ -83,6 +83,8 @@ mkdir -vp $TEST_LOGS_DIR
 
 loggy "Building the docker image..."
 docker image pull "${BUILDER_BASE_IMAGE}"
+
+set +e
 docker build \
     --build-arg BUILDER_BASE_IMAGE="$BUILDER_BASE_IMAGE" \
     --build-arg FINAL_BASE_IMAGE="$FINAL_BASE_IMAGE" \
@@ -94,11 +96,21 @@ docker build \
     --build-arg BES_BUILD_NUMBER="$BES_BUILD_NUMBER" \
     --tag "${SNAPSHOT_IMAGE_TAG}" \
     --build-context aws_downloads="$AWS_DOWNLOADS_DIR/" \
-    --build-context test_logs="$TEST_LOGS_DIR" \
+    --build-context test_logs_dir="$TEST_LOGS_DIR" \
     $DOCKER_DEV_FLAGS \
     -f ${BES_REPO_DIR}/Dockerfile ${BES_REPO_DIR}
 
-echo "Docker build complete!"
-docker image ls -a
+build_status=$?
 
-loggy "Complete!"
+if [ $build_status -ne 0 ]
+then
+  loggy "Docker build FAILED!!  build_status: $build_status"
+else
+  loggy "Docker build complete!"
+  docker image ls -a
+fi
+
+
+loggy "END"
+
+exit $build_status

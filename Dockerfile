@@ -146,7 +146,7 @@ RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
 
 USER 0
 
-RUN --mount=from=test_logs,target=/tmp_mounted,rw \
+RUN --mount=from=test_logs_dir,target=/tmp_mounted,rw \
     echo "# RUNNING AS USER $UID"; \
     test_status="$(cat $TEST_STATUS)"; \
     echo "# test_status: $test_status" >&2 ;\
