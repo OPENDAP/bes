@@ -103,7 +103,14 @@ RUN sudo -s --preserve-env=PATH besctl start
 # ...now run the tests.
 ARG DIST
 ENV DIST=${DIST:-el8}
-ENV TEST_STATUS_FILE="/tmp/status"
+ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
+RUN set -e \
+    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
+    && echo "# TEST_LOGS_DIR: $TEST_LOGS_DIR" \
+    && mkdir -vp "$TEST_LOGS_DIR" \
+    && chown -v $BES_USER:$BES_USER $TEST_LOGS_DIR
+
+ENV TEST_STATUS_FILE="$TEST_LOGS_DIR/bes-tests-status"
 RUN if [ "$DIST" == "el9" ]; then \
         echo "# Warning: Skipping make check because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299"; \
     else \
@@ -122,7 +129,6 @@ RUN if [ "$DIST" == "el9" ]; then \
     fi
 
 # Always make the test log tarball
-ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
 ENV TEST_LOGS_FILE="$TEST_LOGS_DIR/bes-test-logs.tar.gz"
 RUN set -e \
     && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
@@ -162,15 +168,16 @@ RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
         exit 1; \
     fi
 
-ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
+ENV TEST_LOGS_DIR="/home/$BES_USER/bes-test-logs"
+ENV TEST_STATUS_FILE="$TEST_LOGS_DIR/bes-tests-status"
 ENV TEST_LOGS_FILE="$TEST_LOGS_DIR/bes-test-logs.tar.gz"
-
 RUN set -e \
     && echo "# TEST_LOGS_DIR: $TEST_LOGS_DIR" \
     && mkdir -vp $TEST_LOGS_DIR
 
 # Copy the log files so tha t they can be accessed from outside of this docker build (i.e. Travis)
-COPY --from=builder "$TEST_LOGS_FILE" "$TEST_LOGS_DIR/bes-test-logs.tar.gz"
+COPY --from=builder "$TEST_STATUS_FILE" "$TEST_STATUS_FILE"
+COPY --from=builder "$TEST_LOGS_FILE" "$TEST_LOGS_FILE"
 
 # Duplicated from installation above, this time on a slimmer base image...
 # Install the libdap rpms
