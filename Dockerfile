@@ -168,7 +168,7 @@ ENV TEST_LOGS_FILE="$TEST_LOGS_DIR/bes-test-logs.tar.gz"
 
 RUN set -e \
     && echo "# TEST_LOGS_DIR: $TEST_LOGS_DIR" \
-    && sudo mkdir -vp $TEST_LOGS_DIR
+    && mkdir -vp $TEST_LOGS_DIR
 
 # Copy the log files so tha t they can be accessed from outside of this docker build (i.e. Travis)
 COPY --from=builder "$TEST_LOGS_FILE" "$TEST_LOGS_DIR/bes-test-logs.tar.gz"
