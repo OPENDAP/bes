@@ -1,0 +1,16 @@
+netcdf test {
+dimensions:
+	dim1 = 2 ;
+	arr_big_dset_len = 1025 ;
+variables:
+	char arr_big_dset(dim1, arr_big_dset_len) ;
+
+// global attributes:
+		:history = "removed date-timex t_big_vl_str_dset2.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"t_big_vl_str_dset2.h5.dmrpp\"}]}]" ;
+data:
+
+ arr_big_dset =
+  "hzschwswoinyxqqshfxljzoopxulixulvebezkrbrvphzgykyxcjgwktvmcqsaflxwzvppcvyofypyfcjuqhrbyiealvemvakmwbyoiwvkqapewguxuuhdsatkpjzyzixnlkquirghpaczcupuoincwojkbnaegywgzuomcbqevdrjsunxoyjkzlxafxvxpycklrdoycvirsvnuadakumobkbxhtfgntwndwhtrvmzalcghnzohuhvxjtkkqtnqyistrnbamvhxgmsumfpbwggbxgbdftkvijwyplodbpooghqlmaldlnunejoieotacjskcrobbillvmcqyflymztucrplafkkhlkxenhzlzzcibvepwpkxnmmqpxkzlugyibklymmkmjcjgbrlmcxuzfnybamgdymfoastcnhoexhqerjcbtubxofknjvnbdfadymkelggcosfzctpbmcsphphslwmdtbyhqkgsxmeyxhbroabxygngswctyuqzsbvthojtmmljvpsbzqtqawzxjmcwjezwfycksmekrvgrgpfuppqotlrantxsjpspjbsniitleasyqzhisyvdinjdnfbfejysbzdpjgknysbvdvlkwzwuhwtqvqkqgywnlyhpmxoqegqpbkxlvwfwzvyllzphnzmhrjobjanbtvzuelayjlxmaslbpnvyswkooxupomorxpvykcenfeskublwnrdeqrlfirikkvqzemkjhyhgbchqsgmeylqkydmvdjuzlunxghbiygdiubpqtdeepevnnevxveltuoxxcrpykehsrkrgxfzzdkmkltdoiruafrhtaqauzzaitrjnwgdphxkgxzzmfzfgaqcgbkajyiphqwxnnllikruyvdblvrtafyeoayjyadaomtglxerasoxrriczqesloirslcxqgjcetbusxplkqsrbzxuviqvbxiztajqxhbfxlsgqmizrmfpxhxvioktwcbrnkktoxzvszwijrqjsjdkqxutysmc",
+  "palm tree" ;
+}
