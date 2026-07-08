@@ -114,32 +114,33 @@ RUN if [ "$DIST" == "el9" ]; then \
         echo "# TEST_STATUS: $(cat $TEST_STATUS_FILE)" >&2; \
         echo "# test_status: $test_status" >&2; \
         set -e; \
-        if [ $Ttest_status -ne 0 ]; then \
-            echo "# FAILED: BES Tests" >&2; n\
+        if [ $Ttest_status -ne 0 ] \
+        then \
+            echo "# FAILED: BES Tests" >&2; \
         else  \
             echo "# PASSED: BES Tests" >&2 ;\
         fi \
-    fi \
+    fi
 
 # Always make the test log tarball
 ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
 ENV TEST_LOGS_FILE="$TEST_LOGS_DIR/bes-test-logs.tar.gz"
-RUN set -e &&\
-    echo "TEST_LOGS_DIR: $TEST_LOGS_DIR" && \
-    sudo mkdir -vp $TEST_LOGS_DIR && \
-    sudo chown -v $BES_USER:$BES_USER /home/bes_user/bes-test-logs && \
-    echo "# Bundling test logs and site_maps:" >&2 && \
-    find . \( -name "*.log" -o -name "*site_map.txt" \) -print > /tmp/bes-log-file-list.txt && \
-    echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 && \
-    echo "# Test Log Inventory:" >&2 && \
-    cat "/tmp/bes-log-file-list.txt" >&2 && \
-    echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 && \
-    echo "# Making Test Log tarball..." >&2 && \
-    tar -cvzf "$TEST_LOGS_FILE" -T /tmp/bes-log-file-list.txt && \
-    echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2  && \
-    echo -n "# TEST_LOGS_FILE: " >&2  && \
-    ls -l "$TEST_LOGS_FILE" >&2  && \
-    echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2  \
+RUN set -e \
+    && echo "TEST_LOGS_DIR: $TEST_LOGS_DIR" \
+    && sudo mkdir -vp "$TEST_LOGS_DIR" \
+    && sudo chown -v $BES_USER:$BES_USER $TEST_LOGS_DIR \
+    && echo "# Bundling test logs and site_maps:" >&2 \
+    && find . \( -name "*.log" -o -name "*site_map.txt" \) -print > /tmp/bes-log-file-list.txt \
+    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
+    && echo "# Test Log Inventory:" >&2 \
+    && cat "/tmp/bes-log-file-list.txt" >&2 \
+    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
+    && echo "# Making Test Log tarball..." >&2 \
+    && tar -cvzf "$TEST_LOGS_FILE" -T /tmp/bes-log-file-list.txt \
+    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2  \
+    && echo -n "# TEST_LOGS_FILE: " >&2  \
+    && ls -l "$TEST_LOGS_FILE" >&2  \
+    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2
 
 # ...and turn off the besdaemon. We want to turn this on/off regardless of
 # whether we run the tests
@@ -159,7 +160,10 @@ ARG FINAL_BASE_IMAGE
 RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
         echo "Error: Non-empty FINAL_BASE_IMAGE must be specified. Exiting."; \
         exit 1; \
-    fi
+    fi \
+
+ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
+ENV TEST_LOGS_FILE="$TEST_LOGS_DIR/bes-test-logs.tar.gz"
 
 RUN set -e \
     && echo "TEST_LOGS_DIR: $TEST_LOGS_DIR" \
