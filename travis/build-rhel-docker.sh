@@ -106,12 +106,15 @@ else
   docker image ls -a
 fi
 
+loggy "Checking test logs..."
+loggy "$(docker run --rm -v /tmp:/scratch "${SNAPSHOT_IMAGE_TAG}" -c "ls -l $TEST_LOGS_DIR")"
+
 # Note: Take the test log tarball that was created in the Dockerfile and copied to the final mount
 #   and then run this copy command to copy it into Travis.
-docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
+docker run --rm -v /tmp:/scratch "${SNAPSHOT_IMAGE_TAG}" \
     -c "cp $TEST_LOGS_DIR/bes-test-logs.tar.gz /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
 
-docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
+docker run --rm -v /tmp:/scratch "${SNAPSHOT_IMAGE_TAG}" \
     -c "cp $TEST_LOGS_DIR/bes-tests-status /scratch/bes-tests-status"
 
 loggy "ls -l /scratch"

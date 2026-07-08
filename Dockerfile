@@ -130,19 +130,22 @@ RUN if [ "$DIST" == "el9" ]; then \
 
 # Always make the test log tarball
 ENV TEST_LOGS_FILE="$TEST_LOGS_DIR/bes-test-logs.tar.gz"
+ENV TEST_LOG_INVENTORY="$TEST_LOGS_DIR/bes-log-file-list.txt"
 RUN set -e \
     && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
-    && echo "# TEST_LOGS_DIR: $TEST_LOGS_DIR" \
+    && echo "#    TEST_LOGS_DIR: $TEST_LOGS_DIR" \
+    && echo "#   TEST_LOGS_FILE: $TEST_LOGS_FILE" \
+    && echo "# TEST_STATUS_FILE: $TEST_STATUS_FILE" \
     && mkdir -vp "$TEST_LOGS_DIR" \
     && chown -v $BES_USER:$BES_USER $TEST_LOGS_DIR \
     && echo "# Bundling test logs and site_maps:" >&2 \
-    && find . \( -name "*.log" -o -name "*site_map.txt" \) -print > /tmp/bes-log-file-list.txt \
+    && find . \( -name "*.log" -o -name "*site_map.txt" \) -print > "$TEST_LOG_INVENTORY" \
     && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
     && echo "# Test Log Inventory:" >&2 \
-    && cat "/tmp/bes-log-file-list.txt" >&2 \
+    && cat "$TEST_LOG_INVENTORY" >&2 \
     && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
     && echo "# Making Test Log tarball..." >&2 \
-    && tar -cvzf "$TEST_LOGS_FILE" -T /tmp/bes-log-file-list.txt \
+    && tar -cvzf "$TEST_LOGS_FILE" -T "$TEST_LOG_INVENTORY" \
     && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
     && echo -n "# TEST_LOGS_FILE: " >&2 \
     && ls -l "$TEST_LOGS_FILE" >&2  \
@@ -171,13 +174,20 @@ RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
 ENV TEST_LOGS_DIR="/home/$BES_USER/bes-test-logs"
 ENV TEST_STATUS_FILE="$TEST_LOGS_DIR/bes-tests-status"
 ENV TEST_LOGS_FILE="$TEST_LOGS_DIR/bes-test-logs.tar.gz"
+ENV TEST_LOG_INVENTORY="$TEST_LOGS_DIR/bes-log-file-list.txt"
 RUN set -e \
-    && echo "# TEST_LOGS_DIR: $TEST_LOGS_DIR" \
-    && mkdir -vp $TEST_LOGS_DIR
+    && echo "# TEST_LOGS_DIR: $TEST_LOGS_DIR" >&2 \
+    && mkdir -vp $TEST_LOGS_DIR >&2
 
 # Copy the log files so tha t they can be accessed from outside of this docker build (i.e. Travis)
 COPY --from=builder "$TEST_STATUS_FILE" "$TEST_STATUS_FILE"
+COPY --from=builder "$TEST_LOG_INVENTORY" "$TEST_LOG_INVENTORY"
 COPY --from=builder "$TEST_LOGS_FILE" "$TEST_LOGS_FILE"
+
+RUN set -e \
+    && echo "# Checking test log output:" >&2 \
+    && echo "# ls -l $TEST_LOGS_DIR" >&2 \
+    && ls -l "$TEST_LOGS_DIR" >&2
 
 # Duplicated from installation above, this time on a slimmer base image...
 # Install the libdap rpms
