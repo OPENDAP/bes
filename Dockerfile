@@ -161,7 +161,7 @@ ARG FINAL_BASE_IMAGE
 RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
         echo "Error: Non-empty FINAL_BASE_IMAGE must be specified. Exiting."; \
         exit 1; \
-    fi \
+    fi
 
 ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
 ENV TEST_LOGS_FILE="$TEST_LOGS_DIR/bes-test-logs.tar.gz"
