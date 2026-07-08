@@ -84,7 +84,7 @@ mkdir -vp $TEST_LOGS_DIR
 loggy "Building the docker image..."
 docker image pull "${BUILDER_BASE_IMAGE}"
 
-set +e
+set +ex
 docker build \
     --build-arg BUILDER_BASE_IMAGE="$BUILDER_BASE_IMAGE" \
     --build-arg FINAL_BASE_IMAGE="$FINAL_BASE_IMAGE" \
