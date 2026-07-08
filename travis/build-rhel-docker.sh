@@ -34,7 +34,7 @@
 set -eu
 
 function loggy(){
-    echo  "$@" | awk '{ print "# "$0;}'  >&2
+    echo  "$@" | awk '{ print "# build-rhel-docker - "$0;}'  >&2
 }
 
 HYRAX_DEPENDENCIES_TARBALL="hyrax-dependencies-${OS}.tgz"
@@ -70,7 +70,7 @@ loggy "       AWS_DOWNLOADS_DIR: '$AWS_DOWNLOADS_DIR'"
 loggy "           TEST_LOGS_DIR: '$TEST_LOGS_DIR'"
 loggy ""
 
-set -eux
+set -eu
 
 loggy "Downloading AWS dependencies..."
 mkdir -vp $AWS_DOWNLOADS_DIR
@@ -84,7 +84,7 @@ mkdir -vp $TEST_LOGS_DIR
 loggy "Building the docker image..."
 docker image pull "${BUILDER_BASE_IMAGE}"
 
-set +ex
+set +e
 docker build \
     --build-arg BUILDER_BASE_IMAGE="$BUILDER_BASE_IMAGE" \
     --build-arg FINAL_BASE_IMAGE="$FINAL_BASE_IMAGE" \
@@ -101,6 +101,7 @@ docker build \
     -f ${BES_REPO_DIR}/Dockerfile ${BES_REPO_DIR}
 
 build_status=$?
+set -e
 
 if [ $build_status -ne 0 ]
 then
@@ -115,7 +116,5 @@ else
   docker image ls -a
 fi
 
-
 loggy "END"
-
 exit $build_status
