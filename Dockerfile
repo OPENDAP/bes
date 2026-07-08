@@ -103,6 +103,8 @@ RUN sudo -s --preserve-env=PATH besctl start
 # ...now run the tests.
 ARG DIST
 ENV DIST=${DIST:-el8}
+ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs/bes-test-logs.tar.gz"
+ENV TEST_LOGS_FILE="$TEST_LOGS_DIR/bes-test-logs.tar.gz"
 ENV TEST_STATUS="/tmp/status"
 RUN if [ "$DIST" == "el9" ]; then \
         echo "# Warning: Skipping make check because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299"; \
@@ -116,7 +118,7 @@ RUN if [ "$DIST" == "el9" ]; then \
       set -e; \
       if [ $test_status -ne 0 ]; then \
         echo "# FAILED: BES Tests" >&2 && \
-        sudo mkdir -vp /home/bes_user/bes-test-logs && \
+        sudo mkdir -vp $TEST_LOGS_DIR && \
         sudo chown -v $BES_USER:$BES_USER /home/bes_user/bes-test-logs && \
         echo "# Bundling test logs and site_maps:" >&2 && \
         find . \( -name "*.log" -o -name "*site_map.txt" \) -print > /tmp/bes-log-file-list.txt && \
@@ -125,7 +127,7 @@ RUN if [ "$DIST" == "el9" ]; then \
         cat "/tmp/bes-log-file-list.txt" >&2 && \
         echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 && \
         echo "# Making Test Log tarball..." >&2 && \
-        tar -cvzf /home/bes_user/bes-test-logs/bes-test-logs.tar.gz -T /tmp/bes-log-file-list.txt && \
+        tar -cvzf "$TEST_LOGS_FILE " -T /tmp/bes-log-file-list.txt && \
         echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
       else  \
         echo "# PASSED: BES Tests" >&2 ;\
@@ -142,11 +144,14 @@ RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
 USER 0
 
 RUN --mount=from=test_logs,target=/tmp_mounted,rw \
-    echo "RUNNING AS $UID"; \
+    echo "# RUNNING AS USER $UID"; \
     test_status="$(cat $TEST_STATUS)"; \
     echo "# test_status: $test_status" >&2 ;\
+    echo -n "# TEST_LOGS_FILE: " >&2 ;\
+    ls -l "$TEST_LOGS_FILE " >&2 ; \
     if [ $test_status -ne 0 ]; then  \
-        cp /home/bes_user/bes-test-logs/bes-test-logs.tar.gz "/tmp_mounted/bes-test-logs.tar.gz"; \
+        echo -n "# Looks like the 'make check'' failed. Exporting: $TEST_LOGS_FILE" >&2 ;\
+        cp "$TEST_LOGS_FILE" "/tmp_mounted"; \
         exit $test_status;  \
     fi
 
