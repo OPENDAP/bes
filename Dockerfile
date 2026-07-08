@@ -103,7 +103,7 @@ RUN sudo -s --preserve-env=PATH besctl start
 # ...now run the tests.
 ARG DIST
 ENV DIST=${DIST:-el8}
-ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs/bes-test-logs.tar.gz"
+ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
 ENV TEST_LOGS_FILE="$TEST_LOGS_DIR/bes-test-logs.tar.gz"
 ENV TEST_STATUS="/tmp/status"
 RUN if [ "$DIST" == "el9" ]; then \
