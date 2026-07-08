@@ -133,13 +133,16 @@ RUN if [ "$DIST" == "el9" ]; then \
     fi \
 
 USER 0
+
 RUN --mount=from=test_logs,target=/tmp_mounted,rw \
+    echo "RUNNING AS $UID"; \
     test_status="$(cat $TEST_STATUS)"; \
     echo "# test_status: $test_status" >&2 ;\
     if [ $test_status -ne 0 ]; then  \
         cp /home/bes_user/bes-test-logs/bes-test-logs.tar.gz "/tmp_mounted/bes-test-logs.tar.gz"; \
         exit $test_status;  \
-    fi
+    fi \
+
 USER $BES_USER
 
 
