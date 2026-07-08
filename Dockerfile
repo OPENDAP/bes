@@ -124,7 +124,8 @@ RUN if [ "$DIST" == "el9" ]; then \
 # Always make the test log tarball
 ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
 ENV TEST_LOGS_FILE="$TEST_LOGS_DIR/bes-test-logs.tar.gz"
-RUN set -e;\
+RUN set -e &&\
+    echo "TEST_LOGS_DIR: $TEST_LOGS_DIR" && \
     sudo mkdir -vp $TEST_LOGS_DIR && \
     sudo chown -v $BES_USER:$BES_USER /home/bes_user/bes-test-logs && \
     echo "# Bundling test logs and site_maps:" >&2 && \
@@ -161,7 +162,8 @@ RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
     fi
 
 RUN set -e \
-    && sudo mkdir -vp $TEST_LOGS_DIR \
+    && echo "TEST_LOGS_DIR: $TEST_LOGS_DIR" \
+    && sudo mkdir -vp $TEST_LOGS_DIR
 
 # Copy the log files so tha t they can be accessed from outside of this docker build (i.e. Travis)
 COPY --from=builder "$TEST_LOGS_FILE" "$TEST_LOGS_DIR/bes-test-logs.tar.gz"
