@@ -103,73 +103,48 @@ RUN sudo -s --preserve-env=PATH besctl start
 # ...now run the tests.
 ARG DIST
 ENV DIST=${DIST:-el8}
-ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
-ENV TEST_LOGS_FILE="$TEST_LOGS_DIR/bes-test-logs.tar.gz"
-ENV TEST_STATUS="/tmp/status"
+ENV TEST_STATUS_FILE="/tmp/status"
 RUN if [ "$DIST" == "el9" ]; then \
         echo "# Warning: Skipping make check because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299"; \
     else \
-      set +e; \
-      make check -j$(nproc --ignore=1); \
-      test_status=$?; \
-      echo $test_status > $TEST_STATUS; \
-      echo "# TEST_STATUS: $(cat $TEST_STATUS)" >&2; \
-      echo "# test_status: $test_status" >&2; \
-      set -e; \
-      if [ $test_status -ne 0 ]; then \
-        echo "# FAILED: BES Tests" >&2 && \
-        sudo mkdir -vp $TEST_LOGS_DIR && \
-        sudo chown -v $BES_USER:$BES_USER /home/bes_user/bes-test-logs && \
-        echo "# Bundling test logs and site_maps:" >&2 && \
-        find . \( -name "*.log" -o -name "*site_map.txt" \) -print > /tmp/bes-log-file-list.txt && \
-        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 && \
-        echo "# Test Log Inventory:" >&2 && \
-        cat "/tmp/bes-log-file-list.txt" >&2 && \
-        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 && \
-        echo "# Making Test Log tarball..." >&2 && \
-        tar -cvzf "$TEST_LOGS_FILE" -T /tmp/bes-log-file-list.txt && \
-        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2  && \
-        echo -n "# TEST_LOGS_FILE: " >&2  && \
-        ls -l "$TEST_LOGS_FILE" >&2  && \
-        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2  \
-     else  \
-        echo "# PASSED: BES Tests" >&2 ;\
-      fi \
-    fi
+        set +e; \
+        make check -j$(nproc --ignore=1); \
+        test_status=$?; \
+        echo $test_status > $TEST_STATUS_FILE; \
+        echo "# TEST_STATUS: $(cat $TEST_STATUS_FILE)" >&2; \
+        echo "# test_status: $test_status" >&2; \
+        set -e; \
+        if [ $Ttest_status -ne 0 ]; then \
+            echo "# FAILED: BES Tests" >&2; n\
+        else  \
+            echo "# PASSED: BES Tests" >&2 ;\
+        fi \
+    fi \
+
+# Always make the test log tarball
+ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
+ENV TEST_LOGS_FILE="$TEST_LOGS_DIR/bes-test-logs.tar.gz"
+RUN set -e;\
+    sudo mkdir -vp $TEST_LOGS_DIR && \
+    sudo chown -v $BES_USER:$BES_USER /home/bes_user/bes-test-logs && \
+    echo "# Bundling test logs and site_maps:" >&2 && \
+    find . \( -name "*.log" -o -name "*site_map.txt" \) -print > /tmp/bes-log-file-list.txt && \
+    echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 && \
+    echo "# Test Log Inventory:" >&2 && \
+    cat "/tmp/bes-log-file-list.txt" >&2 && \
+    echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 && \
+    echo "# Making Test Log tarball..." >&2 && \
+    tar -cvzf "$TEST_LOGS_FILE" -T /tmp/bes-log-file-list.txt && \
+    echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2  && \
+    echo -n "# TEST_LOGS_FILE: " >&2  && \
+    ls -l "$TEST_LOGS_FILE" >&2  && \
+    echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2  \
 
 # ...and turn off the besdaemon. We want to turn this on/off regardless of
 # whether we run the tests
 RUN sudo -s --preserve-env=PATH besctl stop
 
 RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
-
-
-USER 0
-
-RUN --mount=from=test_logs_dir,target=/tmp_tests,rw \
-    echo "# RUNNING AS USER $UID"; \
-    test_status="$(cat $TEST_STATUS)"; \
-    echo "# test_status: $test_status" >&2 ;\
-    echo -n "# TEST_LOGS_FILE: " >&2 ;\
-    ls -l "$TEST_LOGS_FILE" >&2 ; \
-    if [ $test_status -ne 0 ]; then  \
-        target_file="/tmp_tests/bes-test-logs.tar.gz"; \
-        echo "# Looks like the 'make check'' failed. Exporting: $TEST_LOGS_FILE to $target_file" >&2 ;\
-        touch "$target_file" ; \
-        echo -n "# target_file: "; \
-        ls -l "$target_file" >&2 ; \
-        cp -v "$TEST_LOGS_FILE" "$target_file" >&2 ; \
-        echo -n "# target_file: "; \
-        ls -l "$target_file" >&2 ; \
-    fi
-
-
-RUN echo "# RUNNING AS USER $UID"; \
-    test_status="$(cat $TEST_STATUS)"; \
-    if [ $test_status -ne 0 ]; then  \
-        exit $test_status;  \
-    fi
-
 
 
 
@@ -185,8 +160,11 @@ RUN if [ -z "$FINAL_BASE_IMAGE" ]; then \
         exit 1; \
     fi
 
+RUN set -e \
+    && sudo mkdir -vp $TEST_LOGS_DIR \
+
 # Copy the log files so tha t they can be accessed from outside of this docker build (i.e. Travis)
-# COPY --from=builder /home/bes_user/bes-test-logs/bes-test-logs.tar.gz /bes-test-logs/bes-test-logs.tar.gz
+COPY --from=builder "$TEST_LOGS_FILE" "$TEST_LOGS_DIR/bes-test-logs.tar.gz"
 
 # Duplicated from installation above, this time on a slimmer base image...
 # Install the libdap rpms
