@@ -105,7 +105,7 @@ set -e
 
 if [ $build_status -ne 0 ]
 then
-  loggy "Docker build FAILED!!  build_status: $build_status"
+  loggy "ERROR - Docker build FAILED!!  build_status: $build_status"
   loggy "Test logs should be in: $TEST_LOGS_DIR"
   loggy "ls -l $TEST_LOGS_DIR"
   loggy "$(ls -l $TEST_LOGS_DIR)"

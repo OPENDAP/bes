@@ -146,14 +146,14 @@ RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
 
 USER 0
 
-RUN --mount=from=test_logs_dir,target=/tmp_mounted,rw \
+RUN --mount=from=test_logs_dir,target=/tmp_tests,rw \
     echo "# RUNNING AS USER $UID"; \
     test_status="$(cat $TEST_STATUS)"; \
     echo "# test_status: $test_status" >&2 ;\
     echo -n "# TEST_LOGS_FILE: " >&2 ;\
     ls -l "$TEST_LOGS_FILE" >&2 ; \
     if [ $test_status -ne 0 ]; then  \
-        target_file="/tmp_mounted/bes-test-logs.tar.gz"; \
+        target_file="/tmp_tests/bes-test-logs.tar.gz"; \
         echo "# Looks like the 'make check'' failed. Exporting: $TEST_LOGS_FILE to $target_file" >&2 ;\
         touch "$target_file" ; \
         echo -n "# target_file: "; \
