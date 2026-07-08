@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="removed" name="vl_str_dup_cross_array.h5" dmrpp:href="data/string_arrays/vl_str_dup_cross_array.h5" dmrpp:version="3.21.1">
+    <String name="str_dup">
+        <Dim size="2"/>
+        <Dim size="4"/>
+        <dmrpp:vlsa>
+            <v>apple</v>
+            <v>banana</v>
+            <v c="3">cherry</v>
+            <v c="2">giraffe</v>
+            <v>hippopotamus</v>
+        </dmrpp:vlsa>
+    </String>
+</Dataset>
