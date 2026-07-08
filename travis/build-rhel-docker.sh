@@ -43,7 +43,7 @@ LIBDAP_DEVEL_RPM_FILENAME="libdap-devel-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
 DOCKER_DEV_FLAGS=${DOCKER_DEV_FLAGS:-""}
 CONFIGURE_OPTIONS=${CONFIGURE_OPTIONS:-""}
 AWS_DOWNLOADS_DIR="/tmp/dependency_downloads"
-ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
+TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
 
 loggy "#########################################################################"
 loggy "$0 BEGIN (I am $UID)"
