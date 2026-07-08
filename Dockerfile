@@ -114,8 +114,7 @@ RUN if [ "$DIST" == "el9" ]; then \
         echo "# TEST_STATUS: $(cat $TEST_STATUS_FILE)" >&2; \
         echo "# test_status: $test_status" >&2; \
         set -e; \
-        if [ $Ttest_status -ne 0 ] \
-        then \
+        if [ $test_status -ne 0 ]; then \
             echo "# FAILED: BES Tests" >&2; \
         else  \
             echo "# PASSED: BES Tests" >&2 ;\
@@ -138,8 +137,8 @@ RUN set -e \
     && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
     && echo "# Making Test Log tarball..." >&2 \
     && tar -cvzf "$TEST_LOGS_FILE" -T /tmp/bes-log-file-list.txt \
-    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2  \
-    && echo -n "# TEST_LOGS_FILE: " >&2  \
+    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
+    && echo -n "# TEST_LOGS_FILE: " >&2 \
     && ls -l "$TEST_LOGS_FILE" >&2  \
     && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2
 
