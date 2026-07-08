@@ -176,6 +176,7 @@ jobs:
     - stage: build-docker
       name: "Build docker image bes_core:-el8"
       script:
+        - set -e
         - |
           export BES_BUILD=docker-el8
           echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
@@ -202,13 +203,13 @@ jobs:
           echo "# (In Travis) build_status: $build_status" >&2 
           echo "# (In Travis) BUILDER_BASE_IMAGE: $BUILDER_BASE_IMAGE" >&2 
           if [ $build_status -ne 0 ]; then
-#            ls -l /tmp >&2
-#            cp /tmp/bes-test-logs.tar.gz "/scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
-            docker run --rm -v /tmp:/scratch $BUILDER_BASE_IMAGE  -c "ls -l / && cp /tmp/bes-test-logs.tar.gz /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
+            ls -l /tmp >&2
+            cp /tmp/bes-test-logs.tar.gz "/scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
+            # docker run --rm -v /tmp:/scratch $BUILDER_BASE_IMAGE  -c "ls -l / && cp /tmp/bes-test-logs.tar.gz /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
           fi
         # Now we bail out if the build failed.
         - |
-          if [ $build_status -ne 0 ] then
+          if [ $build_status -ne 0 ]; then
             echo "# ERROR - build-rhel-docker.sh failed! build_status: $build_status" >&2 
             exit $build_status 
           fi
@@ -316,7 +317,7 @@ deploy:
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     bucket: opendap.travis.build
-    skip_cleanup: true
+    cleanup: false
     local_dir: $TRAVIS_BUILD_DIR/package
     on:
       all_branches: true
