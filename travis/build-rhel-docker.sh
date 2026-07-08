@@ -46,7 +46,7 @@ AWS_DOWNLOADS_DIR="/tmp/dependency_downloads"
 TEST_LOGS_DIR="/tmp/tests"
 
 loggy "#########################################################################"
-loggy "$0 BEGIN"
+loggy "$0 BEGIN (I am $UID)"
 loggy "Preparing to build docker image."
 loggy ""
 loggy "Input variables:"

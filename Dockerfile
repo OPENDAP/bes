@@ -130,15 +130,17 @@ RUN if [ "$DIST" == "el9" ]; then \
       else  \
         echo "# PASSED: BES Tests" >&2 ;\
       fi \
-    fi
+    fi \
 
-RUN --mount=from=test_logs,target=/tmp_mounted,rw,uid=0 \
+USER root
+RUN --mount=from=test_logs,target=/tmp_mounted,rw \
     test_status="$(cat $TEST_STATUS)"; \
     echo "# test_status: $test_status" >&2 ;\
     if [ $test_status -ne 0 ]; then  \
         cp /home/bes_user/bes-test-logs/bes-test-logs.tar.gz "/tmp_mounted/bes-test-logs.tar.gz"; \
         exit $test_status;  \
     fi
+USER $BES_USER
 
 
 # ...and turn off the besdaemon. We want to turn this on/off regardless of
