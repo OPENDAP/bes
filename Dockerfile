@@ -129,7 +129,10 @@ RUN if [ "$DIST" == "el9" ]; then \
         echo "# Making Test Log tarball..." >&2 && \
         tar -cvzf "$TEST_LOGS_FILE " -T /tmp/bes-log-file-list.txt && \
         echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
-      else  \
+        echo -n "# TEST_LOGS_FILE: " >&2 ;\
+        ls -l "$TEST_LOGS_FILE" >&2 ; \
+        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
+     else  \
         echo "# PASSED: BES Tests" >&2 ;\
       fi \
     fi
@@ -151,7 +154,7 @@ RUN --mount=from=test_logs,target=/tmp_mounted,rw \
     ls -l "$TEST_LOGS_FILE" >&2 ; \
     if [ $test_status -ne 0 ]; then  \
         echo "# Looks like the 'make check'' failed. Exporting: $TEST_LOGS_FILE" >&2 ;\
-        cp -v "$TEST_LOGS_FILE" "/tmp_mounted" >&2 ; \
+        cp -v "$TEST_LOGS_FILE" "/tmp_mounted/bes-test-logs.tar.gz" >&2 ; \
         exit $test_status;  \
     fi
 
