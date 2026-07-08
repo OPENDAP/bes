@@ -127,7 +127,7 @@ RUN if [ "$DIST" == "el9" ]; then \
         cat "/tmp/bes-log-file-list.txt" >&2 && \
         echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 && \
         echo "# Making Test Log tarball..." >&2 && \
-        tar -cvzf "$TEST_LOGS_FILE " -T /tmp/bes-log-file-list.txt && \
+        tar -cvzf "$TEST_LOGS_FILE" -T /tmp/bes-log-file-list.txt && \
         echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
         echo -n "# TEST_LOGS_FILE: " >&2 ;\
         ls -l "$TEST_LOGS_FILE" >&2 ; \
