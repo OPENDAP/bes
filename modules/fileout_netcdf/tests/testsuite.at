@@ -520,3 +520,5 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/special_fixed_str_array.h
 
 # The variable-length string array dmrpp test
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_big_vl_str_dset2.h5.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/vl_str_array.h5.dmrpp_constrained.bescmd)
+
