@@ -126,9 +126,10 @@ RUN if [ "$DIST" == "el9" ]; then \
 ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
 ENV TEST_LOGS_FILE="$TEST_LOGS_DIR/bes-test-logs.tar.gz"
 RUN set -e \
-    && echo "TEST_LOGS_DIR: $TEST_LOGS_DIR" \
-    && sudo mkdir -vp "$TEST_LOGS_DIR" \
-    && sudo chown -v $BES_USER:$BES_USER $TEST_LOGS_DIR \
+    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
+    && echo "# TEST_LOGS_DIR: $TEST_LOGS_DIR" \
+    && mkdir -vp "$TEST_LOGS_DIR" \
+    && chown -v $BES_USER:$BES_USER $TEST_LOGS_DIR \
     && echo "# Bundling test logs and site_maps:" >&2 \
     && find . \( -name "*.log" -o -name "*site_map.txt" \) -print > /tmp/bes-log-file-list.txt \
     && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
@@ -166,7 +167,7 @@ ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
 ENV TEST_LOGS_FILE="$TEST_LOGS_DIR/bes-test-logs.tar.gz"
 
 RUN set -e \
-    && echo "TEST_LOGS_DIR: $TEST_LOGS_DIR" \
+    && echo "# TEST_LOGS_DIR: $TEST_LOGS_DIR" \
     && sudo mkdir -vp $TEST_LOGS_DIR
 
 # Copy the log files so tha t they can be accessed from outside of this docker build (i.e. Travis)
