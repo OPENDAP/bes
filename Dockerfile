@@ -153,8 +153,14 @@ RUN --mount=from=test_logs,target=/tmp_mounted,rw \
     echo -n "# TEST_LOGS_FILE: " >&2 ;\
     ls -l "$TEST_LOGS_FILE" >&2 ; \
     if [ $test_status -ne 0 ]; then  \
+        target_file="/tmp_mounted/bes-test-logs.tar.gz"; \
         echo "# Looks like the 'make check'' failed. Exporting: $TEST_LOGS_FILE" >&2 ;\
-        cp -v "$TEST_LOGS_FILE" "/tmp_mounted/bes-test-logs.tar.gz" >&2 ; \
+        touch "$target_file" ; \
+        ls -l "$target_file" >&2 ; \
+        echo -n "# target_file: "; \
+        cp -v "$TEST_LOGS_FILE" "$target_file" >&2 ; \
+        ls -l "$target_file" >&2 ; \
+        echo -n "# target_file: "; \
         exit $test_status;  \
     fi
 
