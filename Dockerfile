@@ -159,8 +159,8 @@ RUN --mount=from=test_logs,target=/tmp_mounted,rw \
         echo -n "# target_file: "; \
         ls -l "$target_file" >&2 ; \
         cp -v "$TEST_LOGS_FILE" "$target_file" >&2 ; \
-        ls -l "$target_file" >&2 ; \
         echo -n "# target_file: "; \
+        ls -l "$target_file" >&2 ; \
         exit $test_status;  \
     fi
 
