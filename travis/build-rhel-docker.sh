@@ -121,10 +121,10 @@ docker run --rm -v /tmp:/scratch "${SNAPSHOT_IMAGE_TAG}" \
     -c "cp $TEST_LOGS_DIR/bes-test-logs.tar.gz /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
 
 
-loggy "ls -l /scratch"
-loggy "$(ls -l /scratch)"
+loggy "ls -l /tmp"
+loggy "$(ls -l /tmp)"
 
-bes_tests_status=$(cat /scratch/bes-tests-status)
+bes_tests_status=$(cat /tmp/bes-tests-status)
 if [ $bes_tests_status -ne 0 ]
 then
   loggy "ERROR - The BES autotests failed!!"
