@@ -55,7 +55,6 @@ m4_define([AT_TEST_BLOCKING], [dnl
     AT_CLEANUP
 ])
 
-
 # Test that the create_and_lock() function of the cache will correctly fail
 # to 'create' a file twice. That is, that once a file has been made using
 # 'create_and_lock', trying to 'create_and_lock' the same file again is an
@@ -64,10 +63,6 @@ m4_define([AT_TEST_BLOCKING], [dnl
 m4_define([AT_TEST_CREATE_AND_LOCK], [dnl
 
     AT_SETUP([CREATE_AND_LOCK])
-
-
-    dnl FORCE FAILURE
-    m4exit(1)
 
     # This uses the verbose option of the testsuite itself. 
     AS_IF([test -z $at_verbose], [debug="-d"], [debug=""])
