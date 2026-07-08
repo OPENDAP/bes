@@ -148,7 +148,7 @@ RUN --mount=from=test_logs,target=/tmp_mounted,rw \
     test_status="$(cat $TEST_STATUS)"; \
     echo "# test_status: $test_status" >&2 ;\
     echo -n "# TEST_LOGS_FILE: " >&2 ;\
-    ls -l "$TEST_LOGS_FILE " >&2 ; \
+    ls -l "$TEST_LOGS_FILE" >&2 ; \
     if [ $test_status -ne 0 ]; then  \
         echo "# Looks like the 'make check'' failed. Exporting: $TEST_LOGS_FILE" >&2 ;\
         cp -v "$TEST_LOGS_FILE" "/tmp_mounted" >&2 ; \
