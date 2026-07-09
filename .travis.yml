@@ -187,7 +187,8 @@ jobs:
           export OS=rocky8
           export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
           export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
-        #
+        # Run the build, exit on failure.
+        - |
           set +e
           ./travis/build-rhel-docker.sh
           build_status=$?
@@ -196,7 +197,6 @@ jobs:
           echo "# Checking test log inventory on TravisCI host." >&2
           ls -l /tmp >&2
           echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
-            
           if [ "$build_status" -ne 0 ]; then
             echo "# ERROR - Docker build failed, exiting. build_status: $build_status" >&2
             exit $build_status; 
