@@ -1,14 +1,15 @@
 #!/bin/sh
 #
 # Upload the results of tests after running a build on Travis
-function loggy(){
+function loggy() {
     echo  "$@" | awk '{ print "# upload-test-result() - "$0;}'  >&2
 }
-
-loggy "BEGIN"
-
+HR="^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
 LOG_FILE_TGZ="/tmp/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
 S3_BUCKET="s3://opendap.travis.tests"
+
+loggy "$HR"
+loggy "BEGIN"
 
 if test "$BES_BUILD" = main -o "$BES_BUILD" = distcheck -o "$BES_BUILD" = "docker-el8" -o "$BES_BUILD" = "docker-el9"
 then
@@ -28,6 +29,8 @@ then
   else
     loggy "ERROR - The test logs tarball ($LOG_FILE_TGZ) was not found."
   fi
+else
+  loggy "No logs will uploaded for build: '$BES_BUILD'"
 fi
 
 # A quick hack to get the gcovr report to S3. jhrg 4/20/23
@@ -40,3 +43,4 @@ then
 fi
 
 loggy "END"
+loggy "$HR"
