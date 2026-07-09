@@ -2275,8 +2275,14 @@ void DmrppArray::read_contiguous_string() {
     set_read_p(true);
 }
 
-string DmrppArray::ingest_fixed_length_string(const char *buf, const unsigned long long fixed_str_len,
+string DmrppArray::ingest_fixed_length_string(const char *buf, unsigned long long buf_size, const unsigned long long fixed_str_len,
                                               string_pad_type pad_type) {
+    if (fixed_str_len > buf_size) { 
+        string msg = "The ingestion of a DAP string array " + name() + " has a buffer overflow.\n"; 
+        msg +=" The buffer size: " + to_string(buf_size)+'\n';
+        msg +=" The string length: " + to_string(fixed_str_len)+'\n';
+        throw BESInternalError(msg, __FILE__, __LINE__);
+    }
     string value;
     unsigned long long str_len = 0;
     switch (pad_type) {
@@ -2478,6 +2484,7 @@ DmrppArray *get_as_byte_array(DmrppArray &array) {
     return byte_array_proxy;
 }
 
+#if 0
 /**
  * Reads the string data for the fixed length string array flsa from the
  * data buffer of the data array into which it was read.
@@ -2513,6 +2520,7 @@ void ingest_flsa_data(DmrppArray &flsa, DmrppArray &data) {
         }
     }
 }
+#endif
 
 /**
  * @brief Read data for the array
@@ -3666,13 +3674,14 @@ void DmrppArray::insert_constrained_contiguous_string(Dim_iter dim_iter,
                                                       vector<unsigned long long> &subset_addr,
                                                       const vector<unsigned long long> &array_shape,
                                                       unsigned long long chars_per_string, string_pad_type pad_type,
-                                                      char *src_buf)
+                                                      shared_ptr<Chunk> the_one_chunk)
 {
 
     uint64_t start = this->dimension_start_ll(dim_iter, true);
     uint64_t stop = this->dimension_stop_ll(dim_iter, true);
     uint64_t stride = this->dimension_stride_ll(dim_iter, true);
-
+    
+    char *src_buf = the_one_chunk->get_rbuf();
     dim_iter++;
 
     // The end case for the recursion is dimIter == dim_end(); stride == 1 is an optimization
@@ -3692,7 +3701,8 @@ void DmrppArray::insert_constrained_contiguous_string(Dim_iter dim_iter,
             for (uint64_t source_index = start_index; source_index <= stop_index; source_index++) {
                 uint64_t source_char = source_index * chars_per_string;
                 // Copy a single string.
-                (get_str())[target_index] = ingest_fixed_length_string(src_buf + source_char, chars_per_string, pad_type);
+                unsigned long long left_buf_size = the_one_chunk->get_rbuf_size() - source_char;
+                (get_str())[target_index] = ingest_fixed_length_string(src_buf + source_char, left_buf_size, chars_per_string, pad_type);
                 target_index++;
             }
         }
@@ -3705,7 +3715,8 @@ void DmrppArray::insert_constrained_contiguous_string(Dim_iter dim_iter,
 
                 // Copy a single value.
                 uint64_t source_char = sourceIndex * chars_per_string;
-                (get_str())[target_index] = ingest_fixed_length_string(src_buf + source_char, chars_per_string, pad_type);
+                unsigned long long left_buf_size = the_one_chunk->get_rbuf_size() - source_char;
+                (get_str())[target_index] = ingest_fixed_length_string(src_buf + source_char, left_buf_size, chars_per_string, pad_type);
                 target_index++;
 
             }
@@ -3715,7 +3726,7 @@ void DmrppArray::insert_constrained_contiguous_string(Dim_iter dim_iter,
         for (uint64_t dim_index = start; dim_index <= stop; dim_index += stride) {
             // Nope! Then we recurse to the last dimension to read stuff
             subset_addr.push_back(dim_index);
-            insert_constrained_contiguous_string(dim_iter, target_index, subset_addr, array_shape, chars_per_string, pad_type, src_buf);
+            insert_constrained_contiguous_string(dim_iter, target_index, subset_addr, array_shape, chars_per_string, pad_type, the_one_chunk);
             subset_addr.pop_back();
         }
     }
@@ -3776,7 +3787,8 @@ void DmrppArray::read_contiguous_string_array()
 
             unsigned long long temp_count = 0;
             while (buffer < buffer_end) {
-                (get_str())[temp_count] = ingest_fixed_length_string(buffer, fstr_len, pad_type);
+                unsigned long long left_buf_size = the_one_chunk->get_rbuf_size() - temp_count*fstr_len;
+                (get_str())[temp_count] = ingest_fixed_length_string(buffer, left_buf_size, fstr_len, pad_type);
                 buffer += fstr_len;
                 temp_count++;
             }
@@ -3799,7 +3811,7 @@ void DmrppArray::read_contiguous_string_array()
             }
             else {
                 unsigned long long target_index = 0;
-                insert_constrained_contiguous_string(dim_begin(), target_index, subset, array_shape, fstr_len, pad_type,the_one_chunk->get_rbuf());
+                insert_constrained_contiguous_string(dim_begin(), target_index, subset, array_shape, fstr_len, pad_type,the_one_chunk);
             }
         }
 
@@ -3843,7 +3855,6 @@ void DmrppArray::read_chunked_string_array()
                 for (const auto &chunk: temp_chunks) {
                     if (!is_filters_empty())
                         chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), fstr_len);
-    
                     vector<unsigned long long> chunk_origin = chunk->get_position_in_array();
                     insert_chunk_fixed_size_str_unconstrained(0,0,0,chunk,array_shape,chunk_origin,fstr_len);
                 }
@@ -3964,7 +3975,8 @@ void DmrppArray::insert_chunk_fixed_size_str(unsigned int dim, vector<unsigned l
 
             for (unsigned long long temp_count= 0; temp_count <count; temp_count++) { 
                 unsigned long long source_char = (chunk_fstr_start_index+temp_count) * chars_per_string;
-                get_str()[target_fstr_start_index+temp_count] = ingest_fixed_length_string(source_buffer+source_char,chars_per_string,pad_type);
+                unsigned long long left_buf_size = chunk->get_rbuf_size() - source_char;
+                get_str()[target_fstr_start_index+temp_count] = ingest_fixed_length_string(source_buffer+source_char,left_buf_size,chars_per_string,pad_type);
             }
         } else {
             // Stride != 1
@@ -3981,7 +3993,8 @@ void DmrppArray::insert_chunk_fixed_size_str(unsigned int dim, vector<unsigned l
 
                 unsigned long long chunk_fstr_start_index = get_index(*chunk_element_address, chunk_shape);
                 unsigned long long source_char = chunk_fstr_start_index * chars_per_string;
-                get_str()[target_fstr_start_index+array_temp_count] = ingest_fixed_length_string(source_buffer+source_char,chars_per_string,pad_type);
+                unsigned long long left_buf_size = chunk->get_rbuf_size() - source_char;
+                get_str()[target_fstr_start_index+array_temp_count] = ingest_fixed_length_string(source_buffer+source_char,left_buf_size,chars_per_string,pad_type);
                 array_temp_count++;
             }
         }
@@ -4022,7 +4035,8 @@ void DmrppArray::insert_chunk_fixed_size_str_unconstrained(unsigned int dim, uns
         array_offset += chunk_origin[dim];
         for (unsigned long long temp_count= 0; temp_count <=chunk_end; temp_count++) { 
             unsigned long long source_char = (chunk_offset+temp_count) * chars_per_string;
-            string temp_str = ingest_fixed_length_string(source_buffer+source_char,chars_per_string,pad_type);
+            unsigned long long left_buf_size = chunk->get_rbuf_size() - source_char;
+            string temp_str = ingest_fixed_length_string(source_buffer+source_char,left_buf_size,chars_per_string,pad_type);
             get_str()[array_offset+temp_count]=temp_str;
         }
     } else {

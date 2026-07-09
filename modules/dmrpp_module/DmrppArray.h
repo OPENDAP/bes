@@ -188,7 +188,7 @@ private:
                                               vector<unsigned long long> &subset_addr,
                                               const vector<unsigned long long> &array_shape,
                                               unsigned long long chars_per_string, string_pad_type pad_type,
-                                              char *src_buf);
+                                              shared_ptr<Chunk> the_one_chunk);
     void read_chunked_string_array();   // This class only. jhrg 1/29/24
     void read_chunked_string_array_constrained(); 
     void insert_chunk_fixed_size_str(unsigned int dim, vector<unsigned long long> *target_element_address,
@@ -265,7 +265,7 @@ public:
     void get_ons_objs(vector<ons> &ons_list);
 
     static std::string pad_type_to_str(string_pad_type pad_type);
-    static string ingest_fixed_length_string(const char *buf, unsigned long long fixed_str_len,
+    string ingest_fixed_length_string(const char *buf, unsigned long long buf_size, unsigned long long fixed_str_len,
                                              string_pad_type pad_type);
 
     unsigned int buf2val(void **val) override;
