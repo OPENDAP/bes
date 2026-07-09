@@ -25,7 +25,12 @@ then
     # using: 'test -z "$AWS_ACCESS_KEY_ID" || ...' keeps after_script from running
     # the aws cli for forked PRs (where secure env vars are null). I could've used
     # an 'if' to block out the whole script, but I didn't... jhrg 3/21/18
-    test -z "$AWS_ACCESS_KEY_ID" || aws s3 cp "${LOG_FILE_TGZ}" "${S3_BUCKET}"
+    # test -z "$AWS_ACCESS_KEY_ID" || aws s3 cp "${LOG_FILE_TGZ}" "${S3_BUCKET}"
+    if [ -n "$AWS_ACCESS_KEY_ID" ]; then
+        aws s3 cp "${LOG_FILE_TGZ}" "${S3_BUCKET}"
+    else
+      loggy "Skipping upload to S3, no AWS credentials were found."
+    fi
   else
     loggy "ERROR - The test logs tarball ($LOG_FILE_TGZ) was not found."
   fi
