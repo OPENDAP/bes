@@ -124,7 +124,7 @@ docker run --rm -v /tmp:/scratch "${SNAPSHOT_IMAGE_TAG}" \
 
 
 loggy "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- "
-loggy "Checking test logs on host."
+loggy "Checking test logs on host: /tmp"
 loggy "$(ls -l /tmp)"
 loggy "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- "
 

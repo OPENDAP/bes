@@ -187,9 +187,11 @@ jobs:
           export OS=rocky8
           export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
           export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
+          set +e
           ./travis/build-rhel-docker.sh
           export build_status=$?
           echo "# (In Travis) build_status: $build_status" >&2
+          if [ "$build_status" -ne 0 ]; then exit $build_status; fi
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
         # is built:
