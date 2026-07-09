@@ -32,7 +32,8 @@
 # e: exit immediately on non-zero exit value from a command
 # u: treat unset env vars in substitutions as an error
 set -eu
-
+export  HR="#######################################################################"
+export HR1="--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---"
 function loggy(){
     echo  "$@" | awk '{ print "# build-rhel-docker() - "$0;}'  >&2
 }
@@ -45,7 +46,7 @@ CONFIGURE_OPTIONS=${CONFIGURE_OPTIONS:-""}
 AWS_DOWNLOADS_DIR="/tmp/dependency_downloads"
 TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
 
-loggy "#########################################################################"
+loggy "$HR"
 loggy "$0 BEGIN (I am $UID)"
 loggy "Preparing to build docker image."
 loggy ""
@@ -106,10 +107,10 @@ else
   docker image ls -a
 fi
 
-loggy "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- "
+loggy "$HR1"
 loggy "Checking test logs in Docker image: $SNAPSHOT_IMAGE_TAG, $TEST_LOGS_DIR"
 loggy "$(docker run --rm "${SNAPSHOT_IMAGE_TAG}" -c "ls -l $TEST_LOGS_DIR")"
-loggy "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- "
+loggy "$HR1"
 
 loggy "Copying test logs from $SNAPSHOT_IMAGE_TAG to TravisCI host."
 
@@ -125,18 +126,21 @@ docker run --rm -v /tmp:/scratch "${SNAPSHOT_IMAGE_TAG}" \
     -c "cp -v $TEST_LOGS_DIR/bes-test-logs.tar.gz /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
 
 
-loggy "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- "
+loggy "$HR1"
 loggy "Checking test logs on host: /tmp"
 loggy "$(ls -l /tmp)"
-loggy "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- "
+loggy "$HR1"
 
+# Check the bes tests status (aka make check)
 bes_tests_status=$(cat /tmp/bes-tests-status)
 loggy "bes_tests_status: $bes_tests_status"
-if [ $bes_tests_status -ne 0 ]
+if [ "$bes_tests_status" -ne 0 ]
 then
   loggy "ERROR - The BES autotests failed!"
-  exit $bes_tests_status
+  loggy "$HR"
+  exit "$bes_tests_status"
 fi
 
 loggy "END"
+loggy "$HR"
 exit $build_status
