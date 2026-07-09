@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Upload the results of tests after running a build on Travis
 function loggy() {
