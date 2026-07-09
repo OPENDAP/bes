@@ -187,7 +187,6 @@ jobs:
           export OS=rocky8
           export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
           export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
-        - |
           ./travis/build-rhel-docker.sh
           export build_status=$?
           echo "# (In Travis) build_status: $build_status" >&2

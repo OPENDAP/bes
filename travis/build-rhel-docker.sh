@@ -106,8 +106,10 @@ else
   docker image ls -a
 fi
 
-loggy "Checking test logs..."
+loggy "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- "
+loggy "Checking test logs in Docker image: ${SNAPSHOT_IMAGE_TAG}"
 loggy "$(docker run --rm "${SNAPSHOT_IMAGE_TAG}" -c "ls -l $TEST_LOGS_DIR")"
+loggy "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- "
 
 # Note: Take the test log tarball that was created in the Dockerfile and copied to the final mount
 #   and then run this copy command to copy it into Travis.
@@ -121,13 +123,16 @@ docker run --rm -v /tmp:/scratch "${SNAPSHOT_IMAGE_TAG}" \
     -c "cp $TEST_LOGS_DIR/bes-test-logs.tar.gz /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
 
 
-loggy "ls -l /tmp"
+loggy "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- "
+loggy "Checking test logs on host."
 loggy "$(ls -l /tmp)"
+loggy "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- "
 
 bes_tests_status=$(cat /tmp/bes-tests-status)
+loggy "bes_tests_status: $bes_tests_status"
 if [ $bes_tests_status -ne 0 ]
 then
-  loggy "ERROR - The BES autotests failed!!"
+  loggy "ERROR - The BES autotests failed!"
   exit $bes_tests_status
 fi
 
