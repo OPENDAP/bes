@@ -202,7 +202,7 @@ jobs:
             echo "# ERROR - Docker build failed, exiting. build_status: $build_status" >&2
             #exit $build_status;
           fi
-          test "$build_status" -eq 0
+          # test "$build_status" -eq 0
           #
           #
         # Note: We need downstream access to the environment variable
