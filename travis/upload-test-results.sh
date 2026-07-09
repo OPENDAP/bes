@@ -4,7 +4,9 @@
 function loggy() {
     echo  "$@" | awk '{ print "# upload-test-result() - "$0;}'  >&2
 }
-HR="^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+HR="^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+HR1="--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---"
+
 LOG_FILE_TGZ="/tmp/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
 S3_BUCKET="s3://opendap.travis.tests"
 
@@ -13,12 +15,15 @@ loggy "BEGIN"
 
 if test "$BES_BUILD" = main -o "$BES_BUILD" = distcheck -o "$BES_BUILD" = "docker-el8" -o "$BES_BUILD" = "docker-el9"
 then
-  loggy "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- "
+  loggy "$HR1"
   loggy "Packaging log files for '$BES_BUILD'"
   loggy ""
   loggy "Checking test logs on host."
   loggy "$(ls -l /tmp)"
-  loggy "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- "
+  loggy "$HR1"
+  loggy "Checking test logs in Docker image: $SNAPSHOT_IMAGE_TAG, $TEST_LOGS_DIR"
+  loggy "$(docker run --rm "${SNAPSHOT_IMAGE_TAG}" -c "ls -l $TEST_LOGS_DIR")"
+  loggy "$HR1"
 
   # Create a tarball for non-docker builds from local files - kln 6/23/26
   if test -f "$LOG_FILE_TGZ"; then
