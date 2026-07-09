@@ -192,6 +192,7 @@ jobs:
           set +e
           ./travis/build-rhel-docker.sh
           build_status=$?
+          set -e
           echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
           echo "# (In Travis) build_status: $build_status" >&2
           echo "# Checking test log inventory on TravisCI host." >&2
@@ -199,7 +200,7 @@ jobs:
           echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
           if [ "$build_status" -ne 0 ]; then
             echo "# ERROR - Docker build failed, exiting. build_status: $build_status" >&2
-            # exit $build_status;
+            exit $build_status;
           fi
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
