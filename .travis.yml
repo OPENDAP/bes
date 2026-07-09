@@ -141,20 +141,21 @@ jobs:
       name: "check"
       script:
         - |
+          set -e
           export BES_BUILD=main
           # - export RUNTESTFLAGS="-v"
           export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
           echo "LD_LIBRARY_PATH - $LD_LIBRARY_PATH" >&2
           autoreconf --force --install --verbose
           ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-        - |
           make -j16
           make install && besctl start
+        - |
+          set +e
           make check -j16
           test_status=$?
           besctl stop
-        - ./travis/upload-test-results.sh
-        - |
+          ./travis/upload-test-results.sh
           if [ $test_status -ne 0 ]; then 
               echo "# ERROR - 'make check' failed, exiting. $test_status: $test_status" >&2
               exit $test_status; 
