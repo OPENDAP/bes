@@ -179,7 +179,7 @@ jobs:
         - set -e
         - |
           export BES_BUILD=docker-el8
-          echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+          echo "# branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
           export DOCKER_NAME="bes_core"
           export BUILDER_BASE_IMAGE="opendap/rocky8_hyrax_builder:latest"
           export FINAL_BASE_IMAGE="rockylinux:8"
@@ -187,18 +187,27 @@ jobs:
           export OS=rocky8
           export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
           export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
+        #
           set +e
           ./travis/build-rhel-docker.sh
-          export build_status=$?
+          build_status=$?
+          echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
           echo "# (In Travis) build_status: $build_status" >&2
-          if [ "$build_status" -ne 0 ]; then exit $build_status; fi
+          echo "# Checking test log inventory on TravisCI host." >&2
+          ls -l /tmp >&2
+          echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+            
+          if [ "$build_status" -ne 0 ]; then
+            echo "# ERROR - Docker build failed, exiting. build_status: $build_status" >&2
+            exit $build_status; 
+          fi
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
         # is built:
         - |
           export BES_VERSION="$(docker run --rm ${SNAPSHOT_IMAGE_TAG} -c 'cat bes_VERSION')"
           export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}-${DIST}"
-          echo "Tagging image with BES version: ${BUILD_VERSION_TAG}"
+          echo "# Tagging image with BES version: ${BUILD_VERSION_TAG}"
           docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
         # Uncomment the following to push a test image for a non-test-deploy pull request
         # - |

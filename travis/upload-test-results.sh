@@ -5,6 +5,8 @@ function loggy(){
     echo  "$@" | awk '{ print "# upload-test-result() - "$0;}'  >&2
 }
 
+loggy "BEGIN"
+
 LOG_FILE_TGZ="/tmp/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
 S3_BUCKET="s3://opendap.travis.tests"
 
@@ -29,10 +31,12 @@ then
 fi
 
 # A quick hack to get the gcovr report to S3. jhrg 4/20/23
-if test x$BES_BUILD = xsonar-bes-framework
+if test "$BES_BUILD" = "xsonar-bes-framework"
 then
 	# using: 'test -z "$AWS_ACCESS_KEY_ID" || ...' keeps after_script from running
 	# the aws cli for forked PRs (where secure env vars are null). I could've used
 	# an 'if' to block out the whole script, but I didn't... jhrg 3/21/18
 	test -z "$AWS_ACCESS_KEY_ID" || aws s3 cp ./gcovr_report.txt "${S3_BUCKET}/bes-gcov-${TRAVIS_JOB_NUMBER}.txt"
 fi
+
+loggy "END"
