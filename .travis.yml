@@ -151,8 +151,14 @@ jobs:
           make -j16
           make install && besctl start
           make check -j16
+          test_status=$?
           besctl stop
         - ./travis/upload-test-results.sh
+        - |
+          if [ $test_status -ne 0 ]; then 
+              echo "# ERROR - 'make check' failed, exiting. $test_status: $test_status" >&2
+              exit $test_status; 
+          fi
 
     # build-and-test
     - stage: never
