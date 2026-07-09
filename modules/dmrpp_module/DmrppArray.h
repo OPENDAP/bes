@@ -110,7 +110,7 @@ private:
     void read_contiguous();
     void read_one_bigger_chunk();
     void read_one_chunk_dio();
-    void read_contiguous_string();
+    //void read_contiguous_string();
 
 #ifdef USE_READ_SERIAL
     virtual void insert_chunk_serial(unsigned int dim, std::vector<unsigned long long> *target_element_address,
@@ -266,7 +266,7 @@ public:
 
     static std::string pad_type_to_str(string_pad_type pad_type);
     string ingest_fixed_length_string(const char *buf, unsigned long long buf_size, unsigned long long fixed_str_len,
-                                             string_pad_type pad_type);
+                                             string_pad_type pad_type) const;
 
     unsigned int buf2val(void **val) override;
     vector<u_int8_t> &compact_str_buffer() { return d_compact_str_buf; }

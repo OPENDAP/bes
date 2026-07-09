@@ -1576,6 +1576,7 @@ shared_ptr<Chunk> DmrppArray::find_needed_chunks(unsigned int dim, vector<unsign
     return nullptr;
 }
 
+
 bool DmrppArray::find_needed_chunks_simple(std::shared_ptr<Chunk> chunk, const std::vector<unsigned long long> & chunk_shape, 
                                    const std::vector<unsigned long long> & start, const std::vector<unsigned long long> & stride,
                                    std::vector<unsigned long long> & stop, int num_dims) {
@@ -2244,6 +2245,7 @@ void DmrppArray::set_send_p(bool state) {
     Array::set_send_p(state);
 }
 
+#if 0
 /**
  * @brief Process String Array so long as it has only one element
  *
@@ -2274,9 +2276,10 @@ void DmrppArray::read_contiguous_string() {
 
     set_read_p(true);
 }
+#endif
 
 string DmrppArray::ingest_fixed_length_string(const char *buf, unsigned long long buf_size, const unsigned long long fixed_str_len,
-                                              string_pad_type pad_type) {
+                                              string_pad_type pad_type) const{
     if (fixed_str_len > buf_size) { 
         string msg = "The ingestion of a DAP string array " + name() + " has a buffer overflow.\n"; 
         msg +=" The buffer size: " + to_string(buf_size)+'\n';
@@ -2349,6 +2352,7 @@ std::string array_to_str(DmrppArray a, const string &banner) {
     return msg.str();
 }
 
+#if 0
 #define HEX(x) std::setw(2) << std::setfill('0') << std::hex << (int)(x)
 
 std::string show_string_buff(char *buff, unsigned long long num_bytes, unsigned long long fixed_string_len) {
@@ -2483,6 +2487,7 @@ DmrppArray *get_as_byte_array(DmrppArray &array) {
 
     return byte_array_proxy;
 }
+#endif
 
 #if 0
 /**
@@ -3681,7 +3686,7 @@ void DmrppArray::insert_constrained_contiguous_string(Dim_iter dim_iter,
     uint64_t stop = this->dimension_stop_ll(dim_iter, true);
     uint64_t stride = this->dimension_stride_ll(dim_iter, true);
     
-    char *src_buf = the_one_chunk->get_rbuf();
+    const char *src_buf = the_one_chunk->get_rbuf();
     dim_iter++;
 
     // The end case for the recursion is dimIter == dim_end(); stride == 1 is an optimization
