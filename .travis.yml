@@ -137,7 +137,7 @@ stages:
 jobs:
   include:
     # build-and-test
-    - stage: never
+    - stage: build-and-test
       name: "check"
       script:
         - export BES_BUILD=main
@@ -147,6 +147,7 @@ jobs:
         - export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
         - echo "LD_LIBRARY_PATH - $LD_LIBRARY_PATH" >&2
         - make -j16 && make install && besctl start -d cerr,curl,http && make check -j16 && besctl stop
+        - ./travis/upload-test-results.sh
 
     # build-and-test
     - stage: never
@@ -176,7 +177,6 @@ jobs:
     - stage: build-docker
       name: "Build docker image bes_core:-el8"
       script:
-        - set -e
         - |
           export BES_BUILD=docker-el8
           echo "# branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
@@ -189,10 +189,8 @@ jobs:
           export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
         # Run the build, exit on failure.
         - |
-          set +e
           ./travis/build-rhel-docker.sh
           build_status=$?
-          set -e
           echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
           echo "# (In Travis) build_status: $build_status" >&2
 
