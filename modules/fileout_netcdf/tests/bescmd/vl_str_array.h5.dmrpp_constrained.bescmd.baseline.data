@@ -1,0 +1,32 @@
+netcdf test {
+dimensions:
+	dim1 = 2 ;
+	dim2 = 2 ;
+	str_len = 13 ;
+	dim3 = 1 ;
+	dim4 = 2 ;
+	str_cmp_len = 9 ;
+variables:
+	char str(dim1, dim2, str_len) ;
+	char str_cmp(dim3, dim4, str_cmp_len) ;
+
+// global attributes:
+		:build_dmrpp_metadata.created = "removed date-time" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.21.1" ;
+		:build_dmrpp_metadata.bes = "3.21.1" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -f /Users/myang6/work/opendap/hyrax-2198/bes/modules/hdf5_handler/data/src/vl_str_array.h5 -r vl_str_array.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M" ;
+		:history = "removed date-timex vl_str_array.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"vl_str_array.h5.dmrpp\"}]}]" ;
+data:
+
+ str =
+  "cherry",
+  "date",
+  "giraffe",
+  "hippopotamus" ;
+
+ str_cmp =
+  "elephant",
+  "giraffe" ;
+}

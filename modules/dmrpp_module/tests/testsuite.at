@@ -449,6 +449,8 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/vl_str_dup_array.h5.dmrpp.dap
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/vl_str_cross_array.h5.dmrpp.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_big_vl_str_dset.h5.dmrpp.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_big_vl_str_dset2.h5.dmrpp.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/vl_str_dup_cross_array.h5.dmrpp_constrained.dap])
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([string_arrays/t_big_vl_str_dset2.h5.dmrpp_constrained.dap])
 
 #############################################################################
 # Multi input tests. These test caching. The DAP4 tests fail because caching

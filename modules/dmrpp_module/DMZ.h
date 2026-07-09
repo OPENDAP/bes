@@ -117,6 +117,10 @@ private:
     static bool supported_special_structure_type(libdap::BaseType *btp);
     static bool supported_special_structure_type_internal(libdap::Constructor *var_ctor);
     static void process_vlsa(libdap::BaseType *btp, const pugi::xml_node &vlsa_element);
+    static void process_vlsa_subset(libdap::BaseType *btp, const pugi::xml_node &vlsa_element);
+    static void handle_subset_vl_str(DmrppArray *da, libdap::Array::Dim_iter dim_iter,
+                               vector<unsigned long long> &subset_pos,
+                               vector<string> &whole_str_array, vector<string> &subset_str_array);
 
     static pugi::xml_node get_variable_xml_node_helper(const pugi::xml_node &var_node, std::stack<libdap::BaseType*> &bt);
     static void build_basetype_chain(libdap::BaseType *btp, std::stack<libdap::BaseType*> &bt);

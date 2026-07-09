@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="vl_str_array.h5" dmrpp:href="data/vl_str_array.h5" dmrpp:version="3.21.1">
+    <String name="str">
+        <Dim size="2"/>
+        <Dim size="4"/>
+        <dmrpp:vlsa>
+            <v>apple</v>
+            <v>banana</v>
+            <v>cherry</v>
+            <v>date</v>
+            <v>elephant</v>
+            <v>fox</v>
+            <v>giraffe</v>
+            <v>hippopotamus</v>
+        </dmrpp:vlsa>
+    </String>
+    <String name="str_cmp">
+        <Dim size="2"/>
+        <Dim size="4"/>
+        <dmrpp:vlsa>
+            <v>apple</v>
+            <v>banana</v>
+            <v>cherry</v>
+            <v>date</v>
+            <v>elephant</v>
+            <v>fox</v>
+            <v>giraffe</v>
+            <v>hippopotamus</v>
+        </dmrpp:vlsa>
+    </String>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2026-07-07T16:31:38Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/hyrax-2198/bes/modules/hdf5_handler/data/src/vl_str_array.h5 -r vl_str_array.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
