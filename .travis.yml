@@ -140,13 +140,18 @@ jobs:
     - stage: build-and-test
       name: "check"
       script:
-        - export BES_BUILD=main
-        # - export RUNTESTFLAGS="-v"
-        - autoreconf --force --install --verbose
-        - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-        - export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
-        - echo "LD_LIBRARY_PATH - $LD_LIBRARY_PATH" >&2
-        - make -j16 && make install && besctl start -d cerr,curl,http && make check -j16 && besctl stop
+        - |
+          export BES_BUILD=main
+          # - export RUNTESTFLAGS="-v"
+          export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
+          echo "LD_LIBRARY_PATH - $LD_LIBRARY_PATH" >&2
+          autoreconf --force --install --verbose
+          ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+        - |
+          make -j16
+          make install && besctl start
+          make check -j16
+          besctl stop
         - ./travis/upload-test-results.sh
 
     # build-and-test
