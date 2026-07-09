@@ -201,8 +201,10 @@ jobs:
           if [ "$build_status" -ne 0 ]; then
             echo "# ERROR - Docker build failed, exiting. build_status: $build_status" >&2
             #exit $build_status;
-            test "$build_status" -ne 0
           fi
+          test "$build_status" -eq 0
+          #
+          #
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
         # is built:
