@@ -68,7 +68,7 @@ COPY . ./bes
 RUN sudo chown -R $BES_USER:$BES_USER bes
 WORKDIR bes
 
-RUN set -e && echo "PWD: $PWD" >&2
+RUN set -e && echo "AFTER COPYING PWD: $PWD" >&2
 RUN set -e && ls -l . >&2
 
 
