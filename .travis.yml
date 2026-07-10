@@ -144,19 +144,21 @@ jobs:
         - |
           set +e
           make check -j16
-          test_status=$?
-        - |
-          set -e
+          export test_status=$?
           ./travis/stop_and_post_test_logs
 
     # build-and-test
-    - stage: never
+    - stage: build-and-test
       name: "distcheck"
       script:
         - export BES_BUILD=distcheck
         - autoreconf --force --install --verbose
         - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-        - make distcheck -j16 GZIP_ENV=--fast
+        - |
+          set +e
+          make distcheck -j16 GZIP_ENV=--fast
+          export test_status=$?
+          ./travis/stop_and_post_test_logs
 
     # build-and-test
     - stage: never
