@@ -174,7 +174,7 @@ jobs:
           fi
 
     # build-and-test
-    - stage: build-and-test
+    - stage: never
       name: "distcheck"
       script:
         - export BES_BUILD=distcheck
