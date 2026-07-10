@@ -166,7 +166,7 @@ jobs:
         - |
           set -e
           besctl stop
-          ./travis/collect_autotest_results.sh
+          ./travis/collect_autotest_logs.sh
           ./travis/upload-test-results.sh
           if [ $test_status -ne 0 ]; then 
               echo "# ERROR - 'make check' failed, exiting. $test_status: $test_status" >&2
