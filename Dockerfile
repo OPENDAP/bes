@@ -117,8 +117,7 @@ RUN if [ "$DIST" == "el9" ]; then \
         make check -j$(nproc --ignore=1); \
         test_status=$?; \
         echo $test_status > $TEST_STATUS_FILE; \
-        echo -n "# TEST_STATUS_FILE: " >&2 \
-        ls -l "$TEST_STATUS_FILE" >&2  \
+        echo "# TEST_STATUS_FILE: $(ls -l "$TEST_STATUS_FILE")" >&2 \
         echo "# TEST_STATUS: $(cat $TEST_STATUS_FILE)" >&2; \
         echo "# test_status: $test_status" >&2; \
         set -e; \
@@ -133,7 +132,7 @@ RUN if [ "$DIST" == "el9" ]; then \
 ENV TEST_LOGS_FILE="${TEST_LOGS_DIR}/bes-autotest-logs.tgz"
 ENV TEST_LOG_INVENTORY="${TEST_LOGS_DIR}/bes-log-file-list.txt"
 RUN set -e \
-    && ./travis/collect_autotest_logs.sh
+    && ./travis/collect_autotest_logs.sh >&2
 #    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
 #    && echo "#    TEST_LOGS_DIR: $TEST_LOGS_DIR" \
 #    && echo "#   TEST_LOGS_FILE: $TEST_LOGS_FILE" \
