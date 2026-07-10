@@ -140,9 +140,9 @@ jobs:
     - stage: build-and-test
       name: "check"
       script:
+        # We use fail on error (set -e) for building and
+        # starting the bes.
         - |
-          # We use fail on error (set -e) for to building and 
-          # starting the bes.
           set -e
           export BES_BUILD=main
           # - export RUNTESTFLAGS="-v"
@@ -153,22 +153,20 @@ jobs:
           make -j16
           make install  
           besctl start
+        # We stop failing on error (set +e) for running
+        # make check because we want to collect the test
+        # logs before the job fails.
         - |
-          # We stop failing on error (set +e) for running 
-          # make check because we want to collect the test 
-          # logs before the job fails.
           set +e
           make check -j16
           test_status=$?
+        # We use fail on error (set -e) for stopping
+        # the bes, uploading the test logs, and
+        # acting on the error state.
         - |
-          # We use fail on error (set -e) for to building and 
-          # stopping the bes, uploading the test logs, and 
-          # acting on the error state.
           set -e
           besctl stop
-          TEST_LOG_INVENTORY="/tmp/bes-test-log-inventory"
-          find . \( -name "*.log" -o -name "*site_map.txt" \) -print > "$TEST_LOG_INVENTORY"
-          tar -cvzf "/tmp/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz" -T "$TEST_LOG_INVENTORY"
+          ./travis/collect_autotest_results.sh
           ./travis/upload-test-results.sh
           if [ $test_status -ne 0 ]; then 
               echo "# ERROR - 'make check' failed, exiting. $test_status: $test_status" >&2
@@ -182,7 +180,18 @@ jobs:
         - export BES_BUILD=distcheck
         - autoreconf --force --install --verbose
         - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-        - make distcheck -j16 GZIP_ENV=--fast
+        - |
+          set +e
+          make distcheck -j16 GZIP_ENV=--fast
+          test_status=$?
+        - |
+          set -e
+          ./travis/collect_autotest_results.sh
+          ./travis/upload-test-results.sh
+          if [ $test_status -ne 0 ]; then 
+              echo "# ERROR - 'make distcheck' failed, exiting. $test_status: $test_status" >&2
+              exit $test_status; 
+          fi
 
     # build-and-test
     - stage: never
