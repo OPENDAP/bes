@@ -131,7 +131,7 @@ RUN if [ "$DIST" == "el9" ]; then \
     fi
 
 # Always make the test log tarball
-ENV TEST_LOGS_FILE="${TEST_LOGS_DIR}/bes-autotest-logs.tar.gz"
+ENV TEST_LOGS_FILE="${TEST_LOGS_DIR}/bes-autotest-logs.tgz"
 ENV TEST_LOG_INVENTORY="${TEST_LOGS_DIR}/bes-log-file-list.txt"
 RUN set -e \
     && ./travis/collect_autotest_logs.sh
@@ -204,9 +204,10 @@ RUN useradd \
         $BES_USER \
     && echo $BES_USER ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$BES_USER
 
-ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
+# ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
+ENV TEST_LOGS_DIR="/tmp"
 ENV TEST_STATUS_FILE="${TEST_LOGS_DIR}/bes-tests-status"
-ENV TEST_LOGS_FILE="${TEST_LOGS_DIR}/bes-test-logs.tar.gz"
+ENV TEST_LOGS_FILE="${TEST_LOGS_DIR}/bes-autotest-logs.tgz"
 ENV TEST_LOG_INVENTORY="${TEST_LOGS_DIR}/bes-log-file-list.txt"
 RUN set -e \
     && echo "# TEST_LOGS_DIR: $TEST_LOGS_DIR" >&2 \

@@ -44,7 +44,8 @@ LIBDAP_DEVEL_RPM_FILENAME="libdap-devel-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
 DOCKER_DEV_FLAGS=${DOCKER_DEV_FLAGS:-""}
 CONFIGURE_OPTIONS=${CONFIGURE_OPTIONS:-""}
 AWS_DOWNLOADS_DIR="/tmp/dependency_downloads"
-TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
+#TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
+TEST_LOGS_DIR="/tmp"
 
 loggy "$HR"
 loggy "$0 BEGIN (I am $UID)"
@@ -123,7 +124,7 @@ docker run --rm -v /tmp:/scratch "${SNAPSHOT_IMAGE_TAG}" \
     -c "cp -v $TEST_LOGS_DIR/bes-log-file-list.txt /scratch/bes-log-file-list.txt"
 
 docker run --rm -v /tmp:/scratch "${SNAPSHOT_IMAGE_TAG}" \
-    -c "cp -v $TEST_LOGS_DIR/bes-test-logs.tar.gz /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
+    -c "cp -v $TEST_LOGS_DIR/bes-autotest-logs.tgz /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tgz"
 
 
 loggy "$HR1"

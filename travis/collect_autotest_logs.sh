@@ -31,9 +31,9 @@ loggy "  TEST_STATUS_FILE: $TEST_STATUS_FILE"
 
 if [ -n "${TRAVIS_JOB_NUMBER}" ]
 then
-  TEST_LOGS_FILE="${TEST_LOGS_DIR}/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
+  TEST_LOGS_FILE="${TEST_LOGS_DIR}/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tgz"
 else
-  TEST_LOGS_FILE="${TEST_LOGS_DIR}/bes-autotest-logs.tar.gz"
+  TEST_LOGS_FILE="${TEST_LOGS_DIR}/bes-autotest-logs.tgz"
 fi
 loggy "    TEST_LOGS_FILE: $TEST_LOGS_FILE"
 
