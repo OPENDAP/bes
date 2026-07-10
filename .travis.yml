@@ -137,7 +137,7 @@ stages:
 jobs:
   include:
     # build-and-test
-    - stage: build-and-test
+    - stage: never
       name: "check"
       script:
         # We use fail on error (set -e) for building and
@@ -174,7 +174,7 @@ jobs:
           fi
 
     # build-and-test
-    - stage: never
+    - stage: build-and-test
       name: "distcheck"
       script:
         - export BES_BUILD=distcheck
@@ -209,6 +209,7 @@ jobs:
         - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
         - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
 
+    # build-docker
     - stage: build-docker
       name: "Build docker image bes_core:-el8"
       script:
@@ -281,7 +282,8 @@ jobs:
           echo "Tagging image with BES version: ${BUILD_VERSION_TAG}"
           docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
 
-    - stage: scan
+    # scan
+    - stage: never
       name: "scan bes"
       script:
       - export BES_BUILD=sonar-bes-framework
@@ -291,7 +293,8 @@ jobs:
       - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.token=$SONAR_TOKEN
       - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "QUALITY GATE PASS"
 
-    - stage: scan
+    # scan
+    - stage: never
       name: "scan bes-modules-1"
       script:
         - export BES_BUILD=sonar-bes-modules
@@ -301,7 +304,8 @@ jobs:
         - sonar-scanner -Dproject.settings=sonar-bes-modules-1.properties -Dsonar.token=$SONAR_TOKEN
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
 
-    - stage: scan
+    # scan
+    - stage: never
       name: "scan bes-hdf-handlers"
       script:
         - export BES_BUILD=sonar-bes-hdf-handlers
@@ -312,6 +316,7 @@ jobs:
         # We call the hdf4/5 handlers scan opendap-bes-submodules for historical reasons. jhrg 1/13/22
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-submodules | grep "QUALITY GATE PASS"
 
+    # hyrax-olfs-trigger
     - stage: hyrax-olfs-trigger
       name: "Hyrax OLFS Trigger"
       script:
