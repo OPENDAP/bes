@@ -110,7 +110,6 @@ private:
     void read_contiguous();
     void read_one_bigger_chunk();
     void read_one_chunk_dio();
-    //void read_contiguous_string();
 
 #ifdef USE_READ_SERIAL
     virtual void insert_chunk_serial(unsigned int dim, std::vector<unsigned long long> *target_element_address,
