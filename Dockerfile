@@ -139,6 +139,9 @@ ENV TEST_LOG_INVENTORY="${TEST_LOGS_DIR}/bes-log-file-list.txt"
 RUN set -e && echo "PWD: $PWD" >&2
 RUN set -e && ls -l . >&2
 
+RUN set -e && echo "/bin: " >&2
+RUN set -e && ls -l /bin >&2
+
 RUN set -e \
     && ./travis/collect_autotest_logs.sh >&2
 
