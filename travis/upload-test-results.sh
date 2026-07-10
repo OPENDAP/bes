@@ -7,8 +7,7 @@ function loggy() {
 HR="^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
 HR1="--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---"
 
-TEST_LOGS_DIR="/tmp"
-LOG_FILE_TGZ="${TEST_LOGS_DIR}/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
+LOG_FILE_TGZ="/tmp/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tgz"
 S3_BUCKET="s3://opendap.travis.tests"
 
 loggy "$HR"

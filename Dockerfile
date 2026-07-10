@@ -103,8 +103,7 @@ RUN sudo -s --preserve-env=PATH besctl start
 # ...now run the tests.
 ARG DIST
 ENV DIST=${DIST:-el8}
-#ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
-ENV TEST_LOGS_DIR="/tmp"
+ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
 RUN set -e \
     && mkdir -vp "${TEST_LOGS_DIR}" \
     && chown -v $BES_USER:$BES_USER "${TEST_LOGS_DIR}"
@@ -204,8 +203,7 @@ RUN useradd \
         $BES_USER \
     && echo $BES_USER ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$BES_USER
 
-# ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
-ENV TEST_LOGS_DIR="/tmp"
+ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
 ENV TEST_STATUS_FILE="${TEST_LOGS_DIR}/bes-tests-status"
 ENV TEST_LOGS_FILE="${TEST_LOGS_DIR}/bes-autotest-logs.tgz"
 ENV TEST_LOG_INVENTORY="${TEST_LOGS_DIR}/bes-log-file-list.txt"
