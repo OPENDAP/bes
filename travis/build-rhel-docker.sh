@@ -82,9 +82,6 @@ mkdir -vp $AWS_DOWNLOADS_DIR
 loggy "Building the docker image..."
 docker image pull "${BUILDER_BASE_IMAGE}"
 
-loggy "BEFORE BUILD (PWD: $PWD)"
-loggy "$(ls -l .)"
-
 set +e
 docker build \
     --build-arg BUILDER_BASE_IMAGE="$BUILDER_BASE_IMAGE" \

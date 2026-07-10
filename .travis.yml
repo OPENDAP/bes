@@ -137,7 +137,7 @@ stages:
 jobs:
   include:
     # build-and-test
-    - stage: never
+    - stage: build-and-test
       name: "check"
       script:
         # We use fail on error (set -e) for building and
@@ -174,7 +174,7 @@ jobs:
           fi
 
     # build-and-test
-    - stage: never
+    - stage: build-and-test
       name: "distcheck"
       script:
         - export BES_BUILD=distcheck
@@ -229,14 +229,14 @@ jobs:
           build_status=$?
           echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
           echo "# (In Travis) build_status: $build_status" >&2
-
           ./travis/upload-test-results.sh
-          
           echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+          
           if [ "$build_status" -ne 0 ]; then
             echo "# ERROR - Docker build failed, exiting. build_status: $build_status" >&2
             exit $build_status;
           fi
+
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
         # is built:
