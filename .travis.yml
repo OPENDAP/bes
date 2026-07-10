@@ -186,7 +186,7 @@ jobs:
           test_status=$?
         - |
           set -e
-          ./travis/collect_autotest_results.sh
+          ./travis/collect_autotest_logs.sh
           ./travis/upload-test-results.sh
           if [ $test_status -ne 0 ]; then 
               echo "# ERROR - 'make distcheck' failed, exiting. $test_status: $test_status" >&2
