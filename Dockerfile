@@ -132,6 +132,7 @@ RUN if [ "$DIST" == "el9" ]; then \
 ENV TEST_LOGS_FILE="${TEST_LOGS_DIR}/bes-autotest-logs.tgz"
 ENV TEST_LOG_INVENTORY="${TEST_LOGS_DIR}/bes-log-file-list.txt"
 RUN set -e \
+    && "PWD: $PWD" >&2 \
     && ls -l . >&2 \
     && ./travis/collect_autotest_logs.sh >&2
 #    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
