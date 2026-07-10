@@ -183,7 +183,7 @@ timing/*/*.dtps
 # Specifically for docker:
 Dockerfile
 .dockerignore
-travis/
+#travis/
 retired/
 dapreader/.deps
 dapreader/.libs
