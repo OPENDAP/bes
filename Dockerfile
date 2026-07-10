@@ -103,7 +103,8 @@ RUN sudo -s --preserve-env=PATH besctl start
 # ...now run the tests.
 ARG DIST
 ENV DIST=${DIST:-el8}
-ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
+#ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
+ENV TEST_LOGS_DIR="/tmp"
 RUN set -e \
     && mkdir -vp "${TEST_LOGS_DIR}" \
     && chown -v $BES_USER:$BES_USER "${TEST_LOGS_DIR}"
@@ -130,25 +131,26 @@ RUN if [ "$DIST" == "el9" ]; then \
     fi
 
 # Always make the test log tarball
-ENV TEST_LOGS_FILE="${TEST_LOGS_DIR}/bes-test-logs.tar.gz"
+ENV TEST_LOGS_FILE="${TEST_LOGS_DIR}/bes-autotest-logs.tar.gz"
 ENV TEST_LOG_INVENTORY="${TEST_LOGS_DIR}/bes-log-file-list.txt"
 RUN set -e \
-    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
-    && echo "#    TEST_LOGS_DIR: $TEST_LOGS_DIR" \
-    && echo "#   TEST_LOGS_FILE: $TEST_LOGS_FILE" \
-    && echo "# TEST_STATUS_FILE: $TEST_STATUS_FILE" \
-    && echo "# Bundling test logs and site_maps:" >&2 \
-    && find . \( -name "*.log" -o -name "*site_map.txt" \) -print > "$TEST_LOG_INVENTORY" \
-    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
-    && echo "# Test Log Inventory:" >&2 \
-    && cat "$TEST_LOG_INVENTORY" >&2 \
-    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
-    && echo "# Making Test Log tarball..." >&2 \
-    && tar -cvzf "$TEST_LOGS_FILE" -T "$TEST_LOG_INVENTORY" \
-    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
-    && echo -n "# TEST_LOGS_FILE: " >&2 \
-    && ls -l "$TEST_LOGS_FILE" >&2  \
-    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2
+    && ./travis/collect_autotest_logs.sh
+#    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
+#    && echo "#    TEST_LOGS_DIR: $TEST_LOGS_DIR" \
+#    && echo "#   TEST_LOGS_FILE: $TEST_LOGS_FILE" \
+#    && echo "# TEST_STATUS_FILE: $TEST_STATUS_FILE" \
+#    && echo "# Bundling test logs and site_maps:" >&2 \
+#    && find . \( -name "*.log" -o -name "*site_map.txt" \) -print > "$TEST_LOG_INVENTORY" \
+#    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
+#    && echo "# Test Log Inventory:" >&2 \
+#    && cat "$TEST_LOG_INVENTORY" >&2 \
+#    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
+#    && echo "# Making Test Log tarball..." >&2 \
+#    && tar -cvzf "$TEST_LOGS_FILE" -T "$TEST_LOG_INVENTORY" \
+#    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
+#    && echo -n "# TEST_LOGS_FILE: " >&2 \
+#    && ls -l "$TEST_LOGS_FILE" >&2  \
+#    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2
 
 
 # ...and turn off the besdaemon. We want to turn this on/off regardless of
