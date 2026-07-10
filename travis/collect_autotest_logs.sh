@@ -45,7 +45,7 @@ loggy "$HR2 "
 loggy "# Setup $TEST_LOGS_DIR"
 
 mkdir -vp "$TEST_LOGS_DIR"
-chown -v $BES_USER:$BES_USER "$TEST_LOGS_DIR"
+chown -v "$user":"$group" "$TEST_LOGS_DIR"
 
 loggy "$HR2 "
 loggy "# Bundling test logs and site_maps:"
