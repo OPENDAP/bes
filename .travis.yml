@@ -259,6 +259,7 @@ jobs:
       script:
         - |
           export BES_BUILD=docker-el9
+          echo "BUILDING: $BES_BUILD"
           echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
           export DOCKER_NAME="bes_core"
           export BUILDER_BASE_IMAGE="opendap/rocky9_hyrax_builder:latest"
