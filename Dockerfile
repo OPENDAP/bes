@@ -118,9 +118,10 @@ RUN set -e \
 
 ENV TEST_STATUS_FILE="${TEST_LOGS_DIR}/bes-tests-status"
 RUN if [ "$DIST" == "el9" ]; then \
-        echo "# Warning: Skipping make check because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299"; \
+        echo "# Warning: Skipping el9 tests(make check) because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299"; \
     else \
-        echo "# TEST_STATUS_FILE: ${TEST_STATUS_FILE}" \
+        echo "# Running 'make check' for el8" \
+        echo "# TEST_STATUS_FILE: $TEST_STATUS_FILE" \
         set +e; \
         make check -j$(nproc --ignore=1); \
         test_status=$?; \
