@@ -1,0 +1,1 @@
+{"d_href_to_s3_uri_cache":{"foo":"whee"},"d_href_to_tea_endpoint_cache":{"foo":"whee"},"d_presigned_s3_urls":{"www.a.com:test_user":"http://www.time.com","www.once.com:test_user":"http://www.upon.com"},"d_tea_endpoint_sts_credentials_cache":{"palindrome:test_user":"3035-07-16 02:20:33+00:00"},"this":4295722352}
