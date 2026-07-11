@@ -137,7 +137,7 @@ stages:
 jobs:
   include:
     # build-and-test
-    - stage: build-and-test
+    - stage: never
       name: "check"
       script:
         # We use fail on error (set -e) for building and
@@ -174,7 +174,7 @@ jobs:
           fi
 
     # build-and-test
-    - stage: build-and-test
+    - stage: never
       name: "distcheck"
       script:
         - export BES_BUILD=distcheck
@@ -210,7 +210,7 @@ jobs:
         - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
 
     # build-docker
-    - stage: build-and-test
+    - stage: never
       name: "Build docker image bes_core:-el8"
       script:
         - |
@@ -223,6 +223,7 @@ jobs:
           export OS=rocky8
           export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
           export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
+        #
         # Run the build, exit on failure.
         - |
           ./travis/build-rhel-docker.sh
@@ -236,7 +237,7 @@ jobs:
             echo "# ERROR - Docker build failed, exiting. build_status: $build_status" >&2
             exit $build_status;
           fi
-
+        #
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
         # is built:
@@ -253,10 +254,9 @@ jobs:
         #   docker push ${DEBUGGING_TAG}
 
     # build-docker
-    - stage: never
+    - stage: build-docker
       name: "Build docker image bes_core:-el9"
       script:
-        - set -e
         - |
           export BES_BUILD=docker-el9
           echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
@@ -267,12 +267,21 @@ jobs:
           export OS=rocky9
           export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
           export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
-        - ./travis/build-rhel-docker.sh
-          # Note: Take the test log tarball that was created in the Dockerfile and copied to the final mount
-          #   and then run this copy command to copy it into Travis.
+        #
+        # Run the build, exit on failure.
         - |
-          docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
-          -c "cp /bes-test-logs/bes-test-logs.tar.gz /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
+          ./travis/build-rhel-docker.sh
+          build_status=$?
+          echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+          echo "# (In Travis) build_status: $build_status" >&2
+          ./travis/upload-test-results.sh
+          echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+          
+          if [ "$build_status" -ne 0 ]; then
+            echo "# ERROR - Docker build failed, exiting. build_status: $build_status" >&2
+            exit $build_status;
+          fi
+        #
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
         # is built:
