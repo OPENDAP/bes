@@ -121,7 +121,8 @@ RUN if [ "$DIST" == "el9" ]; then \
         echo "# WARNING: Skipping el9 tests(make check) because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299"; \
         echo "# TEST_STATUS_FILE: $TEST_STATUS_FILE" \
         # Fake the test status to success because we need that file downstream.
-        echo "0" > "$TEST_STATUS_FILE" \
+        echo 0 > "$TEST_STATUS_FILE" \
+        echo "TEST_STATUS_FILE: $(cat "$TEST_STATUS_FILE")" \
    else \
         echo "# Running 'make check' for el8" \
         echo "# TEST_STATUS_FILE: $TEST_STATUS_FILE" \
