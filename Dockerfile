@@ -235,9 +235,11 @@ COPY --from=builder "$TEST_LOG_INVENTORY" "$TEST_LOG_INVENTORY"
 COPY --from=builder "$TEST_LOGS_FILE"     "$TEST_LOGS_FILE"
 
 RUN set -e \
-    && echo "# Checking test log output:" >&2 \
-    && echo "# ls -l $TEST_LOGS_DIR" >&2 \
-    && ls -l "$TEST_LOGS_DIR" >&2
+    && echo "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---" >&2; \
+    && echo "# Check test log inventory:" >&2; \
+    && echo "# ls -l $TEST_LOGS_DIR" >&2; \
+    && ls -l "$TEST_LOGS_DIR" >&2; \
+    && echo "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---" >&2;
 
 # Install the latest hyrax dependencies
 ARG HYRAX_DEPENDENCIES_TARBALL
