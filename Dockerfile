@@ -117,13 +117,14 @@ RUN set -e \
     && chown -v $BES_USER:$BES_USER "${TEST_LOGS_DIR}"
 
 ENV TEST_STATUS_FILE="${TEST_LOGS_DIR}/bes-tests-status"
-RUN echo "DIST: $DIST" >&2; \
+RUN echo "# TEST # TEST# TEST # TEST# TEST # TEST# TEST # TEST# TEST # TEST# TEST # TEST# TEST # TEST# TEST # TEST #" >&2; \
+    echo "# DIST: $DIST" >&2; \
     if [ "$DIST" = "el9" ]; then \
         echo "# WARNING: Skipping el9 tests(make check) because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299" >&2; \
         echo "# TEST_STATUS_FILE: $TEST_STATUS_FILE" >&2; \
         # Fake the test status to success because we need that file downstream.
         echo 0 > "$TEST_STATUS_FILE"; \
-        echo "TEST_STATUS_FILE: $(cat "$TEST_STATUS_FILE")" >&2; \
+        echo "# TEST_STATUS_FILE: $(cat "$TEST_STATUS_FILE")" >&2; \
    else \
         echo "# Running 'make check' for el8" >&2; \
         echo "# TEST_STATUS_FILE: $TEST_STATUS_FILE" >&2; \
@@ -140,7 +141,9 @@ RUN echo "DIST: $DIST" >&2; \
         else  \
             echo "# PASSED: BES Tests" >&2 ;\
         fi \
-    fi
+   fi \
+   echo "# TEST # TEST# TEST # TEST# TEST # TEST# TEST # TEST# TEST # TEST# TEST # TEST# TEST # TEST# TEST # TEST #" >&2;
+
 
 # Always make the test log tarball
 ENV TEST_LOGS_FILE="${TEST_LOGS_DIR}/bes-autotest-logs.tgz"
