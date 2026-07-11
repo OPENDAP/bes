@@ -119,19 +119,18 @@ RUN set -e \
 ENV TEST_STATUS_FILE="${TEST_LOGS_DIR}/bes-tests-status"
 RUN echo "# TEST # TEST# TEST # TEST# TEST # TEST# TEST # TEST# TEST # TEST# TEST # TEST# TEST # TEST# TEST # TEST #" >&2; \
     echo "# DIST: $DIST" >&2; \
-    if [ "$DIST" = "el9" ] || [ 0 -eq 0 ]; then \
+    if [ "$DIST" = "el9" ] && [ 0 -eq 1 ]; then \
         echo "# WARNING: Skipping el9 tests(make check) because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299" >&2; \
         echo "# TEST_STATUS_FILE: $TEST_STATUS_FILE" >&2; \
-        # Fake the test status to success because we need that file downstream.
         echo 0 > "$TEST_STATUS_FILE"; \
         echo "# TEST_STATUS_FILE: $(cat "$TEST_STATUS_FILE")" >&2; \
    else \
-        echo "# Running 'make check' for el8" >&2; \
+        echo "# Running 'make check' for $DIST" >&2; \
         echo "# TEST_STATUS_FILE: $TEST_STATUS_FILE" >&2; \
         set +e; \
         make check -j$(nproc --ignore=1); \
         test_status=$?; \
-        echo $test_status > $TEST_STATUS_FILE; >&2 ; \
+        echo $test_status > $TEST_STATUS_FILE; \
         echo "# TEST_STATUS_FILE: $(ls -l "$TEST_STATUS_FILE")" >&2; \
         echo "# TEST_STATUS: $(cat $TEST_STATUS_FILE)" >&2; \
         echo "# test_status: $test_status" >&2; \
