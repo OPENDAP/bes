@@ -210,7 +210,7 @@ jobs:
         - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
 
     # build-docker
-    - stage: build-docker
+    - stage: build-and-test
       name: "Build docker image bes_core:-el8"
       script:
         - |
