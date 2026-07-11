@@ -117,7 +117,8 @@ RUN set -e \
     && chown -v $BES_USER:$BES_USER "${TEST_LOGS_DIR}"
 
 ENV TEST_STATUS_FILE="${TEST_LOGS_DIR}/bes-tests-status"
-RUN if [ "$DIST" == "el9" ]; then \
+RUN echo "DIST: $DIST" >&2; \
+    if [ "$DIST" = "el9" ]; then \
         echo "# WARNING: Skipping el9 tests(make check) because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299" >&2; \
         echo "# TEST_STATUS_FILE: $TEST_STATUS_FILE" >&2; \
         # Fake the test status to success because we need that file downstream.
