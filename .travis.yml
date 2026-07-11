@@ -137,7 +137,7 @@ stages:
 jobs:
   include:
     # build-and-test
-    - stage: never
+    - stage: build-and-test
       name: "check"
       script:
         # We use fail on error (set -e) for building and
@@ -174,7 +174,7 @@ jobs:
           fi
 
     # build-and-test
-    - stage: never
+    - stage: build-and-test
       name: "distcheck"
       script:
         - export BES_BUILD=distcheck
@@ -194,7 +194,7 @@ jobs:
           fi
 
     # build-and-test
-    - stage: never
+    - stage: build-and-test
       name: "dist"
       script:
         - export BES_BUILD=srcdist
@@ -210,7 +210,7 @@ jobs:
         - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
 
     # build-docker
-    - stage: never
+    - stage: build-docker
       name: "Build docker image bes_core:-el8"
       script:
         - |
@@ -293,7 +293,7 @@ jobs:
           docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
 
     # scan
-    - stage: never
+    - stage: scan
       name: "scan bes"
       script:
       - export BES_BUILD=sonar-bes-framework
@@ -304,7 +304,7 @@ jobs:
       - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "QUALITY GATE PASS"
 
     # scan
-    - stage: never
+    - stage: scan
       name: "scan bes-modules-1"
       script:
         - export BES_BUILD=sonar-bes-modules
@@ -315,7 +315,7 @@ jobs:
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
 
     # scan
-    - stage: never
+    - stage: scan
       name: "scan bes-hdf-handlers"
       script:
         - export BES_BUILD=sonar-bes-hdf-handlers
