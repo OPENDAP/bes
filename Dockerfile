@@ -129,13 +129,13 @@ RUN echo "# TEST # TEST# TEST # TEST# TEST # TEST# TEST # TEST# TEST # TEST# TES
         echo "# TEST_STATUS_FILE: $TEST_STATUS_FILE" >&2; \
         set +e; \
         make check -j$(nproc --ignore=1); \
-        test_status=$$?; \
-        echo $$test_status > $TEST_STATUS_FILE; \
+        test_status=$?; \
+        echo "$test_status" > $TEST_STATUS_FILE; \
         echo "# TEST_STATUS_FILE: $(ls -l "$TEST_STATUS_FILE")" >&2; \
         echo "# TEST_STATUS: $(cat "$TEST_STATUS_FILE")" >&2; \
-        echo "# test_status: $$test_status" >&2; \
+        echo "# test_status: $test_status" >&2; \
         set -e; \
-        if [ $$test_status -ne 0 ]; then \
+        if [ $test_status -ne 0 ]; then \
             echo "# FAILED: BES Tests" >&2; \
         else  \
             echo "# PASSED: BES Tests" >&2 ;\
