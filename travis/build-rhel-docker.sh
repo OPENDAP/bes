@@ -112,7 +112,7 @@ loggy "Checking test logs in Docker image: $SNAPSHOT_IMAGE_TAG, $TEST_LOGS_DIR"
 loggy "$(docker run --rm "${SNAPSHOT_IMAGE_TAG}" -c "ls -l $TEST_LOGS_DIR")"
 loggy "$HR1"
 
-loggy "Copying test logs from $SNAPSHOT_IMAGE_TAG to TravisCI host."
+loggy "Copying test logs from $SNAPSHOT_IMAGE_TAG to Travis host."
 
 # Note: Take the test log tarball that was created in the Dockerfile and copied to the final mount
 #   and then run this copy command to copy it into Travis.
@@ -127,8 +127,8 @@ docker run --rm -v /tmp:/scratch "${SNAPSHOT_IMAGE_TAG}" \
 
 
 loggy "$HR1"
-loggy "Checking test logs on host: /tmp"
-loggy "$(ls -l /tmp)"
+loggy "Checking test logs on Travis host: /tmp"
+loggy "$( ls -l /tmp/bes-* )"
 loggy "$HR1"
 
 # Check the bes tests status (aka make check)
