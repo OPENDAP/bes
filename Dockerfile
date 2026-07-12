@@ -122,11 +122,12 @@ RUN echo "# $HR" >&2; \
     MINUS_K= ; \
     if [ "$DIST" = "el9" ]; then \
         echo "#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2; \
-        echo "# WARNING: Using 'make check -k' for el9 tests because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299" >&2; \
+        echo "# WARNING: Using 'make check -k' for el9 tests because of undiagnosed el9 errors."; \
+        echo "# See ref https://github.com/OPENDAP/bes/issues/1299" >&2; \
         echo "#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2; \
         MINUS_K="-k"; \
-    fi \
-    echo "# Running 'make check' on: $DIST" >&2; \
+    fi; \
+    echo "# Running 'make check $MINUS_K' on: $DIST" >&2; \
     echo "# TEST_STATUS_FILE: $TEST_STATUS_FILE" >&2; \
     set +e; \
     make check $MINUS_K -j$(nproc --ignore=1); \
@@ -154,17 +155,10 @@ ENV TEST_LOG_INVENTORY="${TEST_LOGS_DIR}/bes-log-file-list.txt"
 RUN set -e \
     && ./travis/collect_autotest_logs.sh >&2
 
-# ...and turn off the besdaemon. We want to turn this on/off regardless of
-# whether we run the tests
+# ...and turn off the besdaemon. We always want to turn this on/off
 RUN sudo -s --preserve-env=PATH besctl stop
 
 RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
-
-#RUN set -e \
-#    && echo "# $HR " >&2 \
-#    && echo "ls -l $TEST_LOGS_DIR" \
-#    && ls -l "$TEST_LOGS_DIR" \
-#    && echo "# $HR" >&2
 
 
 ########################################################################################################################
