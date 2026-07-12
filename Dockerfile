@@ -119,23 +119,21 @@ RUN set -e \
 ENV TEST_STATUS_FILE="${TEST_LOGS_DIR}/bes-tests-status"
 RUN echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --" >&2; \
     echo "# Running 'make check' on: $DIST" >&2; \
-    echo "# DIST: $DIST" >&2; \
-        echo "# TEST_STATUS_FILE: $TEST_STATUS_FILE" >&2; \
-        set +e; \
-        make check -j$(nproc --ignore=1); \
-        test_status=$?; \
-        echo "$test_status" > $TEST_STATUS_FILE; \
-        echo "# TEST_STATUS_FILE: $(ls -l "$TEST_STATUS_FILE")" >&2; \
-        echo "# TEST_STATUS: $(cat "$TEST_STATUS_FILE")" >&2; \
-        echo "# test_status: $test_status" >&2; \
-        set -e; \
-        if [ $test_status -ne 0 ]; then \
-            echo "# FAILED: BES Tests" >&2; \
-        else  \
-            echo "# PASSED: BES Tests" >&2 ;\
-        fi \
-    fi ; \
-    if [ "$DIST" = "el9" ] then \
+    echo "# TEST_STATUS_FILE: $TEST_STATUS_FILE" >&2; \
+    set +e; \
+    make check -j$(nproc --ignore=1); \
+    test_status=$?; \
+    echo "$test_status" > $TEST_STATUS_FILE; \
+    echo "# TEST_STATUS_FILE: $(ls -l "$TEST_STATUS_FILE")" >&2; \
+    echo "# TEST_STATUS: $(cat "$TEST_STATUS_FILE")" >&2; \
+    echo "# test_status: $test_status" >&2; \
+    set -e; \
+    if [ $test_status -ne 0 ]; then \
+        echo "# FAILED: BES Tests" >&2; \
+    else  \
+        echo "# PASSED: BES Tests" >&2 ;\
+    fi; \
+    if [ "$DIST" = "el9" ]; then \
         echo "# WARNING: Ignoring el9 tests (make check) because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299" >&2; \
         # Writing 0 to the status file indicates the tests passed.
         echo "# TEST_STATUS_FILE: $TEST_STATUS_FILE" >&2; \
