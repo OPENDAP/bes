@@ -119,10 +119,17 @@ RUN set -e \
 
 ENV TEST_STATUS_FILE="${TEST_LOGS_DIR}/bes-tests-status"
 RUN echo "# $HR" >&2; \
+    MINUS_K= ; \
+    if [ "$DIST" = "el9" ]; then \
+        echo "#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2; \
+        echo "# WARNING: Using 'make check -k' for el9 tests because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299" >&2; \
+        echo "#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2; \
+        MINUS_K="-k"; \
+    fi \
     echo "# Running 'make check' on: $DIST" >&2; \
     echo "# TEST_STATUS_FILE: $TEST_STATUS_FILE" >&2; \
     set +e; \
-    make check -j$(nproc --ignore=1); \
+    make check $MINUS_K -j$(nproc --ignore=1); \
     test_status=$?; \
     echo "$test_status" > $TEST_STATUS_FILE; \
     echo "# TEST_STATUS_FILE: $(ls -l "$TEST_STATUS_FILE")" >&2; \
@@ -138,16 +145,6 @@ RUN echo "# $HR" >&2; \
         echo "# $HR" >&2; \
         echo "# -- -- -- -- -- -- -- -- -- -- --   PASSED: BES Tests     -- -- -- -- -- -- -- -- -- -- --" >&2; \
     fi; \
-    if [ "$DIST" = "el9" ]; then \
-        echo "# $HR" >&2; \
-        echo "#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2; \
-        echo "# WARNING: Ignoring results of el9 tests (make check) because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299" >&2; \
-        # Writing 0 to the status file indicates the tests passed.
-        echo "# Updating TEST_STATUS_FILE: $TEST_STATUS_FILE" >&2; \
-        echo 0 > "$TEST_STATUS_FILE"; \
-        echo "# TEST_STATUS_FILE content: $(cat "$TEST_STATUS_FILE")" >&2; \
-        echo "#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2; \
-    fi ; \
     echo "# $HR" >&2;
 
 
