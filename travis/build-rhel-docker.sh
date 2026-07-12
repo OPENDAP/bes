@@ -128,7 +128,7 @@ docker run --rm -v /tmp:/scratch "${SNAPSHOT_IMAGE_TAG}" \
 
 loggy "$HR1"
 loggy "Checking test logs on Travis host: /tmp"
-loggy "$( ls -l /tmp/bes-* )"
+loggy "$( ls -l /tmp | grep "bes-" )"
 loggy "$HR1"
 
 # Check the bes tests status (aka make check)
