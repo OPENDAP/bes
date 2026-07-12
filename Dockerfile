@@ -9,6 +9,7 @@ ARG BUILDER_BASE_IMAGE
 ARG FINAL_BASE_IMAGE
 FROM ${BUILDER_BASE_IMAGE:-"rockylinux:8"} AS builder
 
+ENV HR="-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
 # Sanity check that the required build argument is provided and non-empty, evn
 # though a default value is provided above. We want to enforce that the value is
 # always specified.
@@ -117,7 +118,7 @@ RUN set -e \
     && chown -v $BES_USER:$BES_USER "${TEST_LOGS_DIR}"
 
 ENV TEST_STATUS_FILE="${TEST_LOGS_DIR}/bes-tests-status"
-RUN echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --" >&2; \
+RUN echo "# $HR" >&2; \
     echo "# Running 'make check' on: $DIST" >&2; \
     echo "# TEST_STATUS_FILE: $TEST_STATUS_FILE" >&2; \
     set +e; \
@@ -129,14 +130,16 @@ RUN echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
     echo "# test_status: $test_status" >&2; \
     set -e; \
     if [ $test_status -ne 0 ]; then \
-        echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --" >&2; \
+        echo "# $HR" >&2; \
         echo "#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2; \
-        echo "# FAILED: BES Tests" >&2; \
+        echo "#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!     FAILED: BES Tests     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2; \
         echo "#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2; \
     else  \
-        echo "# PASSED: BES Tests" >&2 ;\
+        echo "# $HR" >&2; \
+        echo "# -- -- -- -- -- -- -- -- -- -- --   PASSED: BES Tests     -- -- -- -- -- -- -- -- -- -- --" >&2; \
     fi; \
     if [ "$DIST" = "el9" ]; then \
+        echo "# $HR" >&2; \
         echo "#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2; \
         echo "# WARNING: Ignoring results of el9 tests (make check) because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299" >&2; \
         # Writing 0 to the status file indicates the tests passed.
@@ -145,7 +148,7 @@ RUN echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
         echo "# TEST_STATUS_FILE content: $(cat "$TEST_STATUS_FILE")" >&2; \
         echo "#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2; \
     fi ; \
-    echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --" >&2;
+    echo "# $HR" >&2;
 
 
 # Always make the test log tarball
@@ -161,10 +164,10 @@ RUN sudo -s --preserve-env=PATH besctl stop
 RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
 
 #RUN set -e \
-#    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2 \
+#    && echo "# $HR " >&2 \
 #    && echo "ls -l $TEST_LOGS_DIR" \
 #    && ls -l "$TEST_LOGS_DIR" \
-#    && echo "# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- " >&2
+#    && echo "# $HR" >&2
 
 
 ########################################################################################################################
