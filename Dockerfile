@@ -141,9 +141,10 @@ RUN echo "# $HR" >&2; \
     if [ "$DIST" = "el9" ]; then \
         echo "# $HR" >&2; \
         echo "#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2; \
-        echo "# WARNING: Ignoring results of el9 tests (make check) because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299" >&2; \
+        echo "# WARNING: Ignoring results of el9 tests (make check) because of undiagnosed el9 errors." >&2; \
+        echo "# WARNING: See https://github.com/OPENDAP/bes/issues/1299 for more information" >&2; \
         # Writing 0 to the status file indicates the tests passed.
-        echo "# Updating TEST_STATUS_FILE: $TEST_STATUS_FILE" >&2; \
+        echo "# Updating TEST_STATUS_FILE: $TEST_STATUS_FILE to indicate successful tests." >&2; \
         echo 0 > "$TEST_STATUS_FILE"; \
         echo "# TEST_STATUS_FILE content: $(cat "$TEST_STATUS_FILE")" >&2; \
         echo "#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2; \
