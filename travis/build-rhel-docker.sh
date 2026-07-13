@@ -95,16 +95,16 @@ docker build \
     --tag "${SNAPSHOT_IMAGE_TAG}" \
     --build-context aws_downloads="$AWS_DOWNLOADS_DIR/" \
     $DOCKER_DEV_FLAGS \
-    -f ${BES_REPO_DIR}/Dockerfile ${BES_REPO_DIR}
+    -f "${BES_REPO_DIR}/Dockerfile" "${BES_REPO_DIR}"
 
 build_status=$?
 set -e
 if [ $build_status -ne 0 ]
 then
-  loggy "ERROR - Docker build FAILED!!  build_status: $build_status"
+  loggy "ERROR: Docker build FAILED!!  build_status: $build_status"
 else
-  loggy "Docker build complete!"
-  docker image ls -a
+  loggy "SUCCESS: Docker build completed!"
+  loggy "$(docker image ls -a)"
 fi
 
 loggy "$HR1"
@@ -128,7 +128,7 @@ docker run --rm -v /tmp:/scratch "${SNAPSHOT_IMAGE_TAG}" \
 
 loggy "$HR1"
 loggy "Checking test logs on Travis host: /tmp"
-loggy "$( ls -l /tmp | grep "bes-" )"
+loggy "$( ls -l /tmp | grep "bes" )"
 loggy "$HR1"
 
 # Check the bes tests status (aka make check)
@@ -136,11 +136,12 @@ bes_tests_status=$(cat /tmp/bes-tests-status)
 loggy "bes_tests_status: $bes_tests_status"
 if [ "$bes_tests_status" -ne 0 ]
 then
-  loggy "ERROR - The BES autotests failed!"
+  loggy "ERROR: The BES autotests failed!"
   loggy "$HR"
   exit "$bes_tests_status"
 fi
 
+loggy "The BES autotests passed!"
 loggy "END"
 loggy "$HR"
 exit $build_status
