@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="special_fixed_str.h5" dmrpp:href="data/string_arrays/special_fixed_str.h5" dmrpp:version="3.21.1">
+    <String name="One_chunk_unlimited">
+        <Dim size="3"/>
+        <Dim size="3"/>
+        <dmrpp:chunks fillValue="">
+            <dmrpp:chunkDimensionSizes>3 4</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="6710" nBytes="36" chunkPositionInArray="[0,0]"/>
+        </dmrpp:chunks>
+        <dmrpp:FixedLengthStringArray string_length="3" pad="null_term"/>
+    </String>
+    <String name="One_chunk_unlimited_comp">
+        <Dim size="3"/>
+        <Dim size="3"/>
+        <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="">
+            <dmrpp:chunkDimensionSizes>3 4</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="6746" nBytes="31" chunkPositionInArray="[0,0]"/>
+        </dmrpp:chunks>
+        <dmrpp:FixedLengthStringArray string_length="3" pad="null_term"/>
+    </String>
+    <String name="More_null_term_cont_str">
+        <Dim size="3"/>
+        <Dim size="3"/>
+        <dmrpp:chunks fillValue="">
+            <dmrpp:chunk offset="6683" nBytes="27"/>
+        </dmrpp:chunks>
+        <dmrpp:FixedLengthStringArray string_length="3" pad="null_term"/>
+    </String>
+    <String name="More_null_term_chunk_comp_str">
+        <Dim size="3"/>
+        <Dim size="3"/>
+        <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="">
+            <dmrpp:chunkDimensionSizes>2 2</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="6777" nBytes="18" chunkPositionInArray="[0,0]"/>
+            <dmrpp:chunk offset="6795" nBytes="16" chunkPositionInArray="[0,2]"/>
+            <dmrpp:chunk offset="6811" nBytes="14" chunkPositionInArray="[2,0]"/>
+            <dmrpp:chunk offset="6825" nBytes="11" chunkPositionInArray="[2,2]"/>
+        </dmrpp:chunks>
+        <dmrpp:FixedLengthStringArray string_length="3" pad="null_term"/>
+    </String>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2026-07-06T16:55:16Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.21.1</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/hyrax-2197/bes/modules/hdf5_handler/data/src/special_fixed_str.h5 -r special_fixed_str.h5.dmr -u data/string_arrays/special_fixed_str.h5 -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
