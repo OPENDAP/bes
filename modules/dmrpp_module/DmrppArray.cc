@@ -228,6 +228,7 @@ bool one_child_chunk_thread_new(const unique_ptr<one_child_chunk_args_new> &args
  */
 static unsigned long long get_index(const vector<unsigned long long> &address_in_target,
                                     const vector<unsigned long long> &target_shape) {
+
     if (address_in_target.size() != target_shape.size()) { // ranks must be equal
         throw BESInternalError("get_index: address_in_target != target_shape", __FILE__, __LINE__);
     }
@@ -250,9 +251,6 @@ static unsigned long long get_index(const vector<unsigned long long> &address_in
     return offset;
 }
 
-/// Read data for a chunked array when the whole array is to be returned.
-/// See below for the most general case - when chunked data are constrained.
-
 /**
  * For dimension \arg k, compute the multiplier needed for the row-major array
  * offset formula. The formula is:
@@ -267,6 +265,7 @@ static unsigned long long get_index(const vector<unsigned long long> &address_in
  * @param k The dimension in question
  */
 static unsigned long long multiplier(const vector<unsigned long long> &shape, unsigned int k) {
+
     if (!(shape.size() > k + 1)) {
         throw BESInternalError("multiplier: !(shape.size() > k + 1)", __FILE__, __LINE__);
     }
@@ -288,13 +287,13 @@ static unsigned long long multiplier(const vector<unsigned long long> &shape, un
 //  = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 
 DmrppArray &DmrppArray::operator=(const DmrppArray &rhs) {
+
     if (this == &rhs)
         return *this;
 
     dynamic_cast<Array &>(*this) = rhs; // run Constructor=
 
     dynamic_cast<DmrppCommon &>(*this) = rhs;
-    // Removed DmrppCommon::m_duplicate_common(rhs); jhrg 11/12/21
 
     return *this;
 }
@@ -304,6 +303,7 @@ DmrppArray &DmrppArray::operator=(const DmrppArray &rhs) {
  * @return True if the array has a projection expression, false otherwise
  */
 bool DmrppArray::is_projected() {
+
     for (Dim_iter p = dim_begin(), e = dim_end(); p != e; ++p)
         if (dimension_size_ll(p, true) != dimension_size_ll(p, false))
             return true;
@@ -318,6 +318,7 @@ bool DmrppArray::is_projected() {
  * @return The number of elements in this Array
  */
 unsigned long long DmrppArray::get_size(bool constrained) {
+
     // number of array elements in the constrained array
     unsigned long long asize = 1;
     for (Dim_iter dim = dim_begin(), end = dim_end(); dim != end; dim++) {
@@ -327,9 +328,16 @@ unsigned long long DmrppArray::get_size(bool constrained) {
     return asize;
 }
 
+
+/**
+ * @brief Return the number of elements for the buffer that can hold the constrained array regardless the stride.
+ * @return the number of elements for the buffer that can hold the constrained array.
+ * @note Essentially the returned value is the number of elements with the constrained array's start and stop numbers;
+         and the stride for every dimension is 1.
+ */
 unsigned long long DmrppArray::get_maximum_constrained_buffer_nelmts()
 {
-    // The stride here doesn't matter since we need to obtain the maximum constrained buffer. KY 2025-12-08
+
     unsigned long long asize = 1;
     for (Dim_iter dim = dim_begin(), end = dim_end(); dim != end; dim++) {
         int64_t start = dimension_start_ll(dim,true);
@@ -390,6 +398,7 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
                                                vector<unsigned long long> &subset_addr,
                                                const vector<unsigned long long> &array_shape, char /*Chunk*/ *src_buf,
                                                char *dest_buf) {
+
     BESDEBUG("dmrpp", "DmrppArray::" << __func__ << "() - subsetAddress.size(): " << subset_addr.size() << endl);
 
     uint64_t start = this->dimension_start_ll(dim_iter, true);
@@ -411,16 +420,12 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
         subset_addr.pop_back();
 
         // Copy data block from start_index to stop_index
-        // TODO Replace this loop with a call to std::memcpy()
-        for (uint64_t source_index = start_index; source_index <= stop_index; source_index++) {
-            uint64_t target_byte = *target_index * bytes_per_element;
-            uint64_t source_byte = source_index * bytes_per_element;
-            // Copy a single value.
-            for (unsigned long i = 0; i < bytes_per_element; i++) {
-                dest_buf[target_byte++] = src_buf[source_byte++];
-            }
-            (*target_index)++;
-        }
+        uint64_t target_start_byte = *target_index * bytes_per_element;
+        uint64_t source_start_byte = start_index * bytes_per_element;
+        uint64_t bytes_to_copy = (stop_index-start_index+1)*bytes_per_element;
+        memcpy(dest_buf+target_start_byte,src_buf+source_start_byte,bytes_to_copy);
+        *target_index = *target_index + stop_index-start_index+1;
+        
 
     } else {
         for (uint64_t myDimIndex = start; myDimIndex <= stop; myDimIndex += stride) {
@@ -441,9 +446,12 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
                 uint64_t target_byte = *target_index * bytes_per_element;
                 uint64_t source_byte = sourceIndex * bytes_per_element;
 
+#if 0
                 for (unsigned int i = 0; i < bytes_per_element; i++) {
                     dest_buf[target_byte++] = src_buf[source_byte++];
                 }
+#endif
+                memcpy(dest_buf+target_byte,src_buf+source_byte,bytes_per_element);
                 (*target_index)++;
             }
         }
@@ -486,7 +494,6 @@ void DmrppArray::read_contiguous() {
 
     BESDEBUG(dmrpp_3, prolog << "Before is_filter " << endl);
 
-    // Check if this is a DAP structure we can handle
     // Now that the_one_chunk has been read, we do what is necessary...
     if (!is_filters_empty() && !get_one_chunk_fill_value()) {
         the_one_chunk->filter_chunk(get_filters(), get_chunk_size_in_elements(), bytes_per_element);
@@ -739,9 +746,6 @@ void DmrppArray::insert_chunk_unconstrained_dio(shared_ptr<Chunk> chunk) {
 void DmrppArray::build_superchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks) {
     if (get_chunk_count() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
-
-    // Find all the required chunks to read. I used a queue to preserve the chunk order, which
-    // made using a debugger easier. However, order does not matter, AFAIK.
 
     unsigned long long sc_count = 0;
     string sc_id = name() + "-";

@@ -1366,7 +1366,6 @@ bool obtain_structure_array_memb_string_value(hid_t memb_id, size_t values_offse
         H5Tclose(at_base_type);
         err_msg =  "Fail to obtain number of dimensions of the array datatype.";
         return false;
-        
     }
 
     vector<hsize_t>at_dims_h(at_ndims,0);
