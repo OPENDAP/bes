@@ -1552,8 +1552,10 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact) {
                     auto pad_type = array->get_fixed_length_string_pad();
                     auto str_start = reinterpret_cast<char *>(decoded.data());
                     vector<string> fls_values;
+                    auto str_size = decoded.size();
                     while (fls_values.size() < btp->length_ll()) {
-                        string aValue = DmrppArray::ingest_fixed_length_string(str_start, fls_length, pad_type);
+                        auto left_buf_size = str_size - fls_values.size()*fls_length;
+                        string aValue = array->ingest_fixed_length_string(str_start, left_buf_size, fls_length, pad_type);
                         fls_values.emplace_back(aValue);
                         str_start += fls_length;
                     }
