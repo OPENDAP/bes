@@ -153,25 +153,8 @@ jobs:
           make -j16
           make install  
           besctl start
-        # We stop failing on error (set +e) for running
-        # make check because we want to collect the test
-        # logs before the job fails.
-        - |
-          set +e
-          make check -j16
-          test_status=$?
-        # We use fail on error (set -e) for stopping
-        # the bes, uploading the test logs, and
-        # acting on the error state.
-        - |
-          set -e
+          ./travis/mk_local.sh check
           besctl stop
-          ./travis/collect_autotest_logs.sh
-          ./travis/upload-test-results.sh
-          if [ $test_status -ne 0 ]; then 
-              echo "# ERROR - 'make check' failed, exiting. $test_status: $test_status" >&2
-              exit $test_status; 
-          fi
 
     # build-and-test
     - stage: build-and-test
@@ -180,18 +163,8 @@ jobs:
         - export BES_BUILD=distcheck
         - autoreconf --force --install --verbose
         - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-        - |
-          set +e
-          make distcheck -j16 GZIP_ENV=--fast
-          test_status=$?
-        - |
-          set -e
-          ./travis/collect_autotest_logs.sh
-          ./travis/upload-test-results.sh
-          if [ $test_status -ne 0 ]; then 
-              echo "# ERROR - 'make distcheck' failed, exiting. $test_status: $test_status" >&2
-              exit $test_status; 
-          fi
+        - ./travis/mk_local.sh distcheck
+
 
     # build-and-test
     - stage: build-and-test
@@ -225,18 +198,7 @@ jobs:
           export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
         #
         # Run the build, exit on failure.
-        - |
-          ./travis/build-rhel-docker.sh
-          build_status=$?
-          echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
-          echo "# (In Travis) build_status: $build_status" >&2
-          ./travis/upload-test-results.sh
-          echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
-          
-          if [ "$build_status" -ne 0 ]; then
-            echo "# ERROR - Docker build failed, exiting. build_status: $build_status" >&2
-            exit $build_status;
-          fi
+        - ./travis/build-rhel-docker.sh
         #
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
@@ -270,18 +232,8 @@ jobs:
           export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
         #
         # Run the build, exit on failure.
-        - |
-          ./travis/build-rhel-docker.sh
-          build_status=$?
-          echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
-          echo "# (In Travis) build_status: $build_status" >&2
-          ./travis/upload-test-results.sh
-          echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
-          
-          if [ "$build_status" -ne 0 ]; then
-            echo "# ERROR - Docker build failed, exiting. build_status: $build_status" >&2
-            exit $build_status;
-          fi
+        - ./travis/build-rhel-docker.sh
+
         #
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image

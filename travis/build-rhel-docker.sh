@@ -131,17 +131,28 @@ loggy "Checking for BES test log files on Travis host: 'ls -l /tmp/'"
 loggy "$( ls -l /tmp/ | grep "bes" )"
 loggy "$HR1"
 
+
 # Check the bes tests status (aka make check)
-bes_tests_status=$(cat /tmp/bes-tests-status)
-loggy "bes_tests_status: $bes_tests_status"
+bes_tests_status="$(cat /tmp/bes-tests-status)"
+loggy "SUCCESS: The BES autotests passed!"
+
+echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+echo "# (In Travis) build_status: $build_status, bes_tests_status: $bes_tests_status" >&2
+./travis/upload-test-results.sh
+echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+
 if [ "$bes_tests_status" -ne 0 ]
 then
-  loggy "ERROR: The BES autotests failed!"
+  loggy "ERROR: The BES autotests failed! bes_tests_status: $bes_tests_status"
   loggy "$HR"
   exit "$bes_tests_status"
 fi
 
-loggy "The BES autotests passed!"
+if [ "$build_status" -ne 0 ]; then
+  loggy "ERROR: Docker build failed, exiting. build_status: $build_status"
+  exit $build_status;
+fi
+
 loggy "END"
 loggy "$HR"
-exit $build_status
+exit 0
