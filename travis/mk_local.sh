@@ -1,5 +1,8 @@
 #!/bin/bash
-
+#
+# mk_local runs make with the passed target (check, distcheck, etc)
+# Once complete the test logs are collected and uploaded to the archive.
+#
 export  HR="#######################################################################"
 export HR1="--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---"
 function loggy(){
