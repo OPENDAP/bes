@@ -14,10 +14,6 @@ loggy "$HR"
 loggy "BEGIN"
 
 loggy "$HR1"
-loggy "Packaging log files for '$BES_BUILD'"
-loggy "Log File: $LOG_FILE_TGZ"
-loggy "ls -l $(ls -l | grep "$LOG_FILE_TGZ" )"
-loggy "$HR1"
 
 if test -f "$LOG_FILE_TGZ"; then
   if [ -n "$AWS_ACCESS_KEY_ID" ]; then
