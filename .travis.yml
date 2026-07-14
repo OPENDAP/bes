@@ -137,7 +137,7 @@ stages:
 jobs:
   include:
     # build-and-test
-    - stage: never
+    - stage: build-and-test
       name: "check"
       script:
         # We use fail on error (set -e) for building and
@@ -157,7 +157,7 @@ jobs:
           besctl stop
 
     # build-and-test
-    - stage: never
+    - stage: build-and-test
       name: "distcheck"
       script:
         - export BES_BUILD=distcheck
@@ -167,7 +167,7 @@ jobs:
 
 
     # build-and-test
-    - stage: never
+    - stage: build-and-test
       name: "dist"
       script:
         - export BES_BUILD=srcdist
@@ -183,7 +183,7 @@ jobs:
         - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
 
     # build-docker
-    - stage: never
+    - stage: build-docker
       name: "Build docker image bes_core:-el8"
       script:
         - |
@@ -216,7 +216,7 @@ jobs:
         #   docker push ${DEBUGGING_TAG}
 
     # build-docker
-    - stage: never
+    - stage: build-docker
       name: "Build docker image bes_core:-el9"
       script:
         - |
