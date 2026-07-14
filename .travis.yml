@@ -83,7 +83,7 @@ before_install:
   - pip install --user awscli
   # fix for Java 17 install for Sonar from Travis CI support. jhrg 1/23/24
   # see the apt-get package install above. jhrg 10/17/25
-  - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+  - export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
   - export PATH="$JAVA_HOME/bin:$PATH"
   # curl -s "https://get.sdkman.io" | bash
   # source "$HOME/.sdkman/bin/sdkman-init.sh"
