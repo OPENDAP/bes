@@ -45,7 +45,7 @@ addons:
       - gcovr
       - grep
       - libfl-dev   # needed for focal, but not xenial. jhrg 1/18/24
-      - openjdk-17-jdk-headless
+      - openjdk-21-jdk-headless
 
 git:
   depth: 1
@@ -83,7 +83,7 @@ before_install:
   - pip install --user awscli
   # fix for Java 17 install for Sonar from Travis CI support. jhrg 1/23/24
   # see the apt-get package install above. jhrg 10/17/25
-  - export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+  - export JAVA_HOME=/usr/lib/jvm/java-21-openjdk-amd64
   - export PATH="$JAVA_HOME/bin:$PATH"
   # curl -s "https://get.sdkman.io" | bash
   # source "$HOME/.sdkman/bin/sdkman-init.sh"
@@ -140,13 +140,21 @@ jobs:
     - stage: build-and-test
       name: "check"
       script:
-        - export BES_BUILD=main
-        # - export RUNTESTFLAGS="-v"
-        - autoreconf --force --install --verbose
-        - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-        - export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
-        - echo "LD_LIBRARY_PATH - $LD_LIBRARY_PATH" >&2
-        - make -j16 && make install && besctl start -d cerr,curl,http && make check -j16 && besctl stop
+        # We use fail on error (set -e) for building and
+        # starting the bes.
+        - |
+          set -e
+          export BES_BUILD=main
+          # - export RUNTESTFLAGS="-v"
+          export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
+          echo "LD_LIBRARY_PATH - $LD_LIBRARY_PATH" >&2
+          autoreconf --force --install --verbose
+          ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
+          make -j16
+          make install  
+          besctl start
+          ./travis/mk_local.sh check
+          besctl stop
 
     # build-and-test
     - stage: build-and-test
@@ -155,7 +163,8 @@ jobs:
         - export BES_BUILD=distcheck
         - autoreconf --force --install --verbose
         - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
-        - make distcheck -j16 GZIP_ENV=--fast
+        - ./travis/mk_local.sh distcheck
+
 
     # build-and-test
     - stage: build-and-test
@@ -173,13 +182,13 @@ jobs:
         - mv bes-*.tar.gz bes-$SOURCE_VERSION.tar.gz
         - cp bes-$SOURCE_VERSION.tar.gz bes-snapshot.tar.gz
 
+    # build-docker
     - stage: build-docker
       name: "Build docker image bes_core:-el8"
       script:
-        - set -e
         - |
           export BES_BUILD=docker-el8
-          echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
+          echo "# branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
           export DOCKER_NAME="bes_core"
           export BUILDER_BASE_IMAGE="opendap/rocky8_hyrax_builder:latest"
           export FINAL_BASE_IMAGE="rockylinux:8"
@@ -187,19 +196,17 @@ jobs:
           export OS=rocky8
           export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
           export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
+        #
+        # Run the build, exit on failure.
         - ./travis/build-rhel-docker.sh
-        # Note: Take the test log tarball that was created in the Dockerfile and copied to the final mount
-        #   and then run this copy command to copy it into Travis.
-        - |
-          docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
-          -c "cp /bes-test-logs/bes-test-logs.tar.gz /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
+        #
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
         # is built:
         - |
           export BES_VERSION="$(docker run --rm ${SNAPSHOT_IMAGE_TAG} -c 'cat bes_VERSION')"
           export BUILD_VERSION_TAG="opendap/${DOCKER_NAME}:${BES_VERSION}-${DIST}"
-          echo "Tagging image with BES version: ${BUILD_VERSION_TAG}"
+          echo "# Tagging image with BES version: ${BUILD_VERSION_TAG}"
           docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
         # Uncomment the following to push a test image for a non-test-deploy pull request
         # - |
@@ -208,12 +215,13 @@ jobs:
         #   echo $DOCKER_HUB_PWSD | docker login -u $DOCKER_HUB_UID --password-stdin
         #   docker push ${DEBUGGING_TAG}
 
+    # build-docker
     - stage: build-docker
       name: "Build docker image bes_core:-el9"
       script:
-        - set -e
         - |
           export BES_BUILD=docker-el9
+          echo "BUILDING: $BES_BUILD"
           echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
           export DOCKER_NAME="bes_core"
           export BUILDER_BASE_IMAGE="opendap/rocky9_hyrax_builder:latest"
@@ -222,12 +230,11 @@ jobs:
           export OS=rocky9
           export SNAPSHOT_IMAGE_TAG="opendap/${DOCKER_NAME}:snapshot-${DIST}"
           export BES_REPO_DIR=${TRAVIS_BUILD_DIR}
+        #
+        # Run the build, exit on failure.
         - ./travis/build-rhel-docker.sh
-          # Note: Take the test log tarball that was created in the Dockerfile and copied to the final mount
-          #   and then run this copy command to copy it into Travis.
-        - |
-          docker run --rm -v /tmp:/scratch ${SNAPSHOT_IMAGE_TAG} \
-          -c "cp /bes-test-logs/bes-test-logs.tar.gz /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tar.gz"
+
+        #
         # Note: We need downstream access to the environment variable
         # `BUILD_VERSION_TAG` that can only be determined AFTER the image
         # is built:
@@ -237,6 +244,7 @@ jobs:
           echo "Tagging image with BES version: ${BUILD_VERSION_TAG}"
           docker tag ${SNAPSHOT_IMAGE_TAG} ${BUILD_VERSION_TAG}
 
+    # scan
     - stage: scan
       name: "scan bes"
       script:
@@ -245,8 +253,10 @@ jobs:
       - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer --enable-coverage
       - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
       - sonar-scanner -Dproject.settings=sonar-bes-framework.properties -Dsonar.token=$SONAR_TOKEN
+      - ls -l "$TRAVIS_BUILD_DIR" >&2
       - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes | grep "QUALITY GATE PASS"
 
+    # scan
     - stage: scan
       name: "scan bes-modules-1"
       script:
@@ -255,8 +265,10 @@ jobs:
         - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
         - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
         - sonar-scanner -Dproject.settings=sonar-bes-modules-1.properties -Dsonar.token=$SONAR_TOKEN
+        - ls -l "$TRAVIS_BUILD_DIR" >&2
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-modules | grep "QUALITY GATE PASS"
 
+    # scan
     - stage: scan
       name: "scan bes-hdf-handlers"
       script:
@@ -265,9 +277,11 @@ jobs:
         - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer  --enable-coverage
         - build-wrapper-linux-x86-64 --out-dir bw-output make -j16
         - sonar-scanner -Dproject.settings=sonar-bes-hdf-handlers.properties -Dsonar.token=$SONAR_TOKEN
+        - ls -l "$TRAVIS_BUILD_DIR" >&2
         # We call the hdf4/5 handlers scan opendap-bes-submodules for historical reasons. jhrg 1/13/22
         - curl -s https://sonarcloud.io/api/project_badges/quality_gate?project=opendap-bes-submodules | grep "QUALITY GATE PASS"
 
+    # hyrax-olfs-trigger
     - stage: hyrax-olfs-trigger
       name: "Hyrax OLFS Trigger"
       script:
@@ -277,8 +291,6 @@ jobs:
         - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --with-build=$BES_BUILD_NUMBER
         - ./travis/trigger-olfs-build.sh
 
-after_script:
-  - ./travis/upload-test-results.sh
 
 before_deploy:
   - export DEPLOY="S3"
@@ -296,7 +308,7 @@ deploy:
     access_key_id: $AWS_ACCESS_KEY_ID
     secret_access_key: $AWS_SECRET_ACCESS_KEY
     bucket: opendap.travis.build
-    skip_cleanup: true
+    cleanup: false
     local_dir: $TRAVIS_BUILD_DIR/package
     on:
       all_branches: true
