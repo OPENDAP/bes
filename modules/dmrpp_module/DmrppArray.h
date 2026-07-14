@@ -166,9 +166,6 @@ private:
 
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim);
 
-    std::shared_ptr<Chunk> find_needed_chunks(unsigned int dim, std::vector<unsigned long long> *target_element_address,
-                                              std::shared_ptr<Chunk> chunk);
-
     bool find_needed_chunks_simple(std::shared_ptr<Chunk> chunk, const std::vector<unsigned long long> & chunk_shape, 
                                    const std::vector<unsigned long long> & start, const std::vector<unsigned long long> & stride,
                                    std::vector<unsigned long long> & stop, int num_dims);
@@ -201,7 +198,7 @@ private:
                                                    unsigned long long chars_per_string);
 
 
-    bool use_direct_io_opt();
+    //bool use_direct_io_opt();
 
     void add_dio_var_storage_info_constrained();
     void add_dio_var_storage_info_unconstrained();

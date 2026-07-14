@@ -787,9 +787,10 @@ void DmrppArray::read_chunks_unconstrained() {
     if (get_chunk_count() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
-    // Find all the required chunks to read. I used a queue to preserve the chunk order, which
-    // made using a debugger easier. However, order does not matter, AFAIK.
+    queue<shared_ptr<SuperChunk>> super_chunks;
+    build_superchunk_queue(super_chunks);
 
+#if 0
     unsigned long long sc_count = 0;
     stringstream sc_id;
     sc_id << name() << "-" << sc_count++;
@@ -812,6 +813,7 @@ void DmrppArray::read_chunks_unconstrained() {
             }
         }
     }
+#endif
 
     reserve_value_capacity_ll(get_size());
     if (is_readable_struct) {
@@ -844,6 +846,11 @@ void DmrppArray::read_chunks_dio_unconstrained() {
     if (get_chunk_count() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
+    queue<shared_ptr<SuperChunk>> super_chunks;
+    build_superchunk_queue(super_chunks);
+
+
+#if 0
     // Find all the required chunks to read. I used a queue to preserve the chunk order, which
     // made using a debugger easier. However, order does not matter, AFAIK.
 
@@ -869,6 +876,7 @@ void DmrppArray::read_chunks_dio_unconstrained() {
             }
         }
     }
+#endif
 
     // Change to the total storage buffer size to just the compressed buffer size.
     reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
@@ -887,7 +895,7 @@ void DmrppArray::read_chunks_dio_unconstrained() {
         BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl);
 
         // Call direct IO routine
-        super_chunk->read_unconstrained_dio();
+        super_chunk->read_dio();
     }
     set_read_p(true);
 }
@@ -909,9 +917,9 @@ void DmrppArray::read_buffer_chunks_dio_unconstrained()
 
     vector<unsigned long long> buf_end_pos_vec;
 
-    // 1. Since the chunks may be filled, we need to find the first non-filled chunk and make the chunk offset
-    //    as the first buffer offset. The current implementation seems to indicate that the first chunk is always a 
-    //    chunk that stores the real data. So this "for loop" is not expensive.
+    //  Since the chunks may be filled, we need to find the first non-filled chunk and make the chunk offset
+    //  as the first buffer offset. The current implementation seems to indicate that the first chunk is always a 
+    //  chunk that stores the real data. So this "for loop" is not expensive.
     for (const auto &chunk: get_immutable_chunks()) {
         if (chunk->get_offset() != 0) {
             buffer_offset =  chunk->get_offset();
@@ -920,8 +928,8 @@ void DmrppArray::read_buffer_chunks_dio_unconstrained()
     }
 
     auto chunks = this->get_chunks();
-    // 2. We need to know the chunk index of the last non-filled chunk to fill in the last real data buffer chunk position.
-    //    We search from the last element since mostly it is at the end of the chunks.
+    //  We need to know the chunk index of the last non-filled chunk to fill in the last real data buffer chunk position.
+    //  We search from the last element since mostly it is at the end of the chunks.
     unsigned long long last_unfilled_chunk_index = 0;
     for (unsigned long long i = (chunks.size()-1);i>0;i--) {
         if (chunks[i]->get_offset()!=0) {
@@ -979,7 +987,7 @@ void DmrppArray::read_buffer_chunks_dio_unconstrained()
     while(!super_chunks.empty()) {
         auto super_chunk = super_chunks.front();
         super_chunks.pop();
-        super_chunk->read_unconstrained_dio();
+        super_chunk->read_dio();
     }
 
     set_read_p(true);
@@ -1079,40 +1087,6 @@ void DmrppArray::read_linked_blocks() {
 
     set_read_p(true);
 
-    // Leave the following commented code for the time being since we may add this feature in the future. KY 2024-03-20
-#if 0
-    // The size in element of each of the array's dimensions
-    const vector<unsigned long long> array_shape = get_shape(true);
-
-    // The size, in elements, of each of the chunk's dimensions
-    const vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
-
-    BESDEBUG(dmrpp_3, prolog << "d_use_transfer_threads: " << (DmrppRequestHandler::d_use_transfer_threads ? "true" : "false") << endl);
-    BESDEBUG(dmrpp_3, prolog << "d_max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl);
-
-    if (!DmrppRequestHandler::d_use_transfer_threads) {  // Serial transfers
-#if DMRPP_ENABLE_THREAD_TIMERS
-        BES_STOPWATCH_START(dmrpp_3, prolog + "Serial SuperChunk Processing.");
-#endif
-        while(!super_chunks.empty()) {
-            auto super_chunk = super_chunks.front();
-            super_chunks.pop();
-            BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl );
-
-            // Call direct IO routine
-            super_chunk->read_unconstrained_dio();
-        }
-    }
-    else {      // Parallel transfers
-#if DMRPP_ENABLE_THREAD_TIMERS
-        string timer_name = prolog + "Concurrent SuperChunk Processing. d_max_transfer_threads: " + to_string(DmrppRequestHandler::d_max_transfer_threads);
-        BES_STOPWATCH_START(dmrpp_3, timer_name);
-#endif
-        // Call direct IO routine for parallel transfers
-        read_super_chunks_unconstrained_concurrent_dio(super_chunks, this);
-    }
-    set_read_p(true);
-#endif
 }
 
 void DmrppArray::read_linked_blocks_constrained() {
@@ -1501,86 +1475,6 @@ unsigned long long DmrppArray::get_chunk_start(const dimension &thisDim, unsigne
     return first_element_offset;
 }
 
-/**
- * @brief Look at all the chunks and mark those that should be read.
- *
- * This method is used by read_chunks_parallel() to determine which
- * of the chunks that make up this array should be read, decompressed
- * and inserted into the array. The assumption is that the array is
- * subset in some way, so not all of the chunks need to be read.
- *
- * This method works in elements, not bytes.
- *
- * This method calls itself, completing to computation when \arg dim
- * has gone from 0 to the rank (rank-1, actually) of the array. As it does this, the
- * vector `target_element_address` is built up for the given chunk.
- * When \arg dim is the array's rank, `target_element_address` will
- * have a value for all but the rightmost dimension.
- *
- * @param dim Starting with 0, compute values for this dimension of the array
- * @param target_element_address Initially empty, this becomes the location
- * in the array where data should be written.
- * @param chunk This is the chunk.
- */
-shared_ptr<Chunk> DmrppArray::find_needed_chunks(unsigned int dim, vector<unsigned long long> *target_element_address,
-                                                 shared_ptr<Chunk> chunk) {
-    BESDEBUG(dmrpp_3, prolog << " BEGIN, dim: " << dim << endl);
-
-    // The size, in elements, of each of the chunk's dimensions.
-    const vector<unsigned long long> &chunk_shape = get_chunk_dimension_sizes();
-
-    // The chunk's origin point a.k.a. its "position in array".
-    const vector<unsigned long long> &chunk_origin = chunk->get_position_in_array();
-
-    dimension thisDim = this->get_dimension(dim);
-
-    // Do we even want this chunk?
-    // The original code has the off by 1 bug because the start,stop are the dimension index number. KY 2026-2-23
-    if ((unsigned long long)thisDim.start >= (chunk_origin[dim] + chunk_shape[dim]) ||
-        (unsigned long long)thisDim.stop < chunk_origin[dim]) {
-        return nullptr; // No. No, we do not. Skip this chunk.
-    }
-
-    // What's the first element that we are going to access for this dimension of the chunk?
-    unsigned long long chunk_start = get_chunk_start(thisDim, chunk_origin[dim]);
-
-    // Is the next point to be sent in this chunk at all? If no, return.
-    if (chunk_start > chunk_shape[dim]) {
-        return nullptr;
-    }
-
-    // Now we figure out the correct last element, based on the subset expression
-    unsigned long long end_element = chunk_origin[dim] + chunk_shape[dim] - 1;
-    if ((unsigned long long)thisDim.stop < end_element) {
-        end_element = thisDim.stop;
-    }
-
-    unsigned long long chunk_end = end_element - chunk_origin[dim];
-
-    unsigned int last_dim = chunk_shape.size() - 1;
-    if (dim == last_dim) {
-        // The last chunk may be a filled chunk, chunk->to_string() has an issue to  print the chunk info. So comment it out.
-        //BESDEBUG(dmrpp_3, prolog << " END, This is the last_dim. chunk: " << chunk->to_string() << endl);
-        return chunk;
-    } else {
-        // Not the last dimension, so we continue to proceed down the Recursion Branch.
-        for (unsigned long long chunk_index = chunk_start; chunk_index <= chunk_end; chunk_index += thisDim.stride) {
-            (*target_element_address)[dim] = (chunk_index + chunk_origin[dim] - thisDim.start) / thisDim.stride;
-
-            // Re-entry here:
-            auto needed = find_needed_chunks(dim + 1, target_element_address, chunk);
-            if (needed) {
-                BESDEBUG(dmrpp_3, prolog << " END, Found chunk: " << needed->to_string() << endl);
-                return needed;
-            }
-        }
-    }
-    BESDEBUG(dmrpp_3, prolog << " END, dim: " << dim << endl);
-
-    return nullptr;
-}
-
-
 bool DmrppArray::find_needed_chunks_simple(std::shared_ptr<Chunk> chunk, const std::vector<unsigned long long> & chunk_shape, 
                                    const std::vector<unsigned long long> & start, const std::vector<unsigned long long> & stride,
                                    std::vector<unsigned long long> & stop, int num_dims) {
@@ -1877,12 +1771,12 @@ void DmrppArray::read_chunks_dio_constrained() {
         chunk_counter++;
     }
 
+    // Note for the constrained dio case, the storage size was re-calculated for the selected chunks only. 
     BESDEBUG(dmrpp_3, prolog <<"subset dio chunk storage size: "<<get_var_chunks_storage_size()<<endl);
     reserve_value_capacity_ll(get_var_chunks_storage_size());
 
     // Use the same approach as the non-direct chunk IO code for parallel transfer for now.
-    // We use the direct chunk IO for the unconstrained case underneath. The parallel transfer part 
-    // is the same as the non-direct chunk IO code.
+    // The parallel transfer part is the same as the non-direct chunk IO code.
 
 #if DMRPP_ENABLE_THREAD_TIMERS
     BES_STOPWATCH_START(dmrpp_3, prolog + "Serial SuperChunk Processing.");
@@ -1892,8 +1786,7 @@ void DmrppArray::read_chunks_dio_constrained() {
         super_chunks.pop();
         BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl);
         // For the direct IO, the unconstrained and constrained cases are the same.
-        // TODO: will change the read_unconstrained_dio() to a more meaningful name.
-        super_chunk->read_unconstrained_dio();
+        super_chunk->read_dio();
     }
     set_read_p(true);
 }
@@ -1923,8 +1816,8 @@ void DmrppArray::read_buffer_chunks() {
     vector<unsigned long long> var_stride;
     int num_dims = obtain_subset_dims(var_start,var_stop,var_stride);
 
-    // 1. We have to start somewhere, so we will search the first non_filled buffer offset.
-    //    We also obtain the needed chunks info. 
+    //  We have to start somewhere, so we will search the first non_filled buffer offset.
+    //  We also obtain the needed chunks info. 
     for (const auto &chunk: get_immutable_chunks()) {
         bool needed = find_needed_chunks_simple(chunk,chunk_shape,var_start,var_stride,var_stop,num_dims);
         if (needed) {
@@ -1942,7 +1835,7 @@ void DmrppArray::read_buffer_chunks() {
  
     auto chunks = this->get_chunks();
 
-    // 2. We need to know the chunk index of the last non-filled chunk to fill in the last buffer chunk position.
+    // We need to know the chunk index of the last non-filled chunk to fill in the last buffer chunk position.
     unsigned long long last_unfilled_chunk_index = 0;
     for (unsigned long long i = (chunks.size()-1);i>0;i--) {
         if (chunks_needed[i] && chunks[i]->get_offset()!=0) {
@@ -1953,6 +1846,7 @@ void DmrppArray::read_buffer_chunks() {
     BESDEBUG(MODULE, prolog <<" NEW BUFFER maximum buffer size: "<<max_buffer_size<<endl);
     BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
 
+    // Calculate the buffer sizes. The buffer size may be different for each buffer. 
     obtain_buffer_end_pos_vec(chunks_needed,max_buffer_size, buffer_offset, last_unfilled_chunk_index, buf_end_pos_vec);
 
     unsigned long long sc_count = 0;
@@ -2020,7 +1914,7 @@ void DmrppArray::read_buffer_chunks_dio_constrained() {
     bool find_first_non_filled_chunk = true;
     unsigned long long chunk_counter = 0;
 
-    // 1. We have to start somewhere, so we will search the first non_filled buffer offset.
+    // We have to start somewhere, so we will search the first non_filled buffer offset.
     for (const auto &chunk: get_immutable_chunks()) {
         if (dio_subset_chunks_needed[chunk_counter] && find_first_non_filled_chunk){
             if (chunk->get_offset()!=0) {
@@ -2033,7 +1927,7 @@ void DmrppArray::read_buffer_chunks_dio_constrained() {
  
     auto chunks = this->get_chunks();
 
-    // 2. We need to know the chunk index of the last non-filled chunk to fill in the last buffer chunk position.
+    // We need to know the chunk index of the last non-filled chunk to fill in the last buffer chunk position.
     unsigned long long last_unfilled_chunk_index = 0;
     for (unsigned long long i = (chunks.size()-1);i>0;i--) {
         if (dio_subset_chunks_needed[i] && chunks[i]->get_offset()!=0) {
@@ -2044,6 +1938,7 @@ void DmrppArray::read_buffer_chunks_dio_constrained() {
     BESDEBUG(MODULE, prolog <<" NEW BUFFER maximum buffer size: "<<max_buffer_size<<endl);
     BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
 
+    // Obtain the buffer size.
     obtain_buffer_end_pos_vec(dio_subset_chunks_needed,max_buffer_size, buffer_offset, last_unfilled_chunk_index, buf_end_pos_vec);
 
     unsigned long long sc_count = 0;
@@ -2087,7 +1982,7 @@ void DmrppArray::read_buffer_chunks_dio_constrained() {
         auto super_chunk = super_chunks.front();
         super_chunks.pop();
         // For the direct IO, the unconstrained and constrained cases are the same. 
-        super_chunk->read_unconstrained_dio();
+        super_chunk->read_dio();
     }
 
     set_read_p(true);
@@ -2344,9 +2239,11 @@ bool DmrppArray::read() {
     if (!get_chunks_loaded())
         load_chunks(this);
 
-    // It's important to note that w.r.t. the compact data layout the DMZ parser reads the values into the
-    // DmrppArray at the time it is parsed and the read flag is then set. Thus, the compact layout solution
-    // does not explicitly appear in this method as it is handled by the parser.
+    // It's important to note that for some data patterns the DMZ parser reads the values into the
+    // DmrppArray at the time it is parsed and the read flag is then set. Thus, these data patterns
+    // do not explicitly appear in this method as it is handled by the parser.
+    // Currently these data patterns include the compact data layout, the variable-length string, the variable-length float/int,
+    // the structure that contains strings and the missing data that the original HDF file doesn't provide(e.g. HDF-EOS latitude and longitude).
     if (read_p())
         return true;
 
@@ -2379,42 +2276,40 @@ bool DmrppArray::read() {
     if ((var_type == dods_str_c || var_type == dods_url_c) && is_flsa()) 
         return read_string_array();
 
-    DmrppArray *array_to_read = this;
-
     if (BESDebug::IsSet(MODULE)) {
-        string msg = array_to_str(*array_to_read, "Reading Data From DmrppArray");
+        string msg = array_to_str(*this, "Reading Data From DmrppArray");
         BESDEBUG(MODULE, prolog << msg << endl);
     }
     // Single chunk and 'contiguous' are the same for this code.
-    if (array_to_read->get_chunk_count() == 1) {
+    if (get_chunk_count() == 1) {
         BESDEBUG(MODULE, prolog << "Reading data from a single contiguous chunk." << endl);
-        if (this->get_dio_flag())
-            array_to_read->read_one_chunk_dio();
+        if (get_dio_flag())
+            read_one_chunk_dio();
         else {
             //Check if the chunk size is greater than the array size.
-            if (array_to_read->get_chunk_size_in_elements()>array_to_read->get_size(false))
-                array_to_read->read_one_bigger_chunk();
+            if (get_chunk_size_in_elements()>get_size(false))
+                read_one_bigger_chunk();
             else 
-                array_to_read->read_contiguous(); // Throws on various errors
+                read_contiguous(); // Throws on various errors
         }
     } else {                                  // Handle the more complex case where the data is chunked.
         if (get_using_linked_block()) {
             BESDEBUG(MODULE, prolog << "Reading data linked blocks" << endl);
-            if (!array_to_read->is_projected()) {
-                array_to_read->read_linked_blocks();
+            if (!is_projected()) {
+                read_linked_blocks();
             } else {
-                array_to_read->read_linked_blocks_constrained();
+                read_linked_blocks_constrained();
             }
         } else if (is_multi_linked_blocks_chunk()) {
-            if (!array_to_read->is_projected()) {
-                array_to_read->read_chunks_with_linked_blocks();
+            if (!is_projected()) {
+                read_chunks_with_linked_blocks();
             } else {
-                array_to_read->read_chunks_with_linked_blocks_constrained();
+                read_chunks_with_linked_blocks_constrained();
             }
         } else {
-            bool buffer_chunk_case = array_to_read->use_buffer_chunk();
+            bool buffer_chunk_case = use_buffer_chunk();
 
-            if (!array_to_read->is_projected()) {
+            if (!is_projected()) {
 
                 BESDEBUG(MODULE, prolog << "Reading data from chunks, unconstrained." << endl);
 
@@ -2422,41 +2317,42 @@ bool DmrppArray::read() {
                 if (this->get_dio_flag()) {
                     BESDEBUG(MODULE, prolog << "Using direct IO" << endl);
                     if (buffer_chunk_case && DmrppRequestHandler::use_buffer_chunk) 
-                        array_to_read->read_buffer_chunks_dio_unconstrained();
+                        read_buffer_chunks_dio_unconstrained();
                     else 
-                        array_to_read->read_chunks_dio_unconstrained();
+                        read_chunks_dio_unconstrained();
                 }
                 // Also buffer chunks for the non-contiguous chunk case.
                 else if(buffer_chunk_case && DmrppRequestHandler::use_buffer_chunk) { 
                     BESDEBUG(MODULE, prolog << "Using buffer chunk" << endl);
-                    array_to_read->read_buffer_chunks_unconstrained();
+                    read_buffer_chunks_unconstrained();
                 }
                 else {
                     BESDEBUG(MODULE, prolog << "Using general approach" << endl);
-                    array_to_read->read_chunks_unconstrained();
+                    read_chunks_unconstrained();
                 }
             } else {
                 BESDEBUG(MODULE, prolog << "Reading data from chunks, constrained." << endl);
                 if (this->get_dio_flag()) {
                     BESDEBUG(MODULE, prolog << "Using direct IO, constrained" << endl);
                     if (buffer_chunk_case && DmrppRequestHandler::use_buffer_chunk)
-                        array_to_read->read_buffer_chunks_dio_constrained();
+                        read_buffer_chunks_dio_constrained();
                     else
-                        array_to_read->read_chunks_dio_constrained();
+                        read_chunks_dio_constrained();
                 }
                 // Also buffer chunks for the non-contiguous chunk case.
                 else if (buffer_chunk_case && DmrppRequestHandler::use_buffer_chunk)  {
                     BESDEBUG(MODULE, prolog << "Using buffer chunk" << endl);
-                    array_to_read->read_buffer_chunks();
+                    read_buffer_chunks();
                 }
                 else { 
                     BESDEBUG(MODULE, prolog << "Using general approach" << endl);
-                    array_to_read->read_chunks();
+                    read_chunks();
                 }
             }
         }
     }
 
+    // Need to convert BE to LE
     if (this->twiddle_bytes()) {
 
         int64_t num = this->length_ll();
@@ -2846,7 +2742,6 @@ void DmrppArray::print_dap4(XMLWriter &xml, bool constrained /*false*/) {
             throw InternalErr(__FILE__, __LINE__, "Could not write attribute for name");
     }
 
-    // Hack job... Copied from D4Enum::print_xml_writer. jhrg 11/12/13
     if (var()->type() == dods_enum_c) {
         D4Enum *e = static_cast<D4Enum *>(var());
         string path = e->enumeration()->name();
@@ -2946,6 +2841,7 @@ unsigned int DmrppArray::buf2val(void **val) {
     }
 }
 
+#if 0
 // Check if direct chunk IO can be used.
 bool DmrppArray::use_direct_io_opt() {
 
@@ -2980,7 +2876,7 @@ bool DmrppArray::use_direct_io_opt() {
     }
 
     bool is_data_all_fvalues = false;
-    // This is the check for a rare case: the variable data just contains the filled values.
+    // Check a rare case: the variable data just contains the filled values.
     // If this var's storage size is 0. Then it should be filled with the filled values.
     if (has_deflate_filter && this->get_uses_fill_value() && this->get_var_chunks_storage_size() == 0)
         is_data_all_fvalues = true;
@@ -2994,9 +2890,7 @@ bool DmrppArray::use_direct_io_opt() {
     }
 
     // Check if the chunk size is greater than the dimension size for any dimension.
-    // If this is the case, we will not use the direct chunk IO since netCDF-4 doesn't allow this.
-    // TODO later, if the dimension is unlimited, this restriction can be lifted. Current dmrpp doesn't store the
-    // unlimited dimension information.
+    // If this is the case, except for the unlimited dimension case, we will not use the direct chunk IO since netCDF-4 doesn't allow this.
 
     if (has_dio_filters && this->get_processing_fv_chunks() == false) {
 
@@ -3024,6 +2918,7 @@ bool DmrppArray::use_direct_io_opt() {
 
     return ret_value;
 }
+#endif
 
 // Read the data from the supported array of structure
 void DmrppArray::read_array_of_structure(vector<char> &values) {
@@ -3112,7 +3007,7 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
 
     vector<unsigned long long> buf_end_pos_vec;
 
-    // 1. Since the chunks may be filled, we need to find the first non-filled chunk and make the chunk offset
+    // Since the chunks may be filled, we need to find the first non-filled chunk and make the chunk offset
     // as the first buffer offset. The current implementation seems to indicate that the first chunk is always a 
     // chunk that stores the real data. 
     for (const auto &chunk: get_immutable_chunks()) {
@@ -3123,7 +3018,7 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
     }
 
     auto chunks = this->get_chunks();
-    // 2. We need to know the chunk index of the last non-filled chunk to fill in the last real data buffer chunk position.
+    // We need to know the chunk index of the last non-filled chunk to fill in the last real data buffer chunk position.
     unsigned long long last_unfilled_chunk_index = 0;
     for (unsigned long long i = (chunks.size()-1);i>0;i--) {
         if (chunks[i]->get_offset()!=0) {
@@ -3138,6 +3033,7 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
     // Just pass the vector. 
     vector<bool> subset_chunks_needed;
 
+    // Calculate the buffer end position for the whole array.
     obtain_buffer_end_pos_vec(subset_chunks_needed,max_buffer_size, buffer_offset, last_unfilled_chunk_index, buf_end_pos_vec);
 
     unsigned long long sc_count = 0;
@@ -3211,6 +3107,7 @@ bool DmrppArray::use_buffer_chunk() {
     return ret_value;
 }
 
+// Obtain the optimized buffer size when using the buffer chunk.
 void DmrppArray::obtain_buffer_end_pos_vec(const vector<bool>& subset_chunks_needed, unsigned long long max_buffer_size, unsigned long long buffer_offset,
                                            unsigned long long last_unfilled_chunk_index, vector<unsigned long long> & buf_end_pos_vec) const {
 
@@ -3272,7 +3169,7 @@ void DmrppArray::obtain_buffer_end_pos_vec(const vector<bool>& subset_chunks_nee
                     //This is not a contiguous super chunk any more.
                     if (chunk_gap != 0) {
 
-                        // Whenever we have a gap, we need to recalculate the buffer size.
+                        // Whenever we have a gap, we need to re-calculate the buffer size.
                         if (chunk_gap > 0) {
 
                             // If the non-contiguous chunk is going forward; check if it exceeds the maximum buffer boundary.
@@ -3414,6 +3311,7 @@ void DmrppArray::add_dio_var_storage_info_unconstrained() {
     this->set_var_storage_info(dmrpp_vs_info);
 
 }
+
 int DmrppArray::obtain_subset_dims(vector<unsigned long long>& var_start,vector<unsigned long long>&var_stop,vector<unsigned long long>&var_stride) {
 
     Array::Dim_iter di = dim_begin();
@@ -3468,7 +3366,7 @@ bool DmrppArray::read_string_array() {
  * @param array_shape The shape of the array
  * @param chars_per_string number of characters in a string
  * @param pad_type         The string's pad type(space_pad, null_pad or null_term)
- * @param src_buf The buffer containing the data to be copied.
+ * @param chunk  The one_chunk that represents the array subset
  */
 void DmrppArray::insert_constrained_contiguous_string(Dim_iter dim_iter,
                                                       unsigned long long &target_index,
