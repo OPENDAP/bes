@@ -445,12 +445,6 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
                 // Copy a single value.
                 uint64_t target_byte = *target_index * bytes_per_element;
                 uint64_t source_byte = sourceIndex * bytes_per_element;
-
-#if 0
-                for (unsigned int i = 0; i < bytes_per_element; i++) {
-                    dest_buf[target_byte++] = src_buf[source_byte++];
-                }
-#endif
                 memcpy(dest_buf+target_byte,src_buf+source_byte,bytes_per_element);
                 (*target_index)++;
             }
@@ -789,32 +783,6 @@ void DmrppArray::read_chunks_unconstrained() {
 
     queue<shared_ptr<SuperChunk>> super_chunks;
     build_superchunk_queue(super_chunks);
-
-#if 0
-    unsigned long long sc_count = 0;
-    stringstream sc_id;
-    sc_id << name() << "-" << sc_count++;
-    queue<shared_ptr<SuperChunk>> super_chunks;
-    auto current_super_chunk = std::make_shared<SuperChunk>(sc_id.str(), this);
-    super_chunks.push(current_super_chunk);
-
-    // Make the SuperChunks using all the chunks.
-    for (const auto &chunk : get_immutable_chunks()) {
-        bool added = current_super_chunk->add_chunk(chunk);
-        if (!added) {
-            sc_id.str(std::string());
-            sc_id << name() << "-" << sc_count++;
-            current_super_chunk = std::make_shared<SuperChunk>(sc_id.str(), this);
-            super_chunks.push(current_super_chunk);
-            if (!current_super_chunk->add_chunk(chunk)) {
-                stringstream msg;
-                msg << prolog << "Failed to add Chunk to new SuperChunk. chunk: " << chunk->to_string();
-                throw BESInternalError(msg.str(), __FILE__, __LINE__);
-            }
-        }
-    }
-#endif
-
     reserve_value_capacity_ll(get_size());
     if (is_readable_struct) {
         d_structure_array_buf.resize(this->length_ll() * bytes_per_element);
@@ -848,35 +816,6 @@ void DmrppArray::read_chunks_dio_unconstrained() {
 
     queue<shared_ptr<SuperChunk>> super_chunks;
     build_superchunk_queue(super_chunks);
-
-
-#if 0
-    // Find all the required chunks to read. I used a queue to preserve the chunk order, which
-    // made using a debugger easier. However, order does not matter, AFAIK.
-
-    unsigned long long sc_count = 0;
-    stringstream sc_id;
-    sc_id << name() << "-" << sc_count++;
-    queue<shared_ptr<SuperChunk>> super_chunks;
-    auto current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(), this));
-    super_chunks.push(current_super_chunk);
-
-    // Make the SuperChunks using all the chunks.
-    for (const auto &chunk : get_immutable_chunks()) {
-        bool added = current_super_chunk->add_chunk(chunk);
-        if (!added) {
-            sc_id.str(std::string());
-            sc_id << name() << "-" << sc_count++;
-            current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(), this));
-            super_chunks.push(current_super_chunk);
-            if (!current_super_chunk->add_chunk(chunk)) {
-                stringstream msg;
-                msg << prolog << "Failed to add Chunk to new SuperChunk. chunk: " << chunk->to_string();
-                throw BESInternalError(msg.str(), __FILE__, __LINE__);
-            }
-        }
-    }
-#endif
 
     // Change to the total storage buffer size to just the compressed buffer size.
     reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
@@ -2840,85 +2779,6 @@ unsigned int DmrppArray::buf2val(void **val) {
         return (unsigned int)Vector::buf2val_ll(val);
     }
 }
-
-#if 0
-// Check if direct chunk IO can be used.
-bool DmrppArray::use_direct_io_opt() {
-
-    bool ret_value = false;
-    bool is_integer_le_float = false;
-
-    if (DmrppRequestHandler::is_netcdf4_enhanced_response && this->is_filters_empty() == false) {
-        Type t = this->var()->type();
-        if (libdap::is_simple_type(t) && t != dods_str_c && t != dods_url_c && t != dods_enum_c && t != dods_opaque_c) {
-            is_integer_le_float = true;
-            if (is_integer_type(t) && this->get_byte_order() == "BE")
-                is_integer_le_float = false;
-        }
-    }
-
-    bool no_constraint = false;
-
-    // Check if it requires a subset of this variable.
-    if (is_integer_le_float) {
-        no_constraint = true;
-        if (this->is_projected())
-            no_constraint = false;
-    }
-
-    bool has_deflate_filter = false;
-
-    // Check if having the deflate filters.
-    if (no_constraint) {
-        string filters_string = this->get_filters();
-        if (filters_string.find("deflate") != string::npos)
-            has_deflate_filter = true;
-    }
-
-    bool is_data_all_fvalues = false;
-    // Check a rare case: the variable data just contains the filled values.
-    // If this var's storage size is 0. Then it should be filled with the filled values.
-    if (has_deflate_filter && this->get_uses_fill_value() && this->get_var_chunks_storage_size() == 0)
-        is_data_all_fvalues = true;
-
-    bool has_dio_filters = false;
-
-    // If the deflate level is not provided, we cannot do the direct IO.
-    if (has_deflate_filter && !is_data_all_fvalues) {
-        if (this->get_deflate_levels().empty() == false)
-            has_dio_filters = true;
-    }
-
-    // Check if the chunk size is greater than the dimension size for any dimension.
-    // If this is the case, except for the unlimited dimension case, we will not use the direct chunk IO since netCDF-4 doesn't allow this.
-
-    if (has_dio_filters && this->get_processing_fv_chunks() == false) {
-
-        vector<unsigned long long> chunk_dim_sizes = this->get_chunk_dimension_sizes();
-        vector<unsigned long long> dim_sizes;
-        Dim_iter p = dim_begin();
-        while (p != dim_end()) {
-            dim_sizes.push_back((unsigned long long)dimension_size_ll(p));
-            p++;
-        }
-
-        bool chunk_less_dim = true;
-        if (chunk_dim_sizes.size() == dim_sizes.size()) {
-            for (unsigned int i = 0; i < dim_sizes.size(); i++) {
-                if (chunk_dim_sizes[i] > dim_sizes[i]) {
-                    chunk_less_dim = false;
-                    break;
-                }
-            }
-        } else
-            chunk_less_dim = false;
-
-        ret_value = chunk_less_dim;
-    }
-
-    return ret_value;
-}
-#endif
 
 // Read the data from the supported array of structure
 void DmrppArray::read_array_of_structure(vector<char> &values) {

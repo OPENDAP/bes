@@ -197,9 +197,6 @@ private:
                                                    const vector<unsigned long long> &chunk_origin,
                                                    unsigned long long chars_per_string);
 
-
-    //bool use_direct_io_opt();
-
     void add_dio_var_storage_info_constrained();
     void add_dio_var_storage_info_unconstrained();
 
