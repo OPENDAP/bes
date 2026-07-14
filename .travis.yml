@@ -45,7 +45,7 @@ addons:
       - gcovr
       - grep
       - libfl-dev   # needed for focal, but not xenial. jhrg 1/18/24
-      - openjdk-17-jdk-headless
+      - openjdk-21-jdk-headless
 
 git:
   depth: 1
