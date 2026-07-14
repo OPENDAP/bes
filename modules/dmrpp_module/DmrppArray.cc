@@ -90,7 +90,7 @@ namespace dmrpp {
  * @return Returns true if future::get() was called on a ready future, false otherwise.
  */
 bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_counter, unsigned long timeout,
-                     string &debug_prefix) {
+                     const string &debug_prefix) {
     bool future_finished = false;
     bool done = false;
     std::chrono::milliseconds timeout_ms(timeout);
