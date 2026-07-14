@@ -90,7 +90,7 @@ namespace dmrpp {
  * @return Returns true if future::get() was called on a ready future, false otherwise.
  */
 bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_counter, unsigned long timeout,
-                     string debug_prefix) {
+                     string &debug_prefix) {
     bool future_finished = false;
     bool done = false;
     std::chrono::milliseconds timeout_ms(timeout);
@@ -234,7 +234,8 @@ static unsigned long long get_index(const vector<unsigned long long> &address_in
     }
 
     auto shape_index = target_shape.rbegin();
-    auto index = address_in_target.rbegin(), index_end = address_in_target.rend();
+    auto index = address_in_target.rbegin();
+    auto index_end = address_in_target.rend();
 
     unsigned long long multiplier_var = *shape_index++;
     unsigned long long offset = *index++;
@@ -270,7 +271,8 @@ static unsigned long long multiplier(const vector<unsigned long long> &shape, un
         throw BESInternalError("multiplier: !(shape.size() > k + 1)", __FILE__, __LINE__);
     }
 
-    vector<unsigned long long>::const_iterator i = shape.begin(), e = shape.end();
+    vector<unsigned long long>::const_iterator i = shape.begin();
+    vector<unsigned long long>::const_iterator e = shape.end();
     advance(i, k + 1);
     unsigned long long multiplier = *i++;
     while (i != e) {
@@ -355,7 +357,10 @@ unsigned long long DmrppArray::get_maximum_constrained_buffer_nelmts()
  * @return A vector<int> that describes the shape of the array.
  */
 vector<unsigned long long> DmrppArray::get_shape(bool constrained) {
-    auto dim = dim_begin(), edim = dim_end();
+
+    auto dim = dim_begin();
+    auto edim = dim_end();
+
     vector<unsigned long long> shape;
 
     // For a 3d array, this method took 14ms without reserve(), 5ms with
@@ -439,7 +444,7 @@ void DmrppArray::insert_constrained_contiguous(Dim_iter dim_iter, unsigned long 
             } else {
                 // We are at the last (innermost) dimension, so it's time to copy values.
                 subset_addr.push_back(myDimIndex);
-                unsigned int sourceIndex = get_index(subset_addr, array_shape);
+                unsigned long long sourceIndex = get_index(subset_addr, array_shape);
                 subset_addr.pop_back();
 
                 // Copy a single value.
@@ -1393,7 +1398,7 @@ unsigned long long DmrppArray::inflate_simple(char **destp, unsigned long long d
  * @param chunk_origin The chunk's position in the array for this given dimension
  * @return The first _element_ of the chunk to transfer.
  */
-unsigned long long DmrppArray::get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin) {
+unsigned long long DmrppArray::get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin) const {
     // What's the first element that we are going to access for this dimension of the chunk?
     unsigned long long first_element_offset = 0; // start with 0
     if ((unsigned long long)(thisDim.start) < chunk_origin) {
@@ -1544,7 +1549,7 @@ void DmrppArray::insert_chunk(unsigned int dim, vector<unsigned long long> *targ
 
     unsigned int last_dim = chunk_shape.size() - 1;
     if (dim == last_dim) {
-        char *source_buffer = chunk->get_rbuf();
+        const char *source_buffer = chunk->get_rbuf();
         unsigned int elem_width = bytes_per_element;
 
         if (thisDim.stride == 1) {
@@ -2122,7 +2127,7 @@ string DmrppArray::ingest_fixed_length_string(const char *buf, unsigned long lon
     return value;
 }
 
-string dims_to_string(const vector<unsigned long long> dims) {
+string dims_to_string(const vector<unsigned long long> &dims) {
     stringstream ss;
     for (auto dim : dims) {
         ss << "[" << dim << "]";
@@ -2309,7 +2314,6 @@ bool DmrppArray::read() {
         case dods_int32_c:
         case dods_uint32_c: {
             auto *local = reinterpret_cast<dods_uint32 *>(this->get_buf());
-            ;
             while (num--) {
                 *local = bswap_32(*local);
                 local++;
@@ -2319,7 +2323,6 @@ bool DmrppArray::read() {
         case dods_int64_c:
         case dods_uint64_c: {
             auto *local = reinterpret_cast<dods_uint64 *>(this->get_buf());
-            ;
             while (num--) {
                 *local = bswap_64(*local);
                 local++;
@@ -2345,7 +2348,7 @@ bool DmrppArray::read() {
 unsigned long long DmrppArray::set_fixed_string_length(const string &length_str) {
     try {
         d_fixed_str_length = stoull(length_str);
-    } catch (std::invalid_argument e) {
+    } catch (std::invalid_argument &e) {
         stringstream err_msg;
         err_msg << "The value of the length string could not be parsed. Message: " << e.what();
         throw BESInternalError(err_msg.str(), __FILE__, __LINE__);
@@ -2432,7 +2435,7 @@ void DmrppArray::set_ons_string(const vector<ons> &ons_pairs) {
  * @param ons_str
  * @param vlen_str_addrs
  */
-void DmrppArray::get_ons_objs(vector<ons> &ons_pairs) {
+void DmrppArray::get_ons_objs(vector<ons> &ons_pairs) const{
     const string comma(",");
     size_t last = 0;
     size_t next = 0;
@@ -3435,7 +3438,6 @@ void DmrppArray::read_chunked_string_array_constrained() {
     // Initialize queue with the first superchunk
     queue<shared_ptr<SuperChunk>> super_chunks;
     string temp_sc_id = sc_id + to_string(sc_count);
-    //auto current_super_chunk = make_shared<SuperChunk>(SuperChunk(sc_id + to_string(sc_count++), this));
     auto current_super_chunk = make_shared<SuperChunk>(SuperChunk(temp_sc_id, this));
     sc_count++;
     super_chunks.push(current_super_chunk);
