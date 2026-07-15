@@ -85,7 +85,7 @@ public:
 
     virtual void read_unconstrained() { process_child_chunks_unconstrained(); }
 
-    virtual void read_unconstrained_dio();
+    virtual void read_dio();
 
     virtual void retrieve_data();
     virtual void retrieve_data_dio();

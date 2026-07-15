@@ -164,10 +164,7 @@ private:
 
     void build_superchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks);
 
-    unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim);
-
-    std::shared_ptr<Chunk> find_needed_chunks(unsigned int dim, std::vector<unsigned long long> *target_element_address,
-                                              std::shared_ptr<Chunk> chunk);
+    unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim) const;
 
     bool find_needed_chunks_simple(std::shared_ptr<Chunk> chunk, const std::vector<unsigned long long> & chunk_shape, 
                                    const std::vector<unsigned long long> & start, const std::vector<unsigned long long> & stride,
@@ -199,9 +196,6 @@ private:
                                                    const vector<unsigned long long> &array_shape,
                                                    const vector<unsigned long long> &chunk_origin,
                                                    unsigned long long chars_per_string);
-
-
-    bool use_direct_io_opt();
 
     void add_dio_var_storage_info_constrained();
     void add_dio_var_storage_info_unconstrained();
@@ -260,8 +254,8 @@ public:
 
     void set_ons_string(const std::string &ons_str);
     void set_ons_string(const vector<ons> &ons_pairs);
-    std::string get_ons_string() { return d_vlen_ons_str; };
-    void get_ons_objs(vector<ons> &ons_list);
+    std::string get_ons_string() const { return d_vlen_ons_str; };
+    void get_ons_objs(vector<ons> &ons_list) const;
 
     static std::string pad_type_to_str(string_pad_type pad_type);
     string ingest_fixed_length_string(const char *buf, unsigned long long buf_size, unsigned long long fixed_str_len,
@@ -276,7 +270,7 @@ public:
     unsigned long long get_bytes_per_element() const { return bytes_per_element; }
     void set_bytes_per_element(unsigned long long bpe) { bytes_per_element = bpe; }
     void set_special_structure_flag(bool is_special_struct) { is_special_structure = is_special_struct; }
-    bool get_special_structure_flag() { return is_special_structure; }
+    bool get_special_structure_flag() const { return is_special_structure; }
     bool is_projected();
 };
 
@@ -323,7 +317,7 @@ struct one_child_chunk_args_new {
 };
 
 bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_counter, unsigned long timeout,
-                     string debug_prefix);
+                     const string& debug_prefix);
 
 } // namespace dmrpp
 
