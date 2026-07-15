@@ -111,6 +111,39 @@ m4_define([AT_BUILD_DMRPP_M],  [dnl
     AT_CLEANUP
 ])
 
+m4_define([AT_BUILD_DMRPP_OPTIONS],  [dnl
+
+    AT_SETUP([$1 $2])
+    AT_KEYWORDS([build_dmrpp dmrpp data dap4 DAP4])
+
+    input="${abs_top_srcdir}/$1"
+    option=$2
+    AT_XFAIL_IF([test z$3 = zxfail])
+
+    dmr="${input}.dmr"
+    baseline="${input}.dmrpp.${option}.baseline"
+
+    build_dmrpp_app="${abs_top_builddir}/modules/dmrpp_module/build_dmrpp"
+    build_dmrpp_cmd="${build_dmrpp_app} -${option}  -f ${input} -r ${dmr}"
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: ${build_dmrpp_cmd}"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+    [
+        AT_CHECK([${build_dmrpp_cmd}], [], [stdout])
+        REMOVE_VERSIONS([stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([${build_dmrpp_cmd}], [], [stdout])
+        REMOVE_VERSIONS([stdout])
+        AT_CHECK([diff -b -B $baseline stdout])
+        ])
+
+    AT_CLEANUP
+])
+
+
 
 dnl Remove path components of DAP DMR Attributes that may vary with builds.
 dml jhrg 11/22/21
