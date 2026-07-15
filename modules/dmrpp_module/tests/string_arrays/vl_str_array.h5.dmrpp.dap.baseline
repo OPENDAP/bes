@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="vl_str_array.h5">
+    <String name="str">
+        <Dim size="2"/>
+        <Dim size="4"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </String>
+    <String name="str_cmp">
+        <Dim size="2"/>
+        <Dim size="4"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </String>
+</Dataset>
+
+The data:
+String str[2][4] = {{"apple", "banana", "cherry", "date"},{"elephant", "fox", "giraffe", "hippopotamus"}};
+String str_cmp[2][4] = {{"apple", "banana", "cherry", "date"},{"elephant", "fox", "giraffe", "hippopotamus"}};
+

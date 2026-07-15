@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="special_fixed_str.h5">
+    <String name="One_chunk_unlimited">
+        <Dim size="3"/>
+        <Dim size="3"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </String>
+    <String name="One_chunk_unlimited_comp">
+        <Dim size="3"/>
+        <Dim size="3"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </String>
+    <String name="More_null_term_cont_str">
+        <Dim size="3"/>
+        <Dim size="3"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </String>
+    <String name="More_null_term_chunk_comp_str">
+        <Dim size="3"/>
+        <Dim size="3"/>
+        <Attribute name="DAP4_Checksum_CRC32" type="String">
+            removed checksum
+        </Attribute>
+    </String>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>removed date-time</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>removed_version</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>removed_version</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>removed_version</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/hyrax-2197/bes/modules/hdf5_handler/data/src/special_fixed_str.h5 -r special_fixed_str.h5.dmr -u data/string_arrays/special_fixed_str.h5 -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
+
+The data:
+String One_chunk_unlimited[3][3] = {{"abc", "ef", "g"},{"", "hij", "klm"},{"no", "p", ""}};
+String One_chunk_unlimited_comp[3][3] = {{"abc", "ef", "g"},{"", "hij", "klm"},{"no", "p", ""}};
+String More_null_term_cont_str[3][3] = {{"abc", "ef", "g"},{"", "hij", "klm"},{"no", "p", ""}};
+String More_null_term_chunk_comp_str[3][3] = {{"abc", "ef", "g"},{"", "hij", "klm"},{"no", "p", ""}};
+

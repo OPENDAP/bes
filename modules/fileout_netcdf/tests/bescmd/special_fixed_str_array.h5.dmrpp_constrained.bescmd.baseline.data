@@ -1,0 +1,54 @@
+netcdf test {
+dimensions:
+	dim1 = 2 ;
+	dim2 = 2 ;
+	One_chunk_unlimited_len = 3 ;
+	dim3 = 2 ;
+	dim4 = 2 ;
+	One_chunk_unlimited_comp_len = 3 ;
+	dim5 = 2 ;
+	dim6 = 2 ;
+	More_null_term_cont_str_len = 4 ;
+	dim7 = 2 ;
+	dim8 = 2 ;
+	More_null_term_chunk_comp_str_len = 4 ;
+variables:
+	char One_chunk_unlimited(dim1, dim2, One_chunk_unlimited_len) ;
+	char One_chunk_unlimited_comp(dim3, dim4, One_chunk_unlimited_comp_len) ;
+	char More_null_term_cont_str(dim5, dim6, More_null_term_cont_str_len) ;
+	char More_null_term_chunk_comp_str(dim7, dim8, More_null_term_chunk_comp_str_len) ;
+
+// global attributes:
+		:build_dmrpp_metadata.created = "removed date-time" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.21.1" ;
+		:build_dmrpp_metadata.bes = "3.21.1" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -f /Users/myang6/work/opendap/hyrax-2197/bes/modules/hdf5_handler/data/src/special_fixed_str.h5 -r special_fixed_str.h5.dmr -u data/string_arrays/special_fixed_str.h5 -M" ;
+		:history = "removed date-timex special_fixed_str.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"special_fixed_str.h5.dmrpp\"}]}]" ;
+data:
+
+ One_chunk_unlimited =
+  "ef",
+  "g",
+  "p",
+  "" ;
+
+ One_chunk_unlimited_comp =
+  "ef",
+  "g",
+  "p",
+  "" ;
+
+ More_null_term_cont_str =
+  "",
+  "klm",
+  "no",
+  "" ;
+
+ More_null_term_chunk_comp_str =
+  "",
+  "klm",
+  "no",
+  "" ;
+}

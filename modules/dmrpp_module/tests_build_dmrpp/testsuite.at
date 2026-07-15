@@ -160,3 +160,12 @@ AT_GET_DMRPP_3_20([VariableLengthStringArray - VLSA], [t_vl_string_1d.h5],[vlsa.
 # Test an HDF5 file that has fullnamepath attribute 
 #
 AT_GET_DMRPP_3_20([Variable with fullnamepath attribute], [nc4_group_atomic_fonc.nc4], [nc4_group_atomic_fonc.nc4.baseline] )
+
+################################################################################
+# Test variable length string with various encoding cases
+#
+AT_BUILD_DMRPP([modules/dmrpp_module/data/string_arrays/vl_str_array.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/string_arrays/vl_str_dup_array.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/string_arrays/vl_str_dup_cross_array.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/string_arrays/t_big_vl_str_dset.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/string_arrays/t_big_vl_str_dset2.h5])
