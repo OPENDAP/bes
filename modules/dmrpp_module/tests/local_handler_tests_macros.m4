@@ -17,6 +17,8 @@ m4_define([AT_BUILD_DMRPP_H4_TEST_OPTIONS],  [dnl
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
     [
         AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $input2 -${option}], [], [stdout])
+        REMOVE_H4_DMR_VERSIONS([stdout])
+        REMOVE_H4_DMRPP_VERSIONS([stdout])
         REMOVE_VERSIONS([stdout])
         REMOVE_DATE_TIME([stdout])
         REMOVE_BUILD_DMRPP_H4_INVOCATION_ATTR([stdout])
@@ -24,6 +26,8 @@ m4_define([AT_BUILD_DMRPP_H4_TEST_OPTIONS],  [dnl
         ],
         [
         AT_CHECK([$abs_builddir/../build_dmrpp_h4/build_dmrpp_h4 -f $input -r $input2 -${option}], [], [stdout])
+        REMOVE_H4_DMR_VERSIONS([stdout])
+        REMOVE_H4_DMRPP_VERSIONS([stdout])
         REMOVE_VERSIONS([stdout])
         REMOVE_DATE_TIME([stdout])
         REMOVE_BUILD_DMRPP_H4_INVOCATION_ATTR([stdout])
@@ -45,5 +49,21 @@ m4_define([REMOVE_BUILD_DMRPP_H4_INVOCATION_ATTR], [dnl
         -e 's@<Attribute name="invocation" type="String">.*-M</Value>@<Attribute name="Removed(invocation)">@' \
          < $1 > $1.sed
     mv $1.sed $1
+])
+
+m4_define([REMOVE_H4_DMR_VERSIONS], [dnl
+  awk '{
+    gsub(/dmrVersion="[[0-9]+]\.[[0-9]+](-test-deploy)?"/, "dmrVersion=\"removed\"");
+    print
+  }' < $1 > $1.awk
+  mv $1.awk $1
+])
+
+m4_define([REMOVE_H4_DMRPP_VERSIONS], [dnl
+  awk '{
+    gsub(/dmrpp:version="[[0-9]+]\.[[0-9]+]\.[[0-9]+](-[[0-9]+])?(-test-deploy)?"/, "dmrpp:version=\"removed\"");
+    print
+  }' < $1 > $1.awk
+  mv $1.awk $1
 ])
 
