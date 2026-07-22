@@ -5,79 +5,91 @@
 
 #### DMR++ Improvements
 
-* Multi-month direct chunk IO / buffer chunk / superchunk optimization effort: subset support, off-by-one fixes, handling of filled chunks, chunks larger than the array, unlimited dimensions (including ones defined in ancestor groups), and non-contiguous-chunk read optimization (HYRAX-1579, 1641, 1950, 1957, 1966, 1967, 2014, 2016, 2021, 2028, 2029, 2030, 2032, 2033, 2036, 2168, 2144).
+#### DMR++ Improvements
+
+* Direct chunk IO: added and extended a zero-copy chunk-read path for DMR++ subset/whole-variable requests — handling filled chunks, chunks larger than the array, and unlimited dimensions (including ones defined in ancestor groups) (HYRAX-1950, 2014, 2016, 2029, 2030, 2033, 2036, 2144, 2168).
+* Buffer chunk: added a "buffer chunk" mode that reads/holds a larger chunk buffer to speed up direct IO, including whole-array support, a `UseBufferChunk` BES key, constraint/subset tests, and a compression-ratio/shuffle-status test macro (HYRAX-1957, 1966, 1967, 2032).
+* Superchunk: added support for superchunks to cover subsets of non-contiguous chunks (HYRAX-1641).
+* Non-contiguous-chunk read optimization: introduced a simpler, stride-aware method (`find_needed_chunks_simple`) to determine which chunks a subset request actually needs, with a reverted micro-optimization that didn't improve performance (HYRAX-1579, 2021, 2028).
 * Fixed-size and variable-length string array handling in dmrpp/build_dmrpp: buffer-overflow fix on ingest, subsetting support, superchunk-queue refactor, revised size calculation for max response size, 1-character string array mapping (HYRAX-2198, 2200, 2204, 2205, 2210, 2193, 2191, 1225).
 * Vlen (variable-length) data support built into dmrpp: reading HDF5 vlen float/int arrays, dimension naming, and an option to store vlen data in a separate side-car file (HYRAX-1654, 1655, 1658, 1666, 2050).
-* HYRAX-1670: clarified `Container::access()` vs. the new `alt_access()` path used specifically for DMR++ retrieval.
-* HYRAX-1965: removed transfer-thread concurrency from `DmrppArray`.
-* HYRAX-1988: refactored the DMZ parser in the DMR++ module, removing dead code.
+* Clarified `Container::access()` vs. the new `alt_access()` path used specifically for DMR++ retrieval (HYRAX-1670)
+* Removed transfer-thread concurrency from `DmrppArray` (HYRAX-1965).
+* Refactored the DMZ parser in the DMR++ module, removing dead code (HYRAX-1988).
 * Retired `DmrppSaxParser2` (GH #1087); reformatted `DmrppArray`/SuperChunk sources for clang-format conformance (GH #1208).
-* [HYRAX-1883]: disabled DMR++ transfer threads by default after a threading bug; HYRAX-1882: fixed a memory leak from an undeleted `RETURNAS_DMRPP` transmitter.
-* HYRAX-2039: fixed a dmrpp offset/length test failure caused by a mismatched test file.
+* Disabled DMR++ transfer threads by default after a threading bug; HYRAX-1882: fixed a memory leak from an undeleted `RETURNAS_DMRPP` transmitter (HYRAX-1883).
+* Fixed a dmrpp offset/length test failure caused by a mismatched test file (HYRAX-2039).
 * Added a configurable `variable_sleep_interval` to the dmrpp request handler.
-* `.dmrpp` extension detection in NgapApi; return the DMR++ via `get type=dap&returnAs=dmrpp` (GH #1103); `build_dmrpp` metadata (version/invocation/creation time) added to sidecar output by default; `Unlimited_Dimensions` attribute generation turned off by default (togglable via BES key, HYRAX-1771).
-* HYRAX-1743: added unlimited-dimension support to dmrpp/fileout netCDF; added `byteOrder` for data-less variables and made dmrpp return empty data for zero-size arrays (HYRAX-1741, 1742).
-* HYRAX-1683/1652: improved dmrpp generation time for many-chunk files; fixed a vlen dimension-handling bug found via valgrind.
-* HYRAX-1622/1623/1551: added `build_dmrpp_metadata` (version/invocation/creation time) to `build_dmrpp_h4`; HYRAX-1638: added a template string URL for sidecar files.
-* HYRAX-1947: fixed `build_dmrpp_util` to correctly generate files for ECOSTRESS data.
+* `.dmrpp` extension detection in NgapApi; return the DMR++ via `get type=dap&returnAs=dmrpp` (bes#1103); `build_dmrpp` metadata (version/invocation/creation time) added to sidecar output by default; `Unlimited_Dimensions` attribute generation turned off by default (togglable via BES key, HYRAX-1771).
+* Added unlimited-dimension support to dmrpp/fileout netCDF; added `byteOrder` for data-less variables and made dmrpp return empty data for zero-size arrays (HYRAX-1741, 1742, HYRAX-1743).
+* Improved dmrpp generation time for many-chunk files; fixed a vlen dimension-handling bug found via valgrind (HYRAX-1683/1652).
+* Added `build_dmrpp_metadata` (version/invocation/creation time) to `build_dmrpp_h4` (HYRAX-1622/1623/1551); 
+* Added a template string URL for sidecar files (HYRAX-1638).
+* Fixed `build_dmrpp_util` to correctly generate files for ECOSTRESS data (HYRAX-1947).
 * Adopted HDF5's new chunk-iteration API in `build_dmrpp` as part of the HDF5 1.14.6 upgrade (HYRAX-1938).
-* HYRAX-2148/2145: fixed a double-URL-encoding bug and restored support for legacy OPeNDAP URLs in DMR++/dmr++ URI construction.
-* HYRAX-1732: plumbed and cached S3 data-access URLs, injecting them into the DMR++ via a content filter; HYRAX-1733: presigned the DMR++ URL.
-* HYRAX-2187: corrected error messages, including for HDF5's `DisableSideCar` option.
-* HYRAX-1232: added unlimited-dimension support to the direct-IO feature.
+* Fixed a double-URL-encoding bug and restored support for legacy OPeNDAP URLs in DMR++/dmr++ URI construction (HYRAX-2148/2145).
+* Plumbed and cached S3 data-access URLs, injecting them into the DMR++ via a content filter (HYRAX-1732); 
+* Presigned the DMR++ URL (HYRAX-1733).
+* Corrected error messages, including for HDF5's `DisableSideCar` option (HYRAX-2187).
+* Added unlimited-dimension support to the direct-IO feature (HYRAX-1232).
+* Made `build_dmrpp_h4` always save the EOS projection dummy variable value (HYRAX-2043).
 
 #### Handler Updates
 (HDF4, HDF5, fileout netCDF, NcML, gdal, and related modules)
 
-* HYRAX-1913/1938: upgraded the HDF5 handler to compile against HDF5 1.14.6, with baseline/test updates for the version change.
-* HYRAX-2176: updated the HDF5 handler in step with libdap4's DAP4 attribute-find fix.
-* HYRAX-2143, 2120, 2118: ongoing removal of legacy HDF5 API usage, plus faster dimension-name retrieval in more cases.
-* Hyrax 2156/1577/2116: reduced code complexity in EOS5 dimension-name handling and DMR generation; separated memory-heavy NASA tests; added a config-attribute error for HDF4's `EnableCF` option.
-* HYRAX-1916: fixed AIRS CO2 product lat/lon by dropping reliance on the buggy HDF-EOS2 projection library; added COARDS-convention support for HDF-EOS2 Grid geo projections.
-* HYRAX-1892/1837: fixed HDF-EOS5 dimension-size handling for unlimited dimensions; removed a misused `nc_redef()` call in fileout netCDF.
-* HYRAX-1886/1880: fixed DAP4-map coordinate retrieval order; fixed null/missing dimension names for HDF-EOS5 files with dimension scales.
-* HYRAX-1884/1881: fixed multi-element `_FillValue` handling and HDF-EOS2 Grid lat/lon parameter issues.
-* HYRAX-1896: adapted to a netCDF `_FillValue` macro rename.
-* HYRAX-1697: improved netCDF string-write performance (single write vs. many small writes); increased chunk cache for large string arrays.
-* HYRAX-1667/1695: added variable-length float/int array support in the HDF5 handler, including cross-group compound-type tests (which surfaced a netCDF-C client bug).
-* HYRAX-1654/1655/1658/1666: vlen float/int data support in the HDF5 handler and fileout netCDF, plus CF-convention dimension/group-naming fixes.
-* HYRAX-1357: filled empty SDS datasets with `_FillValue`; HYRAX-1656: used the HDF5 API to detect HDF5 files; HYRAX-1659: handled groups with special characters in fileout netCDF.
-* HYRAX-1634: added MCD43GF dimension-scale support, corrected lat/lon ranges.
-* HYRAX-1643/2004: reworked HDF4/HDF5 handler test suites for easier baseline generation.
-* HYRAX-1961: surveyed GDAL-based features and fixed NcML integration tests to run without GDAL.
-* HYRAX-1994: switched to `compress2`/`uncompress2` to handle large missing-data buffers (SWOT Level 4).
-* HYRAX-2043: made `build_dmrpp_h4` always save the EOS projection dummy variable value.
-* HYRAX-2069: removed unnecessary `pugixml.hpp` includes.
-* HYRAX-2076: removed errors/warnings from the embedded `gctp` library; const-ified `gctp()` parameters.
-* HYRAX-2182/1956: added BES keys to tune/disable floating-point data compression in fileout netCDF for large arrays.
+* Upgraded the HDF5 handler to compile against HDF5 1.14.6, with baseline/test updates for the version change (HYRAX-1913/1938).
+* Updated the HDF5 handler in step with libdap4's DAP4 attribute-find fix (HYRAX-2176).
+* Reduced code complexity in EOS5 dimension-name handling and DMR generation (Hyrax 2156/1577/2116)
+* Separated memory-heavy NASA tests
+* Added a config-attribute error for HDF4's `EnableCF` option.
+* Fixed AIRS CO2 product lat/lon by dropping reliance on the buggy HDF-EOS2 projection library; added COARDS-convention support for HDF-EOS2 Grid geo projections (HYRAX-1916).
+* Fixed HDF-EOS5 dimension-size handling for unlimited dimensions; removed a misused `nc_redef()` call in fileout netCDF (HYRAX-1892/1837).
+* Fixed multi-element `_FillValue` handling and HDF-EOS2 Grid lat/lon parameter issues (HYRAX-1884/1881).
+* Adapted to a netCDF `_FillValue` macro rename (HYRAX-1896).
+* Improved netCDF string-write performance (single write vs. many small writes); increased chunk cache for large string arrays (HYRAX-1697).
+* Added variable-length float/int array support in the HDF5 handler, including cross-group compound-type tests (which surfaced a netCDF-C client bug) HYRAX-1667/1695.
+* vlen float/int data support in the HDF5 handler and fileout netCDF, plus CF-convention dimension/group-naming fixes (HYRAX-1654/1655/1658/1666).
+* Filled empty SDS datasets with `_FillValue` (HYRAX-1357). 
+* Used the HDF5 API to detect HDF5 files (HYRAX-1656).
+* Handled groups with special characters in fileout netCDF (HYRAX-1659).
+* Added MCD43GF dimension-scale support, corrected lat/lon ranges (HYRAX-1634).
+* Reworked HDF4/HDF5 handler test suites for easier baseline generation (HYRAX-1643/2004).
+* Surveyed GDAL-based features and fixed NcML integration tests to run without GDAL (HYRAX-1961).
+* Switched to `compress2`/`uncompress2` to handle large missing-data buffers (SWOT Level 4) (HYRAX-1994).
+* Removed unnecessary `pugixml.hpp` includes (HYRAX-2069).
+* Added BES keys to tune/disable floating-point data compression in fileout netCDF for large arrays (HYRAX-2182/1956).
 * Used the two-arch test-compare approach to work around a "minus zero" comparison issue seen with gdal.
-* Removed the retired `w10n_handler` and its build rules; HYRAX-1902: fixed memory leaks from un-deleted transmitters, including in the w10n module.
-* HYRAX-2090: reworked dimension-name lookup to use the DAP4 group pointer instead of the HDF5 API in more cases.
+* Removed the retired `w10n_handler` and its build rules.
+* Fixed memory leaks from un-deleted transmitters, including in the w10n module (HYRAX-1902).
+
 
 #### DAP4
 
-* HYRAX-1488/1489/1490/1707: added end-to-end DAP4 Enum support (D4EnumDef, scalar/array read, group handling), with a typo fix along the way.
-* Optional DAP4 checksums (GH #1130, #1142): made checksum inclusion/computation optional via `D4StreamMarshaller`, with test-baseline updates across nearly every handler module to keep using checksums by default.
-* HYRAX-1242: added an error message for when a DAP4 dimension size doesn't match the array dimension size.
-* HYRAX-1993: handled DMR generation for variables with two unlimited dimensions (previously an error).
-* Hardwired `dmrVersion` to 1.0 for compatibility (GH #1324).
-* HYRAX-1817/1544: checksum-flag (`getdap4 -C`) and DAP2-vs-DAP4 bescmd test fixes; HYRAX-1795: removed a redundant string-datatype check.
-* HYRAX-2009: fixed the `AT_BESCMD_BINARY_DAP4_RESPONSE_TEST` macro for OSX Intel/Apple Silicon.
-* HYRAX-1762: mapped 64-bit acos/oco2 integer variables to the DAP4 64-bit integer type.
-* Asciival module: HYRAX-2166, correctly throws/errors when constrained requests encounter DAP4-typed variables/attributes instead of mishandling them.
+* Added end-to-end DAP4 Enum support (D4EnumDef, scalar/array read, group handling) (HYRAX-1488/1489/1490/1707).
+* Optional DAP4 checksums: made checksum inclusion/computation optional via `D4StreamMarshaller`, with test-baseline updates across nearly every handler module to keep using checksums by default.
+* Added an error message for when a DAP4 dimension size doesn't match the array dimension size (HYRAX-1242).
+* Fixed DAP4-map coordinate retrieval order; fixed null/missing dimension names for HDF-EOS5 files with dimension scales (HYRAX-1886/1880).
+* Handled DMR generation for variables with two unlimited dimensions (previously an error) (HYRAX-1993).
+* Hardwired `dmrVersion` to 1.0 for compatibility.
+* Checksum-flag (`getdap4 -C`) and DAP2-vs-DAP4 bescmd test fixes (HYRAX-1817/1544).
+* Removed a redundant string-datatype check (HYRAX-1795).
+* Fixed the `AT_BESCMD_BINARY_DAP4_RESPONSE_TEST` macro for OSX Intel/Apple Silicon (HYRAX-2009).
+* Mapped 64-bit acos/oco2 integer variables to the DAP4 64-bit integer type (HYRAX-1762).
+* Asciival module: Correctly throws/errors when constrained requests encounter DAP4-typed variables/attributes instead of mishandling them (HYRAX-2166).
+* Reworked dimension-name lookup to use the DAP4 group pointer instead of the HDF5 API in more cases (HYRAX-2090).
 
 #### General
 (CI/CD, dependencies, refactors, code organization, cross-platform/test infrastructure, ...)
 
 * **CI/CD & Docker/RHEL9**: dockerized the BES build end-to-end (HYRAX-1964, GH #1213); added RHEL9/el9 RPM production and Docker build stages (RHEL9, GH #1207, #1212); slimmed and pruned the Docker image; fixed deploy-on-merge, tag naming, and build-log-to-S3 steps; split Travis into stages; added a GHA macOS build workflow, then later added macOS 26 and dropped macos-15-intel/macos-intel; re-enabled/disabled GDAL across CI as needed (HYRAX-1968, 2012); removed `--enable-developer` from the `bes_core` Dockerfile (HYRAX-2077); removed RPM support entirely (HYRAX-2044); pushed `make check`/build logs to S3 (GH #1407, #1398); skipped CI runs on unrelated file changes; ran Travis on Ubuntu Jammy for Java 17.
 * **Meyers singleton refactor**: multi-month, systematic conversion of BES singleton classes (`BESReturnManager`, `BESResponseHandlerList`, `BESRequestHandlerList`, `BESReporterList`, `BESInfoList`, `BESDefinitionsStorageList`, `BESContextManager`, `TheBESKeys`, `BESServiceRegistry`, `RequestServiceTimer`, `BESUncompressedCache`, `BESStoredDapResultCache`, `CredentialsManager`, `BESDapFunctionResponseCache`, `BESContainerStorage*`, and more) to the thread-safe Meyers singleton pattern, closing with a fix for a related cache-locking bug (Hyrax-1774, 1803, 1809, 1812, 1845).
-* **Error-handling refactor**: replaced libdap's `InternalErr` with `BESInternalError` across handler code, improving error messages and exception-path resource cleanup (HYRAX-1418, 1800, 1362).
+* **Error-handling refactor**: replaced libdap's `InternalErr` with `BESInternalError` across handler code, improving error messages and exception-path resource cleanup (HYRAX-1418, 1800, 1362). Removed errors/warnings from the embedded `gctp` library; const-ified `gctp()` parameters (HYRAX-2076).
 * **AWS/S3/CMR/credentials**: replaced ad hoc libcurl S3 code with the AWS C++ SDK for GET/HEAD and presigned URLs (HYRAX-1891, 1900, 1901); extracted and cached S3 credential URLs from CMR granules; added the EDL user id to cache keys in `EffectiveURLCache`/`SignedURLCache` (HYRAX-2177, 2178); added `SignedUrlCache` (HYRAX-1732); forwarded the EDL `client_id` to CMR (HYRAX-1888, 1898); refactored `curl::http_get()`/`http_get_and_write_resource()` to accept passed-in request headers instead of embedding EDL logic deep in the call tree; repaired AWS query-string filtering; improved STS credential-parse error messages (HYRAX-2169); skip (rather than fail) AWS tests when credentials are absent.
 * **Dependency updates**: upgraded to HDF5 1.14.6 then 2.1 (with linkage/rpath fixes); updated nlohmann JSON to 3.12.0; fixed shared-library-version linking (also fixing a GDAL shared-lib bug).
 * **Warnings & code quality**: multiple dedicated warnings-removal passes (HYRAX-1953, 2108, "warnings removal 2", "[hyrax 1895] clean autoreconf"), plus new clang-tidy modernization scripts.
 * **Test infrastructure**: large effort stripping the `dmrVersion` attribute out of test baselines for OS-agnostic, build-aware comparisons (BES-1223, 1219, 1225); added alternate (`.m_proc`) baselines for tests that fail on m4; improved `mkchk` failure reporting; added simple cleanup of old test data; updated baselines after getdap4 began printing full variable paths (Hyrax 1709).
 * **Logging/profiling**: added `request_id`/`uuid` ingestion and logging (GH #1071, #1063); added `beslog2json.py`; added profiling checkpoints across the request path (Hyrax-1835); migrated stopwatch calls to `BES_STOPWATCH` macros; suppressed cache hit/miss logging under `NDEBUG`.
-* **Cleanup/consolidation**: removed the last vestiges of `HTTPCache` (HYRAX-1184); completed removal of echo-token support; retired `www-interface`/`builddmrpp_module`; consolidated retired/unused code into a single `retired/` directory; removed `cmr_module` tests during a CMR outage; TheBESKeys call-site refactor (GH #1305).
+* **Cleanup/consolidation**: removed the last vestiges of `HTTPCache` (HYRAX-1184); completed removal of echo-token support; retired `www-interface`/`builddmrpp_module`; consolidated retired/unused code into a single `retired/` directory; removed `cmr_module` tests during a CMR outage; TheBESKeys call-site refactor (GH #1305). Ongoing removal of legacy HDF5 API usage.
 * **Build system**: HYRAX-1921 configure.ac Makefile fix; HYRAX-1924 64-bit configure.ac OSX detection; improved cppunit-path detection in configure; HYRAX-2085 made `make check` work without `make install` first; fixed the `distcheck` target (`Array::size()` → `length()`); Rocky8/CentOS8 RPM packaging fix; first pass removing `-test-deploy` from version strings; fixed the max-compute-threads config option to enforce a non-zero value.
 * **Docs**: overhauled BES documentation, converting legacy Word files to Markdown and fixing content drift; added Dockerfile documentation to the README; added a default GitHub PR template.
 
