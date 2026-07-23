@@ -10,7 +10,7 @@
 #
 # Try using Ubuntu Focal
 
-dist: focal       # focal is the default, jammy and noble are supported now. jhrg 10/16/25
+dist: jammy       # focal is the default, jammy and noble are supported now. jhrg 10/16/25
 
 # Added vm size upgrade. This costs extra $s
 vm:
@@ -42,6 +42,7 @@ addons:
       - libcurl4-openssl-dev
       - libcppunit-dev
       - libicu-dev
+      - libtirpc-devel
       - gcovr
       - grep
       - libfl-dev   # needed for focal, but not xenial. jhrg 1/18/24
