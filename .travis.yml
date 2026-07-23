@@ -10,7 +10,7 @@
 #
 # Try using Ubuntu Focal
 
-dist: noble       # focal is the default, jammy and noble are supported now. jhrg 10/16/25
+dist: focal       # focal is the default, jammy and noble are supported now. jhrg 10/16/25
 
 # Added vm size upgrade. This costs extra $s
 vm:
@@ -42,14 +42,16 @@ addons:
       - libcurl4-openssl-dev
       - libcppunit-dev
       - libicu-dev
-      - libtirpc3
-      - libtirpc-dev
-      - libopenexr
-      - libopenexr-dev
-      - libilmbase
-      - libilmbase-dev
-      - libpcre3
-      - libpcre3-dev
+      #
+      #- libtirpc3
+      #- libtirpc-dev
+      #- libopenexr
+      #- libopenexr-dev
+      #- libilmbase
+      #- libilmbase-dev
+      #- libpcre3
+      #- libpcre3-dev
+      #
       - gcovr
       - grep
       - libfl-dev   # needed for focal, but not xenial. jhrg 1/18/24
@@ -98,13 +100,13 @@ before_install:
   # sdk install java 17.0.2-open
   # sdk use java 17.0.2-open
   - java -version
-  - |
-    echo "###################################################" >&2
-    echo "Making softlink to hack the tirpc location" >&2
-    sudo ln -v -s /usr/include/tirpc/rpc /usr/include/rpc  >&2
-    echo "Checking: " >&2
-    ls -l /usr/include/rpc >&2
-    echo "###################################################" >&2
+#  - |
+#    echo "###################################################" >&2
+#    echo "Making softlink to hack the tirpc location" >&2
+#    sudo ln -v -s /usr/include/tirpc/rpc /usr/include/rpc  >&2
+#    echo "Checking: " >&2
+#    ls -l /usr/include/rpc >&2
+#    echo "###################################################" >&2
 
 
 
@@ -159,10 +161,10 @@ jobs:
       script:
         # We use fail on error (set -e) for building and
         # starting the bes.
-        - export CFLAGS=$(pkg-config --cflags libtirpc)
-        - export CXXFLAGS=$(pkg-config --cflags libtirpc)
-        - export LDFLAGS=$(pkg-config --libs libtirpc)
-        - dpkg -L libtirpc libtirpc-dev
+#        - export CFLAGS=$(pkg-config --cflags libtirpc)
+#        - export CXXFLAGS=$(pkg-config --cflags libtirpc)
+#        - export LDFLAGS=$(pkg-config --libs libtirpc)
+#        - dpkg -L libtirpc libtirpc-dev
         - |
           set -e
           export BES_BUILD=main
