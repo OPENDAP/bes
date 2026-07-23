@@ -42,7 +42,7 @@ addons:
       - libcurl4-openssl-dev
       - libcppunit-dev
       - libicu-dev
-      - libtirpc-devel
+      - libtirpc-dev
       - gcovr
       - grep
       - libfl-dev   # needed for focal, but not xenial. jhrg 1/18/24
