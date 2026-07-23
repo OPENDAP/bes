@@ -113,6 +113,9 @@ before_script:
   - echo "BES_BUILD_NUMBER is ${BES_BUILD_NUMBER} = ${TRAVIS_BUILD_NUMBER} - ${BES_TRAVIS_BUILD_OFFSET}"
   - export LIBDAP_RPM_VERSION=$(grep "libdap4-" libdap4-snapshot | awk '{print $1;}' - | sed "s/libdap4-//g")
   - echo "Travis default env:"
+  - export CFLAGS=$(pkg-config --cflags libtirpc)
+  - export CXXFLAGS=$(pkg-config --cflags libtirpc)
+  - export LDFLAGS=$(pkg-config --libs libtirpc)
   - printenv
 
 # We have varied our approach to scanning over time. As of 7/23/21, we do not
