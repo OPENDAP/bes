@@ -17,7 +17,6 @@ s3_reader
 fileout_json
 gateway_module
 xml_data_handler
-builddmrpp_module
 gdal_module
 fits_handler
 ncml_module
