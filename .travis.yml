@@ -10,7 +10,7 @@
 #
 # Try using Ubuntu Focal
 
-dist: jammy       # focal is the default, jammy and noble are supported now. jhrg 10/16/25
+dist: noble       # focal is the default, jammy and noble are supported now. jhrg 10/16/25
 
 # Added vm size upgrade. This costs extra $s
 vm:
