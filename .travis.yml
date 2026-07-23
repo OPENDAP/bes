@@ -44,6 +44,9 @@ addons:
       - libicu-dev
       - libtirpc3
       - libtirpc-dev
+      - libopenexr-dev
+      - libilmbase-dev
+      - libpcre3-dev
       - gcovr
       - grep
       - libfl-dev   # needed for focal, but not xenial. jhrg 1/18/24
