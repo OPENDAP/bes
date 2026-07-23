@@ -15,7 +15,7 @@ loggy "BEGIN $HR"
 
 # This is the TravisCI build number when the
 # last formal release was built.
-export BES_TRAVIS_BUILD_OFFSET=7711
+export BES_TRAVIS_BUILD_OFFSET=7717
 
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]
 then

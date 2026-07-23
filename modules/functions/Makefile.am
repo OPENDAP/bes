@@ -29,7 +29,7 @@ endif
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=functions
-M_VER=1.1.2
+M_VER=1.1.3
 
 AM_CPPFLAGS += -DMODULE_NAME=\"$(M_NAME)\" -DMODULE_VERSION=\"$(M_VER)\"
 
