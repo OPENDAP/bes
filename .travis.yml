@@ -42,6 +42,7 @@ addons:
       - libcurl4-openssl-dev
       - libcppunit-dev
       - libicu-dev
+      - libtirpc
       - libtirpc-dev
       - gcovr
       - grep
