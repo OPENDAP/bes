@@ -6,6 +6,10 @@
 
 ## BES Updates
 
+### Security
+
+This release includes changes that resolve **_CVE-2026-16637_** going forward.
+
 ### DMR++ Improvements
 
 * Direct chunk IO: added and extended a zero-copy chunk-read path for DMR++ subset/whole-variable requests — handling
