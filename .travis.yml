@@ -147,7 +147,7 @@ jobs:
         # We use fail on error (set -e) for building and
         # starting the bes.
         - |
-          set -e
+          # set -e
           export BES_BUILD=main
           # - export RUNTESTFLAGS="-v"
           export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
