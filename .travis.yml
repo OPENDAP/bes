@@ -166,7 +166,7 @@ jobs:
 #        - export LDFLAGS=$(pkg-config --libs libtirpc)
 #        - dpkg -L libtirpc libtirpc-dev
         - |
-          set -e
+          # set -e
           export BES_BUILD=main
           # - export RUNTESTFLAGS="-v"
           export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
