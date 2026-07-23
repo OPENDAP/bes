@@ -44,8 +44,11 @@ addons:
       - libicu-dev
       - libtirpc3
       - libtirpc-dev
+      - libopenexr
       - libopenexr-dev
+      - libilmbase
       - libilmbase-dev
+      - libpcre3
       - libpcre3-dev
       - gcovr
       - grep
