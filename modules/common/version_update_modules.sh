@@ -19,11 +19,19 @@
 #              the temp files.
 #          -v: Verbose
 #          -k: clean backup files
+HR="########################################################################"
+HR3="--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---"
+HR2="-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+HR1="- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
+
+function loggy() {
+    echo  "$@" | awk '{ print "# version_update_modules.sh() - "$0;}'  >&2
+}
 
 args=`getopt "nvk" $*`
 if test $? != 0
 then
-    echo "Usage: version_update_modules.sh [-nvk]"
+    loggy "Usage: version_update_modules.sh [-nvk]"
     exit 2
 fi
 
@@ -54,7 +62,7 @@ done
 verbose() {
     if test -n $verbose
     then
-        echo $1
+        loggy $1
     fi
 }
 
@@ -63,17 +71,17 @@ modules=$(cat all_modules.txt)
 
 for module in $modules
 do
-    echo "# == == == == == == == == == == == == == =="
-    echo "# Entering $module"
-    echo "#"
+    verbose "$HR1"
+    verbose "Entering $module"
+    verbose ""
     
     (cd ../$module
 
      # If the sentinel file is here, do nothing.
      if test -f version_updated
      then
-	   echo "Found a 'version_updated' file, exiting."
-	   exit 1
+       loggy "Found a 'version_updated' file, exiting."
+       exit 1
      fi
 
      # If the sentinel file was not found, update the module's version information,
@@ -81,9 +89,7 @@ do
      if test -z $non_destructive
      then
         verbose "Updating sentinel file"
-        cat <<EOF >version_updated
-Updated on `date`
-EOF
+        echo "Updated on $(date)"  > version_updated
      fi
      
      # Get the version number and module from the Makefile.am.
@@ -95,22 +101,24 @@ EOF
      
      # gnarly awk code from stack overflow
      new_version=`echo $version | awk -F. -v OFS=. 'NF==1{print ++$NF}; NF>1{if(length($NF+1)>length($NF))$(NF-1)++; $NF=sprintf("%0*d", length($NF), ($NF+1)%(10^length($NF))); print}'`
-     verbose "New Version: $new_version"
+     verbose "New Version: '$new_version'"
 
      # Update Makefile.am
      verbose "Updating Makefile.am"
      new_m_ver_line="M_VER=$new_version"
+     verbose "new_m_ver_line: '$new_m_ver_line'"
+
      sed "s/^M_VER.*/$new_m_ver_line/g" < Makefile.am > Makefile.am.tmp
 
      if test -z $non_destructive
      then
-         mv Makefile.am Makefile.am.bak
-         mv Makefile.am.tmp Makefile.am
+         mv -v Makefile.am Makefile.am.bak
+         mv -v Makefile.am.tmp Makefile.am
      fi
      
      if test -n $clean
      then
-	     rm Makefile.am.bak
+	     rm -v Makefile.am.bak
      fi 
 
      # This ends the subshell that processes a given module
