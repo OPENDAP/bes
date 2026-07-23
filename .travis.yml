@@ -43,8 +43,8 @@ addons:
       - libcppunit-dev
       - libicu-dev
       #
-      #- libtirpc3
-      #- libtirpc-dev
+      - libtirpc3
+      - libtirpc-dev
       #- libopenexr
       #- libopenexr-dev
       #- libilmbase
