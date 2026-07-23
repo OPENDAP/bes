@@ -95,7 +95,8 @@ before_install:
     echo "###################################################" >&2
     echo "Making softlink to hack the tirpc location" >&2
     sudo ln -v -s /usr/include/tirpc/rpc /usr/include/rpc  >&2
-     echo "Checking: $(ls -l /usr/include/rpc)" >&2
+    echo "Checking: " >&2
+    ls -l /usr/include/ >&2
     echo "###################################################" >&2
 
 
@@ -113,9 +114,6 @@ before_script:
   - echo "BES_BUILD_NUMBER is ${BES_BUILD_NUMBER} = ${TRAVIS_BUILD_NUMBER} - ${BES_TRAVIS_BUILD_OFFSET}"
   - export LIBDAP_RPM_VERSION=$(grep "libdap4-" libdap4-snapshot | awk '{print $1;}' - | sed "s/libdap4-//g")
   - echo "Travis default env:"
-  - export CFLAGS=$(pkg-config --cflags libtirpc)
-  - export CXXFLAGS=$(pkg-config --cflags libtirpc)
-  - export LDFLAGS=$(pkg-config --libs libtirpc)
   - printenv
 
 # We have varied our approach to scanning over time. As of 7/23/21, we do not
@@ -154,6 +152,9 @@ jobs:
       script:
         # We use fail on error (set -e) for building and
         # starting the bes.
+        - export CFLAGS=$(pkg-config --cflags libtirpc)
+        - export CXXFLAGS=$(pkg-config --cflags libtirpc)
+        - export LDFLAGS=$(pkg-config --libs libtirpc)
         - |
           set -e
           dpkg -L libtirpc libtirpc-dev
