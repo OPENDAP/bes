@@ -1,55 +1,79 @@
-# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-## News for 3.22.0
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+
+---
+
+# News for 3.22.0 (July 23, 2026)
 
 ## BES Updates
 
-#### DMR++ Improvements
+### DMR++ Improvements
 
-#### DMR++ Improvements
-
-* Direct chunk IO: added and extended a zero-copy chunk-read path for DMR++ subset/whole-variable requests — handling filled chunks, chunks larger than the array, and unlimited dimensions (including ones defined in ancestor groups) (HYRAX-1950, 2014, 2016, 2029, 2030, 2033, 2036, 2144, 2168).
-* Buffer chunk: added a "buffer chunk" mode that reads/holds a larger chunk buffer to speed up direct IO, including whole-array support, a `UseBufferChunk` BES key, constraint/subset tests, and a compression-ratio/shuffle-status test macro (HYRAX-1957, 1966, 1967, 2032).
+* Direct chunk IO: added and extended a zero-copy chunk-read path for DMR++ subset/whole-variable requests — handling
+  filled chunks, chunks larger than the array, and unlimited dimensions (including ones defined in ancestor groups) (
+  HYRAX-1950, 2014, 2016, 2029, 2030, 2033, 2036, 2144, 2168).
+* Buffer chunk: added a "buffer chunk" mode that reads/holds a larger chunk buffer to speed up direct IO, including
+  whole-array support, a `UseBufferChunk` BES key, constraint/subset tests, and a compression-ratio/shuffle-status test
+  macro (HYRAX-1957, 1966, 1967, 2032).
 * Superchunk: added support for superchunks to cover subsets of non-contiguous chunks (HYRAX-1641).
-* Non-contiguous-chunk read optimization: introduced a simpler, stride-aware method (`find_needed_chunks_simple`) to determine which chunks a subset request actually needs, with a reverted micro-optimization that didn't improve performance (HYRAX-1579, 2021, 2028).
-* Fixed-size and variable-length string array handling in dmrpp/build_dmrpp: buffer-overflow fix on ingest, subsetting support, superchunk-queue refactor, revised size calculation for max response size, 1-character string array mapping (HYRAX-2198, 2200, 2204, 2205, 2210, 2193, 2191, 1225).
-* Vlen (variable-length) data support built into dmrpp: reading HDF5 vlen float/int arrays, dimension naming, and an option to store vlen data in a separate side-car file (HYRAX-1654, 1655, 1658, 1666, 2050).
+* Non-contiguous-chunk read optimization: introduced a simpler, stride-aware method (`find_needed_chunks_simple`) to
+  determine which chunks a subset request actually needs, with a reverted micro-optimization that didn't improve
+  performance (HYRAX-1579, 2021, 2028).
+* Fixed-size and variable-length string array handling in dmrpp/build_dmrpp: buffer-overflow fix on ingest, subsetting
+  support, superchunk-queue refactor, revised size calculation for max response size, 1-character string array mapping (
+  HYRAX-2198, 2200, 2204, 2205, 2210, 2193, 2191, 1225).
+* Vlen (variable-length) data support built into dmrpp: reading HDF5 vlen float/int arrays, dimension naming, and an
+  option to store vlen data in a separate side-car file (HYRAX-1654, 1655, 1658, 1666, 2050).
 * Clarified `Container::access()` vs. the new `alt_access()` path used specifically for DMR++ retrieval (HYRAX-1670)
 * Removed transfer-thread concurrency from `DmrppArray` (HYRAX-1965).
 * Refactored the DMZ parser in the DMR++ module, removing dead code (HYRAX-1988).
-* Retired `DmrppSaxParser2` (GH #1087); reformatted `DmrppArray`/SuperChunk sources for clang-format conformance (GH #1208).
-* Disabled DMR++ transfer threads by default after a threading bug; HYRAX-1882: fixed a memory leak from an undeleted `RETURNAS_DMRPP` transmitter (HYRAX-1883).
+* Retired `DmrppSaxParser2` (GH #1087); reformatted `DmrppArray`/SuperChunk sources for clang-format conformance (GH
+  #1208).
+* Disabled DMR++ transfer threads by default after a threading bug; HYRAX-1882: fixed a memory leak from an undeleted
+  `RETURNAS_DMRPP` transmitter (HYRAX-1883).
 * Fixed a dmrpp offset/length test failure caused by a mismatched test file (HYRAX-2039).
 * Added a configurable `variable_sleep_interval` to the dmrpp request handler.
-* `.dmrpp` extension detection in NgapApi; return the DMR++ via `get type=dap&returnAs=dmrpp` (bes#1103); `build_dmrpp` metadata (version/invocation/creation time) added to sidecar output by default; `Unlimited_Dimensions` attribute generation turned off by default (togglable via BES key, HYRAX-1771).
-* Added unlimited-dimension support to dmrpp/fileout netCDF; added `byteOrder` for data-less variables and made dmrpp return empty data for zero-size arrays (HYRAX-1741, 1742, HYRAX-1743).
-* Improved dmrpp generation time for many-chunk files; fixed a vlen dimension-handling bug found via valgrind (HYRAX-1683/1652).
-* Added `build_dmrpp_metadata` (version/invocation/creation time) to `build_dmrpp_h4` (HYRAX-1622/1623/1551); 
+* `.dmrpp` extension detection in NgapApi; return the DMR++ via `get type=dap&returnAs=dmrpp` (bes#1103); `build_dmrpp`
+  metadata (version/invocation/creation time) added to sidecar output by default; `Unlimited_Dimensions` attribute
+  generation turned off by default (togglable via BES key, HYRAX-1771).
+* Added unlimited-dimension support to dmrpp/fileout netCDF; added `byteOrder` for data-less variables and made dmrpp
+  return empty data for zero-size arrays (HYRAX-1741, 1742, HYRAX-1743).
+* Improved dmrpp generation time for many-chunk files; fixed a vlen dimension-handling bug found via valgrind (
+  HYRAX-1683/1652).
+* Added `build_dmrpp_metadata` (version/invocation/creation time) to `build_dmrpp_h4` (HYRAX-1622/1623/1551);
 * Added a template string URL for sidecar files (HYRAX-1638).
 * Fixed `build_dmrpp_util` to correctly generate files for ECOSTRESS data (HYRAX-1947).
 * Adopted HDF5's new chunk-iteration API in `build_dmrpp` as part of the HDF5 1.14.6 upgrade (HYRAX-1938).
-* Fixed a double-URL-encoding bug and restored support for legacy OPeNDAP URLs in DMR++/dmr++ URI construction (HYRAX-2148/2145).
-* Plumbed and cached S3 data-access URLs, injecting them into the DMR++ via a content filter (HYRAX-1732); 
+* Fixed a double-URL-encoding bug and restored support for legacy OPeNDAP URLs in DMR++/dmr++ URI construction (
+  HYRAX-2148/2145).
+* Plumbed and cached S3 data-access URLs, injecting them into the DMR++ via a content filter (HYRAX-1732);
 * Presigned the DMR++ URL (HYRAX-1733).
 * Corrected error messages, including for HDF5's `DisableSideCar` option (HYRAX-2187).
 * Added unlimited-dimension support to the direct-IO feature (HYRAX-1232).
 * Made `build_dmrpp_h4` always save the EOS projection dummy variable value (HYRAX-2043).
 
-#### Handler Updates
+### Handler Updates
+
 (HDF4, HDF5, fileout netCDF, NcML, gdal, and related modules)
 
-* Upgraded the HDF5 handler to compile against HDF5 1.14.6, with baseline/test updates for the version change (HYRAX-1913/1938).
+* Upgraded the HDF5 handler to compile against HDF5 1.14.6, with baseline/test updates for the version change (
+  HYRAX-1913/1938).
 * Updated the HDF5 handler in step with libdap4's DAP4 attribute-find fix (HYRAX-2176).
 * Reduced code complexity in EOS5 dimension-name handling and DMR generation (Hyrax 2156/1577/2116)
 * Separated memory-heavy NASA tests
 * Added a config-attribute error for HDF4's `EnableCF` option.
-* Fixed AIRS CO2 product lat/lon by dropping reliance on the buggy HDF-EOS2 projection library; added COARDS-convention support for HDF-EOS2 Grid geo projections (HYRAX-1916).
-* Fixed HDF-EOS5 dimension-size handling for unlimited dimensions; removed a misused `nc_redef()` call in fileout netCDF (HYRAX-1892/1837).
+* Fixed AIRS CO2 product lat/lon by dropping reliance on the buggy HDF-EOS2 projection library; added COARDS-convention
+  support for HDF-EOS2 Grid geo projections (HYRAX-1916).
+* Fixed HDF-EOS5 dimension-size handling for unlimited dimensions; removed a misused `nc_redef()` call in fileout
+  netCDF (HYRAX-1892/1837).
 * Fixed multi-element `_FillValue` handling and HDF-EOS2 Grid lat/lon parameter issues (HYRAX-1884/1881).
 * Adapted to a netCDF `_FillValue` macro rename (HYRAX-1896).
-* Improved netCDF string-write performance (single write vs. many small writes); increased chunk cache for large string arrays (HYRAX-1697).
-* Added variable-length float/int array support in the HDF5 handler, including cross-group compound-type tests (which surfaced a netCDF-C client bug) HYRAX-1667/1695.
-* vlen float/int data support in the HDF5 handler and fileout netCDF, plus CF-convention dimension/group-naming fixes (HYRAX-1654/1655/1658/1666).
-* Filled empty SDS datasets with `_FillValue` (HYRAX-1357). 
+* Improved netCDF string-write performance (single write vs. many small writes); increased chunk cache for large string
+  arrays (HYRAX-1697).
+* Added variable-length float/int array support in the HDF5 handler, including cross-group compound-type tests (which
+  surfaced a netCDF-C client bug) HYRAX-1667/1695.
+* vlen float/int data support in the HDF5 handler and fileout netCDF, plus CF-convention dimension/group-naming fixes (
+  HYRAX-1654/1655/1658/1666).
+* Filled empty SDS datasets with `_FillValue` (HYRAX-1357).
 * Used the HDF5 API to detect HDF5 files (HYRAX-1656).
 * Handled groups with special characters in fileout netCDF (HYRAX-1659).
 * Added MCD43GF dimension-scale support, corrected lat/lon ranges (HYRAX-1634).
@@ -62,39 +86,78 @@
 * Removed the retired `w10n_handler` and its build rules.
 * Fixed memory leaks from un-deleted transmitters, including in the w10n module (HYRAX-1902).
 
-
-#### DAP4
+### DAP4
 
 * Added end-to-end DAP4 Enum support (D4EnumDef, scalar/array read, group handling) (HYRAX-1488/1489/1490/1707).
-* Optional DAP4 checksums: made checksum inclusion/computation optional via `D4StreamMarshaller`, with test-baseline updates across nearly every handler module to keep using checksums by default.
+* Optional DAP4 checksums: made checksum inclusion/computation optional via `D4StreamMarshaller`, with test-baseline
+  updates across nearly every handler module to keep using checksums by default.
 * Added an error message for when a DAP4 dimension size doesn't match the array dimension size (HYRAX-1242).
-* Fixed DAP4-map coordinate retrieval order; fixed null/missing dimension names for HDF-EOS5 files with dimension scales (HYRAX-1886/1880).
+* Fixed DAP4-map coordinate retrieval order; fixed null/missing dimension names for HDF-EOS5 files with dimension
+  scales (HYRAX-1886/1880).
 * Handled DMR generation for variables with two unlimited dimensions (previously an error) (HYRAX-1993).
 * Hardwired `dmrVersion` to 1.0 for compatibility.
 * Checksum-flag (`getdap4 -C`) and DAP2-vs-DAP4 bescmd test fixes (HYRAX-1817/1544).
 * Removed a redundant string-datatype check (HYRAX-1795).
 * Fixed the `AT_BESCMD_BINARY_DAP4_RESPONSE_TEST` macro for OSX Intel/Apple Silicon (HYRAX-2009).
 * Mapped 64-bit acos/oco2 integer variables to the DAP4 64-bit integer type (HYRAX-1762).
-* Asciival module: Correctly throws/errors when constrained requests encounter DAP4-typed variables/attributes instead of mishandling them (HYRAX-2166).
+* Asciival module: Correctly throws/errors when constrained requests encounter DAP4-typed variables/attributes instead
+  of mishandling them (HYRAX-2166).
 * Reworked dimension-name lookup to use the DAP4 group pointer instead of the HDF5 API in more cases (HYRAX-2090).
 
-#### General
+### General
+
 (CI/CD, dependencies, refactors, code organization, cross-platform/test infrastructure, ...)
 
-* **CI/CD & Docker/RHEL9**: dockerized the BES build end-to-end (HYRAX-1964, GH #1213); added RHEL9/el9 RPM production and Docker build stages (RHEL9, GH #1207, #1212); slimmed and pruned the Docker image; fixed deploy-on-merge, tag naming, and build-log-to-S3 steps; split Travis into stages; added a GHA macOS build workflow, then later added macOS 26 and dropped macos-15-intel/macos-intel; re-enabled/disabled GDAL across CI as needed (HYRAX-1968, 2012); removed `--enable-developer` from the `bes_core` Dockerfile (HYRAX-2077); removed RPM support entirely (HYRAX-2044); pushed `make check`/build logs to S3 (GH #1407, #1398); skipped CI runs on unrelated file changes; ran Travis on Ubuntu Jammy for Java 17.
-* **Meyers singleton refactor**: multi-month, systematic conversion of BES singleton classes (`BESReturnManager`, `BESResponseHandlerList`, `BESRequestHandlerList`, `BESReporterList`, `BESInfoList`, `BESDefinitionsStorageList`, `BESContextManager`, `TheBESKeys`, `BESServiceRegistry`, `RequestServiceTimer`, `BESUncompressedCache`, `BESStoredDapResultCache`, `CredentialsManager`, `BESDapFunctionResponseCache`, `BESContainerStorage*`, and more) to the thread-safe Meyers singleton pattern, closing with a fix for a related cache-locking bug (Hyrax-1774, 1803, 1809, 1812, 1845).
-* **Error-handling refactor**: replaced libdap's `InternalErr` with `BESInternalError` across handler code, improving error messages and exception-path resource cleanup (HYRAX-1418, 1800, 1362). Removed errors/warnings from the embedded `gctp` library; const-ified `gctp()` parameters (HYRAX-2076).
-* **AWS/S3/CMR/credentials**: replaced ad hoc libcurl S3 code with the AWS C++ SDK for GET/HEAD and presigned URLs (HYRAX-1891, 1900, 1901); extracted and cached S3 credential URLs from CMR granules; added the EDL user id to cache keys in `EffectiveURLCache`/`SignedURLCache` (HYRAX-2177, 2178); added `SignedUrlCache` (HYRAX-1732); forwarded the EDL `client_id` to CMR (HYRAX-1888, 1898); refactored `curl::http_get()`/`http_get_and_write_resource()` to accept passed-in request headers instead of embedding EDL logic deep in the call tree; repaired AWS query-string filtering; improved STS credential-parse error messages (HYRAX-2169); skip (rather than fail) AWS tests when credentials are absent.
-* **Dependency updates**: upgraded to HDF5 1.14.6 then 2.1 (with linkage/rpath fixes); updated nlohmann JSON to 3.12.0; fixed shared-library-version linking (also fixing a GDAL shared-lib bug).
-* **Warnings & code quality**: multiple dedicated warnings-removal passes (HYRAX-1953, 2108, "warnings removal 2", "[hyrax 1895] clean autoreconf"), plus new clang-tidy modernization scripts.
-* **Test infrastructure**: large effort stripping the `dmrVersion` attribute out of test baselines for OS-agnostic, build-aware comparisons (BES-1223, 1219, 1225); added alternate (`.m_proc`) baselines for tests that fail on m4; improved `mkchk` failure reporting; added simple cleanup of old test data; updated baselines after getdap4 began printing full variable paths (Hyrax 1709).
-* **Logging/profiling**: added `request_id`/`uuid` ingestion and logging (GH #1071, #1063); added `beslog2json.py`; added profiling checkpoints across the request path (Hyrax-1835); migrated stopwatch calls to `BES_STOPWATCH` macros; suppressed cache hit/miss logging under `NDEBUG`.
-* **Cleanup/consolidation**: removed the last vestiges of `HTTPCache` (HYRAX-1184); completed removal of echo-token support; retired `www-interface`/`builddmrpp_module`; consolidated retired/unused code into a single `retired/` directory; removed `cmr_module` tests during a CMR outage; TheBESKeys call-site refactor (GH #1305). Ongoing removal of legacy HDF5 API usage.
-* **Build system**: HYRAX-1921 configure.ac Makefile fix; HYRAX-1924 64-bit configure.ac OSX detection; improved cppunit-path detection in configure; HYRAX-2085 made `make check` work without `make install` first; fixed the `distcheck` target (`Array::size()` → `length()`); Rocky8/CentOS8 RPM packaging fix; first pass removing `-test-deploy` from version strings; fixed the max-compute-threads config option to enforce a non-zero value.
-* **Docs**: overhauled BES documentation, converting legacy Word files to Markdown and fixing content drift; added Dockerfile documentation to the README; added a default GitHub PR template.
+* **CI/CD & Docker/RHEL9**: dockerized the BES build end-to-end (HYRAX-1964, GH #1213); added RHEL9/el9 RPM production
+  and Docker build stages (RHEL9, GH #1207, #1212); slimmed and pruned the Docker image; fixed deploy-on-merge, tag
+  naming, and build-log-to-S3 steps; split Travis into stages; added a GHA macOS build workflow, then later added macOS
+  26 and dropped macos-15-intel/macos-intel; re-enabled/disabled GDAL across CI as needed (HYRAX-1968, 2012); removed
+  `--enable-developer` from the `bes_core` Dockerfile (HYRAX-2077); removed RPM support entirely (HYRAX-2044); pushed
+  `make check`/build logs to S3 (GH #1407, #1398); skipped CI runs on unrelated file changes; ran Travis on Ubuntu Jammy
+  for Java 17.
+* **Meyers singleton refactor**: multi-month, systematic conversion of BES singleton classes (`BESReturnManager`,
+  `BESResponseHandlerList`, `BESRequestHandlerList`, `BESReporterList`, `BESInfoList`, `BESDefinitionsStorageList`,
+  `BESContextManager`, `TheBESKeys`, `BESServiceRegistry`, `RequestServiceTimer`, `BESUncompressedCache`,
+  `BESStoredDapResultCache`, `CredentialsManager`, `BESDapFunctionResponseCache`, `BESContainerStorage*`, and more) to
+  the thread-safe Meyers singleton pattern, closing with a fix for a related cache-locking bug (Hyrax-1774, 1803, 1809,
+  1812, 1845).
+* **Error-handling refactor**: replaced libdap's `InternalErr` with `BESInternalError` across handler code, improving
+  error messages and exception-path resource cleanup (HYRAX-1418, 1800, 1362). Removed errors/warnings from the embedded
+  `gctp` library; const-ified `gctp()` parameters (HYRAX-2076).
+* **AWS/S3/CMR/credentials**: replaced ad hoc libcurl S3 code with the AWS C++ SDK for GET/HEAD and presigned URLs (
+  HYRAX-1891, 1900, 1901); extracted and cached S3 credential URLs from CMR granules; added the EDL user id to cache
+  keys in `EffectiveURLCache`/`SignedURLCache` (HYRAX-2177, 2178); added `SignedUrlCache` (HYRAX-1732); forwarded the
+  EDL `client_id` to CMR (HYRAX-1888, 1898); refactored `curl::http_get()`/`http_get_and_write_resource()` to accept
+  passed-in request headers instead of embedding EDL logic deep in the call tree; repaired AWS query-string filtering;
+  improved STS credential-parse error messages (HYRAX-2169); skip (rather than fail) AWS tests when credentials are
+  absent.
+* **Dependency updates**: upgraded to HDF5 1.14.6 then 2.1 (with linkage/rpath fixes); updated nlohmann JSON to 3.12.0;
+  fixed shared-library-version linking (also fixing a GDAL shared-lib bug).
+* **Warnings & code quality**: multiple dedicated warnings-removal passes (HYRAX-1953, 2108, "warnings removal
+  2", "[hyrax 1895] clean autoreconf"), plus new clang-tidy modernization scripts.
+* **Test infrastructure**: large effort stripping the `dmrVersion` attribute out of test baselines for OS-agnostic,
+  build-aware comparisons (BES-1223, 1219, 1225); added alternate (`.m_proc`) baselines for tests that fail on m4;
+  improved `mkchk` failure reporting; added simple cleanup of old test data; updated baselines after getdap4 began
+  printing full variable paths (Hyrax 1709).
+* **Logging/profiling**: added `request_id`/`uuid` ingestion and logging (GH #1071, #1063); added `beslog2json.py`;
+  added profiling checkpoints across the request path (Hyrax-1835); migrated stopwatch calls to `BES_STOPWATCH` macros;
+  suppressed cache hit/miss logging under `NDEBUG`.
+* **Cleanup/consolidation**: removed the last vestiges of `HTTPCache` (HYRAX-1184); completed removal of echo-token
+  support; retired `www-interface`/`builddmrpp_module`; consolidated retired/unused code into a single `retired/`
+  directory; removed `cmr_module` tests during a CMR outage; TheBESKeys call-site refactor (GH #1305). Ongoing removal
+  of legacy HDF5 API usage.
+* **Build system**: HYRAX-1921 configure.ac Makefile fix; HYRAX-1924 64-bit configure.ac OSX detection; improved
+  cppunit-path detection in configure; HYRAX-2085 made `make check` work without `make install` first; fixed the
+  `distcheck` target (`Array::size()` → `length()`); Rocky8/CentOS8 RPM packaging fix; first pass removing
+  `-test-deploy` from version strings; fixed the max-compute-threads config option to enforce a non-zero value.
+* **Docs**: overhauled BES documentation, converting legacy Word files to Markdown and fixing content drift; added
+  Dockerfile documentation to the README; added a default GitHub PR template.
 
-# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-## News for 3.21.1
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+
+---
+
+# News for 3.21.1
 
 ## BES Updates
 
@@ -107,7 +170,8 @@
 * Improved the evaluation URLs for S3 signing
 
 ### DMR++ Improvements
-* Improved support to set the correct struct size to the chunk  if that size
+
+* Improved support to set the correct struct size to the chunk if that size
   can be found in the dmrpp.
 * dmrpp now reads the default fill value of a compound data type.
 * DmrppArray now returns int_64
@@ -116,7 +180,7 @@
   offsets and lengths info to DMRppArray.
 * Initial support to store structure offset and structure size so that the
   dmrpp module can retrieve structure data.
-* Update gen_dmrpp_side_car by adding a new option for users to point to an 
+* Update gen_dmrpp_side_car by adding a new option for users to point to an
   existing sidecar file
 * New option to the gen_dmrpp_side_car python so that users can add the path
   to the HDF5 or the side car files.
@@ -128,11 +192,11 @@
   EnableCF option turned on.
 * Creation time is now added to the build_dmrpp metadata.
 * Now add DAP4 dimensions for the HDF4 SDS/HDF-EOS2 Grid variables. This is
-  required  to use the fileout netCDF to access HDF4 data via the HDF4 handler.
+  required to use the fileout netCDF to access HDF4 data via the HDF4 handler.
 * Includes an option to turn off the generation of the HDF4/HDF-EOS2 missing
   data in the dmrpp file
 * Added support to handle data subset for HDF-EOS2 lat/lon.
-* Added support for HDF-EOS2 latitude/longitude data retrieval by the HDF4 
+* Added support for HDF-EOS2 latitude/longitude data retrieval by the HDF4
   handler.
 * Added a dmrpp test that generates from the CF option of the HDF5 handler that
   has the group hierarchy
@@ -143,16 +207,21 @@
   compression.
 
 ## Release Details
+
 * This version of the BES is part of Hyrax 1.17.1. See opendap.org/software/hyrax/1.17.
 * Major changes include improved support for HDF4, HDF4-EOS, and HDF4-EOS2 data
   stored in S3 via the DMR++, plus much faster generation of NetCDF4 response files.
 * This version of the BES requires libdap-3.21.1.
 * DOI: https://doi.org/10.5281/zenodo.14646648
 
-# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-## News for 3.21.0
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+
+---
+
+# News for 3.21.0
 
 ## Release Details
+
 * This version of the BES is part of Hyrax 1.17.0. See opendap.org/software/hyrax/1.17.
 * Major changes include improved support for HDF5 data stored in S3 via the DMR++
   and much faster generation of NetCDF4 response files.
@@ -215,35 +284,48 @@ Manager system.
 
 The bundled grid() and geogrid() server side functions now support DAP4.
 
-# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-## News for 3.20.13
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+
+---
+
+# News for 3.20.13
 
 * Triggered a build to test new dependencies (hdf-4 and netcdf-4 updates).
 * Improved error messages for the response is too big, and response tool too
   much time to marshall.
+
 ## Release Details
+
 * This version of the BES is part of Hyrax 1.16.8. See opendap.org/software/hyrax/1.16.
 * This version of the BES requires libdap-3.20.11.
 * DOI: https://doi.org/10.5281/zenodo.6878992
 
-# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-## News for 3.20.12
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+
+---
+
+# News for 3.20.12
 
 * Patched bug in HDF5Array.cc introduced by the std::vector refactor
 * Added time.h header to ppt/SocketUtilities.cc
+
 ## Release Details
+
 * This version of the BES is part of Hyrax 1.16.7. See opendap.org/software/hyrax/1.16.
 * This version of the BES requires libdap-3.20.10.
 * DOI: https://doi.org/10.5281/zenodo.6803473
 * Note: DOI also available at zenodo.org (search for OPENDAP/bes version 3.20.12).
 
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 
-# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-## News for 3.20.11
+---
+
+# News for 3.20.11
 
 * Support for RHEL8
 * Refactored get_dmrpp, application. Some features still broken but core
   functionality is working now.
+
 # Continued general migration to C++11 coding norms.
 
 * Improved support for more GES DISC level 3 and level 4 products
@@ -251,7 +333,7 @@ The bundled grid() and geogrid() server side functions now support DAP4.
 * Refactored project so that all of the code that depends on the gdal library
   is in a single module, modules/gdal_module.
 * Retired use of auto_ptr.
-*  Refactored timeout implementation and dropped the use of SIGALRM therein.
+* Refactored timeout implementation and dropped the use of SIGALRM therein.
 * Modified fileout_netcdf handler to allow netcdf-3 responses to be up to 4GB
   in size. This behavior can be reverted by setting FONc.NC3ClassicFormat=true
   in the BEs configuration (aka /etc/bes/site.conf file)
@@ -263,12 +345,15 @@ The bundled grid() and geogrid() server side functions now support DAP4.
 * Improved support for arrays of type String.
 * Fixed trusted url bug in DMZ parser.
 * Added support for "empty" valuyes scalars with associated _FillValue metadata.
+
 ## Release Details
+
 * This version of the BES is part of Hyrax 1.16.6. See opendap.org/software/hyrax/1.16.
 * This version of the BES requires libdap-3.20.10.
 * DOI: https://doi.org/10.5281/zenodo.6799677
 
 #### get_dmrpp Improvements
+
 * Added support for S3 hosted granules to get_dmrpp
 * Added regression test suite for get_dmrpp
 
@@ -279,23 +364,24 @@ The bundled grid() and geogrid() server side functions now support DAP4.
   elements. This support extends to a number of DAAC "specials"
   like HDF-EOS5
 
-# -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
-## News for 3.20.10
+<!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
+
+# News for 3.20.10
 
 #### DMR++ Improvements
 
 * Added support for the HDF5 filter Fletcher32 to the dmr++ creation and
   processing code.
 
-* Implemented lazy evaluation of dmr++ files. This change greatly 
+* Implemented lazy evaluation of dmr++ files. This change greatly
   improves efficiency/speed for requests that subset a dataset that
   contains a large number of variables as only the variables requested
   will have their Chunk information read and parsed.
 
 * Added version and configuration information to dmr++ files built using
-  the build_dmrpp and get_dmrpp applications. This will enable people to 
+  the build_dmrpp and get_dmrpp applications. This will enable people to
   recreate and understand the conditions which resulted in a particular
-  dmr++ instance. This also includes a -z switch for get_dmrpp which 
+  dmr++ instance. This also includes a -z switch for get_dmrpp which
   will return its version.
 
 * Performance improvement: By patching Chunk::add_tracking_query_param() so
@@ -307,42 +393,41 @@ The bundled grid() and geogrid() server side functions now support DAP4.
 #### Handler Updates
 
 * Added new netcdf_handler configuration parameter:
-  NC.PromoteByteToShort 
+  NC.PromoteByteToShort
   Which, when set to true will cause signed 8-bit
-  integer values to be promoted to Int16 (Because the DAP2 data 
+  integer values to be promoted to Int16 (Because the DAP2 data
   model does not support signed 8-bit integers)
 
-* By default the NetCDF Fileout feature will ship with 
-  FONc.ClassicModel=false 
+* By default the NetCDF Fileout feature will ship with
+  FONc.ClassicModel=false
 
 * Added new configuration option to the HDF5 handler:
   EnableCFDMR=true which will allow the generation of CF compliant DMR output.
-  
+
 #### General Houskeeping
 
 * Code organization changes to facilitate development
   and compilation on different platforms.
-  - Moved functions into modules directory
-  - Improved Test scripts to handle version string updates.
-  - Changed libdap includ paths to "libdap/*.h" to prevent 
-    include file collisions.
-  - Started migrating to C++11 regex implementation (away from
-    older less efficient GNU implementation) This is controlled
-    by a compile time switch for now.
+    - Moved functions into modules directory
+    - Improved Test scripts to handle version string updates.
+    - Changed libdap includ paths to "libdap/*.h" to prevent
+      include file collisions.
+    - Started migrating to C++11 regex implementation (away from
+      older less efficient GNU implementation) This is controlled
+      by a compile time switch for now.
 
-
-## News for 3.20.9
+# News for 3.20.9
 
 #### NGAP & DMR++ Improvements
 
 * Trusted cmr (#485)
-  - Modifying things into shape to use http::url anstead of std::string
-  - Replaced strings with http::url objects
-  - Moved AllowedHosts to http
-  - Fixed implmentations of http::url::is_expired()
-  - Switch RemoteSource constructor to shared_ptr
-  - Changed the way that http::url interprets no protocol urls/
-  - Fixed concurrency issues in EffectiveUrlCache
+    - Modifying things into shape to use http::url anstead of std::string
+    - Replaced strings with http::url objects
+    - Moved AllowedHosts to http
+    - Fixed implmentations of http::url::is_expired()
+    - Switch RemoteSource constructor to shared_ptr
+    - Changed the way that http::url interprets no protocol urls/
+    - Fixed concurrency issues in EffectiveUrlCache
 
 * Corrected usage statement for get_dmrpp
 * Handle the "missing data" files in the NGAP system
@@ -355,29 +440,31 @@ The bundled grid() and geogrid() server side functions now support DAP4.
 * First implementation of the new restified path with two mandatory and one optional path components.
 
 #### DAP4
+
 * DAP4 doesn't support DAP2 Grid. The code that handles the DAP2 Grid coordinates
   will cause some DAP4 coordinate variables under different groups to be ignored.
   So this fix ensure the code NOT to call the code that handles the DAP2 Grid coordiantes
-  for the DAP4 case. (HYRAX-477)  
-  
+  for the DAP4 case. (HYRAX-477)
+
 #### General
+
 * Added GitHub Actions to bes.
 * Stop parser EffectiveUrl resolution activity (#532)
 
 * Fonc refactor
-  - Added support for streaming netCDF3 files that do not contain Structures.
-  - Fix a small memory leak in the history attribute code at the transmitter.
-  - Add history attribute is added to dap4.
-  - Add NC.PromoteByteToShort=true in the configuration file. This makes it consistent with nc.conf.in.
-    Also it make sures the value of signed 8-bit integer to be correctly represented in DAP2.
-  - Remove unused getAttrType function from FONcArray.cc.
-  - Dropping throttle from Fonc_transmiter
+    - Added support for streaming netCDF3 files that do not contain Structures.
+    - Fix a small memory leak in the history attribute code at the transmitter.
+    - Add history attribute is added to dap4.
+    - Add NC.PromoteByteToShort=true in the configuration file. This makes it consistent with nc.conf.in.
+      Also it make sures the value of signed 8-bit integer to be correctly represented in DAP2.
+    - Remove unused getAttrType function from FONcArray.cc.
+    - Dropping throttle from Fonc_transmiter
 
 * Added throttle to BESUtil::file_to_stream()
 
 * Ensure the data value correctness for the classic model.
-  - When encountering a mismatch for the data type mapping mismatches,an error will be generated. (HYRAX-467)
-  - For the classic model, ensure the _fillvalue datatype to be the same as the variable datatype.
+    - When encountering a mismatch for the data type mapping mismatches,an error will be generated. (HYRAX-467)
+    - For the classic model, ensure the _fillvalue datatype to be the same as the variable datatype.
 
 * Server handler refactor (#513)
 * Fixing duplicate CF history entries (#504)
@@ -388,21 +475,23 @@ The bundled grid() and geogrid() server side functions now support DAP4.
 * Added new implementation of temp file transfer code for fileout_netcdf (#498)
 * Added config param Http.UserAgent (#493)
 
-* Fixed netCDF-4 and compression information is missing when A DAP2 grid maps to three netCDF variables. (#490) (HYRAX-388) 
+* Fixed netCDF-4 and compression information is missing when A DAP2 grid maps to three netCDF variables. (#490) (
+  HYRAX-388)
 * Adds call to the ftruncate() function in the update cache files activity, unit tests for string replace_all()
 
-### News for 3.20.8
+## News for 3.20.8
 
 #### NGAP & DMR++ Improvements
+
 * The dmr++ production chain: get_dmrpp, build_dmrpp, check_dmrpp, merge_dmrpp, and
   reduce_mdf received the following updates:
-  - Support for injecting configuration modifications to allow fine tuning of the
-    dataset representation in the produced dmr++ file.
-  - Support for HDF5 COMPACT layout data.
-  - Optional creation and injection of missing (domain coordinate) data as needed.
-  - Endian information carried in Chunks
-  - Int64 support
-  - Updated command line options and help page.
+    - Support for injecting configuration modifications to allow fine tuning of the
+      dataset representation in the produced dmr++ file.
+    - Support for HDF5 COMPACT layout data.
+    - Optional creation and injection of missing (domain coordinate) data as needed.
+    - Endian information carried in Chunks
+    - Int64 support
+    - Updated command line options and help page.
 
 * Improved S3 reliability by adding retry efforts for common S3 error responses that
   indicate a retry is worth pursuing (because S3 just fails sometimes and a retry
@@ -424,15 +513,18 @@ The bundled grid() and geogrid() server side functions now support DAP4.
   chunks.
 
 #### BALTO
+
 * Updated JSON-LD content of the server’s Data Request Form pages so that it is (once
   again) in keeping with the (evolving) rules enforced by the Rich Results page which
   is part of Google’s Dataset Search
 
 #### DAP4
+
 * AsciiTransmit supports DAP4 functions
 * Group support in fileout netcdf-4
 
 #### General
+
 * End Of Life for CentOS-6 Support - It’s been a long road CentOS-6, but NASA has
   given us the OK to drop support for you just days before your nominal end of
   life. On to the next std::future.
@@ -460,10 +552,10 @@ The bundled grid() and geogrid() server side functions now support DAP4.
   implemented in a much more thoughtful and efficient manner. Which we will be happy
   to do so if there is sufficient interest!
 
-### News for 3.20.7
+## News for 3.20.7
 
 * Hyrax can generate signed S3 requests when processing dmr++
-  files whose data content live in S3 when the correct credentials
+  files whose data content live in S3 when the correct credentials
   are provided (injected) into the server.
 
 * For configurations that require Hyrax to authenticate to access various
@@ -496,27 +588,31 @@ The bundled grid() and geogrid() server side functions now support DAP4.
 
 See the modules/hdf5_handler/ChangeLog for details.
 
-
 News for 3.20.6
 
 Notable Bugs Fixed:
+
 - Memory leak fixed and unneeded copy removed in awsv4 code
 - CovJson patch.
-- ncml_handler: When an NCML aggregation named a dataset that the server could 
+- ncml_handler: When an NCML aggregation named a dataset that the server could
   not read... crash. Fixed.
 - Server cache stabilization
 
 Features:
+
 - Added (alpha) support support for server authentication credentials:
-- - Environment injection support for besstandalone and besd
-- - A credentials configuration file for multiple sets, in which credentials 
-    are associated with URL prefix's and multiple creds can be defined in a
-    bes.conf environment.   
-- Combined Logs: The server can now be configured to add the OLFS request log 
+-
+    - Environment injection support for besstandalone and besd
+-
+    - A credentials configuration file for multiple sets, in which credentials
+      are associated with URL prefix's and multiple creds can be defined in a
+      bes.conf environment.
+- Combined Logs: The server can now be configured to add the OLFS request log
   content to the BES log.
 
 Performance Improvements
- - No DAS construction for data response.
+
+- No DAS construction for data response.
 
 Tickets closed during this release
 https://opendap.atlassian.net/browse/HK-272 - MDS bug - LMT of data not used
@@ -527,23 +623,33 @@ https://opendap.atlassian.net/browse/HK-413 - Persistent leaks in the libxml2-ba
 https://opendap.atlassian.net/browse/HK-404 - Address operational and efficiency issues in the MDS
 https://opendap.atlassian.net/browse/HK-426 - Form interface bug - Structures do not work correctly - two issues
 https://opendap.atlassian.net/browse/HK-439 - bes source release
-https://opendap.atlassian.net/browse/HK-444 - Build initial version of &#39;ncdmr.cc&#39; that can read the &#39;fnoc1.nc&#39; and build a DMR.
+https://opendap.atlassian.net/browse/HK-444 - Build initial version of &#39;ncdmr.cc&#39; that can read the
+&#39;fnoc1.nc&#39; and build a DMR.
 https://opendap.atlassian.net/browse/HK-445 - Modify the simple ncdmr.cc code so that it includes the attributes.
-https://opendap.atlassian.net/browse/HK-446 - Modify the ncdmr.cc code so that it correctly recognizes shared dimensions in &#39;fnoc1.nc&#39; and &#39;coads_climatology.nc&#39;
-https://opendap.atlassian.net/browse/HK-447 - Modify the ncdmr.cc code so that it can work with netCDF4 files that use groups.
-https://opendap.atlassian.net/browse/HK-448 - Modify the ncdmr.cc code so that it can work with netCDF4 files that contain structures.
-https://opendap.atlassian.net/browse/HK-449 - Integrate the ncdmr.cc code into the netCDF handler so that it is used for the DMR response.
-https://opendap.atlassian.net/browse/HK-454 - the dmrpp_module is unable to build a dmr++ for the test file data/dmrpp/grid_1_2d.h5
-https://opendap.atlassian.net/browse/HK-456 - Install the BES RPM package built from a PR and start the BES from that install. Check for failure.
-https://opendap.atlassian.net/browse/HK-457 - The class BESRegex is utilized in a way that is incompatible with the underlying implementation. FIX
+https://opendap.atlassian.net/browse/HK-446 - Modify the ncdmr.cc code so that it correctly recognizes shared dimensions
+in &#39;fnoc1.nc&#39; and &#39;coads_climatology.nc&#39;
+https://opendap.atlassian.net/browse/HK-447 - Modify the ncdmr.cc code so that it can work with netCDF4 files that use
+groups.
+https://opendap.atlassian.net/browse/HK-448 - Modify the ncdmr.cc code so that it can work with netCDF4 files that
+contain structures.
+https://opendap.atlassian.net/browse/HK-449 - Integrate the ncdmr.cc code into the netCDF handler so that it is used for
+the DMR response.
+https://opendap.atlassian.net/browse/HK-454 - the dmrpp_module is unable to build a dmr++ for the test file
+data/dmrpp/grid_1_2d.h5
+https://opendap.atlassian.net/browse/HK-456 - Install the BES RPM package built from a PR and start the BES from that
+install. Check for failure.
+https://opendap.atlassian.net/browse/HK-457 - The class BESRegex is utilized in a way that is incompatible with the
+underlying implementation. FIX
 https://opendap.atlassian.net/browse/HK-458 - Web interface bug for Structures and Sequences
-https://opendap.atlassian.net/browse/HK-459 - When Hyrax 1.16 runs, we see some error messages &#39;leaking out of stderr&#39;
+https://opendap.atlassian.net/browse/HK-459 - When Hyrax 1.16 runs, we see some error messages &#39;leaking out of
+stderr&#39;
 https://opendap.atlassian.net/browse/HK-472 - BESInternalError Exception thrown by the NcML handler not handled properly
 https://opendap.atlassian.net/browse/HK-473 - Implement combined olfs/bes log.
 https://opendap.atlassian.net/browse/HK-474 - BES 3.20.5 memory errors
 https://opendap.atlassian.net/browse/HK-485 - Modify the CI/CD process to make the docker image
 https://opendap.atlassian.net/browse/HK-492 - Review the Travis activities for olfs, bes, and libdap
-https://opendap.atlassian.net/browse/HK-537 - Reported problem in fileout_netcdf associated with _FillValue in Ocean Color dataset
+https://opendap.atlassian.net/browse/HK-537 - Reported problem in fileout_netcdf associated with _FillValue in Ocean
+Color dataset
 https://opendap.atlassian.net/browse/HK-574 - Memory leak in AWSV4
 
 News for 3.20.5
@@ -641,7 +747,7 @@ News for version 3.20.0
 For more information about the new features and bug fixes, see README.md
 
 * Updates for the HDF4 and HDF5 handlers in addition to bug fixes for other
-handles as noted in the README.md file.
+  handles as noted in the README.md file.
 
 * Site-specific configuration
 
@@ -655,28 +761,28 @@ A new cache has been added to the BES for Metadata Responses (aka, the MDS
 or MetaData Store). This cache is unlike the other BES caches in that it is
 intended to be operated as either a 'cache' or a 'store.' In the latter case,
 items added will never be removed - it is an open-ended place where metadata
-response objects will be kept indefinitely. The MDS contents (as a cache or 
+response objects will be kept indefinitely. The MDS contents (as a cache or
 a store) will survive Hyrax restarts.
 
 * COVJSON Response
 
 For datasets that contain geo-spatial data, we now provide the option to
-get those data (and related metadata) encoded using the covjson format. 
-(See https://covjson.org/). Thanks to Corey Hemphill, Riley Rimer, and 
+get those data (and related metadata) encoded using the covjson format.
+(See https://covjson.org/). Thanks to Corey Hemphill, Riley Rimer, and
 Lewis McGibbney for this contribution.
 
 * Improved support for data stored on Amazon's S3 Web Object Store
 
 Hyrax has been about to work with data stored on S3 by copying those datasets
-to a local cache for some time. With Hyrax 1.15 we have added support for 
+to a local cache for some time. With Hyrax 1.15 we have added support for
 subset-in-place for HDF5 and NetCDF4 data files.
 
 We welcome feedback on this new feature.
 
 * Improved catalog support
 
-We have generalized the BESCatalog system so that it is much easier to use. 
-As an example of new Catalog sub-system's ease of use, we have implemented a 
+We have generalized the BESCatalog system so that it is much easier to use.
+As an example of new Catalog sub-system's ease of use, we have implemented a
 new module that reads information about datasets from NASA's Common Metadata
 Repository (CMR) and uses that to display a Virtual Directory for NASA data
 
@@ -691,10 +797,10 @@ News for version 3.19.1
 
 Logging Improvements
 
-- HYRAX-548: introduce copytruncate directive in besd.logrotate, 
+- HYRAX-548: introduce copytruncate directive in besd.logrotate,
   remove brute-force stop/start
 
-- Log only one line per get command. This can be switched back to 
+- Log only one line per get command. This can be switched back to
   the 'three-lines-per-get' mode. using compile-time switches. There
   is also a way to trace which calls to the LOG() and VERBOSE() macros
   are responsible for which lines in the log. And there is an ERROR()
@@ -707,30 +813,30 @@ Logging Improvements
   is explicitly logged.
 
 - Switched to ISO8601 date-time; UTC is the default.
-  Can use local time in the logs using BES.LogTimeLocal 
-  in bes.conf.  The old date format is still in the code and 
+  Can use local time in the logs using BES.LogTimeLocal
+  in bes.conf. The old date format is still in the code and
   can be used by #undef the compile-time switch ISO8601_TIME_IN_LOGS.
 
 Bug Fixes
 
-- Fixed the integration tests in bes/cmdln.  
+- Fixed the integration tests in bes/cmdln.
 
-HYRAX-248   	Fixed the GeoTiff and JPEG2000 responses; in some
-		cases the raster output was upside down.
-HYRAX-263	Geotiff output appears to have the latitude axis inverted.
-HYRAX-283	fileout geotiff doesn't work for NCEP dataset
-HYRAX-294	Make this function (scale_grid) work correctly when
-		subsetting an array drops it down to 2D
-HYRAX-309	Test the geo functions with real data
-HYRAX-362	Make the GeoTiff (GDAL) handler work with NCML aggregations
-HYRAX-432	WCS-2.0 war file/ deployment is broken
-HYRAX-458	Use of mkstemp/mkstemps in libdap and bes is bogus
-HYRAX-465	The bes (travis) build is broken
-HYRAX-491	Missing single source of truth for supported Format
-HYRAX-507	Fix double quote problems with WCS constraint expression eval
-HYRAX-529	Hyrax fails to start using "service besd start"
-HYRAX-547	FreeForm handler fmt file for ASCII data with two header lines
-HYRAX-548	logrotate.d in the release 1.13.4 RPM restarts bes and tomcat every day
+HYRAX-248 Fixed the GeoTiff and JPEG2000 responses; in some
+cases the raster output was upside down.
+HYRAX-263 Geotiff output appears to have the latitude axis inverted.
+HYRAX-283 fileout geotiff doesn't work for NCEP dataset
+HYRAX-294 Make this function (scale_grid) work correctly when
+subsetting an array drops it down to 2D
+HYRAX-309 Test the geo functions with real data
+HYRAX-362 Make the GeoTiff (GDAL) handler work with NCML aggregations
+HYRAX-432 WCS-2.0 war file/ deployment is broken
+HYRAX-458 Use of mkstemp/mkstemps in libdap and bes is bogus
+HYRAX-465 The bes (travis) build is broken
+HYRAX-491 Missing single source of truth for supported Format
+HYRAX-507 Fix double quote problems with WCS constraint expression eval
+HYRAX-529 Hyrax fails to start using "service besd start"
+HYRAX-547 FreeForm handler fmt file for ASCII data with two header lines
+HYRAX-548 logrotate.d in the release 1.13.4 RPM restarts bes and tomcat every day
 
 Developer fixes
 
@@ -809,19 +915,17 @@ Bug Fixes:
 
 - Repaired a number if timeout issues in the BES.
 
-
 Features:
 
 - hdf5_handler adds support for sinusodial projections.
 
-- ncml_handler adds support for the aggregation and metadata 
+- ncml_handler adds support for the aggregation and metadata
   manipulation of remotely located datasets. This new capanbility
   utilizes the exisiting gateway_handler and allows the ncml_handler
   to aggregate anything the gateway_handler can read.
 
 - Restructured the BES to a significant degree in order to streamline
   release and development issues.
-
 
 News for version 3.17.4
 
@@ -876,7 +980,7 @@ Patch for gcc-6 from Orion Poplawski.
 
 News for Version 3.17.0
 
-BES Error responses now better reflect the actual errors - constraint 
+BES Error responses now better reflect the actual errors - constraint
 expression parse errors are reported as such, for example. The server
 returns sensible error responses that the newly-modified OLFS can
 interpret and use to send informative messages back to a (human) user.
@@ -884,12 +988,14 @@ interpret and use to send informative messages back to a (human) user.
 The BES now supports a usable timeout feature along with the machinery
 to accept the timeout duration from the OLFS using a 'context'. The BES
 will (optionally) cancel the timeout period once data transmission starts
-so the timeout covers only the BES's computation and not the time to 
+so the timeout covers only the BES's computation and not the time to
 send a potentially large response over a slow network. The context name
 is 'bes_timeout' and the value is the timeout period in seconds.
 
 New BES keys were added to control the timeout feature:
+
 # BES.CancelTimeoutOnSend=true
+
 # BES.TimeOutInSeconds=600
 
 The BES now have a Timeout error code and uses a 'Timeout exception' to
@@ -907,8 +1013,8 @@ News for version 3.16.0
 
 Major fixes/improvements to the caching code - Hyrax uses a number of
 different caches. Now they are all correctly synchronized. Handler developers
-should use bes/dispatch/BESFileLockingCache when they need to make a 
-special-purpose cache for their own use. Contact us for details if needed. 
+should use bes/dispatch/BESFileLockingCache when they need to make a
+special-purpose cache for their own use. Contact us for details if needed.
 Note that caching function results will be redone in the next release.
 
 The BES now supports multi-homed hosts with a new Key that specifies the
@@ -920,7 +1026,7 @@ a client was stopped while making a large request.
 
 UUID library issues may now be behind us for good...
 
-An obscure bug in the XML command processing code caused elements to 
+An obscure bug in the XML command processing code caused elements to
 be returned out of order in some cases. Fixed.
 
 We removed the BES performance timing/testing data files and put them in
@@ -984,16 +1090,15 @@ fileout_json now handles arrays of strings properly.
 
 The fileout_netcdf handler has a contributed fix from NSIDC:
 
-   Convert OPeNDAP Byte array data to NetCDF NC_SHORT The handler's
-   output currently interprets unsigned Bytes from OPeNDAP as signed
-   bytes (NC_BYTE). To avoid mis-representing data and retain
-   compatibility with NetCDF3/classic we need to convert/output this
-   data as a NC_SHORT.
+Convert OPeNDAP Byte array data to NetCDF NC_SHORT The handler's
+output currently interprets unsigned Bytes from OPeNDAP as signed
+bytes (NC_BYTE). To avoid mis-representing data and retain
+compatibility with NetCDF3/classic we need to convert/output this
+data as a NC_SHORT.
 
-   The existing test data for fits utilizes signed integers which
-   shouldn't ever be a valid output from DAP2. The test data should be
-   validated/regenerated and the test re-enabled.
-
+The existing test data for fits utilizes signed integers which
+shouldn't ever be a valid output from DAP2. The test data should be
+validated/regenerated and the test re-enabled.
 
 * New handlers
 
@@ -1021,9 +1126,9 @@ Changes to the cache software.
 News for version 3.13.1
 
 Fixed a bug where too many accesses to cached files would cause the
-BES to 'hang'. The cached files were the result of uncompressing 
+BES to 'hang'. The cached files were the result of uncompressing
 gziped files. This is the only change in this bug-fix release and the
-ABI of the BES has not changed, so there's no need to update the 
+ABI of the BES has not changed, so there's no need to update the
 handlers.
 
 News for version 3.13.0
@@ -1034,7 +1139,7 @@ problems building the code under OSX 10.9, requests with really long
 constraints, and a problem where the beslistener daemon failed to exit
 after the front end asked it to. The latter problem could result in
 'zombie' daemon processes that would not go away until the server was
-shutdown. 
+shutdown.
 
 Also in this update: Updates to the copyright headers and a patch from
 Ezequiel Lara Gomez for long options.
@@ -1043,7 +1148,7 @@ News for version 3.12.0
 
 There are several changes to the BES for this release.
 
-The DAP operations have been moved to their own module, reducing the 
+The DAP operations have been moved to their own module, reducing the
 amount of stuff hanging around in dispatch. Along with this change, new
 functionality for server-side functions has been added to the BES's
 DAP module. This supports, in conjunction with changes in the OLFS,
@@ -1175,6 +1280,7 @@ installed in the proper location.
 
 Added a new command to test error handling by clients <showError type="x" />,
 where x is 1-5 and represents the following:
+
 1. Internal Error - the error is internal to the BES Server
 2. Internal Fatal Error - error is fatal, can not continue
 3. Syntax User Error - the requester has a syntax error in request or config
@@ -1214,7 +1320,7 @@ command/documents hold XML that will look very familiar to long-time BES users
 but a big change is that more than one command can be included in the
 document, reducing the number of messages needed to get many of the DAP
 responses. The upshot is that the OLFS <--> BES communication is much more
-efficient. 
+efficient.
 
 TCP window tuning is now provided. The user is allowed to set the tcp window
 sizes for buffer sizes by passing the receive and send buffer sizes to the
@@ -1268,7 +1374,7 @@ classify the given error. Please refer to the release notes on
 docs.opendap.org for Hyrax 1.4 for more information.
 
 BES catalog and data access now includes an option to follow symbolic links
-or not, similar to what is used in Apache.  In the BES configuration file
+or not, similar to what is used in Apache. In the BES configuration file
 is the new parameter BES.*.FollowSymLinks=No|Yes If set to yes, then
 container and catalog requests will follow symbolic links relative to the
 document root. If set to no, then we won't follow symbolic links.
@@ -1319,10 +1425,11 @@ BES.
 
 The BES now determines the location of the BES configuration file in the
 following manner:
+
 1. -c option passed
 2. BES_CONF environment variable
 3. Look in default locations /usr/local/etc/bes/bes.conf,
-/etc/bes/bes.conf, /usr/etc/bes/bes.conf
+   /etc/bes/bes.conf, /usr/etc/bes/bes.conf
 
 The BES now checks the full path of a file/directory against the BES
 configuration parameter BES.Catalog.<catalog_name>.TypeMatch. Before it
@@ -1395,7 +1502,7 @@ Added some security notes to the documentation and to the configuration file
 
 Fixed a problem with dates for Last-Modified headers on Solaris.
 
-Fixed some memory leaks 
+Fixed some memory leaks
 
 News Version 3.4.1
 

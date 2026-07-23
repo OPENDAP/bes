@@ -1,11 +1,11 @@
 #!/bin/bash
 #
 # Update the handler version numbers in the configure.ac, Makefile.am,
-# NEWS and update the ChangeLog with the git log info for each of the
+# NEWS.md and update the ChangeLog with the git log info for each of the
 # bes modules given on the command line.
 #
 # This script automates rote updates when little has changed in a
-# handler. It will update the NEWS file, but not README or INSTALL.
+# handler. It will update the NEWS.md file, but not README or INSTALL.
 # When there are substantive changes, don't use it!
 #
 # This script tests for a 'sentinel' file that, if present, stops the
