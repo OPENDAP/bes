@@ -8,7 +8,7 @@ HR="=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
 ###########################################################################
 # loggy()
 function loggy() {
-    echo "$@" | awk '{ print "# travis_libdap_build_offset.sh() - "$0;}' >&2
+    echo "$@" | awk '{ print "# travis_bes_build_offset.sh() - "$0;}' >&2
 }
 
 loggy "BEGIN $HR"
