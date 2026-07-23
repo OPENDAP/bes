@@ -91,6 +91,14 @@ before_install:
   # sdk install java 17.0.2-open
   # sdk use java 17.0.2-open
   - java -version
+  - |
+    echo "###################################################" >&2
+    echo "Making softlink to hack the tirpc location" >&2
+    sudo ln -v -s /usr/include/tirpc/rpc /usr/include/rpc  >&2
+     echo "Checking: $(ls -l /usr/include/rpc)" >&2
+    echo "###################################################" >&2
+
+
 
 # hyrax-dependencies-build.tar.gz includes/makes the build directory
 install:

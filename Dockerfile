@@ -66,7 +66,6 @@ RUN --mount=from=aws_downloads,target=/tmp_mounted \
 #    && echo "Trying to instal llibtirpc and libtirpc-devel using dnf" \
 #    && sudo dnf -y install libtirpc libtirpc-devel
 
-
 RUN sudo chown -R $BES_USER:$BES_USER $DEPS_PREFIX \
     && sudo chmod o+x /root
 
