@@ -96,7 +96,7 @@ before_install:
     echo "Making softlink to hack the tirpc location" >&2
     sudo ln -v -s /usr/include/tirpc/rpc /usr/include/rpc  >&2
     echo "Checking: " >&2
-    ls -l /usr/include/ >&2
+    ls -l /usr/include/rpc >&2
     echo "###################################################" >&2
 
 
@@ -155,9 +155,9 @@ jobs:
         - export CFLAGS=$(pkg-config --cflags libtirpc)
         - export CXXFLAGS=$(pkg-config --cflags libtirpc)
         - export LDFLAGS=$(pkg-config --libs libtirpc)
+        - dpkg -L libtirpc libtirpc-dev
         - |
           set -e
-          dpkg -L libtirpc libtirpc-dev
           export BES_BUILD=main
           # - export RUNTESTFLAGS="-v"
           export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
