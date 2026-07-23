@@ -61,6 +61,10 @@ RUN --mount=from=aws_downloads,target=/tmp_mounted \
 # To debug what has been installed, use
 # rpm -ql "$PREFIX/rpmbuild/${LIBDAP_RPM_FILENAME}"
 
+RUN set -e \
+    && sudo dnf -y install libtirpc libtirpc-devel
+
+
 RUN sudo chown -R $BES_USER:$BES_USER $DEPS_PREFIX \
     && sudo chmod o+x /root
 
