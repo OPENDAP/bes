@@ -147,7 +147,7 @@ jobs:
         # We use fail on error (set -e) for building and
         # starting the bes.
         - |
-          # set -e
+          set -e
           export BES_BUILD=main
           # - export RUNTESTFLAGS="-v"
           export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
@@ -165,6 +165,8 @@ jobs:
       name: "distcheck"
       script:
         - export BES_BUILD=distcheck
+        - export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
+        - echo "LD_LIBRARY_PATH - $LD_LIBRARY_PATH" >&2
         - autoreconf --force --install --verbose
         - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
         - ./travis/mk_local.sh distcheck
