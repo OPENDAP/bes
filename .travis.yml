@@ -145,6 +145,7 @@ jobs:
         # starting the bes.
         - |
           set -e
+          dpkg -L libtirpc libtirpc-dev
           export BES_BUILD=main
           # - export RUNTESTFLAGS="-v"
           export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
