@@ -12,7 +12,6 @@ netcdf_handler
 fileout_netcdf
 fileout_covjson
 httpd_catalog_module
-ngap_module
 s3_reader
 fileout_json
 gateway_module

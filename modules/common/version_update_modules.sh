@@ -74,7 +74,10 @@ do
     vlog "$HR1"
     vlog "BEGIN module: $module"
 
-    (cd ../$module
+    (
+     cd "../$module"
+
+     # vlog "Working in $PWD"
 
      # If the sentinel file is here, do nothing.
      if [[ -f version_updated ]]; then
@@ -88,14 +91,15 @@ do
      then
         vlog "Updating sentinel file"
         echo "Updated on $(date)"  > version_updated
+        vlog "$(ls -l version_updated)"
      fi
-     
+
      # Get the version number and module from the Makefile.am.
 
      name=$(grep '^M_NAME.*' Makefile.am | sed 's@M_NAME=\(.*\)$@\1@')
      version=$(grep '^M_VER.*' Makefile.am | sed 's@M_VER=\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\)$@\1@')
      
-     vlog "In $module/Makefile.am found: name: $name; version: $version"
+     vlog "In $module/Makefile.am located name: '$name' and version: '$version'"
      
      # gnarly awk code from stack overflow
      new_version=`echo $version | awk -F. -v OFS=. 'NF==1{print ++$NF}; NF>1{if(length($NF+1)>length($NF))$(NF-1)++; $NF=sprintf("%0*d", length($NF), ($NF+1)%(10^length($NF))); print}'`
