@@ -42,6 +42,10 @@ addons:
       - libcurl4-openssl-dev
       - libcppunit-dev
       - libicu-dev
+      #
+      - libtirpc3
+      - libtirpc-dev
+      #
       - gcovr
       - grep
       - libfl-dev   # needed for focal, but not xenial. jhrg 1/18/24
@@ -61,7 +65,7 @@ env:
     - CONFIGURE_OPTIONS=--disable-ncml
     - TESTSUITEFLAGS=-j7
     # Change this when libdap version numbers change
-    - LIBDAP_RPM_VERSION=3.21.1-0
+    - LIBDAP_RPM_VERSION=3.22.0-0
     # AWS_ACCESS_KEY_ID
     # user == travis-bes
     - secure: "ZfL1IPX5zab1HWkJTlNPHroyUOp2lhAlcCH6UXDEL/yXpKoRCNkSo/CILM20DsjBckGys/7chom6uIoOilLu9Tp/6nPwkYlOe5DjgDt/qqKutclk9QBfrwU7WHRUOiEOESZl3Knd6B+GzuBZe8nrJzJhZWT54VFiOlEAGeIiFwo="
@@ -161,6 +165,8 @@ jobs:
       name: "distcheck"
       script:
         - export BES_BUILD=distcheck
+        - export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
+        - echo "LD_LIBRARY_PATH - $LD_LIBRARY_PATH" >&2
         - autoreconf --force --install --verbose
         - ./configure $CONFIGURE_OPTIONS --disable-dependency-tracking --prefix=$prefix --with-dependencies=$prefix/deps --enable-developer
         - ./travis/mk_local.sh distcheck

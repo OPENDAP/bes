@@ -7,7 +7,7 @@
 
 ---
 
-For specific information about the BES, see the file [_NEWS_](./NEWS) for a summary of
+For specific information about the BES, see the file [_NEWS_](./NEWS.md) for a summary of
 new features, important updates, and version-specific release notes. See
 [_ChangeLog_](./ChangeLog) for a complete listing of changes/fixes since the previous release.
 

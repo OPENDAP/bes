@@ -12,12 +12,10 @@ netcdf_handler
 fileout_netcdf
 fileout_covjson
 httpd_catalog_module
-ngap_module
 s3_reader
 fileout_json
 gateway_module
 xml_data_handler
-builddmrpp_module
 gdal_module
 fits_handler
 ncml_module
