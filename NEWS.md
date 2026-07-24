@@ -8,24 +8,24 @@
 
 ### Security
 
-This release includes changes that resolve **_CVE-2026-16637_** going forward.
+This release includes changes that resolve **_CVE-2026-16637_**
 
 ### DMR++ Improvements
 
-* Direct chunk IO: added and extended a zero-copy chunk-read path for DMR++ subset/whole-variable requests — handling
+* **Direct chunk IO**: Added and extended a zero-copy chunk-read path for DMR++ subset/whole-variable requests — handling
   filled chunks, chunks larger than the array, and unlimited dimensions (including ones defined in ancestor groups) (
   HYRAX-1950, 2014, 2016, 2029, 2030, 2033, 2036, 2144, 2168).
-* Buffer chunk: added a "buffer chunk" mode that reads/holds a larger chunk buffer to speed up direct IO, including
+* **Buffer chunk**: added a "buffer chunk" mode that reads/holds a larger chunk buffer to speed up direct IO, including
   whole-array support, a `UseBufferChunk` BES key, constraint/subset tests, and a compression-ratio/shuffle-status test
   macro (HYRAX-1957, 1966, 1967, 2032).
-* Superchunk: added support for superchunks to cover subsets of non-contiguous chunks (HYRAX-1641).
-* Non-contiguous-chunk read optimization: introduced a simpler, stride-aware method (`find_needed_chunks_simple`) to
+* **Superchunk**: added support for superchunks to cover subsets of non-contiguous chunks (HYRAX-1641).
+* **Non-contiguous-chunk read optimization**: introduced a simpler, stride-aware method (`find_needed_chunks_simple`) to
   determine which chunks a subset request actually needs, with a reverted micro-optimization that didn't improve
   performance (HYRAX-1579, 2021, 2028).
-* Fixed-size and variable-length string array handling in dmrpp/build_dmrpp: buffer-overflow fix on ingest, subsetting
+* **Fixed-size and variable-length string array handling in dmrpp/build_dmrpp**: buffer-overflow fix on ingest, subsetting
   support, superchunk-queue refactor, revised size calculation for max response size, 1-character string array mapping (
   HYRAX-2198, 2200, 2204, 2205, 2210, 2193, 2191, 1225).
-* Vlen (variable-length) data support built into dmrpp: reading HDF5 vlen float/int arrays, dimension naming, and an
+* **Vlen (variable-length) data support built into dmrpp**: reading HDF5 vlen float/int arrays, dimension naming, and an
   option to store vlen data in a separate side-car file (HYRAX-1654, 1655, 1658, 1666, 2050).
 * Clarified `Container::access()` vs. the new `alt_access()` path used specifically for DMR++ retrieval (HYRAX-1670)
 * Removed transfer-thread concurrency from `DmrppArray` (HYRAX-1965).
