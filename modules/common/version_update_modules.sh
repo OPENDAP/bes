@@ -28,6 +28,13 @@ function loggy() {
     echo  "$@" | awk '{ print "# version_update_modules.sh() - "$0;}'  >&2
 }
 
+function vlog() {
+    if test -n "$verbose"
+    then
+        loggy "$@"
+    fi
+}
+
 args=`getopt "nvk" $*`
 if test $? != 0
 then
@@ -59,22 +66,15 @@ do
     esac
 done
 
-verbose() {
-    if test -n $verbose
-    then
-        loggy $1
-    fi
-}
 
 
 modules=$(cat all_modules.txt)
 
 for module in $modules
 do
-    verbose "$HR1"
-    verbose "Entering $module"
-    verbose ""
-    
+    vlog "$HR1"
+    vlog "BEGIN module: $module"
+
     (cd ../$module
 
      # If the sentinel file is here, do nothing.
@@ -88,41 +88,45 @@ do
      # by first creating the sentinel file... But don't make it in non_destructive mode
      if test -z $non_destructive
      then
-        verbose "Updating sentinel file"
+        vlog "Updating sentinel file"
         echo "Updated on $(date)"  > version_updated
      fi
      
      # Get the version number and module from the Makefile.am.
 
-     name=`grep '^M_NAME.*' Makefile.am | sed 's@M_NAME=\(.*\)$@\1@'`
-     version=`grep '^M_VER.*' Makefile.am | sed 's@M_VER=\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\)$@\1@'`
+     name=$(grep '^M_NAME.*' Makefile.am | sed 's@M_NAME=\(.*\)$@\1@')
+     version=$(grep '^M_VER.*' Makefile.am | sed 's@M_VER=\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\)$@\1@')
      
-     verbose "Name: $name; Version: $version"
+     vlog "In $module/Makefile.am found: name: $name; version: $version"
      
      # gnarly awk code from stack overflow
      new_version=`echo $version | awk -F. -v OFS=. 'NF==1{print ++$NF}; NF>1{if(length($NF+1)>length($NF))$(NF-1)++; $NF=sprintf("%0*d", length($NF), ($NF+1)%(10^length($NF))); print}'`
-     verbose "New Version: '$new_version'"
+     vlog "Updating to new_version: '$new_version'"
 
      # Update Makefile.am
-     verbose "Updating Makefile.am"
+     vlog "Updating Makefile.am"
      new_m_ver_line="M_VER=$new_version"
-     verbose "new_m_ver_line: '$new_m_ver_line'"
+     vlog "new_m_ver_line: '$new_m_ver_line'"
 
      sed "s/^M_VER.*/$new_m_ver_line/g" < Makefile.am > Makefile.am.tmp
 
-     if test -z $non_destructive
+     if test -z "$non_destructive"
      then
-         mv -v Makefile.am Makefile.am.bak
-         mv -v Makefile.am.tmp Makefile.am
+         vlog "Updating Makefile.am"
+         vlog "$(mv -v Makefile.am Makefile.am.bak)"
+         vlog "$(mv -v Makefile.am.tmp Makefile.am)"
      fi
      
-     if test -n $clean
+     if test -n "$clean"
      then
-	     rm -v Makefile.am.bak
+         vlog "Removing backup file."
+	       rm -v Makefile.am.bak
      fi 
 
      # This ends the subshell that processes a given module
     )
+    vlog "END module: $module"
 
 done
+
 
