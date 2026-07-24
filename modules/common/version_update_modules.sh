@@ -26,16 +26,15 @@ HR1="- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -"
 
 function loggy() {
     echo  "$@" | awk '{ print "# version_update_modules.sh() - "$0;}'  >&2
+    return $?
 }
 
 function vlog() {
-    if test -n "$verbose"
-    then
-        loggy "$@"
-    fi
+    if [[ -n "$verbose" ]]; then loggy "$@"; fi
+    return $?
 }
 
-args=`getopt "nvk" $*`
+args=$(getopt "nvk" $*)
 if test $? != 0
 then
     loggy "Usage: version_update_modules.sh [-nvk]"
@@ -78,15 +77,14 @@ do
     (cd ../$module
 
      # If the sentinel file is here, do nothing.
-     if test -f version_updated
-     then
+     if [[ -f version_updated ]]; then
        loggy "Found a 'version_updated' file, exiting."
        exit 1
      fi
 
      # If the sentinel file was not found, update the module's version information,
      # by first creating the sentinel file... But don't make it in non_destructive mode
-     if test -z $non_destructive
+     if  [[ -z $non_destructive ]]
      then
         vlog "Updating sentinel file"
         echo "Updated on $(date)"  > version_updated
@@ -110,14 +108,14 @@ do
 
      sed "s/^M_VER.*/$new_m_ver_line/g" < Makefile.am > Makefile.am.tmp
 
-     if test -z "$non_destructive"
+     if [[ -z "$non_destructive" ]]
      then
          vlog "Updating Makefile.am"
          vlog "$(mv -v Makefile.am Makefile.am.bak)"
          vlog "$(mv -v Makefile.am.tmp Makefile.am)"
      fi
      
-     if test -n "$clean"
+     if [[ -n "$clean" ]]
      then
          vlog "Removing backup file."
 	       rm -v Makefile.am.bak
