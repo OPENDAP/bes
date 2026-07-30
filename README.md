@@ -3,7 +3,7 @@
 
 ---
 [![TravisCI](https://travis-ci.org/OPENDAP/bes.svg?branch=master)](https://travis-ci.org/OPENDAP/bes)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14655683.svg)](https://doi.org/10.5281/zenodo.14655683)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1013917.svg)](https://doi.org/10.5281/zenodo.1013917)
 
 ---
 
