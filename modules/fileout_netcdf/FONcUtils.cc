@@ -36,7 +36,6 @@
 
 #include "FONcUtils.h"
 #include "FONcDim.h"
-#include "FONcByte.h"
 #include "FONcInt8.h"
 #include "FONcUByte.h"
 #include "FONcStr.h"
