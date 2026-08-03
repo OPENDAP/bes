@@ -111,7 +111,6 @@ FONcInt8::write( int ncid )
 {
     BESDEBUG( "fonc", "FOncInt8::write for var " << d_varname << endl ) ;
     size_t var_index[] = {0} ;
-    //char *data = new char ;
     signed char data_value[1];
 
     if (d_is_dap4)
@@ -121,7 +120,6 @@ FONcInt8::write( int ncid )
 
     data_value[0] = _b->value();
     
-    //_b->buf2val( (void**)&data ) ;
     int stax = nc_put_var1_schar(ncid, d_varid, var_index, data_value ) ;
     if( stax != NC_NOERR )
     {
@@ -130,7 +128,6 @@ FONcInt8::write( int ncid )
                  + d_varname ;
 	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
     }
-    //delete data ;
 }
 
 /** @brief returns the name of the DAP4 int8

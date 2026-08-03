@@ -125,6 +125,7 @@ FONcUInt64::write( int ncid )
 
     _bt->buf2val( (void**)&data ) ;
     int stax = nc_put_var1_ulonglong(ncid, d_varid, var_index, data ) ;
+    delete data ;
     if( stax != NC_NOERR )
     {
 	string err = (string)"fileout.netcdf4 - "
@@ -132,7 +133,6 @@ FONcUInt64::write( int ncid )
                  + d_varname ;
 	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
     }
-    delete data ;
     BESDEBUG( "fonc", "FONcUInt64::done write for var " << d_varname << endl ) ;
 }
 

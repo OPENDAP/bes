@@ -124,7 +124,7 @@ FONcFloat::write( int ncid )
 
     _f->buf2val( (void**)&data ) ;
     int stax = nc_put_var1_float(ncid, d_varid, var_index, data ) ;
-    ncopts = NC_VERBOSE ;
+    delete data ;
     if( stax != NC_NOERR )
     {
 	string err = (string)"fileout.netcdf - "
@@ -132,7 +132,6 @@ FONcFloat::write( int ncid )
                  + d_varname ;
 	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
     }
-    delete data ;
     BESDEBUG( "fonc", "FONcFloat::done write for var " << d_varname << endl ) ;
 }
 

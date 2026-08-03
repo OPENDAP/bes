@@ -27,10 +27,11 @@
 #ifndef FONcInt64_h_
 #define FONcInt64_h_ 1
 
-#include <libdap/BaseType.h>
+#include <libdap/Int64.h>
 
 namespace libdap {
     class BaseType;
+    class Int64;
 }
 
 #include "FONcBaseType.h"
@@ -44,7 +45,7 @@ namespace libdap {
 class FONcInt64 : public FONcBaseType
 {
 private:
-    libdap::BaseType *			_bt ;
+    libdap::Int64 *			_int64 ;
 public:
     				FONcInt64( libdap::BaseType *b ) ;
     virtual			~FONcInt64() ;

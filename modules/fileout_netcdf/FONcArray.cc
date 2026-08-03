@@ -384,7 +384,7 @@ void FONcArray::convert(vector<string> embed, bool _dap4, bool is_dap4_group) {
         }
     }
 
-#ifndef NDEBUG
+#if !NDEBUG
     for( const auto &chunk_size:d_chunksizes) 
         BESDEBUG("fonc", "FONcArray::CHUNK - chunk_size final: " <<chunk_size << endl);
 #endif
@@ -624,7 +624,7 @@ void FONcArray::define(int ncid) {
             }
         }
     
-#ifndef NBEBUG
+#if !NDEBUG
 
         if (fdio_flag) {
             BESDEBUG("fonc","variable name is "<<d_varname << endl);
@@ -668,7 +668,7 @@ void FONcArray::define(int ncid) {
             }
         }
  
-#ifndef NBEBUG
+#if !NDEBUG
         BESDEBUG("fonc", "d_io_flag after intern_data(): "<<d_io_flag<<endl);
         
         if (d_io_flag) {
@@ -1363,13 +1363,13 @@ void FONcArray::write_direct_io_data(int ncid) {
         memcpy (chunk_buf,d_a->get_buf()+vci.chunk_direct_io_offset,vci.chunk_buffer_size);
 
         stax = nc4_write_chunk(ncid, d_varid, vci.filter_mask, vci.chunk_coords.size(), (const size_t *)(vci.chunk_coords.data()),vci.chunk_buffer_size, chunk_buf);
+        delete[] chunk_buf;
         if (stax != NC_NOERR) {
             string err = "fileout.netcdf - nc4_write_chunk error for variable " + d_varname;
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
 
         }
 
-        delete[] chunk_buf;
     }
  
 }
@@ -1417,13 +1417,13 @@ void FONcArray::write_direct_subset_io_data(int ncid) {
         }
 
         stax = nc4_write_chunk(ncid, d_varid, vci.filter_mask, vci.chunk_coords.size(), (const size_t *)(new_chunk_coords.data()),vci.chunk_buffer_size, chunk_buf);
+        delete[] chunk_buf;
         if (stax != NC_NOERR) {
             string err = "fileout.netcdf - nc4_write_chunk error for variable " + d_varname;
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
 
         }
 
-        delete[] chunk_buf;
     }
 }
 

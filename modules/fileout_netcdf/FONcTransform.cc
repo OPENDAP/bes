@@ -136,6 +136,8 @@ FONcTransform::~FONcTransform() {
     // _dmr is not managed by the BESDMRResponse class in this code. However,
     // _dds still is. jhrg 8/13/21
     delete _dmr;
+
+    close_nc_file();
 }
 
 /**
@@ -301,7 +303,6 @@ void FONcTransform::transform_dap2() {
     besDRB.set_async_accepted(d_dhi->data[ASYNC]);
     besDRB.set_store_result(d_dhi->data[STORE_RESULT]);
 
-
     // This function is used by all fileout modules, and they need to include the attributes in data access.
     // So obtain the attributes if necessary. KY 2019-10-30
     if (bdds->get_ia_flag() == false) {
@@ -464,10 +465,11 @@ void FONcTransform::transform_dap2() {
         stax = nc_close(_ncid);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
+        _ncid = -1;
 
     }
     catch (const BESError &e) {
-        (void) nc_close(_ncid); // ignore the error at this point
+        close_nc_file(); // ignore the error at this point
         throw;
     }
 }
@@ -738,6 +740,7 @@ void FONcTransform::transform_dap4() {
         stax = nc_close(_ncid);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
+        _ncid = -1;
 
     }
     else // No group, handle as the classic way
@@ -929,9 +932,10 @@ void FONcTransform::transform_dap4_no_group() {
         stax = nc_close(_ncid);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
+        _ncid = -1;
     }
     catch (BESError &e) {
-        (void) nc_close(_ncid); // ignore the error at this point
+        close_nc_file();
         throw;
     }
 
@@ -1190,7 +1194,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
 
     }
     catch (BESError &e) {
-        (void) nc_close(_ncid); // ignore the error at this point
+        close_nc_file();
         throw;
     }
     BESDEBUG(MODULE,  prolog << "END" << endl);
@@ -1834,6 +1838,15 @@ void FONcTransform::gen_nc4_enum_type(libdap::D4Group *d4_grp,int nc4_grp_id) {
 
 }
 
+void FONcTransform::close_nc_file() {
+
+    if(_ncid >=0) {
+        // ignore the error at this point since close_nc_file is only valid when an exception occurs
+        nc_close(_ncid);
+        _ncid = -1;
+    }
+
+}
 /** @brief dumps information about this transformation object for debugging
  * purposes
  *
@@ -1858,5 +1871,4 @@ void FONcTransform::dump(ostream &strm) const {
     BESIndent::UnIndent();
     BESIndent::UnIndent();
 }
-
 
