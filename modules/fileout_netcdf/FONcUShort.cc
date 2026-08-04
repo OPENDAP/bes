@@ -111,13 +111,13 @@ FONcUShort::write( int ncid )
 {
     BESDEBUG( "fonc", "FONcUShort::write for var " << d_varname << endl ) ;
     size_t var_index[] = {0} ;
-    unsigned short *data = new unsigned short ;
 
     if (d_is_dap4)
         _bt->intern_data();
     else
         _bt->intern_data(*get_eval(), *get_dds());
 
+    unsigned short *data = new unsigned short ;
     _bt->buf2val( (void**)&data ) ;
     int stax = nc_put_var1_ushort(ncid, d_varid, var_index, data ) ;
     if( stax != NC_NOERR )

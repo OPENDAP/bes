@@ -47,7 +47,7 @@
  * @throws BESInternalError if the BaseType is not an Int64
  */
 FONcInt64::FONcInt64( BaseType *b )
-    : FONcBaseType(), _int64(0)
+    : FONcBaseType(), _int64(nullptr)
 {
     _int64 = dynamic_cast<Int64 *>(b) ;
     if( !_int64 )

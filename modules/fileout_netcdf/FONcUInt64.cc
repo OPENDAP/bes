@@ -115,14 +115,13 @@ FONcUInt64::write( int ncid )
 {
     BESDEBUG( "fonc", "FONcUInt64::write for var " << d_varname << endl ) ;
     size_t var_index[] = {0} ;
-    //uint64_t *data = new uint64_t ;
-    unsigned long long  *data = new unsigned long long ;
 
     if (d_is_dap4)
         _bt->intern_data();
     else
         _bt->intern_data(*get_eval(), *get_dds());
 
+    unsigned long long  *data = new unsigned long long ;
     _bt->buf2val( (void**)&data ) ;
     int stax = nc_put_var1_ulonglong(ncid, d_varid, var_index, data ) ;
     delete data ;

@@ -130,7 +130,7 @@ private:
     virtual bool check_var_unlimited_dimension(libdap::Array *t_a, const std::vector<std::string> &unlimited_dim_names);
 #endif
 
-    virtual void close_nc_file();
+    void close_nc_file();
     void throw_if_dap2_response_too_big(DDS *dds, const string &dap2_ce="");
     void throw_if_dap4_response_too_big(DMR *dmr, const string &dap4_ce="");
     string too_big_error_msg(
