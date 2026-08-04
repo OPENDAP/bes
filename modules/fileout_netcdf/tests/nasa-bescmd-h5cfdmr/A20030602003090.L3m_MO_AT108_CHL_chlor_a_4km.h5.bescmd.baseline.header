@@ -4,7 +4,6 @@ dimensions:
 	eightbitcolor = 256 ;
 	rgb = 3 ;
 	rows = 4320 ;
-	palette_len = 2 ;
 variables:
 	float columns(columns) ;
 		columns:units = "degrees_east" ;
@@ -27,7 +26,7 @@ variables:
 		geophysical_data_chlor_a:reference = "O\'Reilly, J.E., and 24 Coauthors, 2000: SeaWiFS Postlaunch Calibration and Validation Analyses, Part 3. NASA Tech. Memo. 2000-206892, Vol. 11, S.B. Hooker and E.R. Firestone, Eds., NASA Goddard Space Flight Center, 49 pp.\\n\n                http://oceancolor.gsfc.nasa.gov/REPROCESSING/R2009/ocv6/" ;
 		geophysical_data_chlor_a:origname = "chlor_a" ;
 		geophysical_data_chlor_a:fullnamepath = "/geophysical_data/chlor_a" ;
-	char palette(rgb, eightbitcolor, palette_len) ;
+	char palette(rgb, eightbitcolor) ;
 		palette:origname = "palette" ;
 		palette:fullnamepath = "/palette" ;
 

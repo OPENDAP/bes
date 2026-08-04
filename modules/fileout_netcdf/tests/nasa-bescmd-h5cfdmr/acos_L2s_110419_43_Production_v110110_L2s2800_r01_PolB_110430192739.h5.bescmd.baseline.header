@@ -7,13 +7,10 @@ dimensions:
 	FakeDim2 = 1 ;
 	Metadata_AscendingNodeCrossingDate_len = 12 ;
 	Metadata_AscendingNodeCrossingTime_len = 15 ;
-	Metadata_AutomaticQualityFlag_len = 1 ;
 	Metadata_BuildId_len = 9 ;
 	Metadata_CollectionLabel_len = 31 ;
 	Metadata_DataFormatType_len = 10 ;
 	FakeDim3 = UNLIMITED ; // (0 currently)
-	Metadata_GapStartTime_len = 1 ;
-	Metadata_GapStopTime_len = 1 ;
 	Metadata_GranulePointer_len = 71 ;
 	Metadata_HDFVersionId_len = 11 ;
 	Metadata_InputPointer_len = 71 ;
@@ -76,7 +73,7 @@ variables:
 		Metadata_AscendingNodeCrossingTime:Type = "FixLenStr" ;
 		Metadata_AscendingNodeCrossingTime:origname = "AscendingNodeCrossingTime" ;
 		Metadata_AscendingNodeCrossingTime:fullnamepath = "/Metadata/AscendingNodeCrossingTime" ;
-	char Metadata_AutomaticQualityFlag(FakeDim2, Metadata_AutomaticQualityFlag_len) ;
+	char Metadata_AutomaticQualityFlag(FakeDim2) ;
 		Metadata_AutomaticQualityFlag:Shape = "Scalar" ;
 		Metadata_AutomaticQualityFlag:Type = "VarLenStr" ;
 		Metadata_AutomaticQualityFlag:origname = "AutomaticQualityFlag" ;
@@ -100,11 +97,11 @@ variables:
 		Metadata_FirstSoundingId:Type = "Signed64" ;
 		Metadata_FirstSoundingId:origname = "FirstSoundingId" ;
 		Metadata_FirstSoundingId:fullnamepath = "/Metadata/FirstSoundingId" ;
-	char Metadata_GapStartTime(FakeDim3, Metadata_GapStartTime_len) ;
+	char Metadata_GapStartTime(FakeDim3) ;
 		Metadata_GapStartTime:Shape = "Gap_Array" ;
 		Metadata_GapStartTime:Type = "FixLenStr" ;
 		Metadata_GapStartTime:origname = "GapStartTime" ;
-	char Metadata_GapStopTime(FakeDim3, Metadata_GapStopTime_len) ;
+	char Metadata_GapStopTime(FakeDim3) ;
 		Metadata_GapStopTime:Shape = "Gap_Array" ;
 		Metadata_GapStopTime:Type = "FixLenStr" ;
 		Metadata_GapStopTime:origname = "GapStopTime" ;

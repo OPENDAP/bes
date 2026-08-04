@@ -11,7 +11,6 @@ dimensions:
 	ancillary_data_release_len = 81 ;
 	ancillary_data_version_len = 81 ;
 	ancillary_data_data_end_utc_len = 28 ;
-	ancillary_data_control_len = 1 ;
 	ancillary_data_granule_end_utc_len = 28 ;
 	ancillary_data_granule_start_utc_len = 28 ;
 	ancillary_data_data_start_utc_len = 28 ;
@@ -1063,7 +1062,7 @@ variables:
 		ancillary_data_data_end_utc:units = "1" ;
 		ancillary_data_data_end_utc:origname = "data_end_utc" ;
 		ancillary_data_data_end_utc:fullnamepath = "/ancillary_data/data_end_utc" ;
-	char ancillary_data_control(FakeDim0, ancillary_data_control_len) ;
+	char ancillary_data_control(FakeDim0) ;
 		ancillary_data_control:contentType = "auxiliaryInformation" ;
 		ancillary_data_control:description = "PGE-specific control file used to generate this granule. To re-use, replace breaks (BR) with linefeeds." ;
 		ancillary_data_control:long_name = "Control File" ;
