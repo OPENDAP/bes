@@ -805,21 +805,27 @@ void FONcArray::define(int ncid) {
             }
         }
     
-#if !NDEBUG
+        define_chunk_info(ncid);
 
-        if (fdio_flag) {
-            BESDEBUG("fonc","variable name is "<<d_varname << endl);
-            BESDEBUG("fonc","FONC direct io flag is true before calling the intern_data()"<<endl);
+#if 0
+        // Obtain the direct IO flag
+        bool d_io_flag = d_a->get_dio_flag();
+    
+        if (!d_io_flag || !((d_a->get_var_storage_info()).has_filled_chunks)) {
+
+            BESDEBUG("fonc","nc_def_var_fill to NC_NOFILL  "<<d_varname << endl);
+            stax = nc_def_var_fill(ncid, d_varid, NC_NOFILL, nullptr );
+            if (stax != NC_NOERR) {
+                    string err = (string) "fileout.netcdf - " + "Failed to clear fill value for " + d_varname;
+                    FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+            }
         }
-        else {
-            BESDEBUG("fonc","variable name is "<<d_varname << endl);
-            BESDEBUG("fonc","FONC direct io flag is false before calling the intern_data()"<<endl);
-        }
+ 
+#if !NDEBUG
+        BESDEBUG("fonc", "d_io_flag after intern_data(): "<<d_io_flag<<endl);
         
-        bool d_io_flag_phase_2 = d_a->get_dio_flag();
-        if (d_io_flag_phase_2) {
-            BESDEBUG("fonc","variable name is "<<d_varname << endl);
-            BESDEBUG("fonc","direct io flag is true before calling the intern_data()"<<endl);
+        if (d_io_flag) {
+
             Array::var_storage_info dmrpp_vs_info = d_a->get_var_storage_info();
 
             BESDEBUG("fonc", "filters: "<<dmrpp_vs_info.filter<<endl);
@@ -829,12 +835,123 @@ void FONcArray::define(int ncid) {
             for (unsigned int i = 0; i < dmrpp_vs_info.chunk_dims.size(); i++) 
                 BESDEBUG("fonc", "chunk_dim["<<i<<"]: "<<dmrpp_vs_info.chunk_dims[i]<<endl);
     
-            BESDEBUG("fonc","End of checking the chunk info. for the define mode.  "<<d_varname << endl);
-
+            for (unsigned int i = 0; i<dmrpp_vs_info.var_chunk_info.size(); i++) {
+                BESDEBUG("fonc", "chunk index: "<<i<<" filter mask "<<dmrpp_vs_info.var_chunk_info[i].filter_mask<<endl);
+                BESDEBUG("fonc", "chunk index: "<<i<<" chunk_direct_io_offset "<<dmrpp_vs_info.var_chunk_info[i].chunk_direct_io_offset<<endl);
+                BESDEBUG("fonc", "chunk index: "<<i<<" chunk_buffer_size "<<dmrpp_vs_info.var_chunk_info[i].chunk_buffer_size<<endl);
+                
+                BESDEBUG("fonc", "chunk index: "<<i<<" coordinates are  "<<endl);
+                for (unsigned int j = 0; j<dmrpp_vs_info.var_chunk_info[i].chunk_coords.size(); j++)
+                    BESDEBUG("fonc", "coordinate index: "<<j<<" value "<<dmrpp_vs_info.var_chunk_info[i].chunk_coords[j]<<endl);
+            }
         }
 
-        
+        BESDEBUG("fonc", "FONcArray::define() netcdf-4 version is " << d_ncVersion << endl);
+
 #endif
+
+        if (isNetCDF4()) {
+            BESDEBUG("fonc", "FONcArray::define() Working netcdf-4 branch " << endl);
+
+            if (d_io_flag) {
+                // Use the direct chunk IO settings.
+                define_dio_filters(ncid);     
+            }
+            else {
+                if (FONcRequestHandler::chunk_size == 0)
+                    // I have no idea if chunksizes is needed in this case.
+                    stax = nc_def_var_chunking(ncid, d_varid, NC_CONTIGUOUS, d_chunksizes.data());
+                else
+                    stax = nc_def_var_chunking(ncid, d_varid, NC_CHUNKED, d_chunksizes.data());
+    
+                if (stax != NC_NOERR) {
+                    string err = "fileout.netcdf - Failed to define chunking for variable " + d_varname;
+                    FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                }
+    
+                // The following code provides a way how to use shuffle. KY 11/2/23
+                if (FONcRequestHandler::use_compression) {
+    
+                    int shuffle = 0;
+                    // For integer, if the type size is >= 2, turn on the shuffle key always.
+                    // For other types, turn off the shuffle key by default.
+                    if (NC_SHORT == d_array_type || NC_USHORT == d_array_type || NC_INT == d_array_type ||
+                        NC_UINT == d_array_type || NC_INT64 == d_array_type || NC_UINT64 == d_array_type ||
+                        FONcRequestHandler::use_shuffle)                
+                        shuffle = 1;
+                    
+                    bool enable_float_write_opt = check_float_write_opt();
+                    if (NC_SHORT == d_array_type || NC_USHORT == d_array_type || NC_INT == d_array_type ||
+                        NC_UINT == d_array_type || NC_INT64 == d_array_type || NC_UINT64 == d_array_type ||
+                        enable_float_write_opt == false) {
+                    
+                    int deflate = 1;
+                    int deflate_level = 4;
+                    stax = nc_def_var_deflate(ncid, d_varid, shuffle, deflate, deflate_level);
+    
+                    if (stax != NC_NOERR) {
+                        string err = (string) "fileout.netcdf - Failed to define compression (deflate) level for variable "
+                                     + d_varname;
+                        FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
+                    }
+                    }
+                }
+
+                // We find that increasing the chunk cache size only benefits large-size character array for NASA files. 
+                // So we only check if we need to increase the chunk cache for character array. 
+                // If we find it necessary to apply this to other datatypes, don't forget to count the datatype size. KY 2025-05-07
+                if (d_array_type == NC_CHAR) {
+
+                    BESDEBUG("fonc", "FONcArray::define() - Checking if we should increase HDF5 chunk cache. " << endl);
+                    // Chunk size is the number of elements in a chunk. chunk cache needs to be in byte. For character the datatype
+                    // is one byte, so we don't need to consider the datatype size but for other datatype, we need to multiply
+                    // the datatype size.
+                    size_t total_chunksizes = 1;
+                    for (const auto& chunk_size:d_chunksizes)
+                        total_chunksizes *= chunk_size;
+    
+                    // If the chunk size is greater than 4M, we increase the chunk cache size to be 64M.
+                    if (total_chunksizes  >NORMAL_CHUNK_CACHE_SIZE) {
+                        size_t cache_size = MAXIMUM_CHUNK_CACHE_SIZE;
+                        BESDEBUG("fonc", "FONcArray::define() - we increase the HDF5 chunk cache of this variable to 64MB. " << endl);
+                        // The number 521 is HDF5's default value for this parameter.
+                        nc_set_var_chunk_cache(ncid, d_varid, cache_size,521,1);
+                    }
+                }
+            }
+        }
+
+#endif
+        // Largely revised the fillvalue check code and add the check for the DAP4 case. KY 2021-05-10
+        if (d_is_dap4) {
+            D4Attributes *d4_attrs = d_a->attributes();
+            updateD4AttrType(d4_attrs, d_array_type);
+        }
+        else {
+            AttrTable &attrs = d_a->get_attr_table();
+            updateAttrType(attrs, d_array_type);
+        }
+
+        BESDEBUG("fonc", "FONcArray::define() - Adding attributes " << endl);
+        FONcAttributes::add_variable_attributes(ncid, d_varid, d_a, isNetCDF4_ENHANCED(), d_is_dap4);
+        FONcAttributes::add_original_name(ncid, d_varid, d_varname, d_orig_varname);
+        d_defined = true;
+    }
+    else {
+        if (d_defined) {
+            BESDEBUG("fonc", "FONcArray::define() - variable " << d_varname << " is already defined" << endl);
+        }
+        if (d_dont_use_it) {
+            BESDEBUG("fonc", "FONcArray::define() - variable " << d_varname << " is not being used" << endl);
+        }
+    }
+
+    BESDEBUG("fonc", "FONcArray::define() - done defining array '" << d_varname << "'" << endl);
+}
+
+void FONcArray::define_chunk_info(int ncid) {
+
+    int stax = NC_NOERR;
 
         // Obtain the direct IO flag
         bool d_io_flag = d_a->get_dio_flag();
@@ -949,31 +1066,8 @@ void FONcArray::define(int ncid) {
             }
         }
 
-        // Largely revised the fillvalue check code and add the check for the DAP4 case. KY 2021-05-10
-        if (d_is_dap4) {
-            D4Attributes *d4_attrs = d_a->attributes();
-            updateD4AttrType(d4_attrs, d_array_type);
-        }
-        else {
-            AttrTable &attrs = d_a->get_attr_table();
-            updateAttrType(attrs, d_array_type);
-        }
 
-        BESDEBUG("fonc", "FONcArray::define() - Adding attributes " << endl);
-        FONcAttributes::add_variable_attributes(ncid, d_varid, d_a, isNetCDF4_ENHANCED(), d_is_dap4);
-        FONcAttributes::add_original_name(ncid, d_varid, d_varname, d_orig_varname);
-        d_defined = true;
-    }
-    else {
-        if (d_defined) {
-            BESDEBUG("fonc", "FONcArray::define() - variable " << d_varname << " is already defined" << endl);
-        }
-        if (d_dont_use_it) {
-            BESDEBUG("fonc", "FONcArray::define() - variable " << d_varname << " is not being used" << endl);
-        }
-    }
 
-    BESDEBUG("fonc", "FONcArray::define() - done defining array '" << d_varname << "'" << endl);
 }
 
 /**

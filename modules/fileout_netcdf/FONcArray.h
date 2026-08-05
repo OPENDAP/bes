@@ -115,6 +115,9 @@ private:
     void convert_dimension_info(const std::vector<std::string> &embed);
     FONcDim * find_dim(const std::vector<std::string> &embed, const std::string &name, int64_t size, bool ignore_size = false);
 
+    // define chunk info
+    void define_chunk_info(int ncid);
+
     // Used in write()
     void write_for_nc4_types(int ncid);
     void write_for_nc3_types(int ncid);
@@ -127,6 +130,7 @@ private:
     void define_dio_filters(int ncid);
     void obtain_dio_filters_order(const string&,bool &,bool &, bool &, bool &, bool &) const;
     void allocate_dio_nc4_def_filters(int, int, bool ,bool , bool , bool , bool, const vector<unsigned int> &) const; 
+
     void write_direct_io_data(int ncid);
     void write_direct_subset_io_data(int ncid);
 
