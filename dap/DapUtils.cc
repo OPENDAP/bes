@@ -569,7 +569,7 @@ bool its_too_big(
     BESDEBUG(MODULE, prolog << "response_size_bytes: " << response_size_bytes << "\n");
     BESDEBUG(MODULE, prolog << "too_big_vars.size(): " << too_big_vars.size() << "\n");
 
-    INFO_LOG("MAX_SIZE_TESTING:response size: " + std::to_string(response_size_bytes) + "KB");
+    INFO_LOG("MAX_SIZE_TESTING:response size: " + std::to_string(response_size_bytes));
 
     // Is the whole thing too big? If so flag and start message.
     bool response_too_big = (max_response_size_bytes > 0) && (response_size_bytes > max_response_size_bytes);
