@@ -1013,8 +1013,7 @@ protected:
     void Handle_GMCVar_AttrNameClashing() ;
     void Handle_GMSPVar_NameClashing(std::set<std::string> &) ;
     void Handle_GMSPVar_AttrNameClashing() ;
-    template<typename T> void GMHandle_General_NameClashing(std::set<std::string>&objnameset, std::vector<T*>& objvec)
-        ;
+    template<typename T> void GMHandle_General_NameClashing(std::set<std::string>&objnameset, std::vector<T*>& objvec);
 
     std::string get_CF_string(std::string s) override;
 
@@ -1350,8 +1349,7 @@ protected:
     void Replace_Var_Attrs_EOS(const EOS5CVar *src, EOS5CVar *target);
     void Handle_EOS5CVar_NameClashing(std::set<std::string> &) ;
     void Handle_EOS5CVar_AttrNameClashing() ;
-    template<typename T> void EOS5Handle_General_NameClashing(std::set<std::string>&objnameset, std::vector<T*>& objvec)
-        ;
+    template<typename T> void EOS5Handle_General_NameClashing(std::set<std::string>&objnameset, std::vector<T*>& objvec);
     template<typename T> void Create_Missing_CV(T*, EOS5CVar*, const std::string &, EOS5Type, int) const;
     void Create_Added_Var_NewName_FullPath(EOS5Type, const std::string&, const std::string&, std::string &, std::string &) const;
 
