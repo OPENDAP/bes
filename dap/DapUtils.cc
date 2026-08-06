@@ -318,6 +318,8 @@ uint64_t crsaibv_process_variable(
                 vsize = var->width_ll(true);
             response_size += vsize;
 
+            INFO_LOG("MAX_SIZE_TESTING:var: " + get_dap_decl(var) + " " + std::to_string(vsize) + " bytes");
+
             BESDEBUG(MODULE_VERBOSE, prolog << "  " << get_dap_decl(var) << "(" << vsize << " bytes)" << endl);
             if ( (max_var_size > 0) && (vsize > max_var_size) ) {
                 string entry = get_dap_decl(var) + " (" + to_string(vsize) + " bytes)";
@@ -566,6 +568,8 @@ bool its_too_big(
     BESDEBUG(MODULE, prolog << "max_var_size_bytes: " << max_var_size_bytes << "\n");
     BESDEBUG(MODULE, prolog << "response_size_bytes: " << response_size_bytes << "\n");
     BESDEBUG(MODULE, prolog << "too_big_vars.size(): " << too_big_vars.size() << "\n");
+
+    INFO_LOG("MAX_SIZE_TESTING:response size: " + std::to_string(response_size_bytes) + "KB");
 
     // Is the whole thing too big? If so flag and start message.
     bool response_too_big = (max_response_size_bytes > 0) && (response_size_bytes > max_response_size_bytes);
