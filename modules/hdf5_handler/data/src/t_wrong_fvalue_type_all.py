@@ -64,7 +64,7 @@ dset2.attrs.create ('_FillValue', data=0, dtype =numpy.float32)
 
 dset3 = file.create_dataset("s_int16",(), dtype='i2')
 dset3[...] = -1
-dset3.attrs.create ('_FillValue', data=32768, dtype =numpy.float32)
+dset3.attrs.create ('_FillValue', data=32767, dtype =numpy.float32)
 
 dset4 = file.create_dataset("s_uint16",(), dtype=numpy.uint16)
 dset4[...] = 1
@@ -72,7 +72,7 @@ dset4.attrs.create ('_FillValue', data=0, dtype =numpy.float32)
 
 dset5 = file.create_dataset("s_int32",(), dtype='i4')
 dset5[...] = -1
-dset5.attrs.create ('_FillValue', data=2147483647, dtype =numpy.float32)
+dset5.attrs.create ('_FillValue', data=-65536, dtype =numpy.float32)
 
 dset6 = file.create_dataset("s_uint32",(), dtype=numpy.uint32)
 dset6[...] = 1

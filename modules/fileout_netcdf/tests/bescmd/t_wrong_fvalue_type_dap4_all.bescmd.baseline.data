@@ -52,7 +52,7 @@ variables:
 		s_int16:origname = "s_int16" ;
 		s_int16:fullnamepath = "/s_int16" ;
 	int s_int32 ;
-		s_int32:_FillValue = 2147483647 ;
+		s_int32:_FillValue = -65536 ;
 		s_int32:origname = "s_int32" ;
 		s_int32:fullnamepath = "/s_int32" ;
 	short s_int8 ;
