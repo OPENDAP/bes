@@ -4948,6 +4948,9 @@ void GMFile::Handle_Obj_NameClashing(bool include_attr)  {
     // Moving to h5gmcfdap.cc, right after Adjust_Dim_Name
     //Handle_DimNameClashing();
 }
+//Explicit template instantiations
+template void GMFile::GMHandle_General_NameClashing<GMCVar>(set<string>& objnameset, vector<GMCVar*>& gmcvar);
+template void GMFile::GMHandle_General_NameClashing<GMSPVar>(set<string>& objnameset, vector<GMSPVar*>& gmspvar);
 
 // Name clashing for coordinate variables
 void GMFile::Handle_GMCVar_NameClashing(set<string> &objnameset )  {
