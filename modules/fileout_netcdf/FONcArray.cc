@@ -927,12 +927,6 @@ void FONcArray::write(int ncid) {
         // might be a mistake in the data model - using String for CHAR might not be
         // the best plan. Right now, it's what we have. jhrg 10/3/22
 
-        // Can we optimize for a special case where all strings are the same length?
-        // jhrg 10/3/22
-        // We don't need to consider the above special case after we optimize the general
-        // string write routine with one netcdf write call. In fact, the calculation
-        // of the equal_length increases the execution time.
-        // ky ?/?/25
         write_string_array(ncid);
     }
     else if (isNetCDF4_ENHANCED()) {

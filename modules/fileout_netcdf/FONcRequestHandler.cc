@@ -39,7 +39,6 @@
 #include <BESResponseNames.h>
 #include <BESVersionInfo.h>
 #include <BESDataNames.h>
-#include <BESDataNames.h>
 #include <TheBESKeys.h>
 #include <BESDebug.h>
 #include <BESUtil.h>

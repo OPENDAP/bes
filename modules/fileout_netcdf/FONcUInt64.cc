@@ -1,4 +1,4 @@
-// FONcUInt.cc
+// FONcUUInt64.cc
 
 // This file is part of BES Netcdf File Out Module
 
@@ -38,7 +38,7 @@
 #include "FONcUtils.h"
 #include "FONcAttributes.h"
 
-/** @brief Constructor for FOncUInt64 that takes a DAP UInt64
+/** @brief Constructor for FONcUInt64 that takes a DAP UInt64
  *
  * This constructor takes a DAP BaseType and makes sure that it is a DAP
  * UInt64 instance. If not, it throws an exception
@@ -52,7 +52,7 @@ FONcUInt64::FONcUInt64( BaseType *b )
     UInt64 *u64 = dynamic_cast<UInt64 *>(b) ;
     if( !u64 )
     {
-	string s = (string)"File out netcdf, FONcUInt was passed a "
+	string s = (string)"File out netcdf, FONcUInt64 was passed a "
 		   + "variable that is not a DAP UInt64" ;
 	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }

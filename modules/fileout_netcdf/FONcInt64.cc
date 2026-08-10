@@ -38,12 +38,12 @@
 #include "FONcUtils.h"
 #include "FONcAttributes.h"
 
-/** @brief Constructor for FOncInt64 that takes a DAP Int64
+/** @brief Constructor for FONcInt64 that takes a DAP Int64
  *
  * This constructor takes a DAP BaseType and makes sure that it is a DAP
  * Int64 instance. If not, it throws an exception
  *
- * @param b A DAP BaseType that should be an uint64
+ * @param b A DAP BaseType that should be an Int64
  * @throws BESInternalError if the BaseType is not an Int64
  */
 FONcInt64::FONcInt64( BaseType *b )
@@ -52,7 +52,7 @@ FONcInt64::FONcInt64( BaseType *b )
     _int64 = dynamic_cast<Int64 *>(b) ;
     if( !_int64 )
     {
-	string s = (string)"File out netcdf, FONcUInt was passed a "
+	string s = (string)"File out netcdf, FONcUInt64 was passed a "
 		   + "variable that is not a DAP Int64" ;
 	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
@@ -101,9 +101,9 @@ FONcInt64::define( int ncid )
     }
 }
 
-/** @brief Write the unsigned int out to the netcdf file
+/** @brief Write the Int64 out to the netcdf file
  *
- * Once the unsigned int is defined, the value of the unsigned int can be written out
+ * Once the Int64 is defined, the value of the Int64 can be written out
  *
  * @param ncid The id of the netcdf file
  * @throws BESInternalError if there is a problem writing the value

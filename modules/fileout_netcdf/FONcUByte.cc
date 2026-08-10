@@ -108,7 +108,7 @@ FONcUByte::define( int ncid )
 void
 FONcUByte::write( int ncid )
 {
-    BESDEBUG( "fonc", "FOncUByte::write for var " << d_varname << endl ) ;
+    BESDEBUG( "fonc", "FONcUByte::write for var " << d_varname << endl ) ;
     size_t var_index[] = {0} ;
 
     if (d_is_dap4)

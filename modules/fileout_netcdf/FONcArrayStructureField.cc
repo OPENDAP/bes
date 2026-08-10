@@ -117,7 +117,7 @@ FONcArrayStructureField::FONcArrayStructureField( BaseType *b, Array* a, bool is
                  struct_dims.push_back(use_dim);
              }
          }
-     }
+    }
 
 }
 
@@ -399,9 +399,6 @@ void FONcArrayStructureField::obtain_scalar_data(char *data_buf_ptr, BaseType *b
             throw BESInternalError(err, __FILE__, __LINE__);
     }
 }
-
-// Note: TODO: if the string is equal-size, we can optimize as write_equal_length_string_array() in FONcArray.cc.
-//             However, for netCDF-4, the better way is to map DAP4 string to netCDF-4 string. 
 
 void FONcArrayStructureField::write_str(int ncid){
 

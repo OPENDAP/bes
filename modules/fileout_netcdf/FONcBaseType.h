@@ -54,8 +54,7 @@ class ConstraintEvaluator;
 /** @brief A DAP BaseType with file out netcdf information included
  *
  * This class represents a DAP BaseType with additional information
- * needed to write it out to a netcdf file. Includes a reference to the
- * actual DAP BaseType being converted
+ * needed to write it out to a netcdf file. 
  */
 class FONcBaseType: public BESObj {
 protected:
@@ -75,12 +74,6 @@ protected:
 
     libdap::DDS *d_dds = nullptr;
     libdap::ConstraintEvaluator *d_eval = nullptr;
-
-    // direct io flag, used in the define mode,the default is false. It should be set to true when direct io is supported.
-    // TODO: This is for the temporary memory usage optimization. Once we can support the define() with or without dio for individual array.
-    //       This flag is not necessary and should be removed. KY 11/29/23
-    bool fdio_flag = false;
-
 
 public:
     FONcBaseType() = default;
@@ -123,11 +116,6 @@ public:
     virtual D4AttributeType getD4AttrType(nc_type t);
     virtual void updateD4AttrType(libdap::D4Attributes *d4_attrs, nc_type t);
     virtual void updateAttrType(libdap::AttrTable&  attrs, nc_type t);
-
-    // TODO: This is for the temporary memory usage optimization. Once we can support the define() with or without dio for individual array.
-    //       The following methods are  not necessary and should be removed. KY 11/29/23
-    bool get_fdio_flag() const {return fdio_flag; }
-    void set_fdio_flag(bool dio_flag_value = true) { fdio_flag = dio_flag_value; }
 
 };
 

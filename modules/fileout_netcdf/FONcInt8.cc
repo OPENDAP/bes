@@ -109,7 +109,7 @@ FONcInt8::define( int ncid )
 void
 FONcInt8::write( int ncid )
 {
-    BESDEBUG( "fonc", "FOncInt8::write for var " << d_varname << endl ) ;
+    BESDEBUG( "fonc", "FONcInt8::write for var " << d_varname << endl ) ;
     size_t var_index[] = {0} ;
     signed char data_value[1];
 
@@ -128,6 +128,7 @@ FONcInt8::write( int ncid )
                  + d_varname ;
 	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
     }
+    BESDEBUG( "fonc", "FONcInt8::done write for var " << d_varname << endl ) ;
 }
 
 /** @brief returns the name of the DAP4 int8
