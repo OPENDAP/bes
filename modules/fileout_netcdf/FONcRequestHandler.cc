@@ -47,20 +47,21 @@
 #include "FONcNames.h"
 
 std::string FONcRequestHandler::temp_dir;
-bool FONcRequestHandler::byte_to_short;
-bool FONcRequestHandler::use_compression;
-bool FONcRequestHandler::use_shuffle;
-bool FONcRequestHandler::float_write_opt;
-unsigned long long  FONcRequestHandler::float_write_opt_buffer_size;
+bool FONcRequestHandler::use_compression = true;
+bool FONcRequestHandler::use_shuffle = true;
+bool FONcRequestHandler::float_write_opt = true;
+unsigned long long  FONcRequestHandler::float_write_opt_buffer_size = 536870912;
 #if 0
 float FONcRequestHandler::float_write_opt_comp_ratio;
 #endif
-unsigned long long  FONcRequestHandler::chunk_size;
-bool FONcRequestHandler::classic_model;
-bool FONcRequestHandler::reduce_dim;
-bool FONcRequestHandler::no_global_attrs;
-unsigned long long FONcRequestHandler::request_max_size_kb;
-bool FONcRequestHandler::nc3_classic_format;
+bool FONcRequestHandler::use_contiguous_storage = false;
+bool FONcRequestHandler::classic_model = false;
+bool FONcRequestHandler::reduce_dim = false;
+bool FONcRequestHandler::no_global_attrs = false;
+
+// The request_max_size_kb equal = 0 means the request_max_size is unlimited.
+unsigned long long FONcRequestHandler::request_max_size_kb = 0;
+bool FONcRequestHandler::nc3_classic_format = false;
 
 using namespace std;
 
@@ -91,7 +92,7 @@ FONcRequestHandler::FONcRequestHandler( const string &name )
     FONcRequestHandler::float_write_opt_comp_ratio = TheBESKeys::read_float_key(FONC_FLOAT_WRITE_OPT_KEY, FONC_FLOAT_WRITE_OPT_COMP_RATIO);
 #endif
 
-    FONcRequestHandler::chunk_size = TheBESKeys::read_ulong_key(FONC_CHUNK_SIZE_KEY, FONC_CHUNK_SIZE);
+    FONcRequestHandler::use_contiguous_storage = TheBESKeys::read_bool_key(FONC_USE_CONTIGUOUS_KEY, FONC_USE_CONTIGUOUS);
     FONcRequestHandler::classic_model = TheBESKeys::read_bool_key(FONC_CLASSIC_MODEL_KEY, FONC_CLASSIC_MODEL);
     FONcRequestHandler::reduce_dim = TheBESKeys::read_bool_key(FONC_REDUCE_DIM_KEY, FONC_REDUCE_DIM);
     FONcRequestHandler::no_global_attrs = TheBESKeys::read_bool_key(FONC_NO_GLOBAL_ATTRS_KEY, FONC_NO_GLOBAL_ATTRS);
@@ -99,13 +100,12 @@ FONcRequestHandler::FONcRequestHandler( const string &name )
     FONcRequestHandler::nc3_classic_format = TheBESKeys::read_bool_key(FONC_NC3_CLASSIC_FORMAT_KEY, FONC_NC3_CLASSIC_FORMAT);
 
     BESDEBUG("fonc", "FONcRequestHandler::temp_dir: " << FONcRequestHandler::temp_dir << endl);
-    BESDEBUG("fonc", "FONcRequestHandler::byte_to_short: " << FONcRequestHandler::byte_to_short << endl);
     BESDEBUG("fonc", "FONcRequestHandler::use_compression: " << FONcRequestHandler::use_compression << endl);
     BESDEBUG("fonc", "FONcRequestHandler::use_shuffle: " << FONcRequestHandler::use_shuffle << endl);
     BESDEBUG("fonc", "FONcRequestHandler::float_write_opt: " << FONcRequestHandler::float_write_opt << endl);
     BESDEBUG("fonc", "FONcRequestHandler::float_write_opt_buffer_size: " << FONcRequestHandler::float_write_opt_buffer_size << endl);
 
-    BESDEBUG("fonc", "FONcRequestHandler::chunk_size: " << FONcRequestHandler::chunk_size << endl);
+    BESDEBUG("fonc", "FONcRequestHandler::use_contiguous_storage: " << FONcRequestHandler::use_contiguous_storage << endl);
     BESDEBUG("fonc", "FONcRequestHandler::classic_model: " << FONcRequestHandler::classic_model << endl);
     BESDEBUG("fonc", "FONcRequestHandler::reduce_dim: " << FONcRequestHandler::reduce_dim << endl);
     BESDEBUG("fonc", "FONcRequestHandler::turn_off_global_attrs: " << FONcRequestHandler::no_global_attrs << endl);

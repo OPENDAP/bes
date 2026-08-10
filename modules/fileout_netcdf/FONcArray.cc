@@ -705,9 +705,8 @@ void FONcArray::define_chunk_info(int ncid) {
             define_dio_filters(ncid);     
         }
         else {
-            if (FONcRequestHandler::chunk_size == 0)
-                // I have no idea if chunksizes is needed in this case.
-                stax = nc_def_var_chunking(ncid, d_varid, NC_CONTIGUOUS, d_chunksizes.data());
+            if (FONcRequestHandler::use_contiguous_storage)
+                stax = nc_def_var_chunking(ncid, d_varid, NC_CONTIGUOUS, nullptr);
             else
                 stax = nc_def_var_chunking(ncid, d_varid, NC_CHUNKED, d_chunksizes.data());
 
@@ -717,7 +716,7 @@ void FONcArray::define_chunk_info(int ncid) {
             }
 
             // The following code provides a way how to use shuffle. KY 11/2/23
-            if (FONcRequestHandler::use_compression) {
+            if (FONcRequestHandler::use_compression && FONcRequestHandler::use_contiguous_storage==false) {
 
                 int shuffle = 0;
                 // For integer, if the type size is >= 2, turn on the shuffle key always.
@@ -746,7 +745,7 @@ void FONcArray::define_chunk_info(int ncid) {
             // We find that increasing the chunk cache size only benefits large-size character array for NASA files. 
             // So we only check if we need to increase the chunk cache for character array. 
             // If we find it necessary to apply this to other datatypes, don't forget to count the datatype size. KY 2025-05-07
-            if (d_array_type == NC_CHAR) {
+            if (d_array_type == NC_CHAR && FONcRequestHandler::use_contiguous_storage == false) {
 
                 BESDEBUG("fonc", "FONcArray::define() - Checking if we should increase HDF5 chunk cache. " << endl);
                 // Chunk size is the number of elements in a chunk. chunk cache needs to be in byte. For character the datatype

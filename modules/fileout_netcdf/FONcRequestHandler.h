@@ -50,7 +50,6 @@ public:
     void dump(std::ostream &strm) const override;
 
     static std::string temp_dir;
-    static bool byte_to_short;
     static bool use_compression;
     static bool use_shuffle;
     static bool float_write_opt;
@@ -58,7 +57,7 @@ public:
 #if 0
     static float float_write_opt_comp_ratio;
 #endif
-    static unsigned long long chunk_size;
+    static bool use_contiguous_storage;
     static bool classic_model;
     static bool reduce_dim;
     static bool no_global_attrs;
