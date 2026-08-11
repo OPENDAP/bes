@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="t_special_name.h5">
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>removed date-time</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>removed_version</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>removed_version</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>removed_version</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/hyrax-2215/bes/modules/hdf5_handler/data/src/t_special_name.h5 -r t_special_name.h5.dmr -u data/dmrpp/t_special_name.h5 -M</Value>
+        </Attribute>
+    </Attribute>
+    <Group name="data field">
+        <Int16 name="data.1">
+            <Dim size="2"/>
+            <Attribute name="_FillValue" type="Int16">
+                <Value>-999</Value>
+            </Attribute>
+            <Attribute name="DAP4_Checksum_CRC32" type="String">
+                removed checksum
+            </Attribute>
+        </Int16>
+    </Group>
+</Dataset>
+
+The data:
+Int16 /data field/data.1[2] = {1, 2};
+
