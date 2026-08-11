@@ -1,4 +1,4 @@
-// FONcUInt.cc
+// FONcUUInt64.cc
 
 // This file is part of BES Netcdf File Out Module
 
@@ -38,7 +38,7 @@
 #include "FONcUtils.h"
 #include "FONcAttributes.h"
 
-/** @brief Constructor for FOncUInt64 that takes a DAP UInt64
+/** @brief Constructor for FONcUInt64 that takes a DAP UInt64
  *
  * This constructor takes a DAP BaseType and makes sure that it is a DAP
  * UInt64 instance. If not, it throws an exception
@@ -52,7 +52,7 @@ FONcUInt64::FONcUInt64( BaseType *b )
     UInt64 *u64 = dynamic_cast<UInt64 *>(b) ;
     if( !u64 )
     {
-	string s = (string)"File out netcdf, FONcUInt was passed a "
+	string s = (string)"File out netcdf, FONcUInt64 was passed a "
 		   + "variable that is not a DAP UInt64" ;
 	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
@@ -115,16 +115,16 @@ FONcUInt64::write( int ncid )
 {
     BESDEBUG( "fonc", "FONcUInt64::write for var " << d_varname << endl ) ;
     size_t var_index[] = {0} ;
-    //uint64_t *data = new uint64_t ;
-    unsigned long long  *data = new unsigned long long ;
 
     if (d_is_dap4)
         _bt->intern_data();
     else
         _bt->intern_data(*get_eval(), *get_dds());
 
+    unsigned long long  *data = new unsigned long long ;
     _bt->buf2val( (void**)&data ) ;
     int stax = nc_put_var1_ulonglong(ncid, d_varid, var_index, data ) ;
+    delete data ;
     if( stax != NC_NOERR )
     {
 	string err = (string)"fileout.netcdf4 - "
@@ -132,7 +132,6 @@ FONcUInt64::write( int ncid )
                  + d_varname ;
 	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
     }
-    delete data ;
     BESDEBUG( "fonc", "FONcUInt64::done write for var " << d_varname << endl ) ;
 }
 

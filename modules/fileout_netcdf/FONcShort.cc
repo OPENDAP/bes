@@ -38,7 +38,7 @@
 #include "FONcUtils.h"
 #include "FONcAttributes.h"
 
-/** @brief Constructor for FOncShort that takes a DAP Int16 or UInt16
+/** @brief Constructor for FONcShort that takes a DAP Int16 or UInt16
  *
  * This constructor takes a DAP BaseType and makes sure that it is a DAP
  * Int16 or UInt16 instance. If not, it throws an exception

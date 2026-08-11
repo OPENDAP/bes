@@ -67,20 +67,16 @@ private:
     size_t d_nelements = 1;
     // The FONcDim dimensions to be used for this variable
     std::vector<FONcDim *> d_dims;
-    // The netcdf dimension ids for this array from DAP4
-    std::vector<int> d4_dim_ids{};
-
-    std::vector<bool>use_d4_dim_ids;
-    std::vector<int> d4_rds_nums;
 
     // The netcdf dimension ids for this array
     std::vector<int> d_dim_ids{};
     // The netcdf dimension sizes to be written
-    //size_t * d_dim_sizes; // changed int to size_t. jhrg 12.27.2011
     std::vector<size_t> d_dim_sizes{};
-    // If string data, we need to do some comparison, so instead of
-    // reading it more than once, read it once and save here
-    // FIXME std::vector<std::string> d_str_data;
+
+    // The netcdf dimension ids for this array from DAP4
+    std::vector<int> d4_dim_ids{};
+    std::vector<bool>use_d4_dim_ids;
+    std::vector<int> d4_rds_nums;
 
     // If the array is already a map in a grid, then we don't want to
     // define it or write it.
@@ -100,7 +96,6 @@ private:
     // if DAP4 dim. is defined
     bool d4_def_dim = false;
 
-
     // For Enum handling
     bool d_is_dap4_enum = false;
     nc_type d_fa_nc_enum_base_type = NC_NAT;
@@ -109,11 +104,15 @@ private:
     // For unlimited dimension handling
     std::vector<std::string>unlimited_dim_names;
 
-
     // For 1-byte string array handling
     bool one_byte_string_array = false;
 
+    // convert dimension info
+    void convert_dimension_info(const std::vector<std::string> &embed);
     FONcDim * find_dim(const std::vector<std::string> &embed, const std::string &name, int64_t size, bool ignore_size = false);
+
+    // define chunk info
+    void define_chunk_info(int ncid);
 
     // Used in write()
     void write_for_nc4_types(int ncid);
@@ -123,14 +122,15 @@ private:
     void write_string_array(int ncid);
     void write_enum_array(int ncid);
 
+    // direct chunk IO methods, currently only work with the dmrpp module.
     void define_dio_filters(int ncid);
     void obtain_dio_filters_order(const string&,bool &,bool &, bool &, bool &, bool &) const;
     void allocate_dio_nc4_def_filters(int, int, bool ,bool , bool , bool , bool, const vector<unsigned int> &) const; 
+
     void write_direct_io_data(int ncid);
     void write_direct_subset_io_data(int ncid);
 
     bool is_unlimited_dim(const string &dim_name) const;
-
     bool check_float_write_opt() const;
     FONcArray() = default;      // Used in some unit tests
     friend class FONcArrayTest;
@@ -149,25 +149,11 @@ public:
 
     virtual libdap::Array *array() { return d_a; }
     void set_nc4_enum_type_id(int enum_type_id) { d_fa_nc4_enum_type_id = enum_type_id;}
-    void set_nc4_enum_basetype (nc_type enum_basetype) { d_fa_nc_enum_base_type = enum_basetype;}
+    void set_nc4_enum_basetype(nc_type enum_basetype) { d_fa_nc_enum_base_type = enum_basetype;}
     void set_enum_flag(bool is_enum) {d_is_dap4_enum = is_enum; }
     void set_unlimited_dim_names(const std::vector<std::string> & u_dnames) { unlimited_dim_names = u_dnames;}
 
     virtual void dump(std::ostream &strm) const override;
-
-    // The following code is to calcuate the maximum possible chunk size one can use for array.
-    // It is not used now. But keep it for the potential future use.
-#if 0
-    size_t obtain_max_chunk_size(size_t total_size, int m_num_chunks, int chunk_dim_size, int allowed_chunk_dim_size) {
-
-        int actual_num_chunks = total_size/(chunk_dim_size*chunk_dim_size);
-        if ((actual_num_chunks > m_num_chunks) && (chunk_dim_size < allowed_chunk_dim_size)) 
-            chunk_dim_size = obtain_max_chunk_size(total_size,m_num_chunks,2*chunk_dim_size,allowed_chunk_dim_size);
-        return chunk_dim_size;
-
-    }
-#endif
-
     static std::vector<FONcDim *> Dimensions;
 };
 

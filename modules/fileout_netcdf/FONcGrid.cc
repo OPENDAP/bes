@@ -98,13 +98,12 @@ FONcGrid::~FONcGrid()
  * and the array.
  *
  * @param ncid The id of the NetCDF file
- * @throws BESInternalError if there is a problem defining the
- * Byte
+ * @throws BESInternalError if there is a problem defining the Grid
  */
 void FONcGrid::define(int ncid)
 {
     if (!d_defined) {
-        BESDEBUG("fonc", "FOncGrid::define - defining grid " << d_varname << endl);
+        BESDEBUG("fonc", "FONcGrid::define - defining grid " << d_varname << endl);
 
         for (auto map: _maps)
             map->define(ncid);
@@ -115,7 +114,7 @@ void FONcGrid::define(int ncid)
 
         d_defined = true;
 
-        BESDEBUG("fonc", "FOncGrid::define - done defining grid " << d_varname << endl);
+        BESDEBUG("fonc", "FONcGrid::define - done defining grid " << d_varname << endl);
     }
 }
 
@@ -132,8 +131,7 @@ void FONcGrid::define(int ncid)
  * then it references that shared map instead of creating a new one.
  *
  * @param embed The list of parent names for this grid
- * @throws BESInternalError if there is a problem defining the
- * Byte
+ * @throws BESInternalError if there is a problem defining the Grid
  */
 void FONcGrid::convert(vector<string> embed, bool _dap4, bool is_dap4_group)
 {
@@ -149,7 +147,7 @@ void FONcGrid::convert(vector<string> embed, bool _dap4, bool is_dap4_group)
     Grid::Map_iter me = _grid->map_end();
     for (; mi != me; mi++) {
 
-        // Only add FONcBaseType instances to _maps if the Frid Map is
+        // Only add FONcBaseType instances to _maps if the Grid Map is
         // supposed to be sent. See Hyrax-282. jhrg 11/3/16
         if ((*mi)->send_p()) {
 
@@ -222,7 +220,7 @@ void FONcGrid::convert(vector<string> embed, bool _dap4, bool is_dap4_group)
  */
 void FONcGrid::write(int ncid)
 {
-    BESDEBUG("fonc", "FOncGrid::define - writing grid " << d_varname << endl);
+    BESDEBUG("fonc", "FONcGrid::define - writing grid " << d_varname << endl);
 
     // FONcBaseType instances are added only if the corresponding DAP variable
     // should be sent. See Hyrax-282. jhrg 11/3/16
@@ -232,14 +230,14 @@ void FONcGrid::write(int ncid)
         (*i)->write(ncid);
     }
 
-    // only write this if is have been convert()ed and define()ed.
+    // only write this if Grid has been convert()ed and define()ed.
     // See above and Hyrax-282. jhrg  11/3/16
     if (_arr)
         _arr->write(ncid);
 
     d_defined = true;
 
-    BESDEBUG("fonc", "FOncGrid::define - done writing grid " << d_varname << endl);
+    BESDEBUG("fonc", "FONcGrid::define - done writing grid " << d_varname << endl);
 }
 
 /** @brief returns the name of the DAP Grid

@@ -108,17 +108,16 @@ FONcUByte::define( int ncid )
 void
 FONcUByte::write( int ncid )
 {
-    BESDEBUG( "fonc", "FOncUByte::write for var " << d_varname << endl ) ;
+    BESDEBUG( "fonc", "FONcUByte::write for var " << d_varname << endl ) ;
     size_t var_index[] = {0} ;
-    unsigned char *data = new unsigned char ;
 
     if (d_is_dap4)
         _b->intern_data();
     else
         _b->intern_data(*get_eval(), *get_dds());
 
-    _b->buf2val( (void**)&data ) ;
-    int stax = nc_put_var1_uchar(ncid, d_varid, var_index, data ) ;
+    unsigned char data = _b->value();
+    int stax = nc_put_var1_uchar(ncid, d_varid, var_index, &data ) ;
     if( stax != NC_NOERR )
     {
 	string err = (string)"fileout.netcdf - "
@@ -126,7 +125,6 @@ FONcUByte::write( int ncid )
                  + d_varname ;
 	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
     }
-    delete data ;
 }
 
 /** @brief returns the name of the DAP Byte

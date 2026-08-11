@@ -38,21 +38,20 @@
 #include "FONcUtils.h"
 #include "FONcAttributes.h"
 
-/** @brief Constructor for FOncInt64 that takes a DAP Int64
+/** @brief Constructor for FONcInt64 that takes a DAP Int64
  *
  * This constructor takes a DAP BaseType and makes sure that it is a DAP
  * Int64 instance. If not, it throws an exception
  *
- * @param b A DAP BaseType that should be an uint64
+ * @param b A DAP BaseType that should be an Int64
  * @throws BESInternalError if the BaseType is not an Int64
  */
 FONcInt64::FONcInt64( BaseType *b )
-    : FONcBaseType(), _bt( b )
+    : FONcBaseType(), _int64(dynamic_cast<Int64 *>(b) )
 {
-    Int64 *u64 = dynamic_cast<Int64 *>(b) ;
-    if( !u64 )
+    if( !_int64 )
     {
-	string s = (string)"File out netcdf, FONcUInt was passed a "
+	string s = (string)"File out netcdf, FONcUInt64 was passed a "
 		   + "variable that is not a DAP Int64" ;
 	throw BESInternalError( s, __FILE__, __LINE__ ) ;
     }
@@ -85,15 +84,15 @@ FONcInt64::define( int ncid )
     if( !d_defined )
     {
         if(d_is_dap4) {
-            D4Attributes *d4_attrs = _bt->attributes();                                                     
+            D4Attributes *d4_attrs = _int64->attributes();                                                     
             updateD4AttrType(d4_attrs,NC_INT64);   
         }
         else {
-            AttrTable &attrs = _bt->get_attr_table();  
+            AttrTable &attrs = _int64->get_attr_table();  
             updateAttrType(attrs,NC_INT64); 
         }
 
-	FONcAttributes::add_variable_attributes(ncid, d_varid, _bt , isNetCDF4_ENHANCED(), d_is_dap4) ;
+	FONcAttributes::add_variable_attributes(ncid, d_varid, _int64 , isNetCDF4_ENHANCED(), d_is_dap4) ;
 	FONcAttributes::add_original_name(ncid, d_varid,
                                       d_varname, d_orig_varname ) ;
 
@@ -101,9 +100,9 @@ FONcInt64::define( int ncid )
     }
 }
 
-/** @brief Write the unsigned int out to the netcdf file
+/** @brief Write the Int64 out to the netcdf file
  *
- * Once the unsigned int is defined, the value of the unsigned int can be written out
+ * Once the Int64 is defined, the value of the Int64 can be written out
  *
  * @param ncid The id of the netcdf file
  * @throws BESInternalError if there is a problem writing the value
@@ -113,17 +112,14 @@ FONcInt64::write( int ncid )
 {
     BESDEBUG( "fonc", "FONcInt64::write for var " << d_varname << endl ) ;
     size_t var_index[] = {0} ;
-    //int64_t *data = new int64_t ;
-    long long  *data = new long long ;
 
     if (d_is_dap4)
-        _bt->intern_data();
+        _int64->intern_data();
     else
-        _bt->intern_data(*get_eval(), *get_dds());
+        _int64->intern_data(*get_eval(), *get_dds());
 
-    _bt->buf2val( (void**)&data ) ;
-    //int stax = nc_put_var1_longlong( ncid, _varid, var_index, (const long long*)data ) ;
-    int stax = nc_put_var1_longlong(ncid, d_varid, var_index, data ) ;
+    long long data = _int64->value() ;
+    int stax = nc_put_var1_longlong(ncid, d_varid, var_index, &data ) ;
     if( stax != NC_NOERR )
     {
 	string err = (string)"fileout.netcdf - "
@@ -131,7 +127,6 @@ FONcInt64::write( int ncid )
                  + d_varname ;
 	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
     }
-    delete data ;
     BESDEBUG( "fonc", "FONcInt64::done write for var " << d_varname << endl ) ;
 }
 
@@ -142,12 +137,12 @@ FONcInt64::write( int ncid )
 string
 FONcInt64::name()
 {
-    return _bt->name() ;
+    return _int64->name() ;
 }
 
 /** @brief returns the netcdf type of the DAP object
  *
- * @returns The nc_type of NC_UINT
+ * @returns The nc_type of NC_INT64
  */
 nc_type
 FONcInt64::type()
@@ -167,7 +162,7 @@ FONcInt64::dump( ostream &strm ) const
     strm << BESIndent::LMarg << "FONcInt64::dump - ("
 			     << (void *)this << ")" << endl ;
     BESIndent::Indent() ;
-    strm << BESIndent::LMarg << "name = " << _bt->name()  << endl ;
+    strm << BESIndent::LMarg << "name = " << _int64->name()  << endl ;
     BESIndent::UnIndent() ;
 }
 

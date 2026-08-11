@@ -41,11 +41,11 @@ namespace libdap {
 class BaseType;
 }
 
-/** @brief A DAP Array with file out netcdf information included
+/** @brief A DAP structure array field  with file out netcdf information included
  *
- * This class represents a DAP Array with additional information
+ * This class represents a DAP structure array field  with additional information
  * needed to write it out to a netcdf file. Includes a reference to the
- * actual DAP Array being converted.
+ * actual DAP structure array field  being converted.
  */
 class FONcArrayStructureField: public FONcBaseType {
 private:

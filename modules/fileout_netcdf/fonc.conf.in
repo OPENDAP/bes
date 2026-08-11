@@ -28,7 +28,7 @@ FONc.Reference = http://docs.opendap.org/index.php/BES_-_Modules_-_FileOut_Netcd
 
 # The default values for these keys
 FONc.UseCompression = true
-FONc.ChunkSize = 4096
+FONc.UseContiguousStorage = false
 FONc.ClassicModel = false
 
 FONc.RequestMaxSizeKB = 0
