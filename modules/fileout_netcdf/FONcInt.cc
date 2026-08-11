@@ -38,13 +38,13 @@
 #include "FONcUtils.h"
 #include "FONcAttributes.h"
 
-/** @brief Constructor for FOncInt that takes a DAP Int32 or UInt32
+/** @brief Constructor for FONcInt that takes a DAP Int32
  *
  * This constructor takes a DAP BaseType and makes sure that it is a DAP
- * Int32 or UInt32 instance. If not, it throws an exception
+ * Int32 instance. If not, it throws an exception
  *
- * @param b A DAP BaseType that should be an int32 or uint32
- * @throws BESInternalError if the BaseType is not an Int32 or UInt32
+ * @param b A DAP BaseType that should be an int32 
+ * @throws BESInternalError if the BaseType is not an Int32 
  */
 FONcInt::FONcInt( BaseType *b )
     : FONcBaseType(), _bt( b )
@@ -84,15 +84,14 @@ FONcInt::FONcInt( BaseType *b ,bool unsigned_short)
   }
 }
 /** @brief Destructor that cleans up the instance
- *
- * The DAP Int32 or UInt32 instance does not belong to the FONcByte
+ * The DAP Int32 instance does not belong to the FONcInt
  * instance, so it is not deleted.
  */
 FONcInt::~FONcInt()
 {
 }
 
-/** @brief define the DAP Int32 or UInt32 in the netcdf file
+/** @brief define the DAP Int32 in the netcdf file
  *
  * The definition actually takes place in FONcBaseType. This function
  * adds the attributes for the instance as well as an attribute if
@@ -100,7 +99,7 @@ FONcInt::~FONcInt()
  *
  * @param ncid The id of the NetCDF file
  * @throws BESInternalError if there is a problem defining the
- * Int32 or UInt32
+ * Int32 
  */
 void
 FONcInt::define( int ncid )

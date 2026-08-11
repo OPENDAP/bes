@@ -61,7 +61,7 @@ class BESDataHandlerInterface;
  */
 class FONcTransform: public BESObj {
 private:
-    int _ncid = 0;
+    int _ncid = -1;
     libdap::DDS *_dds = nullptr;
     libdap::DMR *_dmr = nullptr;
     BESResponseObject *d_obj = nullptr;
@@ -126,10 +126,7 @@ private:
     virtual bool obtain_unlimited_dimension_info(libdap::D4Group *grp, std::vector<std::string> &unlimited_dim_names) const;
     virtual bool no_dio_dimension(libdap::D4Group *grp, libdap::Array *d_a, const vector<string> &unlimited_dimnames,libdap::Array::Dim_iter di) const;
     virtual bool no_dio_ancestor_dimension(libdap::D4Group *grp, libdap::Array *d_a,libdap::Array::Dim_iter di) const;
-#if 0
-    virtual bool check_var_unlimited_dimension(libdap::Array *t_a, const std::vector<std::string> &unlimited_dim_names);
-#endif
-
+    void close_nc_file();
     void throw_if_dap2_response_too_big(DDS *dds, const string &dap2_ce="");
     void throw_if_dap4_response_too_big(DMR *dmr, const string &dap4_ce="");
     string too_big_error_msg(

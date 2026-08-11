@@ -33,7 +33,7 @@
 #include "FONcUtils.h"
 #include "FONcAttributes.h"
 
-/** @brief Constructor for FOncShort that takes a DAP  UInt16
+/** @brief Constructor for FONcShort that takes a DAP UInt16
  *
  * This constructor takes a DAP BaseType and makes sure that it is a DAP
  * UInt16 instance. If not, it throws an exception
@@ -62,15 +62,14 @@ FONcUShort::~FONcUShort()
 {
 }
 
-/** @brief define the DAP Int16 or UInt16 in the netcdf file
+/** @brief define the DAP UInt16 in the netcdf file
  *
  * The definition actually takes place in FONcBaseType. This function
  * adds the attributes for the variable instance as well as an attribute if
  * the name had to be modified.
  *
  * @param ncid The id of the NetCDF file
- * @throws BESInternalError if there is a problem defining the
- * Byte
+ * @throws BESInternalError if there is a problem defining the UInt16
  */
 void
 FONcUShort::define( int ncid )
@@ -111,13 +110,13 @@ FONcUShort::write( int ncid )
 {
     BESDEBUG( "fonc", "FONcUShort::write for var " << d_varname << endl ) ;
     size_t var_index[] = {0} ;
-    unsigned short *data = new unsigned short ;
 
     if (d_is_dap4)
         _bt->intern_data();
     else
         _bt->intern_data(*get_eval(), *get_dds());
 
+    unsigned short *data = new unsigned short ;
     _bt->buf2val( (void**)&data ) ;
     int stax = nc_put_var1_ushort(ncid, d_varid, var_index, data ) ;
     if( stax != NC_NOERR )

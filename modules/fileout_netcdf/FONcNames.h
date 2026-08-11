@@ -20,8 +20,8 @@
 #define FONC_USE_SHUFFLE false
 #define FONC_USE_SHUFFLE_KEY "FONc.UseShuffle"
 
-#define FONC_CHUNK_SIZE 4096
-#define FONC_CHUNK_SIZE_KEY "FONc.ChunkSize"
+#define FONC_USE_CONTIGUOUS false
+#define FONC_USE_CONTIGUOUS_KEY "FONc.UseContiguousStorage"
 
 // In fonc.conf.in, the FONC_CLASSIC_MODEL is set to false, which is
 // default setting in distribution. So here we change the FONC_CLASSIC_MODEL 

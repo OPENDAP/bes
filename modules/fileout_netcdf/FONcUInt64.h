@@ -1,4 +1,4 @@
-// FONcUInt.h
+// FONcUInt64.h
 
 // This file is part of BES Netcdf File Out Module
 
@@ -35,11 +35,11 @@ namespace libdap {
 
 #include "FONcBaseType.h"
 
-/** @brief A DAP UInt32 with file out netcdf information included
+/** @brief A DAP UInt64 with file out netcdf information included
  *
- * This class represents a DAP UInt32 with additional information
+ * This class represents a DAP UInt64 with additional information
  * needed to write it out to a netcdf file. Includes a reference to the
- * actual DAP UInt32 being converted
+ * actual DAP UInt64 being converted
  */
 class FONcUInt64 : public FONcBaseType
 {

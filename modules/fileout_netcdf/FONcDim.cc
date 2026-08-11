@@ -41,7 +41,7 @@ using std::ostringstream;
 
 int FONcDim::DimNameNum = 0;
 int FONcDim::StructDimNameNum = 0;
-/** @brief Constructor for FOncDim that defines the dimension of an
+/** @brief Constructor for FONcDim that defines the dimension of an
  * array
  *
  * @param name The name of the dimension

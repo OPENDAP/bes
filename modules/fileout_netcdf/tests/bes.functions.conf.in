@@ -67,7 +67,7 @@ FONc.Tempdir=@abs_top_builddir@/modules/fileout_netcdf/tests/
 
 # The default values for these keys
 FONc.UseCompression=true
-FONc.ChunkSize=4096
+FONc.UseContiguousStorage=false
 FONc.ClassicModel=false
 # Uncomment the following line to suppress the output of global attributes.
 #FONc.NoGlobalAttrs=true

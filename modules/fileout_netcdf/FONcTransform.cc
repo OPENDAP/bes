@@ -136,6 +136,8 @@ FONcTransform::~FONcTransform() {
     // _dmr is not managed by the BESDMRResponse class in this code. However,
     // _dds still is. jhrg 8/13/21
     delete _dmr;
+
+    close_nc_file();
 }
 
 /**
@@ -301,7 +303,6 @@ void FONcTransform::transform_dap2() {
     besDRB.set_async_accepted(d_dhi->data[ASYNC]);
     besDRB.set_store_result(d_dhi->data[STORE_RESULT]);
 
-
     // This function is used by all fileout modules, and they need to include the attributes in data access.
     // So obtain the attributes if necessary. KY 2019-10-30
     if (bdds->get_ia_flag() == false) {
@@ -314,6 +315,7 @@ void FONcTransform::transform_dap2() {
 
     // Split constraint into two halves; stores the function and non-function parts in this instance.
     besDRB.split_ce(eval);
+
     // If there are functions, parse them and eval.
     // Use that DDS and parse the non-function ce
     // Serialize using the second ce and the second dds
@@ -464,10 +466,11 @@ void FONcTransform::transform_dap2() {
         stax = nc_close(_ncid);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
+        _ncid = -1;
 
     }
     catch (const BESError &e) {
-        (void) nc_close(_ncid); // ignore the error at this point
+        close_nc_file(); // ignore the error at this point
         throw;
     }
 }
@@ -641,7 +644,6 @@ void FONcTransform::transform_dap4() {
         // the constraint is not empty!
         check_and_obtain_dimensions(root_grp, true);
 
-        // Don't remove the following code, they are for debugging.
 #if !NDEBUG
         map<string, int64_t>::iterator it;
 
@@ -657,8 +659,7 @@ void FONcTransform::transform_dap4() {
 #endif
 
         // DAP4 requires the DAP4 dimension sizes defined in the group should be changed
-        // according to the corresponding variable sizes. Check section 8.6.2 at
-        // https://docs.opendap.org/index.php/DAP4:_Specification_Volume_1
+        // according to the corresponding variable sizes.
         //
         map<string, int64_t>::iterator git, vit;
         for (git = GFQN_dimname_to_dimsize.begin(); git != GFQN_dimname_to_dimsize.end(); ++git) {
@@ -684,7 +685,6 @@ void FONcTransform::transform_dap4() {
         vector <string> root_d4_dimname_list;
         for (git = GFQN_dimname_to_dimsize.begin(); git != GFQN_dimname_to_dimsize.end(); ++git) {
             string d4_temp_dimname = git->first.substr(1);
-            //BESDEBUG(MODULE,  prolog << "d4_temp_dimname: "<<d4_temp_dimname<<endl);
             if (d4_temp_dimname.find('/') == string::npos)
                 root_d4_dimname_list.push_back(d4_temp_dimname);
         }
@@ -738,6 +738,7 @@ void FONcTransform::transform_dap4() {
         stax = nc_close(_ncid);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
+        _ncid = -1;
 
     }
     else // No group, handle as the classic way
@@ -782,11 +783,6 @@ void FONcTransform::transform_dap4_no_group() {
 
     D4Group *root_grp = _dmr->root();
 
-    is_root_no_grp_unlimited_dim = obtain_unlimited_dimension_info(root_grp,root_no_grp_unlimited_dimnames);
-
-    if(root_grp->has_enum_defs()) 
-        gen_nc4_enum_type(root_grp,_ncid);
- 
 #if !NDEBUG
     D4Dimensions *root_dims = root_grp->dims();
     for (D4Dimensions::D4DimensionsIter di = root_dims->dim_begin(), de = root_dims->dim_end(); di != de; ++di) {
@@ -797,11 +793,19 @@ void FONcTransform::transform_dap4_no_group() {
     }
 #endif
 
+    // Before going to the variables, 
+    // if having the unlimited dimensions, need the special handling.
+    is_root_no_grp_unlimited_dim = obtain_unlimited_dimension_info(root_grp,root_no_grp_unlimited_dimnames);
+
+    // if having enums, also need the special handling.
+    if(root_grp->has_enum_defs()) 
+        gen_nc4_enum_type(root_grp,_ncid);
+    
+    // Now go to variables.
     Constructor::Vars_iter vi = root_grp->var_begin();
     Constructor::Vars_iter ve = root_grp->var_end();
 
     // If the global_dio_flag is false, we cannot do direct IO for this file at all. No need to check every variable.
-    // This is necessary since direct IO cannot apply to the current existing dmrpp files in the earth data cloud. KY 2023-12-11
     if (global_dio_flag == false) {
         for (; vi != ve; vi++) {
             if ((*vi)->send_p()) {
@@ -825,24 +829,14 @@ void FONcTransform::transform_dap4_no_group() {
             if ((*vi)->send_p()) {
                 BaseType *v = *vi;
     
-                BESDEBUG(MODULE, prolog << "Direct IO is off, Converting variable '" << v->name() << "'" << endl);
+                BESDEBUG(MODULE, prolog << "Global direct IO flag is true, Converting variable '" << v->name() << "'" << endl);
     
                 if (v->type() == dods_array_c) {
                     auto t_a = dynamic_cast<Array *>(v);
-                    if (t_a->get_dio_flag()) {
+                    if (t_a->get_dio_flag()) 
                         set_constraint_var_dio_flag(root_grp, t_a, root_no_grp_unlimited_dimnames);
-#if 0
-                        bool var_has_unlim_dim = false;
-                        if (is_root_no_grp_unlimited_dim) 
-                            var_has_unlim_dim = check_var_unlimited_dimension(t_a,root_no_grp_unlimited_dimnames);
-                        if (var_has_unlim_dim)
-                            t_a->set_dio_flag(false);
-                        else 
-                            set_constraint_var_dio_flag(t_a);
-#endif
-                    }
-    
                 }
+
                 // This is a factory class call, and 'fg' is specialized for 'v'
                 FONcBaseType *fb = FONcUtils::convert(v, FONcTransform::_returnAs, FONcRequestHandler::classic_model, GFQN_to_en_typeid_vec,root_no_grp_unlimited_dimnames);
                 
@@ -855,17 +849,7 @@ void FONcTransform::transform_dap4_no_group() {
         }
     }
 
-#if !NDEBUG
-    if (root_grp->grp_begin() == root_grp->grp_end())
-        BESDEBUG(MODULE,  prolog << "No group  " << endl);
-    else
-        BESDEBUG(MODULE,  prolog << "Has group  " << endl);
-    for (D4Group::groupsIter gi = root_grp->grp_begin(), ge = root_grp->grp_end(); gi != ge; ++gi)
-        BESDEBUG(MODULE,  prolog << "Group name:  " << (*gi)->name() << endl);
-#endif
-
     fonc_history_util::updateHistoryAttributes(_dmr, d_dhi->data[POST_CONSTRAINT]);
-
 
     try {
         // Here we will be defining the variables of the netcdf and
@@ -880,7 +864,6 @@ void FONcTransform::transform_dap4_no_group() {
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
             BESDEBUG(MODULE, prolog << "Defining variable:  " << fbt->name() << endl);
-            //fbt->set_is_dap4(true);
             fbt->define(_ncid);
         }
 
@@ -929,9 +912,10 @@ void FONcTransform::transform_dap4_no_group() {
         stax = nc_close(_ncid);
         if (stax != NC_NOERR)
             FONcUtils::handle_error(stax, "File out netcdf, unable to close: " + _localfile, __FILE__, __LINE__);
+        _ncid = -1;
     }
     catch (BESError &e) {
-        (void) nc_close(_ncid); // ignore the error at this point
+        close_nc_file();
         throw;
     }
 
@@ -1105,17 +1089,8 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
     
                 if (v->type() == dods_array_c) {
                     auto t_a = dynamic_cast<Array *>(v);
-                    if (t_a->get_dio_flag()) { 
+                    if (t_a->get_dio_flag())  
                         set_constraint_var_dio_flag(d4_grp, t_a, unlimited_dimnames);
-#if 0
-                        bool var_has_unlim_dim = false;
-                        var_has_unlim_dim = check_var_unlimited_dimension(t_a,unlimited_dimnames);
-                        if (var_has_unlim_dim)
-                            t_a->set_dio_flag(false);
-                        else 
-                            set_constraint_var_dio_flag(t_a);
-#endif
-                    }
                 }
     
                 // This is a factory class call, and 'fg' is specialized for 'v'
@@ -1141,16 +1116,12 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
 #endif
 
     try {
-        // Here we will be defining the variables of the netcdf and
-        // adding attributes. To do this we must be in define mode.
-        //nc_redef(_ncid);
 
         vector<FONcBaseType *>::iterator i = fonc_vars_in_grp.begin();
         vector<FONcBaseType *>::iterator e = fonc_vars_in_grp.end();
         for (; i != e; i++) {
             FONcBaseType *fbt = *i;
             BESDEBUG(MODULE,  prolog << "Defining variable:  " << fbt->name() << endl);
-            //fbt->set_is_dap4(true);
             fbt->define(nc4_grp_id);
         }
 
@@ -1190,7 +1161,7 @@ void FONcTransform::transform_dap4_group_internal(D4Group *d4_grp,
 
     }
     catch (BESError &e) {
-        (void) nc_close(_ncid); // ignore the error at this point
+        close_nc_file();
         throw;
     }
     BESDEBUG(MODULE,  prolog << "END" << endl);
@@ -1214,7 +1185,6 @@ void FONcTransform::gen_included_grp_list(D4Group *grp) {
 
         if (grp->var_begin() != grp->var_end()) {
 
-            BESDEBUG(MODULE, prolog << "Has child variables" << endl);
             Constructor::Vars_iter vi = grp->var_begin();
             Constructor::Vars_iter ve = grp->var_end();
 
@@ -1262,7 +1232,7 @@ void FONcTransform::check_and_obtain_dimensions(D4Group *grp, bool is_root_grp) 
 
     if (_dmr->get_ce_empty())
         included_grp = true;
-        // Always include the root attributes.
+    // Always include the root attributes.
     else if (is_root_grp == true)
         included_grp = true;
     else {
@@ -1290,17 +1260,14 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp) {
             BESDEBUG(MODULE, prolog << "Fully qualfied dim name: " << (*di)->fully_qualified_name() << endl);
 #endif
             int64_t dimsize = (*di)->size();
-            if ((*di)->constrained()) {
+            if ((*di)->constrained()) 
                 dimsize = ((*di)->c_stop() - (*di)->c_start()) / (*di)->c_stride() + 1;
-
-            }
             GFQN_dimname_to_dimsize[(*di)->fully_qualified_name()] = dimsize;
         }
     }
 
     // The size of DAP4 dimension needs to be updated if the dimension size of a variable with the same dimension is 
     // different. So we also need to remember the Variable FQN dimension name and size. 
-    // Check section 8.6.2 of DAP4 specification(https://docs.opendap.org/index.php/DAP4:_Specification_Volume_1)
     Constructor::Vars_iter vi = grp->var_begin();
     Constructor::Vars_iter ve = grp->var_end();
     for (; vi != ve; vi++) {
@@ -1313,11 +1280,12 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp) {
                     if ((*dim_i).name != "") {
                         D4Dimension *d4dim = t_a->dimension_D4dim(dim_i);
                         if (d4dim) {
+#if !NDEBUG
                             BESDEBUG(MODULE, prolog << "Check dim- dim name is: " << d4dim->name() << endl);
                             BESDEBUG(MODULE, prolog << "Check dim- dim size is: " << d4dim->size() << endl);
                             BESDEBUG(MODULE, prolog << "Check dim- fully_qualfied_dim name is: "
                                     << d4dim->fully_qualified_name() << endl);
-
+#endif
                             int64_t dimsize = t_a->dimension_size_ll(dim_i, true);
 #if !NDEBUG
                             BESDEBUG(MODULE, prolog << "Check dim- final dim size is: " << dimsize << endl);
@@ -1329,13 +1297,11 @@ void FONcTransform::check_and_obtain_dimensions_internal(D4Group *grp) {
                                 string err = "fileout_netcdf-4: dimension found with the same name, but different size";
                                 throw BESInternalError(err, __FILE__, __LINE__);
                             }
-                            //VFQN_dimname_to_dimsize[d4dim->fully_qualified_name()] = dimsize;
                         }
                         else
                             throw BESInternalError("Has dimension name but D4 dimension is NULL", __FILE__, __LINE__);
                     }
                     // No need to handle the case when the dimension name doesn't exist. This will be handled in FONcArray.cc.
-                    // else { } 
                 }
             }
         }
@@ -1406,12 +1372,13 @@ void FONcTransform::set_constraint_var_dio_flag(D4Group *d4_grp, Array* t_a, con
             int64_t start = t_a->dimension_start_ll (di, true);
             int64_t stop = t_a->dimension_stop_ll (di, true);
             if ((start+chunk_dim_sizes[dim_rank_count])>(stop+1)) {
+#if !NDEBUG
                 BESDEBUG(MODULE, prolog << "start of this dimension: " <<start << endl);
                 BESDEBUG(MODULE, prolog << "stop of this dimension: " <<stop << endl);
                 BESDEBUG(MODULE, prolog << "chunk_dim_size of this dimension: " <<chunk_dim_sizes[dim_rank_count] << endl);
                 BESDEBUG(MODULE, prolog << "The subset size of this dimension is smaller than the corresponding chunk size. " << endl);
                 BESDEBUG(MODULE, prolog << "Cannot do direct IO subset: the variable name is: " <<t_a->var()->name() << endl);
-                
+#endif                
                 no_dio = no_dio_dimension(d4_grp, t_a, unlimited_dimnames,di);
                 if (no_dio)
                     break;
@@ -1429,9 +1396,11 @@ void FONcTransform::set_constraint_var_dio_flag(D4Group *d4_grp, Array* t_a, con
         for (; di != de; di++) {
             int64_t start = t_a->dimension_start_ll (di, true);
             if ((start%chunk_dim_sizes[dim_rank_count])!=0) {
+#if !NDEBUG
                 BESDEBUG(MODULE, prolog << "start of this dimension: " <<start<<" is not the starting point of a chunk." << endl);
                 BESDEBUG(MODULE, prolog << "chunk_dim_size of this dimension: " <<chunk_dim_sizes[dim_rank_count] << endl);
                 BESDEBUG(MODULE, prolog << "Cannot do direct IO subset: the variable name is: " <<t_a->var()->name() << endl);
+#endif
                 no_dio = true;
                 break;
             }
@@ -1731,27 +1700,6 @@ bool FONcTransform::no_dio_ancestor_dimension(D4Group *d4_grp, Array *d_a, Array
 
 }
 
-#if 0
-bool FONcTransform::check_var_unlimited_dimension(libdap::Array *t_a, const vector<string> &unlimited_dimnames) {
-
-    bool ret_value = false;
-    for (const auto &und:unlimited_dimnames) {
-        Array::Dim_iter dim_i = t_a->dim_begin();
-        Array::Dim_iter dim_e = t_a->dim_end();
-        for (; dim_i != dim_e; dim_i++) {
-            if ((*dim_i).name == und) {
-                ret_value = true;
-                break;
-            }
-        }
-        if (ret_value)
-            break;
-    }
-    return ret_value;
- 
-}
-#endif
-
 void FONcTransform::gen_nc4_enum_type(libdap::D4Group *d4_grp,int nc4_grp_id) {
 
     string grp_fqn = d4_grp->FQN();
@@ -1834,6 +1782,15 @@ void FONcTransform::gen_nc4_enum_type(libdap::D4Group *d4_grp,int nc4_grp_id) {
 
 }
 
+void FONcTransform::close_nc_file() {
+
+    if(_ncid >=0) {
+        // ignore the error at this point since close_nc_file is only valid when an exception occurs
+        nc_close(_ncid);
+        _ncid = -1;
+    }
+
+}
 /** @brief dumps information about this transformation object for debugging
  * purposes
  *
@@ -1858,5 +1815,4 @@ void FONcTransform::dump(ostream &strm) const {
     BESIndent::UnIndent();
     BESIndent::UnIndent();
 }
-
 
