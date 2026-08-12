@@ -2342,6 +2342,8 @@ bool DmrppArray::read() {
         }
     }
 
+    if (get_chunk_count() ==1 || get_using_linked_block() || is_multi_linked_blocks_chunk())
+        release_chunk_read_buffer();
     return true;
 }
 
