@@ -35,6 +35,7 @@
 #include <pugixml.hpp>
 
 #include <libdap/Type.h>
+#include "Chunk.h"
 
 namespace libdap {
 class DMR;
@@ -168,6 +169,11 @@ public:
     DmrppCommon(const DmrppCommon &) = default;
 
     virtual ~DmrppCommon()= default;
+
+    virtual void release_chunk_read_buffer() const{
+        for (auto &chunk: d_chunks)
+            chunk->release_chunk_buffer();
+    }
 
     /// @brief Return the names of all the filters in the order they were applied
     virtual std::string get_filters() const {

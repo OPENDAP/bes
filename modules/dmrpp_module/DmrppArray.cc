@@ -2220,10 +2220,13 @@ bool DmrppArray::read() {
     if ((var_type == dods_str_c || var_type == dods_url_c) && is_flsa()) 
         return read_string_array();
 
+    // Sonar cloud marks the following log vulnerable to injection attacks. So comment out for the time being.
+#if 0
     if (BESDebug::IsSet(MODULE)) {
         string msg = array_to_str(*this, "Reading Data From DmrppArray");
         BESDEBUG(MODULE, prolog << msg << endl);
     }
+#endif
     // Single chunk and 'contiguous' are the same for this code.
     if (get_chunk_count() == 1) {
         BESDEBUG(MODULE, prolog << "Reading data from a single contiguous chunk." << endl);
@@ -2342,6 +2345,8 @@ bool DmrppArray::read() {
         }
     }
 
+    if (get_chunk_count() ==1 || get_using_linked_block() || is_multi_linked_blocks_chunk())
+        release_chunk_read_buffer();
     return true;
 }
 
