@@ -170,7 +170,7 @@ public:
 
     virtual ~DmrppCommon()= default;
 
-    virtual void release_chunk_read_buffer() {
+    virtual void release_chunk_read_buffer() const{
         for (auto &chunk: d_chunks)
             chunk->release_chunk_buffer();
     }
