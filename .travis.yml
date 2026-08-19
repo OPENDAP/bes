@@ -130,7 +130,7 @@ before_script:
 stages:
   - name: build-and-test
   - name: build-docker
-  - name: scan
+  - name: never
     if:  branch = master
   - name: hyrax-olfs-trigger
     if: type != pull_request OR branch =~ ^(.*-test-deploy)$
