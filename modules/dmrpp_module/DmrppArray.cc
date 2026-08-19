@@ -666,6 +666,8 @@ static ThreadCount &transfer_thread_count() {
 template <typename SendOffFn>
 void read_super_chunks_concurrent_internal(queue<shared_ptr<SuperChunk>> &super_chunks,
                                        SendOffFn sof) {
+struct timeval tv,tv2;
+gettimeofday(&tv,NULL);
 
     auto &thread_store = transfer_thread_count();
 
@@ -692,6 +694,13 @@ void read_super_chunks_concurrent_internal(queue<shared_ptr<SuperChunk>> &super_
         thread_store.release_all_threads(futures);
         throw;
     }
+gettimeofday(&tv2,NULL);
+        long seconds = tv2.tv_sec - tv.tv_sec;
+    long useconds = tv2.tv_usec -tv.tv_usec;
+    double elapsed = seconds *1000.0 + useconds/1000.0;
+    stringstream msg;
+msg <<"Parallel data transfer Execution time: " << elapsed <<" ms"<<endl;
+    INFO_LOG(msg.str());
 }
 
 void read_super_chunks_concurrent(queue<shared_ptr<SuperChunk>> &super_chunks) {
