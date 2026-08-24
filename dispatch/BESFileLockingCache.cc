@@ -781,7 +781,7 @@ unsigned long long BESFileLockingCache::update_cache_info(const string &target) 
     if (lseek(fd, 0, SEEK_SET) == -1)
         throw BESInternalError(prolog + "Could not rewind to front of cache info file.", __FILE__, __LINE__);
 
-    if (write(fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
+    if (write(fd, &current_size, sizeof(current_size)) != sizeof(current_size))
         throw BESInternalError(prolog + "Could not write size info from the cache info file!", __FILE__, __LINE__);
 
 #if 0
