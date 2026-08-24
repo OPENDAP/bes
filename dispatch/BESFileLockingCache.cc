@@ -765,6 +765,9 @@ unsigned long long BESFileLockingCache::update_cache_info(const string &target) 
     if (read(fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
         throw BESInternalError(prolog + "Could not get read size info from the cache info file!", __FILE__, __LINE__);
 
+    if (current_size > d_max_cache_size_in_bytes * 10) //check to make sure the current size isn't larger than the max bound
+        throw BESInternalError(prolog + "Cached file size is larger than max cache size", __FILE__, __LINE__);
+
     struct stat buf;
     int statret = stat(target.c_str(), &buf);
     if (statret == 0)
