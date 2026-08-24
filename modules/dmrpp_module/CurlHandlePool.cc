@@ -39,7 +39,7 @@
 #include "Chunk.h"
 #include "CredentialsManager.h"
 
-#define CURL_VERBOSE 1  // Logs curl info to the bes.log
+#define CURL_VERBOSE 0  // Logs curl info to the bes.log
 
 // set to 1 to abuse the credentials mgr to get/use and EDL Token for certain URLs.
 // This is very expensive since it is run in code that is used when _each chunk_ is
