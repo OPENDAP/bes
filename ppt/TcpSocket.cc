@@ -136,8 +136,10 @@ void TcpSocket::connect()
     }
 
     sin.sin_port = htons(_portVal);
-    pProtoEnt = getprotobyname("tcp");
-    if (!pProtoEnt) {
+    struct protoent protoEntBuff;
+    char protoBuf[1024];
+    int protoRet = getprotobyname_r("tcp", &protoEntBuff, protoBuf, sizeof(protoBuf), &pProtoEnt);
+    if (protoRet != 0 || !pProtoEnt) {
         string err("Error retreiving tcp protocol information");
         throw BESInternalError(err, __FILE__, __LINE__);
     }
@@ -281,8 +283,11 @@ void TcpSocket::listen()
     }
 
     BESDEBUG(MODULE, prolog << "Checking /etc/services for port " << _portVal << endl);
-    struct servent *sir = getservbyport(htons(_portVal), 0);
-    if (sir) {
+    struct servent servEntBuff;
+    char servBuf[1024];
+    struct servent *sir;
+    int servRet = getservbyport_r(htons(_portVal), 0, &servEntBuff, servBuf, sizeof(servBuf), &sir);
+    if (servRet == 0 && sir) {
         std::ostringstream error_oss;
         error_oss << endl << "CONFIGURATION ERROR: The requested port (" << _portVal
             << ") appears in the system services list. ";
