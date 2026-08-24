@@ -39,7 +39,7 @@
 #include "Chunk.h"
 #include "CredentialsManager.h"
 
-#define CURL_VERBOSE 0  // Logs curl info to the bes.log
+#define CURL_VERBOSE 1  // Logs curl info to the bes.log
 
 // set to 1 to abuse the credentials mgr to get/use and EDL Token for certain URLs.
 // This is very expensive since it is run in code that is used when _each chunk_ is
@@ -274,7 +274,7 @@ void CurlHandlePool::initialize() {
     // See https://curl.se/libcurl/c/curl_share_setopt.html
     curl_share_setopt(d_share, CURLSHOPT_SHARE, CURL_LOCK_DATA_COOKIE);
     curl_share_setopt(d_share, CURLSHOPT_SHARE, CURL_LOCK_DATA_DNS);
-    curl_share_setopt(d_share, CURLSHOPT_SHARE, CURL_LOCK_DATA_CONNECT);
+    //curl_share_setopt(d_share, CURLSHOPT_SHARE, CURL_LOCK_DATA_CONNECT);
     curl_share_setopt(d_share, CURLSHOPT_SHARE, CURL_LOCK_DATA_SSL_SESSION);
 
     curl_share_setopt(d_share, CURLSHOPT_LOCKFUNC, lock_cb);
