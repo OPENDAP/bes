@@ -321,8 +321,7 @@ CurlHandlePool::get_easy_handle(Chunk *chunk) {
 
         handle->d_chunk = chunk;
 
-        CURLcode res = curl_easy_setopt(handle->d_handle, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-        res = curl_easy_setopt(handle->d_handle, CURLOPT_URL, chunk->get_data_url()->str().c_str());
+        CURLcode res = curl_easy_setopt(handle->d_handle, CURLOPT_URL, chunk->get_data_url()->str().c_str());
         curl::eval_curl_easy_setopt_result(res, prolog, "CURLOPT_URL", handle->d_errbuf.data(), __FILE__, __LINE__);
 
         res = curl_easy_setopt(handle->d_handle, CURLOPT_SHARE, d_share);
