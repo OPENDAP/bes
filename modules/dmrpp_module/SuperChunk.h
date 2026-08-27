@@ -59,13 +59,16 @@ class SuperChunk {
 
     bool non_contiguous_chunk{false};
 
+public:
+
     bool is_contiguous(std::shared_ptr<Chunk> candidate_chunk);
     void map_chunks_to_buffer();
     void map_non_contiguous_chunks_to_buffer();
     void read_aggregate_bytes();
     void read_fill_value_chunk();
+    bool get_uses_fill_value() {return d_uses_fill_value; }
 
-public:
+
     // Make the sc_id an uint64 and not a string - the code uses sstream to make the value. jhrg 5/7/22
     explicit SuperChunk(const std::string &sc_id, DmrppArray *parent = nullptr) : d_id(sc_id), d_parent_array(parent) {}
 
@@ -80,6 +83,11 @@ public:
     virtual unsigned long long get_offset() const { return d_offset; }
     virtual size_t get_chunk_count() const { return d_chunks.size(); }
     std::vector<std::shared_ptr<Chunk>> get_chunks() const { return d_chunks; }
+    char * get_read_buffer() { return d_read_buffer;}
+    bool get_d_is_read() { return d_is_read;}
+    void set_read_buffer(unsigned long long size) {
+                                                   if(!d_read_buffer) 
+                                                        d_read_buffer = new char[size];}
 
     virtual void read() { process_child_chunks(); }
 
@@ -92,6 +100,10 @@ public:
 
     virtual void process_child_chunks();
     virtual void process_child_chunks_unconstrained();
+
+    virtual void read_curl_multi();
+    virtual void read_unconstrained_curl_multi();
+    virtual void read_dio_curl_multi();
 
     virtual bool empty() const { return d_chunks.empty(); }
 

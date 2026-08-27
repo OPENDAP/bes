@@ -31,7 +31,10 @@
 #include <sstream>
 #include <string>
 #include <thread>
+#include <unordered_map>
 #include <vector>
+
+#include <curl/curl.h>
 
 #include <cassert>
 #include <cmath>
@@ -663,6 +666,147 @@ static ThreadCount &transfer_thread_count() {
     return tc;
 }
 
+struct CurlMultiTransfer {
+    shared_ptr<SuperChunk> super_chunk;
+    unique_ptr<Chunk> super_chunk_internal;      
+    unique_ptr<dmrpp_easy_handle, void(*)(dmrpp_easy_handle*)> easy_handle{nullptr, [](dmrpp_easy_handle *h){ CurlHandlePool::release_handle(h); }};
+    unsigned int re_try = 0;               // TODO(retry): bump on retry, cap at some max
+};
+
+
+static unique_ptr<CurlMultiTransfer> prepare_super_chunk_transfer(const shared_ptr<SuperChunk> &sc, bool dio) {
+
+    if (sc->get_d_is_read())
+        return nullptr;
+
+    auto tf = make_unique<CurlMultiTransfer>();
+    tf->super_chunk = sc;
+
+    sc->set_read_buffer(sc->get_size());
+
+    if (sc->get_non_contiguous_chunk_flag())  
+         sc->map_non_contiguous_chunks_to_buffer();
+    else 
+         sc->map_chunks_to_buffer();
+    if (!dio && sc->get_uses_fill_value()) 
+        sc->read_fill_value_chunk();
+    else {
+        tf->super_chunk_internal = make_unique<Chunk>(sc->get_data_url(), "NOT_USED", sc->get_size(), sc->get_offset());
+        tf->super_chunk_internal->set_read_buffer(sc->get_read_buffer(), sc->get_size(),0, false);
+        auto *curl_handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(tf->super_chunk_internal.get());
+        if (!curl_handle)
+            throw BESInternalError(prolog + "No more libcurl handles.", __FILE__, __LINE__);
+        tf->easy_handle.reset(curl_handle);
+    } 
+         
+    return tf;
+}
+
+template <typename SendOffFn>
+static void finish_super_chunk_transfer(CurlMultiTransfer &transfer, SendOffFn send_off, CURLcode result) {
+
+    if (result != CURLE_OK) {
+        throw BESInternalError(prolog + "Data transfer error for SuperChunk " + transfer.super_chunk->id(),
+                                __FILE__, __LINE__);
+    }
+
+    auto &sc = transfer.super_chunk;
+    if (sc->get_size() != transfer.super_chunk_internal->get_bytes_read()) {
+        ostringstream oss;
+        oss << prolog << "Wrong number of bytes read for SuperChunk " << sc->id()
+            << "; read: " << transfer.super_chunk_internal->get_bytes_read() << ", expected: " << sc->get_size();
+        throw BESInternalError(oss.str(), __FILE__, __LINE__);
+    }
+    send_off(sc);
+
+}
+
+// Pass the parameter dio because for dio read the filled chunks won't be called.
+template <typename SendOffFn>
+void read_super_chunks_concurrent_curl_multi(queue<shared_ptr<SuperChunk>> &super_chunks,
+                                       SendOffFn sof, bool dio) {
+
+    const unsigned long max_threads = DmrppRequestHandler::d_max_transfer_threads; 
+    CURLM *curl_multi = curl_multi_init();
+    if (!curl_multi)
+        throw BESInternalError("curl_multi_init() failed.", __FILE__, __LINE__);
+
+    unordered_map<CURL *, unique_ptr<CurlMultiTransfer>> multi_transfer_maps;
+    multi_transfer_maps.reserve(max_threads);
+
+    auto cleanup = [&]() {
+        for (auto &handle : multi_transfer_maps)
+            curl_multi_remove_handle(curl_multi, handle.first);
+        multi_transfer_maps.clear();
+        curl_multi_cleanup(curl_multi);
+    };
+
+    try {
+      int still_running = 0;
+      while (!super_chunks.empty() || !multi_transfer_maps.empty()) {
+
+          while (multi_transfer_maps.size() < max_threads && !super_chunks.empty()) {
+
+              auto sc = super_chunks.front();
+              super_chunks.pop();
+
+              auto transfer = prepare_super_chunk_transfer(sc, dio);
+              CURL *curl_handle = transfer->easy_handle->get_curl_handle(); 
+
+              if (!curl_handle) {
+                  CURLMcode mc = curl_multi_add_handle(curl_multi, curl_handle);
+                  if (mc != CURLM_OK)
+                      throw BESInternalError(prolog + "curl_multi_add_handle() failed: " +
+                                              curl_multi_strerror(mc), __FILE__, __LINE__);
+    
+                  multi_transfer_maps.emplace(curl_handle, std::move(transfer));
+              }
+          }
+
+          CURLMcode mc = curl_multi_perform(curl_multi, &still_running);
+          if (mc != CURLM_OK)
+              throw BESInternalError(prolog + "curl_multi_perform() failed: " +
+                                      curl_multi_strerror(mc), __FILE__, __LINE__);
+
+          // Sleep until there's something to do
+          if (still_running > 0) {
+              int numfds = 0;
+              mc = curl_multi_wait(curl_multi, nullptr, 0, 1000 /*ms*/, &numfds);
+              if (mc != CURLM_OK)
+                  throw BESInternalError(prolog + "curl_multi_poll() failed: " +
+                                          curl_multi_strerror(mc), __FILE__, __LINE__);
+          }
+
+          // Wrap up
+          int msgs_left = 0;
+          CURLMsg *msg = nullptr;
+          while ((msg = curl_multi_info_read(curl_multi, &msgs_left)) != nullptr) {
+              if (msg->msg != CURLMSG_DONE)
+                  continue;
+
+              CURL *easy = msg->easy_handle;
+              auto it = multi_transfer_maps.find(easy);
+              if (it == multi_transfer_maps.end())
+                  continue; // shouldn't happen
+
+              CURLcode result = msg->data.result;
+              curl_multi_remove_handle(curl_multi, easy);
+
+              finish_super_chunk_transfer(*it->second, sof, result);
+
+              multi_transfer_maps.erase(it); 
+          }
+      }
+  } catch (...) {
+      cleanup();
+      throw;
+  }
+
+  cleanup();
+    
+}
+
+
 template <typename SendOffFn>
 void read_super_chunks_concurrent_internal(queue<shared_ptr<SuperChunk>> &super_chunks,
                                        SendOffFn sof) {
@@ -704,6 +848,24 @@ msg <<"Parallel data transfer Execution time: " << elapsed <<" ms"<<endl;
 }
 
 void read_super_chunks_concurrent(queue<shared_ptr<SuperChunk>> &super_chunks) {
+    read_super_chunks_concurrent_curl_multi(super_chunks,[](const shared_ptr<SuperChunk> &sc) { sc->read_curl_multi(); },
+                                           false);
+}
+
+void read_super_chunks_unconstrained_concurrent(queue<shared_ptr<SuperChunk>> &super_chunks) {
+    read_super_chunks_concurrent_curl_multi(super_chunks,[](const shared_ptr<SuperChunk> &sc) { sc->read_unconstrained_curl_multi(); },
+                                           false);
+}
+
+
+void read_super_chunks_dio_concurrent(queue<shared_ptr<SuperChunk>> &super_chunks) {
+    read_super_chunks_concurrent_curl_multi(super_chunks,[](const shared_ptr<SuperChunk> &sc) { sc->read_dio_curl_multi(); },
+                                           true);
+}
+
+
+#if 0
+void read_super_chunks_concurrent(queue<shared_ptr<SuperChunk>> &super_chunks) {
     read_super_chunks_concurrent_internal(super_chunks,[](const shared_ptr<SuperChunk> &sc) { sc->read(); });
 }
 
@@ -714,7 +876,7 @@ void read_super_chunks_unconstrained_concurrent(queue<shared_ptr<SuperChunk>> &s
 void read_super_chunks_dio_concurrent(queue<shared_ptr<SuperChunk>> &super_chunks) {
     read_super_chunks_concurrent_internal(super_chunks, [](const shared_ptr<SuperChunk> &sc) { sc->read_dio(); });
 }
-
+#endif
 
 /**
  * @brief Insert a chunk into an unconstrained Array
