@@ -726,6 +726,9 @@ template <typename SendOffFn>
 void read_super_chunks_concurrent_curl_multi(queue<shared_ptr<SuperChunk>> &super_chunks,
                                        SendOffFn sof, bool dio) {
 
+struct timeval tv,tv2;
+gettimeofday(&tv,NULL);
+
     const unsigned long max_threads = DmrppRequestHandler::d_max_transfer_threads; 
     CURLM *curl_multi = curl_multi_init();
     if (!curl_multi)
@@ -812,8 +815,16 @@ void read_super_chunks_concurrent_curl_multi(queue<shared_ptr<SuperChunk>> &supe
       throw;
   }
 
+
   cleanup();
     
+gettimeofday(&tv2,NULL);
+        long seconds = tv2.tv_sec - tv.tv_sec;
+    long useconds = tv2.tv_usec -tv.tv_usec;
+    double elapsed = seconds *1000.0 + useconds/1000.0;
+    stringstream msg;
+msg <<"Parallel data transfer Execution time: " << elapsed <<" ms"<<endl;
+    INFO_LOG(msg.str());
 }
 
 
@@ -1067,6 +1078,10 @@ void DmrppArray::read_chunks_dio_unconstrained() {
     const vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
 
     if (!DmrppRequestHandler::d_use_transfer_threads || super_chunks.size() == 1) {
+struct timeval tv,tv2;
+gettimeofday(&tv,NULL);
+
+
 #if DMRPP_ENABLE_THREAD_TIMERS
     BES_STOPWATCH_START(dmrpp_3, prolog + "Serial SuperChunk Processing.");
 #endif
@@ -1078,6 +1093,13 @@ void DmrppArray::read_chunks_dio_unconstrained() {
         // Call direct IO routine
         super_chunk->read_dio();
     }
+gettimeofday(&tv2,NULL);
+        long seconds = tv2.tv_sec - tv.tv_sec;
+    long useconds = tv2.tv_usec -tv.tv_usec;
+    double elapsed = seconds *1000.0 + useconds/1000.0;
+    stringstream msg;
+msg <<" Sequential data transfer Execution time: " << elapsed <<" ms"<<endl;
+    INFO_LOG(msg.str());
     }
     else 
         read_super_chunks_dio_concurrent(super_chunks);
