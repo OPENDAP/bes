@@ -688,16 +688,16 @@ static unique_ptr<CurlMultiTransfer> prepare_super_chunk_transfer(const shared_p
          sc->map_non_contiguous_chunks_to_buffer();
     else 
          sc->map_chunks_to_buffer();
-    if (!dio && sc->get_uses_fill_value()) 
-        sc->read_fill_value_chunk();
-    else {
+    //if (!dio && sc->get_uses_fill_value()) 
+    //    sc->read_fill_value_chunk();
+    //else {
         tf->super_chunk_internal = make_unique<Chunk>(sc->get_data_url(), "NOT_USED", sc->get_size(), sc->get_offset());
         tf->super_chunk_internal->set_read_buffer(sc->get_read_buffer(), sc->get_size(),0, false);
         auto *curl_handle = DmrppRequestHandler::curl_handle_pool->get_easy_handle(tf->super_chunk_internal.get());
         if (!curl_handle)
             throw BESInternalError(prolog + "No more libcurl handles.", __FILE__, __LINE__);
         tf->easy_handle.reset(curl_handle);
-    } 
+    //} 
          
     return tf;
 }
@@ -740,6 +740,7 @@ void read_super_chunks_concurrent_curl_multi(queue<shared_ptr<SuperChunk>> &supe
         multi_transfer_maps.clear();
         curl_multi_cleanup(curl_multi);
     };
+//cerr<<"super chunk number"<<super_chunks.size()<<endl;
 
     try {
       int still_running = 0;
@@ -750,17 +751,26 @@ void read_super_chunks_concurrent_curl_multi(queue<shared_ptr<SuperChunk>> &supe
               auto sc = super_chunks.front();
               super_chunks.pop();
 
+
+              if(!dio && sc->get_uses_fill_value()) {
+//cerr<<"coming to filled chunks"<<endl;
+                    sc->read_fill_value_chunk();
+                    sof(sc);
+                    continue;
+              }
               auto transfer = prepare_super_chunk_transfer(sc, dio);
+
               CURL *curl_handle = transfer->easy_handle->get_curl_handle(); 
 
-              if (!curl_handle) {
+              //if (curl_handle) {
+//cerr<<"coming to curl_handle check" <<endl;
                   CURLMcode mc = curl_multi_add_handle(curl_multi, curl_handle);
                   if (mc != CURLM_OK)
                       throw BESInternalError(prolog + "curl_multi_add_handle() failed: " +
                                               curl_multi_strerror(mc), __FILE__, __LINE__);
     
                   multi_transfer_maps.emplace(curl_handle, std::move(transfer));
-              }
+              //}
           }
 
           CURLMcode mc = curl_multi_perform(curl_multi, &still_running);
