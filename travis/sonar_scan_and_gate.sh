@@ -2,10 +2,12 @@
 #
 # sonar_scan_and_gate.sh <sonar-project-key> <sonar-properties-file>
 #
-# Run build-wrapper + sonar-scanner for one of the BES sonar projects and
-# then poll SonarCloud's quality gate badge for the result. Building this
-# as a single shared script avoids keeping three near-identical copies of
-# this logic in .travis.yml (one per sonar-bes-*.properties file).
+# Run build-wrapper + sonar-scanner for one of the BES sonar projects.
+# sonar-scanner itself fails the build on a quality gate failure (see
+# sonar.qualitygate.wait=true in the sonar-bes-*.properties files).
+# Building this as a single shared script avoids keeping three
+# near-identical copies of this logic in .travis.yml (one per
+# sonar-bes-*.properties file).
 #
 # Usage (from .travis.yml), e.g. for the "bes" scan:
 #   ./travis/sonar_scan_and_gate.sh opendap-bes sonar-bes-framework.properties
@@ -59,19 +61,14 @@ sonar-scanner -Dproject.settings="$sonar_properties_file" -Dsonar.token="$SONAR_
 
 ls -l "$TRAVIS_BUILD_DIR" >&2
 
-# Read back the quality gate for the same context we just analyzed (PR or
-# branch), not the project's default badge, which always reflects main.
-badge_url="https://sonarcloud.io/api/project_badges/quality_gate?project=${sonar_project_key}"
-if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
-    badge_url="${badge_url}&pullRequest=${TRAVIS_PULL_REQUEST}"
-else
-    badge_url="${badge_url}&branch=${TRAVIS_BRANCH}"
-fi
-
-loggy "Checking quality gate: $badge_url"
-curl -s "$badge_url"
-curl -s "$badge_url" | grep "QUALITY GATE PASS"
-gate_status=$?
+# In the .travis.yml file, we used curl to fetch the project_badges/quality_gate
+# SVG badge and grep it for "QUALITY GATE PASS" to fail the build. That's a
+# display endpoint for README badges, not a documented API for CI gating: the
+# pass/fail text is rendered into SVG markup with no stable contract, and badge
+# responses can be served from a cache, so a check run right after analysis
+# isn't guaranteed to see the just-computed result. It's also redundant: every
+# sonar-bes-*.properties file sets sonar.qualitygate.wait=true, so sonar-scanner
+# (above) already blocks on the quality gate and exits non-zero when it fails,
+# which - combined with `set -e` - already fails this script. jhrg 9/1/26
 
 loggy "END $HR"
-exit $gate_status
