@@ -86,7 +86,6 @@ void TcpSocket::connect()
 
     if (_host.empty()) _host = "localhost";
 
-    struct protoent *pProtoEnt;
     struct sockaddr_in sin{};
     struct hostent *ph;
     if (isdigit(_host[0])) {
@@ -154,8 +153,7 @@ void TcpSocket::connect()
     }
 
     int descript = -1;
-    struct addrinfo *rp = nullptr;
-    for (rp = res_list; rp != nullptr; rp = rp->ai_next) {
+    for (struct addrinfo *rp = res_list; rp != nullptr; rp = rp->ai_next) {
         descript = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
         if (descript != -1) break;   // got a usable socket; rp now holds the matching address
     }
@@ -305,13 +303,15 @@ void TcpSocket::listen()
 
     struct sockaddr_in probe_addr{};
     probe_addr.sin_family = AF_INET;
-    probe_addr.sin_port = htons(_portVal);
+    probe_addr.sin_port = htons((uint16_t)_portVal);
     probe_addr.sin_addr.s_addr = INADDR_ANY;
 
-    char service_name[NI_MAXSERV];
+
+    string service_name;
+    service_name.resize(NI_MAXSERV);
     int gni_err = getnameinfo((struct sockaddr*) &probe_addr, sizeof(probe_addr),
                               nullptr, 0,                       // don't need a hostname, just the service
-                              service_name, sizeof(service_name),
+                              &service_name[0], sizeof(service_name),
                               0);                                // no NI_NUMERICSERV: resolve a name if one is registered
 
     if (gni_err != 0) {
@@ -322,7 +322,7 @@ void TcpSocket::listen()
     // Without NI_NUMERICSERV, getnameinfo() falls back to returning the port number
     // itself (as a string) when no service name is registered. Compare against that
     // to tell "found a real service" apart from "nothing registered".
-    if (service_name != std::to_string(_portVal)) {
+    if (&service_name[0] != std::to_string(_portVal)) {
         std::ostringstream error_oss;
         error_oss << endl << "CONFIGURATION ERROR: The requested port (" << _portVal
                   << ") appears in the system services list. ";
