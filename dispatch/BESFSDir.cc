@@ -93,7 +93,8 @@ void BESFSDir::loadDir() {
     try {
         // open a directory stream
         // make sure the directory is valid and readable
-        if ((dip = opendir(_dirName.c_str())) == nullptr) {
+        dip = opendir(_dirName.c_str());
+        if (dip == nullptr) {
             string err_str = "ERROR: failed to open directory '" + _dirName + "'";
             throw BESError(err_str, BES_NOT_FOUND_ERROR, __FILE__, __LINE__);
         } else {
