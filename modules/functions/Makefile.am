@@ -45,8 +45,8 @@ endif
 # add this back into the code. See also DapFunctions.cc. jhrg 6/11/22
 # It's back in. jhrg 12/2/25
 if BUILD_GDAL
-AM_CPPFLAGS +=  $(GDAL_CFLAGS)
-LIBADD +=  $(GDAL_LDFLAGS)
+AM_CPPFLAGS += $(GDAL_CFLAGS)
+LIBADD += $(GDAL_LDFLAGS)
 endif
 
 lib_besdir=$(libdir)/bes
