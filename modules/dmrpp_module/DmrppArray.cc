@@ -66,6 +66,7 @@
 #include "float_byteswap.h"
 #include "vlsa_util.h"
 #include "ThreadCount.h"
+#include "HttpNames.h" 
 
 // Used with BESDEBUG
 #define dmrpp_3 "dmrpp:3"
@@ -702,13 +703,49 @@ static unique_ptr<CurlMultiTransfer> prepare_super_chunk_transfer(const shared_p
     return tf;
 }
 
-template <typename SendOffFn>
-static void finish_super_chunk_transfer(CurlMultiTransfer &transfer, SendOffFn send_off, CURLcode result) {
+// There may be 0.1% S3 failure rate, so we need to retry to see if we can obtain the data for a SuperChunk.
+enum class ParallelTransferStatus { PT_SUCCESS, PT_RETRYABLE, PT_FAILURE };
 
-    if (result != CURLE_OK) {
-        throw BESInternalError(prolog + "Data transfer error for SuperChunk " + transfer.super_chunk->id(),
-                                __FILE__, __LINE__);
+static constexpr unsigned int MAX_ATTEMPTS = 3;
+static constexpr std::chrono::microseconds INITIAL_RETRY_BACKOFF{250000}; // 0.25s
+
+// Follow eval_curl_easy_perform_code() + eval_http_get_response() from CurlUtils.cc to check the retry results.
+static ParallelTransferStatus PT_result(CURL *easy, const shared_ptr<http::url> &data_url, CURLcode curl_code) {
+    // Mirrors dmrpp_easy_handle::read_data()'s protocol branch: only
+    // HTTP/HTTPS gets retried; everything else is single-attempt, matching
+    // the plain curl_easy_perform() call in the `else` branch of read_data().
+    if (data_url->protocol() != HTTPS_PROTOCOL && data_url->protocol() != HTTP_PROTOCOL)
+        return curl_code == CURLE_OK ? ParallelTransferStatus::PT_SUCCESS : ParallelTransferStatus::PT_FAILURE;
+
+    // --- mirrors eval_curl_easy_perform_code(): every non-OK curl-level
+    //     code is treated as retryable there (just logged differently per
+    //     case), so we do the same here. ---
+    if (curl_code != CURLE_OK)
+        return ParallelTransferStatus::PT_RETRYABLE;
+
+    // --- mirrors eval_http_get_response() / process_http_code_helper() ---
+    long http_code = 0;
+    if (curl_easy_getinfo(easy, CURLINFO_RESPONSE_CODE, &http_code) != CURLE_OK)
+        return ParallelTransferStatus::PT_FAILURE; // couldn't even read the response code back
+
+    if (http_code == 200 || http_code == 206)
+        return ParallelTransferStatus::PT_SUCCESS;
+
+    switch (http_code) {
+        case 400: case 401: case 402: case 403: case 404: case 408:
+            return ParallelTransferStatus::PT_FAILURE;
+        case 422: case 500: case 502: case 503: case 504:
+            // May need to check if the url is listed as retryable url.
+            return ParallelTransferStatus::PT_RETRYABLE;
+        default:
+            return ParallelTransferStatus::PT_FAILURE;
     }
+}
+
+
+template <typename SendOffFn>
+static void finish_super_chunk_transfer(CurlMultiTransfer &transfer, SendOffFn send_off) {
+
 
     auto &sc = transfer.super_chunk;
     if (sc->get_size() != transfer.super_chunk_internal->get_bytes_read()) {
@@ -720,6 +757,12 @@ static void finish_super_chunk_transfer(CurlMultiTransfer &transfer, SendOffFn s
     send_off(sc);
 
 }
+
+struct RetryCandidate {
+    unique_ptr<CurlMultiTransfer> tf;
+    chrono::steady_clock::time_point not_before;
+};
+
 
 // Pass the parameter dio because for dio read the filled chunks won't be called.
 template <typename SendOffFn>
@@ -736,18 +779,42 @@ gettimeofday(&tv,NULL);
 
     unordered_map<CURL *, unique_ptr<CurlMultiTransfer>> multi_transfer_maps;
     multi_transfer_maps.reserve(max_threads);
+    vector<RetryCandidate> retries;
 
     auto cleanup = [&]() {
         for (auto &handle : multi_transfer_maps)
             curl_multi_remove_handle(curl_multi, handle.first);
         multi_transfer_maps.clear();
+        retries.clear();
         curl_multi_cleanup(curl_multi);
     };
-//cerr<<"super chunk number"<<super_chunks.size()<<endl;
 
     try {
       int still_running = 0;
-      while (!super_chunks.empty() || !multi_transfer_maps.empty()) {
+      while (!super_chunks.empty() || !multi_transfer_maps.empty() || !retries.empty()) {
+
+          // Mark the current time
+          auto time_now = chrono::steady_clock::now();
+
+          //Check retries 
+          for (auto it = retries.begin(); it != retries.end(); ) {
+              if (multi_transfer_maps.size() >= max_threads)
+                  break;
+              if (it->not_before <= time_now) {
+                  CURL *curl_handle = it->tf->easy_handle->get_curl_handle(); 
+                  CURLMcode mc = curl_multi_add_handle(curl_multi, curl_handle);
+                  if (mc != CURLM_OK)
+                      throw BESInternalError(prolog + "curl_multi_add_handle() failed: " +
+                                              curl_multi_strerror(mc), __FILE__, __LINE__);
+    
+                  multi_transfer_maps.emplace(curl_handle, std::move(it->tf));
+
+                  it = retries.erase(it);
+              } 
+              else {
+                  ++it;
+              }
+          }
 
           while (multi_transfer_maps.size() < max_threads && !super_chunks.empty()) {
 
@@ -782,13 +849,27 @@ gettimeofday(&tv,NULL);
                                       curl_multi_strerror(mc), __FILE__, __LINE__);
 
           // Sleep until there's something to do
-          if (still_running > 0) {
+          if (still_running > 0 || !retries.empty()) {
+
+            int wait_ms = 1000;
+            if (!retries.empty()) {
+                    auto earliest = min_element(retries.begin(), retries.end(),
+                        [](const RetryCandidate &a, const RetryCandidate &b) { return a.not_before < b.not_before; });
+                    auto until = chrono::duration_cast<chrono::milliseconds>(earliest->not_before - time_now).count();
+                    wait_ms = static_cast<int>(max<long long>(0, min<long long>(until, 1000)));
+                }
+
               int numfds = 0;
-              mc = curl_multi_wait(curl_multi, nullptr, 0, 1000 /*ms*/, &numfds);
+#if LIBCURL_VERSION_NUM >= 0x074200  
+              mc = curl_multi_poll(curl_multi, nullptr, 0, wait_ms, &numfds);
+#else
+              mc = curl_multi_wait(curl_multi, nullptr, 0, wait_ms, &numfds);
+#endif
               if (mc != CURLM_OK)
                   throw BESInternalError(prolog + "curl_multi_poll() failed: " +
                                           curl_multi_strerror(mc), __FILE__, __LINE__);
           }
+
 
           // Wrap up
           int msgs_left = 0;
@@ -800,14 +881,50 @@ gettimeofday(&tv,NULL);
               CURL *easy = msg->easy_handle;
               auto it = multi_transfer_maps.find(easy);
               if (it == multi_transfer_maps.end())
-                  continue; // shouldn't happen
+                  continue;
 
               CURLcode result = msg->data.result;
               curl_multi_remove_handle(curl_multi, easy);
 
-              finish_super_chunk_transfer(*it->second, sof, result);
-
+              //finish_super_chunk_transfer(*it->second, sof, result);
+              unique_ptr<CurlMultiTransfer> transfer = std::move(it->second);
               multi_transfer_maps.erase(it); 
+              ParallelTransferStatus pt_status = PT_result(easy, transfer->super_chunk->get_data_url(), result);
+
+                switch (pt_status) {
+                    case ParallelTransferStatus::PT_SUCCESS:
+                        // May itself throw (bytes-read mismatch) -- let it
+                        // propagate to the outer catch, same as before.
+                        finish_super_chunk_transfer(*transfer, sof);
+                        break;
+                    case ParallelTransferStatus::PT_RETRYABLE: {
+                        ++transfer->re_try;
+                        if (transfer->re_try >= MAX_ATTEMPTS) {
+                            throw BESInternalError(prolog + "Made " + std::to_string(transfer->re_try) +
+                                                    " failed attempts to retrieve SuperChunk " +
+                                                    transfer->super_chunk->id() + ". Giving up.",
+                                                    __FILE__, __LINE__);
+                        }
+                        // reset the bytes read before this handle is re-used.
+                        transfer->super_chunk_internal->set_bytes_read(0);
+
+                        // This reuses the same CURL* (Range header, callbacks,
+                        // etc. are already set correctly for the same request)
+                        // by re-adding it to the multi handle -- curl_multi
+                        // supports removing and re-adding a handle to retry a
+                        // transfer. If you'd rather not trust that the handle's
+                        // internal state is fully clean after a failed transfer,
+                        // the more conservative alternative is to discard it and
+                        // call DmrppRequestHandler::curl_handle_pool->get_easy_handle()
+                        // again for a fresh one, same as begin_super_chunk_fetch() does.
+                        auto backoff = INITIAL_RETRY_BACKOFF * (1u << (transfer->re_try - 1)); // 0.25s, 0.5s, ...
+                        retries.push_back({std::move(transfer), time_now + backoff});
+                        break;
+                    }
+                    case ParallelTransferStatus::PT_FAILURE:
+                        throw BESInternalError(prolog + "Data transfer error for SuperChunk " +
+                                                transfer->super_chunk->id(), __FILE__, __LINE__);
+              }
           }
       }
   } catch (...) {
