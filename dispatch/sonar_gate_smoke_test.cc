@@ -7,6 +7,9 @@
 // itself, trigger a Quality Gate failure. I changed the gate value to
 // try this smoke test. jhrg 9/2/26
 //
+// This is built using a target in the dispatch/Makefile.am. Unless we want
+// the smoke test to run, that should be commented out. jhrg 9/2/26
+//
 // CWE-120 / CWE-787: unbounded strcpy() into a fixed-size stack buffer.
 #include <cstring>
 

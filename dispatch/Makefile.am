@@ -169,5 +169,6 @@ cccc:
 		$(SRCS)$(HDRS)  
 
 # TEMPORARY - SonarCloud PR quality-gate smoke test. Remove before merging.
-noinst_PROGRAMS = sonar_gate_smoke_test
-sonar_gate_smoke_test_SOURCES = sonar_gate_smoke_test.cc
+# See the matching comment in dispatch/sonar_gate_smoke_test.cc. jhrg 9/2/26
+# noinst_PROGRAMS = sonar_gate_smoke_test
+# sonar_gate_smoke_test_SOURCES = sonar_gate_smoke_test.cc
