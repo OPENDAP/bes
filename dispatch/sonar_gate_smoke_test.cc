@@ -3,7 +3,9 @@
 // TEMPORARY. Deliberately vulnerable program used only to verify that the
 // SonarCloud quality gate fails a PR build correctly. Not part of the BES
 // product. Delete this file and the noinst_PROGRAMS stanza in
-// dispatch/Makefile.am before merging.
+// dispatch/Makefile.am before merging. Note that this does not, in and of
+// itself, trigger a Quality Gate failure. I changed the gate value to
+// try this smoke test. jhrg 9/2/26
 //
 // CWE-120 / CWE-787: unbounded strcpy() into a fixed-size stack buffer.
 #include <cstring>
