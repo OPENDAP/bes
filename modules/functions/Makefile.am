@@ -7,7 +7,10 @@
 AUTOMAKE_OPTIONS = foreign subdir-objects
 
 AM_CPPFLAGS = -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap $(DAP_CFLAGS)
-LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+# XML2_LDFLAGS pins the real system libxml2 ahead of the -L path GDAL_LDFLAGS
+# injects below, which can otherwise hijack the bare -lxml2 in DAP_*_LIBS on
+# macOS. See configure.ac. jhrg 9/3/26
+LIBADD = $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(XML2_LDFLAGS)
 
 # These are not used by automake but are often useful for certain types of
 # debugging. The best way to use these is to run configure as:
