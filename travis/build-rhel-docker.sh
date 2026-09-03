@@ -32,9 +32,10 @@
 # e: exit immediately on non-zero exit value from a command
 # u: treat unset env vars in substitutions as an error
 set -eu
-
+export  HR="#######################################################################"
+export HR1="--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---"
 function loggy(){
-    echo  "$@" | awk '{ print "# "$0;}'  >&2
+    echo  "$@" | awk '{ print "# build-rhel-docker() - "$0;}'  >&2
 }
 
 HYRAX_DEPENDENCIES_TARBALL="hyrax-dependencies-${OS}.tgz"
@@ -43,9 +44,10 @@ LIBDAP_DEVEL_RPM_FILENAME="libdap-devel-$LIBDAP_RPM_VERSION.$DIST.x86_64.rpm"
 DOCKER_DEV_FLAGS=${DOCKER_DEV_FLAGS:-""}
 CONFIGURE_OPTIONS=${CONFIGURE_OPTIONS:-""}
 AWS_DOWNLOADS_DIR="/tmp/dependency_downloads"
+TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
 
-loggy "#########################################################################"
-loggy "$0 BEGIN"
+loggy "$HR"
+loggy "$0 BEGIN (I am $UID)"
 loggy "Preparing to build docker image."
 loggy ""
 loggy "Input variables:"
@@ -62,22 +64,25 @@ loggy "   DOCKER_DEV_FLAGS: '$DOCKER_DEV_FLAGS'"
 loggy "        DOCKER_NAME: '$DOCKER_NAME'"
 loggy ""
 loggy "Artifact info:"
-loggy "       HYRAX_DEPENDENCIES_TARBALL: '$HYRAX_DEPENDENCIES_TARBALL'"
-loggy "       LIBDAP_RPM_FILENAME: '$LIBDAP_RPM_FILENAME'"
-loggy "       LIBDAP_DEVEL_RPM_FILENAME: '$LIBDAP_DEVEL_RPM_FILENAME'"
-loggy "       AWS_DOWNLOADS_DIR: '$AWS_DOWNLOADS_DIR'"
+loggy " HYRAX_DEPENDENCIES_TARBALL: '$HYRAX_DEPENDENCIES_TARBALL'"
+loggy "        LIBDAP_RPM_FILENAME: '$LIBDAP_RPM_FILENAME'"
+loggy "  LIBDAP_DEVEL_RPM_FILENAME: '$LIBDAP_DEVEL_RPM_FILENAME'"
+loggy "          AWS_DOWNLOADS_DIR: '$AWS_DOWNLOADS_DIR'"
+loggy "              TEST_LOGS_DIR: '$TEST_LOGS_DIR'"
 loggy ""
 
-set -eux
+set -eu
 
 loggy "Downloading AWS dependencies..."
-mkdir -p $AWS_DOWNLOADS_DIR
+mkdir -vp $AWS_DOWNLOADS_DIR
 [[ -e "$AWS_DOWNLOADS_DIR/$HYRAX_DEPENDENCIES_TARBALL" ]] || aws s3 cp "s3://opendap.travis.build/$HYRAX_DEPENDENCIES_TARBALL" $AWS_DOWNLOADS_DIR
 [[ -e "$AWS_DOWNLOADS_DIR/$LIBDAP_RPM_FILENAME" ]] || aws s3 cp "s3://opendap.travis.build/$LIBDAP_RPM_FILENAME" "$AWS_DOWNLOADS_DIR"
 [[ -e "$AWS_DOWNLOADS_DIR/$LIBDAP_DEVEL_RPM_FILENAME" ]] || aws s3 cp "s3://opendap.travis.build/$LIBDAP_DEVEL_RPM_FILENAME" "$AWS_DOWNLOADS_DIR"
 
 loggy "Building the docker image..."
 docker image pull "${BUILDER_BASE_IMAGE}"
+
+set +e
 docker build \
     --build-arg BUILDER_BASE_IMAGE="$BUILDER_BASE_IMAGE" \
     --build-arg FINAL_BASE_IMAGE="$FINAL_BASE_IMAGE" \
@@ -90,9 +95,64 @@ docker build \
     --tag "${SNAPSHOT_IMAGE_TAG}" \
     --build-context aws_downloads="$AWS_DOWNLOADS_DIR/" \
     $DOCKER_DEV_FLAGS \
-    -f ${BES_REPO_DIR}/Dockerfile ${BES_REPO_DIR}
+    -f "${BES_REPO_DIR}/Dockerfile" "${BES_REPO_DIR}"
 
-echo "Docker build complete!"
-docker image ls -a
+build_status=$?
+set -e
+if [ $build_status -ne 0 ]
+then
+  loggy "ERROR: Docker build FAILED!!  build_status: $build_status"
+else
+  loggy "SUCCESS: Docker build completed!"
+  loggy "$(docker image ls -a)"
+fi
 
-loggy "Complete!"
+loggy "$HR1"
+loggy "Checking test logs in Docker image: $SNAPSHOT_IMAGE_TAG, $TEST_LOGS_DIR"
+loggy "$(docker run --rm "${SNAPSHOT_IMAGE_TAG}" -c "ls -l $TEST_LOGS_DIR")"
+loggy "$HR1"
+
+loggy "Copying test logs from $SNAPSHOT_IMAGE_TAG to Travis host."
+
+# Note: Take the test log tarball that was created in the Dockerfile and copied to the final mount
+#   and then run this copy command to copy it into Travis.
+docker run --rm -v /tmp:/scratch "${SNAPSHOT_IMAGE_TAG}" \
+    -c "cp -v $TEST_LOGS_DIR/bes-tests-status /scratch/bes-tests-status"
+
+docker run --rm -v /tmp:/scratch "${SNAPSHOT_IMAGE_TAG}" \
+    -c "cp -v $TEST_LOGS_DIR/bes-log-file-list.txt /scratch/bes-log-file-list.txt"
+
+docker run --rm -v /tmp:/scratch "${SNAPSHOT_IMAGE_TAG}" \
+    -c "cp -v $TEST_LOGS_DIR/bes-autotest-logs.tgz /scratch/bes-autotest-${TRAVIS_JOB_NUMBER}-logs.tgz"
+
+
+loggy "$HR1"
+loggy "Checking for BES test log files on Travis host: 'ls -l /tmp/'"
+loggy "$( ls -l /tmp/ | grep "bes" )"
+loggy "$HR1"
+
+
+# Check the bes tests status (aka make check)
+bes_tests_status="$(cat /tmp/bes-tests-status)"
+loggy "SUCCESS: The BES autotests passed!"
+
+echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+echo "# (In Travis) build_status: $build_status, bes_tests_status: $bes_tests_status" >&2
+./travis/upload-test-results.sh
+echo "# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" >&2
+
+if [ "$bes_tests_status" -ne 0 ]
+then
+  loggy "ERROR: The BES autotests failed! bes_tests_status: $bes_tests_status"
+  loggy "$HR"
+  exit "$bes_tests_status"
+fi
+
+if [ "$build_status" -ne 0 ]; then
+  loggy "ERROR: Docker build failed, exiting. build_status: $build_status"
+  exit $build_status;
+fi
+
+loggy "END"
+loggy "$HR"
+exit 0

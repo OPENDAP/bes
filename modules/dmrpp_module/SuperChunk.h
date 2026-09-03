@@ -79,12 +79,13 @@ public:
     virtual unsigned long long get_size() const { return d_size; }
     virtual unsigned long long get_offset() const { return d_offset; }
     virtual size_t get_chunk_count() const { return d_chunks.size(); }
+    std::vector<std::shared_ptr<Chunk>> get_chunks() const { return d_chunks; }
 
     virtual void read() { process_child_chunks(); }
 
     virtual void read_unconstrained() { process_child_chunks_unconstrained(); }
 
-    virtual void read_unconstrained_dio();
+    virtual void read_dio();
 
     virtual void retrieve_data();
     virtual void retrieve_data_dio();

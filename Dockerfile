@@ -9,6 +9,7 @@ ARG BUILDER_BASE_IMAGE
 ARG FINAL_BASE_IMAGE
 FROM ${BUILDER_BASE_IMAGE:-"rockylinux:8"} AS builder
 
+ENV HR="-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
 # Sanity check that the required build argument is provided and non-empty, evn
 # though a default value is provided above. We want to enforce that the value is
 # always specified.
@@ -68,6 +69,14 @@ COPY . ./bes
 RUN sudo chown -R $BES_USER:$BES_USER bes
 WORKDIR bes
 
+#RUN set -e \
+#    && echo "###################################################################################################" >&2 \
+#    && echo "AFTER COPY command (PWD: $PWD)" >&2 \
+#    && ls -l . >&2 \
+#    && echo "###################################################################################################" >&2
+
+
+
 RUN autoreconf -fiv
 RUN echo "Sanity check: CPPFLAGS=$CPPFLAGS LDFLAGS=$LDFLAGS prefix=$PREFIX" \
     && ./configure --disable-dependency-tracking \
@@ -103,18 +112,50 @@ RUN sudo -s --preserve-env=PATH besctl start
 # ...now run the tests.
 ARG DIST
 ENV DIST=${DIST:-el8}
-RUN if [ "$DIST" == "el9" ]; then \
-        echo "# Warning: Skipping make check because of undiagnosed el9 errors; ref https://github.com/OPENDAP/bes/issues/1299"; \
-    else \
-        make check -j$(nproc --ignore=1); \
-    fi
+ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
+RUN set -e \
+    && mkdir -vp "${TEST_LOGS_DIR}" \
+    && chown -v $BES_USER:$BES_USER "${TEST_LOGS_DIR}"
 
-# ...and turn off the besdaemon. We want to turn this on/off regardless of
-# whether we run the tests
+ENV TEST_STATUS_FILE="${TEST_LOGS_DIR}/bes-tests-status"
+RUN echo "# $HR" >&2; \
+    echo "# Running 'make check' on: $DIST" >&2; \
+    echo "# TEST_STATUS_FILE: $TEST_STATUS_FILE" >&2; \
+    set +e; \
+    make check -j$(nproc --ignore=1); \
+    test_status=$?; \
+    echo "$test_status" > $TEST_STATUS_FILE; \
+    echo "# TEST_STATUS_FILE: $(ls -l "$TEST_STATUS_FILE")" >&2; \
+    echo "# TEST_STATUS: $(cat "$TEST_STATUS_FILE")" >&2; \
+    echo "# test_status: $test_status" >&2; \
+    set -e; \
+    if [ $test_status -ne 0 ]; then \
+        echo "# $HR" >&2; \
+        echo "#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2; \
+        echo "#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!     FAILED: BES Tests     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2; \
+        echo "#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" >&2; \
+    else  \
+        echo "# $HR" >&2; \
+        echo "# -- -- -- -- -- -- -- -- -- -- --   PASSED: BES Tests     -- -- -- -- -- -- -- -- -- -- --" >&2; \
+    fi; \
+    echo "# $HR" >&2;
+
+
+# Always make the test log tarball
+ENV TEST_LOGS_FILE="${TEST_LOGS_DIR}/bes-autotest-logs.tgz"
+ENV TEST_LOG_INVENTORY="${TEST_LOGS_DIR}/bes-log-file-list.txt"
+RUN set -e \
+    && ./travis/collect_autotest_logs.sh >&2
+
+# ...and turn off the besdaemon. We always want to turn this on/off
 RUN sudo -s --preserve-env=PATH besctl stop
 
 RUN cat libdap4-snapshot | cut -d ' ' -f 1 | sed 's/libdap4-//' > libdap_VERSION
 
+
+########################################################################################################################
+########################################################################################################################
+########################################################################################################################
 #####
 ##### Final layer: libdap + hyrax-dependencies + bes
 #####
@@ -148,6 +189,26 @@ RUN useradd \
         --uid ${USER_ID} \
         $BES_USER \
     && echo $BES_USER ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$BES_USER
+
+ENV TEST_LOGS_DIR="/home/bes_user/bes-test-logs"
+ENV TEST_STATUS_FILE="${TEST_LOGS_DIR}/bes-tests-status"
+ENV TEST_LOGS_FILE="${TEST_LOGS_DIR}/bes-autotest-logs.tgz"
+ENV TEST_LOG_INVENTORY="${TEST_LOGS_DIR}/bes-log-file-list.txt"
+RUN set -e \
+    && echo "# TEST_LOGS_DIR: $TEST_LOGS_DIR" >&2 \
+    && mkdir -vp "$TEST_LOGS_DIR" >&2
+
+# Copy the log files so that they can be accessed from outside of this docker build (i.e. Travis)
+COPY --from=builder "$TEST_STATUS_FILE"   "$TEST_STATUS_FILE"
+COPY --from=builder "$TEST_LOG_INVENTORY" "$TEST_LOG_INVENTORY"
+COPY --from=builder "$TEST_LOGS_FILE"     "$TEST_LOGS_FILE"
+
+RUN set -e \
+    && echo "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---" >&2 \
+    && echo "# Check test log inventory:" >&2 \
+    && echo "# ls -l $TEST_LOGS_DIR" >&2 \
+    && ls -l "$TEST_LOGS_DIR" >&2 \
+    && echo "--- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---" >&2
 
 # Install the latest hyrax dependencies
 ARG HYRAX_DEPENDENCIES_TARBALL

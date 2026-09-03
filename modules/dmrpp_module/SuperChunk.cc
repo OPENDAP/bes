@@ -922,7 +922,7 @@ string SuperChunk::to_string(bool verbose = false) const {
 void SuperChunk::dump(ostream &strm) const { strm << to_string(false); }
 
 // direct chunk method to read unconstrained variables.
-void SuperChunk::read_unconstrained_dio() {
+void SuperChunk::read_dio() {
 
     // Retrieve data for the direct IO case.
     retrieve_data_dio();

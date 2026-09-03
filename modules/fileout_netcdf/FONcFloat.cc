@@ -115,16 +115,16 @@ FONcFloat::write( int ncid )
 {
     BESDEBUG( "fonc", "FONcFloat::write for var " << d_varname << endl ) ;
     size_t var_index[] = {0} ;
-    float *data = new float ;
 
     if (d_is_dap4)
         _f->intern_data();
     else
         _f->intern_data(*get_eval(), *get_dds());
 
+    float *data = new float ;
     _f->buf2val( (void**)&data ) ;
     int stax = nc_put_var1_float(ncid, d_varid, var_index, data ) ;
-    ncopts = NC_VERBOSE ;
+    delete data ;
     if( stax != NC_NOERR )
     {
 	string err = (string)"fileout.netcdf - "
@@ -132,7 +132,6 @@ FONcFloat::write( int ncid )
                  + d_varname ;
 	FONcUtils::handle_error( stax, err, __FILE__, __LINE__ ) ;
     }
-    delete data ;
     BESDEBUG( "fonc", "FONcFloat::done write for var " << d_varname << endl ) ;
 }
 

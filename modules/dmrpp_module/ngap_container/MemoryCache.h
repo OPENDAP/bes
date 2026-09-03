@@ -71,7 +71,7 @@ class MemoryCache {
     /// Purge the cache of the oldest entries.
     void purge() {
         // if number of elements > threshold, purge
-        for (int entries = 0; entries < d_purge_items; ++entries) {
+        for (unsigned int entries = 0; entries < d_purge_items; ++entries) {
             std::string key = d_fifo_keys.front();
 
             d_cache.erase(d_cache.find(key));

@@ -333,10 +333,17 @@ public:
                      << (untrusted_src_url->is_trusted() ? "" : "NOT ") << "trusted." << endl);
             DBG(cerr << prolog << "result_url: " << result_url->str() << " is "
                      << (result_url->is_trusted() ? "" : "NOT ") << "trusted." << endl);
+
             DBG(cerr << prolog << "EffectiveUrlCache::TheCache()->d_effective_urls.size(): "
                      << EffectiveUrlCache::TheCache()->d_effective_urls.size() << endl);
             CPPUNIT_ASSERT(EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
+
+            DBG(cerr << prolog << "result_url->str() == result_url_str: " <<
+                (result_url->str() == result_url_str?"true":"false") << "\n");
             CPPUNIT_ASSERT(result_url->str() == result_url_str);
+
+            DBG(cerr << prolog << "result_url->is_trusted(): " <<
+                (result_url->is_trusted()?"true":"false") << endl);
             CPPUNIT_ASSERT(!result_url->is_trusted());
 
             result_url = EffectiveUrlCache::TheCache()->get_effective_url(trusted_src_url);
@@ -344,10 +351,17 @@ public:
                      << (trusted_src_url->is_trusted() ? "" : "NOT ") << "trusted." << endl);
             DBG(cerr << prolog << "result_url: " << result_url->str() << " is "
                      << (result_url->is_trusted() ? "" : "NOT ") << "trusted." << endl);
+
             DBG(cerr << prolog << "EffectiveUrlCache::TheCache()->d_effective_urls.size(): "
                      << EffectiveUrlCache::TheCache()->d_effective_urls.size() << endl);
             CPPUNIT_ASSERT(EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
+
+            DBG(cerr << prolog << "result_url->str() == result_url_str: " <<
+            (result_url->str() == result_url_str?"true":"false") << "\n");
             CPPUNIT_ASSERT(result_url->str() == result_url_str);
+
+            DBG(cerr << prolog << "result_url->is_trusted(): " <<
+                (result_url->is_trusted()?"true":"false") << endl);
             CPPUNIT_ASSERT(result_url->is_trusted());
 
             result_url = EffectiveUrlCache::TheCache()->get_effective_url(untrusted_src_url);
@@ -355,21 +369,33 @@ public:
                      << (untrusted_src_url->is_trusted() ? "" : "NOT ") << "trusted." << endl);
             DBG(cerr << prolog << "result_url: " << result_url->str() << " is "
                      << (result_url->is_trusted() ? "" : "NOT ") << "trusted." << endl);
+
             DBG(cerr << prolog << "EffectiveUrlCache::TheCache()->d_effective_urls.size(): "
                      << EffectiveUrlCache::TheCache()->d_effective_urls.size() << endl);
             CPPUNIT_ASSERT(EffectiveUrlCache::TheCache()->d_effective_urls.size() == 1);
+
+            DBG(cerr << prolog << "result_url->str() == result_url_str: " <<
+                (result_url->str() == result_url_str?"true":"false") << "\n");
             CPPUNIT_ASSERT(result_url->str() == result_url_str);
+
+            DBG(cerr << prolog << "result_url->is_trusted(): " <<
+               (result_url->is_trusted()?"true":"false") << endl);
             CPPUNIT_ASSERT(!result_url->is_trusted());
 
             // Test that dump is correct
-            auto strm = std::ostringstream();
-            EffectiveUrlCache::TheCache()->dump(strm);
-            // Remove start of string to skip address that varies
-            auto result = strm.str().substr(49);
+            auto result_strm = std::ostringstream();
+            EffectiveUrlCache::TheCache()->dump(result_strm);
+            auto result_str = result_strm.str();
+            DBG(cerr << prolog << "EffectiveUrlCache::TheCache()->dump(): \n" << result_str << "\n" );
+
             std::string expected_str =
-                string("   d_skip_regex: \n    effective url list:") + "\n        http://test.opendap.org/data/nothing_is_here.html:test_user --> http://test.opendap.org/data/httpd_catalog/READTHIS";
-            CPPUNIT_ASSERT_MESSAGE("The dump should contain:\n" + expected_str + "\n\nbut did not; INSTEAD was\n" + result,
-                                result.find(expected_str) != std::string::npos);
+                string("http://test.opendap.org/data/nothing_is_here.html:test_user --> http://test.opendap.org/data/httpd_catalog/READTHIS");
+
+            DBG(cerr << prolog << "expected_str: '" << expected_str << "'" << endl);
+
+
+            CPPUNIT_ASSERT_MESSAGE("The dump should contain:\n'" + expected_str + "'\n\nbut did not; INSTEAD was\n'" + result_strm.str() + "'",
+                                result_str.find(expected_str) != std::string::npos);
 
         }
         catch (const BESError &be) {

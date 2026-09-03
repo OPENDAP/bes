@@ -38,7 +38,7 @@
 #include "FONcUtils.h"
 #include "FONcAttributes.h"
 
-/** @brief Constructor for FOncUInt that takes a DAP UInt32
+/** @brief Constructor for FONcUInt that takes a DAP UInt32
  *
  * This constructor takes a DAP BaseType and makes sure that it is a DAP
  * UInt32 instance. If not, it throws an exception
@@ -60,7 +60,7 @@ FONcUInt::FONcUInt( BaseType *b )
 
 /** @brief Destructor that cleans up the instance
  *
- * The DAP UInt32 instance does not belong to the FONcInt
+ * The DAP UInt32 instance does not belong to the FONcUInt
  * instance, so it is not deleted.
  */
 FONcUInt::~FONcUInt()

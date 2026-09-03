@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="t_big_vl_str_dset2.h5" dmrpp:href="data/t_big_vl_str_dset2.h5" dmrpp:version="3.21.1">
+    <String name="arr_big_dset">
+        <Dim size="2"/>
+        <dmrpp:vlsa>
+            <v s="1024">eJwVk0cSRCEIRM8qfiOYE3L6cRZWuRBsXjdehvZnnBLy5daGt0xRSqm8KLyzDRjBDn1XL+7iZR3dwbmTbkNZ4iO7Vr1vsbdeq+NqvsMNRr3StBWmA7eEs7Gpao5bvJb/hppYo1wJnAnbCt35qrToVddTok+JCFkZd4+TVZKGZvbX41iZy40oxMry5no1Uv/K1Tv0sfNSn8KVCiCwn9blefJ3/Ow7iSLtfJbil98cJ2Kbud0wZs+g0vbs0ljJVjjOATv47MQd4rmVyge1FOcbJUUf5ZVNLMGUqXQcqHsBCER/JNfSTTKX7pWURfSEbLIXEtEBtqmnIueUWuU3xHI3AL6KhCk+rtApaV5i832S3HeTLWpMnX0x7JvpUcNcwMVijjs/ieq9QUPO6TKs6Fkh6VF99YNO+iZc39ANTuayh14U8HXZjaPnXU0G7OlLnClR3HWAtNnUEY5Jn2jk2Id3JIN9u+6qXbW2MqmrPHnEOmqEkUOYZNS4TXwYd38hxy9bsCbe1/Cr0WF+t/1twiNn+TPbbtietZmur4lLM65VQKZ97IvTJZL6nEq+xwJRZZhbliF1I3FSg6DmfcfBUnjVkkrnui9qk60ZuIBO7p9pnWzoAXE3MQmjv96B9m24B4Ma3i/tL65nQmbnIVz3hQW1zc+YanbOZvM2NFdhfm5eNH507I6tyIcJaX4l9KVs91M1tURUmD3m477qGR2LJCvWqaYdoIo3VN8O50wUsK9HCmj3qew15U12X3JLmo7YdDUK9x60NDPofTJIc3NRmwlrcH0LMzoIrx3aBg4yVWzP3re5w7UUpL8Us+cdCs6joWfEWVj2kBNib3HEDxuveUfSP+sst6g=</v>
+            <v>palm tree</v>
+        </dmrpp:vlsa>
+    </String>
+</Dataset>

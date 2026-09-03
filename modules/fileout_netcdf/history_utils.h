@@ -36,7 +36,6 @@ void updateHistoryAttributes(libdap::DDS *dds, const std::string &ce);
 // NEW
 void updateHistoryAttributes(libdap::DMR *dmr, const std::string &ce);
 
-// These are
 std::string get_time_now();
 std::string create_cf_history_txt(const std::string &request_url);
 template<typename RJSON_WRITER> void create_json_history_obj(const std::string &request_url, RJSON_WRITER &writer);

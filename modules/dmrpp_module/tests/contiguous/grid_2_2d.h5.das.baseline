@@ -1,9 +1,33 @@
 Attributes {
-    /HDFEOS/GRIDS/GeoGrid1/Data%20Fields/temperature {
-        String units "K";
+    /HDFEOS/GRIDS/GeoGrid1/YDim {
+        String units "degrees_north";
     }
-    /HDFEOS/GRIDS/GeoGrid2/Data%20Fields/temperature {
+    /HDFEOS/GRIDS/GeoGrid1/XDim {
+        String units "degrees_east";
+    }
+    /HDFEOS/GRIDS/GeoGrid1/Data_Fields/temperature {
         String units "K";
+        String fullnamepath "/HDFEOS/GRIDS/GeoGrid1/Data Fields/temperature";
+    }
+    /HDFEOS/GRIDS/GeoGrid2/YDim {
+        String units "degrees_north";
+    }
+    /HDFEOS/GRIDS/GeoGrid2/XDim {
+        String units "degrees_east";
+    }
+    /HDFEOS/GRIDS/GeoGrid2/Data_Fields/temperature {
+        String units "K";
+        String fullnamepath "/HDFEOS/GRIDS/GeoGrid2/Data Fields/temperature";
+    }
+    /HDFEOS_INFORMATION/StructMetadata_0 {
+        String fullnamepath "/HDFEOS INFORMATION/StructMetadata.0";
+    }
+    build_dmrpp_metadata {
+        String created "2026-08-04T19:00:07Z";
+        String build_dmrpp "3.21.1";
+        String bes "3.21.1";
+        String libdap "libdap-3.21.1";
+        String invocation "build_dmrpp -f /private/tmp/grid_2_2d.h5 -r grid_2_2d.h5.dmr -u data/dmrpp/grid_2_2d.h5 -M";
     }
     HDFEOS {
         ADDITIONAL {
@@ -12,16 +36,16 @@ Attributes {
         }
         GRIDS {
             GeoGrid1 {
-                Data%20Fields {
+                Data_Fields {
                 }
             }
             GeoGrid2 {
-                Data%20Fields {
+                Data_Fields {
                 }
             }
         }
     }
-    HDFEOS%20INFORMATION {
+    HDFEOS_INFORMATION {
         String HDFEOSVersion "HDFEOS_5.1.13";
     }
 }

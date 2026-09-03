@@ -29,9 +29,10 @@
 
 #include <memory>
 #include <map>
-#include <unordered_map>
 #include <string>
 #include <mutex>
+
+#include <curl/curl.h>
 
 #include "BESObj.h"
 #include "BESRegex.h"   // for std::unique_ptr<BESRegex>
@@ -95,7 +96,7 @@ public:
 
     ~EffectiveUrlCache() override = default;
 
-    std::shared_ptr<EffectiveUrl> get_effective_url(std::shared_ptr<url> source_url);
+    std::shared_ptr<EffectiveUrl> get_effective_url(const std::shared_ptr<url>& source_url, curl_slist *http_request_headers = nullptr);
 
     void dump(std::ostream &strm) const override;
 

@@ -11,7 +11,7 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/ATL08_2018
 # when accessing a fixed-size chunked string array. This is documented in the ticket https://bugs.earthdata.nasa.gov/browse/HYRAX-1225
 # We will resume this test until the above ticket is fixed.
 # The variable name is /ancillary_data/control, a fixed-size string array.
-#valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/ATL13_20190330212241_00250301_002_01.h5.bescmd >nasa_dap4_default_test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/ATL13_20190330212241_00250301_002_01.h5.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/DeepBlue-SeaWiFS-1.0_L3_20100613_v004-20130604T133539Z.h5.bescmd >nasa_dap4_default_test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/DeepBlue-SeaWiFS_L2_20100101T003505Z_v004-20130524T141300Z.h5.bescmd >nasa_dap4_default_test.nc
 #    GLAH13_633_2103_001_1317_0_01_0001.h5.bescmd
@@ -62,4 +62,4 @@ valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/AIRS.2024.
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/GEDI04.dmrpp.bescmd >nasa_dap4_default_test.nc
 
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/TROPESS_CrIS-JPSS1_L2_Full_CH4_20250914_MUSES_R1p25_FS_F2p10_J0.nc.dmrpp.bescmd>nasa_dap4_default_test.nc
-
+valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/nasa-bescmd/ATL02_20221231235632_01741814_006_01.h5.dmrpp.bescmd>nasa_dap4_default_test.nc

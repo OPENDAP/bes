@@ -66,8 +66,7 @@ FONcSequence::~FONcSequence()
  * Currently Sequences are not supported by FileOut NetCDF
  *
  * @param embed The list of parent names for this sequence
- * @throws BESInternalError if there is a problem converting the
- * Byte
+ * @throws BESInternalError if there is a problem converting the Sequence.
  */
 void FONcSequence::convert(vector<string> embed,bool _dap4, bool is_dap4_group)
 {

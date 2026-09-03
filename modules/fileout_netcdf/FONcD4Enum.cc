@@ -84,15 +84,6 @@ FONcD4Enum::define( int ncid )
             FONcUtils::handle_error(stax, err, __FILE__, __LINE__);
         }
 
-        if(d_is_dap4) {
-            D4Attributes *d4_attrs = d_f->attributes();                                                     
-            updateD4AttrType(d4_attrs,NC_FLOAT);   
-        }
-        else {
-            AttrTable &attrs = d_f->get_attr_table();  
-            updateAttrType(attrs,NC_FLOAT); 
-        }
-
 	FONcAttributes::add_variable_attributes(ncid, d_varid, d_f, isNetCDF4_ENHANCED() , d_is_dap4) ;
 	FONcAttributes::add_original_name(ncid, d_varid,
                                       d_varname, d_orig_varname ) ;

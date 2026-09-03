@@ -1,0 +1,14 @@
+Attributes {
+    /data%20field/data.1 {
+        Int16 _FillValue -999;
+    }
+    build_dmrpp_metadata {
+        String created "2026-08-10T22:03:02Z";
+        String build_dmrpp "3.22.0";
+        String bes "3.22.0";
+        String libdap "libdap-3.21.1";
+        String invocation "build_dmrpp -f /Users/myang6/work/opendap/hyrax-2215/bes/modules/hdf5_handler/data/src/t_special_name.h5 -r t_special_name.h5.dmr -u data/dmrpp/t_special_name.h5 -M";
+    }
+    data%20field {
+    }
+}

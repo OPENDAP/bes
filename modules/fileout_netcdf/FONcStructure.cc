@@ -115,7 +115,7 @@ FONcStructure::~FONcStructure()
  * called i1, then two variables are created in the netcdf file called
  * s1.a1 and s1.i1.
  *
- * @note This method only converts the variables that are to be sent. Thsi keeps
+ * @note This method only converts the variables that are to be sent. This keeps
  * the convert() and write() methods below from operating on DAP variables
  * that should not be sent.
  *

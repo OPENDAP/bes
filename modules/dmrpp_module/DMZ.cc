@@ -1552,8 +1552,10 @@ DMZ::process_compact(BaseType *btp, const xml_node &compact) {
                     auto pad_type = array->get_fixed_length_string_pad();
                     auto str_start = reinterpret_cast<char *>(decoded.data());
                     vector<string> fls_values;
+                    auto str_size = decoded.size();
                     while (fls_values.size() < btp->length_ll()) {
-                        string aValue = DmrppArray::ingest_fixed_length_string(str_start, fls_length, pad_type);
+                        auto left_buf_size = str_size - fls_values.size()*fls_length;
+                        string aValue = array->ingest_fixed_length_string(str_start, left_buf_size, fls_length, pad_type);
                         fls_values.emplace_back(aValue);
                         str_start += fls_length;
                     }
@@ -1644,6 +1646,71 @@ void DMZ::process_vlsa(libdap::BaseType *btp, const pugi::xml_node &vlsa_element
     array->set_value(entries, (int) entries.size());
     array->set_read_p(true);
 }
+
+void DMZ::process_vlsa_subset(libdap::BaseType *btp, const pugi::xml_node &vlsa_element) {
+    if (btp->type() != dods_array_c) {
+        throw BESInternalError(prolog + "Received an unexpected " + btp->type_name() +
+                               " Expected an instance of DmrppArray!", __FILE__, __LINE__);
+    }
+    auto *array = dynamic_cast<DmrppArray *>(btp);
+    if (!array) {
+        throw BESInternalError("Internal state error. "
+                               "Object claims to be array but is not.", __FILE__, __LINE__);
+    }
+    if (array->var()->type() != dods_str_c && array->var()->type() != dods_url_c) {
+        throw BESInternalError(prolog + "Internal state error. "
+                               "Expected array of dods_str_c, got " +
+                               array->var()->type_name(), __FILE__, __LINE__);
+    }
+
+    // Read the whole array data.
+    vector<string> entries;
+    vlsa::read(vlsa_element, entries);
+
+    // Now we need to do the subset and provide the right values.
+    vector<string> entries_subset;
+    vector<unsigned long long> da_dims = array->get_shape(false);
+    vector<unsigned long long> subset_pos;
+    handle_subset_vl_str(array,array->dim_begin(),subset_pos, entries,entries_subset);
+
+    array->set_is_vlsa(true);
+    array->set_value(entries_subset, (int) entries_subset.size());
+    array->set_read_p(true);
+}
+void DMZ::handle_subset_vl_str(DmrppArray *da, libdap::Array::Dim_iter dim_iter, 
+                               vector<unsigned long long> &subset_pos,
+                               vector<string> &whole_str_array, vector<string> &subset_str_array) {
+    // Obtain the number of elements in each dimension 
+    vector<unsigned long long> da_dims = da->get_shape(false);
+
+    // Obtain the start, stop and stride for this each dimension
+    uint64_t start = da->dimension_start_ll(dim_iter, true);
+    uint64_t stop = da->dimension_stop_ll(dim_iter, true);
+    uint64_t stride = da->dimension_stride_ll(dim_iter, true);
+
+    dim_iter++;
+
+    for (uint64_t myDimIndex = start; myDimIndex <= stop; myDimIndex += stride) {
+        // Is it the last dimension?
+        if (dim_iter != da->dim_end()) {
+            // Nope! Then we recurse to the last dimension to read stuff
+            subset_pos.push_back(myDimIndex);
+
+            // The recursive function will fill in the subset_pos until the dim_end().
+            handle_subset_vl_str(da, dim_iter, subset_pos, whole_str_array, subset_str_array);
+            subset_pos.pop_back();
+        }
+        else {
+            // We are at the last (innermost) dimension, so it's time to copy values.
+            subset_pos.push_back(myDimIndex);
+            unsigned long long  sourceIndex = INDEX_nD_TO_1D(da_dims, subset_pos);
+            subset_pos.pop_back();
+            subset_str_array.push_back(whole_str_array[sourceIndex]);
+        }
+    }
+}
+
+
 
 void
 DMZ::process_missing_data(BaseType *btp, const xml_node &missing_data) {
@@ -2475,7 +2542,16 @@ void DMZ::load_chunks(BaseType *btp) {
     auto vlsa_element = var_node.child(DMRPP_VLSA_ELEMENT);
     if (vlsa_element) {
         vlsa_found = 1;
-        process_vlsa(btp, vlsa_element);
+        bool is_vl_str_array_subset = false;
+        if(btp->type() == dods_array_c) {
+            auto *da = dynamic_cast<DmrppArray *>(btp);
+            if (da->is_projected())
+                is_vl_str_array_subset = true;
+        }
+        if (is_vl_str_array_subset)
+            process_vlsa_subset(btp,vlsa_element);
+        else 
+            process_vlsa(btp, vlsa_element);
     }
 
     // Here we (optionally) check that exactly one of the supported types of node was found

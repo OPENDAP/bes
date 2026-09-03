@@ -110,7 +110,6 @@ private:
     void read_contiguous();
     void read_one_bigger_chunk();
     void read_one_chunk_dio();
-    void read_contiguous_string();
 
 #ifdef USE_READ_SERIAL
     virtual void insert_chunk_serial(unsigned int dim, std::vector<unsigned long long> *target_element_address,
@@ -163,10 +162,9 @@ private:
     void obtain_buffer_end_pos_vec(const vector<bool>& subset_chunks_needed, unsigned long long max_buffer_size, unsigned long long buffer_offset,
                                  unsigned long long last_unfilled_chunk_index, vector<unsigned long long> & buf_end_pos_vec) const;
 
-    unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim);
+    void build_superchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks);
 
-    std::shared_ptr<Chunk> find_needed_chunks(unsigned int dim, std::vector<unsigned long long> *target_element_address,
-                                              std::shared_ptr<Chunk> chunk);
+    unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim) const;
 
     bool find_needed_chunks_simple(std::shared_ptr<Chunk> chunk, const std::vector<unsigned long long> & chunk_shape, 
                                    const std::vector<unsigned long long> & start, const std::vector<unsigned long long> & stride,
@@ -179,7 +177,25 @@ private:
     void read_array_of_structure(vector<char> &values);
     bool check_struct_handling();
 
-    bool use_direct_io_opt();
+
+    bool read_string_array(); // not virtual; this class only. jhrg 11/07/23
+    void read_contiguous_string_array(); // not virtual; this class only. jhrg 11/09/23
+    void insert_constrained_contiguous_string(Dim_iter dim_iter, unsigned long long &target_index,
+                                              vector<unsigned long long> &subset_addr,
+                                              const vector<unsigned long long> &array_shape,
+                                              unsigned long long chars_per_string, string_pad_type pad_type,
+                                              shared_ptr<Chunk> the_one_chunk);
+    void read_chunked_string_array();   // This class only. jhrg 1/29/24
+    void read_chunked_string_array_constrained(); 
+    void insert_chunk_fixed_size_str(unsigned int dim, vector<unsigned long long> *target_element_address,
+                                     vector<unsigned long long> *chunk_element_address, shared_ptr<Chunk> chunk,
+                                     const vector<unsigned long long> &constrained_array_shape, 
+                                     unsigned long long chars_per_string);
+    void insert_chunk_fixed_size_str_unconstrained(unsigned int dim, unsigned long long array_offset,
+                                                   unsigned long long chunk_offset, shared_ptr<Chunk> chunk,
+                                                   const vector<unsigned long long> &array_shape,
+                                                   const vector<unsigned long long> &chunk_origin,
+                                                   unsigned long long chars_per_string);
 
     void add_dio_var_storage_info_constrained();
     void add_dio_var_storage_info_unconstrained();
@@ -238,12 +254,12 @@ public:
 
     void set_ons_string(const std::string &ons_str);
     void set_ons_string(const vector<ons> &ons_pairs);
-    std::string get_ons_string() { return d_vlen_ons_str; };
-    void get_ons_objs(vector<ons> &ons_list);
+    std::string get_ons_string() const { return d_vlen_ons_str; };
+    void get_ons_objs(vector<ons> &ons_list) const;
 
     static std::string pad_type_to_str(string_pad_type pad_type);
-    static string ingest_fixed_length_string(const char *buf, unsigned long long fixed_str_len,
-                                             string_pad_type pad_type);
+    string ingest_fixed_length_string(const char *buf, unsigned long long buf_size, unsigned long long fixed_str_len,
+                                             string_pad_type pad_type) const;
 
     unsigned int buf2val(void **val) override;
     vector<u_int8_t> &compact_str_buffer() { return d_compact_str_buf; }
@@ -254,7 +270,7 @@ public:
     unsigned long long get_bytes_per_element() const { return bytes_per_element; }
     void set_bytes_per_element(unsigned long long bpe) { bytes_per_element = bpe; }
     void set_special_structure_flag(bool is_special_struct) { is_special_structure = is_special_struct; }
-    bool get_special_structure_flag() { return is_special_structure; }
+    bool get_special_structure_flag() const { return is_special_structure; }
     bool is_projected();
 };
 
@@ -301,7 +317,7 @@ struct one_child_chunk_args_new {
 };
 
 bool get_next_future(list<std::future<bool>> &futures, atomic_uint &thread_counter, unsigned long timeout,
-                     string debug_prefix);
+                     const string& debug_prefix);
 
 } // namespace dmrpp
 

@@ -3,11 +3,11 @@
 
 ---
 [![TravisCI](https://travis-ci.org/OPENDAP/bes.svg?branch=master)](https://travis-ci.org/OPENDAP/bes)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14655683.svg)](https://doi.org/10.5281/zenodo.14655683)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1013917.svg)](https://doi.org/10.5281/zenodo.1013917)
 
 ---
 
-For specific information about the BES, see the file [_NEWS_](./NEWS) for a summary of
+For specific information about the BES, see the file [_NEWS_](./NEWS.md) for a summary of
 new features, important updates, and version-specific release notes. See
 [_ChangeLog_](./ChangeLog) for a complete listing of changes/fixes since the previous release.
 
@@ -561,3 +561,5 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in
 all copies or substantial portions of the Software.
 ```
+
+

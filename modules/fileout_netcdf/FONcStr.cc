@@ -60,7 +60,7 @@ FONcStr::FONcStr(BaseType *b) :
 
 /** @brief Destructor that cleans up the str
  *
- * The DAP Str instance does not belong to the FONcByte instance, so it
+ * The DAP Str instance does not belong to the FONcStr instance, so it
  * is not cleaned up. During definition, though, the data needed to be
  * extracted to calculate the length dimension. It is kept so that we
  * don't have to get the data twice. The string data is deleted here.

@@ -26,7 +26,7 @@ variables:
 	short s_int16 ;
 		s_int16:_FillValue = 32767s ;
 	int s_int32 ;
-		s_int32:_FillValue = 2147483647 ;
+		s_int32:_FillValue = -65536 ;
 	int64 s_int64 ;
 		s_int64:_FillValue = 0LL ;
 	byte s_int8 ;

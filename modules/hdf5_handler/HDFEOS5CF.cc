@@ -3326,6 +3326,10 @@ template<class T> void EOS5File::EOS5Handle_General_NameClashing(set<string>&obj
 
 }
 
+//Explicit template instantiations
+template void EOS5File::EOS5Handle_General_NameClashing<EOS5CVar>(set<string>& objnameset, vector<EOS5CVar*>& eos5cvars);
+template void EOS5File::EOS5Handle_General_NameClashing<Dimension>(set<string>& objnameset, vector<Dimension*>& eos5dims);
+
 // Handle Dimension name clashing
 void EOS5File::Handle_DimNameClashing() 
 {

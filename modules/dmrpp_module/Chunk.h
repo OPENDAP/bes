@@ -372,7 +372,14 @@ public:
     {
         _duplicate(h4bs);
     }
-
+    virtual void release_chunk_buffer()
+    {
+        if (d_read_buffer_is_mine)
+            delete[] d_read_buffer;
+        d_read_buffer = nullptr;
+        d_read_buffer_is_mine = false;
+    }
+    
     virtual ~Chunk()
     {
         if(d_read_buffer_is_mine)

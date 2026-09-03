@@ -54,12 +54,12 @@ void http_get_and_write_resource(const std::shared_ptr<http::url> &target_url, i
 
 bool http_head(const std::string &target_url, int tries = 3, unsigned long wait_time_us = 1'000'000);
 
-void http_get(const std::string &target_url, std::string &buf, bool use_raw_url_no_new_headers = false);
+void http_get(const std::string &target_url, std::string &buf, curl_slist *http_request_headers = nullptr);
 
 void super_easy_perform(CURL *ceh);
 ///@}
 
-std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http::url> &url);
+std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http::url> &url, curl_slist *http_request_headers = nullptr);
 
 std::string filter_aws_url(const std::string &eff_url);
 
@@ -88,7 +88,7 @@ std::string error_message(CURLcode response_code, const char *error_buf);
 void read_data(CURL *c_handle);
 
 curl_slist *append_http_header(curl_slist *slist, const std::string &header_name, const std::string &value);
-
+curl_slist *add_edl_hdr_from_the_cm(const std::string &target_url, curl_slist *request_headers);
 curl_slist *add_edl_auth_headers(curl_slist *request_headers);
 curl_slist *add_edl_auth_headers(const std::string &target_url, curl_slist *request_headers);
 curl_slist *sign_url_for_s3_if_possible(const std::string &url, curl_slist *request_headers);

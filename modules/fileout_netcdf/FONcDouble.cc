@@ -37,7 +37,7 @@
 #include "FONcUtils.h"
 #include "FONcAttributes.h"
 
-/** @brief Constructor for FOncDouble that takes a DAP Float64
+/** @brief Constructor for FONcDouble that takes a DAP Float64
  *
  * This constructor takes a DAP BaseType and makes sure that it is a DAP
  * Float64 instance. If not, it throws an exception

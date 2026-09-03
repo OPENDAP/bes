@@ -123,10 +123,16 @@ AT_BUILD_DMRPP([modules/dmrpp_module/data/fill_value/comp_array2_udf_nfv_chunk_c
 # Test vlen float/int data.
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/vlen.h5])
 
+# Test the feature to save the variable length data into a sidecar file. 
+AT_BUILD_DMRPP_OPTIONS([modules/dmrpp_module/data/dmrpp/vlen.h5],[L])
+
 # Test enum data.
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/t_enum_name_scalar.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/t_enum_grp.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/dmrpp/t_enum_name_chunk_array.h5])
+
+# Test the feature to turn off the direct chunk IO.
+AT_BUILD_DMRPP_OPTIONS([modules/dmrpp_module/data/dmrpp/chunked_shufzip_oneD.h5],[D])
 
 # Test build_dmrpp with the -M option
 # AT_BUILD_DMRPP_M([modules/dmrpp_module/data/dmrpp/chunked_compound.h5])
@@ -154,3 +160,12 @@ AT_GET_DMRPP_3_20([VariableLengthStringArray - VLSA], [t_vl_string_1d.h5],[vlsa.
 # Test an HDF5 file that has fullnamepath attribute 
 #
 AT_GET_DMRPP_3_20([Variable with fullnamepath attribute], [nc4_group_atomic_fonc.nc4], [nc4_group_atomic_fonc.nc4.baseline] )
+
+################################################################################
+# Test variable length string with various encoding cases
+#
+AT_BUILD_DMRPP([modules/dmrpp_module/data/string_arrays/vl_str_array.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/string_arrays/vl_str_dup_array.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/string_arrays/vl_str_dup_cross_array.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/string_arrays/t_big_vl_str_dset.h5])
+AT_BUILD_DMRPP([modules/dmrpp_module/data/string_arrays/t_big_vl_str_dset2.h5])

@@ -1524,6 +1524,10 @@ template<class T> void File::Handle_General_NameClashing(set<string>&objnameset,
         objvec[cl_to_ol[i]]->newname = clashnamelist[i];
 
 }
+// Explicit template instantiations to make undefined symbol Handle_General_NameClashing found.
+template void File::Handle_General_NameClashing<Var>(set<string>&objnameset, vector<Var*>& vars);
+template void File::Handle_General_NameClashing<Group>(set<string>&objnameset, vector<Group*>& grps);
+template void File::Handle_General_NameClashing<Attribute>(set<string>&objnameset, vector<Attribute*>& attrs);
 
 // Handle General object name clashing
 void File::Handle_GeneralObj_NameClashing(bool include_attr, set<string>& objnameset) 
