@@ -28,13 +28,6 @@ BES.Catalog.catalog.FollowSymLinks=No
 BES.ServerPort=10002
 # BES.ServerUnixSocket=/tmp/bes.socket
 
-BES.ServerSecure=no
-BES.ServerSecurePort=10003
-BES.ServerCertFile=/full/path/to/serverside/certificate/file.pem
-BES.ServerKeyFile=/full/path/to/serverside/key/file.pem
-BES.ClientCertFile=/full/path/to/clientside/certificate/file.pem
-BES.ClientKeyFile=/full/path/to/clientside/key/file.pem
-
 #-----------------------------------------------------------------------#
 # help file locations, for text, html, and xml versions                 #
 #-----------------------------------------------------------------------#
