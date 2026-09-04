@@ -41,6 +41,6 @@ Upper Left  (  21.0000000,  89.0000000)
 Lower Left  (  21.0000000, -89.0000000)
 Upper Right (     379.000,      89.000)
 Lower Right (     379.000,     -89.000)
-Center      (     200.000,      -0.000)
+Center      (     200.000,       0.000)
 Band 1 Block=180x22 Type=Byte, ColorInterp=Gray
 Band 2 Block=180x22 Type=Byte, ColorInterp=Undefined
