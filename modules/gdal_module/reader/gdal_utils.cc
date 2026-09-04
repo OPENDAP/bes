@@ -29,8 +29,6 @@
 #include <gdal.h>
 #include <cpl_string.h>
 
-//#define DODS_DEBUG 1
-
 #include <libdap/Byte.h>
 #include <libdap/UInt16.h>
 #include <libdap/Int16.h>
@@ -65,18 +63,7 @@ using namespace libdap;
 
 static void attach_str_attr_item(AttrTable *parent_table, const char *pszKey, const char *pszValue)
 {
-    //string oQuotedValue;
-#if 0
-    char *pszEscapedText = CPLEscapeString(pszValue, -1,
-    CPLES_BackslashQuotable);
-#endif
-
-    //parent_table->append_attr(pszKey, "String", pszEscapedText /*oQuotedValue*/);
     parent_table->append_attr(pszKey, "String", pszValue /*oQuotedValue*/);
-
-#if 0
-    CPLFree(pszEscapedText);
-#endif
 }
 
 /************************************************************************/
@@ -93,9 +80,9 @@ static void translate_metadata(CSLConstList md, AttrTable *parent_table)
 
     md_table = parent_table->append_container(string("Metadata"));
 
-    for (i = 0; md != NULL && md[i] != NULL; i++) {
+    for (i = 0; md != nullptr && md[i] != nullptr; i++) {
         const char *pszValue;
-        char *pszKey = NULL;
+        char *pszKey = nullptr;
 
         pszValue = CPLParseNameValue(md[i], &pszKey);
 
@@ -142,10 +129,6 @@ static void build_global_attributes(const GDALDatasetH& hDS, AttrTable* attr_tab
         attr_table->append_attr("Northernmost_Northing", "Float64", CPLSPrintf("%.16g", dfMaxY));
         attr_table->append_attr("Southernmost_Northing", "Float64", CPLSPrintf("%.16g", dfMinY));
         attr_table->append_attr("Easternmost_Easting", "Float64", CPLSPrintf("%.16g", dfMaxX));
-#if 0
-        // Gareth Williams pointed out this typo. jhrg 9/26/19
-        attr_table->append_attr("Westernmost_Northing", "Float64", CPLSPrintf("%.16g", dfMinX));
-#endif
         attr_table->append_attr("Westernmost_Easting", "Float64", CPLSPrintf("%.16g", dfMinX));
 
         snprintf(szGeoTransform, 200, "%.16g %.16g %.16g %.16g %.16g %.16g", adfGeoTransform[0], adfGeoTransform[1],
@@ -157,7 +140,6 @@ static void build_global_attributes(const GDALDatasetH& hDS, AttrTable* attr_tab
     /* -------------------------------------------------------------------- */
     /*      Metadata.                                                       */
     /* -------------------------------------------------------------------- */
-    //char** md;
     auto md = GDALGetMetadata(hDS, NULL);
     if (md != NULL) translate_metadata(md, attr_table);
 
@@ -165,7 +147,7 @@ static void build_global_attributes(const GDALDatasetH& hDS, AttrTable* attr_tab
     /*      SRS                                                             */
     /* -------------------------------------------------------------------- */
     const char* pszWKT = GDALGetProjectionRef(hDS);
-    if (pszWKT != NULL && strlen(pszWKT) > 0) attach_str_attr_item(attr_table, "spatial_ref", pszWKT);
+    if (pszWKT != nullptr && strlen(pszWKT) > 0) attach_str_attr_item(attr_table, "spatial_ref", pszWKT);
 }
 
 /**
@@ -212,7 +194,7 @@ static void build_variable_attributes(const GDALDatasetH &hDS, AttrTable *band_a
     /* -------------------------------------------------------------------- */
     /*      Description.                                                    */
     /* -------------------------------------------------------------------- */
-    if (GDALGetDescription(hBand) != NULL && strlen(GDALGetDescription(hBand)) > 0) {
+    if (GDALGetDescription(hBand) != nullptr && strlen(GDALGetDescription(hBand)) > 0) {
         attach_str_attr_item(band_attr, "Description", GDALGetDescription(hBand));
     }
 
@@ -227,8 +209,8 @@ static void build_variable_attributes(const GDALDatasetH &hDS, AttrTable *band_a
     /* -------------------------------------------------------------------- */
     /*      Band Metadata.                                                  */
     /* -------------------------------------------------------------------- */
-    auto md = GDALGetMetadata(hBand, NULL);
-    if (md != NULL) translate_metadata(md, band_attr);
+    char **md = GDALGetMetadata(hBand, nullptr);
+    if (md != nullptr) translate_metadata(md, band_attr);
 
     /* -------------------------------------------------------------------- */
     /*      Colormap.                                                       */
@@ -236,7 +218,7 @@ static void build_variable_attributes(const GDALDatasetH &hDS, AttrTable *band_a
     GDALColorTableH hCT;
 
     hCT = GDALGetRasterColorTable(hBand);
-    if (hCT != NULL) {
+    if (hCT != nullptr) {
         AttrTable *ct_attr;
         int iColor, nColorCount = GDALGetColorEntryCount(hCT);
 
