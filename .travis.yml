@@ -165,7 +165,6 @@ jobs:
       name: "distcheck"
       script:
         - export BES_BUILD=distcheck
-
         - export LD_LIBRARY_PATH="/home/travis/install/deps/lib:$LD_LIBRARY_PATH"
         - echo "LD_LIBRARY_PATH - $LD_LIBRARY_PATH" >&2
         - autoreconf --force --install --verbose

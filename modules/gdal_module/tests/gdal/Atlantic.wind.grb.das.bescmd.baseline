@@ -11,1586 +11,1586 @@ Attributes {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "0 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345636800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345636800";
+            String GRIB_FORECAST_SECONDS "0";
         }
     }
     band_2 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "0 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345636800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345636800";
+            String GRIB_FORECAST_SECONDS "0";
         }
     }
     band_3 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "10800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345647600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345647600";
+            String GRIB_FORECAST_SECONDS "10800";
         }
     }
     band_4 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "10800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345647600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345647600";
+            String GRIB_FORECAST_SECONDS "10800";
         }
     }
     band_5 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "21600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345658400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345658400";
+            String GRIB_FORECAST_SECONDS "21600";
         }
     }
     band_6 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "21600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345658400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345658400";
+            String GRIB_FORECAST_SECONDS "21600";
         }
     }
     band_7 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "32400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345669200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345669200";
+            String GRIB_FORECAST_SECONDS "32400";
         }
     }
     band_8 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "32400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345669200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345669200";
+            String GRIB_FORECAST_SECONDS "32400";
         }
     }
     band_9 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "43200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345680000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345680000";
+            String GRIB_FORECAST_SECONDS "43200";
         }
     }
     band_10 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "43200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345680000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345680000";
+            String GRIB_FORECAST_SECONDS "43200";
         }
     }
     band_11 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "54000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345690800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345690800";
+            String GRIB_FORECAST_SECONDS "54000";
         }
     }
     band_12 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "54000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345690800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345690800";
+            String GRIB_FORECAST_SECONDS "54000";
         }
     }
     band_13 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "64800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345701600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345701600";
+            String GRIB_FORECAST_SECONDS "64800";
         }
     }
     band_14 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "64800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345701600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345701600";
+            String GRIB_FORECAST_SECONDS "64800";
         }
     }
     band_15 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "75600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345712400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345712400";
+            String GRIB_FORECAST_SECONDS "75600";
         }
     }
     band_16 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "75600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345712400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345712400";
+            String GRIB_FORECAST_SECONDS "75600";
         }
     }
     band_17 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "86400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345723200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345723200";
+            String GRIB_FORECAST_SECONDS "86400";
         }
     }
     band_18 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "86400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345723200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345723200";
+            String GRIB_FORECAST_SECONDS "86400";
         }
     }
     band_19 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "97200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345734000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345734000";
+            String GRIB_FORECAST_SECONDS "97200";
         }
     }
     band_20 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "97200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345734000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345734000";
+            String GRIB_FORECAST_SECONDS "97200";
         }
     }
     band_21 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "108000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345744800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345744800";
+            String GRIB_FORECAST_SECONDS "108000";
         }
     }
     band_22 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "108000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345744800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345744800";
+            String GRIB_FORECAST_SECONDS "108000";
         }
     }
     band_23 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "118800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345755600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345755600";
+            String GRIB_FORECAST_SECONDS "118800";
         }
     }
     band_24 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "118800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345755600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345755600";
+            String GRIB_FORECAST_SECONDS "118800";
         }
     }
     band_25 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "129600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345766400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345766400";
+            String GRIB_FORECAST_SECONDS "129600";
         }
     }
     band_26 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "129600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345766400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345766400";
+            String GRIB_FORECAST_SECONDS "129600";
         }
     }
     band_27 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "140400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345777200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345777200";
+            String GRIB_FORECAST_SECONDS "140400";
         }
     }
     band_28 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "140400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345777200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345777200";
+            String GRIB_FORECAST_SECONDS "140400";
         }
     }
     band_29 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "151200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345788000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345788000";
+            String GRIB_FORECAST_SECONDS "151200";
         }
     }
     band_30 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "151200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345788000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345788000";
+            String GRIB_FORECAST_SECONDS "151200";
         }
     }
     band_31 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "162000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345798800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345798800";
+            String GRIB_FORECAST_SECONDS "162000";
         }
     }
     band_32 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "162000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345798800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345798800";
+            String GRIB_FORECAST_SECONDS "162000";
         }
     }
     band_33 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "172800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345809600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345809600";
+            String GRIB_FORECAST_SECONDS "172800";
         }
     }
     band_34 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "172800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345809600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345809600";
+            String GRIB_FORECAST_SECONDS "172800";
         }
     }
     band_35 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "183600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345820400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345820400";
+            String GRIB_FORECAST_SECONDS "183600";
         }
     }
     band_36 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "183600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345820400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345820400";
+            String GRIB_FORECAST_SECONDS "183600";
         }
     }
     band_37 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "194400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345831200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345831200";
+            String GRIB_FORECAST_SECONDS "194400";
         }
     }
     band_38 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "194400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345831200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345831200";
+            String GRIB_FORECAST_SECONDS "194400";
         }
     }
     band_39 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "205200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345842000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345842000";
+            String GRIB_FORECAST_SECONDS "205200";
         }
     }
     band_40 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "205200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345842000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345842000";
+            String GRIB_FORECAST_SECONDS "205200";
         }
     }
     band_41 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "216000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345852800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345852800";
+            String GRIB_FORECAST_SECONDS "216000";
         }
     }
     band_42 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "216000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345852800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345852800";
+            String GRIB_FORECAST_SECONDS "216000";
         }
     }
     band_43 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "226800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345863600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345863600";
+            String GRIB_FORECAST_SECONDS "226800";
         }
     }
     band_44 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "226800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345863600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345863600";
+            String GRIB_FORECAST_SECONDS "226800";
         }
     }
     band_45 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "237600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345874400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345874400";
+            String GRIB_FORECAST_SECONDS "237600";
         }
     }
     band_46 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "237600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345874400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345874400";
+            String GRIB_FORECAST_SECONDS "237600";
         }
     }
     band_47 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "248400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345885200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345885200";
+            String GRIB_FORECAST_SECONDS "248400";
         }
     }
     band_48 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "248400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345885200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345885200";
+            String GRIB_FORECAST_SECONDS "248400";
         }
     }
     band_49 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "259200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345896000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345896000";
+            String GRIB_FORECAST_SECONDS "259200";
         }
     }
     band_50 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "259200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345896000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345896000";
+            String GRIB_FORECAST_SECONDS "259200";
         }
     }
     band_51 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "270000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345906800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345906800";
+            String GRIB_FORECAST_SECONDS "270000";
         }
     }
     band_52 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "270000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345906800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345906800";
+            String GRIB_FORECAST_SECONDS "270000";
         }
     }
     band_53 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "280800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345917600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345917600";
+            String GRIB_FORECAST_SECONDS "280800";
         }
     }
     band_54 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "280800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345917600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345917600";
+            String GRIB_FORECAST_SECONDS "280800";
         }
     }
     band_55 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "291600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345928400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345928400";
+            String GRIB_FORECAST_SECONDS "291600";
         }
     }
     band_56 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "291600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345928400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345928400";
+            String GRIB_FORECAST_SECONDS "291600";
         }
     }
     band_57 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "302400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345939200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345939200";
+            String GRIB_FORECAST_SECONDS "302400";
         }
     }
     band_58 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "302400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345939200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345939200";
+            String GRIB_FORECAST_SECONDS "302400";
         }
     }
     band_59 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "313200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345950000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345950000";
+            String GRIB_FORECAST_SECONDS "313200";
         }
     }
     band_60 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "313200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345950000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345950000";
+            String GRIB_FORECAST_SECONDS "313200";
         }
     }
     band_61 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "324000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345960800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345960800";
+            String GRIB_FORECAST_SECONDS "324000";
         }
     }
     band_62 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "324000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345960800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345960800";
+            String GRIB_FORECAST_SECONDS "324000";
         }
     }
     band_63 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "334800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345971600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345971600";
+            String GRIB_FORECAST_SECONDS "334800";
         }
     }
     band_64 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "334800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345971600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345971600";
+            String GRIB_FORECAST_SECONDS "334800";
         }
     }
     band_65 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "345600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345982400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345982400";
+            String GRIB_FORECAST_SECONDS "345600";
         }
     }
     band_66 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "345600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345982400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345982400";
+            String GRIB_FORECAST_SECONDS "345600";
         }
     }
     band_67 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "356400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345993200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345993200";
+            String GRIB_FORECAST_SECONDS "356400";
         }
     }
     band_68 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "356400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1345993200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1345993200";
+            String GRIB_FORECAST_SECONDS "356400";
         }
     }
     band_69 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "367200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346004000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346004000";
+            String GRIB_FORECAST_SECONDS "367200";
         }
     }
     band_70 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "367200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346004000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346004000";
+            String GRIB_FORECAST_SECONDS "367200";
         }
     }
     band_71 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "378000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346014800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346014800";
+            String GRIB_FORECAST_SECONDS "378000";
         }
     }
     band_72 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "378000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346014800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346014800";
+            String GRIB_FORECAST_SECONDS "378000";
         }
     }
     band_73 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "388800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346025600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346025600";
+            String GRIB_FORECAST_SECONDS "388800";
         }
     }
     band_74 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "388800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346025600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346025600";
+            String GRIB_FORECAST_SECONDS "388800";
         }
     }
     band_75 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "399600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346036400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346036400";
+            String GRIB_FORECAST_SECONDS "399600";
         }
     }
     band_76 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "399600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346036400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346036400";
+            String GRIB_FORECAST_SECONDS "399600";
         }
     }
     band_77 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "410400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346047200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346047200";
+            String GRIB_FORECAST_SECONDS "410400";
         }
     }
     band_78 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "410400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346047200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346047200";
+            String GRIB_FORECAST_SECONDS "410400";
         }
     }
     band_79 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "421200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346058000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346058000";
+            String GRIB_FORECAST_SECONDS "421200";
         }
     }
     band_80 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "421200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346058000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346058000";
+            String GRIB_FORECAST_SECONDS "421200";
         }
     }
     band_81 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "432000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346068800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346068800";
+            String GRIB_FORECAST_SECONDS "432000";
         }
     }
     band_82 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "432000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346068800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346068800";
+            String GRIB_FORECAST_SECONDS "432000";
         }
     }
     band_83 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "442800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346079600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346079600";
+            String GRIB_FORECAST_SECONDS "442800";
         }
     }
     band_84 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "442800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346079600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346079600";
+            String GRIB_FORECAST_SECONDS "442800";
         }
     }
     band_85 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "453600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346090400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346090400";
+            String GRIB_FORECAST_SECONDS "453600";
         }
     }
     band_86 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "453600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346090400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346090400";
+            String GRIB_FORECAST_SECONDS "453600";
         }
     }
     band_87 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "464400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346101200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346101200";
+            String GRIB_FORECAST_SECONDS "464400";
         }
     }
     band_88 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "464400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346101200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346101200";
+            String GRIB_FORECAST_SECONDS "464400";
         }
     }
     band_89 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "475200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346112000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346112000";
+            String GRIB_FORECAST_SECONDS "475200";
         }
     }
     band_90 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "475200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346112000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346112000";
+            String GRIB_FORECAST_SECONDS "475200";
         }
     }
     band_91 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "486000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346122800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346122800";
+            String GRIB_FORECAST_SECONDS "486000";
         }
     }
     band_92 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "486000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346122800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346122800";
+            String GRIB_FORECAST_SECONDS "486000";
         }
     }
     band_93 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "496800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346133600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346133600";
+            String GRIB_FORECAST_SECONDS "496800";
         }
     }
     band_94 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "496800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346133600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346133600";
+            String GRIB_FORECAST_SECONDS "496800";
         }
     }
     band_95 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "507600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346144400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346144400";
+            String GRIB_FORECAST_SECONDS "507600";
         }
     }
     band_96 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "507600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346144400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346144400";
+            String GRIB_FORECAST_SECONDS "507600";
         }
     }
     band_97 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "518400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346155200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346155200";
+            String GRIB_FORECAST_SECONDS "518400";
         }
     }
     band_98 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "518400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346155200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346155200";
+            String GRIB_FORECAST_SECONDS "518400";
         }
     }
     band_99 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "529200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346166000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346166000";
+            String GRIB_FORECAST_SECONDS "529200";
         }
     }
     band_100 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "529200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346166000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346166000";
+            String GRIB_FORECAST_SECONDS "529200";
         }
     }
     band_101 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "540000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346176800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346176800";
+            String GRIB_FORECAST_SECONDS "540000";
         }
     }
     band_102 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "540000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346176800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346176800";
+            String GRIB_FORECAST_SECONDS "540000";
         }
     }
     band_103 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "550800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346187600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346187600";
+            String GRIB_FORECAST_SECONDS "550800";
         }
     }
     band_104 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "550800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346187600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346187600";
+            String GRIB_FORECAST_SECONDS "550800";
         }
     }
     band_105 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "561600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346198400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346198400";
+            String GRIB_FORECAST_SECONDS "561600";
         }
     }
     band_106 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "561600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346198400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346198400";
+            String GRIB_FORECAST_SECONDS "561600";
         }
     }
     band_107 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "572400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346209200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346209200";
+            String GRIB_FORECAST_SECONDS "572400";
         }
     }
     band_108 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "572400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346209200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346209200";
+            String GRIB_FORECAST_SECONDS "572400";
         }
     }
     band_109 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "583200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346220000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346220000";
+            String GRIB_FORECAST_SECONDS "583200";
         }
     }
     band_110 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "583200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346220000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346220000";
+            String GRIB_FORECAST_SECONDS "583200";
         }
     }
     band_111 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "594000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346230800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346230800";
+            String GRIB_FORECAST_SECONDS "594000";
         }
     }
     band_112 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "594000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346230800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346230800";
+            String GRIB_FORECAST_SECONDS "594000";
         }
     }
     band_113 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "604800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346241600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346241600";
+            String GRIB_FORECAST_SECONDS "604800";
         }
     }
     band_114 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "604800 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346241600 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346241600";
+            String GRIB_FORECAST_SECONDS "604800";
         }
     }
     band_115 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "615600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346252400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346252400";
+            String GRIB_FORECAST_SECONDS "615600";
         }
     }
     band_116 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "615600 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346252400 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346252400";
+            String GRIB_FORECAST_SECONDS "615600";
         }
     }
     band_117 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "626400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346263200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346263200";
+            String GRIB_FORECAST_SECONDS "626400";
         }
     }
     band_118 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "626400 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346263200 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346263200";
+            String GRIB_FORECAST_SECONDS "626400";
         }
     }
     band_119 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "637200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346274000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346274000";
+            String GRIB_FORECAST_SECONDS "637200";
         }
     }
     band_120 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "637200 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346274000 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346274000";
+            String GRIB_FORECAST_SECONDS "637200";
         }
     }
     band_121 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "u-component of wind [m/s]";
             String GRIB_ELEMENT "UGRD";
-            String GRIB_FORECAST_SECONDS "648000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346284800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346284800";
+            String GRIB_FORECAST_SECONDS "648000";
         }
     }
     band_122 {
         Float64 missing_value 9999;
         String Description "1[-] SFC (Ground or water surface)";
         Metadata {
+            String GRIB_UNIT "[m/s]";
             String GRIB_COMMENT "v-component of wind [m/s]";
             String GRIB_ELEMENT "VGRD";
-            String GRIB_FORECAST_SECONDS "648000 sec";
-            String GRIB_REF_TIME "1345636800 sec UTC";
             String GRIB_SHORT_NAME "1-SFC";
-            String GRIB_UNIT "[m/s]";
-            String GRIB_VALID_TIME "1346284800 sec UTC";
+            String GRIB_REF_TIME "1345636800";
+            String GRIB_VALID_TIME "1346284800";
+            String GRIB_FORECAST_SECONDS "648000";
         }
     }
 }
