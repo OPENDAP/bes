@@ -24,6 +24,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <algorithm>
 
 #include <gdal.h>
 #include <cpl_string.h>
@@ -72,7 +73,7 @@ static void attach_str_attr_item(AttrTable *parent_table, const char *pszKey, co
 /*      attach it to the passed container.                              */
 /************************************************************************/
 
-static void translate_metadata(char **md, AttrTable *parent_table)
+static void translate_metadata(CSLConstList md, AttrTable *parent_table)
 {
     AttrTable *md_table;
     int i;
@@ -113,17 +114,17 @@ static void build_global_attributes(const GDALDatasetH& hDS, AttrTable* attr_tab
         int nYSize = GDALGetRasterYSize(hDS);
 
         dfMaxX =
-            MAX(MAX(adfGeoTransform[0], adfGeoTransform[0] + adfGeoTransform[1] * nXSize),
-                MAX(adfGeoTransform[0] + adfGeoTransform[2] * nYSize, adfGeoTransform[0] + adfGeoTransform[2] * nYSize + adfGeoTransform[1] * nXSize));
+            max(max(adfGeoTransform[0], adfGeoTransform[0] + adfGeoTransform[1] * nXSize),
+                max(adfGeoTransform[0] + adfGeoTransform[2] * nYSize, adfGeoTransform[0] + adfGeoTransform[2] * nYSize + adfGeoTransform[1] * nXSize));
         dfMinX =
-            MIN(MIN(adfGeoTransform[0], adfGeoTransform[0] + adfGeoTransform[1] * nXSize),
-                MIN(adfGeoTransform[0] + adfGeoTransform[2] * nYSize, adfGeoTransform[0] + adfGeoTransform[2] * nYSize + adfGeoTransform[1] * nXSize));
+            min(min(adfGeoTransform[0], adfGeoTransform[0] + adfGeoTransform[1] * nXSize),
+                min(adfGeoTransform[0] + adfGeoTransform[2] * nYSize, adfGeoTransform[0] + adfGeoTransform[2] * nYSize + adfGeoTransform[1] * nXSize));
         dfMaxY =
-            MAX(MAX(adfGeoTransform[3], adfGeoTransform[3] + adfGeoTransform[4] * nXSize),
-                MAX(adfGeoTransform[3] + adfGeoTransform[5] * nYSize, adfGeoTransform[3] + adfGeoTransform[5] * nYSize + adfGeoTransform[4] * nXSize));
+            max(max(adfGeoTransform[3], adfGeoTransform[3] + adfGeoTransform[4] * nXSize),
+                max(adfGeoTransform[3] + adfGeoTransform[5] * nYSize, adfGeoTransform[3] + adfGeoTransform[5] * nYSize + adfGeoTransform[4] * nXSize));
         dfMinY =
-            MIN(MIN(adfGeoTransform[3], adfGeoTransform[3] + adfGeoTransform[4] * nXSize),
-                MIN(adfGeoTransform[3] + adfGeoTransform[5] * nYSize, adfGeoTransform[3] + adfGeoTransform[5] * nYSize + adfGeoTransform[4] * nXSize));
+            min(min(adfGeoTransform[3], adfGeoTransform[3] + adfGeoTransform[4] * nXSize),
+                min(adfGeoTransform[3] + adfGeoTransform[5] * nYSize, adfGeoTransform[3] + adfGeoTransform[5] * nYSize + adfGeoTransform[4] * nXSize));
 
         attr_table->append_attr("Northernmost_Northing", "Float64", CPLSPrintf("%.16g", dfMaxY));
         attr_table->append_attr("Southernmost_Northing", "Float64", CPLSPrintf("%.16g", dfMinY));
@@ -139,9 +140,8 @@ static void build_global_attributes(const GDALDatasetH& hDS, AttrTable* attr_tab
     /* -------------------------------------------------------------------- */
     /*      Metadata.                                                       */
     /* -------------------------------------------------------------------- */
-    char** md;
-    md = GDALGetMetadata(hDS, nullptr);
-    if (md != nullptr) translate_metadata(md, attr_table);
+    auto md = GDALGetMetadata(hDS, NULL);
+    if (md != NULL) translate_metadata(md, attr_table);
 
     /* -------------------------------------------------------------------- */
     /*      SRS                                                             */

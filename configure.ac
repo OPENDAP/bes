@@ -101,6 +101,34 @@ bes_prune_missing_L_paths()
     echo "$bes_pruned_L_paths"
 }
 
+dnl gdal-config's --dep-libs output is baked in at GDAL's own build time and
+dnl simply records whatever -L search paths were in effect on the machine
+dnl that built it. If a Conda/Anaconda environment was active on PATH at
+dnl that time (common on macOS dev machines), that bakes in a -L pointing
+dnl into the Conda environment's lib directory. Conda ships its own,
+dnl relocatable (install_name @rpath/...) copies of common libraries such
+dnl as libxml2 and libzstd; if that directory is searched ahead of the
+dnl system/Homebrew copies, an otherwise-plain -lxml2 or -lzstd can bind to
+dnl the Conda copy instead, and the resulting module fails to dlopen at
+dnl runtime because no -rpath was ever added for that Conda directory (nor
+dnl should one be - the built module must not depend on a developer's local
+dnl Conda install). Strip any such path out of GDAL_LDFLAGS. jhrg 9/3/26
+bes_prune_conda_L_paths()
+{
+    bes_pruned_L_paths=
+    for bes_arg
+    do
+        case $bes_arg in
+        -L*conda*)
+            ;;
+        *)
+            bes_pruned_L_paths="$bes_pruned_L_paths $bes_arg"
+            ;;
+        esac
+    done
+    echo "$bes_pruned_L_paths"
+}
+
 dnl Libtool still defaults an unset MACOSX_DEPLOYMENT_TARGET to 10.0 in the
 dnl generated libtool script, which adds deprecated -bind_at_load for C++ links.
 dnl Preserve explicit user targets, but make the unset default new enough to skip it.
@@ -444,6 +472,27 @@ AC_SUBST([xmlprivatelibs])
 AC_SUBST([XML2_LIBS])
 AC_SUBST([XML2_STATIC_LIBS])
 AC_SUBST([XML2_CFLAGS])
+
+dnl XML2_LIBS above is a bare '-lxml2' with no -L of its own (same is true of
+dnl libdap's dap-config output used to set DAP_SERVER_LIBS/DAP_CLIENT_LIBS),
+dnl relying on the linker's default search path to find the system libxml2.
+dnl On macOS, modules that also link GDAL add a -L search path taken from
+dnl `gdal-config --dep-libs`; that path is baked in at GDAL's own build time
+dnl and can point at an unrelated libxml2 (e.g. a Homebrew or Anaconda copy)
+dnl if GDAL happened to be built with such an environment on PATH. If that
+dnl directory is searched before the system one, the bare -lxml2 silently
+dnl binds to the wrong, relocatable (@rpath-based) copy, and the resulting
+dnl module fails to dlopen at runtime because no matching -rpath was added
+dnl for it. Pin an explicit, high-priority -L to the real system libxml2
+dnl location so it is always found first. jhrg 9/3/26
+XML2_LDFLAGS=
+AS_CASE([$host],
+    [*darwin*],
+    [AS_IF([test -n "`which xcrun 2>/dev/null`"],
+        [macos_sdk_path=`xcrun --show-sdk-path 2>/dev/null`
+         AS_IF([test -n "$macos_sdk_path" -a -d "$macos_sdk_path/usr/lib"],
+             [XML2_LDFLAGS="-L$macos_sdk_path/usr/lib"])])])
+AC_SUBST([XML2_LDFLAGS])
 
 dnl Removed jhrg 1/30/23 SIC_VAR_SYS_ERRLIST
 
@@ -825,8 +874,8 @@ AS_IF([test -n "$with_gdal_prefix" -a $with_gdal_prefix = no],
     # Add the rpath options for shared versons of the GDAL dependencies. Note
     # that AM_LDFLAGS has the shared path info for deps/lib and deps/lib64. jhrg 4/10/26
     GDAL_LDFLAGS=""
-    AS_IF([test -n "$deps_proj_libdir"], [GDAL_LDFLAGS="$GDAL_LDFLAGS -Wl,-rpath,$deps_proj_libdir"])
-    AS_IF([test -n "$deps_proj_libdir64"], [GDAL_LDFLAGS="$GDAL_LDFLAGS -Wl,-rpath,$deps_proj_libdir64"])
+    AS_IF([test -n "$deps_proj_libdir"], [GDAL_LDFLAGS="$GDAL_LDFLAGS -L$deps_proj_libdir -Wl,-rpath,$deps_proj_libdir"])
+    AS_IF([test -n "$deps_proj_libdir64"], [GDAL_LDFLAGS="$GDAL_LDFLAGS -L$deps_proj_libdir64 -Wl,-rpath,$deps_proj_libdir64"])
  
     # Add the OS-specific shared linker syntax for the rpath option. jhrg 4/10/26
     AM_COND_IF([DARWIN],
@@ -837,6 +886,7 @@ AS_IF([test -n "$with_gdal_prefix" -a $with_gdal_prefix = no],
     # the libs of the dependencies. We need to use that to get the proj library, 
     # which is a dependency of gdal. jhrg 4/10/26
     GDAL_LDFLAGS="$GDAL_LDFLAGS $($with_gdal_prefix/bin/gdal-config --libs) $($with_gdal_prefix/bin/gdal-config --dep-libs)"
+    GDAL_LDFLAGS=`bes_prune_conda_L_paths $GDAL_LDFLAGS`
     AC_MSG_NOTICE([Set GDAL_LDFLAGS to $GDAL_LDFLAGS.])
 
     GDAL_CFLAGS="`$with_gdal_prefix/bin/gdal-config --cflags`"
