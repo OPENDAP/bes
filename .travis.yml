@@ -96,9 +96,10 @@ before_install:
   - java -version
 
 # hyrax-dependencies-build.tar.gz includes/makes the build directory
+# BEFORE MERGE - hyrax-dependencies-build-test-deploy.tgz --> back to hyrax-dependencies-build.tgz jhrg 9/4/26
 install:
-  - aws s3 cp s3://opendap.travis.build/hyrax-dependencies-build.tgz $TRAVIS_BUILD_DIR
-  - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/hyrax-dependencies-build.tgz
+  - aws s3 cp s3://opendap.travis.build/hyrax-dependencies-build-test-deploy.tgz $TRAVIS_BUILD_DIR
+  - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/hyrax-dependencies-build-test-deploy.tgz
   - aws s3 cp s3://opendap.travis.build/libdap-build.tar.gz $TRAVIS_BUILD_DIR
   - tar -C $HOME -xzvf $TRAVIS_BUILD_DIR/libdap-build.tar.gz
 
@@ -132,6 +133,7 @@ stages:
   - name: scan
     if:  branch = master
   - name: build-docker
+    if: branch = never  # REMOVE BEFORE MERGE jhrg 9/4/26
   - name: hyrax-olfs-trigger
     if: type != pull_request OR branch =~ ^(.*-test-deploy)$
     # A way to skip a stage. jhrg 1/26/23
