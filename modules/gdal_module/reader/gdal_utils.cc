@@ -76,11 +76,10 @@ static void attach_str_attr_item(AttrTable *parent_table, const char *pszKey, co
 static void translate_metadata(CSLConstList md, AttrTable *parent_table)
 {
     AttrTable *md_table;
-    int i;
 
     md_table = parent_table->append_container(string("Metadata"));
 
-    for (i = 0; md != nullptr && md[i] != nullptr; i++) {
+    for (int i = 0; md != nullptr && md[i] != nullptr; i++) {
         const char *pszValue;
         char *pszKey = nullptr;
 
@@ -147,7 +146,7 @@ static void build_global_attributes(const GDALDatasetH& hDS, AttrTable* attr_tab
     /*      SRS                                                             */
     /* -------------------------------------------------------------------- */
     const char* pszWKT = GDALGetProjectionRef(hDS);
-    if (pszWKT != nullptr && strlen(pszWKT) > 0) attach_str_attr_item(attr_table, "spatial_ref", pszWKT);
+    if (pszWKT != nullptr && strnlen(pszWKT, 4096) > 0) attach_str_attr_item(attr_table, "spatial_ref", pszWKT);
 }
 
 /**
@@ -194,7 +193,7 @@ static void build_variable_attributes(const GDALDatasetH &hDS, AttrTable *band_a
     /* -------------------------------------------------------------------- */
     /*      Description.                                                    */
     /* -------------------------------------------------------------------- */
-    if (GDALGetDescription(hBand) != nullptr && strlen(GDALGetDescription(hBand)) > 0) {
+    if (GDALGetDescription(hBand) != nullptr && strnlen(GDALGetDescription(hBand), 4096) > 0) {
         attach_str_attr_item(band_attr, "Description", GDALGetDescription(hBand));
     }
 
