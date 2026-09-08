@@ -944,7 +944,7 @@ gettimeofday(&tv2,NULL);
     double elapsed = seconds *1000.0 + useconds/1000.0;
     stringstream msg;
 msg <<"Parallel data transfer Execution time: " << elapsed <<" ms"<<endl;
-    INFO_LOG(msg.str());
+    //INFO_LOG(msg.str());
 }
 
 
@@ -985,7 +985,7 @@ gettimeofday(&tv2,NULL);
     double elapsed = seconds *1000.0 + useconds/1000.0;
     stringstream msg;
 msg <<"Parallel data transfer Execution time: " << elapsed <<" ms"<<endl;
-    INFO_LOG(msg.str());
+    //INFO_LOG(msg.str());
 }
 
 void read_super_chunks_concurrent(queue<shared_ptr<SuperChunk>> &super_chunks) {
@@ -1219,7 +1219,7 @@ gettimeofday(&tv2,NULL);
     double elapsed = seconds *1000.0 + useconds/1000.0;
     stringstream msg;
 msg <<" Sequential data transfer Execution time: " << elapsed <<" ms"<<endl;
-    INFO_LOG(msg.str());
+    //INFO_LOG(msg.str());
     }
     else 
         read_super_chunks_dio_concurrent(super_chunks);
