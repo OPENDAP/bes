@@ -671,7 +671,7 @@ struct CurlMultiTransfer {
     shared_ptr<SuperChunk> super_chunk;
     unique_ptr<Chunk> super_chunk_internal;      
     unique_ptr<dmrpp_easy_handle, void(*)(dmrpp_easy_handle*)> easy_handle{nullptr, [](dmrpp_easy_handle *h){ CurlHandlePool::release_handle(h); }};
-    unsigned int re_try = 0;               // TODO(retry): bump on retry, cap at some max
+    unsigned int re_try = 0;               
 };
 
 
@@ -899,6 +899,9 @@ gettimeofday(&tv,NULL);
                         break;
                     case ParallelTransferStatus::PT_RETRYABLE: {
                         ++transfer->re_try;
+                        stringstream msg;
+                        msg <<"Attempt to retry the data transfer, re_try "<<transfer->re_try <<" times."<<endl;
+                        INFO_LOG(msg.str());
                         if (transfer->re_try >= MAX_ATTEMPTS) {
                             throw BESInternalError(prolog + "Made " + std::to_string(transfer->re_try) +
                                                     " failed attempts to retrieve SuperChunk " +
@@ -1308,17 +1311,15 @@ void DmrppArray::read_buffer_chunks_dio_unconstrained()
     // Change to the total storage buffer size to just the compressed buffer size. 
     reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
 
-//    if (!DmrppRequestHandler::d_use_transfer_threads || super_chunks.size() == 1) {
+   if (!DmrppRequestHandler::d_use_transfer_threads || super_chunks.size() == 1) {
     while(!super_chunks.empty()) {
         auto super_chunk = super_chunks.front();
         super_chunks.pop();
         super_chunk->read_dio();
     }
-#if 0
     }
     else 
         read_super_chunks_dio_concurrent(super_chunks);
-#endif
 
     set_read_p(true);
 }
@@ -2225,10 +2226,15 @@ void DmrppArray::read_buffer_chunks() {
 
     reserve_value_capacity_ll(get_size(true));
 
+    if (!DmrppRequestHandler::d_use_transfer_threads || super_chunks.size() == 1) {
     while (!super_chunks.empty()) {
         auto super_chunk = super_chunks.front();
         super_chunks.pop();
         super_chunk->read();
+    }
+    }
+    else {
+        read_super_chunks_concurrent(super_chunks);
     }
 
     set_read_p(true);
@@ -2317,11 +2323,17 @@ void DmrppArray::read_buffer_chunks_dio_constrained() {
 
     reserve_value_capacity_ll(get_var_chunks_storage_size());
 
+    if (!DmrppRequestHandler::d_use_transfer_threads || super_chunks.size() == 1) {
     while (!super_chunks.empty()) {
         auto super_chunk = super_chunks.front();
         super_chunks.pop();
         // For the direct IO, the unconstrained and constrained cases are the same. 
         super_chunk->read_dio();
+    }
+    }
+    else {
+        read_super_chunks_dio_concurrent(super_chunks);
+
     }
 
     set_read_p(true);
@@ -3337,10 +3349,15 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
 
     reserve_value_capacity_ll(get_size());
 
+    if (!DmrppRequestHandler::d_use_transfer_threads || super_chunks.size() == 1) {
     while (!super_chunks.empty()) {
         auto super_chunk = super_chunks.front();
         super_chunks.pop();
         super_chunk->read_unconstrained();
+    }
+    }
+    else {
+        read_super_chunks_unconstrained_concurrent(super_chunks);
     }
 
     set_read_p(true);
