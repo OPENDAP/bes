@@ -34,17 +34,17 @@
             <Value>444650 10 0 4640510 0 -10</Value>
         </Attribute>
         <Attribute name="Metadata" type="Container">
-            <Attribute name="AREA_OR_POINT" type="String">
-                <Value>Area</Value>
-            </Attribute>
-            <Attribute name="TIFFTAG_RESOLUTIONUNIT" type="String">
-                <Value>1 (unitless)</Value>
-            </Attribute>
             <Attribute name="TIFFTAG_XRESOLUTION" type="String">
                 <Value>72</Value>
             </Attribute>
             <Attribute name="TIFFTAG_YRESOLUTION" type="String">
                 <Value>72</Value>
+            </Attribute>
+            <Attribute name="TIFFTAG_RESOLUTIONUNIT" type="String">
+                <Value>1 (unitless)</Value>
+            </Attribute>
+            <Attribute name="AREA_OR_POINT" type="String">
+                <Value>Area</Value>
             </Attribute>
         </Attribute>
         <Attribute name="spatial_ref" type="String">

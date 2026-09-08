@@ -86,7 +86,6 @@ void TcpSocket::connect()
 
     if (_host.empty()) _host = "localhost";
 
-    struct protoent *pProtoEnt;
     struct sockaddr_in sin{};
     struct hostent *ph;
     if (isdigit(_host[0])) {
@@ -136,16 +135,31 @@ void TcpSocket::connect()
     }
 
     sin.sin_port = htons(_portVal);
-    pProtoEnt = getprotobyname("tcp");
-    if (!pProtoEnt) {
-        string err("Error retreiving tcp protocol information");
+    _connected = false;
+
+    struct addrinfo hints{};
+    struct addrinfo *res_list = nullptr;
+
+    hints.ai_family   = AF_INET;      // keep IPv4-only to match existing behavior; use AF_UNSPEC to allow IPv6 too
+    hints.ai_socktype = SOCK_STREAM;  // implies TCP -> no need to look up the protocol by name
+    hints.ai_flags    = 0;            // getaddrinfo() handles both numeric IPs and hostnames automatically
+
+    string port_str = std::to_string(_portVal);
+
+    int gai_err = getaddrinfo(_host.c_str(), port_str.c_str(), &hints, &res_list);
+    if (gai_err != 0) {
+        string err = string("Error resolving host ") + _host + ": " + gai_strerror(gai_err);
         throw BESInternalError(err, __FILE__, __LINE__);
     }
 
-    _connected = false;
-    int descript = socket(AF_INET, SOCK_STREAM, pProtoEnt->p_proto);
+    int descript = -1;
+    for (struct addrinfo *rp = res_list; rp != nullptr; rp = rp->ai_next) {
+        descript = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+        if (descript != -1) break;   // got a usable socket; rp now holds the matching address
+    }
 
     if (descript == -1) {
+        freeaddrinfo(res_list);
         throw BESInternalError(string("getting socket descriptor: ") + strerror(errno), __FILE__, __LINE__);
     }
     else {
@@ -156,14 +170,19 @@ void TcpSocket::connect()
         holder = fcntl(_socket, F_GETFL, NULL);
         holder = holder | O_NONBLOCK;
         int status = fcntl(_socket, F_SETFL, holder);
-        if (status == -1)
-           throw BESInternalError(string("Could not reset socket to blocking mode: ") + strerror(errno), __FILE__, __LINE__);
+        if (status == -1) {
+            freeaddrinfo(res_list);
+            throw BESInternalError(string("Could not reset socket to blocking mode: ") + strerror(errno), __FILE__,
+                                   __LINE__);
+        }
 
         // we must set the send and receive buffer sizes before the connect call
         setTcpRecvBufferSize();
         setTcpSendBufferSize();
 
         int res = ::connect(descript, (struct sockaddr*) &sin, sizeof(sin));
+
+        freeaddrinfo(res_list);   // done with the list either way, once connect() has been issued
 
         if (res == -1) {
             if (errno == EINPROGRESS) {
@@ -281,23 +300,33 @@ void TcpSocket::listen()
     }
 
     BESDEBUG(MODULE, prolog << "Checking /etc/services for port " << _portVal << endl);
-    struct servent *sir = getservbyport(htons(_portVal), 0);
-    if (sir) {
+
+    struct sockaddr_in probe_addr{};
+    probe_addr.sin_family = AF_INET;
+    probe_addr.sin_port = htons((uint16_t)_portVal);
+    probe_addr.sin_addr.s_addr = INADDR_ANY;
+
+
+    string service_name;
+    service_name.resize(NI_MAXSERV);
+    int gni_err = getnameinfo((struct sockaddr*) &probe_addr, sizeof(probe_addr),
+                              nullptr, 0,                       // don't need a hostname, just the service
+                              &service_name[0], sizeof(service_name),
+                              0);                                // no NI_NUMERICSERV: resolve a name if one is registered
+
+    if (gni_err != 0) {
+        throw BESInternalError(string("Error checking system services for port ") + std::to_string(_portVal)
+                               + ": " + gai_strerror(gni_err), __FILE__, __LINE__);
+    }
+
+    // Without NI_NUMERICSERV, getnameinfo() falls back to returning the port number
+    // itself (as a string) when no service name is registered. Compare against that
+    // to tell "found a real service" apart from "nothing registered".
+    if (&service_name[0] != std::to_string(_portVal)) {
         std::ostringstream error_oss;
         error_oss << endl << "CONFIGURATION ERROR: The requested port (" << _portVal
-            << ") appears in the system services list. ";
-        error_oss << "Port " << _portVal << " is assigned to the service '" << sir->s_name << (string) "'";
-
-        if (sir->s_aliases[0] != 0) {
-            error_oss << " which may also be known as: ";
-            for (int i = 0; sir->s_aliases[i] != 0; i++) {
-                if (i > 0) error_oss << " or ";
-
-                error_oss << sir->s_aliases[i];
-            }
-        }
-
-        error_oss << endl;
+                  << ") appears in the system services list. ";
+        error_oss << "Port " << _portVal << " is assigned to the service '" << service_name << "'" << endl;
 
         throw BESInternalError(error_oss.str(), __FILE__, __LINE__);
     }

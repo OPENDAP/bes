@@ -751,18 +751,22 @@ void BESFileLockingCache::unlock_and_close(const string &file_name) {
  */
 unsigned long long BESFileLockingCache::update_cache_info(const string &target) {
     AdvisoryLockGuard write_alg(d_cache_info_fd, F_WRLCK);
-    unsigned long long current_size;
+    int fd = d_cache_info_fd;
+    unsigned long long current_size = 0;
 #if 0
     try {
         lock_cache_write();
 #endif
 
-    if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
+    if (lseek(fd, 0, SEEK_SET) == -1)
         throw BESInternalError(prolog + "Could not rewind to front of cache info file.", __FILE__, __LINE__);
 
     // read the size from the cache info file
-    if (read(d_cache_info_fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
+    if (read(fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
         throw BESInternalError(prolog + "Could not get read size info from the cache info file!", __FILE__, __LINE__);
+
+    if (current_size > d_max_cache_size_in_bytes * 10) //check to make sure the current size isn't larger than the max bound
+        throw BESInternalError(prolog + "Cached file size is larger than max cache size", __FILE__, __LINE__);
 
     struct stat buf;
     int statret = stat(target.c_str(), &buf);
@@ -774,10 +778,10 @@ unsigned long long BESFileLockingCache::update_cache_info(const string &target) 
 
     BESDEBUG(CACHE, prolog << "cache size updated to: " << current_size << endl);
 
-    if (lseek(d_cache_info_fd, 0, SEEK_SET) == -1)
+    if (lseek(fd, 0, SEEK_SET) == -1)
         throw BESInternalError(prolog + "Could not rewind to front of cache info file.", __FILE__, __LINE__);
 
-    if (write(d_cache_info_fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long))
+    if (write(fd, &current_size, sizeof(unsigned long long)) != sizeof(unsigned long long)) // NOSONAR
         throw BESInternalError(prolog + "Could not write size info from the cache info file!", __FILE__, __LINE__);
 
 #if 0

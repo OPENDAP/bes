@@ -28,6 +28,9 @@
         "**/*.o": true,
         "**/*.lo": true
     },
+    "search.exclude": {
+        "**/retired/**": true
+    },
     // Terminal environment settings. jhrg 3/11/26
     "terminal.integrated.env.osx": {
         "prefix": "${config:prefix}",

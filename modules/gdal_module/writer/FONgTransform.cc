@@ -329,7 +329,7 @@ void FONgTransform::transform_to_geotiff()
     if( Driver == NULL )
         throw Error("Could not get the MEM driver from/for GDAL: " + string(CPLGetLastErrorMsg()));
 
-    char **Metadata = Driver->GetMetadata();
+    auto Metadata = Driver->GetMetadata();
     if (!CSLFetchBoolean(Metadata, GDAL_DCAP_CREATE, FALSE))
         throw Error("Could not make output format.");
 
@@ -426,7 +426,7 @@ void FONgTransform::transform_to_geotiff()
             throw Error("Could not get driver for GeoTiff: " + string(CPLGetLastErrorMsg()));
 
         // The drivers only support CreateCopy()
-        char **Metadata = Driver->GetMetadata();
+        auto Metadata = Driver->GetMetadata();
         if (!CSLFetchBoolean(Metadata, GDAL_DCAP_CREATECOPY, FALSE))
             BESDEBUG("fong", "Driver does not support dataset creation via 'CreateCopy()'." << endl);
 
@@ -501,7 +501,7 @@ void FONgTransform::transform_to_jpeg2000()
     if( Driver == NULL )
         throw Error("Could not get the MEM driver from/for GDAL: " + string(CPLGetLastErrorMsg()));
 
-    char **Metadata = Driver->GetMetadata();
+    auto Metadata = Driver->GetMetadata();
     if (!CSLFetchBoolean(Metadata, GDAL_DCAP_CREATE, FALSE))
         throw Error("Driver JP2OpenJPEG does not support dataset creation.");
 
@@ -585,7 +585,7 @@ void FONgTransform::transform_to_jpeg2000()
             throw Error("Could not get driver for JP2OpenJPEG: " + string(CPLGetLastErrorMsg()));
 
         // The JPEG2000 drivers only support CreateCopy()
-        char **Metadata = Driver->GetMetadata();
+        auto Metadata = Driver->GetMetadata();
         if (!CSLFetchBoolean(Metadata, GDAL_DCAP_CREATECOPY, FALSE))
             BESDEBUG("fong", "Driver JP2OpenJPEG does not support dataset creation via 'CreateCopy()'." << endl);
         //throw Error("Driver JP2OpenJPEG does not support dataset creation via 'CreateCopy()'.");

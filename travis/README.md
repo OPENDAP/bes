@@ -97,3 +97,5 @@ aws s3api put-bucket-lifecycle-configuration \
 [2]: https://docs.aws.amazon.com/cli/latest/reference/s3api/put-bucket-lifecycle-configuration.html?utm_source=chatgpt.com "put-bucket-lifecycle-configuration — AWS CLI 2.31.0 Command Reference"
 
 
+
+

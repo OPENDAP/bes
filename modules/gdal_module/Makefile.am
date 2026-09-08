@@ -41,7 +41,10 @@ GDAL_SRCS = GDALModule.cc GDALRequestHandler.cc
 GDAL_HDRS = GDALModule.h GDALRequestHandler.h
 
 libgdal_module_la_SOURCES = $(GDAL_SRCS) $(GDAL_HDRS)
-libgdal_module_la_LDFLAGS = -avoid-version -module -L$(builddir)/reader -L$(builddir)/writer $(AM_LDFLAGS) $(GDAL_LDFLAGS)
+# XML2_LDFLAGS pins the real system libxml2 ahead of the -L path GDAL_LDFLAGS
+# injects below, which can otherwise hijack the bare -lxml2 in DAP_*_LIBS on
+# macOS. See configure.ac. jhrg 9/3/26
+libgdal_module_la_LDFLAGS = -avoid-version -module -L$(builddir)/reader -L$(builddir)/writer $(AM_LDFLAGS) $(XML2_LDFLAGS) $(GDAL_LDFLAGS)
 libgdal_module_la_LIBADD = $(LIBADD)
 
 moduledir = $(sysconfdir)/bes/modules
