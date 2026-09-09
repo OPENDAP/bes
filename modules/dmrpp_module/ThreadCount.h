@@ -67,7 +67,7 @@ public:
        }
        return false;
     }
-    void release_all_threads(std::list<std::future<bool>> &futures) {
+    void release_all_threads(std::list<std::future<bool>> &futures) const {
 
         while (!futures.empty()) {
             try {
