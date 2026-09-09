@@ -57,6 +57,7 @@ class dmrpp_easy_handle {
 
 public:
     dmrpp_easy_handle();
+    CURL * get_curl_handle() { return d_handle;}
 
     ~dmrpp_easy_handle();
 
