@@ -66,7 +66,7 @@ public:
     void map_non_contiguous_chunks_to_buffer();
     void read_aggregate_bytes();
     void read_fill_value_chunk();
-    bool get_uses_fill_value() {return d_uses_fill_value; }
+    bool get_uses_fill_value() const {return d_uses_fill_value; }
 
 
     // Make the sc_id an uint64 and not a string - the code uses sstream to make the value. jhrg 5/7/22
@@ -84,7 +84,7 @@ public:
     virtual size_t get_chunk_count() const { return d_chunks.size(); }
     std::vector<std::shared_ptr<Chunk>> get_chunks() const { return d_chunks; }
     char * get_read_buffer() { return d_read_buffer;}
-    bool get_d_is_read() { return d_is_read;}
+    bool get_d_is_read() const { return d_is_read;}
     void set_read_buffer(unsigned long long size) {
                                                    if(!d_read_buffer) 
                                                         d_read_buffer = new char[size];}

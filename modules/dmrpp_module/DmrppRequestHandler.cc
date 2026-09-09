@@ -113,7 +113,7 @@ namespace dmrpp
     int DmrppRequestHandler::d_object_cache_entries = 100;
     double DmrppRequestHandler::d_object_cache_purge_level = 0.2;
 
-    bool DmrppRequestHandler::d_use_transfer_threads = false;
+    bool DmrppRequestHandler::d_use_transfer_threads = true;
     unsigned long DmrppRequestHandler::d_max_transfer_threads = 8UL;
     unsigned long DmrppRequestHandler::d_default_max_transfer_threads = 4UL;
 
