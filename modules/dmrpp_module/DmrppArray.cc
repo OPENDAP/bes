@@ -62,6 +62,7 @@
 #include "byteswap_compat.h"
 #include "float_byteswap.h"
 #include "vlsa_util.h"
+#include "ThreadCount.h"
 
 // Used with BESDEBUG
 #define dmrpp_3 "dmrpp:3"
@@ -657,6 +658,64 @@ void DmrppArray::read_one_chunk_dio() {
     memcpy(target_buffer, source_buffer, the_one_chunk->get_size());
 }
 
+static ThreadCount &transfer_thread_count() {
+    static ThreadCount tc(DmrppRequestHandler::d_max_transfer_threads);
+    return tc;
+}
+
+template <typename SendOffFn>
+void read_super_chunks_concurrent_internal(queue<shared_ptr<SuperChunk>> &super_chunks,
+                                       SendOffFn sof) {
+struct timeval tv,tv2;
+gettimeofday(&tv,NULL);
+
+    auto &thread_store = transfer_thread_count();
+
+    list<future<bool>> futures;
+    try {
+        while (!super_chunks.empty() || !futures.empty()) {
+            while (!super_chunks.empty()) {
+                auto super_chunk = super_chunks.front();
+                bool started = thread_store.start_future(futures, [super_chunk, sof]() -> bool {
+                    sof(super_chunk);
+                    return true;
+                });
+                if (!started)
+                    break; // The store is full; wait for a free spot.
+
+                super_chunks.pop();
+            }
+
+            if (!futures.empty())
+                thread_store.wait_for_one(futures, std::chrono::milliseconds(DMRPP_WAIT_FOR_FUTURE_MS));
+        }
+    } catch (...) {
+        // Before exception, clean up all the running threads.
+        thread_store.release_all_threads(futures);
+        throw;
+    }
+gettimeofday(&tv2,NULL);
+        long seconds = tv2.tv_sec - tv.tv_sec;
+    long useconds = tv2.tv_usec -tv.tv_usec;
+    double elapsed = seconds *1000.0 + useconds/1000.0;
+    stringstream msg;
+msg <<"Parallel data transfer Execution time: " << elapsed <<" ms"<<endl;
+    INFO_LOG(msg.str());
+}
+
+void read_super_chunks_concurrent(queue<shared_ptr<SuperChunk>> &super_chunks) {
+    read_super_chunks_concurrent_internal(super_chunks,[](const shared_ptr<SuperChunk> &sc) { sc->read(); });
+}
+
+void read_super_chunks_unconstrained_concurrent(queue<shared_ptr<SuperChunk>> &super_chunks) {
+    read_super_chunks_concurrent_internal(super_chunks,[](const shared_ptr<SuperChunk> &sc) { sc->read_unconstrained(); });
+}
+
+void read_super_chunks_dio_concurrent(queue<shared_ptr<SuperChunk>> &super_chunks) {
+    read_super_chunks_concurrent_internal(super_chunks, [](const shared_ptr<SuperChunk> &sc) { sc->read_dio(); });
+}
+
+
 /**
  * @brief Insert a chunk into an unconstrained Array
  *
@@ -798,6 +857,7 @@ void DmrppArray::read_chunks_unconstrained() {
     // The size, in elements, of each of the chunk's dimensions
     const vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
 
+     if (!DmrppRequestHandler::d_use_transfer_threads || super_chunks.size() == 1) {
 #if DMRPP_ENABLE_THREAD_TIMERS
     BES_STOPWATCH_START(dmrpp_3, prolog + "Serial SuperChunk Processing.");
 #endif
@@ -806,6 +866,10 @@ void DmrppArray::read_chunks_unconstrained() {
         super_chunks.pop();
         BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl);
         super_chunk->read_unconstrained();
+    }
+    }
+    else {
+        read_super_chunks_unconstrained_concurrent(super_chunks);
     }
 
     if (is_readable_struct)
@@ -830,6 +894,7 @@ void DmrppArray::read_chunks_dio_unconstrained() {
     // The size, in elements, of each of the chunk's dimensions
     const vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
 
+    if (!DmrppRequestHandler::d_use_transfer_threads || super_chunks.size() == 1) {
 #if DMRPP_ENABLE_THREAD_TIMERS
     BES_STOPWATCH_START(dmrpp_3, prolog + "Serial SuperChunk Processing.");
 #endif
@@ -841,6 +906,10 @@ void DmrppArray::read_chunks_dio_unconstrained() {
         // Call direct IO routine
         super_chunk->read_dio();
     }
+    }
+    else 
+        read_super_chunks_dio_concurrent(super_chunks);
+            
     set_read_p(true);
 }
 
@@ -928,11 +997,17 @@ void DmrppArray::read_buffer_chunks_dio_unconstrained()
     // Change to the total storage buffer size to just the compressed buffer size. 
     reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
 
+//    if (!DmrppRequestHandler::d_use_transfer_threads || super_chunks.size() == 1) {
     while(!super_chunks.empty()) {
         auto super_chunk = super_chunks.front();
         super_chunks.pop();
         super_chunk->read_dio();
     }
+#if 0
+    }
+    else 
+        read_super_chunks_dio_concurrent(super_chunks);
+#endif
 
     set_read_p(true);
 }
@@ -1667,6 +1742,7 @@ void DmrppArray::read_chunks() {
 
     // This version is the 'serial' version of the code. It reads a chunk, inserts it,
     // reads the next one, and so on.
+    if (!DmrppRequestHandler::d_use_transfer_threads || super_chunks.size() == 1) { 
 #if DMRPP_ENABLE_THREAD_TIMERS
     BES_STOPWATCH_START(dmrpp_3, prolog + "Serial SuperChunk Processing.");
 #endif
@@ -1675,6 +1751,10 @@ void DmrppArray::read_chunks() {
         super_chunks.pop();
         BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl);
         super_chunk->read();
+    }
+    }
+    else {
+        read_super_chunks_concurrent(super_chunks);
     }
 
     if (is_readable_struct)
@@ -1722,6 +1802,7 @@ void DmrppArray::read_chunks_dio_constrained() {
     // Use the same approach as the non-direct chunk IO code for parallel transfer for now.
     // The parallel transfer part is the same as the non-direct chunk IO code.
 
+    if (!DmrppRequestHandler::d_use_transfer_threads || super_chunks.size() == 1) {
 #if DMRPP_ENABLE_THREAD_TIMERS
     BES_STOPWATCH_START(dmrpp_3, prolog + "Serial SuperChunk Processing.");
 #endif
@@ -1732,6 +1813,9 @@ void DmrppArray::read_chunks_dio_constrained() {
         // For the direct IO, the unconstrained and constrained cases are the same.
         super_chunk->read_dio();
     }
+    }
+    else 
+        read_super_chunks_dio_concurrent(super_chunks);
     set_read_p(true);
 }
 

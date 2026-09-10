@@ -113,6 +113,10 @@ namespace dmrpp
     int DmrppRequestHandler::d_object_cache_entries = 100;
     double DmrppRequestHandler::d_object_cache_purge_level = 0.2;
 
+    bool DmrppRequestHandler::d_use_transfer_threads = false;
+    unsigned long DmrppRequestHandler::d_max_transfer_threads = 8UL;
+    unsigned long DmrppRequestHandler::d_default_max_transfer_threads = 4UL;
+
     bool DmrppRequestHandler::d_use_compute_threads = true;
     unsigned long DmrppRequestHandler::d_max_compute_threads = 8UL;
     unsigned long DmrppRequestHandler::d_default_max_compute_threads = 4UL;
@@ -155,6 +159,22 @@ namespace dmrpp
         stringstream msg;
 
         // Using TheBESKeys calls instead of custom functions kln 4/1/26
+        d_use_transfer_threads = TheBESKeys::read_bool_key(DMRPP_USE_TRANSFER_THREADS_KEY, d_use_transfer_threads);
+        d_max_transfer_threads = std::max(d_default_max_transfer_threads, TheBESKeys::read_ulong_key(DMRPP_MAX_TRANSFER_THREADS_KEY, d_max_transfer_threads));
+        msg << prolog << "Concurrent Transfer Threads: ";
+        if (DmrppRequestHandler::d_use_transfer_threads)
+        {
+            msg << "Enabled. max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads << endl;
+        }
+        else
+        {
+            msg << "Disabled." << endl;
+        }
+
+        INFO_LOG(msg.str());
+        msg.str(std::string());
+
+
         d_use_compute_threads = TheBESKeys::read_bool_key(DMRPP_USE_COMPUTE_THREADS_KEY, d_use_compute_threads);
         d_max_compute_threads = std::max(d_default_max_compute_threads, TheBESKeys::read_ulong_key(DMRPP_MAX_COMPUTE_THREADS_KEY, d_max_compute_threads));
         msg << prolog << "Concurrent Compute Threads: ";
