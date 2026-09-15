@@ -1157,22 +1157,51 @@ void DmrppArray::read_chunks_dio_unconstrained() {
     // The size, in elements, of each of the chunk's dimensions
     const vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
 
+cerr<<"variable FQN: "<<this->FQN()<<endl;
+cerr<<"super chunk: "<<endl;
+cerr<<"Number of super chunks: "<< super_chunks.size() <<endl;
+ 
     if (!DmrppRequestHandler::d_use_transfer_threads || super_chunks.size() == 1) {
+
+struct timeval tv,tv2;
+gettimeofday(&tv,NULL);
 
 #if DMRPP_ENABLE_THREAD_TIMERS
     BES_STOPWATCH_START(dmrpp_3, prolog + "Serial SuperChunk Processing.");
 #endif
+unsigned long long total_size = 0;
+unsigned long long min_chunk_size = 0;
+unsigned long long max_chunk_size =0;
     while (!super_chunks.empty()) {
         auto super_chunk = super_chunks.front();
+cerr<<"super chunk offset: "<<super_chunk->get_offset() <<endl;
+cerr<<"super chunk size: "<<super_chunk->get_size() <<endl;
+total_size+=super_chunk->get_size();
+if(min_chunk_size >super_chunk->get_size())
+    min_chunk_size = super_chunk->get_size();
+if(max_chunk_size <super_chunk->get_size())
+    max_chunk_size = super_chunk->get_size();
+ 
         super_chunks.pop();
         BESDEBUG(dmrpp_3, prolog << super_chunk->to_string(true) << endl);
 
         // Call direct IO routine
         super_chunk->read_dio();
     }
+cerr<<"total_super_chunk_size: "<<total_size<<endl;
+cerr<<"max super_chunk_size: "<<max_chunk_size<<endl;
+cerr<<"min super_chunk_size: "<<min_chunk_size<<endl;
+
+gettimeofday(&tv2,NULL);
+        long seconds = tv2.tv_sec - tv.tv_sec;
+    long useconds = tv2.tv_usec -tv.tv_usec;
+    double elapsed = seconds *1000.0 + useconds/1000.0;
+cerr <<"data transfer Execution time: " << elapsed <<" ms"<<endl;
+    //INFO_LOG(msg.str());
     }
     else 
         read_super_chunks_dio_concurrent(super_chunks);
+   
             
     set_read_p(true);
 }
@@ -1258,15 +1287,42 @@ void DmrppArray::read_buffer_chunks_dio_unconstrained()
        }
     }
 
+unsigned long long total_size = 0;
+unsigned long long min_chunk_size = 0;
+unsigned long long max_chunk_size =0;
+ 
+cerr<<"variable FQN: "<<this->FQN()<<endl;
+cerr<<"buffer chunk: "<<endl;
+cerr<<"Number of buffer chunks: "<< super_chunks.size() << endl;
     // Change to the total storage buffer size to just the compressed buffer size. 
     reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
 
    if (!DmrppRequestHandler::d_use_transfer_threads || super_chunks.size() == 1) {
+struct timeval tv,tv2;
+gettimeofday(&tv,NULL);
     while(!super_chunks.empty()) {
         auto super_chunk = super_chunks.front();
+cerr<<"buffer chunk offset: "<<super_chunk->get_offset() <<endl;
+cerr<<"buffer chunk size: "<<super_chunk->get_size() <<endl;
+total_size+=super_chunk->get_size();
+if(min_chunk_size >super_chunk->get_size())
+    min_chunk_size = super_chunk->get_size();
+if(max_chunk_size <super_chunk->get_size())
+    max_chunk_size = super_chunk->get_size();
+ 
         super_chunks.pop();
         super_chunk->read_dio();
     }
+cerr<<"total_buffer_chunk_size: "<<total_size<<endl;
+cerr<<"max buffer_chunk_size: "<<max_chunk_size<<endl;
+cerr<<"min buffer_chunk_size: "<<min_chunk_size<<endl;
+
+gettimeofday(&tv2,NULL);
+        long seconds = tv2.tv_sec - tv.tv_sec;
+    long useconds = tv2.tv_usec -tv.tv_usec;
+    double elapsed = seconds *1000.0 + useconds/1000.0;
+cerr <<"data transfer Execution time: " << elapsed <<" ms"<<endl;
+
     }
     else 
         read_super_chunks_dio_concurrent(super_chunks);
