@@ -1160,6 +1160,7 @@ void DmrppArray::read_chunks_dio_unconstrained() {
 cerr<<"variable FQN: "<<this->FQN()<<endl;
 cerr<<"super chunk: "<<endl;
 cerr<<"Number of super chunks: "<< super_chunks.size() <<endl;
+unsigned long long  num_super_chunks = super_chunks.size(); 
  
     if (!DmrppRequestHandler::d_use_transfer_threads || super_chunks.size() == 1) {
 
@@ -1170,9 +1171,14 @@ gettimeofday(&tv,NULL);
     BES_STOPWATCH_START(dmrpp_3, prolog + "Serial SuperChunk Processing.");
 #endif
 unsigned long long total_size = 0;
-unsigned long long min_chunk_size = 0;
+unsigned long long min_chunk_size = 4294967296;
 unsigned long long max_chunk_size =0;
+unsigned long long chunk_count = 0;
     while (!super_chunks.empty()) {
+struct timeval tvs,tvs2;
+gettimeofday(&tvs,NULL);
+
+
         auto super_chunk = super_chunks.front();
 cerr<<"super chunk offset: "<<super_chunk->get_offset() <<endl;
 cerr<<"super chunk size: "<<super_chunk->get_size() <<endl;
@@ -1187,16 +1193,30 @@ if(max_chunk_size <super_chunk->get_size())
 
         // Call direct IO routine
         super_chunk->read_dio();
+gettimeofday(&tvs2,NULL);
+        long s_seconds = tvs2.tv_sec - tvs.tv_sec;
+    long s_useconds = tvs2.tv_usec -tvs.tv_usec;
+    double s_elapsed = s_seconds *1000.0 + s_useconds/1000.0;
+cerr <<"Super Chunk "<< chunk_count <<" data transfer Execution time: " << s_elapsed <<" ms"<<endl;
+cerr<<" Super Chunk bytes per ms: "<< super_chunk->get_size()/(int)(s_elapsed) <<endl;
+    chunk_count++;
+
     }
 cerr<<"total_super_chunk_size: "<<total_size<<endl;
 cerr<<"max super_chunk_size: "<<max_chunk_size<<endl;
 cerr<<"min super_chunk_size: "<<min_chunk_size<<endl;
+int average_chunk_size = total_size/num_super_chunks;
+cerr<<"average super_chunk_size: "<<average_chunk_size<<endl;
 
 gettimeofday(&tv2,NULL);
         long seconds = tv2.tv_sec - tv.tv_sec;
     long useconds = tv2.tv_usec -tv.tv_usec;
     double elapsed = seconds *1000.0 + useconds/1000.0;
-cerr <<"data transfer Execution time: " << elapsed <<" ms"<<endl;
+cerr <<"With Super chunk: variable data transfer Execution time: " << elapsed <<" ms"<<endl;
+int bpm = total_size/(int)(elapsed);
+cerr<<" Total Super chunk bytes per ms: "<<total_size/(int)(elapsed) <<endl;
+cerr<<"List total Execution time, bytes per ms, total used space(total super chunk size),maximum super_chunk size, minimum super_chunk size, average super_chunk size, number of super chunks"<<endl;
+cerr<<"VNS: "<<this->FQN()<<" "<<elapsed <<" "<<bpm <<" "<<total_size<<" "<<max_chunk_size<<" "<<min_chunk_size<<" "<<average_chunk_size <<" "<<num_super_chunks<<endl;
     //INFO_LOG(msg.str());
     }
     else 
@@ -1288,11 +1308,12 @@ void DmrppArray::read_buffer_chunks_dio_unconstrained()
     }
 
 unsigned long long total_size = 0;
-unsigned long long min_chunk_size = 0;
+unsigned long long min_chunk_size = 4294967296;
 unsigned long long max_chunk_size =0;
  
 cerr<<"variable FQN: "<<this->FQN()<<endl;
 cerr<<"buffer chunk: "<<endl;
+unsigned long long  num_buf_chunks = super_chunks.size();
 cerr<<"Number of buffer chunks: "<< super_chunks.size() << endl;
     // Change to the total storage buffer size to just the compressed buffer size. 
     reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
@@ -1300,7 +1321,11 @@ cerr<<"Number of buffer chunks: "<< super_chunks.size() << endl;
    if (!DmrppRequestHandler::d_use_transfer_threads || super_chunks.size() == 1) {
 struct timeval tv,tv2;
 gettimeofday(&tv,NULL);
+unsigned long long chunk_count = 0;
     while(!super_chunks.empty()) {
+struct timeval tvs,tvs2;
+gettimeofday(&tvs,NULL);
+
         auto super_chunk = super_chunks.front();
 cerr<<"buffer chunk offset: "<<super_chunk->get_offset() <<endl;
 cerr<<"buffer chunk size: "<<super_chunk->get_size() <<endl;
@@ -1312,16 +1337,32 @@ if(max_chunk_size <super_chunk->get_size())
  
         super_chunks.pop();
         super_chunk->read_dio();
+
+gettimeofday(&tvs2,NULL);
+        long s_seconds = tvs2.tv_sec - tvs.tv_sec;
+    long s_useconds = tvs2.tv_usec -tvs.tv_usec;
+    double s_elapsed = s_seconds *1000.0 + s_useconds/1000.0;
+cerr <<"Buffer Chunk "<< chunk_count <<" data transfer Execution time: " << s_elapsed <<" ms"<<endl;
+cerr<<" Buffer Chunk bytes per ms: "<< super_chunk->get_size()/(int)(s_elapsed) <<endl;
+    chunk_count++;
+
+
     }
 cerr<<"total_buffer_chunk_size: "<<total_size<<endl;
 cerr<<"max buffer_chunk_size: "<<max_chunk_size<<endl;
 cerr<<"min buffer_chunk_size: "<<min_chunk_size<<endl;
+int average_chunk_size = total_size/num_buf_chunks;
+cerr<<"average buffer_chunk_size: "<<average_chunk_size<<endl;
 
 gettimeofday(&tv2,NULL);
         long seconds = tv2.tv_sec - tv.tv_sec;
     long useconds = tv2.tv_usec -tv.tv_usec;
     double elapsed = seconds *1000.0 + useconds/1000.0;
-cerr <<"data transfer Execution time: " << elapsed <<" ms"<<endl;
+cerr <<"With buffer chunk variable data transfer Execution time: " << elapsed <<" ms"<<endl;
+int bpm = total_size/(int)(elapsed);
+cerr<<" Total buffer chunk bytes per ms: "<<bpm <<endl;
+cerr<<"List total Execution time, bytes per ms, total used space(total buffer size),maximum buffer size, minimum buffer_chunk size, average buffer_chunk size, number of buffers"<<endl;
+cerr<<"VNB: "<<this->FQN()<<" "<<elapsed <<" "<<bpm <<" "<<total_size<<" "<<max_chunk_size<<" "<<min_chunk_size<<" "<<average_chunk_size <<" "<<num_buf_chunks<<endl;
 
     }
     else 
