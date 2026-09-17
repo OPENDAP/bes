@@ -664,7 +664,7 @@ void DmrppArray::read_one_chunk_dio() {
 
 // This struct includes all the necessary components to use curl_multi to handle the data transfer in parallel.
 // super_chunk is the pointer to the super chunk that we need to fill in the data from either S3 or a local file system. 
-// super_chunk_internal is the internal chunk that the callback function chunk_write_data needs to use to read the data with curl.
+// super_chunk_internal is the internal chunk that the callback function chunk_write_data needs to use to read the data.
 // dmrpp_easy_handle is a customized object that a libcurl easy handle and other information. See CurlHandlePool.h for details.
 // It transfers the super_chunk for curl to read the data.
 // The second parameter of unique_ptr<dmrpp_easy_handle, void(*)(dmrpp_easy_handle*)> is a custom-deleter with a lamda to release the handle.
@@ -705,6 +705,7 @@ static unique_ptr<MyCurlMultiTransfer> prepare_super_chunk_transfer(const shared
 // There may be 0.1% S3 failure rate, so we need to retry to see if we can obtain the data for a SuperChunk.
 enum class ParallelTransferStatus { PT_SUCCESS, PT_RETRYABLE, PT_FAILURE };
 
+// The maxinum number to retry is 3. According to our experience, this is enough.
 static constexpr unsigned int MAX_ATTEMPTS = 3;
 static constexpr std::chrono::microseconds INITIAL_RETRY_BACKOFF{250000}; // 0.25s
 
