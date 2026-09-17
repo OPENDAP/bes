@@ -1060,7 +1060,7 @@ void DMZ::set_up_direct_io_flag_phase_2(D4Group * grp, BaseType *btp) {
     if (!chunk_less_dim)
         return;
 
-    // Another special case is that some chunks are only filled with the fvalues. This case cannot be handled by direct IO.
+    // Another special case is that some chunks are only filled with the fvalues. This case can be conditionally supported, so need to check.
     // First calculate the number of logical chunks.
     // Also up to this step, the size of chunk_dim_sizes must be the same as the size of dim_sizes. No need to double check.
 
@@ -1072,10 +1072,13 @@ void DMZ::set_up_direct_io_flag_phase_2(D4Group * grp, BaseType *btp) {
         has_filled_chunks = true;
 
     // Filled chunks can be supported for the whole variable case. However, we also need to check if _FillValue attribute is
-    // defined in this variable.
+    // defined in this variable. This works since in fileout netCDF, NC_NOFILL is set. So for DIO, we don't need to care about
+    // the data values in those filled chunks.
     if (has_filled_chunks) {
 
         BESDEBUG(PARSER, prolog << "has_filled_chunks: " <<btp->name() << endl);
+        // To be consistent with the current dmrpp's fillvalue handling, check if the _FillValue attribute exists.
+
         if (btp->attributes()->find("_FillValue")==nullptr)
             return;
     }

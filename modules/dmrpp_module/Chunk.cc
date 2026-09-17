@@ -153,7 +153,6 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
     size_t nbytes = size * nmemb;
     auto chunk = reinterpret_cast<Chunk *>(data);
 
-
     auto data_url = chunk->get_data_url();
     BESDEBUG(MODULE, prolog << "chunk->get_data_url():" << data_url << endl);
 

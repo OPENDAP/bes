@@ -958,4 +958,122 @@ void SuperChunk::read_dio() {
     }
 }
 
+void SuperChunk::read_curl_multi() {
+
+    for (const auto &chunk : d_chunks) {
+        chunk->set_is_read(true);
+        chunk->set_bytes_read(chunk->get_size());
+    }
+    BES_PROFILE_TIMING(
+        string("Handle SuperChunk data constrained - ") + (get_data_url() ? get_data_url()->get_url_no_query() : "") +
+        string(" - ") + ::to_string(get_size()) + string(" byte(s) - ") + ::to_string(get_chunk_count()) +
+        " chunk(s) - Using multithreading: " + (DmrppRequestHandler::d_use_compute_threads ? "true" : "false"));
+
+    vector<unsigned long long> constrained_array_shape = d_parent_array->get_shape(true);
+    BESDEBUG(SUPER_CHUNK_MODULE, prolog << "d_use_compute_threads: "
+                                        << (DmrppRequestHandler::d_use_compute_threads ? "true" : "false") << endl);
+    BESDEBUG(SUPER_CHUNK_MODULE,
+             prolog << "d_max_compute_threads: " << DmrppRequestHandler::d_max_compute_threads << endl);
+
+    if (!DmrppRequestHandler::d_use_compute_threads) {
+#if DMRPP_ENABLE_THREAD_TIMERS
+        BES_STOPWATCH_START(SUPER_CHUNK_MODULE, prolog + "Serial Chunk Processing. id: " + d_id);
+#endif
+        for (const auto &chunk : d_chunks) {
+            process_one_chunk(chunk, d_parent_array, constrained_array_shape);
+        }
+    } else {
+#if DMRPP_ENABLE_THREAD_TIMERS
+        stringstream timer_tag;
+        timer_tag << prolog << "Concurrent Chunk Processing. id: " << d_id;
+        BES_STOPWATCH_START(SUPER_CHUNK_MODULE, timer_tag.str());
+#endif
+        queue<shared_ptr<Chunk>> chunks_to_process;
+        for (const auto &chunk : d_chunks)
+            chunks_to_process.push(chunk);
+
+        process_chunks_concurrent(d_id, chunks_to_process, d_parent_array, constrained_array_shape);
+    }
+
+}
+
+void SuperChunk::read_unconstrained_curl_multi() {
+
+    for (const auto &chunk : d_chunks) {
+        chunk->set_is_read(true);
+        chunk->set_bytes_read(chunk->get_size());
+    }
+ 
+    BES_PROFILE_TIMING(
+        string("Handle SuperChunk data unconstrained - ") + (get_data_url() ? get_data_url()->get_url_no_query() : "") +
+        string(" - ") + ::to_string(get_size()) + string(" byte(s) - ") + ::to_string(get_chunk_count()) +
+        " chunk(s) - Using multithreading: " + (DmrppRequestHandler::d_use_compute_threads ? "true" : "false"));
+
+    // The size in element of each of the array's dimensions
+    const vector<unsigned long long> array_shape = d_parent_array->get_shape(true);
+    // The size, in elements, of each of the chunk's dimensions
+    const vector<unsigned long long> chunk_shape = d_parent_array->get_chunk_dimension_sizes();
+
+    if (!DmrppRequestHandler::d_use_compute_threads) {
+#if DMRPP_ENABLE_THREAD_TIMERS
+        BES_STOPWATCH_START(SUPER_CHUNK_MODULE, prolog + "Serial Chunk Processing. sc_id: " + d_id);
+#endif
+        for (const auto &chunk : d_chunks) {
+            process_one_chunk_unconstrained(chunk, chunk_shape, d_parent_array, array_shape);
+        }
+    } else {
+#if DMRPP_ENABLE_THREAD_TIMERS
+        stringstream timer_tag;
+        timer_tag << prolog << "Concurrent Chunk Processing. sc_id: " << d_id;
+        BES_STOPWATCH_START(SUPER_CHUNK_MODULE, timer_tag.str());
+#endif
+        queue<shared_ptr<Chunk>> chunks_to_process;
+        for (const auto &chunk : d_chunks) {
+            chunks_to_process.push(chunk);
+        }
+        process_chunks_unconstrained_concurrent(d_id, chunks_to_process, chunk_shape, d_parent_array, array_shape);
+    }
+
+}
+
+void SuperChunk::read_dio_curl_multi() {
+
+    for (const auto &chunk : d_chunks) {
+        chunk->set_is_read(true);
+        chunk->set_bytes_read(chunk->get_size());
+    }
+
+    BES_PROFILE_TIMING(
+        string("Handle SuperChunk data dio - ") + (get_data_url() ? get_data_url()->get_url_no_query() : "") +
+        string(" - ") + ::to_string(get_size()) + string(" byte(s) - ") + ::to_string(get_chunk_count()) +
+        " chunk(s) - Using multithreading: " + (DmrppRequestHandler::d_use_compute_threads ? "true" : "false"));
+
+    // The size in element of each of the array's dimensions
+    const vector<unsigned long long> array_shape = d_parent_array->get_shape(true);
+    // The size, in elements, of each of the chunk's dimensions
+    const vector<unsigned long long> chunk_shape = d_parent_array->get_chunk_dimension_sizes();
+
+    if (!DmrppRequestHandler::d_use_compute_threads) {
+#if DMRPP_ENABLE_THREAD_TIMERS
+        BES_STOPWATCH_START(SUPER_CHUNK_MODULE, prolog + "Serial Chunk Processing. sc_id: " + d_id);
+#endif
+        for (const auto &chunk : d_chunks) {
+            process_one_chunk_unconstrained_dio(chunk, chunk_shape, d_parent_array, array_shape);
+        }
+    } else {
+#if DMRPP_ENABLE_THREAD_TIMERS
+        stringstream timer_tag;
+        timer_tag << prolog << "Concurrent Chunk Processing. sc_id: " << d_id;
+        BES_STOPWATCH_START(SUPER_CHUNK_MODULE, timer_tag.str());
+#endif
+        queue<shared_ptr<Chunk>> chunks_to_process;
+        for (const auto &chunk : d_chunks)
+            chunks_to_process.push(chunk);
+
+        process_chunks_unconstrained_concurrent_dio(d_id, chunks_to_process, chunk_shape, d_parent_array, array_shape);
+    }
+   
+
+}
+
 } // namespace dmrpp
