@@ -135,6 +135,44 @@ void process_s3_error_response(const shared_ptr<http::url> &data_url, const stri
     }
 }
 
+namespace {
+
+/**
+ * @brief Parse an S3 <Error> XML document into its Code/Message fields, without
+ * throwing for a well-formed-but-unwanted error -- only throws if the document
+ * isn't parseable, or isn't an <Error> element, at all (i.e. it wasn't even
+ * recognizable as an S3 error response). See process_s3_error_response(), which
+ * does the same parsing but always throws; this version is used by
+ * chunk_write_data() so it can decide whether to retry before deciding whether
+ * to throw.
+ */
+void extract_s3_error_fields(const string &xml_message, string &code, string &message) {
+    pugi::xml_document error;
+    pugi::xml_parse_result result = error.load_string(xml_message.c_str());
+    if (!result)
+        throw BESInternalError("The underlying data store returned an unintelligible error message.", __FILE__, __LINE__);
+
+    pugi::xml_node err_elmnt = error.document_element();
+    if (!err_elmnt || (strcmp(err_elmnt.name(), "Error") != 0))
+        throw BESInternalError("The underlying data store returned a bogus error message.", __FILE__, __LINE__);
+
+    code = err_elmnt.child_value("Code");
+    message = err_elmnt.child_value("Message");
+}
+
+/**
+ * @brief AWS S3 error codes documented/observed as transient -- worth retrying.
+ * See https://docs.aws.amazon.com/AmazonS3/latest/API/ErrorResponses.html
+ * Notably NOT here: AccessDenied and anything unrecognized -- those are treated
+ * as terminal, same as before this change.
+ */
+bool is_transient_s3_error_code(const string &code) {
+    return code == "InternalError" || code == "SlowDown" || code == "RequestTimeout" ||
+           code == "ServiceUnavailable" || code == "RequestTimeTooSkewed" || code == "OperationAborted";
+}
+
+} // namespace
+
 /**
  * @brief Callback passed to libcurl to handle reading bytes.
  *
@@ -167,6 +205,34 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
         // which maybe in this error text, may have < or > chars in them. the XML parser
         // will be sad if that happens. jhrg 12/30/19
         try {
+            string code, message;
+            extract_s3_error_fields(xml_message, code, message);
+
+            if (is_transient_s3_error_code(code)) {
+                // Transient object-store error -- S3 itself documents these as worth
+                // retrying (InternalError's message is literally "We encountered an
+                // internal error. Please try again."). Don't throw here: throwing from
+                // inside a libcurl write callback unwinds straight past the retry logic
+                // in super_easy_perform() (sequential path) / PT_result() (curl_multi
+                // path), since neither ever gets a chance to see this transfer
+                // complete. Instead, record the error and tell libcurl the write
+                // failed -- returning anything other than nbytes aborts the transfer
+                // with CURLE_WRITE_ERROR -- so the *existing* CURLcode-based retry path
+                // (which already retries CURLE_GOT_NOTHING and friends) picks this up
+                // the same way it does any other transport-level failure.
+                stringstream msg;
+                msg << prolog << "The underlying object store reported a transient error; "
+                    << "letting the curl-level retry logic handle it. (Tried: "
+                    << data_url->get_url_no_query() << ") Object Store Message: " << message
+                    << " (Code: " << code << ")";
+                BESDEBUG(MODULE, msg.str() << endl);
+                chunk->set_retryable_s3_error(msg.str());
+                return 0;   // != nbytes -> libcurl aborts this transfer with CURLE_WRITE_ERROR
+            }
+
+            // Not a known-transient code (e.g. AccessDenied), or the document didn't
+            // even parse as an <Error> element -- not worth retrying, so throw
+            // immediately, exactly as before this change.
             process_s3_error_response(data_url, xml_message);   // throws a BESError
         }
         catch (BESError) {

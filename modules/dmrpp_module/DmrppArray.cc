@@ -889,6 +889,9 @@ void read_super_chunks_concurrent_curl_multi(queue<shared_ptr<SuperChunk>> &supe
                         retry_msg <<"Attempt to retry the data transfer, re_try "<<transfer->re_try <<" times."<<endl;
                         INFO_LOG(retry_msg.str());
                         if (transfer->re_try >= MAX_ATTEMPTS) {
+                            string extra;
+                            if (transfer->super_chunk_internal->get_is_retryable_s3_error())
+                                extra = " Last error: " + transfer->super_chunk_internal->get_retryable_s3_error_message();
                             throw BESInternalError(prolog + "Made " + std::to_string(transfer->re_try) +
                                                     " failed attempts to retrieve SuperChunk " +
                                                     transfer->super_chunk->id() + ". Giving up.",
@@ -896,6 +899,7 @@ void read_super_chunks_concurrent_curl_multi(queue<shared_ptr<SuperChunk>> &supe
                         }
                         // reset the bytes read before this handle is re-used.
                         transfer->super_chunk_internal->set_bytes_read(0);
+                        transfer->super_chunk_internal->clear_retryable_s3_error();
 
                         auto backoff = INITIAL_RETRY_BACKOFF * (1u << (transfer->re_try - 1)); // 0.25s, 0.5s, ...
                         retries.push_back({std::move(transfer), time_now + backoff});
