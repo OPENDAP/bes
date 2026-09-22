@@ -1219,9 +1219,21 @@ cerr<<"List total Execution time, bytes per ms, total used space(total super chu
 cerr<<"VNS: "<<this->FQN()<<" "<<elapsed <<" "<<bpm <<" "<<total_size<<" "<<max_chunk_size<<" "<<min_chunk_size<<" "<<average_chunk_size <<" "<<num_super_chunks<<endl;
     //INFO_LOG(msg.str());
     }
-    else 
+    else { 
+struct timeval tv,tv2;
+gettimeofday(&tv,NULL);
+
         read_super_chunks_dio_concurrent(super_chunks);
-   
+gettimeofday(&tv2,NULL);
+        long seconds = tv2.tv_sec - tv.tv_sec;
+    long useconds = tv2.tv_usec -tv.tv_usec;
+    double elapsed = seconds *1000.0 + useconds/1000.0;
+cerr <<"With parallel super chunk variable data transfer Execution time: " << elapsed <<" ms"<<endl;
+cerr<<"VNS: "<<this->FQN()<<" "<<elapsed<<endl;
+
+  
+
+    }
             
     set_read_p(true);
 }
@@ -1324,7 +1336,6 @@ gettimeofday(&tv,NULL);
 unsigned long long chunk_count = 0;
     while(!super_chunks.empty()) {
 struct timeval tvs,tvs2;
-gettimeofday(&tvs,NULL);
 
         auto super_chunk = super_chunks.front();
 cerr<<"buffer chunk offset: "<<super_chunk->get_offset() <<endl;
@@ -1335,6 +1346,7 @@ if(min_chunk_size >super_chunk->get_size())
 if(max_chunk_size <super_chunk->get_size())
     max_chunk_size = super_chunk->get_size();
  
+gettimeofday(&tvs,NULL);
         super_chunks.pop();
         super_chunk->read_dio();
 
@@ -1365,9 +1377,19 @@ cerr<<"List total Execution time, bytes per ms, total used space(total buffer si
 cerr<<"VNB: "<<this->FQN()<<" "<<elapsed <<" "<<bpm <<" "<<total_size<<" "<<max_chunk_size<<" "<<min_chunk_size<<" "<<average_chunk_size <<" "<<num_buf_chunks<<endl;
 
     }
-    else 
-        read_super_chunks_dio_concurrent(super_chunks);
+    else {
 
+struct timeval tv,tv2;
+gettimeofday(&tv,NULL);
+        read_super_chunks_dio_concurrent(super_chunks);
+gettimeofday(&tv2,NULL);
+        long seconds = tv2.tv_sec - tv.tv_sec;
+    long useconds = tv2.tv_usec -tv.tv_usec;
+    double elapsed = seconds *1000.0 + useconds/1000.0;
+cerr <<"With parallel buffer chunk variable data transfer Execution time: " << elapsed <<" ms"<<endl;
+cerr<<"VNB: "<<this->FQN()<<" "<<elapsed<<endl;
+
+    }
     set_read_p(true);
 }
 
