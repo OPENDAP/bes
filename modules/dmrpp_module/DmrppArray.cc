@@ -905,7 +905,7 @@ void read_super_chunks_concurrent_curl_multi(queue<shared_ptr<SuperChunk>> &supe
                     case ParallelTransferStatus::PT_RETRYABLE: {
                         ++transfer->retry;
                         stringstream retry_msg;
-                        retry_msg <<"Attempt to retry the data transfer, retry "<<transfer->retry <<" times."<<endl;
+                        retry_msg <<"Attempt to retry the parallel data transfer, retry "<<transfer->retry <<" times."<<endl;
                         INFO_LOG(retry_msg.str());
                         if (transfer->retry >= MAX_ATTEMPTS) {
                             string extra_err_msg;
