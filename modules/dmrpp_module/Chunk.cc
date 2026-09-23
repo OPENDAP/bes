@@ -206,7 +206,8 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
         // will be sad if that happens. jhrg 12/30/19
         try {
             // Here we need to extract the error code and message to see if we need to retry before throwing the error.
-            string code, message;
+            string code;
+            string  message;
             extract_s3_error_fields(xml_message, code, message);
 
             if (is_transient_s3_error_code(code)) {
