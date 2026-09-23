@@ -27,6 +27,7 @@
 #ifndef  _bes_http_CURL_UTILS_H_
 #define  _bes_http_CURL_UTILS_H_ 1
 
+#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
@@ -56,7 +57,7 @@ bool http_head(const std::string &target_url, int tries = 3, unsigned long wait_
 
 void http_get(const std::string &target_url, std::string &buf, curl_slist *http_request_headers = nullptr);
 
-void super_easy_perform(CURL *ceh);
+void super_easy_perform(CURL *ceh, std::function<void()> operation_before_retry = nullptr);
 ///@}
 
 std::shared_ptr<http::EffectiveUrl> get_redirect_url(const std::shared_ptr<http::url> &url, curl_slist *http_request_headers = nullptr);

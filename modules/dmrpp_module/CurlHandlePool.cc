@@ -231,7 +231,13 @@ void dmrpp_easy_handle::read_data() {
     if (d_url->protocol() == HTTPS_PROTOCOL || d_url->protocol() == HTTP_PROTOCOL) {
         try {
             // This code throws an exception if there is a problem. jhrg 11/16/23
-            curl::super_easy_perform(d_handle);
+            // Here we use a lamda to reset the bytes_read be 0 before retrying the fetch of data.
+            // We also clear the previous retryable error in this stage.
+            curl::super_easy_perform(d_handle, [this]() {
+                                                         d_chunk->set_bytes_read(0);
+                                                         d_chunk->clear_retryable_s3_error();
+                                                        });
+
         }
         catch (http::HttpError &http_error) {
             string err_msg = prolog + "Hyrax encountered a Service Chaining Error while attempting to acquire "

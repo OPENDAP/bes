@@ -69,7 +69,7 @@ using namespace std;
 
 namespace curl {
 
-static void super_easy_perform(CURL *c_handle, int fd);
+static void super_easy_perform(CURL *c_handle, int fd, std::function<void()> before_retry = nullptr);
 
 const unsigned int retry_limit = 3; // 10; // Amazon's suggestion
 const useconds_t url_retry_time = 250'000; // 1/4 second in micro seconds
@@ -1050,13 +1050,16 @@ static void truncate_file(int fd) {
  * determine when there was success, when to keep trying, and if to give up.
  *
  * @param c_handle The CURL easy handle on which to operate
+ * @param operation_before_retry A function pointer to handle things before the retry. 
+ *                               The reason to use a function pointer is because we need to go the chunk level for operation.
+ *                               By default, this parameter is set to nullptr when retry doesn't occur.
  */
-void super_easy_perform(CURL *c_handle) {
+void super_easy_perform(CURL *c_handle, std::function<void()> operation_before_retry) {
     int fd = -1;
-    super_easy_perform(c_handle, fd);
+    super_easy_perform(c_handle, fd, std::move(operation_before_retry));
 }
 
-static void super_easy_perform(CURL *c_handle, int fd) {
+static void super_easy_perform(CURL *c_handle, int fd, std::function<void()> operation_before_retry) {
     BESDEBUG(MODULE, prolog << "BEGIN\n");
 
     useconds_t retry_time = url_retry_time; // 0.25 seconds
@@ -1120,6 +1123,9 @@ static void super_easy_perform(CURL *c_handle, int fd) {
 
                 if (fd >= 0)
                     truncate_file(fd);
+
+                if (operation_before_retry!=nullptr)
+                    operation_before_retry();
             }
         }
     }
