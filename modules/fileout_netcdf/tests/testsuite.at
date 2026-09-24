@@ -418,6 +418,7 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/sinusoid.hdf.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/sinusoid_ll_constraint.hdf.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/grid_2_2d_ps.hdf.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/grid_1_2d.hdf.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/sds_two_linked_blocks_merged_one.hdf.dmrpp.bescmd)
 
 #HDF4 CF 
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/SDS_simple_comp.hdf.dap2.bescmd], [bes.h4cf.conf])
@@ -484,6 +485,31 @@ AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/h5_less_odd_chunk
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/h5_odd_chunk_size_comp2_dio_constraint.h5.dmrpp.compression.bescmd],[bes.nc4.grp.conf])
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST_NC4_COMPRESSION([bescmd/h5_odd_chunk_size_comp2_no_dio_constraint.h5.dmrpp.compression.bescmd],[bes.nc4.grp.conf])
 
+# Buffer chunk parallel data transfer tests
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/h5_odd_chunk_size_comp_dio_constraint.h5.dmrpp.bescmd], [bes.nc4.grp.p.transfer.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/h5_odd_chunk_size.h5.dmrpp.bescmd], [bes.nc4.grp.p.transfer.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/h5_less_odd_chunk_size_comp.h5.dmrpp.bescmd],[bes.nc4.grp.p.transfer.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/h5_odd_chunk_size_comp_constraint.h5.dmrpp.bescmd],[bes.nc4.grp.p.transfer.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/h5_less_odd_chunk_size_constraint.h5.dmrpp.bescmd],[bes.nc4.grp.p.transfer.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/lnumbers.bin.comprehensive_constraint.dmrpp.bescmd],[bes.nc4.grp.p.transfer.conf])
+
+# Super chunk sequential data transfer tests
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/h5_odd_chunk_size_comp_dio_constraint.h5.dmrpp.bescmd], [bes.nc4.grp.dmrpp.superchunk.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/h5_odd_chunk_size.h5.dmrpp.bescmd], [bes.nc4.grp.dmrpp.superchunk.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/h5_less_odd_chunk_size_comp.h5.dmrpp.bescmd],[bes.nc4.grp.dmrpp.superchunk.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/h5_odd_chunk_size_comp_constraint.h5.dmrpp.bescmd],[bes.nc4.grp.dmrpp.superchunk.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/h5_less_odd_chunk_size_constraint.h5.dmrpp.bescmd],[bes.nc4.grp.dmrpp.superchunk.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/lnumbers.bin.comprehensive_constraint.dmrpp.bescmd],[bes.nc4.grp.dmrpp.superchunk.conf])
+
+
+# Super chunk parallel data transfer tests
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/h5_odd_chunk_size_comp_dio_constraint.h5.dmrpp.bescmd], [bes.nc4.grp.dmrpp.superchunk.p.transfer.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/h5_odd_chunk_size.h5.dmrpp.bescmd], [bes.nc4.grp.dmrpp.superchunk.p.transfer.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/h5_less_odd_chunk_size_comp.h5.dmrpp.bescmd],[bes.nc4.grp.dmrpp.superchunk.p.transfer.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/h5_odd_chunk_size_comp_constraint.h5.dmrpp.bescmd],[bes.nc4.grp.dmrpp.superchunk.p.transfer.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/h5_less_odd_chunk_size_constraint.h5.dmrpp.bescmd],[bes.nc4.grp.dmrpp.superchunk.p.transfer.conf])
+AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/lnumbers.bin.comprehensive_constraint.dmrpp.bescmd],[bes.nc4.grp.dmrpp.superchunk.p.transfer.conf])
+
 
 #Disable direct IO tests
 AT_BESCMD_BESCONF_NETCDF_RESPONSE_TEST([bescmd/One_chunk_shuf_deflate.h5.dmrpp.bescmd], [bes.nc4.grp.disable_dio.conf])
@@ -521,4 +547,5 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/special_fixed_str_array.h
 # The variable-length string array dmrpp test
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_big_vl_str_dset2.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/vl_str_array.h5.dmrpp_constrained.bescmd)
+
 

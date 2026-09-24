@@ -1,0 +1,14 @@
+netcdf test {
+dimensions:
+	dim1 = 30 ;
+variables:
+	ubyte num(dim1) ;
+
+// global attributes:
+		:history = "removed date-timex lnumbers_comprehensive.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"lnumbers_comprehensive.dmrpp\"}]}]" ;
+data:
+
+ num = 6, 7, 12, 13, 42, 43, 46, 47, 4, 5, 8, 9, 2, 3, 20, 21, 10, 11, 24, 
+    25, 34, 35, 40, 41, 0, 0, 16, 17, 0, 0 ;
+}
