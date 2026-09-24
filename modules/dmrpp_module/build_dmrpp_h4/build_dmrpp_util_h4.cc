@@ -693,15 +693,19 @@ bool  ingest_sds_info_to_chunk(int file, int32 obj_ref, BaseType *btp) {
             // Here we will see if we can combine the number of contiguous blocks to a bigger one.
             // This is necessary since HDF4 may store small size data in large number of contiguous linked blocks.
             // KY 2024-02-22
+
             vector<int> merged_lengths;
             vector<int> merged_offsets;
             size_t merged_number_blocks = combine_linked_blocks(map_info, merged_lengths, merged_offsets);
             for (unsigned i = 0; i < merged_number_blocks; i++) {
-                VERBOSE(cerr << "offsets[" << i << "]: " << map_info.offsets[i] << endl);
-                VERBOSE(cerr << "lengths[" << i << "]: " << map_info.lengths[i] << endl);
-
+                VERBOSE(cerr << "merged_offsets[" << i << "]: " << merged_offsets[i] << endl);
+                VERBOSE(cerr << "merged_lengths[" << i << "]: " << merged_lengths[i] << endl);
                 // This has linked blocks. Add this information to the dmrpp:chunks.
-                dc->add_chunk(endian_name, merged_lengths[i], merged_offsets[i], true,i);
+                // If there is only one merged block, it essentially is a chunk;so treat it as a chunk.
+                if (merged_number_blocks == 1) 
+                   dc->add_chunk(endian_name, merged_lengths[0], merged_offsets[0], position_in_array);
+                else 
+                   dc->add_chunk(endian_name, merged_lengths[i], merged_offsets[i], true,i);
 
             }
         }
