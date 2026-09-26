@@ -1310,9 +1310,8 @@ void DmrppArray::read_buffer_chunks_dio_unconstrained()
 void DmrppArray::read_linked_blocks() {
 
     unsigned int num_linked_blocks = this->get_total_linked_blocks();
-    if (num_linked_blocks < 2)
-        throw BESInternalError("The number of linked blocks must be >1 to read the data.", __FILE__, __LINE__);
 
+    // the number of linked blocks can be 1.
     vector<unsigned long long> accumulated_lengths;
     accumulated_lengths.resize(num_linked_blocks);
     vector<unsigned long long> individual_lengths;
