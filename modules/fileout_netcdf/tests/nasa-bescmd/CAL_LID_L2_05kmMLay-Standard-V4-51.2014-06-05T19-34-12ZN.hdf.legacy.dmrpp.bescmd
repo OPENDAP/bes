@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <request reqID="some_unique_value" >
     <setContext name="dap_format">dap4</setContext>
-    <setContainer name="fnc4test" space="catalog">/data/CAL_LID_L2_05kmMLay-Standard-V4-51.2014-06-05T19-34-12ZN.hdf.dmrpp</setContainer>
+    <setContainer name="fnc4test" space="catalog">/data/CAL_LID_L2_05kmMLay-Standard-V4-51.2014-06-05T19-34-12ZN.hdf.legacy.dmrpp</setContainer>
     <define name="d">
     <container name="fnc4test" />
     </define>

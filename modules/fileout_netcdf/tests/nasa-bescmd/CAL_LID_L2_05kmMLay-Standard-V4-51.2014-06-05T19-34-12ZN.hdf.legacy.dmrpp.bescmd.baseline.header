@@ -1166,8 +1166,8 @@ variables:
 		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
 		:build_dmrpp_metadata.invocation = "build_dmrpp_h4 -f /Users/myang6/Desktop/CAL_LID_L2_05kmMLay-Standard-V4-51.2014-06-05T19-34-12ZN.hdf -r CAL_LID_L2_05kmMLay-Standard-V4-51.2014-06-05T19-34-12ZN.hdf.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -D -M" ;
 		:build_dmrpp_metadata.configuration = "H4.EnableCF=false" ;
-		:history = "removed date-timex CAL_LID_L2_05kmMLay-Standard-V4-51.2014-06-05T19-34-12ZN.hdf.dmrpp\n" ;
-		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"CAL_LID_L2_05kmMLay-Standard-V4-51.2014-06-05T19-34-12ZN.hdf.dmrpp\"}]}]" ;
+		:history = "removed date-timex CAL_LID_L2_05kmMLay-Standard-V4-51.2014-06-05T19-34-12ZN.hdf.legacy.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"CAL_LID_L2_05kmMLay-Standard-V4-51.2014-06-05T19-34-12ZN.hdf.legacy.dmrpp\"}]}]" ;
 
 group: Lidar_Surface_Detection {
   variables:
