@@ -3340,10 +3340,14 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
     set_read_p(true);
 }
 
+
 bool DmrppArray::use_buffer_chunk() {
 
     bool ret_value = false;
     auto chunks = this->get_chunks();
+
+    // Array size 
+    const unsigned long long ARRAY_SIZE_MARK = 268435456;
 
     // Since we find quite a few cases that the chunks are not adjacent in the middle, this causes the expensive 
     // cloud access several times even with super chunks. So we will try to use the buffer chunk for those cases too. KY 2025-11-20
@@ -3360,6 +3364,45 @@ bool DmrppArray::use_buffer_chunk() {
             }
         }
     }
+
+    // When the total buffer size is much bigger than the total super chunk size, 
+    // the super chunk, especially when combined with the parallel data transfer; may achieve better performance.
+    // So here we still need to check if we should use super chunk.
+    if (ret_value) {
+
+        ret_value = use_buffer_chunk_internal();
+
+    }
+    return ret_value;
+}
+
+bool DmrppArray::use_buffer_chunk_internal() {
+
+    bool ret_value = true;
+    // Here we need to consider the array subset.
+    bool is_subset = is_projected();
+  
+    // We only need to consider the bigger size array. Now the size is >256MB.
+    const unsigned long long ARRAY_SIZE_MARK = 268435456;
+
+    // Now the chunk size should be greater than 32KB to consider not using the buffer chunk.
+    const unsigned long long CHUNK_SIZE_MARK = 32768;
+
+    unsigned array_size = get_size(is_subset)*bytes_per_element;   
+    unsigned chunk_size = get_chunk_size_in_elements()*bytes_per_element;
+ 
+    if (array_size >ARRAY_SIZE_MARK && chunk_size > CHUNK_SIZE_MARK) 
+        ret_value = use_buffer_chunk_internal_more(is_subset);
+    
+    return ret_value;
+
+}
+
+// 
+bool DmrppArray::use_buffer_chunk_internal_more(bool is_subset) {
+
+    bool ret_value = true;
+    // Calculate the buffer size and the super chunk size.
 
     return ret_value;
 }
@@ -3471,6 +3514,7 @@ void DmrppArray::obtain_buffer_end_pos_vec(const vector<bool>& subset_chunks_nee
         }
     }
 }
+
 
 unsigned long long DmrppArray::obtain_buffer_end_pos(const vector<unsigned long long>& t_buf_end_pos_vec, unsigned long long cur_buf_end_pos) const {
 
