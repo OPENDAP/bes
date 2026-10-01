@@ -1121,6 +1121,47 @@ void DmrppArray::build_superchunk_queue(queue<shared_ptr<SuperChunk>> &super_chu
     }
 }
 
+void DmrppArray::build_bufferchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks) {
+
+    if (get_chunk_count() < 2)
+        throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
+
+    unsigned long long sc_count=0;
+    stringstream sc_id;
+    sc_count++;
+    sc_id << name() << "-" << sc_count;
+    //queue<shared_ptr<SuperChunk>> super_chunks;
+    auto current_super_chunk = std::make_shared<SuperChunk>(sc_id.str(), this) ;
+
+    // Set the non-contiguous chunk flag
+    current_super_chunk->set_non_contiguous_chunk_flag(true);
+    super_chunks.push(current_super_chunk);
+
+    auto chunks = this->get_chunks();
+    unsigned long long buf_end_pos_counter = 0;
+    for (const auto & chunk:chunks) {
+       bool added = current_super_chunk->add_chunk_non_contiguous(chunk,buf_end_pos_vec[buf_end_pos_counter]);
+       if(!added){
+           sc_id.str(std::string()); // clears stringstream.
+           sc_count++;
+           sc_id << name() << "-" << sc_count;
+           current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(),this));
+
+           // We need to mark that this superchunk includes non-contiguous chunks.
+           current_super_chunk->set_non_contiguous_chunk_flag(true);
+           super_chunks.push(current_super_chunk);
+
+           buf_end_pos_counter++;
+           if(!current_super_chunk->add_chunk_non_contiguous(chunk, buf_end_pos_vec[buf_end_pos_counter])){
+               stringstream msg ;
+               msg << prolog << "Failed to add chunk to new superchunk. chunk: " << chunk->to_string();
+               throw BESInternalError(msg.str(), __FILE__, __LINE__);
+
+           }
+       }
+    }
+}
+
 /**
  * @brief Read data for an unconstrained chunked array
  *
@@ -1263,6 +1304,9 @@ void DmrppArray::read_buffer_chunks_dio_unconstrained()
     //obtain_buffer_end_pos_vec(subset_chunks_needed,max_buffer_size, buffer_offset, last_unfilled_chunk_index, buf_end_pos_vec);
     obtain_buffer_end_pos_vec();
 
+    queue<shared_ptr<SuperChunk>> super_chunks;
+    build_bufferchunk_queue(super_chunks);
+#if 0
     unsigned long long sc_count=0;
     stringstream sc_id;
     sc_count++;
@@ -1297,7 +1341,7 @@ void DmrppArray::read_buffer_chunks_dio_unconstrained()
            }
        }
     }
-
+#endif
     // Change to the total storage buffer size to just the compressed buffer size. 
     reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
 
@@ -3392,7 +3436,10 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
     // Calculate the buffer end position for the whole array.
     //obtain_buffer_end_pos_vec(subset_chunks_needed,max_buffer_size, buffer_offset, last_unfilled_chunk_index, buf_end_pos_vec);
     obtain_buffer_end_pos_vec();
+    queue<shared_ptr<SuperChunk>> super_chunks;
+    build_bufferchunk_queue(super_chunks);
 
+#if 0
     unsigned long long sc_count = 0;
     stringstream sc_id;
     sc_count++;
@@ -3429,7 +3476,7 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
             }
         }
     }
-
+#endif
     reserve_value_capacity_ll(get_size());
 
     if (!DmrppRequestHandler::d_use_transfer_threads || super_chunks.size() == 1) {

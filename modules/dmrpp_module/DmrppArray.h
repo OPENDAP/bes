@@ -179,6 +179,7 @@ private:
     void obtain_buffer_end_pos_vec();
 
     void build_superchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks);
+    void build_bufferchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks);
 
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim) const;
 
