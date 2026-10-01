@@ -1212,6 +1212,7 @@ void DmrppArray::read_buffer_chunks_dio_unconstrained()
     if (get_chunk_count() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
+#if 0
     // We need to pre-calculate the buffer_end_position for each buffer chunk to find the optimial buffer size.
     // unsigned long long buffer_offset = 0;
 
@@ -1250,6 +1251,8 @@ void DmrppArray::read_buffer_chunks_dio_unconstrained()
     }
     }
 
+#endif
+    set_up_buffer_chunk();
     BESDEBUG(MODULE, prolog <<" NEW BUFFER maximum buffer size: "<<max_buffer_size<<endl);
     BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
 
@@ -1271,6 +1274,7 @@ void DmrppArray::read_buffer_chunks_dio_unconstrained()
     current_super_chunk->set_non_contiguous_chunk_flag(true);
     super_chunks.push(current_super_chunk);
 
+    auto chunks = this->get_chunks();
     unsigned long long buf_end_pos_counter = 0;
     for (const auto & chunk:chunks) {
        bool added = current_super_chunk->add_chunk_non_contiguous(chunk,buf_end_pos_vec[buf_end_pos_counter]);
@@ -1991,17 +1995,54 @@ void DmrppArray::read_chunks() {
     auto current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(), this));
     super_chunks.push(current_super_chunk);
 
-    // TODO We know that non-contiguous chunks may be forward or backward in the file from
-    //  the current offset. When an add_chunk() call fails, prior to making a new SuperChunk
-    //  we might want try adding the rejected Chunk to the other existing SuperChunks to see
-    //  if it's contiguous there.
-    // Find the required Chunks and put them into SuperChunks.
-    bool found_needed_chunks = false;
+#if 0
     vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
     vector<unsigned long long> var_start;
     vector<unsigned long long> var_stop;
     vector<unsigned long long> var_stride;
     int num_dims = obtain_subset_dims(var_start,var_stop,var_stride);
+ 
+    if (subset_chunks_needed.empty()) {
+        for (const auto &chunk: get_immutable_chunks()) {
+            bool needed = find_needed_chunks_simple(chunk,chunk_shape,var_start,var_stride,var_stop,num_dims);
+            if (needed) {
+                subset_chunks_needed.push_back(true);
+            }
+            else
+                subset_chunks_needed.push_back(false);
+        }
+    }
+
+    if (subset_chunks_needed.empty())
+        throw BESInternalError(string("No subset can be found for variable ") + name(), __FILE__, __LINE__
+#endif
+    obtain_subset_chunks_needed();
+
+    // TODO We know that non-contiguous chunks may be forward or backward in the file from
+    //  the current offset. When an add_chunk() call fails, prior to making a new SuperChunk
+    //  we might want try adding the rejected Chunk to the other existing SuperChunks to see
+    //  if it's contiguous there.
+    // Find the required Chunks and put them into SuperChunks.
+
+    auto chunks = this->get_chunks();
+    for (unsigned long long i = 0; i < chunks.size(); i++) {
+        if (subset_chunks_needed[i]){
+            bool added = current_super_chunk->add_chunk(chunks[i]);
+            if(!added){
+                sc_id.str(std::string()); // clears stringstream.
+                sc_count++;
+                sc_id << name() << "-" << sc_count;
+                current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(), this));
+                super_chunks.push(current_super_chunk);
+                if(!current_super_chunk->add_chunk(chunks[i])){
+                    stringstream msg ;
+                    msg << prolog << "Failed to add chunk to new superchunk. chunk: " << (chunks[i])->to_string();
+                    throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                }
+            }
+        }
+    }
+#if 0
     for (const auto &chunk : get_immutable_chunks()) {
         
         bool needed = find_needed_chunks_simple(chunk,chunk_shape,var_start,var_stride,var_stop,num_dims);
@@ -2026,6 +2067,7 @@ void DmrppArray::read_chunks() {
         throw BESInternalError("ERROR - Failed to locate any chunks that correspond to the requested data.", __FILE__,
                                __LINE__);
     }
+#endif
 
     reserve_value_capacity_ll(get_size(true));
     if (is_readable_struct)
@@ -2126,6 +2168,7 @@ void DmrppArray::read_buffer_chunks() {
     if (get_chunk_count() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
+#if 0
     // We need to pre-calculate the buffer_end_position for each buffer chunk to find the optimial buffer size.
     //unsigned long long buffer_offset = 0;
 
@@ -2157,28 +2200,38 @@ void DmrppArray::read_buffer_chunks() {
         }
         else
             subset_chunks_needed.push_back(false);
-        if (needed && find_first_non_filled_chunk){
-            if (chunk->get_offset()!=0) {
-                buffer_offset =  chunk->get_offset();
+    }
+    }
+
+    if (subset_chunks_needed.empty())
+        throw BESInternalError(string("No subset can be found for variable ") + name(), __FILE__, __LINE__);
+
+    auto chunks = this->get_chunks();
+    for (unsigned long long i = 0; i < chunks.size(); i++) {
+        if (subset_chunks_needed[i] && find_first_non_filled_chunk){
+            if ((chunks[i])->get_offset()!=0) {
+                buffer_offset =  (chunks[i])->get_offset();
                 find_first_non_filled_chunk = false;
             }
         }
     }
-    }
+    
  
-    auto chunks = this->get_chunks();
-
     // We need to know the chunk index of the last non-filled chunk to fill in the last buffer chunk position.
-
     if (!is_last_unfilled_chunk_index_checked) {
-    //unsigned long long last_unfilled_chunk_index = 0;
     for (unsigned long long i = (chunks.size()-1);i>0;i--) {
         if (subset_chunks_needed[i] && chunks[i]->get_offset()!=0) {
             last_unfilled_chunk_index = i;
+            is_last_unfilled_chunk_index_checked = true;
             break;
         }
     }
     }
+#endif
+
+    obtain_subset_chunks_needed();
+    set_up_subset_buffer_chunk(); 
+
     BESDEBUG(MODULE, prolog <<" NEW BUFFER maximum buffer size: "<<max_buffer_size<<endl);
     BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
 
@@ -2198,6 +2251,7 @@ void DmrppArray::read_buffer_chunks() {
     super_chunks.push(current_super_chunk);
 
     unsigned long long buf_end_pos_counter = 0;
+    auto chunks = this->get_chunks();
     for (unsigned long long i = 0; i < chunks.size(); i++) {
         if (subset_chunks_needed[i]){
             bool added = current_super_chunk->add_chunk_non_contiguous(chunks[i],buf_end_pos_vec[buf_end_pos_counter]);
@@ -2246,6 +2300,12 @@ void DmrppArray::read_buffer_chunks_dio_constrained() {
     if (subset_chunks_needed.empty())
         throw BESInternalError(string("read_buffer_chunks_dio_constrained: Expected subset selected chunks for variable ") + name(), __FILE__, __LINE__);
 
+    set_up_subset_buffer_chunk();
+
+#if 0
+    if (subset_chunks_needed.empty())
+        throw BESInternalError(string("read_buffer_chunks_dio_constrained: Expected subset selected chunks for variable ") + name(), __FILE__, __LINE__);
+
     // We need to pre-calculate the buffer_end_position for each buffer chunk to find the optimial buffer size.
     //unsigned long long buffer_offset = 0;
 
@@ -2286,6 +2346,8 @@ void DmrppArray::read_buffer_chunks_dio_constrained() {
         }
     }
     }
+#endif
+
     BESDEBUG(MODULE, prolog <<" NEW BUFFER maximum buffer size: "<<max_buffer_size<<endl);
     BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
 
@@ -2305,6 +2367,7 @@ void DmrppArray::read_buffer_chunks_dio_constrained() {
     super_chunks.push(current_super_chunk);
 
     unsigned long long buf_end_pos_counter = 0;
+    auto chunks = this->get_chunks();
     for (unsigned long long i = 0; i < chunks.size(); i++) {
         if (subset_chunks_needed[i]){
             bool added = current_super_chunk->add_chunk_non_contiguous(chunks[i],buf_end_pos_vec[buf_end_pos_counter]);
@@ -3279,6 +3342,7 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
     if (get_chunk_count() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
+#if 0
     // We need to pre-calculate the buffer_end_position for each buffer chunk to find the optimial buffer size.
     //unsigned long long buffer_offset = 0;
 
@@ -3310,10 +3374,14 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
     for (unsigned long long i = (chunks.size()-1);i>0;i--) {
         if (chunks[i]->get_offset()!=0) {
             last_unfilled_chunk_index = i;
+            is_last_unfilled_chunk_index_checked = true;
             break;
         }
     }
     }
+
+#endif
+    set_up_buffer_chunk();
 
     BESDEBUG(MODULE, prolog <<" NEW BUFFER maximum buffer size: "<<max_buffer_size<<endl);
     BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
@@ -3337,6 +3405,7 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
     super_chunks.push(current_super_chunk);
 
     unsigned long long buf_end_pos_counter = 0;
+    auto chunks = this->get_chunks();
     for (const auto & chunk:chunks) {
         bool added = current_super_chunk->add_chunk_non_contiguous(chunk,buf_end_pos_vec[buf_end_pos_counter]);
         if(!added){
@@ -3377,8 +3446,114 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
     set_read_p(true);
 }
 
+void DmrppArray::obtain_subset_chunks_needed() {
 
+    if (subset_chunks_needed.empty()) {
+        vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
+        vector<unsigned long long> var_start;
+        vector<unsigned long long> var_stop;
+        vector<unsigned long long> var_stride;
+        int num_dims = obtain_subset_dims(var_start,var_stop,var_stride);
+    
+        for (const auto &chunk: get_immutable_chunks()) {
+            bool needed = find_needed_chunks_simple(chunk,chunk_shape,var_start,var_stride,var_stop,num_dims); 
+            if (needed) {          
+                subset_chunks_needed.push_back(true);
+            }
+            else
+                subset_chunks_needed.push_back(false);
+        }
+    }
+    if (subset_chunks_needed.empty())
+        throw BESInternalError(string("No subset can be found for variable ") + name(), __FILE__, __LINE__);
+
+}
+
+void DmrppArray::set_up_subset_buffer_chunk() {
+
+    if (subset_buffer_chunk_set_up)
+        return;
+    bool find_first_non_filled_chunk = true;
+
+    if (subset_chunks_needed.empty())  
+        throw BESInternalError(string("set_up_subset_buffer_chunk: Expected subset selected chunks for variable ") + name(), __FILE__, __LINE__);
+
+    // Set up max_buffer_size
+    if (max_buffer_size == 0) 
+        max_buffer_size = bytes_per_element * this->get_maximum_constrained_buffer_nelmts();
+
+    auto chunks = this->get_chunks();
+
+    // the buffer_offset(the first buffer offset)
+    for (unsigned long long i = 0; i < chunks.size(); i++) {
+        if (subset_chunks_needed[i] && find_first_non_filled_chunk){
+            if (chunks[i]->get_offset()!=0) {
+                buffer_offset =  chunks[i]->get_offset();
+                find_first_non_filled_chunk = false;
+            }
+        }
+    }
+    
+    // The chunk index of the last non-filled chunk to fill in the last real data buffer chunk position.
+    if (!is_last_unfilled_chunk_index_checked) {
+        for (unsigned long long i = (chunks.size()-1);i>0;i--) {
+            if (subset_chunks_needed[i] && chunks[i]->get_offset()!=0) {
+                last_unfilled_chunk_index = i;
+                is_last_unfilled_chunk_index_checked = true;
+                break;
+            }
+        }
+    }
+
+    subset_buffer_chunk_set_up = true;
+}
+
+void DmrppArray::set_up_buffer_chunk() {
+
+    if (buffer_chunk_set_up)
+        return;
+ 
+    // The maximum buffer size is set to the current variable size. 
+    // This seems an issue for a highly compressed variable. However, it is not since we are
+    // going to calculate the optimal buffer size. It will be confined within the file size.
+    max_buffer_size = bytes_per_element * this->get_size(false);
+
+
+    // Since the chunks may be filled, we need to find the first non-filled chunk and make the chunk offset
+    // as the first buffer offset. The current implementation seems to indicate that the first chunk is always a 
+    // chunk that stores the real data. 
+    for (const auto &chunk: get_immutable_chunks()) {
+        if (chunk->get_offset() != 0) {
+            buffer_offset =  chunk->get_offset();
+            break;
+        }
+    }
+
+    auto chunks = this->get_chunks();
+
+    if (is_last_unfilled_chunk_index_checked == false) {
+
+        // We need to know the chunk index of the last non-filled chunk to fill in the last real data buffer chunk position.
+        for (unsigned long long i = (chunks.size()-1);i>0;i--) {
+            if (chunks[i]->get_offset()!=0) {
+                last_unfilled_chunk_index = i;
+                is_last_unfilled_chunk_index_checked = true;
+                break;
+            }
+        }
+    }
+
+    buffer_chunk_set_up = true;
+}
 bool DmrppArray::use_buffer_chunk() {
+
+
+    // We mostly will use the parallel data transfer, now we find the short cut case.
+    // If the number of chunks is smaller than the number of parallel threads, just use the super chunk;
+    // since one data transfer will be carried for both the buffer chunk and the super chunk cases and
+    // we know the total buffer size will always be greater than the super chunk size; so just use the super chunk.
+    if (DmrppRequestHandler::d_use_transfer_threads && get_chunk_count() <=DmrppRequestHandler::d_max_transfer_threads)
+        return false;
 
     bool ret_value = false;
     auto chunks = this->get_chunks();
@@ -3405,11 +3580,9 @@ bool DmrppArray::use_buffer_chunk() {
     // When the total buffer size is much bigger than the total super chunk size, 
     // the super chunk, especially when combined with the parallel data transfer; may achieve better performance.
     // So here we still need to check if we should use super chunk.
-    if (ret_value) {
-
+    // Another case is when the total buffer chunk size is the same as the total super chunk size, we should use super chunk.
+    if (ret_value) 
         ret_value = use_buffer_chunk_internal();
-
-    }
     return ret_value;
 }
 
@@ -3419,7 +3592,7 @@ bool DmrppArray::use_buffer_chunk_internal() {
     // Here we need to consider the array subset.
     bool is_subset = is_projected();
   
-    // We only need to consider the bigger size array. Now the size is >256MB.
+    // We only need to consider the bigger size array. Now the size should be > 256MB.
     const unsigned long long ARRAY_SIZE_MARK = 268435456;
 
     // Now the chunk size should be greater than 32KB to consider not using the buffer chunk.
@@ -3439,8 +3612,107 @@ bool DmrppArray::use_buffer_chunk_internal() {
 bool DmrppArray::use_buffer_chunk_internal_more(bool is_subset) {
 
     bool ret_value = true;
-    // Calculate the buffer size and the super chunk size.
 
+    // First, obtain the super chunk size.  
+    size_t total_super_chunk_size = get_var_chunks_storage_size();
+    
+#if 0
+    // Now we need to calculate the buffer size.
+
+    bool find_first_non_filled_chunk = true;
+
+    // Calculate the subset_chunks_needed.
+    if (is_subset) {
+
+        if (subset_chunks_needed.empty() {
+            for (const auto &chunk: get_immutable_chunks()) {
+                vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
+                vector<unsigned long long> var_start;
+                vector<unsigned long long> var_stop;
+                vector<unsigned long long> var_stride;
+                int num_dims = obtain_subset_dims(var_start,var_stop,var_stride);
+        
+                bool needed = find_needed_chunks_simple(chunk,chunk_shape,var_start,var_stride,var_stop,num_dims);
+                if (needed) 
+                    subset_chunks_needed.push_back(true);
+                else
+                    subset_chunks_needed.push_back(false);
+            }
+        
+            if (subset_chunks_needed.empty())  
+                throw BESInternalError(string("read_chunks_dio_constrained: Expected subset selected chunks for variable ") + name(), __FILE__, __LINE__);
+        
+            // Set up max_buffer_size
+            if (max_buffer_size == 0) 
+                max_buffer_size = bytes_per_element * this->get_maximum_constrained_buffer_nelmts();
+
+            auto chunks = this->get_chunks();
+    
+            // We need to fill in the information for buffer chunk and super chunk.
+            for (unsigned long long i = 0; i < chunks.size(); i++) {
+                if (subset_chunks_needed[i] && find_first_non_filled_chunk){
+                    if (chunks[i]->get_offset()!=0) {
+                        buffer_offset =  chunk[i]->get_offset();
+                        find_first_non_filled_chunk = false;
+                    }
+                }
+            }
+            
+            if (!is_last_unfilled_chunk_index_checked) {
+                for (unsigned long long i = (chunks.size()-1);i>0;i--) {
+                    if (subset_chunks_needed[i] && chunks[i]->get_offset()!=0) {
+                        last_unfilled_chunk_index = i;
+                        is_last_unfilled_chunk_index_checked = true;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    else { // Whole array. 
+
+    // The maximum buffer size is set to the current variable size. 
+    // This seems an issue for a highly compressed variable. However, it is not since we are
+    // going to calculate the optimal buffer size. It will be confined within the file size.
+    if (max_buffer_size == 0)
+        max_buffer_size = bytes_per_element * this->get_size(false);
+
+    //vector<unsigned long long> buf_end_pos_vec;
+
+    // Since the chunks may be filled, we need to find the first non-filled chunk and make the chunk offset
+    // as the first buffer offset. The current implementation seems to indicate that the first chunk is always a 
+    // chunk that stores the real data. 
+    if (buffer_offset == 0) {
+    for (const auto &chunk: get_immutable_chunks()) {
+        if (chunk->get_offset() != 0) {
+            buffer_offset =  chunk->get_offset();
+            break;
+        }
+    }
+    }
+    auto chunks = this->get_chunks();
+    if (is_last_unfilled_chunk_index_checked == false) {
+    // We need to know the chunk index of the last non-filled chunk to fill in the last real data buffer chunk position.
+    //unsigned long long last_unfilled_chunk_index = 0;
+
+    for (unsigned long long i = (chunks.size()-1);i>0;i--) {
+        if (chunks[i]->get_offset()!=0) {
+            last_unfilled_chunk_index = i;
+            is_last_unfilled_chunk_index_checked = true;
+            break;
+        }
+    }
+    }
+
+
+
+
+
+
+    }
+#endif
+    
+    
     return ret_value;
 }
 

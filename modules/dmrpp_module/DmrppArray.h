@@ -103,7 +103,11 @@ private:
     unsigned long long buffer_offset = 0;
     unsigned long long last_unfilled_chunk_index = 0;
     bool is_last_unfilled_chunk_index_checked = false;
+    bool subset_buffer_chunk_set_up = false;
+    bool buffer_chunk_set_up = false;
+
     vector<bool> subset_chunks_needed;
+
     vector<unsigned long long> buf_end_pos_vec;
 
     DmrppArray::dimension get_dimension(unsigned int dim_num);
@@ -165,6 +169,8 @@ private:
     void read_buffer_chunks_unconstrained();
 
     unsigned long long get_maximum_constrained_buffer_nelmts();
+    void set_up_subset_buffer_chunk();
+    void set_up_buffer_chunk();
     unsigned long long obtain_buffer_end_pos(const vector<unsigned long long>& t_buf_end_pos_vec, unsigned long long cur_buf_end_pos) const;
 #if 0
     void obtain_buffer_end_pos_vec(const vector<bool>& subset_chunks_needed, unsigned long long max_buffer_size, unsigned long long buffer_offset,
@@ -179,6 +185,7 @@ private:
     bool find_needed_chunks_simple(std::shared_ptr<Chunk> chunk, const std::vector<unsigned long long> & chunk_shape, 
                                    const std::vector<unsigned long long> & start, const std::vector<unsigned long long> & stride,
                                    std::vector<unsigned long long> & stop, int num_dims);
+    void obtain_subset_chunks_needed();
     int obtain_subset_dims(vector<unsigned long long>& var_start,vector<unsigned long long>&var_stop,vector<unsigned long long>&var_stride);
 
     virtual void insert_chunk(unsigned int dim, std::vector<unsigned long long> *target_element_address,
