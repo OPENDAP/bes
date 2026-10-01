@@ -181,6 +181,10 @@ private:
     void build_superchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks);
     void build_bufferchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks);
 
+    void build_subset_superchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks);
+    void build_subset_bufferchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks);
+
+
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim) const;
 
     bool find_needed_chunks_simple(std::shared_ptr<Chunk> chunk, const std::vector<unsigned long long> & chunk_shape, 
