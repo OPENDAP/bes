@@ -293,7 +293,8 @@ void hdfistream_sds::open(const char *filename)
         THROW(hcerr_openfile);
     }
 
-    BESDEBUG("h4", "sds file opened: id=" << _file_id << endl);
+    // SonarScan flagged:  id=" << _file_id as possible logging injection so I removed it - kln
+    BESDEBUG("h4", "sds file opened" << endl);
 
     _filename = filename;       // assign filename
     _get_fileinfo();            // get file information
