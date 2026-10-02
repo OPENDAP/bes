@@ -3666,6 +3666,7 @@ bool DmrppArray::use_buffer_chunk_internal() {
     // Here we need to consider the array subset.
     bool is_subset = is_projected();
   
+#if 0
     // We only need to consider the bigger size array. Now the size should be > 256MB.
     const unsigned long long ARRAY_SIZE_MARK = 268435456;
 
@@ -3677,6 +3678,8 @@ bool DmrppArray::use_buffer_chunk_internal() {
  
     if (array_size >ARRAY_SIZE_MARK && chunk_size > CHUNK_SIZE_MARK) 
         ret_value = use_buffer_chunk_internal_more(is_subset);
+#endif
+    ret_value = use_buffer_chunk_internal_more(is_subset);
     
     return ret_value;
 
@@ -3686,9 +3689,6 @@ bool DmrppArray::use_buffer_chunk_internal() {
 bool DmrppArray::use_buffer_chunk_internal_more(bool is_subset) {
 
     bool ret_value = true;
-
-    // First, obtain the super chunk size.  
-    size_t total_super_chunk_size = get_var_chunks_storage_size();
 
     // Build the super chunk and buffer chunk queues once. They are kept as class members and
     // the read routine chosen in read() takes them over, so they are not rebuilt there.
@@ -3702,6 +3702,53 @@ bool DmrppArray::use_buffer_chunk_internal_more(bool is_subset) {
         build_bufferchunk_reuse_queue();
     }
     // TODO: compare super_chunks_reuse/buffer_chunks_reuse (or the subset_* queues) to decide ret_value.
+
+    // Number of SuperChunks and buffer chunks that hold real data (fill-value chunks are skipped;
+    // each one is its own SuperChunk and nothing is transferred for it), and the total number of
+    // bytes the buffer chunks transfer.
+    unsigned long long num_super_chunks = 0;
+    unsigned long long num_buffer_chunks = 0;
+    unsigned long long buffer_chunks_total_size = 0;
+    unsigned long long super_chunks_total_size = get_var_chunks_storage_size();
+
+    // std::queue cannot be iterated, so walk a copy (it only copies the shared_ptrs).
+    // The member queues stay intact so the read routine can reuse them.
+    const auto &sc_queue  = is_subset ? subset_super_chunks_reuse  : super_chunks_reuse;
+    const auto &buf_queue = is_subset ? subset_buffer_chunks_reuse : buffer_chunks_reuse;
+
+    auto sc_copy = sc_queue;
+    auto buf_copy = buf_queue;
+    if (get_processing_fv_chunks()) {
+    while (!sc_copy.empty()) {
+        if (!sc_copy.front()->get_uses_fill_value())
+            num_super_chunks++;
+        sc_copy.pop();
+    }
+
+    while (!buf_copy.empty()) {
+        if (!buf_copy.front()->get_uses_fill_value()) {
+            num_buffer_chunks++;
+            buffer_chunks_total_size += buf_copy.front()->get_size();
+        }
+        buf_copy.pop();
+    }
+    }
+    else {
+        num_super_chunks = sc_copy.size();
+        num_buffer_chunks = buf_copy.size();
+        while (!buf_copy.empty()) {
+            buffer_chunks_total_size += buf_copy.front()->get_size();
+            buf_copy.pop();
+        }
+    }
+
+    // Now we need to consider the parallel data transfer
+    const unsigned int size_unit = 8092;
+    // Add transferring time comparision with optimization
+
+    BESDEBUG(MODULE, prolog << "number of non-fill super chunks: " << num_super_chunks << endl);
+    BESDEBUG(MODULE, prolog << "number of non-fill buffer chunks: " << num_buffer_chunks
+                            << ", total buffer chunk size: " << buffer_chunks_total_size << endl);
     
 #if 0
     // Now we need to calculate the buffer size.
