@@ -99,6 +99,11 @@ private:
     vector<char> d_structure_array_str_buf;
     bool is_special_structure = false;
 
+    queue<shared_ptr<SuperChunk>> super_chunks_reuse;
+    queue<shared_ptr<SuperChunk>> buffer_chunks_reuse;
+    queue<shared_ptr<SuperChunk>> subset_super_chunks_reuse;
+    queue<shared_ptr<SuperChunk>> subset_buffer_chunks_reuse;
+ 
     unsigned long long max_buffer_size = 0;
     unsigned long long buffer_offset = 0;
     unsigned long long last_unfilled_chunk_index = 0;
@@ -180,9 +185,14 @@ private:
 
     void build_superchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks);
     void build_bufferchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks);
-
     void build_subset_superchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks);
     void build_subset_bufferchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks);
+
+    void build_superchunk_reuse_queue();
+    void build_bufferchunk_reuse_queue();
+    void build_subset_superchunk_reuse_queue();
+    void build_subset_bufferchunk_reuse_queue();
+    void clear_reuse_queues();
 
 
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim) const;

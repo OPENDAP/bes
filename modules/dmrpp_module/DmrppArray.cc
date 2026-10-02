@@ -1121,81 +1121,6 @@ void DmrppArray::build_superchunk_queue(queue<shared_ptr<SuperChunk>> &super_chu
     }
 }
 
-void DmrppArray::build_subset_superchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks) {
-
-    if (get_chunk_count() < 2 || subset_chunks_needed.empty())
-        throw BESInternalError(string("Expected chunks and subset for variable ") + name(), __FILE__, __LINE__);
-    
-    // Find all the required chunks to read. I used a queue to preserve the chunk order, which
-    // made using a debugger easier. However, order does not matter, AFAIK.
-    unsigned long long sc_count = 0;
-    stringstream sc_id;
-    sc_id << name() << "-" << sc_count++;
-    auto current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(), this));
-    super_chunks.push(current_super_chunk);
-    auto chunks = this->get_chunks();
-    for (unsigned long long i = 0; i < chunks.size(); i++) {
-        if (subset_chunks_needed[i]){
-            bool added = current_super_chunk->add_chunk(chunks[i]);
-            if(!added){
-                sc_id.str(std::string()); // clears stringstream.
-                sc_count++;
-                sc_id << name() << "-" << sc_count;
-                current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(), this));
-                super_chunks.push(current_super_chunk);
-                if(!current_super_chunk->add_chunk(chunks[i])){
-                    stringstream msg ;
-                    msg << prolog << "Failed to add chunk to new superchunk. chunk: " << (chunks[i])->to_string();
-                    throw BESInternalError(msg.str(), __FILE__, __LINE__);
-                }
-            }
-        }
-    }
-}
-
-void DmrppArray::build_subset_bufferchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks) {
-
-    if (get_chunk_count() < 2 || subset_chunks_needed.empty())
-        throw BESInternalError(string("Expected chunks and subset for variable ") + name(), __FILE__, __LINE__);
- 
-    unsigned long long sc_count = 0;
-    stringstream sc_id;
-    sc_count++;
-    sc_id << name() << "-" << sc_count;
-    auto current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(), this));
-
-    // Set the non-contiguous chunk flag
-    current_super_chunk->set_non_contiguous_chunk_flag(true);
-    super_chunks.push(current_super_chunk);
-
-    unsigned long long buf_end_pos_counter = 0;
-    auto chunks = this->get_chunks();
-    for (unsigned long long i = 0; i < chunks.size(); i++) {
-        if (subset_chunks_needed[i]){
-            bool added = current_super_chunk->add_chunk_non_contiguous(chunks[i],buf_end_pos_vec[buf_end_pos_counter]);
-            if(!added){
-                sc_id.str(std::string()); // clears stringstream.
-                sc_count++;
-                sc_id << name() << "-" << sc_count;
-                current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(), this));
-
-                // We need to mark that this superchunk includes non-contiguous chunks.
-                current_super_chunk->set_non_contiguous_chunk_flag(true);
-                super_chunks.push(current_super_chunk);
-                buf_end_pos_counter++;
-                if(!current_super_chunk->add_chunk_non_contiguous(chunks[i],buf_end_pos_vec[buf_end_pos_counter])){
-                    stringstream msg ;
-                    msg << prolog << "Failed to add chunk to new superchunk. chunk: " << (chunks[i])->to_string();
-                    throw BESInternalError(msg.str(), __FILE__, __LINE__);
-
-                }
-            }
-        }
-    }
-
-
-
-}
 void DmrppArray::build_bufferchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks) {
 
     if (get_chunk_count() < 2)
@@ -1237,6 +1162,139 @@ void DmrppArray::build_bufferchunk_queue(queue<shared_ptr<SuperChunk>> &super_ch
     }
 }
 
+
+/**
+ * Populate a queue with SuperChunks that transfer only the chunks needed by the current
+ * constraint (subset_chunks_needed must already be set).
+ */
+void DmrppArray::build_subset_superchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks) {
+
+    if (get_chunk_count() < 2)
+        throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
+
+    if (subset_chunks_needed.empty())
+        throw BESInternalError(string("build_subset_superchunk_queue: Expected subset selected chunks for variable ") + name(), __FILE__, __LINE__);
+
+    // TODO We know that non-contiguous chunks may be forward or backward in the file from
+    //  the current offset. When an add_chunk() call fails, prior to making a new SuperChunk
+    //  we might want try adding the rejected Chunk to the other existing SuperChunks to see
+    //  if it's contiguous there.
+    unsigned long long sc_count = 0;
+    stringstream sc_id;
+    sc_id << name() << "-" << sc_count;
+    auto current_super_chunk = std::make_shared<SuperChunk>(sc_id.str(), this);
+    super_chunks.push(current_super_chunk);
+
+    auto chunks = this->get_chunks();
+    for (unsigned long long i = 0; i < chunks.size(); i++) {
+        if (subset_chunks_needed[i]) {
+            bool added = current_super_chunk->add_chunk(chunks[i]);
+            if (!added) {
+                sc_id.str(std::string()); // clears stringstream.
+                sc_count++;
+                sc_id << name() << "-" << sc_count;
+                current_super_chunk = std::make_shared<SuperChunk>(sc_id.str(), this);
+                super_chunks.push(current_super_chunk);
+                if (!current_super_chunk->add_chunk(chunks[i])) {
+                    stringstream msg;
+                    msg << prolog << "Failed to add chunk to new superchunk. chunk: " << (chunks[i])->to_string();
+                    throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Populate a queue with buffer chunks (non-contiguous SuperChunks) for the chunks needed by
+ * the current constraint. subset_chunks_needed and buf_end_pos_vec must already be set.
+ */
+void DmrppArray::build_subset_bufferchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks) {
+
+    if (get_chunk_count() < 2)
+        throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
+
+    if (subset_chunks_needed.empty())
+        throw BESInternalError(string("build_subset_bufferchunk_queue: Expected subset selected chunks for variable ") + name(), __FILE__, __LINE__);
+
+    unsigned long long sc_count = 0;
+    stringstream sc_id;
+    sc_count++;
+    sc_id << name() << "-" << sc_count;
+    auto current_super_chunk = std::make_shared<SuperChunk>(sc_id.str(), this);
+
+    // Set the non-contiguous chunk flag
+    current_super_chunk->set_non_contiguous_chunk_flag(true);
+    super_chunks.push(current_super_chunk);
+
+    unsigned long long buf_end_pos_counter = 0;
+    auto chunks = this->get_chunks();
+    for (unsigned long long i = 0; i < chunks.size(); i++) {
+        if (subset_chunks_needed[i]) {
+            bool added = current_super_chunk->add_chunk_non_contiguous(chunks[i], buf_end_pos_vec[buf_end_pos_counter]);
+            if (!added) {
+                sc_id.str(std::string()); // clears stringstream.
+                sc_count++;
+                sc_id << name() << "-" << sc_count;
+                current_super_chunk = std::make_shared<SuperChunk>(sc_id.str(), this);
+
+                // We need to mark that this superchunk includes non-contiguous chunks.
+                current_super_chunk->set_non_contiguous_chunk_flag(true);
+                super_chunks.push(current_super_chunk);
+                buf_end_pos_counter++;
+                if (!current_super_chunk->add_chunk_non_contiguous(chunks[i], buf_end_pos_vec[buf_end_pos_counter])) {
+                    stringstream msg;
+                    msg << prolog << "Failed to add chunk to new superchunk. chunk: " << (chunks[i])->to_string();
+                    throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                }
+            }
+        }
+    }
+}
+
+// The *_reuse_queue() methods build the member queues once, in use_buffer_chunk_internal_more(),
+// so that the read routine selected by read() can take them over instead of rebuilding them.
+// The buffer chunk versions also run the buffer set-up (buffer_offset, last_unfilled_chunk_index
+// and buf_end_pos_vec). obtain_buffer_end_pos_vec() appends to buf_end_pos_vec and moves
+// buffer_offset, so it must run only once per read; a read routine that reuses a buffer chunk
+// queue therefore skips the set-up as well.
+void DmrppArray::build_superchunk_reuse_queue() {
+    if (super_chunks_reuse.empty())
+        build_superchunk_queue(super_chunks_reuse);
+}
+
+void DmrppArray::build_bufferchunk_reuse_queue() {
+    if (buffer_chunks_reuse.empty()) {
+        set_up_buffer_chunk();
+        obtain_buffer_end_pos_vec();
+        build_bufferchunk_queue(buffer_chunks_reuse);
+    }
+}
+
+void DmrppArray::build_subset_superchunk_reuse_queue() {
+    if (subset_super_chunks_reuse.empty()) {
+        obtain_subset_chunks_needed();   // no-op if already set (e.g. the direct IO case)
+        build_subset_superchunk_queue(subset_super_chunks_reuse);
+    }
+}
+
+void DmrppArray::build_subset_bufferchunk_reuse_queue() {
+    if (subset_buffer_chunks_reuse.empty()) {
+        obtain_subset_chunks_needed();   // no-op if already set (e.g. the direct IO case)
+        set_up_subset_buffer_chunk();
+        obtain_buffer_end_pos_vec();
+        build_subset_bufferchunk_queue(subset_buffer_chunks_reuse);
+    }
+}
+
+// Release all the reused SuperChunk queues (and the read buffers they own). Called when read() finishes.
+void DmrppArray::clear_reuse_queues() {
+    queue<shared_ptr<SuperChunk>>().swap(super_chunks_reuse);
+    queue<shared_ptr<SuperChunk>>().swap(buffer_chunks_reuse);
+    queue<shared_ptr<SuperChunk>>().swap(subset_super_chunks_reuse);
+    queue<shared_ptr<SuperChunk>>().swap(subset_buffer_chunks_reuse);
+}
+
 /**
  * @brief Read data for an unconstrained chunked array
  *
@@ -1253,7 +1311,11 @@ void DmrppArray::read_chunks_unconstrained() {
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
     queue<shared_ptr<SuperChunk>> super_chunks;
-    build_superchunk_queue(super_chunks);
+    // Reuse the queue built in use_buffer_chunk_internal_more() if there is one.
+    if (!super_chunks_reuse.empty())
+        super_chunks.swap(super_chunks_reuse);
+    else
+        build_superchunk_queue(super_chunks);
     reserve_value_capacity_ll(get_size());
     if (is_readable_struct) {
         d_structure_array_buf.resize(this->length_ll() * bytes_per_element);
@@ -1291,7 +1353,11 @@ void DmrppArray::read_chunks_dio_unconstrained() {
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
     queue<shared_ptr<SuperChunk>> super_chunks;
-    build_superchunk_queue(super_chunks);
+    // Reuse the queue built in use_buffer_chunk_internal_more() if there is one.
+    if (!super_chunks_reuse.empty())
+        super_chunks.swap(super_chunks_reuse);
+    else
+        build_superchunk_queue(super_chunks);
 
     // Change to the total storage buffer size to just the compressed buffer size.
     reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
@@ -1368,19 +1434,20 @@ void DmrppArray::read_buffer_chunks_dio_unconstrained()
     }
 
 #endif
-    set_up_buffer_chunk();
-    BESDEBUG(MODULE, prolog <<" NEW BUFFER maximum buffer size: "<<max_buffer_size<<endl);
-    BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
-
-    // This vector won't be needed for our case but since we are using a common method, just pass in.
-    //vector<bool> subset_chunks_needed;
-
-    // Calculate the buffer end position for the whole array.
-    //obtain_buffer_end_pos_vec(subset_chunks_needed,max_buffer_size, buffer_offset, last_unfilled_chunk_index, buf_end_pos_vec);
-    obtain_buffer_end_pos_vec();
-
     queue<shared_ptr<SuperChunk>> super_chunks;
-    build_bufferchunk_queue(super_chunks);
+    // Reuse the queue built in use_buffer_chunk_internal_more() if there is one. In that case the
+    // buffer set-up was already done, so it must not be repeated.
+    if (!buffer_chunks_reuse.empty())
+        super_chunks.swap(buffer_chunks_reuse);
+    else {
+        set_up_buffer_chunk();
+        BESDEBUG(MODULE, prolog <<" NEW BUFFER maximum buffer size: "<<max_buffer_size<<endl);
+        BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
+
+        // Calculate the buffer end position for the whole array.
+        obtain_buffer_end_pos_vec();
+        build_bufferchunk_queue(super_chunks);
+    }
 #if 0
     unsigned long long sc_count=0;
     stringstream sc_id;
@@ -2105,69 +2172,15 @@ void DmrppArray::read_chunks() {
     if (get_chunk_count() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
-#if 0
-    // Find all the required chunks to read. I used a queue to preserve the chunk order, which
-    // made using a debugger easier. However, order does not matter, AFAIK.
-    unsigned long long sc_count = 0;
-    stringstream sc_id;
-    sc_id << name() << "-" << sc_count++;
     queue<shared_ptr<SuperChunk>> super_chunks;
-    auto current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(), this));
-    super_chunks.push(current_super_chunk);
-#endif
-
-#if 0
-    vector<unsigned long long> chunk_shape = get_chunk_dimension_sizes();
-    vector<unsigned long long> var_start;
-    vector<unsigned long long> var_stop;
-    vector<unsigned long long> var_stride;
-    int num_dims = obtain_subset_dims(var_start,var_stop,var_stride);
- 
-    if (subset_chunks_needed.empty()) {
-        for (const auto &chunk: get_immutable_chunks()) {
-            bool needed = find_needed_chunks_simple(chunk,chunk_shape,var_start,var_stride,var_stop,num_dims);
-            if (needed) {
-                subset_chunks_needed.push_back(true);
-            }
-            else
-                subset_chunks_needed.push_back(false);
-        }
+    // Reuse the queue built in use_buffer_chunk_internal_more() if there is one.
+    if (!subset_super_chunks_reuse.empty())
+        super_chunks.swap(subset_super_chunks_reuse);
+    else {
+        obtain_subset_chunks_needed();
+        build_subset_superchunk_queue(super_chunks);
     }
 
-    if (subset_chunks_needed.empty())
-        throw BESInternalError(string("No subset can be found for variable ") + name(), __FILE__, __LINE__
-#endif
-    obtain_subset_chunks_needed();
-
-    queue<shared_ptr<SuperChunk>> super_chunks;
-    build_subset_superchunk_queue(super_chunks);
-
-    // TODO We know that non-contiguous chunks may be forward or backward in the file from
-    //  the current offset. When an add_chunk() call fails, prior to making a new SuperChunk
-    //  we might want try adding the rejected Chunk to the other existing SuperChunks to see
-    //  if it's contiguous there.
-    // Find the required Chunks and put them into SuperChunks.
-
-#if 0
-    auto chunks = this->get_chunks();
-    for (unsigned long long i = 0; i < chunks.size(); i++) {
-        if (subset_chunks_needed[i]){
-            bool added = current_super_chunk->add_chunk(chunks[i]);
-            if(!added){
-                sc_id.str(std::string()); // clears stringstream.
-                sc_count++;
-                sc_id << name() << "-" << sc_count;
-                current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(), this));
-                super_chunks.push(current_super_chunk);
-                if(!current_super_chunk->add_chunk(chunks[i])){
-                    stringstream msg ;
-                    msg << prolog << "Failed to add chunk to new superchunk. chunk: " << (chunks[i])->to_string();
-                    throw BESInternalError(msg.str(), __FILE__, __LINE__);
-                }
-            }
-        }
-    }
-#endif
 #if 0
     for (const auto &chunk : get_immutable_chunks()) {
         
@@ -2231,45 +2244,17 @@ void DmrppArray::read_chunks_dio_constrained() {
     if (get_chunk_count() < 2)
         throw BESInternalError(string("Expected chunks for variable ") + name(), __FILE__, __LINE__);
 
-    queue<shared_ptr<SuperChunk>> super_chunks;
-    if (subset_chunks_needed.empty()) 
-        throw BESInternalError(string("read_chunks_dio_constrained: Expected subset selected chunks for variable ") + name(), __FILE__, __LINE__);
-
-    build_subset_superchunk_queue(super_chunks);
-
-#if 0
-    // Find all the required chunks to read.
-    unsigned long long sc_count = 0;
-    stringstream sc_id;
-    sc_id << name() << "-" << sc_count++;
-    queue<shared_ptr<SuperChunk>> super_chunks;
-    auto current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(), this));
-    super_chunks.push(current_super_chunk);
-
     // Since for the dio subset case, we have already figured out the needed chunks for the subset;
     // we don't want to do this again. kY 2026-02-16
     if (subset_chunks_needed.empty()) 
         throw BESInternalError(string("read_chunks_dio_constrained: Expected subset selected chunks for variable ") + name(), __FILE__, __LINE__);
 
-    unsigned long long chunk_counter = 0;
-    for (const auto &chunk : get_immutable_chunks()) {
-        if (subset_chunks_needed[chunk_counter]) {
-            bool added = current_super_chunk->add_chunk(chunk);
-            if (!added) {
-                sc_id.str(std::string()); // Clears stringstream.
-                sc_id << name() << "-" << sc_count++;
-                current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(), this));
-                super_chunks.push(current_super_chunk);
-                if (!current_super_chunk->add_chunk(chunk)) {
-                    stringstream msg;
-                    msg << prolog << "Failed to add Chunk to new SuperChunk. chunk: " << chunk->to_string();
-                    throw BESInternalError(msg.str(), __FILE__, __LINE__);
-                }
-            }
-        }
-        chunk_counter++;
-    }
-#endif
+    queue<shared_ptr<SuperChunk>> super_chunks;
+    // Reuse the queue built in use_buffer_chunk_internal_more() if there is one.
+    if (!subset_super_chunks_reuse.empty())
+        super_chunks.swap(subset_super_chunks_reuse);
+    else
+        build_subset_superchunk_queue(super_chunks);
 
     // Note for the constrained dio case, the storage size was re-calculated for the selected chunks only. 
     BESDEBUG(dmrpp_3, prolog <<"subset dio chunk storage size: "<<get_var_chunks_storage_size()<<endl);
@@ -2363,54 +2348,22 @@ void DmrppArray::read_buffer_chunks() {
     }
 #endif
 
-    obtain_subset_chunks_needed();
-    set_up_subset_buffer_chunk(); 
-
-    BESDEBUG(MODULE, prolog <<" NEW BUFFER maximum buffer size: "<<max_buffer_size<<endl);
-    BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
-
-    // Calculate the buffer sizes. The buffer size may be different for each buffer. 
-    //obtain_buffer_end_pos_vec(chunks_needed,max_buffer_size, buffer_offset, last_unfilled_chunk_index, buf_end_pos_vec);
-    obtain_buffer_end_pos_vec();
     queue<shared_ptr<SuperChunk>> super_chunks;
-    build_subset_bufferchunk_queue(super_chunks);
+    // Reuse the queue built in use_buffer_chunk_internal_more() if there is one. In that case the
+    // buffer set-up was already done, so it must not be repeated.
+    if (!subset_buffer_chunks_reuse.empty())
+        super_chunks.swap(subset_buffer_chunks_reuse);
+    else {
+        obtain_subset_chunks_needed();
+        set_up_subset_buffer_chunk();
 
-#if 0
-    unsigned long long sc_count = 0;
-    stringstream sc_id;
-    sc_count++;
-    sc_id << name() << "-" << sc_count;
-    auto current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(), this));
+        BESDEBUG(MODULE, prolog <<" NEW BUFFER maximum buffer size: "<<max_buffer_size<<endl);
+        BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
 
-    // Set the non-contiguous chunk flag
-    current_super_chunk->set_non_contiguous_chunk_flag(true);
-    super_chunks.push(current_super_chunk);
-
-    unsigned long long buf_end_pos_counter = 0;
-    auto chunks = this->get_chunks();
-    for (unsigned long long i = 0; i < chunks.size(); i++) {
-        if (subset_chunks_needed[i]){
-            bool added = current_super_chunk->add_chunk_non_contiguous(chunks[i],buf_end_pos_vec[buf_end_pos_counter]);
-            if(!added){
-                sc_id.str(std::string()); // clears stringstream.
-                sc_count++;
-                sc_id << name() << "-" << sc_count;
-                current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(), this));
-
-                // We need to mark that this superchunk includes non-contiguous chunks.
-                current_super_chunk->set_non_contiguous_chunk_flag(true);
-                super_chunks.push(current_super_chunk);
-                buf_end_pos_counter++;
-                if(!current_super_chunk->add_chunk_non_contiguous(chunks[i],buf_end_pos_vec[buf_end_pos_counter])){
-                    stringstream msg ;
-                    msg << prolog << "Failed to add chunk to new superchunk. chunk: " << (chunks[i])->to_string();
-                    throw BESInternalError(msg.str(), __FILE__, __LINE__);
-
-                }
-            }
-        }
+        // Calculate the buffer sizes. The buffer size may be different for each buffer.
+        obtain_buffer_end_pos_vec();
+        build_subset_bufferchunk_queue(super_chunks);
     }
-#endif
 
     reserve_value_capacity_ll(get_size(true));
 
@@ -2436,8 +2389,6 @@ void DmrppArray::read_buffer_chunks_dio_constrained() {
 
     if (subset_chunks_needed.empty())
         throw BESInternalError(string("read_buffer_chunks_dio_constrained: Expected subset selected chunks for variable ") + name(), __FILE__, __LINE__);
-
-    set_up_subset_buffer_chunk();
 
 #if 0
     if (subset_chunks_needed.empty())
@@ -2485,52 +2436,21 @@ void DmrppArray::read_buffer_chunks_dio_constrained() {
     }
 #endif
 
-    BESDEBUG(MODULE, prolog <<" NEW BUFFER maximum buffer size: "<<max_buffer_size<<endl);
-    BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
-
-    // Obtain the buffer size.
-    //obtain_buffer_end_pos_vec(dio_subset_chunks_needed,max_buffer_size, buffer_offset, last_unfilled_chunk_index, buf_end_pos_vec);
-    obtain_buffer_end_pos_vec();
     queue<shared_ptr<SuperChunk>> super_chunks;
-    build_subset_bufferchunk_queue(super_chunks);
+    // Reuse the queue built in use_buffer_chunk_internal_more() if there is one. In that case the
+    // buffer set-up was already done, so it must not be repeated.
+    if (!subset_buffer_chunks_reuse.empty())
+        super_chunks.swap(subset_buffer_chunks_reuse);
+    else {
+        set_up_subset_buffer_chunk();
 
-#if 0
-    unsigned long long sc_count = 0;
-    stringstream sc_id;
-    sc_count++;
-    sc_id << name() << "-" << sc_count;
-    queue<shared_ptr<SuperChunk>> super_chunks;
-    auto current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(), this));
+        BESDEBUG(MODULE, prolog <<" NEW BUFFER maximum buffer size: "<<max_buffer_size<<endl);
+        BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
 
-    // Set the non-contiguous chunk flag
-    current_super_chunk->set_non_contiguous_chunk_flag(true);
-    super_chunks.push(current_super_chunk);
-
-    unsigned long long buf_end_pos_counter = 0;
-    auto chunks = this->get_chunks();
-    for (unsigned long long i = 0; i < chunks.size(); i++) {
-        if (subset_chunks_needed[i]){
-            bool added = current_super_chunk->add_chunk_non_contiguous(chunks[i],buf_end_pos_vec[buf_end_pos_counter]);
-            if(!added){
-                sc_id.str(std::string()); // clears stringstream.
-                sc_count++;
-                sc_id << name() << "-" << sc_count;
-                current_super_chunk = shared_ptr<SuperChunk>(new SuperChunk(sc_id.str(), this));
-
-                // We need to mark that this superchunk includes non-contiguous chunks.
-                current_super_chunk->set_non_contiguous_chunk_flag(true);
-                super_chunks.push(current_super_chunk);
-                buf_end_pos_counter++;
-                if(!current_super_chunk->add_chunk_non_contiguous(chunks[i],buf_end_pos_vec[buf_end_pos_counter])){
-                    stringstream msg ;
-                    msg << prolog << "Failed to add chunk to new superchunk. chunk: " << (chunks[i])->to_string();
-                    throw BESInternalError(msg.str(), __FILE__, __LINE__);
-
-                }
-            }
-        }
+        // Calculate the buffer sizes. The buffer size may be different for each buffer.
+        obtain_buffer_end_pos_vec();
+        build_subset_bufferchunk_queue(super_chunks);
     }
-#endif
 
     reserve_value_capacity_ll(get_var_chunks_storage_size());
 
@@ -2793,6 +2713,15 @@ std::string array_to_str(DmrppArray a, const string &banner) {
  */
 
 bool DmrppArray::read() {
+
+    // The SuperChunk queues built in use_buffer_chunk_internal_more() are kept as members so the read
+    // routine can reuse them. Release whatever is left (e.g. the queue for the path not taken)
+    // when read() exits, including when an exception is thrown.
+    struct ReuseQueueGuard {
+        DmrppArray *array;
+        ~ReuseQueueGuard() { array->clear_reuse_queues(); }
+    } reuse_queue_guard{this};
+
     // If the chunks are not loaded, load them now. NB: load_chunks()
     // reads data for HDF5 COMPACT storage, so read_p() will be true
     // (but it does not read any other data). Thus, call load_chunks()
@@ -3522,19 +3451,20 @@ void DmrppArray::read_buffer_chunks_unconstrained() {
     }
 
 #endif
-    set_up_buffer_chunk();
-
-    BESDEBUG(MODULE, prolog <<" NEW BUFFER maximum buffer size: "<<max_buffer_size<<endl);
-    BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
-
-    // Just pass the vector. 
-    //vector<bool> subset_chunks_needed;
-
-    // Calculate the buffer end position for the whole array.
-    //obtain_buffer_end_pos_vec(subset_chunks_needed,max_buffer_size, buffer_offset, last_unfilled_chunk_index, buf_end_pos_vec);
-    obtain_buffer_end_pos_vec();
     queue<shared_ptr<SuperChunk>> super_chunks;
-    build_bufferchunk_queue(super_chunks);
+    // Reuse the queue built in use_buffer_chunk_internal_more() if there is one. In that case the
+    // buffer set-up was already done, so it must not be repeated.
+    if (!buffer_chunks_reuse.empty())
+        super_chunks.swap(buffer_chunks_reuse);
+    else {
+        set_up_buffer_chunk();
+        BESDEBUG(MODULE, prolog <<" NEW BUFFER maximum buffer size: "<<max_buffer_size<<endl);
+        BESDEBUG(MODULE, prolog <<" NEW BUFFER buffer_offset: "<<buffer_offset<<endl);
+
+        // Calculate the buffer end position for the whole array.
+        obtain_buffer_end_pos_vec();
+        build_bufferchunk_queue(super_chunks);
+    }
 
 #if 0
     unsigned long long sc_count = 0;
@@ -3759,13 +3689,19 @@ bool DmrppArray::use_buffer_chunk_internal_more(bool is_subset) {
 
     // First, obtain the super chunk size.  
     size_t total_super_chunk_size = get_var_chunks_storage_size();
+
+    // Build the super chunk and buffer chunk queues once. They are kept as class members and
+    // the read routine chosen in read() takes them over, so they are not rebuilt there.
+    // They are only inspected (sizes and offsets) here, never read.
     if (is_subset) {
-        obtain_subset_chunks_needed(); 
-        set_up_subset_buffer_chunk(); 
+        build_subset_superchunk_reuse_queue();
+        build_subset_bufferchunk_reuse_queue();
     }
-    else 
-        set_up_buffer_chunk();
-    obtain_buffer_end_pos_vec();
+    else {
+        build_superchunk_reuse_queue();
+        build_bufferchunk_reuse_queue();
+    }
+    // TODO: compare super_chunks_reuse/buffer_chunks_reuse (or the subset_* queues) to decide ret_value.
     
 #if 0
     // Now we need to calculate the buffer size.
