@@ -200,7 +200,7 @@ fancy_typename(BaseType *v) {
             return "URL";
         case dods_array_c: {
             ostringstream type;
-            Array *a = (Array *) v;
+            Array a = dynamic_cast<Array*>(v);
             type << "Array of " << fancy_typename(a->var()) << "s ";
             for (Array::Dim_iter p = a->dim_begin(); p != a->dim_end(); p++) {
                 type << "[" << a->dimension_name(p) << " = 0.."
