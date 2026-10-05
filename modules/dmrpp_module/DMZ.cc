@@ -1018,9 +1018,13 @@ void DMZ::set_up_direct_io_flag_phase_2(D4Group * grp, BaseType *btp) {
         for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute()) {
             if (is_eq(attr.name(), "compressionType")) {
                 filter = attr.value();
-                if (filter[filter.size()-1]=='2')
+                // There are only three filters supported: deflate, shuffle and
+                // fletcher32. If the last character of the string is 2,
+                // we know this is the fletcher32 filter. So mark it and break.
+                if (filter[filter.size()-1]=='2') {
                     has_fletcher32_last_with_deflate = true;
                     break;
+                }
             }
         }
     }
