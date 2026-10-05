@@ -1010,6 +1010,23 @@ void DMZ::set_up_direct_io_flag_phase_2(D4Group * grp, BaseType *btp) {
     if (dc(btp)->is_disable_dio())
         return;
 
+    // We find a special case related to the use of fletcher32 filter and the deflate filter.
+    // If the fletcher32 is the last filter, we cannot do the direct IO.
+    
+     bool has_fletcher32_last_with_deflate = false;
+     if (has_deflate_filter) {
+        for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute()) {
+            if (is_eq(attr.name(), "compressionType")) {
+                filter = attr.value();
+                if (filter[filter.size()-1]=='2')
+                    has_fletcher32_last_with_deflate = true;
+                    break;
+            }
+        }
+    }
+    if (has_fletcher32_last_with_deflate)
+        return;
+
     // Now we need to read the first child of dmrpp:chunks to obtain the chunk sizes.
     vector<unsigned long long> chunk_dim_sizes;
     for (auto child = chunks.child("dmrpp:chunkDimensionSizes"); child; child = child.next_sibling()) {
