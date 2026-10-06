@@ -202,8 +202,8 @@ fancy_typename(BaseType *v) {
             auto *a = dynamic_cast<Array*>(v);
             string type = "Array of " + fancy_typename(a->var()) + "s ";
             for (Array::Dim_iter p = a->dim_begin(); p != a->dim_end(); p++) {
-                type += "[" += a->dimension_name(p) += " = 0.."
-                     += a->dimension_size(p, false) - 1 + "]";
+                type += "[" += a->dimension_name(p) + " = 0.."
+                     + to_string(a->dimension_size(p, false) - 1) + "]";
             }
             return type;
         }
