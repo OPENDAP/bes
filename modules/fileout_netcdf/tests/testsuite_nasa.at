@@ -163,3 +163,5 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(nasa-bescmd/MOD13Q1.A2023353.h17
 #HDF4 one merged link block.
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/CAL_LID_L2_05kmMLay-Standard-V4-51.2014-06-05T19-34-12ZN.hdf.legacy.dmrpp.bescmd)
 
+# fletcher32 combined with deflate and it is used as the last filter applied in the pipeline. Direct IO cannot be used. 
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR(nasa-bescmd/S5P_RPRO_L2__CO_____20180430T001950_20180430T020120_02818_03_020400_20220901T170054.nc.dmrpp.bescmd)
