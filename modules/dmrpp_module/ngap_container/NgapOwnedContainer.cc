@@ -333,10 +333,6 @@ bool NgapOwnedContainer::get_item_from_dmrpp_cache(string &dmrpp_string) const {
         CACHE_LOG(prolog + "Memory Cache miss, DMR++: " + get_real_name() + '\n');
     }
 
-#IF
-
-#ENDIF
-
     // Before going over the network to get the DMR++, look in the FileCache.
     // If found, put it in the memory cache and return it as a string.
     FileCache::Item item;
