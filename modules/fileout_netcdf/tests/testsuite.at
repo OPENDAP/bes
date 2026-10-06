@@ -549,4 +549,6 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/special_fixed_str_array.h
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/t_big_vl_str_dset2.h5.dmrpp.bescmd)
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/vl_str_array.h5.dmrpp_constrained.bescmd)
 
-
+# The wrong order fletch32 order test(should be fletcher32, shuffle,deflate, but it is legal to have shuffle, deflate and fletcher32)
+# The dio currently doesn't work for the wrong order.
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/One_chunk_shuf_deflate_fletcher.h5.dmrpp.bescmd)

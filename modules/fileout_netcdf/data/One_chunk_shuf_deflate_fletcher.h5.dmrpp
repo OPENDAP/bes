@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="One_chunk_shuf_deflate_fletcher.h5" dmrpp:href="data/One_chunk_shuf_deflate_fletcher.h5" dmrpp:version="3.22.0">
+    <Int32 name="dset">
+        <Dim size="6"/>
+        <Dim size="4"/>
+        <dmrpp:chunks compressionType="shuffle deflate fletcher32" deflateLevel="1" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>6 4</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="3095" nBytes="31" chunkPositionInArray="[0,0]"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2026-10-05T14:53:56Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.22.0</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.22.0</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/opendap-minternal/misc/direct_chunk/One_chunk_shuf_deflate_fletcher.h5 -r One_chunk_shuf_deflate_fletcher.h5.dmr -u One_chunk_shuf_deflate_fletcher.h5 -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
