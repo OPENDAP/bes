@@ -3667,6 +3667,7 @@ bool DmrppArray::use_buffer_chunk_internal() {
     bool ret_value = true;
     // Here we need to consider the array subset.
     bool is_subset = is_projected();
+    const unsigned long long ARRAY_SIZE_MARK = 268435456;
   
 #if 0
     // We only need to consider the bigger size array. Now the size should be > 256MB.
