@@ -335,7 +335,6 @@ bool NgapOwnedContainer::get_item_from_dmrpp_cache(string &dmrpp_string) const {
 
     // Before going over the network to get the DMR++, look in the FileCache.
     // If found, put it in the memory cache and return it as a string.
-
     FileCache::Item item;
     if (NgapOwnedContainer::d_dmrpp_file_cache.get(FileCache::hash_key(get_real_name()), item)) { // got it
         // read data from the file into the string.

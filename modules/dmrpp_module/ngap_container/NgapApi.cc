@@ -90,8 +90,7 @@ string NgapApi::build_cmr_query_url_old_rpath_format(const string &restified_pat
     if (provider_index != 0) {
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
-        msg << " has the path element '" << NGAP_PROVIDERS_KEY << "' located in the incorrect position (";
-        msg << provider_index << ") expected 0.";
+        msg << " has the path element '" << NGAP_PROVIDERS_KEY << "' located in the incorrect position, expected 0.";
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
     provider_index += string(NGAP_PROVIDERS_KEY).size();
@@ -133,8 +132,7 @@ string NgapApi::build_cmr_query_url_old_rpath_format(const string &restified_pat
     if (granule_index <= collection_index + 1) { // The value of collection must have at least one character.
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
-        msg << " has the path element '" << NGAP_GRANULES_KEY << "' located in the incorrect position (";
-        msg << granule_index << ") expected at least " << collection_index + 1;
+        msg << " has the path element '" << NGAP_GRANULES_KEY << "' located in the incorrect position,";
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
     string collection = r_path.substr(collection_index, granule_index - collection_index);
@@ -222,8 +220,8 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
     if (collections_key_index != 0) {  // The COLLECTIONS_KEY comes first
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
-        msg << " has the path element '" << NGAP_COLLECTIONS_KEY << "' located in the incorrect position (";
-        msg << collections_key_index << ") expected at least " << provider_index + 1;
+        msg << " has the path element '" << NGAP_COLLECTIONS_KEY << "' located in the incorrect position,";
+        msg << " expected at least " << provider_index + 1;
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
     // This is now the beginning of the collection_concept_id value.
