@@ -3632,8 +3632,10 @@ bool DmrppArray::use_buffer_chunk() {
     bool ret_value = false;
     auto chunks = this->get_chunks();
 
+#if 0
     // Array size 
-    const unsigned long long ARRAY_SIZE_MARK = 268435456;
+    // const unsigned long long ARRAY_SIZE_MARK = 268435456;
+#endif
 
     // Since we find quite a few cases that the chunks are not adjacent in the middle, this causes the expensive 
     // cloud access several times even with super chunks. So we will try to use the buffer chunk for those cases too. KY 2025-11-20
@@ -3679,6 +3681,7 @@ bool DmrppArray::use_buffer_chunk_internal() {
     if (array_size >ARRAY_SIZE_MARK && chunk_size > CHUNK_SIZE_MARK) 
         ret_value = use_buffer_chunk_internal_more(is_subset);
 #endif
+
     ret_value = use_buffer_chunk_internal_more(is_subset);
     
     return ret_value;
@@ -3688,7 +3691,15 @@ bool DmrppArray::use_buffer_chunk_internal() {
 // 
 bool DmrppArray::use_buffer_chunk_internal_more(bool is_subset) {
 
-    bool ret_value = true;
+    const unsigned lower_threshold_trans_size = 2097152;
+
+    unsigned selected_data_size = get_size(is_subset)*bytes_per_element;
+
+    // If the array (or subset) size is too small, we can safely choose the buffer chunk.
+    // Currently we set the value be 2MB based on our performance evaluation results.
+    if (selected_data_size < lower_threshold_trans_size)
+        return true;
+    
 
     // Build the super chunk and buffer chunk queues once. They are kept as class members and
     // the read routine chosen in read() takes them over, so they are not rebuilt there.
@@ -3703,7 +3714,7 @@ bool DmrppArray::use_buffer_chunk_internal_more(bool is_subset) {
     }
     // TODO: compare super_chunks_reuse/buffer_chunks_reuse (or the subset_* queues) to decide ret_value.
 
-    // Number of SuperChunks and buffer chunks that hold real data (fill-value chunks are skipped;
+    // Obtain th1 number of SuperChunks and buffer chunks that hold real data (fill-value chunks are skipped;
     // each one is its own SuperChunk and nothing is transferred for it), and the total number of
     // bytes the buffer chunks transfer.
     unsigned long long num_super_chunks = 0;
@@ -3719,19 +3730,19 @@ bool DmrppArray::use_buffer_chunk_internal_more(bool is_subset) {
     auto sc_copy = sc_queue;
     auto buf_copy = buf_queue;
     if (get_processing_fv_chunks()) {
-    while (!sc_copy.empty()) {
-        if (!sc_copy.front()->get_uses_fill_value())
-            num_super_chunks++;
-        sc_copy.pop();
-    }
-
-    while (!buf_copy.empty()) {
-        if (!buf_copy.front()->get_uses_fill_value()) {
-            num_buffer_chunks++;
-            buffer_chunks_total_size += buf_copy.front()->get_size();
+        while (!sc_copy.empty()) {
+            if (!sc_copy.front()->get_uses_fill_value())
+                num_super_chunks++;
+            sc_copy.pop();
         }
-        buf_copy.pop();
-    }
+    
+        while (!buf_copy.empty()) {
+            if (!buf_copy.front()->get_uses_fill_value()) {
+                num_buffer_chunks++;
+                buffer_chunks_total_size += buf_copy.front()->get_size();
+            }
+            buf_copy.pop();
+        }
     }
     else {
         num_super_chunks = sc_copy.size();
@@ -3742,14 +3753,49 @@ bool DmrppArray::use_buffer_chunk_internal_more(bool is_subset) {
         }
     }
 
-    // Now we need to consider the parallel data transfer
-    const unsigned int size_unit = 8092;
-    // Add transferring time comparision with optimization
+    // We use the super chunk approach if the super chunk is equal to the buffer chunk.
+    if (buffer_chunks_total_size == super_chunks_total_size)
+        return false;
 
-    BESDEBUG(MODULE, prolog << "number of non-fill super chunks: " << num_super_chunks << endl);
-    BESDEBUG(MODULE, prolog << "number of non-fill buffer chunks: " << num_buffer_chunks
-                            << ", total buffer chunk size: " << buffer_chunks_total_size << endl);
-    
+    // If the buffer size is lower than the lower threshold, just use the buffer chunk.
+    if (buffer_chunks_total_size < lower_threshold_trans_size)
+        return true;
+
+    // Size is in byte
+    const unsigned int size_unit = 8192;
+
+    // transfer_overhead_time in ms(millisecond) 
+    const unsigned int transfer_overhead_time = 256;
+
+    unsigned long long  buffer_chunk_est_trans_time = 0;
+    unsigned long long  super_chunk_est_trans_time = 0;
+
+    // We need to consider the parallel data transfer. 
+    // By using the parallel data transfer, using super chunk may be faster for some cases.
+    if (DmrppRequestHandler::d_use_transfer_threads) {
+
+        const unsigned int max_num_par_tasks = DmrppRequestHandler::d_max_transfer_threads;
+        if (num_buffer_chunks <= max_num_par_tasks)
+            buffer_chunk_est_trans_time = transfer_overhead_time + buffer_chunks_total_size/size_unit;
+        else 
+            buffer_chunk_est_trans_time = ((num_buffer_chunks+max_num_par_tasks-1)/max_num_par_tasks)* transfer_overhead_time + buffer_chunks_total_size/size_unit;
+
+        if (num_super_chunks <= max_num_par_tasks)
+            super_chunk_est_trans_time = transfer_overhead_time + super_chunks_total_size/size_unit;
+        else 
+            super_chunk_est_trans_time = ((num_super_chunks+max_num_par_tasks-1)/max_num_par_tasks)* transfer_overhead_time + super_chunks_total_size/size_unit;
+
+    }
+    else {
+        buffer_chunk_est_trans_time = num_buffer_chunks * transfer_overhead_time + buffer_chunks_total_size/size_unit;
+        super_chunk_est_trans_time = num_super_chunks * transfer_overhead_time + super_chunks_total_size/size_unit;
+    }
+        
+    if (buffer_chunk_est_trans_time < super_chunk_est_trans_time)  
+        return true;
+    else
+        return false;
+
 #if 0
     // Now we need to calculate the buffer size.
 
@@ -3847,7 +3893,6 @@ bool DmrppArray::use_buffer_chunk_internal_more(bool is_subset) {
 #endif
     
     
-    return ret_value;
 }
 
 // Obtain the optimized buffer size when using the buffer chunk.
