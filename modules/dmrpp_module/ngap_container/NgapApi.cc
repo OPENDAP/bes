@@ -133,7 +133,6 @@ string NgapApi::build_cmr_query_url_old_rpath_format(const string &restified_pat
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
         msg << " has the path element '" << NGAP_GRANULES_KEY << "' located in the incorrect position,";
-        msg << " expected at least " << collection_index + 1;
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
     string collection = r_path.substr(collection_index, granule_index - collection_index);
