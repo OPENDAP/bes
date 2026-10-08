@@ -43,6 +43,7 @@
 
 #include "NgapApi.h"
 #include "NgapNames.h"
+#include "NgapServiceChaining.h"
 
 using namespace std;
 
@@ -505,9 +506,11 @@ NgapApi::DataAccessUrls NgapApi::convert_ngap_resty_path_to_data_access_urls(con
         curl::http_get(cmr_query_url, cmr_json_string, curl::add_edl_auth_headers(nullptr));
     }
     catch (http::HttpError &http_error) {
-        string err_msg = prolog + "Hyrax encountered a Service Chaining Error while "
-                         "attempting to retrieve a CMR record. " + http_error.get_message();
-        http_error.set_message(err_msg);
+        if (is_http_5xx(http_error.http_status()))
+            add_service_chaining_message(http_error, prolog, "attempting to retrieve a CMR record.");
+        else
+            http_error.set_message(prolog + "Error while attempting to retrieve a CMR record. "
+                                   + http_error.get_message());
         throw;
     }
 
