@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="PACE_OCI_20251111T135258_L1B_V3_nc" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="foo" space="catalog">/data/PACE_OCI.20251111T135258.L1B.V3.nc.dmrpp</setContainer>
+    <define name="d">
+    <container name="foo" />
+    </define>
+    <get type="dap" definition="d" returnAs="netcdf-4" />
+</request>
