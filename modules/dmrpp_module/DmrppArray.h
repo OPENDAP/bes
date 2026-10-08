@@ -99,7 +99,21 @@ private:
     vector<char> d_structure_array_str_buf;
     bool is_special_structure = false;
 
-    vector<bool> dio_subset_chunks_needed;
+    queue<shared_ptr<SuperChunk>> super_chunks_reuse;
+    queue<shared_ptr<SuperChunk>> buffer_chunks_reuse;
+    queue<shared_ptr<SuperChunk>> subset_super_chunks_reuse;
+    queue<shared_ptr<SuperChunk>> subset_buffer_chunks_reuse;
+ 
+    unsigned long long max_buffer_size = 0;
+    unsigned long long buffer_offset = 0;
+    unsigned long long last_unfilled_chunk_index = 0;
+    bool is_last_unfilled_chunk_index_checked = false;
+    bool subset_buffer_chunk_set_up = false;
+    bool buffer_chunk_set_up = false;
+
+    vector<bool> subset_chunks_needed;
+
+    vector<unsigned long long> buf_end_pos_vec;
 
     DmrppArray::dimension get_dimension(unsigned int dim_num);
 
@@ -153,22 +167,40 @@ private:
     void read_chunks_with_linked_blocks_constrained();
 
     
+    bool use_buffer_chunk_internal_more(bool);
+    bool use_buffer_chunk_internal();
     bool use_buffer_chunk();
     void read_buffer_chunks();
     void read_buffer_chunks_unconstrained();
 
     unsigned long long get_maximum_constrained_buffer_nelmts();
+    void set_up_subset_buffer_chunk();
+    void set_up_buffer_chunk();
     unsigned long long obtain_buffer_end_pos(const vector<unsigned long long>& t_buf_end_pos_vec, unsigned long long cur_buf_end_pos) const;
+#if 0
     void obtain_buffer_end_pos_vec(const vector<bool>& subset_chunks_needed, unsigned long long max_buffer_size, unsigned long long buffer_offset,
                                  unsigned long long last_unfilled_chunk_index, vector<unsigned long long> & buf_end_pos_vec) const;
+#endif
+    void obtain_buffer_end_pos_vec();
 
     void build_superchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks);
+    void build_bufferchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks);
+    void build_subset_superchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks);
+    void build_subset_bufferchunk_queue(queue<shared_ptr<SuperChunk>> &super_chunks);
+
+    void build_superchunk_reuse_queue();
+    void build_bufferchunk_reuse_queue();
+    void build_subset_superchunk_reuse_queue();
+    void build_subset_bufferchunk_reuse_queue();
+    void clear_reuse_queues();
+
 
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim) const;
 
     bool find_needed_chunks_simple(std::shared_ptr<Chunk> chunk, const std::vector<unsigned long long> & chunk_shape, 
                                    const std::vector<unsigned long long> & start, const std::vector<unsigned long long> & stride,
                                    std::vector<unsigned long long> & stop, int num_dims);
+    void obtain_subset_chunks_needed();
     int obtain_subset_dims(vector<unsigned long long>& var_start,vector<unsigned long long>&var_stop,vector<unsigned long long>&var_stride);
 
     virtual void insert_chunk(unsigned int dim, std::vector<unsigned long long> *target_element_address,
