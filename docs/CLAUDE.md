@@ -1,10 +1,8 @@
-# AGENTS.md
+# CLAUDE.md for `docs/`
 
-## Scope
+These rules apply to the `docs/` directory. They add to the top-level `CLAUDE.md`, which also applies here.
 
-These instructions apply to the `bes/docs` directory. They add to the repo-wide rules in the top-level [`AGENTS.md`](../AGENTS.md), which also apply here.
-
-## Directory Content
+## Directory content
 
 - Technical documents that describe the organization and function of the BES (for example, `BES_*.md`).
 - Work logs and plans written under the top-level "Writing Documents" rules also live here. They are not technical documentation.

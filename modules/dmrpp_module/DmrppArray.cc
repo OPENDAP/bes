@@ -67,6 +67,7 @@
 #include "vlsa_util.h"
 #include "ThreadCount.h"
 #include "HttpNames.h" 
+#include "NgapServiceChaining.h"
 
 // Used with BESDEBUG
 #define dmrpp_3 "dmrpp:3"
@@ -674,6 +675,7 @@ struct MyCurlMultiTransfer {
     unique_ptr<Chunk> super_chunk_internal;      
     unique_ptr<dmrpp_easy_handle, void(*)(dmrpp_easy_handle*)> easy_handle{nullptr, [](dmrpp_easy_handle *h){ CurlHandlePool::release_handle(h); }};
     unsigned int retry = 0;               
+    long last_http_code = 0;    // HTTP status of the most recent attempt; 0 if none
 };
 
 // In this function, we will set up all the necessary information in the super chunk before handing over to curl.
@@ -710,7 +712,10 @@ static constexpr unsigned int MAX_ATTEMPTS = 3;
 static constexpr std::chrono::microseconds INITIAL_RETRY_BACKOFF{250000}; // 0.25s
 
 // Follow eval_curl_easy_perform_code() + eval_http_get_response() from CurlUtils.cc to check the retry results.
-static ParallelTransferStatus PT_result(CURL *easy, const shared_ptr<http::url> &data_url, CURLcode curl_code) {
+// The HTTP status of the response, if any, is returned in http_code.
+static ParallelTransferStatus PT_result(CURL *easy, const shared_ptr<http::url> &data_url, CURLcode curl_code,
+                                       long &http_code) {
+    http_code = 0;
 
     // HTTP/HTTPS gets retried. 
     if (data_url->protocol() != HTTPS_PROTOCOL && data_url->protocol() != HTTP_PROTOCOL)
@@ -721,7 +726,6 @@ static ParallelTransferStatus PT_result(CURL *easy, const shared_ptr<http::url> 
     if (curl_code != CURLE_OK)
         return ParallelTransferStatus::PT_RETRYABLE;
 
-    long http_code = 0;
     if (curl_easy_getinfo(easy, CURLINFO_RESPONSE_CODE, &http_code) != CURLE_OK)
         return ParallelTransferStatus::PT_FAILURE; // couldn't even read the response code back
 
@@ -737,6 +741,21 @@ static ParallelTransferStatus PT_result(CURL *easy, const shared_ptr<http::url> 
         default:
             return ParallelTransferStatus::PT_FAILURE;
     }
+}
+
+// Throw a BESInternalError for a failed SuperChunk transfer. For an NGAP request that failed
+// with a 50x response, mark the error as a Service Chaining Error.
+static void throw_super_chunk_transfer_error(const string &msg, long http_code) {
+    BESInternalError e(http_code == 0 ? msg : msg + " Last HTTP status: " + std::to_string(http_code),
+                       __FILE__, __LINE__);
+    if (ngap::is_ngap_request() && ngap::is_http_5xx(http_code)) {
+        // msg already starts with the caller's prolog
+        ngap::add_service_chaining_message(e, "",
+                                           "attempting to acquire granule data from a remote source.\n"
+                                           "This could be a problem with accessing the data granule at its "
+                                           "resident location (typically S3).");
+    }
+    throw e;
 }
 
 // After obtaining the data, we need to finish the other necessary steps like decompressing the received data before going back to the variable array level.
@@ -894,7 +913,8 @@ void read_super_chunks_concurrent_curl_multi(queue<shared_ptr<SuperChunk>> &supe
                 multi_transfer_maps.erase(it); 
 
                 // Obtain the transfer status to see if we need to retry.
-                ParallelTransferStatus pt_status = PT_result(easy, transfer->super_chunk->get_data_url(), result);
+                ParallelTransferStatus pt_status = PT_result(easy, transfer->super_chunk->get_data_url(), result,
+                                                             transfer->last_http_code);
   
                 switch (pt_status) {
                     case ParallelTransferStatus::PT_SUCCESS:
@@ -911,10 +931,10 @@ void read_super_chunks_concurrent_curl_multi(queue<shared_ptr<SuperChunk>> &supe
                             string extra_err_msg;
                             if (transfer->super_chunk_internal->get_is_retryable_s3_error())
                                 extra_err_msg = " Last error: " + transfer->super_chunk_internal->get_retryable_s3_error_message();
-                            throw BESInternalError(prolog + "Made " + std::to_string(transfer->retry) +
-                                                    " failed attempts to retrieve SuperChunk " +
-                                                    transfer->super_chunk->id() + ". Giving up." + extra_err_msg,
-                                                    __FILE__, __LINE__);
+                            throw_super_chunk_transfer_error(prolog + "Made " + std::to_string(transfer->retry) +
+                                                             " failed attempts to retrieve SuperChunk " +
+                                                             transfer->super_chunk->id() + ". Giving up." + extra_err_msg,
+                                                             transfer->last_http_code);
                         }
                         // reset the bytes read before this handle is re-used, and clear any
                         // transient object-store error recorded by chunk_write_data() so a
@@ -929,8 +949,9 @@ void read_super_chunks_concurrent_curl_multi(queue<shared_ptr<SuperChunk>> &supe
                         break;
                     }
                     case ParallelTransferStatus::PT_FAILURE:
-                        throw BESInternalError(prolog + "Data transfer error for SuperChunk " +
-                                                transfer->super_chunk->id(), __FILE__, __LINE__);
+                        throw_super_chunk_transfer_error(prolog + "Data transfer error for SuperChunk " +
+                                                         transfer->super_chunk->id() + ".",
+                                                         transfer->last_http_code);
                 }
             }
         }

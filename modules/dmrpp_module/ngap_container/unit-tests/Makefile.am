@@ -97,7 +97,7 @@ $(abs_builddir)/static-cache:
 # NgapContainerTest NgapRequestHandlerTest
 
 if CPPUNIT
-UNIT_TESTS = MemoryCacheTest NgapApiTest NgapOwnedContainerTest
+UNIT_TESTS = MemoryCacheTest NgapApiTest NgapOwnedContainerTest NgapServiceChainingTest
 else
 UNIT_TESTS =
 
@@ -121,3 +121,6 @@ NgapApiTest_LDADD =  $(LIBADD) $(LDADD_AWS)
 
 NgapOwnedContainerTest_SOURCES = NgapOwnedContainerTest.cc
 NgapOwnedContainerTest_LDADD = $(LIBADD) $(LDADD_AWS)
+
+NgapServiceChainingTest_SOURCES = NgapServiceChainingTest.cc
+NgapServiceChainingTest_LDADD = $(LIBADD)

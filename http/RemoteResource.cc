@@ -247,8 +247,8 @@ void RemoteResource::get_url(int fd, curl_slist *http_request_headers) {
         BESDEBUG(MODULE, prolog << "Resource " << d_url->str() << " saved to temporary file " << d_filename << endl);
     }
     catch (http::HttpError &http_error) {
-        string err_msg = prolog + "Hyrax encountered a Service Chaining Error while "
-                         "attempting to retrieve a RemoteResource.\n" + http_error.get_message();
+        string err_msg = prolog + "Error while attempting to retrieve a RemoteResource. "
+                         + http_error.get_message();
         http_error.set_message(err_msg);
         throw;
     }

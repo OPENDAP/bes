@@ -46,6 +46,8 @@
 #include "CurlHandlePool.h"
 #include "EffectiveUrlCache.h"
 #include "SignedUrlCache.h"
+#include "HttpError.h"
+#include "NgapServiceChaining.h"
 #include "DmrppRequestHandler.h"
 #include "DmrppNames.h"
 #include "byteswap_compat.h"
@@ -1440,7 +1442,17 @@ std::shared_ptr<http::url> Chunk::get_data_url() const {
         if (d_data_url->is_trusted()) {
             req_hdrs = curl::add_edl_auth_headers(nullptr);
         }
-        url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url, req_hdrs);
+        try {
+            url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url, req_hdrs);
+        }
+        catch (http::HttpError &http_error) {
+            if (ngap::is_ngap_request() && ngap::is_http_5xx(http_error.http_status())) {
+                ngap::add_service_chaining_message(http_error, prolog,
+                                                   "attempting to retrieve a redirect URL.\n"
+                                                   "This is probably problem with TEA or S3 signing.");
+            }
+            throw;
+        }
     }
     BESDEBUG(MODULE, prolog << "Using data_url: " << url->get_url_no_query() << endl);
 
