@@ -3626,8 +3626,10 @@ bool DmrppArray::use_buffer_chunk() {
     // If the number of chunks is smaller than the number of parallel threads, just use the super chunk;
     // since one data transfer will be carried for both the buffer chunk and the super chunk cases and
     // we know the total buffer size will always be greater than the super chunk size; so just use the super chunk.
-    if (DmrppRequestHandler::d_use_transfer_threads && get_chunk_count() <=DmrppRequestHandler::d_max_transfer_threads)
+    if (DmrppRequestHandler::d_use_transfer_threads && get_chunk_count() <=DmrppRequestHandler::d_max_transfer_threads) {
+cerr<<"Variable "<< this->FQN() <<" use super chunk - number of chunks less than number of chunks: "<< get_chunk_count() <<endl;
         return false;
+}
 
     bool ret_value = false;
     auto chunks = this->get_chunks();
@@ -3659,6 +3661,8 @@ bool DmrppArray::use_buffer_chunk() {
     // Another case is when the total buffer chunk size is the same as the total super chunk size, we should use super chunk.
     if (ret_value) 
         ret_value = use_buffer_chunk_internal();
+    else 
+        cerr<<"Variable "<< this->FQN() <<" use super chunk - one contiguous super chunk." <<endl;
     return ret_value;
 }
 
@@ -3695,10 +3699,13 @@ bool DmrppArray::use_buffer_chunk_internal_more(bool is_subset) {
 
     unsigned selected_data_size = get_size(is_subset)*bytes_per_element;
 
+cerr<<"variable FQN: "<<this->FQN()<<endl;
     // If the array (or subset) size is too small, we can safely choose the buffer chunk.
     // Currently we set the value be 2MB based on our performance evaluation results.
-    if (selected_data_size < lower_threshold_trans_size)
+    if (selected_data_size < lower_threshold_trans_size) {
+cerr<<"Variable "<< this->FQN() <<" use buffer chunk - small variable size: "<< selected_data_size <<endl;
         return true;
+    }
     
 
     // Build the super chunk and buffer chunk queues once. They are kept as class members and
@@ -3753,13 +3760,25 @@ bool DmrppArray::use_buffer_chunk_internal_more(bool is_subset) {
         }
     }
 
+cerr<<"Number of super chunks: "<< num_super_chunks <<endl;
+cerr<<"Super chunk total size: "<<super_chunks_total_size <<endl;
+cerr<<"Number of buffer chunks: "<< num_buffer_chunks <<endl;
+cerr<<"Buffer chunk total size: "<<buffer_chunks_total_size <<endl;
+
     // We use the super chunk approach if the super chunk is equal to the buffer chunk.
-    if (buffer_chunks_total_size == super_chunks_total_size)
+    if (buffer_chunks_total_size == super_chunks_total_size) {
+cerr<<"Variable "<< this->FQN() <<" use super chunk - super chunk size = buffer chunk size "<< super_chunks_total_size <<endl;
+
         return false;
+     }
 
     // If the buffer size is lower than the lower threshold, just use the buffer chunk.
-    if (buffer_chunks_total_size < lower_threshold_trans_size)
+    if (buffer_chunks_total_size < lower_threshold_trans_size) {
+cerr<<"Variable "<< this->FQN() <<" use buffer chunk - small buffer chunk total size: "<< buffer_chunks_total_size  <<endl;
+
         return true;
+    }
+
 
     // Size is in byte
     const unsigned int size_unit = 8192;
@@ -3791,10 +3810,50 @@ bool DmrppArray::use_buffer_chunk_internal_more(bool is_subset) {
         super_chunk_est_trans_time = num_super_chunks * transfer_overhead_time + super_chunks_total_size/size_unit;
     }
         
-    if (buffer_chunk_est_trans_time < super_chunk_est_trans_time)  
+if (DmrppRequestHandler::d_use_transfer_threads) {
+
+        const unsigned int max_num_par_tasks = DmrppRequestHandler::d_max_transfer_threads;
+cerr<<" Parallel - maximum number of tasks per data transfer: "<< DmrppRequestHandler::d_max_transfer_threads <<endl;
+int num_data_transfer = (num_buffer_chunks <= max_num_par_tasks)?1:((num_buffer_chunks+max_num_par_tasks-1)/max_num_par_tasks);
+cerr<<" Parallel - buffer chunk - number of total data transfer: "<< num_data_transfer <<endl;
+num_data_transfer = (num_super_chunks <= max_num_par_tasks)?1:((num_super_chunks+max_num_par_tasks-1)/max_num_par_tasks);
+cerr<<" Parallel - super chunk - number of total data transfer: "<< num_data_transfer <<endl;
+cerr<<" Parallel - buffer chunk - time to transfer the data excluding the overhead: "<<  buffer_chunks_total_size/size_unit<<endl;
+cerr<<" Parallel - super chunk - time to transfer the data excluding the overhead: "<<  super_chunks_total_size/size_unit<<endl;
+cerr<<" Parallel - buffer chunk - total time to transfer the data: "<<  buffer_chunk_est_trans_time<<endl;
+cerr<<" Parallel - super chunk - total time to transfer the data: "<<  super_chunk_est_trans_time<<endl;
+
+}
+else {
+cerr<<" Sequential - buffer chunk - number of total data transfer: "<< num_buffer_chunks<<endl;
+cerr<<" Sequential - super chunk - number of total data transfer: "<< num_super_chunks<<endl;
+cerr<<" Sequential - buffer chunk - time to transfer the data excluding the overhead: "<<  buffer_chunks_total_size/size_unit<<endl;
+cerr<<" Sequential - super chunk - time to transfer the data excluding the overhead: "<<  super_chunks_total_size/size_unit<<endl;
+cerr<<" Sequential - buffer chunk - total time to transfer the data: "<<  buffer_chunk_est_trans_time<<endl;
+cerr<<" Sequential - super chunk - total time to transfer the data: "<<  super_chunk_est_trans_time<<endl;
+
+}
+
+    if (buffer_chunk_est_trans_time < super_chunk_est_trans_time) { 
+
+if (DmrppRequestHandler::d_use_transfer_threads) {
+cerr<<"Variable "<< this->FQN() <<" Parallel use buffer chunk -  total time: "<< buffer_chunk_est_trans_time << " ;super chunk total time: " << super_chunk_est_trans_time  << "; number of maximum parallel tasks: "<< DmrppRequestHandler::d_max_transfer_threads << endl;
+}
+else 
+cerr<<"Variable "<< this->FQN() <<" Sequential use buffer chunk -  total time: "<< buffer_chunk_est_trans_time << " ;super chunk total time: " << super_chunk_est_trans_time    << endl;
         return true;
-    else
+
+    }
+    else {
+
+if (DmrppRequestHandler::d_use_transfer_threads) {
+cerr<<"Variable "<< this->FQN() <<" Parallel use super chunk -  total time: "<<super_chunk_est_trans_time << " ;buffer chunk total time: " << buffer_chunk_est_trans_time  << "; number of maximum parallel tasks: "<< DmrppRequestHandler::d_max_transfer_threads <<endl;
+}
+else 
+cerr<<"Variable "<< this->FQN() <<" Sequential use super chunk -  total time: "<<super_chunk_est_trans_time << " ;buffer chunk total time: " << buffer_chunk_est_trans_time  << endl;
+
         return false;
+    }
 
 #if 0
     // Now we need to calculate the buffer size.
