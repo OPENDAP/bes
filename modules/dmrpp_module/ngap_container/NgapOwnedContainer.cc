@@ -566,9 +566,8 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
         INFO_LOG(prolog + "Found the DMRpp in the DAAC-bucket for: " + dmrpp_url_str);
     } catch (http::HttpError &http_error) {
         if (is_http_5xx(http_error.http_status()))
-            add_service_chaining_message(http_error, prolog, "attempting to read the DMR++ from the DAAC bucket.");
-        http_error.set_message(http_error.get_message() +
-                               "\nNgapOwnedContainer::dmrpp_read_from_daac_bucket() failed to read the DMR++ from S3.");
+            add_service_chaining_message(http_error, prolog, " attempting to read the DMR++ from the DAAC bucket.");
+        http_error.set_message( "Failed to read the DMR++ from S3. " + http_error.get_message());
         throw;
     }
 }
