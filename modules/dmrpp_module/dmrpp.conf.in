@@ -41,6 +41,27 @@ BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.(dmrpp)(\.bz2|\.gz|\.Z)?$;
 
 # DMRPP.MaxParallelTransfers = 8
 
+# Set DecisionParallelTransfers to the number of parallel transfers assumed when
+# choosing between the buffer chunk and the super chunk for a variable. Under load
+# the transfers that really overlap are usually fewer than MaxParallelTransfers, and
+# assuming too many favors the super chunk (more requests). The value is capped at
+# MaxParallelTransfers. It only affects that choice; transfers still use
+# MaxParallelTransfers.
+
+# DMRPP.DecisionParallelTransfers = 4
+
+# The buffer chunk/super chunk choice estimates the transfer time of each as
+#   number of request rounds * DecisionRequestOverheadMs + bytes / DecisionBytesPerMs
+# (a request round is one request in serial mode, or up to DecisionParallelTransfers
+# requests in parallel mode) and picks the faster one. A variable, or a buffer chunk
+# total, smaller than DecisionSmallSize bytes always uses the buffer chunk.
+# With the defaults, one request costs the same as transferring 2 MB.
+# DecisionBytesPerMs must be at least 1.
+
+# DMRPP.DecisionBytesPerMs = 8192
+# DMRPP.DecisionRequestOverheadMs = 256
+# DMRPP.DecisionSmallSize = 2097152
+
 # These three keys control the object memory caches.
 #
 # The DMR++ handler uas two caches for recently computed/used binary objects;

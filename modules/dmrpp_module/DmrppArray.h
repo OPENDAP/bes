@@ -193,6 +193,7 @@ private:
     void build_subset_superchunk_reuse_queue();
     void build_subset_bufferchunk_reuse_queue();
     void clear_reuse_queues();
+    unsigned long long count_super_chunks(bool is_subset) const;
 
 
     unsigned long long get_chunk_start(const dimension &thisDim, unsigned long long chunk_origin_for_dim) const;

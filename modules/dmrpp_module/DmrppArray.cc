@@ -1295,6 +1295,62 @@ void DmrppArray::clear_reuse_queues() {
     queue<shared_ptr<SuperChunk>>().swap(subset_buffer_chunks_reuse);
 }
 
+// Count the SuperChunks that build_superchunk_queue() (or build_subset_superchunk_queue() when
+// is_subset is true) would create, without creating them. use_buffer_chunk_internal_more() only needs
+// this number to choose between the super chunk and the buffer chunk, so we avoid allocating SuperChunk
+// objects and calling Chunk::get_data_url() (a signed/effective URL cache lookup) for every chunk.
+// The grouping follows SuperChunk::add_chunk(): a chunk joins the current SuperChunk when it starts
+// where the previous chunk ends; a fill-value chunk always gets its own SuperChunk.
+// NOTE: SuperChunk::is_contiguous() also requires the same data URL. Here we assume all chunks of a
+// variable are in the same file, so only the offsets are compared.
+// Fill-value chunks (Chunk::get_uses_fill_value() is true) are only created at run time by
+// DMZ::process_fill_value_chunks(), which also calls set_processing_fv_chunks(). So when
+// get_processing_fv_chunks() is false (the common case) there are no fill-value chunks and the
+// per-chunk fill-value check is skipped. When it is true, each fill-value chunk is its own SuperChunk
+// and, to match the original counting, is not counted (nothing is transferred for it). KY 2026-10-12
+unsigned long long DmrppArray::count_super_chunks(bool is_subset) const {
+
+    const auto &chunks = get_immutable_chunks();
+    if (is_subset && subset_chunks_needed.size() != chunks.size())
+        throw BESInternalError(string("count_super_chunks: Expected subset selected chunks for variable ") + name(), __FILE__, __LINE__);
+
+    unsigned long long num_super_chunks = 0;
+    unsigned long long next_offset = 0;
+
+    // True when the current SuperChunk holds real data, so a contiguous chunk can be added to it.
+    bool sc_open = false;
+
+    if (!get_processing_fv_chunks()) {
+        // No fill-value chunks.
+        for (size_t i = 0; i < chunks.size(); i++) {
+            if (is_subset && !subset_chunks_needed[i])
+                continue;
+            const auto &chunk = chunks[i];
+            if (!sc_open || chunk->get_offset() != next_offset)
+                num_super_chunks++;
+            sc_open = true;
+            next_offset = chunk->get_offset() + chunk->get_size();
+        }
+    }
+    else {
+        for (size_t i = 0; i < chunks.size(); i++) {
+            if (is_subset && !subset_chunks_needed[i])
+                continue;
+            const auto &chunk = chunks[i];
+            if (chunk->get_uses_fill_value()) {
+                // Its own SuperChunk, not counted; the next real-data chunk starts a new SuperChunk.
+                sc_open = false;
+                continue;
+            }
+            if (!sc_open || chunk->get_offset() != next_offset)
+                num_super_chunks++;
+            sc_open = true;
+            next_offset = chunk->get_offset() + chunk->get_size();
+        }
+    }
+    return num_super_chunks;
+}
+
 /**
  * @brief Read data for an unconstrained chunked array
  *
@@ -3626,13 +3682,15 @@ bool DmrppArray::use_buffer_chunk() {
     // If the number of chunks is smaller than the number of parallel threads, just use the super chunk;
     // since one data transfer will be carried for both the buffer chunk and the super chunk cases and
     // we know the total buffer size will always be greater than the super chunk size; so just use the super chunk.
-    if (DmrppRequestHandler::d_use_transfer_threads && get_chunk_count() <=DmrppRequestHandler::d_max_transfer_threads) {
+    // d_decision_transfer_threads (not d_max_transfer_threads) is used: it is the number of transfers we
+    // expect to really run in parallel under load. The transfers themselves still use d_max_transfer_threads.
+    if (DmrppRequestHandler::d_use_transfer_threads && get_chunk_count() <=DmrppRequestHandler::d_decision_transfer_threads) {
 cerr<<"Variable "<< this->FQN() <<" use super chunk - number of chunks less than number of chunks: "<< get_chunk_count() <<endl;
         return false;
 }
 
     bool ret_value = false;
-    auto chunks = this->get_chunks();
+    const auto &chunks = this->get_immutable_chunks();
 
 #if 0
     // Array size 
@@ -3695,54 +3753,48 @@ bool DmrppArray::use_buffer_chunk_internal() {
 // 
 bool DmrppArray::use_buffer_chunk_internal_more(bool is_subset) {
 
-    const unsigned lower_threshold_trans_size = 2097152;
+    // Set by DMRPP.DecisionSmallSize (default 2MB).
+    const unsigned long long lower_threshold_trans_size = DmrppRequestHandler::d_decision_small_size;
 
-    unsigned selected_data_size = get_size(is_subset)*bytes_per_element;
+    unsigned long long selected_data_size = get_size(is_subset)*bytes_per_element;
 
 cerr<<"variable FQN: "<<this->FQN()<<endl;
     // If the array (or subset) size is too small, we can safely choose the buffer chunk.
-    // Currently we set the value be 2MB based on our performance evaluation results.
+    // The default value is 2MB based on our performance evaluation results.
     if (selected_data_size < lower_threshold_trans_size) {
 cerr<<"Variable "<< this->FQN() <<" use buffer chunk - small variable size: "<< selected_data_size <<endl;
         return true;
     }
     
 
-    // Build the super chunk and buffer chunk queues once. They are kept as class members and
-    // the read routine chosen in read() takes them over, so they are not rebuilt there.
-    // They are only inspected (sizes and offsets) here, never read.
+    // Build the buffer chunk queue once. It is kept as a class member and the buffer chunk read
+    // routine chosen in read() takes it over, so it is not rebuilt there. It is only inspected
+    // (sizes) here, never read.
+    // The super chunk queue is NOT built here: we only need the number of super chunks, which
+    // count_super_chunks() obtains in one cheap pass. If the super chunk is chosen, the super chunk
+    // read routine builds its queue itself (super_chunks_reuse/subset_super_chunks_reuse stay empty).
+    // The buffer chunk is chosen in most timing comparisons, so building only its queue wastes the least.
     if (is_subset) {
-        build_subset_superchunk_reuse_queue();
+        obtain_subset_chunks_needed();   // no-op if already set
         build_subset_bufferchunk_reuse_queue();
     }
-    else {
-        build_superchunk_reuse_queue();
+    else
         build_bufferchunk_reuse_queue();
-    }
-    // TODO: compare super_chunks_reuse/buffer_chunks_reuse (or the subset_* queues) to decide ret_value.
 
     // Obtain th1 number of SuperChunks and buffer chunks that hold real data (fill-value chunks are skipped;
     // each one is its own SuperChunk and nothing is transferred for it), and the total number of
     // bytes the buffer chunks transfer.
-    unsigned long long num_super_chunks = 0;
+    unsigned long long num_super_chunks = count_super_chunks(is_subset);
     unsigned long long num_buffer_chunks = 0;
     unsigned long long buffer_chunks_total_size = 0;
     unsigned long long super_chunks_total_size = get_var_chunks_storage_size();
 
     // std::queue cannot be iterated, so walk a copy (it only copies the shared_ptrs).
     // The member queues stay intact so the read routine can reuse them.
-    const auto &sc_queue  = is_subset ? subset_super_chunks_reuse  : super_chunks_reuse;
     const auto &buf_queue = is_subset ? subset_buffer_chunks_reuse : buffer_chunks_reuse;
 
-    auto sc_copy = sc_queue;
     auto buf_copy = buf_queue;
     if (get_processing_fv_chunks()) {
-        while (!sc_copy.empty()) {
-            if (!sc_copy.front()->get_uses_fill_value())
-                num_super_chunks++;
-            sc_copy.pop();
-        }
-    
         while (!buf_copy.empty()) {
             if (!buf_copy.front()->get_uses_fill_value()) {
                 num_buffer_chunks++;
@@ -3752,7 +3804,6 @@ cerr<<"Variable "<< this->FQN() <<" use buffer chunk - small variable size: "<< 
         }
     }
     else {
-        num_super_chunks = sc_copy.size();
         num_buffer_chunks = buf_copy.size();
         while (!buf_copy.empty()) {
             buffer_chunks_total_size += buf_copy.front()->get_size();
@@ -3780,11 +3831,11 @@ cerr<<"Variable "<< this->FQN() <<" use buffer chunk - small buffer chunk total 
     }
 
 
-    // Size is in byte
-    const unsigned int size_unit = 8192;
+    // Bytes transferred per ms(millisecond). Set by DMRPP.DecisionBytesPerMs (default 8192, at least 1).
+    const unsigned long long size_unit = DmrppRequestHandler::d_decision_bytes_per_ms;
 
-    // transfer_overhead_time in ms(millisecond) 
-    const unsigned int transfer_overhead_time = 256;
+    // transfer_overhead_time in ms(millisecond) per request round. Set by DMRPP.DecisionRequestOverheadMs (default 256).
+    const unsigned long long transfer_overhead_time = DmrppRequestHandler::d_decision_request_overhead_ms;
 
     unsigned long long  buffer_chunk_est_trans_time = 0;
     unsigned long long  super_chunk_est_trans_time = 0;
@@ -3793,7 +3844,7 @@ cerr<<"Variable "<< this->FQN() <<" use buffer chunk - small buffer chunk total 
     // By using the parallel data transfer, using super chunk may be faster for some cases.
     if (DmrppRequestHandler::d_use_transfer_threads) {
 
-        const unsigned int max_num_par_tasks = DmrppRequestHandler::d_max_transfer_threads;
+        const unsigned int max_num_par_tasks = DmrppRequestHandler::d_decision_transfer_threads;
         if (num_buffer_chunks <= max_num_par_tasks)
             buffer_chunk_est_trans_time = transfer_overhead_time + buffer_chunks_total_size/size_unit;
         else 
@@ -3812,8 +3863,8 @@ cerr<<"Variable "<< this->FQN() <<" use buffer chunk - small buffer chunk total 
         
 if (DmrppRequestHandler::d_use_transfer_threads) {
 
-        const unsigned int max_num_par_tasks = DmrppRequestHandler::d_max_transfer_threads;
-cerr<<" Parallel - maximum number of tasks per data transfer: "<< DmrppRequestHandler::d_max_transfer_threads <<endl;
+        const unsigned int max_num_par_tasks = DmrppRequestHandler::d_decision_transfer_threads;
+cerr<<" Parallel - maximum number of tasks per data transfer: "<< DmrppRequestHandler::d_decision_transfer_threads <<endl;
 int num_data_transfer = (num_buffer_chunks <= max_num_par_tasks)?1:((num_buffer_chunks+max_num_par_tasks-1)/max_num_par_tasks);
 cerr<<" Parallel - buffer chunk - number of total data transfer: "<< num_data_transfer <<endl;
 num_data_transfer = (num_super_chunks <= max_num_par_tasks)?1:((num_super_chunks+max_num_par_tasks-1)/max_num_par_tasks);
@@ -3837,7 +3888,7 @@ cerr<<" Sequential - super chunk - total time to transfer the data: "<<  super_c
     if (buffer_chunk_est_trans_time < super_chunk_est_trans_time) { 
 
 if (DmrppRequestHandler::d_use_transfer_threads) {
-cerr<<"Variable "<< this->FQN() <<" Parallel use buffer chunk -  total time: "<< buffer_chunk_est_trans_time << " ;super chunk total time: " << super_chunk_est_trans_time  << "; number of maximum parallel tasks: "<< DmrppRequestHandler::d_max_transfer_threads << endl;
+cerr<<"Variable "<< this->FQN() <<" Parallel use buffer chunk -  total time: "<< buffer_chunk_est_trans_time << " ;super chunk total time: " << super_chunk_est_trans_time  << "; number of maximum parallel tasks: "<< DmrppRequestHandler::d_decision_transfer_threads << endl;
 }
 else 
 cerr<<"Variable "<< this->FQN() <<" Sequential use buffer chunk -  total time: "<< buffer_chunk_est_trans_time << " ;super chunk total time: " << super_chunk_est_trans_time    << endl;
@@ -3847,7 +3898,7 @@ cerr<<"Variable "<< this->FQN() <<" Sequential use buffer chunk -  total time: "
     else {
 
 if (DmrppRequestHandler::d_use_transfer_threads) {
-cerr<<"Variable "<< this->FQN() <<" Parallel use super chunk -  total time: "<<super_chunk_est_trans_time << " ;buffer chunk total time: " << buffer_chunk_est_trans_time  << "; number of maximum parallel tasks: "<< DmrppRequestHandler::d_max_transfer_threads <<endl;
+cerr<<"Variable "<< this->FQN() <<" Parallel use super chunk -  total time: "<<super_chunk_est_trans_time << " ;buffer chunk total time: " << buffer_chunk_est_trans_time  << "; number of maximum parallel tasks: "<< DmrppRequestHandler::d_decision_transfer_threads <<endl;
 }
 else 
 cerr<<"Variable "<< this->FQN() <<" Sequential use super chunk -  total time: "<<super_chunk_est_trans_time << " ;buffer chunk total time: " << buffer_chunk_est_trans_time  << endl;
@@ -4197,7 +4248,7 @@ void DmrppArray::add_dio_var_storage_info_constrained() {
     vector<unsigned long long> var_stop;
     vector<unsigned long long> var_stride;
     int num_dims = obtain_subset_dims(var_start,var_stop,var_stride);
-    auto chunks = this->get_chunks();
+    auto &chunks = this->get_immutable_chunks();
     for (const auto &chunk:chunks) {
         bool needed = find_needed_chunks_simple(chunk,chunk_shape,var_start,var_stride,var_stop,num_dims);
         if (needed) {
@@ -4240,7 +4291,7 @@ void DmrppArray::add_dio_var_storage_info_unconstrained() {
 
     Array::var_storage_info dmrpp_vs_info = this->get_var_storage_info();
 
-    auto chunks = this->get_chunks();
+    const auto &chunks = this->get_immutable_chunks();
 
     // Need to provide the offset of a chunk in the final data buffer.
     for (unsigned int i = 0; i < chunks.size(); i++) {
