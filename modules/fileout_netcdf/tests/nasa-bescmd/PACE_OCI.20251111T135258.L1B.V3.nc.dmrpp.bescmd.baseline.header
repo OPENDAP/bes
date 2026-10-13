@@ -51,7 +51,7 @@ dimensions:
 		:build_dmrpp_metadata.build_dmrpp = "3.21.1" ;
 		:build_dmrpp_metadata.bes = "3.21.1" ;
 		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
-		:build_dmrpp_metadata.invocation = "build_dmrpp -f /Users/myang6/Desktop/tmp-amazon-nasa-files/PACE_OCI.20251111T135258.L1B.V3.nc -r PACE_OCI.20251111T135258.L1B.V3.nc.dmr -u https://s3.us-east-1.amazonaws.com/opendap.scratch/merra2/PACE_OCI.20251111T135258.L1B.V3.nc -M" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -f /Users/myang6/Desktop/tmp-amazon-nasa-files/PACE_OCI.20251111T135258.L1B.V3.nc -r PACE_OCI.20251111T135258.L1B.V3.nc.dmr -u data/PACE_OCI.20251111T135258.L1B.V3.nc -M" ;
 		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"PACE_OCI.20251111T135258.L1B.V3.nc.dmrpp\"}]}]" ;
 
 group: sensor_band_parameters {

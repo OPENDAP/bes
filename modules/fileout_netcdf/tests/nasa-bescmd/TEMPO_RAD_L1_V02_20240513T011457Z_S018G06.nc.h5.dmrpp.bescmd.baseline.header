@@ -79,7 +79,7 @@ variables:
 		:build_dmrpp_metadata.build_dmrpp = "3.21.1" ;
 		:build_dmrpp_metadata.bes = "3.21.1" ;
 		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
-		:build_dmrpp_metadata.invocation = "build_dmrpp -f /Users/myang6/Desktop/tmp-amazon-nasa-files/TEMPO_RAD_L1_V02_20240513T011457Z_S018G06.nc.h5 -r TEMPO_RAD_L1_V02_20240513T011457Z_S018G06.nc.h5.dmr -u https://s3.us-east-1.amazonaws.com/opendap.scratch/merra2/TEMPO_RAD_L1_V02_20240513T011457Z_S018G06.nc.h5 -M" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -f /Users/myang6/Desktop/tmp-amazon-nasa-files/TEMPO_RAD_L1_V02_20240513T011457Z_S018G06.nc.h5 -r TEMPO_RAD_L1_V02_20240513T011457Z_S018G06.nc.h5.dmr -u data/TEMPO_RAD_L1_V02_20240513T011457Z_S018G06.nc.h5 -M" ;
 		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"TEMPO_RAD_L1_V02_20240513T011457Z_S018G06.nc.h5.dmrpp\"}]}]" ;
 
 group: band_540_740_nm {
