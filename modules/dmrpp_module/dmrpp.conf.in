@@ -50,12 +50,9 @@ BES.Catalog.catalog.TypeMatch+=dmrpp:.*\.(dmrpp)(\.bz2|\.gz|\.Z)?$;
 
 # DMRPP.DecisionParallelTransfers = 4
 
-# The buffer chunk/super chunk choice estimates the transfer time of each as
-#   number of request rounds * DecisionRequestOverheadMs + bytes / DecisionBytesPerMs
-# (a request round is one request in serial mode, or up to DecisionParallelTransfers
-# requests in parallel mode) and picks the faster one. A variable, or a buffer chunk
-# total, smaller than DecisionSmallSize bytes always uses the buffer chunk.
-# With the defaults, one request costs the same as transferring 2 MB.
+# The following parameters are used to esitmate the buffer chunk/super chunk transfer time.
+# The time is estimated by the number of request rounds * DecisionRequestOverheadMs + bytes / DecisionBytesPerMs
+# When the transferred size is smaller than DecisionSmallSize bytes, the buffer chunk is used.
 # DecisionBytesPerMs must be at least 1.
 
 # DMRPP.DecisionBytesPerMs = 8192
