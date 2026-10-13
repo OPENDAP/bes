@@ -3746,7 +3746,7 @@ void HDFCFUtil::write_sp_sds_dds_cache(const HDFSP::File* spf,FILE*dds_file,size
         s_total_written_count << total_written_bytes_count;
         // Removed from the following line: + " buffer size should be " + total_bytes_dds_cache.str()
         //  SonarScan was complaining about possible logging injection - kln
-        string msg = "DDs cached file " + dds_filename + ", improper buffer size";
+        string msg = "DDS cached file " + dds_filename + ", improper buffer size";
         throw BESInternalError (msg,__FILE__, __LINE__);
     }
 
@@ -3755,8 +3755,8 @@ void HDFCFUtil::write_sp_sds_dds_cache(const HDFSP::File* spf,FILE*dds_file,size
     if(bytes_really_written != total_bytes_dds_cache) {
         stringstream s_really_written_bytes;
         s_really_written_bytes << bytes_really_written;
-        string msg = "DDs cached file "+ dds_filename + ", improper size";
-        msg += ". The real size written to the file is " + s_really_written_bytes.str();
+        string msg = "DDS cached file "+ dds_filename + ", improper size";
+        msg += ". The real size written to the file is " + to_string(s_really_written_bytes);
         throw BESInternalError (msg,__FILE__, __LINE__);
     }
 
