@@ -2,31 +2,16 @@
 
 ## Scope
 
-These instructions apply to the  `bes/docs` directory.
+These instructions apply to the `bes/docs` directory. They add to the repo-wide rules in the top-level [`AGENTS.md`](../AGENTS.md), which also apply here.
 
 ## Directory Content
 
-- Files that describe the technical organization and function of the BES
+- Technical documents that describe the organization and function of the BES (for example, `BES_*.md`).
+- Work logs and plans written under the top-level "Writing Documents" rules also live here. They are not technical documentation.
+- This directory is not the place for end-user documentation, EXCEPT when that information helps explain a technical detail.
 
-## Change Discipline
+## Makefile.am
 
-- Do not revert unrelated local changes in a dirty worktree.
-- Keep edits narrowly scoped to the request.
-- If you encounter unexpected repository changes that conflict with the task, stop and ask how to proceed.
-- Do not run destructive git commands unless explicitly requested.
-- Make sure the Makefile.am is up to date after any change.
-
-## Review Priorities
-
-When asked to review, prioritize:
-
-1. Behavioral regressions in server responses, protocol handling, and installed/runtime behavior
-2. Memory/resource safety and ownership lifetime issues
-3. Build-system or packaging regressions in autotools, distcheck, CI, or Docker flows
-4. Configuration/install-layout regressions that would affect deployed BES instances
-
-## Communication
-
-- State assumptions and environment details explicitly, especially configure flags and dependency locations.
-- Adopt a professional engineering tone in responses.
-- The files in this directory are not the proper place for end-user documentation EXCEPT when that information is useful to explain a technical detail.
+- When you add, rename, or remove a technical document (a `BES_*.md`-style file), update `EXTRA_DIST` in `docs/Makefile.am` to match.
+- Do not add work logs, plans, or other scratch documents to `EXTRA_DIST`.
+- Do not edit any other `Makefile.am` because of a docs change.

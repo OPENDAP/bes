@@ -62,6 +62,7 @@
 #include "BESStopWatch.h"
 
 #include "NgapOwnedContainer.h"
+#include "NgapServiceChaining.h"
 
 #include "DapUtils.h"
 
@@ -423,6 +424,18 @@ namespace dmrpp
     }
 
     /**
+     * @brief Record if this request uses an NgapOwnedContainer.
+     *
+     * Data reads happen after the dap_build_*() methods return, so the
+     * 'Service Chaining Error' code in the chunk-read and redirect paths
+     * uses this per-process flag to tell if the request is an NGAP request.
+     */
+    static void record_ngap_request(const BESDataHandlerInterface &dhi)
+    {
+        ngap::set_ngap_request(dynamic_cast<ngap::NgapOwnedContainer *>(dhi.container) != nullptr);
+    }
+
+    /**
      * Given a request for the DMR response, look at the data source and
      * parse it's DMR/XML information. If the data source is a .dmr or .xml
      * file, assume that's all the data source contains and that the plain
@@ -437,6 +450,7 @@ namespace dmrpp
     bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
     {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+        record_ngap_request(dhi);
 
         auto bdmr = dynamic_cast<BESDMRResponse *>(dhi.response_handler->get_response_object());
         if (!bdmr)
@@ -466,6 +480,7 @@ namespace dmrpp
     bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
     {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+        record_ngap_request(dhi);
 
         auto bdmr = dynamic_cast<BESDMRResponse *>(dhi.response_handler->get_response_object());
         if (!bdmr)
@@ -506,6 +521,7 @@ namespace dmrpp
     bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface &dhi)
     {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+        record_ngap_request(dhi);
 
         auto bdds = dynamic_cast<BESDataDDSResponse *>(dhi.response_handler->get_response_object());
         if (!bdds)
@@ -533,6 +549,7 @@ namespace dmrpp
     bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface &dhi)
     {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+        record_ngap_request(dhi);
 
         auto bdds = dynamic_cast<BESDDSResponse *>(dhi.response_handler->get_response_object());
         if (!bdds)
@@ -561,6 +578,7 @@ namespace dmrpp
     bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface &dhi)
     {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+        record_ngap_request(dhi);
 
         auto bdas = dynamic_cast<BESDASResponse *>(dhi.response_handler->get_response_object());
         if (!bdas)
