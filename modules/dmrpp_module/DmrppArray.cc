@@ -1151,7 +1151,6 @@ void DmrppArray::build_bufferchunk_queue(queue<shared_ptr<SuperChunk>> &super_ch
     stringstream sc_id;
     sc_count++;
     sc_id << name() << "-" << sc_count;
-    //queue<shared_ptr<SuperChunk>> super_chunks;
     auto current_super_chunk = std::make_shared<SuperChunk>(sc_id.str(), this) ;
 
     // Set the non-contiguous chunk flag
@@ -3480,10 +3479,6 @@ bool DmrppArray::use_buffer_chunk_internal_more(bool is_subset) {
     else
         build_bufferchunk_reuse_queue();
 
-    // Obtain th1 number of SuperChunks and buffer chunks that hold real data (fill-value chunks are skipped;
-    // each one is its own SuperChunk and nothing is transferred for it), and the total number of
-    // bytes the buffer chunks transfer.
-    unsigned long long num_super_chunks = count_super_chunks(is_subset);
     unsigned long long num_buffer_chunks = 0;
     unsigned long long buffer_chunks_total_size = 0;
     unsigned long long super_chunks_total_size = get_var_chunks_storage_size();
@@ -3492,6 +3487,10 @@ bool DmrppArray::use_buffer_chunk_internal_more(bool is_subset) {
     // The member queues stay intact so the read routine can reuse them.
     const auto &buf_queue = is_subset ? subset_buffer_chunks_reuse : buffer_chunks_reuse;
 
+    // Obtain the number buffer chunks that hold real data (fill-value chunks are skipped;
+    // each one is its own SuperChunk and nothing is transferred for it), and the total number of
+    // bytes the buffer chunks transfer.
+ 
     auto buf_copy = buf_queue;
     if (get_processing_fv_chunks()) {
         while (!buf_copy.empty()) {
@@ -3518,6 +3517,11 @@ bool DmrppArray::use_buffer_chunk_internal_more(bool is_subset) {
     if (buffer_chunks_total_size < lower_threshold_trans_size) 
         return true;
     
+    // Obtain the number of SuperChunks that hold real data (fill-value chunks are skipped;
+    // each one is its own SuperChunk and nothing is transferred for it), and the total number of
+    // bytes the buffer chunks transfer.
+    unsigned long long num_super_chunks = count_super_chunks(is_subset);
+ 
     // Now we need to estimate the data transfer time of using the super chunk and the buffer chunk.
 
     // Bytes transferred per ms(millisecond). Set by DMRPP.DecisionBytesPerMs (default 8192, at least 1). 
