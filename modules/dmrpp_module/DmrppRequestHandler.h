@@ -80,6 +80,16 @@ public:
     static bool d_use_transfer_threads;
     static unsigned long d_max_transfer_threads;
     static unsigned long d_default_max_transfer_threads;
+    // The number of parallel transfers assumed when choosing between the buffer chunk and the super chunk.
+    // Never greater than d_max_transfer_threads. See DMRPP.DecisionParallelTransfers in dmrpp.conf.
+    static unsigned long d_decision_transfer_threads;
+    // The transfer time model used to choose between the buffer chunk and the super chunk:
+    //   estimated time (ms) = number of request rounds * d_decision_request_overhead_ms
+    //                         + bytes / d_decision_bytes_per_ms
+    // Variables (or buffer chunks) smaller than d_decision_small_size bytes always use the buffer chunk.
+    static unsigned long d_decision_bytes_per_ms;
+    static unsigned long d_decision_request_overhead_ms;
+    static unsigned long d_decision_small_size;
 
     static bool d_use_compute_threads;
     static unsigned long d_max_compute_threads;
