@@ -3753,10 +3753,8 @@ void HDFCFUtil::write_sp_sds_dds_cache(const HDFSP::File* spf,FILE*dds_file,size
     size_t bytes_really_written = fwrite((const void*)temp_buf.data(),1,total_bytes_dds_cache,dds_file);
 
     if(bytes_really_written != total_bytes_dds_cache) {
-        stringstream s_really_written_bytes;
-        s_really_written_bytes << bytes_really_written;
         string msg = "DDS cached file "+ dds_filename + ", improper size";
-        msg += ". The real size written to the file is " + to_string(s_really_written_bytes);
+        msg += ". The real size written to the file is " + std::to_string(bytes_really_written);
         throw BESInternalError (msg,__FILE__, __LINE__);
     }
 
