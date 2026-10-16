@@ -1010,6 +1010,27 @@ void DMZ::set_up_direct_io_flag_phase_2(D4Group * grp, BaseType *btp) {
     if (dc(btp)->is_disable_dio())
         return;
 
+    // We find a special case related to the use of fletcher32 filter and the deflate filter.
+    // If the fletcher32 is the last filter, we cannot do the direct IO.
+    
+     bool has_fletcher32_last_with_deflate = false;
+     if (has_deflate_filter) {
+        for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute()) {
+            if (is_eq(attr.name(), "compressionType")) {
+                filter = attr.value();
+                // There are only three filters supported: deflate, shuffle and
+                // fletcher32. If the last character of the string is 2,
+                // we know this is the fletcher32 filter. So mark it and break.
+                if (filter[filter.size()-1]=='2') {
+                    has_fletcher32_last_with_deflate = true;
+                    break;
+                }
+            }
+        }
+    }
+    if (has_fletcher32_last_with_deflate)
+        return;
+
     // Now we need to read the first child of dmrpp:chunks to obtain the chunk sizes.
     vector<unsigned long long> chunk_dim_sizes;
     for (auto child = chunks.child("dmrpp:chunkDimensionSizes"); child; child = child.next_sibling()) {
@@ -2222,23 +2243,26 @@ static void add_fill_value_information(DmrppCommon *dc, const string &value_stri
          }
      }
      if (block_count > 0) {
-         if (block_count == 1)
-             throw BESInternalError(" The number of linked block is 1, but it should be > 1.", __FILE__, __LINE__);
-         if (block_count > 1) {
-             // set using linked block
-             dc(btp)->set_using_linked_block();
-             // reset the count to 0 to process the blocks.
-             block_count = 0;
-             for (auto chunk = chunks.child("dmrpp:block"); chunk; chunk = chunk.next_sibling()) {
-                 if (is_eq(chunk.name(), "dmrpp:block")) {
-                     process_block(dc(btp), chunk, block_count);
-                     BESDEBUG(PARSER,
-                              prolog << "This count of linked block of this variable is: " << block_count << endl);
-                     block_count++;
-                 }
-             }
-             dc(btp)->set_total_linked_blocks(block_count);
-         }
+
+        // set using linked block
+        // When building the dmrpp file, we treate one linked block case as a chunk.So the number of linked blocks
+        // is supposed to be greater than 1. 
+        // However, for a special case when two adjacent linked blocks can be merged to one block, we
+        // forgot making the merged block as a chunk. This is fixed. However, there are existing dmrpp files
+        // that contain one merged linked block already. So we also support the case when the number of linked block is equal to 1. 
+        dc(btp)->set_using_linked_block();
+
+        // reset the count to 0 to process the blocks.
+        block_count = 0;
+        for (auto chunk = chunks.child("dmrpp:block"); chunk; chunk = chunk.next_sibling()) {
+            if (is_eq(chunk.name(), "dmrpp:block")) {
+                process_block(dc(btp), chunk, block_count);
+                BESDEBUG(PARSER,
+                         prolog << "This count of linked block of this variable is: " << block_count << endl);
+                block_count++;
+            }
+            dc(btp)->set_total_linked_blocks(block_count);
+        }
      }
      else if (is_multi_lb_chunks) {
          queue<vector<pair<unsigned long long, unsigned long long> > > mb_index_queue;

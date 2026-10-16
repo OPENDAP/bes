@@ -1,0 +1,16 @@
+netcdf test {
+dimensions:
+	dim1 = 6 ;
+	dim2 = 4 ;
+variables:
+	int dset(dim1, dim2) ;
+
+// global attributes:
+		:build_dmrpp_metadata.created = "removed date-time" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.22.0" ;
+		:build_dmrpp_metadata.bes = "3.22.0" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -f /Users/myang6/work/opendap/opendap-minternal/misc/direct_chunk/One_chunk_shuf_deflate_fletcher.h5 -r One_chunk_shuf_deflate_fletcher.h5.dmr -u One_chunk_shuf_deflate_fletcher.h5 -M" ;
+		:history = "removed date-timex One_chunk_shuf_deflate_fletcher.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"One_chunk_shuf_deflate_fletcher.h5.dmrpp\"}]}]" ;
+}
