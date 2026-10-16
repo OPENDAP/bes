@@ -655,7 +655,7 @@ void DmrppArray::read_one_chunk_dio() {
     // This is the chunk for this variable.
     auto the_one_chunk = get_immutable_chunks()[0];
 
-    // For this version, we just read the whole chunk all at once.
+    // We just need to read the whole chunk all at once regardless the subset or not. KY 2026-10-15
     the_one_chunk->read_chunk_dio();
     reserve_value_capacity_ll_byte(get_var_chunks_storage_size());
     const char *source_buffer = the_one_chunk->get_rbuf();
