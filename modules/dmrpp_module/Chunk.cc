@@ -50,6 +50,7 @@
 #include "DmrppNames.h"
 #include "byteswap_compat.h"
 #include "float_byteswap.h"
+#include "lzw_util.h"
 
 using namespace std;
 using http::EffectiveUrlCache;
@@ -706,10 +707,90 @@ checksum_fletcher32(const void *_data, size_t _len)
 } /* end checksum_fletcher32() */
 
 /**
+ * @brief Parse a decimal unsigned integer taken from a filter token.
+ *
+ * Reject emtpy strings, signs, whitespace, and anything else that is not a plain
+ * run of digits (and values too large to be sensible), so a malformed DMR++
+ * attribute produces a clear error instead of a silently wrong decode.
+ *
+ * @param value the tect to parse
+ * @param filter the whole filter token, used only for the error message
+ */
+static unsigned long long parse_filter_uint(const string &value, const string &filter) {
+    if (value.empty() || value.size() > 18 || value.find_first_not_of("0123456789") != string::npos) {
+        throw BESInternalError(prolog + "Malformed filter '" + filter + "': '" + value
+                               + "' is not a valid unsigned integer.", __FILE__, __LINE__);
+    } // end if
+    return stoull(value);
+} //end parse_filter_unit(...)
+
+/// Parameters carried by a 'tiffpred' filter token.
+struct TiffPredictorParams {
+    int predictor;                          ///< TIFF Predictor tag value: 2 or 3
+    unsigned samples_per_pixel;             ///< Interleave stride, in samples (1 for planar data)
+    unsigned long long elements_per_row;    ///< Samples in one row of the chunk (row width * samples_per_pixel)
+};
+
+/**
+ * @brief Parse a 'tiffpred' filter token.
+ *
+ * The token has the form  tiffpred:<predictor>:<samples-per-pixel>:<elements-per-row>
+ * for example "tiffpred:2:3:1536" for 3-band chunky data that is 512 pixels wide. The element
+ * (sample) size comes from the array, not from the token, and the byte order from the chunk.
+ *
+ * @param filter The token, as found in the compressionType attribute
+ * @return The parsed parameters
+ * @throw BESInternalError if the token is malformed
+ */
+static TiffPredictorParams parse_tiff_predictor_filter(const string &filter) {
+    // Do not skip empty fields: "tiffpred:2::512" must be an error, not a 3-field token.
+    const vector<string> parts = BESUtil::split(filter, ':', false);
+    if (parts.size() != 4 || parts[0] != "tiffpred") {
+        throw BESInternalError(prolog + "Malformed filter '" + filter
+                               + "': expected tiffpred:<predictor>:<samples-per-pixel>:<elements-per-row>.",
+                               __FILE__, __LINE__);
+    }
+
+    const unsigned long long predictor = parse_filter_uint(parts[1], filter);
+    if (predictor != 2 && predictor != 3) {
+        throw BESInternalError(prolog + "Unsupported TIFF predictor in filter '" + filter
+                               + "': only predictor 2 (horizontal differencing) and 3 (floating point) are supported.",
+                               __FILE__, __LINE__);
+    }
+
+    const unsigned long long spp = parse_filter_uint(parts[2], filter);
+    const unsigned long long row = parse_filter_uint(parts[3], filter);
+    if (spp == 0 || spp > 65535 || row == 0 || row % spp != 0) {
+        throw BESInternalError(prolog + "Invalid sizes in filter '" + filter
+                               + "': samples-per-pixel must be > 0 and divide elements-per-row.",
+                               __FILE__, __LINE__);
+    }
+
+    TiffPredictorParams params;
+    params.predictor = static_cast<int>(predictor);
+    params.samples_per_pixel = static_cast<unsigned>(spp);
+    params.elements_per_row = row;
+    return params;
+} // end parse_tiff_predictor_filter(...)
+
+/**
  * @brief filter data in the chunk
  *
  * This method tracks if a chunk has already been decompressed, so, like read_chunk()
  * it can be called for a chunk that has already been decompressed without error.
+ *
+ * The filters are listed in the order they were applied when the data were written, and are
+ * undone here in reverse order. The recognized filter names are
+ *   - deflate, shuffle, fletcher32: HDF5 filters.
+ *   - lzw: TIFF LZW (TIFF Compression=5, as used by GeoTIFF). See lzw_decode().
+ *   - tiffpred:P:S:R: reverse the TIFF predictor P (2 or 3) on rows of R samples with S samples per
+ *     pixel. Use it with lzw (or deflate) when the TIFF Predictor tag is 2 or 3; because it is
+ *     applied before compression when writing, it is listed before lzw, e.g. "tiffpred:2:1:512 lzw".
+ *     The sample size is elem_width and the byte order is the chunk's byte order.
+ *
+ * @note If an LZW stream ends (with an EOI code) before it has produced chunk_size elements, as can
+ * happen for the last strip of a TIFF whose height is not a multiple of RowsPerStrip, the rest of the
+ * chunk is filled with zeros. Corrupt or truncated LZW data is an error.
  *
  * @param filters Space separated list of filters
  * @param chunk_size The _expected_ chunk size, in elements; used to allocate storage
@@ -898,6 +979,73 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
                                        __FILE__, __LINE__);
             }
         } // end filter is fletcher32
+        else if (filter == "lzw") {
+            // TIFF LZW. The read buffer holds the compressed bytes; decode them into a buffer
+            // of the full, expected chunk size and install that as the new read buffer.
+            if (get_rbuf() == nullptr || get_rbuf_size() == 0) {
+                throw BESInternalError(prolog + "lzw filter: the chunk has no data to decompress.",
+                                       __FILE__, __LINE__);
+            }
+
+            char *dest = new char[chunk_size];
+            try {
+                size_t decoded = 0;
+                const lzw_status status = lzw_decode(reinterpret_cast<const uint8_t *>(get_rbuf()),
+                                                     static_cast<size_t>(get_rbuf_size()),
+                                                     reinterpret_cast<uint8_t *>(dest),
+                                                     static_cast<size_t>(chunk_size), &decoded);
+                if (status == LZW_SHORT_OUTPUT) {
+                    // A well-formed stream that holds less than a full chunk (e.g. a short last strip).
+                    // lzw_decode() has already zero-filled the remainder of dest.
+                    BESDEBUG(MODULE, prolog << "lzw filter: decoded " << decoded << " of " << chunk_size
+                                            << " bytes; the remainder was zero filled." << endl);
+                }
+                else if (status != LZW_OK) {
+                    stringstream msg;
+                    msg << prolog << "lzw filter: " << lzw_status_str(status)
+                        << " (compressed bytes: " << get_rbuf_size() << ", expected decoded bytes: " << chunk_size
+                        << ", decoded bytes: " << decoded << ")";
+                    throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                }
+
+                // This replaces (and deletes) the original read buffer with dest.
+                set_read_buffer(dest, chunk_size, chunk_size, true);
+            }
+            catch (...) {
+                delete[] dest;
+                throw;
+            }
+        } // end filter is lzw
+        else if (filter == "tiffpred" || filter.rfind("tiffpred:", 0) == 0) {
+            // Undo the TIFF predictor in place; the buffer was installed by a previous filter
+            // (lzw or deflate) and is already the size of the decoded chunk.
+            const TiffPredictorParams pp = parse_tiff_predictor_filter(filter);
+
+            if (get_rbuf() == nullptr || get_rbuf_size() == 0) {
+                throw BESInternalError(prolog + "tiffpred filter: the chunk has no data to process.",
+                                       __FILE__, __LINE__);
+            }
+            if (elem_width == 0 || elem_width > 8) {
+                throw BESInternalError(prolog + "tiffpred filter: unsupported element size "
+                                       + std::to_string(elem_width) + " bytes.", __FILE__, __LINE__);
+            }
+
+            // Samples are accumulated in the chunk's byte order, so any byte swapping that DmrppArray
+            // does later still sees data in the order the DMR++ declared.
+            const bool big_endian = (d_byte_order == "BE");
+            const tiff_predictor_status status =
+                    tiff_predictor_decode(reinterpret_cast<uint8_t *>(get_rbuf()),
+                                          static_cast<size_t>(get_rbuf_size()), pp.predictor,
+                                          static_cast<unsigned>(elem_width), pp.samples_per_pixel,
+                                          static_cast<size_t>(pp.elements_per_row * elem_width), big_endian);
+            if (status != TIFF_PREDICTOR_OK) {
+                stringstream msg;
+                msg << prolog << "tiffpred filter: " << tiff_predictor_status_str(status)
+                    << " (filter: " << filter << ", element size: " << elem_width
+                    << ", buffer bytes: " << get_rbuf_size() << ")";
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+            }
+        } // end filter is tiffpred
     } // end for loop
     d_is_inflated = true;
 }
