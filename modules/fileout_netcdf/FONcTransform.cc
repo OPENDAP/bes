@@ -1377,7 +1377,6 @@ void FONcTransform::set_constraint_var_dio_flag(D4Group *d4_grp, Array* t_a, con
                 BESDEBUG(MODULE, prolog << "stop of this dimension: " <<stop << endl);
                 BESDEBUG(MODULE, prolog << "chunk_dim_size of this dimension: " <<chunk_dim_sizes[dim_rank_count] << endl);
                 BESDEBUG(MODULE, prolog << "The subset size of this dimension is smaller than the corresponding chunk size. " << endl);
-                BESDEBUG(MODULE, prolog << "Cannot do direct IO subset: the variable name is: " <<t_a->var()->name() << endl);
 #endif                
                 no_dio = no_dio_dimension(d4_grp, t_a, unlimited_dimnames,di);
                 if (no_dio)
@@ -1386,6 +1385,9 @@ void FONcTransform::set_constraint_var_dio_flag(D4Group *d4_grp, Array* t_a, con
             dim_rank_count++;
         }
         if (no_dio) {
+#if !NDEBUG
+                BESDEBUG(MODULE, prolog << "Can do direct IO subset: the variable name is: " <<t_a->var()->name() << endl);
+#endif
             t_a->set_dio_flag(false);   
             return;
         }
