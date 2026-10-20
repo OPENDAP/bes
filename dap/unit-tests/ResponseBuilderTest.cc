@@ -806,6 +806,7 @@ public:
         CPPUNIT_ASSERT(rb.get_ignore_check_too_big());
         rb.set_ignore_check_too_big(false);
         CPPUNIT_ASSERT(!rb.get_ignore_check_too_big());
+        DBG(cerr << plog << "SUCCEED" << endl);
         DBG(cerr << plog << "END" << endl);
     }
 
@@ -814,8 +815,11 @@ public:
     {
         DBG(cerr << endl << plog << "BEGIN" << endl);
         TheBESKeys::TheKeys()->set_key(BES_MAX_VAR_SIZE_KEY, "10");
+        DBG(cerr << plog << "Set maximum variable size to 10 bytes." << endl);
         drb->set_dap4ce("");    // empty CE: every variable is marked to send
+        DBG(cerr << plog << "At least one variable size is 96 bytes, so should throw." << endl);
         CPPUNIT_ASSERT_THROW(drb->dap4_process_ce_for_intern_data(*test_01_dmr), BESSyntaxUserError);
+        DBG(cerr << plog << "SUCCEED" << endl);
         DBG(cerr << plog << "END" << endl);
     }
 
@@ -825,8 +829,10 @@ public:
         TheBESKeys::TheKeys()->set_key(BES_MAX_VAR_SIZE_KEY, "10");
         TheBESKeys::TheKeys()->set_key(BES_MAX_RESPONSE_SIZE_KEY, "10");
         drb->set_dap4ce("");
+        DBG(cerr << plog << "Set the ignore check flag true" << endl);
         drb->set_ignore_check_too_big(true);
         CPPUNIT_ASSERT_NO_THROW(drb->dap4_process_ce_for_intern_data(*test_01_dmr));
+        DBG(cerr << plog << "SUCCEED" << endl);
         DBG(cerr << plog << "END" << endl);
     }
 
@@ -837,6 +843,7 @@ public:
         TheBESKeys::TheKeys()->set_key(BES_MAX_VAR_SIZE_KEY, "2");
         test_05_dds->mark_all(true);
         CPPUNIT_ASSERT_THROW(drb->throw_if_too_big(*test_05_dds, __FILE__, __LINE__), BESSyntaxUserError);
+        DBG(cerr << plog << "SUCCEED" << endl);
         DBG(cerr << plog << "END" << endl);
     }
 
@@ -848,6 +855,7 @@ public:
         test_05_dds->mark_all(true);
         drb->set_ignore_check_too_big(true);
         CPPUNIT_ASSERT_NO_THROW(drb->throw_if_too_big(*test_05_dds, __FILE__, __LINE__));
+        DBG(cerr << plog << "SUCCEED" << endl);
         DBG(cerr << plog << "END" << endl);
     }
 
