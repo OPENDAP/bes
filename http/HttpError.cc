@@ -39,8 +39,8 @@ namespace http {
 void HttpError::add_my_error_details_to(BESInfo &info) const {
     info.add_tag("curl_code", std::to_string(d_curl_code));
     info.add_tag("http_status", std::to_string(d_http_status));
-    info.add_tag("origin_url", d_origin_url);
-    info.add_tag("redirect_url", d_redirect_url);
+    info.add_tag("origin_url", curl::filter_aws_url(d_origin_url));
+    info.add_tag("redirect_url", curl::filter_aws_url(d_redirect_url));
     info.begin_tag("response_headers");
     for (const auto &header: d_response_headers) {
         info.add_tag("header", header);

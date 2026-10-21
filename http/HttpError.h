@@ -36,6 +36,7 @@
 
 #include "BESInfo.h"
 #include "BESError.h"
+#include "CurlUtils.h"
 
 namespace http {
 
