@@ -63,8 +63,8 @@ public:
             BESError(msg, BES_HTTP_ERROR, file, line),
             d_curl_code(code),
             d_http_status(http_status),
-            d_origin_url(origin_url),
-            d_redirect_url(redirect_url),
+            d_origin_url(curl::filter_aws_url(origin_url)),
+            d_redirect_url(curl::filter_aws_url(redirect_url)),
             d_response_headers(response_headers),
             d_response_body(response_body) {};
 
@@ -78,8 +78,8 @@ public:
             BESError(msg, BES_HTTP_ERROR, file, line),
             d_curl_code(code),
             d_http_status(http_status),
-            d_origin_url(origin_url),
-            d_redirect_url(redirect_url) {};
+            d_origin_url(curl::filter_aws_url(origin_url)),
+            d_redirect_url(curl::filter_aws_url(redirect_url)) {};
 
     HttpError(std::string msg, std::string file, unsigned int line) :
             BESError(std::move(msg), BES_HTTP_ERROR, std::move(file), line) {}
