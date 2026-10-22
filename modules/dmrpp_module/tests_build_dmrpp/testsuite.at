@@ -169,3 +169,7 @@ AT_BUILD_DMRPP([modules/dmrpp_module/data/string_arrays/vl_str_dup_array.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/string_arrays/vl_str_dup_cross_array.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/string_arrays/t_big_vl_str_dset.h5])
 AT_BUILD_DMRPP([modules/dmrpp_module/data/string_arrays/t_big_vl_str_dset2.h5])
+# Note: the following test baseline file is only temporary to let UTF-8 encoding characters convert to Latin-1(ISO-8859)
+# The hyrax team plans to use UTF-8 in the dmrpp document in the future. Once that happens, the baseline file of this
+# test needs to be updated. KY 2026-10-22
+AT_BUILD_DMRPP([modules/dmrpp_module/data/string_arrays/utf8_vlen_str.h5])
