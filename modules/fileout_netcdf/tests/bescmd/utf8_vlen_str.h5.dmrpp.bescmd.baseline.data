@@ -1,0 +1,18 @@
+netcdf test {
+dimensions:
+	dim1 = 4 ;
+	site_name_len = 12 ;
+variables:
+	char site_name(dim1, site_name_len) ;
+
+// global attributes:
+		:history = "removed date-timex utf8_vlen_str.h5.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"utf8_vlen_str.h5.dmrpp\"}]}]" ;
+data:
+
+ site_name =
+  "Cuncumen",
+  "Puchuncav\303\255",
+  "Ventanas",
+  "La Greda" ;
+}
