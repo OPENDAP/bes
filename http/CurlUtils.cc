@@ -1542,7 +1542,10 @@ sign_s3_url(const string &target_url, AccessCredentials *ac, curl_slist *req_hea
     req_headers = append_http_header(req_headers, "x-amz-content-sha256",
                                      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855");
     req_headers = append_http_header(req_headers, "x-amz-date", AWSV4::ISO8601_date(request_time));
+
+#ifndef NDEBUG
     INFO_LOG(prolog + "Signed S3 request for " + target_url);
+#endif
 
     return req_headers;
 }
