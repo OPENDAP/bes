@@ -41,6 +41,7 @@
 #include "Base64.h"
 #include "DmrppCommon.h"
 #include "Chunk.h"
+#include "DmrppRequestHandler.h"
 
 #include "read_test_baseline.h"
 #include "test_config.h"
@@ -57,6 +58,17 @@ static bool bes_debug = false;
 #define prolog std::string("DmrppCommonTest::").append(__func__).append("() - ")
 
 namespace dmrpp {
+
+class emulate_original_filter_order {
+    bool d_saved;
+public:
+    explicit emulate_original_filter_order(bool value) :
+            d_saved(DmrppRequestHandler::d_emulate_original_filter_order_behavior)
+    { DmrppRequestHandler::d_emulate_original_filter_order_behavior = value; }
+
+    ~emulate_original_filter_order()
+    { DmrppRequestHandler::d_emulate_original_filter_order_behavior = d_saved; }
+};
 
 class DmrppCommonTest: public CppUnit::TestFixture {
 private:
@@ -285,6 +297,52 @@ public:
         try {
             d_dc.ingest_compression_type("fletcher32");
             CPPUNIT_ASSERT(d_dc.d_filters == "fletcher32");
+        }
+        catch(BESError &be){
+            stringstream msg;
+            msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
+            cerr << msg.str() << endl;
+            CPPUNIT_FAIL(msg.str());
+        }
+        catch(std::exception &se){
+            stringstream msg;
+            msg << prolog << "Caught std::exception! Message: " << se.what();
+            cerr << msg.str() << endl;
+            CPPUNIT_FAIL(msg.str());
+        }
+        catch(...){
+            CPPUNIT_FAIL(prolog + "Caught unknown exception.");
+        }
+    }
+
+    void test_ingest_compression_type_5()
+    {
+        try {
+            d_dc.ingest_compression_type("lzw");
+            CPPUNIT_ASSERT(d_dc.d_filters == "lzw");
+        }
+        catch(BESError &be){
+            stringstream msg;
+            msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
+            cerr << msg.str() << endl;
+            CPPUNIT_FAIL(msg.str());
+        }
+        catch(std::exception &se){
+            stringstream msg;
+            msg << prolog << "Caught std::exception! Message: " << se.what();
+            cerr << msg.str() << endl;
+            CPPUNIT_FAIL(msg.str());
+        }
+        catch(...){
+            CPPUNIT_FAIL(prolog + "Caught unknown exception.");
+        }
+    }
+
+    void test_ingest_compression_type_6()
+    {
+        try {
+            d_dc.ingest_compression_type("tiffpred:2:3:2100 lzw");
+            CPPUNIT_ASSERT(d_dc.d_filters == "tiffpred:2:3:2100 lzw");
         }
         catch(BESError &be){
             stringstream msg;
@@ -642,6 +700,8 @@ public:
         CPPUNIT_TEST(test_ingest_compression_type_2);
         CPPUNIT_TEST(test_ingest_compression_type_3);
         CPPUNIT_TEST(test_ingest_compression_type_4);
+        CPPUNIT_TEST(test_ingest_compression_type_5);
+        CPPUNIT_TEST(test_ingest_compression_type_6);
 
         CPPUNIT_TEST(test_add_chunk_1);
         CPPUNIT_TEST(test_add_chunk_2);
