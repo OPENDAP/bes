@@ -104,6 +104,30 @@ class TestSample(unittest.TestCase):
             self.addCleanup(os.remove, fonc_name)
             self.addCleanup(os.remove, bescmd_name)
             self.addCleanup(os.remove, "grid_1_2d.h5.dmrpp_fonc.nc4.data")
+        """
+        # Note: the following tests how gen_dmrpp_side_car works when there is UTF-8 characters in the original file.
+        # Currently Hyrax converts the UTF-8 characters to ISO-8559 when generating the dmrpp file for a UTF-8 HDF5 variable-length string.
+        # The hyrax team plans to use UTF-8 in the dmrpp document in the future. Once that happens, the baseline file of this
+        # test needs to be updated. KY 2026-10-22
+        """
+    def test_gen_dmrpp_side_car_utf8(self):
+        
+        print("Testing utf8_vlen_str.h5 : string contains utf8 characters")
+        subprocess.run(["./gen_dmrpp_side_car", "-i", "utf8_vlen_str.h5","-u", "utf8_vlen_str.h5"])
+        bescmd_name = gen_bescmd_conf.generate_bes_cmd("utf8_vlen_str.h5.dmrpp")
+        fonc_name=bescmd_name+"_fonc.nc4"
+        subprocess.run(["besstandalone", "-c", "bes.test.conf", "-i",bescmd_name , "-f", fonc_name])
+        with open('utf8_vlen_str.h5.dmrpp_fonc.nc4.data','w') as nc_data_file:
+            subprocess.run(["ncdump", fonc_name],stdout=nc_data_file)
+        result = filecmp.cmp("utf8_vlen_str.h5.dmrpp_fonc.nc4.data","utf8_vlen_str.h5.dmrpp_fonc.nc4.data.baseline")
+        self.assertEqual(result ,True )
+ 
+        if not os.environ.get('PRESERVE_TEST_ASSETS'):
+            self.addCleanup(os.remove, "utf8_vlen_str.h5.dmrpp")
+            self.addCleanup(os.remove, fonc_name)
+            self.addCleanup(os.remove, bescmd_name)
+            self.addCleanup(os.remove, "utf8_vlen_str.h5.dmrpp_fonc.nc4.data")
+
 
 
     @classmethod
