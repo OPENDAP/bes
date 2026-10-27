@@ -84,7 +84,7 @@ build_dmrpp_CPPFLAGS = $(AM_CPPFLAGS) $(H5_CPPFLAGS) -I$(top_srcdir)/modules/hdf
 build_dmrpp_SOURCES = $(BES_SRCS) $(BES_HDRS) DmrppRequestHandler.cc DmrppRequestHandler.h \
     build_dmrpp.cc build_dmrpp_util.cc build_dmrpp_util.h h5common.cc h5common.h
 build_dmrpp_LDFLAGS = $(AM_LDFLAGS) $(top_builddir)/dap/.libs/libdap_module.a
-build_dmrpp_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) -L$(builddir)/ngap_container -lngap \
+build_dmrpp_LDADD = -L$(builddir)/ngap_container -lngap $(BES_DISPATCH_LIB) $(BES_HTTP_LIB)  \
     $(H5_LDFLAGS) $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) \
     $(LDADD) $(XML2_LIBS) $(BYTESWAP_LIBS) -lz
 

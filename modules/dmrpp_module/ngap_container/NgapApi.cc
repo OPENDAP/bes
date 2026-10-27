@@ -498,7 +498,7 @@ NgapApi::DataAccessUrls NgapApi::convert_ngap_resty_path_to_data_access_urls(con
 
     string cmr_json_string;
     try {
-        BES_PROFILE_TIMING(string("Request granule record from CMR - ") + cmr_query_url);
+        BES_DBG_PROFILE_TIMING(string("Request granule record from CMR - ") + cmr_query_url);
         // We know that CMR is an EDL authenticated situation, so we create those headers
         // (if available) and pass them into the http_get() call
         curl::http_get(cmr_query_url, cmr_json_string, curl::add_edl_auth_headers(nullptr));
