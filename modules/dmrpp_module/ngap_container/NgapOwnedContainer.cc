@@ -107,6 +107,9 @@ long long NgapOwnedContainer::d_dmrpp_file_cache_purge_size_mb = 2'000; // 2,000
 string NgapOwnedContainer::d_dmrpp_file_cache_dir = "/tmp/hyrax_dmrpp_cache";
 
 FileCache NgapOwnedContainer::d_dmrpp_file_cache;
+#ifdef ENABLE_REDIS_CACHE
+RedisCache NgapOwnedContainer::d_dmrpp_redis_cache;
+#endif
 
 /**
  * @brief Creates an instance of NgapOwnedContainer with a symbolic name
@@ -163,17 +166,43 @@ NgapOwnedContainer::NgapOwnedContainer(const string &sym_name, const string &rea
         NgapOwnedContainer::d_dmrpp_file_cache_purge_size_mb =
             MEGABYTE *
             TheBESKeys::read_ulong_key(DMRPP_FILE_CACHE_SPACE, NgapOwnedContainer::d_dmrpp_file_cache_purge_size_mb);
+
+        // Set up the redis cache if it is enabled. kln 10/27/26
+        #ifdef ENABLE_REDIS_CACHEZ
+        const std::string redis_host = TheBESKeys::read_string_key("BES.RedisCache.Host", "127.0.0.1");
+        const std::string redis_cache_dir = TheBESKeys::read_string_key("BES.RedisCache.Directory", "/mnt/shared/bes-cache");
+
+        if (!NgapOwnedContainer::d_dmrpp_redis_cache.initialize(
+                redis_cache_dir,
+                redis_host,
+                6379,
+                0,
+                "ngap-dmrpp",
+                NgapOwnedContainer::d_dmrpp_file_cache_size_mb,
+                NgapOwnedContainer::d_dmrpp_file_cache_purge_size_mb)) {
+
+            ERROR_LOG("NgapOwnedContainer::NgapOwnedContainer() - failed to initialize DMR++ Redis cache");
+        }
+
+        // Setup the file cache if redis is NOT enabled. kln 10/27/26
+        #else
         NgapOwnedContainer::d_dmrpp_file_cache_dir =
             TheBESKeys::read_string_key(DMRPP_FILE_CACHE_DIR, NgapOwnedContainer::d_dmrpp_file_cache_dir);
+
         if (BESUtil::mkdir_p(NgapOwnedContainer::d_dmrpp_file_cache_dir, 0775) != 0) {
-            ERROR_LOG("DMR++ file cache directory '" + NgapOwnedContainer::d_dmrpp_file_cache_dir +
-                      "' error: " + strerror(errno));
+            ERROR_LOG("DMR++ file cache directory '" +
+            NgapOwnedContainer::d_dmrpp_file_cache_dir +
+            "' error: " + strerror(errno));
         }
-        if (!NgapOwnedContainer::d_dmrpp_file_cache.initialize(NgapOwnedContainer::d_dmrpp_file_cache_dir,
-                                                               NgapOwnedContainer::d_dmrpp_file_cache_size_mb,
-                                                               NgapOwnedContainer::d_dmrpp_file_cache_purge_size_mb)) {
+
+        if (!NgapOwnedContainer::d_dmrpp_file_cache.initialize(
+                NgapOwnedContainer::d_dmrpp_file_cache_dir,
+                NgapOwnedContainer::d_dmrpp_file_cache_size_mb,
+                NgapOwnedContainer::d_dmrpp_file_cache_purge_size_mb)) {
+
             ERROR_LOG("NgapOwnedContainer::NgapOwnedContainer() - failed to initialize DMR++ file cache");
         }
+        #endif
     }
 }
 
@@ -324,7 +353,6 @@ string NgapOwnedContainer::build_dmrpp_url_to_local_path(const string &rest_path
 }
 
 bool NgapOwnedContainer::get_item_from_dmrpp_cache(string &dmrpp_string) const {
-
     // Read the cache entry if it exists. jhrg 4/29/24
     if (NgapOwnedContainer::d_dmrpp_mem_cache.get(get_real_name(), dmrpp_string)) {
         CACHE_LOG(prolog + "Memory Cache hit, DMR++: " + get_real_name() + '\n');
@@ -333,10 +361,25 @@ bool NgapOwnedContainer::get_item_from_dmrpp_cache(string &dmrpp_string) const {
         CACHE_LOG(prolog + "Memory Cache miss, DMR++: " + get_real_name() + '\n');
     }
 
-#IF
+    #ifdef ENABLE_REDIS_CACHE
+    RedisCache::Item item;
 
-#ENDIF
+    if (NgapOwnedContainer::d_dmrpp_redis_cache.get(RedisCache::hash_key(get_real_name()), item)) {
+        CACHE_LOG(prolog + "Redis Cache hit, DMR++: " + get_real_name() + '\n');
 
+        if (file_to_string(item.get_fd(), dmrpp_string)) {
+            NgapOwnedContainer::d_dmrpp_mem_cache.put(get_real_name(), dmrpp_string);
+            CACHE_LOG(prolog + "Memory Cache put, DMR++: " + get_real_name() + '\n');
+            return true;
+        }
+
+        ERROR_LOG(prolog + "Failed to read DMR++ from Redis cache\n");
+        return false;
+    }
+
+    CACHE_LOG(prolog + "Redis Cache miss, DMR++: " + get_real_name() + '\n');
+
+    #else
     // Before going over the network to get the DMR++, look in the FileCache.
     // If found, put it in the memory cache and return it as a string.
     FileCache::Item item;
@@ -356,14 +399,29 @@ bool NgapOwnedContainer::get_item_from_dmrpp_cache(string &dmrpp_string) const {
         CACHE_LOG(prolog + "File Cache miss, DMR++: " + get_real_name() + '\n');
     }
 
+    #endif
     return false;
 }
 
 bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string) const {
-    if (NgapOwnedContainer::d_dmrpp_file_cache.put_data(FileCache::hash_key(get_real_name()), dmrpp_string)) {
+    const std::string key = FileCache::hash_key(get_real_name());
+
+    // Use Redis Cache if enabled, otherwise default to File Cache put
+    #ifdef ENABLE_REDIS_CACHE
+    if (NgapOwnedContainer::d_dmrpp_redis_cache.put_data(key, dmrpp_string)) {
+        CACHE_LOG(prolog + "Redis Cache put, DMR++: " + get_real_name() + '\n');
+    } else {
+        CACHE_LOG(prolog + "Failed to put DMR++ in Redis cache\n");
+        return false;
+    }
+
+    if (!NgapOwnedContainer::d_dmrpp_redis_cache.purge()) {
+        ERROR_LOG(prolog + "Call to RedisCache::purge() failed\n");
+    }
+    #else
+    if (NgapOwnedContainer::d_dmrpp_file_cache.put_data(key, dmrpp_string)) {
         CACHE_LOG(prolog + "File Cache put, DMR++: " + get_real_name() + '\n');
     } else {
-        // This might not be an error - put_data() records errors. jhrg 2/13/25
         CACHE_LOG(prolog + "Failed to put DMR++ in file cache\n");
         return false;
     }
@@ -371,6 +429,7 @@ bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string
     if (!NgapOwnedContainer::d_dmrpp_file_cache.purge()) {
         ERROR_LOG(prolog + "Call to FileCache::purge() failed\n");
     }
+    #endif
 
     NgapOwnedContainer::d_dmrpp_mem_cache.put(get_real_name(), dmrpp_string);
     CACHE_LOG(prolog + "Memory Cache put, DMR++: " + get_real_name() + '\n');
