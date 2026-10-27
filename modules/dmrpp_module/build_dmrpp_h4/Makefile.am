@@ -54,7 +54,7 @@ HDR = build_dmrpp_util_h4.h ../Chunk.h ../DMRpp.h ../DMZ.h ../DmrppArray.h ../Dm
 
 build_dmrpp_h4_CPPFLAGS = $(AM_CPPFLAGS)
 build_dmrpp_h4_LDFLAGS = $(AM_LDFLAGS) $(HDFEOS2_LDFLAGS) $(HDF4_LDFLAGS) $(BES_DAP_LIB_LDFLAGS)
-build_dmrpp_h4_LDADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) -lngap -L$(builddir)/../ngap_container \
+build_dmrpp_h4_LDADD =-L$(builddir)/../ngap_container -lngap $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) \
     $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LDFLAGS) $(OPENSSL_LIBS) $(XML2_LIBS) \
     $(BYTESWAP_LIBS) $(HDFEOS2_LIBS) $(HDF4_LIBS) $(LDADD)
 
