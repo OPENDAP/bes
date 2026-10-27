@@ -716,7 +716,7 @@ void SuperChunk::retrieve_data() {
         return;
     }
 
-    BES_PROFILE_TIMING(string("Request SuperChunk data - ") +
+    BES_DBG_PROFILE_TIMING(string("Request SuperChunk data - ") +
                        (get_data_url() ? get_data_url()->get_url_no_query() : "") + string(" - ") +
                        ::to_string(get_size()) + string(" byte(s) - ") + ::to_string(get_chunk_count()) + " chunk(s)");
 
@@ -773,7 +773,7 @@ void SuperChunk::retrieve_data_dio() {
         return;
     }
 
-    BES_PROFILE_TIMING(string("Request SuperChunk data dio - ") +
+    BES_DBG_PROFILE_TIMING(string("Request SuperChunk data dio - ") +
                        (get_data_url() ? get_data_url()->get_url_no_query() : "") + string(" - ") +
                        ::to_string(get_size()) + string(" byte(s) - ") + ::to_string(get_chunk_count()) + " chunk(s)");
 
@@ -820,7 +820,7 @@ void SuperChunk::process_child_chunks() {
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
     retrieve_data();
 
-    BES_PROFILE_TIMING(
+    BES_DBG_PROFILE_TIMING(
         string("Handle SuperChunk data constrained - ") + (get_data_url() ? get_data_url()->get_url_no_query() : "") +
         string(" - ") + ::to_string(get_size()) + string(" byte(s) - ") + ::to_string(get_chunk_count()) +
         " chunk(s) - Using multithreading: " + (DmrppRequestHandler::d_use_compute_threads ? "true" : "false"));
@@ -862,7 +862,7 @@ void SuperChunk::process_child_chunks_unconstrained() {
     BESDEBUG(SUPER_CHUNK_MODULE, prolog << "BEGIN" << endl);
     retrieve_data();
 
-    BES_PROFILE_TIMING(
+    BES_DBG_PROFILE_TIMING(
         string("Handle SuperChunk data unconstrained - ") + (get_data_url() ? get_data_url()->get_url_no_query() : "") +
         string(" - ") + ::to_string(get_size()) + string(" byte(s) - ") + ::to_string(get_chunk_count()) +
         " chunk(s) - Using multithreading: " + (DmrppRequestHandler::d_use_compute_threads ? "true" : "false"));
@@ -927,7 +927,7 @@ void SuperChunk::read_dio() {
     // Retrieve data for the direct IO case.
     retrieve_data_dio();
 
-    BES_PROFILE_TIMING(
+    BES_DBG_PROFILE_TIMING(
         string("Handle SuperChunk data dio - ") + (get_data_url() ? get_data_url()->get_url_no_query() : "") +
         string(" - ") + ::to_string(get_size()) + string(" byte(s) - ") + ::to_string(get_chunk_count()) +
         " chunk(s) - Using multithreading: " + (DmrppRequestHandler::d_use_compute_threads ? "true" : "false"));
@@ -964,7 +964,7 @@ void SuperChunk::read_curl_multi() {
         chunk->set_is_read(true);
         chunk->set_bytes_read(chunk->get_size());
     }
-    BES_PROFILE_TIMING(
+    BES_DBG_PROFILE_TIMING(
         string("Handle Curl_multi SuperChunk data constrained - ") + (get_data_url() ? get_data_url()->get_url_no_query() : "") +
         string(" - ") + ::to_string(get_size()) + string(" byte(s) - ") + ::to_string(get_chunk_count()) +
         " chunk(s) - Using multithreading: " + (DmrppRequestHandler::d_use_compute_threads ? "true" : "false"));
@@ -1004,7 +1004,7 @@ void SuperChunk::read_unconstrained_curl_multi() {
         chunk->set_bytes_read(chunk->get_size());
     }
  
-    BES_PROFILE_TIMING(
+    BES_DBG_PROFILE_TIMING(
         string("Handle curl_multi SuperChunk data unconstrained - ") + (get_data_url() ? get_data_url()->get_url_no_query() : "") +
         string(" - ") + ::to_string(get_size()) + string(" byte(s) - ") + ::to_string(get_chunk_count()) +
         " chunk(s) - Using multithreading: " + (DmrppRequestHandler::d_use_compute_threads ? "true" : "false"));
@@ -1043,7 +1043,7 @@ void SuperChunk::read_dio_curl_multi() {
         chunk->set_bytes_read(chunk->get_size());
     }
 
-    BES_PROFILE_TIMING(
+    BES_DBG_PROFILE_TIMING(
         string("Handle curl_multi SuperChunk data dio - ") + (get_data_url() ? get_data_url()->get_url_no_query() : "") +
         string(" - ") + ::to_string(get_size()) + string(" byte(s) - ") + ::to_string(get_chunk_count()) +
         " chunk(s) - Using multithreading: " + (DmrppRequestHandler::d_use_compute_threads ? "true" : "false"));

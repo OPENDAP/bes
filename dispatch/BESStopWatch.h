@@ -94,9 +94,11 @@ static const std::string MISSING_LOG_PARAM;
 #endif
 
 // Profile timing is only used in developer (--enable-developer) builds.
+#if 0
 #ifdef NDEBUG
 #undef PROFILE_TIMING
 #endif
+#endif 
 
 #ifdef PROFILE_TIMING
 #define BES_PROFILE_TIMING(message)                                                                                    \
@@ -104,6 +106,12 @@ static const std::string MISSING_LOG_PARAM;
     profileTimer.start(string("Profile timing: ") + (message))
 #else
 #define BES_PROFILE_TIMING(message)
+#endif
+
+#ifndef NDEBUG
+#define BES_DBG_PROFILE_TIMING(message) BES_PROFILE_TIMING(message)
+#else
+#define BES_DBG_PROFILE_TIMING(message)
 #endif
 
 class BESStopWatch;
