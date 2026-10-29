@@ -29,6 +29,7 @@
 
 #include <curl/curl.h>
 #include "rapidjson/document.h"
+#include "rapidjson/error/en.h"
 
 #include "BESNotFoundError.h"
 #include "BESSyntaxUserError.h"
@@ -55,6 +56,29 @@ namespace {
 /// @return True if 's' ends with 'suffix'. std::string::ends_with() is C++20.
 bool ends_with(const string &s, const string &suffix) {
     return s.size() >= suffix.size() && s.compare(s.size() - suffix.size(), suffix.size(), suffix) == 0;
+}
+
+/**
+ * @brief Get a string member of a umm/RelatedUrls element.
+ * rapidjson only asserts its preconditions, and NDEBUG builds don't check them, so test
+ * them here and throw instead (BUG-002).
+ * @return The value of the member
+ * @exception BESInternalError if 'obj' is not an object or the member is missing or not a string
+ */
+string get_string_member(const rapidjson::Value &obj, const char *name) {
+    if (!obj.IsObject()) {
+        throw BESInternalError("The umm/RelatedUrls element is not an object", __FILE__, __LINE__);
+    }
+    auto mitr = obj.FindMember(name);
+    if (mitr == obj.MemberEnd()) {
+        throw BESInternalError(string("The umm/RelatedUrls element does not contain the ") + name + " object",
+                               __FILE__, __LINE__);
+    }
+    if (!mitr->value.IsString()) {
+        throw BESInternalError(string("The umm/RelatedUrls element's ") + name + " is not a string",
+                               __FILE__, __LINE__);
+    }
+    return mitr->value.GetString();
 }
 } // namespace
 
@@ -293,26 +317,13 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
 }
 
 string get_data_http_url(rapidjson::Value &obj) {
-    auto mitr = obj.FindMember("URL");
-    if (mitr == obj.MemberEnd()) {
-        throw BESInternalError("The umm/RelatedUrls element does not contain the URL object", __FILE__, __LINE__);
-    }
-
-    const rapidjson::Value &r_url = mitr->value;
-
-    mitr = obj.FindMember("Type");
-    if (mitr == obj.MemberEnd()) {
-        throw BESInternalError("The umm/RelatedUrls element does not contain the Type object", __FILE__, __LINE__);
-    }
-
-    const rapidjson::Value &r_type = mitr->value;
+    const string candidate_url = get_string_member(obj, "URL");
+    const string r_type = get_string_member(obj, "Type");
 
     bool noSubtype = obj.FindMember("Subtype") == obj.MemberEnd();
 
-    if ((r_type.GetString() == string(CMR_URL_TYPE_GET_DATA)) && noSubtype) {
+    if ((r_type == CMR_URL_TYPE_GET_DATA) && noSubtype) {
         // Added test that the URL does not end in 'xml' to avoid the LPDAAC .cmr.xml records. jhrg 5/22/24
-        string candidate_url = r_url.GetString();
-
         // The URL has to start with HTTP/S and cannot end in .xml or .dmrpp (FR-007). jhrg 6/2/25
         if ((candidate_url.find("https://") == 0 || candidate_url.find("http://") == 0)
             && !ends_with(candidate_url, ".xml")
@@ -326,25 +337,12 @@ string get_data_http_url(rapidjson::Value &obj) {
 
 
 string get_data_s3_url(rapidjson::Value &obj) {
-    auto mitr = obj.FindMember("URL");
-    if (mitr == obj.MemberEnd()) {
-        throw BESInternalError("The umm/RelatedUrls element does not contain the URL object", __FILE__, __LINE__);
-    }
-
-    const rapidjson::Value &r_url = mitr->value;
-
-    mitr = obj.FindMember("Type");
-    if (mitr == obj.MemberEnd()) {
-        throw BESInternalError("The umm/RelatedUrls element does not contain the Type object", __FILE__, __LINE__);
-    }
-
-    const rapidjson::Value &r_type = mitr->value;
+    const string candidate_url = get_string_member(obj, "URL");
+    const string r_type = get_string_member(obj, "Type");
 
     bool noSubtype = obj.FindMember("Subtype") == obj.MemberEnd();
 
-    if ((r_type.GetString() == string(CMR_URL_TYPE_GET_DATA)) && noSubtype) {
-        string candidate_url = r_url.GetString();
-
+    if ((r_type == CMR_URL_TYPE_GET_DATA) && noSubtype) {
         // The URL has to start with s3:// and cannot end in .xml or .dmrpp (FR-008)
         if (candidate_url.find("s3://") == 0
             && !ends_with(candidate_url, ".xml")
@@ -357,24 +355,10 @@ string get_data_s3_url(rapidjson::Value &obj) {
 }
 
 string get_s3credentials_url(rapidjson::Value &obj) {
+    const string candidate_url = get_string_member(obj, "URL");
+    const string r_type = get_string_member(obj, "Type");
 
-    auto mitr = obj.FindMember("URL");
-    if (mitr == obj.MemberEnd()) {
-        throw BESInternalError("The umm/RelatedUrls element does not contain the URL object", __FILE__, __LINE__);
-    }
-
-    const rapidjson::Value &r_url = mitr->value;
-
-    mitr = obj.FindMember("Type");
-    if (mitr == obj.MemberEnd()) {
-        throw BESInternalError("The umm/RelatedUrls element does not contain the Type object", __FILE__, __LINE__);
-    }
-
-    const rapidjson::Value &r_type = mitr->value;
-
-    if (r_type.GetString() == string(CMR_URL_TYPE_GET_S3CREDENTIALS)) {
-        string candidate_url = r_url.GetString();
-
+    if (r_type == CMR_URL_TYPE_GET_S3CREDENTIALS) {
         // The URL has to start with HTTP/S and must end in s3credentials
         if ((candidate_url.find("https://") == 0 || candidate_url.find("http://") == 0)
             && ends_with(candidate_url, "s3credentials")) {
@@ -410,26 +394,50 @@ string get_s3credentials_url(rapidjson::Value &obj) {
 NgapApi::DataAccessUrls NgapApi::get_urls_from_granules_umm_json_v1_4(const std::string &rest_path,
                                                                       const std::string &cmr_granule_json_string) {
 
+    // rapidjson only asserts its preconditions, and NDEBUG builds don't check them, so each
+    // access below is checked first. A malformed response is an internal error (BUG-002).
     rapidjson::Document cmr_granule_response;
     cmr_granule_response.Parse(cmr_granule_json_string.c_str());
+    if (cmr_granule_response.HasParseError()) {
+        throw BESInternalError(string("The CMR response for '") + rest_path + "' is not valid JSON: "
+                               + rapidjson::GetParseError_En(cmr_granule_response.GetParseError())
+                               + " (offset " + to_string(cmr_granule_response.GetErrorOffset()) + ")",
+                               __FILE__, __LINE__);
+    }
+    if (!cmr_granule_response.IsObject()) {
+        throw BESInternalError(string("The CMR response for '") + rest_path + "' is not a JSON object.",
+                               __FILE__, __LINE__);
+    }
 
-    const rapidjson::Value &val = cmr_granule_response["hits"];
-    int hits = val.GetInt();
+    auto mitr = cmr_granule_response.FindMember("hits");
+    if (mitr == cmr_granule_response.MemberEnd() || !mitr->value.IsInt()) {
+        throw BESInternalError(string("The CMR response for '") + rest_path + "' has no integer 'hits' value.",
+                               __FILE__, __LINE__);
+    }
+    int hits = mitr->value.GetInt();
     if (hits < 1) {
         throw BESNotFoundError(string("The specified path '") + rest_path
                                + "' does not identify a granule in CMR.", __FILE__, __LINE__);
     }
 
-    rapidjson::Value &items = cmr_granule_response["items"];
-    if (!items.IsArray()) {
+    mitr = cmr_granule_response.FindMember("items");
+    if (mitr == cmr_granule_response.MemberEnd() || !mitr->value.IsArray()) {
         throw BESInternalError(string("ERROR! The CMR response did not contain the data URL information: ")
                                + rest_path, __FILE__, __LINE__);
+    }
+    rapidjson::Value &items = mitr->value;
+    if (items.Empty() || !items[0].IsObject()) {
+        throw BESInternalError(string("The CMR response for '") + rest_path + "' has no granule item.",
+                               __FILE__, __LINE__);
     }
 
     // JSON is now vetted so that we know it has an array of one or more 'items'. jhrg 6/2/25
     rapidjson::Value &items_obj = items[0];
-    auto mitr = items_obj.FindMember("umm");
-    // BUG? Could mitr be null here? jhrg 10/29/26 See HYRAX-2316.
+    mitr = items_obj.FindMember("umm");
+    if (mitr == items_obj.MemberEnd() || !mitr->value.IsObject()) {
+        throw BESInternalError(string("The CMR response for '") + rest_path + "' has no umm object.",
+                               __FILE__, __LINE__);
+    }
     rapidjson::Value &umm = mitr->value;
     mitr = umm.FindMember("RelatedUrls");
     if (mitr == umm.MemberEnd()) {

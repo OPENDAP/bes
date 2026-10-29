@@ -466,6 +466,61 @@ public:
         CPPUNIT_ASSERT_EQUAL(string("s3://bucket/granule.nc"), data_s3_url);
     }
 
+    // BUG-002: a malformed CMR response must throw BESInternalError, not crash or report not-found.
+    static void assert_malformed_response_throws(const string &json) {
+        CPPUNIT_ASSERT_THROW_MESSAGE("Malformed CMR response should throw BESInternalError: " + json,
+                                     NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", json),
+                                     BESInternalError);
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_umm_missing_empty_item() {
+        assert_malformed_response_throws("{\"hits\":1,\"items\":[{}]}");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_umm_missing() {
+        assert_malformed_response_throws("{\"hits\":1,\"items\":[{\"meta\":{\"x\":1}}]}");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_umm_not_object() {
+        assert_malformed_response_throws("{\"hits\":1,\"items\":[{\"umm\":3}]}");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_not_json() {
+        assert_malformed_response_throws("<html>503</html>");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_hits_missing() {
+        assert_malformed_response_throws("{\"items\":[{\"umm\":{\"RelatedUrls\":[{\"Type\":\"GET DATA\",\"URL\":\"https://data.example/a.nc\"}]}}]}");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_hits_not_int() {
+        assert_malformed_response_throws("{\"hits\":\"1\",\"items\":[{\"umm\":{\"RelatedUrls\":[{\"Type\":\"GET DATA\",\"URL\":\"https://data.example/a.nc\"}]}}]}");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_items_missing() {
+        assert_malformed_response_throws("{\"hits\":1}");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_items_empty() {
+        assert_malformed_response_throws("{\"hits\":1,\"items\":[]}");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_item_not_object() {
+        assert_malformed_response_throws("{\"hits\":1,\"items\":[3]}");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_type_not_string() {
+        assert_malformed_response_throws("{\"hits\":1,\"items\":[{\"umm\":{\"RelatedUrls\":[{\"Type\":7,\"URL\":\"https://data.example/a.nc\"}]}}]}");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_url_not_string() {
+        assert_malformed_response_throws("{\"hits\":1,\"items\":[{\"umm\":{\"RelatedUrls\":[{\"Type\":\"GET DATA\",\"URL\":null}]}}]}");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_related_url_not_object() {
+        assert_malformed_response_throws("{\"hits\":1,\"items\":[{\"umm\":{\"RelatedUrls\":[3]}}]}");
+    }
+
     /**
      * Test urls to make sure an existing ".dmrpp" is removed if found
      * kln 6/6/25
@@ -527,6 +582,18 @@ public:
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_dmrpp_not_suffix);
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_xml_not_suffix);
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_rejected_suffixes);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_umm_missing_empty_item);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_umm_missing);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_umm_not_object);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_not_json);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_hits_missing);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_hits_not_int);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_items_missing);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_items_empty);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_item_not_object);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_type_not_string);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_url_not_string);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_related_url_not_object);
     CPPUNIT_TEST (test_dmrpp_is_removed_from_data_url);
 
     CPPUNIT_TEST_SUITE_END();
