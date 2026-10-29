@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="unlimited_netcdf4.nc" dmrpp:href="data/unlimited_netcdf4.nc" dmrpp:version="3.22.0">
+    <Dimension name="rec" size="4"/>
+    <Dimension name="x" size="4"/>
+    <Int32 name="data">
+        <Dim name="/rec"/>
+        <Dim name="/x"/>
+        <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="-2147483647" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>4 4</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="10808" nBytes="40" chunkPositionInArray="[0,0]"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Attribute name="DODS_EXTRA" type="Container">
+        <Attribute name="Unlimited_Dimension" type="String">
+            <Value>rec</Value>
+        </Attribute>
+    </Attribute>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2026-10-15T19:48:19Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.22.0</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.22.0</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/Desktop/unlimited_netcdf4.nc -r unlimited_netcdf4.nc.dmr -u data/unlimited_netcdf4.nc -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

@@ -43,6 +43,10 @@
 
 #define DMRPP_USE_TRANSFER_THREADS_KEY "DMRPP.UseParallelTransfers"
 #define DMRPP_MAX_TRANSFER_THREADS_KEY "DMRPP.MaxParallelTransfers"
+#define DMRPP_DECISION_TRANSFER_THREADS_KEY "DMRPP.DecisionParallelTransfers"
+#define DMRPP_DECISION_BYTES_PER_MS_KEY "DMRPP.DecisionBytesPerMs"
+#define DMRPP_DECISION_REQUEST_OVERHEAD_MS_KEY "DMRPP.DecisionRequestOverheadMs"
+#define DMRPP_DECISION_SMALL_SIZE_KEY "DMRPP.DecisionSmallSize"
 
 #define DMRPP_USE_COMPUTE_THREADS_KEY "DMRPP.UseComputeThreads"
 #define DMRPP_MAX_COMPUTE_THREADS_KEY "DMRPP.MaxComputeThreads"

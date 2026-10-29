@@ -101,7 +101,12 @@ void join_threads(pthread_t threads[], unsigned int num_threads)
 
 /// @brief Set the value of the filters property
 void DmrppCommon::set_filter(const string &value) {
-    if (DmrppRequestHandler::d_emulate_original_filter_order_behavior) {
+        // SBL: claude recommended guard
+        // The legacy behavior below rebuilds the list from the three HDF5 filter names it knows about.
+        // 'lzw' and 'tiffpred' postdate it (so there is no historical order to emulate), and would be
+        // silently dropped, leaving compressed bytes to be treated as data. Keep such strings verbatim.
+        const bool has_tiff_filter = value.find("lzw") != string::npos || value.find("tiffpred") != string::npos;
+        if (DmrppRequestHandler::d_emulate_original_filter_order_behavior && !has_tiff_filter) {
         d_filters = "";
         if (value.find("shuffle") != string::npos)
             d_filters.append(" shuffle");

@@ -86,6 +86,17 @@ protected:
      */
     std::string d_store_result;
 
+    /**
+     * If true, the response size checks done by dap_utils::throw_if_too_big()
+     * (BES.MaxResponseSize.bytes, BES.MaxVariableSize.bytes and the matching
+     * BES contexts) are skipped. Default: false (the checks run).
+     */
+    bool d_ignore_check_too_big = false;
+
+    void throw_if_too_big(libdap::DMR &dmr, const std::string &file, unsigned int line) const;
+
+    void throw_if_too_big(const libdap::DDS &dds, const std::string &file, unsigned int line) const;
+
 #ifdef DAP2_STORED_RESULTS
     bool store_dap2_result(ostream &out, libdap::DDS &dds, libdap::ConstraintEvaluator &eval);
 #endif
@@ -131,6 +142,15 @@ public:
 
     virtual void set_btp_func_ce(const std::string &_ce) {
         d_btp_func_ce = _ce;
+    }
+
+    /** @brief Skip (true) or run (false, the default) the response size checks. */
+    void set_ignore_check_too_big(bool ignore) {
+        d_ignore_check_too_big = ignore;
+    }
+
+    bool get_ignore_check_too_big() const {
+        return d_ignore_check_too_big;
     }
 
     virtual std::string get_dataset_name() const;

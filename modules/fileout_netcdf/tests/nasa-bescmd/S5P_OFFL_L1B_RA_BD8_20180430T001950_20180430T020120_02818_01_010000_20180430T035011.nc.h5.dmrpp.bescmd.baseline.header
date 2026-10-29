@@ -19,7 +19,7 @@ netcdf test {
 		:build_dmrpp_metadata.build_dmrpp = "3.21.1" ;
 		:build_dmrpp_metadata.bes = "3.21.1" ;
 		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
-		:build_dmrpp_metadata.invocation = "build_dmrpp -f /scr/kent/opendap/hyrax-dev/hyrax-new/hyrax-1490/bes/modules/fileout_netcdf/data/S5P_OFFL_L1B_RA_BD8_20180430T001950_20180430T020120_02818_01_010000_20180430T035011.nc.h5 -r S5P_OFFL_L1B_RA_BD8_20180430T001950_20180430T020120_02818_01_010000_20180430T035011.nc.h5.dmr -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -f /Users/myang6/Desktop/tmp-amazon-nasa-files/S5P_OFFL_L1B_RA_BD8_20180430T001950_20180430T020120_02818_01_010000_20180430T035011.nc.h5 -r S5P_OFFL_L1B_RA_BD8_20180430T001950_20180430T020120_02818_01_010000_20180430T035011.nc.h5.dmr -u data/S5P_OFFL_L1B_RA_BD8_20180430T001950_20180430T020120_02818_01_010000_20180430T035011.nc.h5 -M" ;
 		:history = "removed date-timex S5P_OFFL_L1B_RA_BD8_20180430T001950_20180430T020120_02818_01_010000_20180430T035011.nc.h5.dmrpp\n" ;
 		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"S5P_OFFL_L1B_RA_BD8_20180430T001950_20180430T020120_02818_01_010000_20180430T035011.nc.h5.dmrpp\"}]}]" ;
 
@@ -3058,9 +3058,9 @@ group: METADATA {
 
 group: PROCESSOR {
   dimensions:
-  	job_configuration_dim = 169 ;
-  	algorithm_configuration_dim = 247 ;
-  	processing_configuration_dim = 1692 ;
+  	job_configuration_dim = UNLIMITED ; // (169 currently)
+  	algorithm_configuration_dim = UNLIMITED ; // (247 currently)
+  	processing_configuration_dim = UNLIMITED ; // (1692 currently)
   	job_configuration_len1 = 268 ;
   	algorithm_configuration_len2 = 133 ;
   	processing_configuration_len3 = 260 ;
@@ -3071,5 +3071,8 @@ group: PROCESSOR {
   		algorithm_configuration:description = "Overview of the algorithms that were used in de L01b data processing for this data product" ;
   	char processing_configuration(processing_configuration_dim, processing_configuration_len3) ;
   		processing_configuration:description = "Overview of all the processing steps, the algorithm order and data flow of the L01b data processing for this data product" ;
+
+  // group attributes:
+  		:DODS_EXTRA.Unlimited_Dimension = "job_configuration_dim\nalgorithm_configuration_dim\nprocessing_configuration_dim" ;
   } // group PROCESSOR
 }
