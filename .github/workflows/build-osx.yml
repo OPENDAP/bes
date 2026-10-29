@@ -157,8 +157,10 @@ jobs:
         if: steps.build-and-test.outcome == 'failure'
         run: |
           sh ./.github/scripts/upload-test-results.sh
+          echo "Failed test logs uploaded to s3."
           # Because previous job failed, we need to re-throw failure
           # now that logs are uploaded
+          echo "Exiting with error status"
           exit 1
         shell: bash
         env:
