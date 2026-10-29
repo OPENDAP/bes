@@ -102,6 +102,8 @@ public:
     virtual ~FONcTransform();
     virtual void transform_dap2();
     virtual void transform_dap4();
+    virtual void set_global_dio_flag(bool flag) { global_dio_flag = flag;}
+    virtual string get_returnAs() { return _returnAs; }
 
     virtual void dump(ostream &strm) const;
 
@@ -129,6 +131,7 @@ private:
     void close_nc_file();
     void throw_if_dap2_response_too_big(DDS *dds, const string &dap2_ce="");
     void throw_if_dap4_response_too_big(DMR *dmr, const string &dap4_ce="");
+    void throw_if_dap4_response_too_big_dio(DMR *dmr, const string &dap4_ce="");
     string too_big_error_msg(
             const unsigned dap_version,
             const string &return_encoding,

@@ -502,6 +502,28 @@ void FONcTransform::throw_if_dap4_response_too_big(DMR *dmr, const string &dap4_
     }
 }
 
+void FONcTransform::throw_if_dap4_response_too_big_dio(DMR *dmr, const string &dap4_ce)
+{
+#if 0
+    unsigned long long max_response_size_kb = FONcRequestHandler::get_request_max_size_kb();
+    BESDEBUG(MODULE, prolog << "Configured max_request_size_kb: " << max_response_size_kb << endl);
+
+    unsigned long long req_size_kb = dmr->request_size_kb(true);
+    BESDEBUG(MODULE, prolog << "dmr->get_request_size_kb(): " << req_size_kb << endl);
+
+    string return_encoding;
+    set_max_size_and_encoding(max_response_size_kb, return_encoding);
+
+    // set the max request size in kilobytes for testing if the request is too large
+    dmr->set_response_limit_kb(max_response_size_kb);
+
+    if (dmr->too_big()) {
+        string err_msg = too_big_error_msg(4,return_encoding,req_size_kb, max_response_size_kb, dap4_ce);
+        throw BESSyntaxUserError(err_msg,__FILE__,__LINE__);
+    }
+#endif
+}
+
 /** @brief Transforms each of the variables of the DMR to the NetCDF
  * file
  *
@@ -518,6 +540,12 @@ void FONcTransform::transform_dap4() {
     d_dhi->first_container();
 
     BESDapResponseBuilder responseBuilder;
+
+    // global_dio_flag has been retrieved before transform_dap4().
+    // When global_dio_flag is on, we will not ask the responseBuilder to check if the response size is too big.
+    if (global_dio_flag) 
+        responseBuilder.set_ignore_check_too_big(true);
+    
     _dmr = responseBuilder.setup_dap4_intern_data(d_obj, *d_dhi).release();
 
     _dmr->set_response_limit_kb(FONcRequestHandler::get_request_max_size_kb());
@@ -546,7 +574,10 @@ void FONcTransform::transform_dap4() {
                 __LINE__);
     }
 
-    throw_if_dap4_response_too_big(_dmr,responseBuilder.get_dap4ce() );
+    if (!global_dio_flag) 
+        throw_if_dap4_response_too_big(_dmr,responseBuilder.get_dap4ce() );
+    else 
+        throw_if_dap4_response_too_big_dio(_dmr,responseBuilder.get_dap4ce());
 
     BESDapResponseBuilder besDRB;
 
@@ -594,20 +625,6 @@ void FONcTransform::transform_dap4() {
         }
  
 #endif
-    }
-    // Check if direct_io_flag is set for any Array variables. If the global dio flag is false, we don't need to loop through
-    // every variable to check if the direct IO can be applied. 
-    if (FONC_RETURN_AS_NETCDF4 == FONcTransform::_returnAs && false == FONcRequestHandler::classic_model) {
-        global_dio_flag = _dmr->get_global_dio_flag();
-
-#if !NDEBUG
-        if(global_dio_flag) {  
-            BESDEBUG(MODULE, prolog << "global_dio_flag is true" << endl);
-        }
-        else 
-            BESDEBUG(MODULE, prolog << "global_dio_flag is false" << endl);
-#endif
-
     }
 
     // Convert the DMR into an internal format to keep track of
