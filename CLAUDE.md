@@ -4,7 +4,7 @@
 
 # CLAUDE.md — `bes`
 
-**What this project is:** The is the Back End Server for Hyrax, an OPeNDAP data server.
+**What this project is:** This is the Back End Server for Hyrax, an OPeNDAP data server.
 
 1. **OLFS** (front end, Java, separate repo: github.com/opendap/olfs). Implements the DAP2/DAP4 web API and talks to the BES over PPT.
 2. **BES framework** (this repo). A Unix daemon (`besdaemon` → `beslistener`) that parses BES XML requests, dispatches them to plugin modules, and streams responses back.
@@ -179,8 +179,7 @@ x86_64)`. Unit-test framework: `CppUnit` (1.12 or later).
 - Exceptions are allowed for errors at API boundaries: derive from `std::exception`,
   throw by value, catch by `const&`. Destructors are `noexcept`. Never let an exception
   escape across a C ABI, a thread boundary, or a callback invoked from C code. Don't
-  use exceptions for routine control flow (not-found, end-of-input). If this project
-  builds with `-fno-exceptions`, replace this bullet with status codes / enums.
+  use exceptions for routine control flow (not-found, end-of-input).
 - `<cstdint>` fixed-width types for file formats, wire formats, and anything whose size
   is part of the contract; `std::size_t` for sizes and indices. No mixed
   signed/unsigned comparisons without an explicit, commented cast.
@@ -319,10 +318,3 @@ x86_64)`. Unit-test framework: `CppUnit` (1.12 or later).
   `pkginclude_HEADERS`) gets a one-line Doxygen-style comment: what it does,
   ownership/lifetime of pointer or reference arguments and returns, units where
   relevant, whether it can throw, and thread-safety when it isn't obvious.
-
-## Plan mode
-
-For anything nontrivial, prefer Claude Code's built-in plan mode (`Shift+Tab` twice)
-combined with `/plan-feature` — read the requirements, think through the approach, and
-present the plan before touching code. Read-only research and planning shouldn't need
-write access to the codebase.
