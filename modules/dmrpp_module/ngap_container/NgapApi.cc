@@ -424,7 +424,7 @@ NgapApi::DataAccessUrls NgapApi::get_urls_from_granules_umm_json_v1_4(const std:
     // JSON is now vetted so that we know it has an array of one or more 'items'. jhrg 6/2/25
     rapidjson::Value &items_obj = items[0];
     auto mitr = items_obj.FindMember("umm");
-
+    // BUG? Could mitr be null here? jhrg 10/29/26 See HYRAX-2316.
     rapidjson::Value &umm = mitr->value;
     mitr = umm.FindMember("RelatedUrls");
     if (mitr == umm.MemberEnd()) {
