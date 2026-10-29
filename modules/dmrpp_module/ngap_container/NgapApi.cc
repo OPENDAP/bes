@@ -26,6 +26,7 @@
 
 #include <sstream>
 #include <ctime>
+#include <memory>
 
 #include <curl/curl.h>
 #include "rapidjson/document.h"
@@ -80,24 +81,50 @@ string get_string_member(const rapidjson::Value &obj, const char *name) {
     }
     return mitr->value.GetString();
 }
+
+using curl_easy_handle = std::unique_ptr<CURL, decltype(&curl_easy_cleanup)>;
+
+/// @return A new curl easy handle, used only for curl_easy_escape() and curl_easy_unescape().
+curl_easy_handle make_curl_easy_handle() {
+    curl_easy_handle ceh(curl_easy_init(), &curl_easy_cleanup);
+    if (!ceh) {
+        throw BESInternalError("Could not initialize a curl easy handle.", __FILE__, __LINE__);
+    }
+    return ceh;
+}
+
+/// @return 's' URL-encoded.
+string url_escape(CURL *ceh, const string &s) {
+    std::unique_ptr<char, decltype(&curl_free)> escaped(
+            curl_easy_escape(ceh, s.c_str(), static_cast<int>(s.size())), &curl_free);
+    if (!escaped) {
+        throw BESInternalError("Could not URL-encode '" + s + "'.", __FILE__, __LINE__);
+    }
+    return {escaped.get()};
+}
+
+/// @return 's' URL-decoded.
+string url_unescape(CURL *ceh, const string &s) {
+    int out_len = 0;
+    std::unique_ptr<char, decltype(&curl_free)> unescaped(
+            curl_easy_unescape(ceh, s.c_str(), static_cast<int>(s.size()), &out_len), &curl_free);
+    if (!unescaped) {
+        throw BESInternalError("Could not URL-decode '" + s + "'.", __FILE__, __LINE__);
+    }
+    return {unescaped.get(), static_cast<size_t>(out_len)};
+}
 } // namespace
 
 /**
  * @brief Get the CMR search endpoint URL using information from the BES Keys.
- * This method only reads the BES keys once and caches the results, including
- * the assembled URL.
+ * The BES keys are read on every call.
  * @return The URL used to access CMR.
  */
 string NgapApi::get_cmr_search_endpoint_url() {
-    static string cmr_search_endpoint_url;
-    if (cmr_search_endpoint_url.empty()) {
-        const string cmr_hostname = TheBESKeys::read_string_key(NGAP_CMR_HOSTNAME_KEY, DEFAULT_CMR_ENDPOINT_URL);
-        const string cmr_search_endpoint_path = TheBESKeys::read_string_key(NGAP_CMR_SEARCH_ENDPOINT_PATH_KEY,
-                                                                                 DEFAULT_CMR_SEARCH_ENDPOINT_PATH);
-        cmr_search_endpoint_url = BESUtil::assemblePath(cmr_hostname, cmr_search_endpoint_path);
-    }
-
-    return cmr_search_endpoint_url;
+    const string cmr_hostname = TheBESKeys::read_string_key(NGAP_CMR_HOSTNAME_KEY, DEFAULT_CMR_ENDPOINT_URL);
+    const string cmr_search_endpoint_path = TheBESKeys::read_string_key(NGAP_CMR_SEARCH_ENDPOINT_PATH_KEY,
+                                                                        DEFAULT_CMR_SEARCH_ENDPOINT_PATH);
+    return BESUtil::assemblePath(cmr_hostname, cmr_search_endpoint_path);
 }
 
 /**
@@ -177,38 +204,21 @@ string NgapApi::build_cmr_query_url_old_rpath_format(const string &restified_pat
     string cmr_url = get_cmr_search_endpoint_url() + "?";
     {
         // This easy-handle is only created so we can use the curl_easy_escape() on the token values
-        CURL *ceh = curl_easy_init();
-        char *unescaped_url_content;
-        int unescaped_output_length = 0;
-        char *escaped_url_content;
+        auto ceh = make_curl_easy_handle();
 
         // Add provider
-        unescaped_url_content = curl_easy_unescape(ceh, provider.c_str(), static_cast<int>(provider.size()), &unescaped_output_length);
-        escaped_url_content = curl_easy_escape(ceh, unescaped_url_content, unescaped_output_length);
-        cmr_url += string(CMR_PROVIDER).append("=").append(escaped_url_content).append("&");
-        curl_free(unescaped_url_content);
-        curl_free(escaped_url_content);
+        cmr_url += string(CMR_PROVIDER).append("=").append(url_escape(ceh.get(), url_unescape(ceh.get(), provider))).append("&");
 
-        unescaped_url_content = curl_easy_unescape(ceh, collection.c_str(), static_cast<int>(collection.size()), &unescaped_output_length);
-        escaped_url_content = curl_easy_escape(ceh, unescaped_url_content, unescaped_output_length);
+        const string escaped_collection = url_escape(ceh.get(), url_unescape(ceh.get(), collection));
         if (use_collection_concept_id) {
             // Add collection_concept_id
-            cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(escaped_url_content).append("&");
+            cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(escaped_collection).append("&");
         } else {
             // Add entry_title
-            cmr_url += string(CMR_ENTRY_TITLE).append("=").append(escaped_url_content).append("&");
-
+            cmr_url += string(CMR_ENTRY_TITLE).append("=").append(escaped_collection).append("&");
         }
-        curl_free(unescaped_url_content);
-        curl_free(escaped_url_content);
 
-        unescaped_url_content = curl_easy_unescape(ceh, granule.c_str(), static_cast<int>(granule.size()), &unescaped_output_length);
-        escaped_url_content = curl_easy_escape(ceh, unescaped_url_content, unescaped_output_length);
-        cmr_url += string(CMR_GRANULE_UR).append("=").append(escaped_url_content);
-        curl_free(unescaped_url_content);
-        curl_free(escaped_url_content);
-
-        curl_easy_cleanup(ceh);
+        cmr_url += string(CMR_GRANULE_UR).append("=").append(url_escape(ceh.get(), url_unescape(ceh.get(), granule)));
     }
 
     return cmr_url;
@@ -299,18 +309,10 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
 
     {
         // This easy-handle is only created so we can use the curl_easy_escape() on the token values
-        CURL *ceh = curl_easy_init();
-        char *escaped_url_content;
+        auto ceh = make_curl_easy_handle();
 
-        escaped_url_content = curl_easy_escape(ceh, collection_name.c_str(), static_cast<int>(collection_name.size()));
-        cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(escaped_url_content).append("&");
-        curl_free(escaped_url_content);
-
-        escaped_url_content = curl_easy_escape(ceh, granule_name.c_str(), static_cast<int>(granule_name.size()));
-        cmr_url += string(CMR_GRANULE_UR).append("=").append(escaped_url_content);
-        curl_free(escaped_url_content);
-
-        curl_easy_cleanup(ceh);
+        cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(url_escape(ceh.get(), collection_name)).append("&");
+        cmr_url += string(CMR_GRANULE_UR).append("=").append(url_escape(ceh.get(), granule_name));
     }
 
     return cmr_url;

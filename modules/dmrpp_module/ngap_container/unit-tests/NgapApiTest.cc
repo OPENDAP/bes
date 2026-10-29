@@ -27,6 +27,7 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <vector>
 
 #include <unistd.h>
 #include <libdap/util.h>
@@ -280,6 +281,23 @@ public:
     }
 
     // Test the 'no hits' case
+    // TASK-002: the CMR endpoint is built from the BES keys on every call, not cached.
+    static void cmr_endpoint_reads_keys_each_call() {
+        const string original_host = TheBESKeys::read_string_key(NGAP_CMR_HOSTNAME_KEY, DEFAULT_CMR_ENDPOINT_URL);
+        TheBESKeys::TheKeys()->set_key(NGAP_CMR_HOSTNAME_KEY, "https://cmr.example");
+        try {
+            const string cmr_query_url = NgapApi::build_cmr_query_url("collections/C1-PROV/granules/g.nc");
+            const string expected_prefix = "https://cmr.example/search/granules.umm_json_v1_4?";
+            CPPUNIT_ASSERT_MESSAGE("Expected '" + cmr_query_url + "' to start with '" + expected_prefix + "'",
+                                   cmr_query_url.find(expected_prefix) == 0);
+        }
+        catch (...) {
+            TheBESKeys::TheKeys()->set_key(NGAP_CMR_HOSTNAME_KEY, original_host);
+            throw;
+        }
+        TheBESKeys::TheKeys()->set_key(NGAP_CMR_HOSTNAME_KEY, original_host);
+    }
+
     static void test_get_urls_from_granules_umm_json_v1_4_no_hits() {
         DBG(cerr << prolog << "BEGIN" << endl);
         const string json = bes::read_test_baseline(string(TEST_SRC_DIR) + "/cmr_json_responses/no_hits.json");
@@ -562,6 +580,7 @@ public:
     CPPUNIT_TEST_SUITE(NgapApiTest);
 
     CPPUNIT_TEST (resty_path_to_cmr_query_test_01);
+    CPPUNIT_TEST (cmr_endpoint_reads_keys_each_call);
     CPPUNIT_TEST (resty_path_to_cmr_query_test_02);
     CPPUNIT_TEST (resty_path_to_cmr_query_test_03);
     CPPUNIT_TEST (resty_path_to_cmr_query_test_04);
