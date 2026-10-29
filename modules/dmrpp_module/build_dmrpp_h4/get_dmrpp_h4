@@ -394,10 +394,10 @@ if (args.data_url is not None):
 
 if (args.disable_missing_data is True):
     ret = subprocess.run(["build_dmrpp_h4", "-f", hdf4_full_path, "-r", hdf4_dmr_name, "-u", hdf4_url, "-D", "-M"],
-                         stdout=subprocess.PIPE, universal_newlines=True)
+                         stdout=subprocess.PIPE)
 else:
     ret = subprocess.run(["build_dmrpp_h4", "-f", hdf4_full_path, "-r", hdf4_dmr_name, "-u", hdf4_url,"-M"],
-                         stdout=subprocess.PIPE, universal_newlines=True)
+                         stdout=subprocess.PIPE)
 if ret.returncode != 0:
     print("build_dmrpp_h4 fails to generate the HDF4 dmrpp file. ")
     print("The HDF4 file name is:  ",hdf4_full_path)
@@ -414,7 +414,9 @@ if ret.returncode != 0:
     sys.exit(1)
 
 hdf4_dmrpp_name = hdf4_name_cur_dir + ".dmrpp"
-with open(hdf4_dmrpp_name, 'w') as f:
+# build_dmrpp output is written as raw bytes so the XML's declared encoding
+# (e.g. ISO-8859-1) is preserved and no locale decoding is applied.
+with open(hdf4_dmrpp_name, 'wb') as f:
     f.write(ret.stdout)
 
 # Remove the temporary dmr and bescmd files.

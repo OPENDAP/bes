@@ -324,7 +324,7 @@ SignedUrlCache::get_sts_credentials_from_tea_endpoint(std::string const &tea_end
     // 1. Get the credentials from TEA
     std::string s3credentials_json_string;
     try {
-        BES_PROFILE_TIMING(string("Request s3 credentials from TEA - ") + tea_endpoint_url);
+        BES_DBG_PROFILE_TIMING(string("Request s3 credentials from TEA - ") + tea_endpoint_url);
 
         // Note: We know that this request is going to TEA so we know that we need to add
         // the users EDL auth token and such to the request headers.

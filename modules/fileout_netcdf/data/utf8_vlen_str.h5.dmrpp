@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="removed" name="utf8_vlen_str.h5" dmrpp:href="data/utf8_vlen_str.h5">
+    <String name="site_name">
+        <Dim size="4"/>
+        <dmrpp:vlsa>
+            <v>Cuncumen</v>
+            <v>Puchuncaví</v>
+            <v>Ventanas</v>
+            <v>La Greda</v>
+        </dmrpp:vlsa>
+    </String>
+</Dataset>

@@ -356,6 +356,47 @@ m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST],  [dnl
     AT_CLEANUP
 ])
 
+dnl same as AT_BESCMD_BINARY_DAP4_RESPONSE_TEST but use getdap4 -D -M(PRINT_NC_DAP4_DATA_RESPONSE) 
+m4_define([AT_BESCMD_BINARY_DAP4_RESPONSE_TEST2],  [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([bescmd data dap4 DAP4])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+    AT_XFAIL_IF([test z$2 = zxfail])
+    repeat=$3
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        PRINT_NC_DAP4_DATA_RESPONSE([stdout])
+        REMOVE_DAP4_CHECKSUM([stdout])
+        REMOVE_DATE_TIME([stdout])
+        REMOVE_VERSIONS([stdout])
+        AT_CHECK([mv stdout $baseline.tmp])
+        ],
+        [
+        AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input], [], [stdout])
+        PRINT_NC_DAP4_DATA_RESPONSE([stdout])
+        REMOVE_DAP4_CHECKSUM([stdout])
+        REMOVE_DATE_TIME([stdout])
+        REMOVE_VERSIONS([stdout])
+
+        # if the tests are running on Apple silicon and there exists a .m_proc baseline,
+        # use the *.mproc baseline. Otherwise use the plain baseline. jhrg 2/3/26
+        AS_IF([ test "x$(uname -m)" = "xarm64" -a -f $baseline.m_proc],
+            [ AT_CHECK([diff -b -B $baseline.m_proc stdout]) ],
+            [ AT_CHECK([diff -b -B $baseline stdout]) ])
+    ])
+
+    AT_CLEANUP
+])
+
 #
 # AT_BESCMD_BESCONF_BINARY_DAP4_RESPONSE_TEST(<bescmd file>, <bes.conf file>, [pass|xfail], [repeat|cached])
 #

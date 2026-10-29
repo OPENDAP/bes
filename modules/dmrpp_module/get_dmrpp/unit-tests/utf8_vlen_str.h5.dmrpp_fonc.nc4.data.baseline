@@ -1,0 +1,14 @@
+netcdf utf8_vlen_str.h5.dmrpp_test.bescmd_fonc {
+dimensions:
+	dim1 = 4 ;
+	site_name_len = 12 ;
+variables:
+	char site_name(dim1, site_name_len) ;
+data:
+
+ site_name =
+  "Cuncumen",
+  "Puchuncav\303\255",
+  "Ventanas",
+  "La Greda" ;
+}

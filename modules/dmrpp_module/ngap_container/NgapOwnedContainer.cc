@@ -547,10 +547,10 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
         // called from a region other than us-west-2, etc---it will return a nullptr, so that we can fall
         // back on using the TEA service to sign our urls through a series of redirects
         if (presigned_url == nullptr) {
-            BES_PROFILE_TIMING(string("SERVICE CHAIN WARNING! Falling back to request DMR++ from DAAC bucket - ") + dmrpp_url_str);
+            BES_DBG_PROFILE_TIMING(string("SERVICE CHAIN WARNING! Falling back to request DMR++ from DAAC bucket - ") + dmrpp_url_str);
             curl::http_get(dmrpp_url_str, dmrpp_string,curl::add_edl_auth_headers(nullptr));
         } else {
-            BES_PROFILE_TIMING(string("Request presigned DMRpp from DAAC bucket - ") + presigned_url->str());
+            BES_DBG_PROFILE_TIMING(string("Request presigned DMRpp from DAAC bucket - ") + presigned_url->str());
             curl::http_get(presigned_url->str(), dmrpp_string, nullptr);
         }
 

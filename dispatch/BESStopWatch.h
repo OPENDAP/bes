@@ -101,6 +101,13 @@ static const std::string MISSING_LOG_PARAM;
 #define BES_PROFILE_TIMING(message)
 #endif
 
+// BES_DBG_PROFILE_TIMING is only used in developer (--enable-developer) builds.
+#ifndef NDEBUG
+#define BES_DBG_PROFILE_TIMING(message) BES_PROFILE_TIMING(message)
+#else
+#define BES_DBG_PROFILE_TIMING(message)
+#endif
+
 class BESStopWatch;
 
 namespace bes_timing {

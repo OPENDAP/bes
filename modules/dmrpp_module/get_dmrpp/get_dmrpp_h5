@@ -403,10 +403,10 @@ if (args.data_url is not None):
 
 if (args.vlen_in_sidecar is True): 
     ret = subprocess.run(["build_dmrpp", "-f", hdf5_full_path, "-r", hdf5_dmr_name, "-u", hdf5_url, "-M","-L"],
-                         stdout=subprocess.PIPE, universal_newlines=True)
+                         stdout=subprocess.PIPE)
 else:
     ret = subprocess.run(["build_dmrpp", "-f", hdf5_full_path, "-r", hdf5_dmr_name, "-u", hdf5_url, "-M"],
-                         stdout=subprocess.PIPE, universal_newlines=True)
+                         stdout=subprocess.PIPE)
 if ret.returncode != 0:
     print("build_dmrpp fails to generate the HDF5 dmrpp file. ")
     print("The HDF5 file name is:  ",hdf5_full_path)
@@ -423,7 +423,9 @@ if ret.returncode != 0:
     sys.exit(1)
 
 hdf5_dmrpp_name = hdf5_name_cur_dir + ".dmrpp"
-with open(hdf5_dmrpp_name, 'w') as f:
+# build_dmrpp output is written as raw bytes so the XML's declared encoding
+# (e.g. ISO-8859-1) is preserved and no locale decoding is applied.
+with open(hdf5_dmrpp_name, 'wb') as f:
     f.write(ret.stdout)
 
 # Remove the temporary dmr and bescmd files.
