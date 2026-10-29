@@ -28,6 +28,8 @@
 //#define DODS_DEBUG
 
 #include <cstdio>
+#include <cerrno>
+#include <cstring>
 #include <unistd.h>
 #include <sys/stat.h>
 
@@ -608,6 +610,14 @@ BESDapFunctionResponseCache::write_dataset_to_cache(DDS *dds, const string &reso
         catch (...) {
             // Bummer. There was a problem doing The Stuff. Now we gotta clean up.
             cache_file_ostream.close();
+            // Remove the partial entry while we still hold the exclusive lock. If it stayed,
+            // its resource-id line would make every later request for it a cache hit with no
+            // data (BUG-003). Don't use purge_file(): this file's size was never added to the
+            // cache info. Don't throw here; the original exception must propagate.
+            if (unlink(cache_file_name.c_str()) != 0) {
+                ERROR_LOG("Could not remove the partial function response cache file " + cache_file_name + ": "
+                          + strerror(errno));
+            }
             unlock_and_close(cache_file_name);
             throw;
         }

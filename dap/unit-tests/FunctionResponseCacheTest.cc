@@ -268,6 +268,39 @@ public:
     // returns the DDS. The second call reads the value from the cache.
     //
     // Use load_from_cache() (Private interface) to read the data.
+    // BUG-003: A server function that throws must not leave a partial cache entry behind;
+    // repeating the request must give the function's error again, not a DDX parse error.
+    void failed_function_leaves_no_cache_entry()
+    {
+        DBG(cerr << "failed_function_leaves_no_cache_entry() - BEGIN" << endl);
+
+        cache = BESDapFunctionResponseCache::get_instance();
+        CPPUNIT_ASSERT(cache);
+
+        const string constraint = "test()"; // test() requires one argument, so it throws
+        for (int i = 0; i < 2; ++i) {
+            try {
+                cache->get_or_cache_dataset(test_dds, constraint);
+                CPPUNIT_FAIL("Expected test() with no arguments to throw");
+            }
+            catch (const std::exception &e) {
+                // libdap::Error and BESError both derive from std::exception
+                const string msg = e.what();
+                DBG(cerr << "call " << i << ": " << msg << endl);
+                CPPUNIT_ASSERT_MESSAGE("Call " + std::to_string(i) + " threw '" + msg
+                                       + "', expected the function's own error",
+                                       msg.find("requires one argument") != string::npos);
+            }
+        }
+
+        string resource_id = cache->get_resource_id(test_dds, constraint);
+        string cache_file_name = cache->get_hash_basename(resource_id) + "_0";
+        CPPUNIT_ASSERT_MESSAGE("No cache file should remain: " + cache_file_name,
+                               access(cache_file_name.c_str(), F_OK) != 0);
+
+        DBG(cerr << "failed_function_leaves_no_cache_entry() - END" << endl);
+    }
+
     void cache_and_read_a_response()
     {
         DBG(cerr << "cache_and_read_a_response() - BEGIN" << endl);
@@ -374,6 +407,7 @@ CPPUNIT_TEST_SUITE( FunctionResponseCacheTest );
     //CPPUNIT_TEST(ctor_test_1);
     CPPUNIT_TEST(ctor_test_2);
     CPPUNIT_TEST(cache_a_response);
+    CPPUNIT_TEST(failed_function_leaves_no_cache_entry);
     CPPUNIT_TEST(cache_and_read_a_response);
     CPPUNIT_TEST(cache_and_read_a_response2);
 
