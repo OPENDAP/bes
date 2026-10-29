@@ -492,6 +492,7 @@ public:
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_related_urls_not_an_array);
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_no_valid_related_url);
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_related_url_wo_URL);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_related_url_wo_Type);
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_minimal_json);
 
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_lpdaac);
