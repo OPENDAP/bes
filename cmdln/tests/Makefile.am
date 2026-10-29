@@ -6,7 +6,7 @@ CLEANFILES =
 # NB: Make sure to distribute both the source and generated files
 # for the test
 EXTRA_DIST = $(TESTSUITE) $(TESTSUITE).at $(srcdir)/package.m4 \
-atlocal.in ff hdf4 hdf5 nc show ssfunc mds_initial_state
+atlocal.in ff hdf4 hdf5 nc show ssfunc dmrpp mds_initial_state
 
 DISTCLEANFILES = atconfig
 
