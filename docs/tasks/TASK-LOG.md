@@ -100,6 +100,45 @@ Out of scope:
 
 ---
 
+## TASK-003 — Unit tests for the RelatedUrls selection rules in `get_urls_from_granules_umm_json_v1_4`
+
+**Category:** Test Coverage
+**Status:** Plan Ready
+**Created:** 2026-10-29
+**Related requirements/constraints:** FR-007, FR-008, FR-009, FR-010 (the tests check the
+selection rules these define)
+**Plan:** `plans/task-ngapapi-umm-json-tests-plan.md`
+
+**Scope:** New CppUnit tests in `modules/dmrpp_module/ngap_container/unit-tests/NgapApiTest.cc`
+for `NgapApi::get_urls_from_granules_umm_json_v1_4`, with new fixtures in
+`unit-tests/cmr_json_responses/`. Only tests that pass on the current code:
+- Selection rules (FR-007–FR-009): first match wins; an entry with a `Subtype` is skipped
+  for the https and S3 data URLs; `http://` is accepted as well as `https://`; the wrong
+  `Type` or scheme is not selected; the s3credentials URL needs `Type`
+  `VIEW RELATED INFORMATION` and must end in `s3credentials`.
+- Partial results (FR-010): an https data URL with no S3 or s3credentials URL returns
+  empty strings for those and doesn't throw.
+- `hits` > 1: only `items[0]` is used. No requirement covers this; the test pins down
+  current behavior.
+- A table in the plan that maps each FR-007–FR-010 clause to at least one named test.
+
+Out of scope:
+- Malformed CMR responses that crash on the current code instead of throwing: parse errors,
+  missing `"hits"` / non-int `"hits"`, missing `"items"` (asserts in builds without `NDEBUG`),
+  empty `items`, `items[0]` not an object, missing or non-object `"umm"` (`NgapApi.cc:433-435`,
+  HYRAX-2316), and non-string `Type` / `URL`. These need a code fix first and are to be logged
+  as a separate bug with its own regression tests.
+- Whether a missing `Type` should skip the entry instead of failing (the TASK-001 open
+  question).
+- Whether `Subtype` should matter for the s3credentials URL. FR-009 doesn't say, so it gets no
+  test here.
+- Any change to `NgapApi.cc` or `NgapApi.h`.
+
+**Motivation:** Requested 2026-10-29 after BUG-001. The tests cover only the error paths and
+three real-world fixtures; most FR-007–FR-010 clauses have no test of their own.
+
+---
+
 <!-- Add new tasks via /plan-task, or by hand — keep the section format: metadata
      lines, then Scope / Motivation. Unlike a bug, a task doesn't need a symptom or
      reproduction — it needs a clear boundary of what's included and what isn't,
