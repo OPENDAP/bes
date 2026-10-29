@@ -116,7 +116,7 @@ Each step below is a reproduction step from BUG-001, run again as a regression t
    of a copy of the logic.
    - Include the BUG-001 step-3 inputs, trimming the https URL first and then the S3 URL.
      Expect `https://data.example/a.nc` and `s3://some-bucket/long/prefix/a.nc`. The
-     pre-fix logic gives `s3://some-bucket`, so run the test against the old code once to
+     pre-fix logic gives `s3://some-bucket/lo`, so run the test against the old code once to
      confirm it fails.
    - Keep the existing no-suffix and `.dmrpp`-in-the-middle cases.
 6. In `NgapOwnedContainerTest`, if `dmrpp_read_from_daac_bucket`'s URL construction can be

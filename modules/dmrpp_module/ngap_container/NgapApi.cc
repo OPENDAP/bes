@@ -51,6 +51,13 @@ using namespace std;
 
 namespace ngap {
 
+namespace {
+/// @return True if 's' ends with 'suffix'. std::string::ends_with() is C++20.
+bool ends_with(const string &s, const string &suffix) {
+    return s.size() >= suffix.size() && s.compare(s.size() - suffix.size(), suffix.size(), suffix) == 0;
+}
+} // namespace
+
 /**
  * @brief Get the CMR search endpoint URL using information from the BES Keys.
  * This method only reads the BES keys once and caches the results, including
@@ -306,10 +313,10 @@ string get_data_http_url(rapidjson::Value &obj) {
         // Added test that the URL does not end in 'xml' to avoid the LPDAAC .cmr.xml records. jhrg 5/22/24
         string candidate_url = r_url.GetString();
 
-        // The URL has to start with HTTP/S and cannot end in .xml or .dmrpp. jhrg 6/2/25
+        // The URL has to start with HTTP/S and cannot end in .xml or .dmrpp (FR-007). jhrg 6/2/25
         if ((candidate_url.find("https://") == 0 || candidate_url.find("http://") == 0)
-            && candidate_url.rfind(".xml") == string::npos
-            && candidate_url.rfind(".dmrpp") == string::npos) {
+            && !ends_with(candidate_url, ".xml")
+            && !ends_with(candidate_url, ".dmrpp")) {
             return candidate_url;
         }
     }
@@ -338,10 +345,10 @@ string get_data_s3_url(rapidjson::Value &obj) {
     if ((r_type.GetString() == string(CMR_URL_TYPE_GET_DATA)) && noSubtype) {
         string candidate_url = r_url.GetString();
 
-        // The URL has to start with s3:// and cannot end in .xml or .dmrpp
+        // The URL has to start with s3:// and cannot end in .xml or .dmrpp (FR-008)
         if (candidate_url.find("s3://") == 0
-            && candidate_url.rfind(".xml") == string::npos
-            && candidate_url.rfind(".dmrpp") == string::npos) {
+            && !ends_with(candidate_url, ".xml")
+            && !ends_with(candidate_url, ".dmrpp")) {
             return candidate_url;
         }
     }
@@ -367,12 +374,10 @@ string get_s3credentials_url(rapidjson::Value &obj) {
 
     if (r_type.GetString() == string(CMR_URL_TYPE_GET_S3CREDENTIALS)) {
         string candidate_url = r_url.GetString();
-        string suffix = "s3credentials";
-        auto expected_suffix_offset = candidate_url.size() - suffix.size();
 
         // The URL has to start with HTTP/S and must end in s3credentials
         if ((candidate_url.find("https://") == 0 || candidate_url.find("http://") == 0)
-            && candidate_url.rfind(suffix) == expected_suffix_offset) {
+            && ends_with(candidate_url, "s3credentials")) {
             return candidate_url;
         }
     }
@@ -468,6 +473,23 @@ NgapApi::DataAccessUrls NgapApi::get_urls_from_granules_umm_json_v1_4(const std:
 }
 
 /**
+ * @brief Remove a trailing '.dmrpp' from a data URL, if present.
+ *
+ * This is defensive. Under FR-007/FR-008, get_urls_from_granules_umm_json_v1_4() never
+ * selects a data URL that ends in '.dmrpp', so this should not change the URL. It guards
+ * against a future change to that filter; NgapOwnedContainer appends '.dmrpp' to the data
+ * URLs to locate the DMR++ (FR-011).
+ *
+ * @param url value-result parameter; the URL to trim
+ */
+void NgapApi::strip_dmrpp_suffix(string &url) {
+    const string suffix = ".dmrpp";
+    if (ends_with(url, suffix)) {
+        url.erase(url.size() - suffix.size());
+    }
+}
+
+/**
  * @brief Converts an NGAP restified granule path into a CMR metadata query for the granule.
  *
  * The NGAP module's "restified" interface uses a google-esque set of
@@ -522,16 +544,8 @@ NgapApi::DataAccessUrls NgapApi::convert_ngap_resty_path_to_data_access_urls(con
     }
 
     // Check for existing .dmrpp and remove it if found at the end of the url. - kln 6/6/25
-    string suffix = ".dmrpp";
-    if (data_access_url.size() >= suffix.size() &&
-    data_access_url.compare(data_access_url.size() - suffix.size(), suffix.size(), suffix) == 0) {
-        data_access_url.erase(data_access_url.size() - suffix.size());
-    }
-    // ...ditto for the s3 url
-    if (data_s3_url.size() >= suffix.size() &&
-    data_s3_url.compare(data_s3_url.size() - suffix.size(), suffix.size(), suffix) == 0) {
-        data_s3_url.erase(data_access_url.size() - suffix.size());
-    }
+    strip_dmrpp_suffix(data_access_url);
+    strip_dmrpp_suffix(data_s3_url);
 
     BESDEBUG(MODULE, prolog << "END (data_access_url: " << data_access_url << ", data_s3_url: " << data_s3_url << ", tea_endpoint_url: " << tea_endpoint_url << ")" << endl);
 
