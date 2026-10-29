@@ -1508,7 +1508,7 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
     BESDEBUG(MODULE, prolog << "dmr.request_xml_base(): \"" << dmr.request_xml_base() << "\""<< endl);
 
     // Write the DMR
-    XMLWriter xml("    ", dmr.get_utf8_xml_encoding() ? "UTF-8" : "ISO-8859-1");;
+    XMLWriter xml("    ", dmr.get_utf8_xml_encoding() ? "UTF-8" : "ISO-8859-1");
     dmr.print_dap4(xml, !d_dap4ce.empty());
 
     // now make the chunked output stream; set the size to be at least chunk_size
@@ -1554,7 +1554,7 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr)
         string serviceUrl = get_store_result();
 
         D4AsyncUtil d4au;
-        XMLWriter xmlWrtr("    ", dmr.get_utf8_xml_encoding() ? "UTF-8" : "ISO-8859-1");;
+        XMLWriter xmlWrtr("    ", dmr.get_utf8_xml_encoding() ? "UTF-8" : "ISO-8859-1");
  
         // FIXME See above comment for store dap2 result
         bool found;
