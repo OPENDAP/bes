@@ -33,13 +33,7 @@
 #define MODULES_NGAP_MODULE_NGAPAPI_H_
 
 #include <string>
-#include <vector>
-#include <map>
 #include <tuple>
-
-namespace http {
-class url;
-}
 
 namespace ngap {
 /**
