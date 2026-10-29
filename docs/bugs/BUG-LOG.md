@@ -67,7 +67,7 @@ actually found in the code, not guessed from symptoms.)*
 
 **Actual behavior:**
 - Steps 1–2 throw `BESInternalError` ("Failed to locate a data URL").
-- Step 3 gives `s3://some-bucket`. It truncates at the trimmed https URL's length minus 6.
+- Step 3 gives `s3://some-bucket/lo`. It truncates at the trimmed https URL's length (25) minus 6.
   If the trimmed https URL were longer than the S3 URL, it would throw `std::out_of_range`
   instead.
 
