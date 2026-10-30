@@ -796,6 +796,36 @@ void BESDapResponseBuilder::remove_timeout() const
 #endif
 
 /**
+ * @brief Wrapper for dap_utils::throw_if_too_big() that honors d_ignore_check_too_big.
+ * @param dmr The DMR to which a ce has been applied.
+ * @param file The file of the calling code.
+ * @param line The line in the calling code.
+ */
+void BESDapResponseBuilder::throw_if_too_big(libdap::DMR &dmr, const std::string &file, unsigned int line) const
+{
+    if (d_ignore_check_too_big) {
+        BESDEBUG(MODULE, prolog << "Response size check skipped (ignore_check_too_big is true)." << endl);
+        return;
+    }
+    dap_utils::throw_if_too_big(dmr, file, line);
+}
+
+/**
+ * @brief Wrapper for dap_utils::throw_if_too_big() that honors d_ignore_check_too_big.
+ * @param dds The DDS to which a ce has been applied.
+ * @param file The file of the calling code.
+ * @param line The line in the calling code.
+ */
+void BESDapResponseBuilder::throw_if_too_big(const libdap::DDS &dds, const std::string &file, unsigned int line) const
+{
+    if (d_ignore_check_too_big) {
+        BESDEBUG(MODULE, prolog << "Response size check skipped (ignore_check_too_big is true)." << endl);
+        return;
+    }
+    dap_utils::throw_if_too_big(dds, file, line);
+}
+
+/**
  * @brief Process a DDS (i.e., apply a constraint) for a non-DAP transmitter.
  *
  * This is a companion method to the intern_dap2_data() method. Unlike that,
@@ -957,7 +987,7 @@ BESDapResponseBuilder::intern_dap2_data(BESResponseObject *obj, BESDataHandlerIn
     dds->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
     dap_utils::throw_for_dap4_typed_vars_or_attrs(dds, __FILE__, __LINE__);
-    dap_utils::throw_if_too_big(*dds, __FILE__, __LINE__);
+    throw_if_too_big(*dds, __FILE__, __LINE__);
 
 
     // Iterate through the variables in the DataDDS and read
@@ -1034,7 +1064,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
 
         (*dds)->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
-        dap_utils::throw_if_too_big(**dds, __FILE__, __LINE__);
+        throw_if_too_big(**dds, __FILE__, __LINE__);
 
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
@@ -1056,7 +1086,7 @@ void BESDapResponseBuilder::send_dap2_data(ostream &data_stream, DDS **dds, Cons
         (*dds)->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
         dap_utils::throw_for_dap4_typed_vars_or_attrs(*dds, __FILE__, __LINE__);
-        dap_utils::throw_if_too_big(**dds, __FILE__, __LINE__);
+        throw_if_too_big(**dds, __FILE__, __LINE__);
 
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
@@ -1154,7 +1184,7 @@ void BESDapResponseBuilder::send_dap2_data(BESDataHandlerInterface &dhi, DDS **d
 
         (*dds)->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
-        dap_utils::throw_if_too_big(**dds, __FILE__, __LINE__);
+        throw_if_too_big(**dds, __FILE__, __LINE__);
 
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
@@ -1176,7 +1206,7 @@ void BESDapResponseBuilder::send_dap2_data(BESDataHandlerInterface &dhi, DDS **d
         (*dds)->tag_nested_sequences(); // Tag Sequences as Parent or Leaf node.
 
         dap_utils::throw_for_dap4_typed_vars_or_attrs(*dds, __FILE__, __LINE__);
-        dap_utils::throw_if_too_big(**dds, __FILE__, __LINE__);
+        throw_if_too_big(**dds, __FILE__, __LINE__);
 
         if (with_mime_headers)
             set_mime_binary(data_stream, dods_data, x_plain, last_modified_time(d_dataset), (*dds)->get_dap_version());
@@ -1333,16 +1363,9 @@ void BESDapResponseBuilder::send_dmr(ostream &out, DMR &dmr, bool with_mime_head
 
     BESDEBUG(MODULE, prolog << "dmr.request_xml_base(): '"<< dmr.request_xml_base() << "' (dmr: " << (void *) &dmr << ")" << endl);
 
-    if (dmr.get_utf8_xml_encoding()) {
-        auto xml = XMLWriter("    ","UTF-8");
-        dmr.print_dap4(xml, /*constrained &&*/!d_dap4ce.empty() /* true == constrained */);
-        out << xml.get_doc() << flush;
-    }
-    else {
-        XMLWriter xml;
-        dmr.print_dap4(xml, /*constrained &&*/!d_dap4ce.empty() /* true == constrained */);
-        out << xml.get_doc() << flush;
-    }
+    XMLWriter xml("    ", dmr.get_utf8_xml_encoding() ? "UTF-8" : "ISO-8859-1");
+    dmr.print_dap4(xml, /*constrained &&*/!d_dap4ce.empty() /* true == constrained */);
+    out << xml.get_doc() << flush;
 }
 
 void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool with_mime_headers)
@@ -1366,7 +1389,7 @@ void BESDapResponseBuilder::send_dap4_data_using_ce(ostream &out, DMR &dmr, bool
     }
 
     dap_utils::log_response_and_memory_size(prolog, dmr);
-    dap_utils::throw_if_too_big(dmr, __FILE__, __LINE__);
+    throw_if_too_big(dmr, __FILE__, __LINE__);
 
     // The following block is for debugging purpose. KY 05/13/2020
 #if !NDEBUG
@@ -1416,7 +1439,7 @@ void BESDapResponseBuilder::dap4_process_ce_for_intern_data(DMR &dmr)
         dmr.set_ce_empty(true);
         dmr.root()->set_send_p(true);
     }
-    dap_utils::throw_if_too_big(dmr, __FILE__, __LINE__);
+    throw_if_too_big(dmr, __FILE__, __LINE__);
 }
 
 void BESDapResponseBuilder::send_dap4_data(ostream &out, DMR &dmr, bool with_mime_headers)
@@ -1485,9 +1508,7 @@ void BESDapResponseBuilder::serialize_dap4_data(std::ostream &out, libdap::DMR &
     BESDEBUG(MODULE, prolog << "dmr.request_xml_base(): \"" << dmr.request_xml_base() << "\""<< endl);
 
     // Write the DMR
-    XMLWriter xml;
-    if (dmr.get_utf8_xml_encoding()) 
-        xml = XMLWriter("    ","UTF-8");
+    XMLWriter xml("    ", dmr.get_utf8_xml_encoding() ? "UTF-8" : "ISO-8859-1");
     dmr.print_dap4(xml, !d_dap4ce.empty());
 
     // now make the chunked output stream; set the size to be at least chunk_size
@@ -1533,9 +1554,7 @@ bool BESDapResponseBuilder::store_dap4_result(ostream &out, libdap::DMR &dmr)
         string serviceUrl = get_store_result();
 
         D4AsyncUtil d4au;
-        XMLWriter xmlWrtr;
-        if (dmr.get_utf8_xml_encoding()) 
-            xmlWrtr = XMLWriter("    ","UTF-8");
+        XMLWriter xmlWrtr("    ", dmr.get_utf8_xml_encoding() ? "UTF-8" : "ISO-8859-1");
  
         // FIXME See above comment for store dap2 result
         bool found;

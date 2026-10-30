@@ -46,10 +46,13 @@
 #include "CurlHandlePool.h"
 #include "EffectiveUrlCache.h"
 #include "SignedUrlCache.h"
+#include "HttpError.h"
+#include "NgapServiceChaining.h"
 #include "DmrppRequestHandler.h"
 #include "DmrppNames.h"
 #include "byteswap_compat.h"
 #include "float_byteswap.h"
+#include "lzw_util.h"
 
 using namespace std;
 using http::EffectiveUrlCache;
@@ -135,6 +138,44 @@ void process_s3_error_response(const shared_ptr<http::url> &data_url, const stri
     }
 }
 
+// For internal linkage only, use a anonymous namespace
+namespace {
+
+/**
+ * @brief Parse an S3 <Error> XML document into its Code/Message fields, without
+ * throwing for a well-formed-but-unwanted error -- only throws if the document
+ * isn't parseable, or isn't an <Error> element, at all (i.e. it wasn't even
+ * recognizable as an S3 error response). 
+ * This version is used by chunk_write_data(), which will decide which error to retry. 
+ */
+void extract_s3_error_fields(const string &xml_message, string &code, string &message) {
+    pugi::xml_document error;
+    pugi::xml_parse_result result = error.load_string(xml_message.c_str());
+    if (!result)
+        throw BESInternalError("The underlying data store returned an unintelligible error message.", __FILE__, __LINE__);
+
+    pugi::xml_node err_elmnt = error.document_element();
+    if (!err_elmnt || (strcmp(err_elmnt.name(), "Error") != 0))
+        throw BESInternalError("The underlying data store returned a bogus error message.", __FILE__, __LINE__);
+
+    code = err_elmnt.child_value("Code");
+    message = err_elmnt.child_value("Message");
+}
+
+/**
+ * @brief AWS S3 error codes documented/observed as transient -- worth retrying.
+ * See https://docs.aws.amazon.com/AmazonS3/latest/API/API_Error.html
+ * Notably NOT here: AccessDenied and anything unrecognized -- those will not be retried.
+ * There are many errors according to the above URLs. We need to keep an eye on if the following errors are
+ * enough to retry.
+ */
+bool is_transient_s3_error_code(const string &code) {
+    return code == "InternalError" || code == "SlowDown" || code == "RequestTimeout" ||
+           code == "ServiceUnavailable" || code == "RequestTimeTooSkewed" || code == "OperationAborted";
+}
+
+} // namespace
+
 /**
  * @brief Callback passed to libcurl to handle reading bytes.
  *
@@ -153,7 +194,6 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
     size_t nbytes = size * nmemb;
     auto chunk = reinterpret_cast<Chunk *>(data);
 
-
     auto data_url = chunk->get_data_url();
     BESDEBUG(MODULE, prolog << "chunk->get_data_url():" << data_url << endl);
 
@@ -168,6 +208,35 @@ size_t chunk_write_data(void *buffer, size_t size, size_t nmemb, void *data) {
         // which maybe in this error text, may have < or > chars in them. the XML parser
         // will be sad if that happens. jhrg 12/30/19
         try {
+            // Here we need to extract the error code and message to see if we need to retry before throwing the error.
+            string code;
+            string  message;
+            extract_s3_error_fields(xml_message, code, message);
+
+            if (is_transient_s3_error_code(code)) {
+                // Transient object-store error -- S3 itself documents these as worth
+                // retrying (InternalError's message is literally "We encountered an
+                // internal error. Please try again."). Don't throw here: throwing from
+                // inside a libcurl write callback unwinds straight past the retry logic
+                // in super_easy_perform() (sequential path) / PT_result() (curl_multi
+                // path), since neither ever gets a chance to see this transfer
+                // complete. Instead, record the error and tell libcurl the write
+                // failed -- returning anything other than nbytes aborts the transfer
+                // with CURLE_WRITE_ERROR -- so the *existing* CURLcode-based retry path
+                // picks this up.
+                stringstream msg;
+                msg << prolog << "The underlying object store reported a transient error; "
+                    << "letting the curl-level retry logic handle it. (Tried: "
+                    << data_url->get_url_no_query() << ") Object Store Message: " << message
+                    << " (Code: " << code << ")";
+                BESDEBUG(MODULE, msg.str() << endl);
+                chunk->set_retryable_s3_error(msg.str());
+                return 0;   // != nbytes -> libcurl aborts this transfer with CURLE_WRITE_ERROR
+            }
+
+            // Not a known-transient code (e.g. AccessDenied), or the document didn't
+            // even parse as an <Error> element -- not worth retrying, so throw
+            // immediately, exactly as before this change.
             process_s3_error_response(data_url, xml_message);   // throws a BESError
         }
         catch (BESError) {
@@ -640,10 +709,90 @@ checksum_fletcher32(const void *_data, size_t _len)
 } /* end checksum_fletcher32() */
 
 /**
+ * @brief Parse a decimal unsigned integer taken from a filter token.
+ *
+ * Reject emtpy strings, signs, whitespace, and anything else that is not a plain
+ * run of digits (and values too large to be sensible), so a malformed DMR++
+ * attribute produces a clear error instead of a silently wrong decode.
+ *
+ * @param value the tect to parse
+ * @param filter the whole filter token, used only for the error message
+ */
+static unsigned long long parse_filter_uint(const string &value, const string &filter) {
+    if (value.empty() || value.size() > 18 || value.find_first_not_of("0123456789") != string::npos) {
+        throw BESInternalError(prolog + "Malformed filter '" + filter + "': '" + value
+                               + "' is not a valid unsigned integer.", __FILE__, __LINE__);
+    } // end if
+    return stoull(value);
+} //end parse_filter_unit(...)
+
+/// Parameters carried by a 'tiffpred' filter token.
+struct TiffPredictorParams {
+    int predictor;                          ///< TIFF Predictor tag value: 2 or 3
+    unsigned samples_per_pixel;             ///< Interleave stride, in samples (1 for planar data)
+    unsigned long long elements_per_row;    ///< Samples in one row of the chunk (row width * samples_per_pixel)
+};
+
+/**
+ * @brief Parse a 'tiffpred' filter token.
+ *
+ * The token has the form  tiffpred:<predictor>:<samples-per-pixel>:<elements-per-row>
+ * for example "tiffpred:2:3:1536" for 3-band chunky data that is 512 pixels wide. The element
+ * (sample) size comes from the array, not from the token, and the byte order from the chunk.
+ *
+ * @param filter The token, as found in the compressionType attribute
+ * @return The parsed parameters
+ * @throw BESInternalError if the token is malformed
+ */
+static TiffPredictorParams parse_tiff_predictor_filter(const string &filter) {
+    // Do not skip empty fields: "tiffpred:2::512" must be an error, not a 3-field token.
+    const vector<string> parts = BESUtil::split(filter, ':', false);
+    if (parts.size() != 4 || parts[0] != "tiffpred") {
+        throw BESInternalError(prolog + "Malformed filter '" + filter
+                               + "': expected tiffpred:<predictor>:<samples-per-pixel>:<elements-per-row>.",
+                               __FILE__, __LINE__);
+    }
+
+    const unsigned long long predictor = parse_filter_uint(parts[1], filter);
+    if (predictor != 2 && predictor != 3) {
+        throw BESInternalError(prolog + "Unsupported TIFF predictor in filter '" + filter
+                               + "': only predictor 2 (horizontal differencing) and 3 (floating point) are supported.",
+                               __FILE__, __LINE__);
+    }
+
+    const unsigned long long spp = parse_filter_uint(parts[2], filter);
+    const unsigned long long row = parse_filter_uint(parts[3], filter);
+    if (spp == 0 || spp > 65535 || row == 0 || row % spp != 0) {
+        throw BESInternalError(prolog + "Invalid sizes in filter '" + filter
+                               + "': samples-per-pixel must be > 0 and divide elements-per-row.",
+                               __FILE__, __LINE__);
+    }
+
+    TiffPredictorParams params;
+    params.predictor = static_cast<int>(predictor);
+    params.samples_per_pixel = static_cast<unsigned>(spp);
+    params.elements_per_row = row;
+    return params;
+} // end parse_tiff_predictor_filter(...)
+
+/**
  * @brief filter data in the chunk
  *
  * This method tracks if a chunk has already been decompressed, so, like read_chunk()
  * it can be called for a chunk that has already been decompressed without error.
+ *
+ * The filters are listed in the order they were applied when the data were written, and are
+ * undone here in reverse order. The recognized filter names are
+ *   - deflate, shuffle, fletcher32: HDF5 filters.
+ *   - lzw: TIFF LZW (TIFF Compression=5, as used by GeoTIFF). See lzw_decode().
+ *   - tiffpred:P:S:R: reverse the TIFF predictor P (2 or 3) on rows of R samples with S samples per
+ *     pixel. Use it with lzw (or deflate) when the TIFF Predictor tag is 2 or 3; because it is
+ *     applied before compression when writing, it is listed before lzw, e.g. "tiffpred:2:1:512 lzw".
+ *     The sample size is elem_width and the byte order is the chunk's byte order.
+ *
+ * @note If an LZW stream ends (with an EOI code) before it has produced chunk_size elements, as can
+ * happen for the last strip of a TIFF whose height is not a multiple of RowsPerStrip, the rest of the
+ * chunk is filled with zeros. Corrupt or truncated LZW data is an error.
  *
  * @param filters Space separated list of filters
  * @param chunk_size The _expected_ chunk size, in elements; used to allocate storage
@@ -832,6 +981,73 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
                                        __FILE__, __LINE__);
             }
         } // end filter is fletcher32
+        else if (filter == "lzw") {
+            // TIFF LZW. The read buffer holds the compressed bytes; decode them into a buffer
+            // of the full, expected chunk size and install that as the new read buffer.
+            if (get_rbuf() == nullptr || get_rbuf_size() == 0) {
+                throw BESInternalError(prolog + "lzw filter: the chunk has no data to decompress.",
+                                       __FILE__, __LINE__);
+            }
+
+            char *dest = new char[chunk_size];
+            try {
+                size_t decoded = 0;
+                const lzw_status status = lzw_decode(reinterpret_cast<const uint8_t *>(get_rbuf()),
+                                                     static_cast<size_t>(get_rbuf_size()),
+                                                     reinterpret_cast<uint8_t *>(dest),
+                                                     static_cast<size_t>(chunk_size), &decoded);
+                if (status == LZW_SHORT_OUTPUT) {
+                    // A well-formed stream that holds less than a full chunk (e.g. a short last strip).
+                    // lzw_decode() has already zero-filled the remainder of dest.
+                    BESDEBUG(MODULE, prolog << "lzw filter: decoded " << decoded << " of " << chunk_size
+                                            << " bytes; the remainder was zero filled." << endl);
+                }
+                else if (status != LZW_OK) {
+                    stringstream msg;
+                    msg << prolog << "lzw filter: " << lzw_status_str(status)
+                        << " (compressed bytes: " << get_rbuf_size() << ", expected decoded bytes: " << chunk_size
+                        << ", decoded bytes: " << decoded << ")";
+                    throw BESInternalError(msg.str(), __FILE__, __LINE__);
+                }
+
+                // This replaces (and deletes) the original read buffer with dest.
+                set_read_buffer(dest, chunk_size, chunk_size, true);
+            }
+            catch (...) {
+                delete[] dest;
+                throw;
+            }
+        } // end filter is lzw
+        else if (filter == "tiffpred" || filter.rfind("tiffpred:", 0) == 0) {
+            // Undo the TIFF predictor in place; the buffer was installed by a previous filter
+            // (lzw or deflate) and is already the size of the decoded chunk.
+            const TiffPredictorParams pp = parse_tiff_predictor_filter(filter);
+
+            if (get_rbuf() == nullptr || get_rbuf_size() == 0) {
+                throw BESInternalError(prolog + "tiffpred filter: the chunk has no data to process.",
+                                       __FILE__, __LINE__);
+            }
+            if (elem_width == 0 || elem_width > 8) {
+                throw BESInternalError(prolog + "tiffpred filter: unsupported element size "
+                                       + std::to_string(elem_width) + " bytes.", __FILE__, __LINE__);
+            }
+
+            // Samples are accumulated in the chunk's byte order, so any byte swapping that DmrppArray
+            // does later still sees data in the order the DMR++ declared.
+            const bool big_endian = (d_byte_order == "BE");
+            const tiff_predictor_status status =
+                    tiff_predictor_decode(reinterpret_cast<uint8_t *>(get_rbuf()),
+                                          static_cast<size_t>(get_rbuf_size()), pp.predictor,
+                                          static_cast<unsigned>(elem_width), pp.samples_per_pixel,
+                                          static_cast<size_t>(pp.elements_per_row * elem_width), big_endian);
+            if (status != TIFF_PREDICTOR_OK) {
+                stringstream msg;
+                msg << prolog << "tiffpred filter: " << tiff_predictor_status_str(status)
+                    << " (filter: " << filter << ", element size: " << elem_width
+                    << ", buffer bytes: " << get_rbuf_size() << ")";
+                throw BESInternalError(msg.str(), __FILE__, __LINE__);
+            }
+        } // end filter is tiffpred
     } // end for loop
     d_is_inflated = true;
 }
@@ -1374,7 +1590,17 @@ std::shared_ptr<http::url> Chunk::get_data_url() const {
         if (d_data_url->is_trusted()) {
             req_hdrs = curl::add_edl_auth_headers(nullptr);
         }
-        url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url, req_hdrs);
+        try {
+            url = EffectiveUrlCache::TheCache()->get_effective_url(d_data_url, req_hdrs);
+        }
+        catch (http::HttpError &http_error) {
+            if (ngap::is_ngap_request() && ngap::is_http_5xx(http_error.http_status())) {
+                ngap::add_service_chaining_message(http_error, prolog,
+                                                   "attempting to retrieve a redirect URL.\n"
+                                                   "This is probably problem with TEA or S3 signing.");
+            }
+            throw;
+        }
     }
     BESDEBUG(MODULE, prolog << "Using data_url: " << url->get_url_no_query() << endl);
 

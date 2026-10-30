@@ -62,6 +62,7 @@
 #include "BESStopWatch.h"
 
 #include "NgapOwnedContainer.h"
+#include "NgapServiceChaining.h"
 
 #include "DapUtils.h"
 
@@ -113,6 +114,14 @@ namespace dmrpp
     int DmrppRequestHandler::d_object_cache_entries = 100;
     double DmrppRequestHandler::d_object_cache_purge_level = 0.2;
 
+    bool DmrppRequestHandler::d_use_transfer_threads = true;
+    unsigned long DmrppRequestHandler::d_max_transfer_threads = 8UL;
+    unsigned long DmrppRequestHandler::d_default_max_transfer_threads = 4UL;
+    unsigned long DmrppRequestHandler::d_decision_transfer_threads = 4UL;
+    unsigned long DmrppRequestHandler::d_decision_bytes_per_ms = 8192UL;           // 8 KB per ms
+    unsigned long DmrppRequestHandler::d_decision_request_overhead_ms = 256UL;     // 256 ms per request round
+    unsigned long DmrppRequestHandler::d_decision_small_size = 2097152UL;          // 2 MB
+
     bool DmrppRequestHandler::d_use_compute_threads = true;
     unsigned long DmrppRequestHandler::d_max_compute_threads = 8UL;
     unsigned long DmrppRequestHandler::d_default_max_compute_threads = 4UL;
@@ -155,8 +164,49 @@ namespace dmrpp
         stringstream msg;
 
         // Using TheBESKeys calls instead of custom functions kln 4/1/26
+        d_use_transfer_threads = TheBESKeys::read_bool_key(DMRPP_USE_TRANSFER_THREADS_KEY, d_use_transfer_threads);
+        d_max_transfer_threads = std::max(d_default_max_transfer_threads, TheBESKeys::read_ulong_key(DMRPP_MAX_TRANSFER_THREADS_KEY, d_max_transfer_threads));
+
+        // The buffer chunk/super chunk choice assumes this many transfers really run in parallel. Under
+        // production load (many besd processes sharing the network and S3) the effective parallelism is
+        // often lower than d_max_transfer_threads; assuming too much parallelism favors the super chunk,
+        // which then becomes much slower. Keep it within [1, d_max_transfer_threads]. KY 2026-10-12
+        d_decision_transfer_threads = TheBESKeys::read_ulong_key(DMRPP_DECISION_TRANSFER_THREADS_KEY, d_decision_transfer_threads);
+        d_decision_transfer_threads = std::max(1UL, std::min(d_decision_transfer_threads, d_max_transfer_threads));
+
+        msg << prolog << "Concurrent Transfer Threads: ";
+        if (DmrppRequestHandler::d_use_transfer_threads)
+        {
+            msg << "Enabled. max_transfer_threads: " << DmrppRequestHandler::d_max_transfer_threads <<endl;
+        }
+        else
+        {
+            msg << "Disabled." << endl;
+        }
+
+        INFO_LOG(msg.str());
+        msg.str(std::string());
+
+        // Parameters of the buffer chunk/super chunk transfer time model. KY 2026-10-12
+        // d_decision_bytes_per_ms is a divisor, so it must be at least 1.
+        d_decision_bytes_per_ms = std::max(1UL, TheBESKeys::read_ulong_key(DMRPP_DECISION_BYTES_PER_MS_KEY, d_decision_bytes_per_ms));
+        d_decision_request_overhead_ms = TheBESKeys::read_ulong_key(DMRPP_DECISION_REQUEST_OVERHEAD_MS_KEY, d_decision_request_overhead_ms);
+        d_decision_small_size = TheBESKeys::read_ulong_key(DMRPP_DECISION_SMALL_SIZE_KEY, d_decision_small_size);
+
+#ifndef NDEBUG 
+        
+        if (DmrppRequestHandler::d_use_transfer_threads)
+            msg << prolog << " Decision_transfer_threads: " << DmrppRequestHandler::d_decision_transfer_threads << endl;
+        msg << "Buffer chunk/super chunk choice: bytes_per_ms: " << d_decision_bytes_per_ms
+            << " request_overhead_ms: " << d_decision_request_overhead_ms
+            << " small_size: " << d_decision_small_size << endl;
+        INFO_LOG(msg.str());
+        msg.str(std::string());
+#endif
+
         d_use_compute_threads = TheBESKeys::read_bool_key(DMRPP_USE_COMPUTE_THREADS_KEY, d_use_compute_threads);
         d_max_compute_threads = std::max(d_default_max_compute_threads, TheBESKeys::read_ulong_key(DMRPP_MAX_COMPUTE_THREADS_KEY, d_max_compute_threads));
+
         msg << prolog << "Concurrent Compute Threads: ";
         if (DmrppRequestHandler::d_use_compute_threads)
         {
@@ -172,8 +222,11 @@ namespace dmrpp
 
         // DMRPP_CONTIGUOUS_CONCURRENT_THRESHOLD_KEY
         d_contiguous_concurrent_threshold = TheBESKeys::read_ulong_key(DMRPP_CONTIGUOUS_CONCURRENT_THRESHOLD_KEY, d_contiguous_concurrent_threshold);
+
+#ifndef NDEBUG
         msg << prolog << "Contiguous Concurrency Threshold: " << d_contiguous_concurrent_threshold << " bytes." << endl;
         INFO_LOG(msg.str());
+#endif
 
         // Whether the default direct IO feature is disabled. Read the key in.
         disable_direct_io = TheBESKeys::read_bool_key(DMRPP_DISABLE_DIRECT_IO, disable_direct_io);
@@ -403,6 +456,18 @@ namespace dmrpp
     }
 
     /**
+     * @brief Record if this request uses an NgapOwnedContainer.
+     *
+     * Data reads happen after the dap_build_*() methods return, so the
+     * 'Service Chaining Error' code in the chunk-read and redirect paths
+     * uses this per-process flag to tell if the request is an NGAP request.
+     */
+    static void record_ngap_request(const BESDataHandlerInterface &dhi)
+    {
+        ngap::set_ngap_request(dynamic_cast<ngap::NgapOwnedContainer *>(dhi.container) != nullptr);
+    }
+
+    /**
      * Given a request for the DMR response, look at the data source and
      * parse it's DMR/XML information. If the data source is a .dmr or .xml
      * file, assume that's all the data source contains and that the plain
@@ -417,6 +482,7 @@ namespace dmrpp
     bool DmrppRequestHandler::dap_build_dmr(BESDataHandlerInterface &dhi)
     {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+        record_ngap_request(dhi);
 
         auto bdmr = dynamic_cast<BESDMRResponse *>(dhi.response_handler->get_response_object());
         if (!bdmr)
@@ -446,6 +512,7 @@ namespace dmrpp
     bool DmrppRequestHandler::dap_build_dap4data(BESDataHandlerInterface &dhi)
     {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+        record_ngap_request(dhi);
 
         auto bdmr = dynamic_cast<BESDMRResponse *>(dhi.response_handler->get_response_object());
         if (!bdmr)
@@ -486,6 +553,7 @@ namespace dmrpp
     bool DmrppRequestHandler::dap_build_dap2data(BESDataHandlerInterface &dhi)
     {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+        record_ngap_request(dhi);
 
         auto bdds = dynamic_cast<BESDataDDSResponse *>(dhi.response_handler->get_response_object());
         if (!bdds)
@@ -513,6 +581,7 @@ namespace dmrpp
     bool DmrppRequestHandler::dap_build_dds(BESDataHandlerInterface &dhi)
     {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+        record_ngap_request(dhi);
 
         auto bdds = dynamic_cast<BESDDSResponse *>(dhi.response_handler->get_response_object());
         if (!bdds)
@@ -541,6 +610,7 @@ namespace dmrpp
     bool DmrppRequestHandler::dap_build_das(BESDataHandlerInterface &dhi)
     {
         BESDEBUG(MODULE, prolog << "BEGIN" << endl);
+        record_ngap_request(dhi);
 
         auto bdas = dynamic_cast<BESDASResponse *>(dhi.response_handler->get_response_object());
         if (!bdas)

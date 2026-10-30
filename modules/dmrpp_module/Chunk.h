@@ -133,6 +133,14 @@ private:
     bool d_is_inflated {false};
     std::string d_response_content_type;
 
+    /// Set by chunk_write_data() when the object store (S3) returns a transient
+    /// error (e.g. InternalError, SlowDown etc) instead of chunk data. Recorded here
+    /// instead of throwing so the curl-level retry logic (super_easy_perform() /
+    /// the curl_multi event loop) gets a chance to retry the request -- see
+    /// set_retryable_s3_error().
+    bool d_retryable_s3_error {false};
+    std::string d_retryable_s3_error_message;
+
     friend class ChunkTest;
     friend class DmrppCommonTest;
     friend class MockChunk;
@@ -405,6 +413,29 @@ public:
 
     /// @brief Set the response type of the last response
     void  set_response_content_type(const std::string &ct) { d_response_content_type = ct; }
+
+    /// @brief True if chunk_write_data() detected a transient (retryable) object-store
+    /// error -- e.g. S3's "InternalError" -- while reading this Chunk's response body.
+    bool get_is_retryable_s3_error() const { return d_retryable_s3_error; }
+
+    /// @brief The message recorded by set_retryable_s3_error(); only meaningful when
+    /// get_is_retryable_s3_error() is true.
+    std::string get_retryable_s3_error_message() const { return d_retryable_s3_error_message; }
+
+    /// @brief Record a transient object-store error detected in chunk_write_data(), in
+    /// place of throwing, so libcurl's normal CURLE_WRITE_ERROR retry path 
+    /// gets a chance to retry this request.
+    void set_retryable_s3_error(const std::string &message) {
+        d_retryable_s3_error = true;
+        d_retryable_s3_error_message = message;
+    }
+
+    /// @brief Clear any previously recorded retryable error before a fresh attempt
+    /// reuses this Chunk (e.g. before a retry re-registers the same handle).
+    void clear_retryable_s3_error() {
+        d_retryable_s3_error = false;
+        d_retryable_s3_error_message.clear();
+    }
 
     /// @return Get the chunk byte order
     virtual std::string get_byte_order() { return d_byte_order; }

@@ -54,6 +54,7 @@
 
 #include "NgapNames.h"
 #include "NgapOwnedContainer.h"
+#include "NgapServiceChaining.h"
 
 #define PUGIXML_NO_XPATH
 #define PUGIXML_HEADER_ONLY
@@ -529,16 +530,22 @@ bool NgapOwnedContainer::get_opendap_content_filters(map<string, string, std::le
 /**
  * @brief Read the DMR++ from the OPeNDAP S3 bucket
  * @param dmrpp_string value-result parameter for the DMR++ doc as a string
- * @return True if the document was found, false otherwise
- * @exception Throw xxx on a 50x response from HTTP.
+ * @exception http::HttpError if the DMR++ cannot be read. A 50x response is
+ * reported as a Service Chaining Error.
  */
 void NgapOwnedContainer::dmrpp_read_from_opendap_bucket(string &dmrpp_string) const {
     BES_MODULE_TIMING(prolog + get_real_name());
 
     string dmrpp_url_str = build_dmrpp_url_to_owned_bucket(get_real_name());
     INFO_LOG(prolog + "Look in the OPeNDAP-bucket for the DMRpp for: " + dmrpp_url_str);
-    // @TODO - Is this even the right idea to look for S3 creds in CredentialsManager for this call??
-    curl::http_get(dmrpp_url_str, dmrpp_string,curl::sign_url_for_s3_if_possible(dmrpp_url_str, nullptr));
+    try {
+        // @TODO - Is this even the right idea to look for S3 creds in CredentialsManager for this call??
+        curl::http_get(dmrpp_url_str, dmrpp_string,curl::sign_url_for_s3_if_possible(dmrpp_url_str, nullptr));
+    } catch (http::HttpError &http_error) {
+        if (is_http_5xx(http_error.http_status()))
+            add_service_chaining_message(http_error, prolog, "attempting to read the DMR++ from the OPeNDAP bucket.");
+        throw;
+    }
     map<string, string, std::less<>> content_filters;
     if (!get_opendap_content_filters(content_filters)) {
         throw BESInternalError("Could not build opendap content filters for DMR++", __FILE__, __LINE__);
@@ -605,10 +612,10 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
         // called from a region other than us-west-2, etc---it will return a nullptr, so that we can fall
         // back on using the TEA service to sign our urls through a series of redirects
         if (presigned_url == nullptr) {
-            BES_PROFILE_TIMING(string("SERVICE CHAIN WARNING! Falling back to request DMR++ from DAAC bucket - ") + dmrpp_url_str);
+            BES_DBG_PROFILE_TIMING(string("SERVICE CHAIN WARNING! Falling back to request DMR++ from DAAC bucket - ") + dmrpp_url_str);
             curl::http_get(dmrpp_url_str, dmrpp_string,curl::add_edl_auth_headers(nullptr));
         } else {
-            BES_PROFILE_TIMING(string("Request presigned DMRpp from DAAC bucket - ") + presigned_url->str());
+            BES_DBG_PROFILE_TIMING(string("Request presigned DMRpp from DAAC bucket - ") + presigned_url->str());
             curl::http_get(presigned_url->str(), dmrpp_string, nullptr);
         }
 
@@ -622,8 +629,9 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
         filter_response(content_filters, dmrpp_string);
         INFO_LOG(prolog + "Found the DMRpp in the DAAC-bucket for: " + dmrpp_url_str);
     } catch (http::HttpError &http_error) {
-        http_error.set_message(http_error.get_message() +
-                               "NgapOwnedContainer::dmrpp_read_from_daac_bucket() failed to read the DMR++ from S3.");
+        if (is_http_5xx(http_error.http_status()))
+            add_service_chaining_message(http_error, prolog, " attempting to read the DMR++ from the DAAC bucket.");
+        http_error.set_message( "Failed to read the DMR++ from S3. " + http_error.get_message());
         throw;
     }
 }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="sds_two_linked_blocks_merged_one.hdf" dmrpp:href="data/sds_two_linked_blocks_merged_one.hdf" dmrpp:version="3.22.0">
+    <Dimension name="fakeDim0" size="4"/>
+    <Dimension name="fakeDim1" size="2"/>
+    <Int32 name="temperature">
+        <Dim name="/fakeDim0"/>
+        <Dim name="/fakeDim1"/>
+        <Attribute name="dmr_sds_ref" type="Int32">
+            <Value>2</Value>
+        </Attribute>
+        <dmrpp:chunks byteOrder="BE">
+            <dmrpp:chunk offset="2776" nBytes="32" chunkPositionInArray="[0,0]"/>
+        </dmrpp:chunks>
+    </Int32>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2026-09-24T19:31:20Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.22.0</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.22.0</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>./build_dmrpp_h4 -f sds_two_linked_blocks_merged_one.hdf -r sds_two_linked_blocks_merged_one.hdf.dmr -u data/sds_two_linked_blocks_merged_one.hdf -M</Value>
+        </Attribute>
+        <Attribute name="configuration" type="String">
+            <Value>H4.EnableCF=false</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

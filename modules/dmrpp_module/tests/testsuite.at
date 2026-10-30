@@ -404,6 +404,11 @@ AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_compound_simple_array_fix_str_
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_compound_simple_array_fix_str.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([contiguous/t_compound_array_fix_vlen_str.h5.dap])
 
+# UTF-8 variable-length string array
+AT_BESCMD_BINARY_DAP2_RESPONSE_TEST([contiguous/utf8_vlen_str.h5.dods])
+# Will use getdap4 -D -M instead of getdap4 -C -D -M
+AT_BESCMD_BINARY_DAP4_RESPONSE_TEST2([contiguous/utf8_vlen_str.h5.dap])
+
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_high_comp_one_chunk.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_high_comp_one_chunk_naligned.h5.dap])
 AT_BESCMD_BINARY_DAP4_RESPONSE_TEST([chunked/compound_high_comp_two_chunks.h5.dap])

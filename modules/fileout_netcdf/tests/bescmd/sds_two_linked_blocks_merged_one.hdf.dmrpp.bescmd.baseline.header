@@ -1,0 +1,18 @@
+netcdf test {
+dimensions:
+	fakeDim0 = 4 ;
+	fakeDim1 = 2 ;
+variables:
+	int temperature(fakeDim0, fakeDim1) ;
+		temperature:dmr_sds_ref = 2 ;
+
+// global attributes:
+		:build_dmrpp_metadata.created = "removed date-time" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.22.0" ;
+		:build_dmrpp_metadata.bes = "3.22.0" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
+		:build_dmrpp_metadata.invocation = "./build_dmrpp_h4 -f sds_two_linked_blocks_merged_one.hdf -r sds_two_linked_blocks_merged_one.hdf.dmr -u data/sds_two_linked_blocks_merged_one.hdf -M" ;
+		:build_dmrpp_metadata.configuration = "H4.EnableCF=false" ;
+		:history = "removed date-timex sds_two_linked_blocks_merged_one.hdf.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"sds_two_linked_blocks_merged_one.hdf.dmrpp\"}]}]" ;
+}

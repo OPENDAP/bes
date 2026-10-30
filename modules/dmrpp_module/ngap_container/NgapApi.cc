@@ -43,6 +43,7 @@
 
 #include "NgapApi.h"
 #include "NgapNames.h"
+#include "NgapServiceChaining.h"
 
 using namespace std;
 
@@ -90,8 +91,7 @@ string NgapApi::build_cmr_query_url_old_rpath_format(const string &restified_pat
     if (provider_index != 0) {
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
-        msg << " has the path element '" << NGAP_PROVIDERS_KEY << "' located in the incorrect position (";
-        msg << provider_index << ") expected 0.";
+        msg << " has the path element '" << NGAP_PROVIDERS_KEY << "' located in the incorrect position, expected 0.";
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
     provider_index += string(NGAP_PROVIDERS_KEY).size();
@@ -133,8 +133,7 @@ string NgapApi::build_cmr_query_url_old_rpath_format(const string &restified_pat
     if (granule_index <= collection_index + 1) { // The value of collection must have at least one character.
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
-        msg << " has the path element '" << NGAP_GRANULES_KEY << "' located in the incorrect position (";
-        msg << granule_index << ") expected at least " << collection_index + 1;
+        msg << " has the path element '" << NGAP_GRANULES_KEY << "' located in the incorrect position,";
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
     string collection = r_path.substr(collection_index, granule_index - collection_index);
@@ -222,8 +221,8 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
     if (collections_key_index != 0) {  // The COLLECTIONS_KEY comes first
         stringstream msg;
         msg << prolog << "The specified path '" << r_path << "'";
-        msg << " has the path element '" << NGAP_COLLECTIONS_KEY << "' located in the incorrect position (";
-        msg << collections_key_index << ") expected at least " << provider_index + 1;
+        msg << " has the path element '" << NGAP_COLLECTIONS_KEY << "' located in the incorrect position,";
+        msg << " expected at least " << provider_index + 1;
         throw BESSyntaxUserError(msg.str(), __FILE__, __LINE__);
     }
     // This is now the beginning of the collection_concept_id value.
@@ -499,15 +498,17 @@ NgapApi::DataAccessUrls NgapApi::convert_ngap_resty_path_to_data_access_urls(con
 
     string cmr_json_string;
     try {
-        BES_PROFILE_TIMING(string("Request granule record from CMR - ") + cmr_query_url);
+        BES_DBG_PROFILE_TIMING(string("Request granule record from CMR - ") + cmr_query_url);
         // We know that CMR is an EDL authenticated situation, so we create those headers
         // (if available) and pass them into the http_get() call
         curl::http_get(cmr_query_url, cmr_json_string, curl::add_edl_auth_headers(nullptr));
     }
     catch (http::HttpError &http_error) {
-        string err_msg = prolog + "Hyrax encountered a Service Chaining Error while "
-                         "attempting to retrieve a CMR record. " + http_error.get_message();
-        http_error.set_message(err_msg);
+        if (is_http_5xx(http_error.http_status()))
+            add_service_chaining_message(http_error, prolog, "attempting to retrieve a CMR record.");
+        else
+            http_error.set_message(prolog + "Error while attempting to retrieve a CMR record. "
+                                   + http_error.get_message());
         throw;
     }
 

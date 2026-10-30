@@ -99,3 +99,7 @@ H4.EnableDirectDMR=true
 # H4.EnableCF=true
 # H4.DisableStructMetaAttr=true
 # H4.EnableVdata_to_Attr=true
+
+# For the dmrpp tests, keep the original setting by using buffer chunk and sequential data transfer.
+DMRPP.UseBufferChunk= true
+DMRPP.UseParallelTransfers=false

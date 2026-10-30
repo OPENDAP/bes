@@ -323,8 +323,12 @@ valgrind besstandalone -c tests/bes.nc4.grp.disable_dio.conf -i tests/bescmd/One
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/multi_fvalue.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.conf -i tests/bescmd/multi_fvalue_dap2_nc4.h5.bescmd>test.nc
 
-#odd-chunk-sizes
+#odd-chunk-sizes (also includes different configuration)
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_odd_chunk_size.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.dmrpp.superchunk.conf -i tests/bescmd/h5_odd_chunk_size.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.p.transfer.conf -i tests/bescmd/h5_odd_chunk_size.h5.dmrpp.bescmd>test.nc
+valgrind besstandalone -c tests/bes.nc4.grp.dmrpp.superchunk.p.transfer.conf -i tests/bescmd/h5_odd_chunk_size.h5.dmrpp.bescmd>test.nc
+
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_less_odd_chunk_size_comp.h5.dmrpp.bescmd>test.nc
 valgrind besstandalone -c tests/bes.nc4.grp.conf -i tests/bescmd/h5_odd_chunk_size_comp_constraint.h5.dmrpp.bescmd>test.nc
 

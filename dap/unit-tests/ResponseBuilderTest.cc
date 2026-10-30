@@ -76,6 +76,7 @@
 #include "BESDDSResponse.h"
 #include "BESDataDDSResponse.h"
 #include "BESDataHandlerInterface.h"
+#include "BESSyntaxUserError.h"
 #include "RequestServiceTimer.h"
 
 #include "test_utils.h"
@@ -98,6 +99,8 @@ static bool debug_2 = false;
 #define BES_DATA_ROOT "BES.Data.RootDirectory"
 #define BES_CATALOG_ROOT "BES.Catalog.catalog.RootDirectory"
 #define BES_CANCEL_TIMEOUT_ON_SEND "BES.CancelTimeoutOnSend"
+#define BES_MAX_VAR_SIZE_KEY "BES.MaxVariableSize.bytes"
+#define BES_MAX_RESPONSE_SIZE_KEY "BES.MaxResponseSize.bytes"
 
 #define MODULE "dap"
 #define plog std::string("ResponseBuilderTest::").append(__func__).append("() - ")
@@ -318,6 +321,10 @@ public:
         d4_btf = 0;
         delete test_01_dmr;
         test_01_dmr = 0;
+
+        // Restore the 'no limit' defaults used by the size-check tests.
+        TheBESKeys::TheKeys()->set_key(BES_MAX_VAR_SIZE_KEY, "0");
+        TheBESKeys::TheKeys()->set_key(BES_MAX_RESPONSE_SIZE_KEY, "0");
         DBG2(cerr << plog << "END" << endl);
     }
 
@@ -788,6 +795,70 @@ public:
     }
 
 
+    // ---- ignore_check_too_big tests ----
+
+    void ignore_check_too_big_accessor_test()
+    {
+        DBG(cerr << endl << plog << "BEGIN" << endl);
+        BESDapResponseBuilder rb;
+        CPPUNIT_ASSERT_MESSAGE("The default should be false", !rb.get_ignore_check_too_big());
+        rb.set_ignore_check_too_big(true);
+        CPPUNIT_ASSERT(rb.get_ignore_check_too_big());
+        rb.set_ignore_check_too_big(false);
+        CPPUNIT_ASSERT(!rb.get_ignore_check_too_big());
+        DBG(cerr << plog << "SUCCEED" << endl);
+        DBG(cerr << plog << "END" << endl);
+    }
+
+    // test_01.dmr has e.g. Float64 g[3][4] (96 bytes), so a 10 byte limit must trip.
+    void dap4_too_big_throws_test()
+    {
+        DBG(cerr << endl << plog << "BEGIN" << endl);
+        TheBESKeys::TheKeys()->set_key(BES_MAX_VAR_SIZE_KEY, "10");
+        DBG(cerr << plog << "Set maximum variable size to 10 bytes." << endl);
+        drb->set_dap4ce("");    // empty CE: every variable is marked to send
+        DBG(cerr << plog << "At least one variable size is 96 bytes, so should throw." << endl);
+        CPPUNIT_ASSERT_THROW(drb->dap4_process_ce_for_intern_data(*test_01_dmr), BESSyntaxUserError);
+        DBG(cerr << plog << "SUCCEED" << endl);
+        DBG(cerr << plog << "END" << endl);
+    }
+
+    void dap4_too_big_ignored_test()
+    {
+        DBG(cerr << endl << plog << "BEGIN" << endl);
+        TheBESKeys::TheKeys()->set_key(BES_MAX_VAR_SIZE_KEY, "10");
+        TheBESKeys::TheKeys()->set_key(BES_MAX_RESPONSE_SIZE_KEY, "10");
+        drb->set_dap4ce("");
+        DBG(cerr << plog << "Set the ignore check flag true" << endl);
+        drb->set_ignore_check_too_big(true);
+        CPPUNIT_ASSERT_NO_THROW(drb->dap4_process_ce_for_intern_data(*test_01_dmr));
+        DBG(cerr << plog << "SUCCEED" << endl);
+        DBG(cerr << plog << "END" << endl);
+    }
+
+    // test.05.ddx has Int32/UInt32/Float64 scalars (4 or 8 bytes), so a 2 byte limit must trip.
+    void dap2_too_big_throws_test()
+    {
+        DBG(cerr << endl << plog << "BEGIN" << endl);
+        TheBESKeys::TheKeys()->set_key(BES_MAX_VAR_SIZE_KEY, "2");
+        test_05_dds->mark_all(true);
+        CPPUNIT_ASSERT_THROW(drb->throw_if_too_big(*test_05_dds, __FILE__, __LINE__), BESSyntaxUserError);
+        DBG(cerr << plog << "SUCCEED" << endl);
+        DBG(cerr << plog << "END" << endl);
+    }
+
+    void dap2_too_big_ignored_test()
+    {
+        DBG(cerr << endl << plog << "BEGIN" << endl);
+        TheBESKeys::TheKeys()->set_key(BES_MAX_VAR_SIZE_KEY, "2");
+        TheBESKeys::TheKeys()->set_key(BES_MAX_RESPONSE_SIZE_KEY, "2");
+        test_05_dds->mark_all(true);
+        drb->set_ignore_check_too_big(true);
+        CPPUNIT_ASSERT_NO_THROW(drb->throw_if_too_big(*test_05_dds, __FILE__, __LINE__));
+        DBG(cerr << plog << "SUCCEED" << endl);
+        DBG(cerr << plog << "END" << endl);
+    }
+
     void dummy_test(){
         DBG(cerr << endl << plog << "BEGIN" << endl);
         DBG(cerr << plog << "NOTHING WILL BE DONE." << endl);
@@ -810,6 +881,12 @@ public:
         CPPUNIT_TEST(invoke_server_side_function_test);
 #endif
         CPPUNIT_TEST(dummy_test);
+
+        CPPUNIT_TEST(ignore_check_too_big_accessor_test);
+        CPPUNIT_TEST(dap4_too_big_throws_test);
+        CPPUNIT_TEST(dap4_too_big_ignored_test);
+        CPPUNIT_TEST(dap2_too_big_throws_test);
+        CPPUNIT_TEST(dap2_too_big_ignored_test);
 
 #if 0
         // FIXME These tests have baselines that rely on hash values that are
