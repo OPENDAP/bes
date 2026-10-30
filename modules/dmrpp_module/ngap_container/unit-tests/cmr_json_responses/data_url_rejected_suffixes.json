@@ -1,0 +1,30 @@
+{
+  "hits" : 1,
+  "took" : 1,
+  "items" : [ {
+    "umm" : {
+      "RelatedUrls" : [ {
+        "Type" : "GET DATA",
+        "URL" : "https://data.example/granule.nc.dmrpp"
+      }, {
+        "Type" : "GET DATA",
+        "URL" : "https://data.example/granule.cmr.xml"
+      }, {
+        "Type" : "GET DATA",
+        "URL" : "s3://bucket/granule.nc.dmrpp"
+      }, {
+        "Type" : "GET DATA",
+        "URL" : "s3://bucket/granule.cmr.xml"
+      }, {
+        "Type" : "GET DATA",
+        "URL" : "https://data.example/granule.nc"
+      }, {
+        "Type" : "GET DATA",
+        "URL" : "s3://bucket/granule.nc"
+      }, {
+        "Type" : "VIEW RELATED INFORMATION",
+        "URL" : "https://data.example/s3credentials"
+      } ]
+    }
+  } ]
+}

@@ -1,10 +1,6 @@
-# CLAUDE.md
+# CLAUDE.md — `bes`
 
-Guidance for Claude Code when working in the `bes` repository.
-
-## What this repo is
-
-The BES (Back-End Server) is the lower two tiers of Hyrax, OPeNDAP's three-tier data server:
+**What this project is:** This is the Back End Server for Hyrax, an OPeNDAP data server.
 
 1. **OLFS** (front end, Java, separate repo: github.com/opendap/olfs). Implements the DAP2/DAP4 web API and talks to the BES over PPT.
 2. **BES framework** (this repo). A Unix daemon (`besdaemon` → `beslistener`) that parses BES XML requests, dispatches them to plugin modules, and streams responses back.
@@ -12,95 +8,160 @@ The BES (Back-End Server) is the lower two tiers of Hyrax, OPeNDAP's three-tier 
 
 Most DAP2/DAP4 protocol code comes from **libdap4** (github.com/opendap/libdap4), an external dependency. Third-party libraries come from **hyrax-dependencies**.
 
-- Language: C++14. Do not use features from C++17 or later.
-- The codebase is long-lived and has downstream users. Prefer stability, compatibility, and small reviewable diffs.
-- Ignore `retired/`.
+This repo plans work from written requirements, not from conversation memory or
+assumption. Requirements, use cases, and constraints live in `docs/`. Plans that
+Claude produces live in `plans/`. Every plan traces back to written IDs: a feature
+plan cites FR/NFR/UC/IC IDs, a bugfix plan cites a `BUG-###`, a task plan cites a
+`TASK-###` (bugfix and task plans may legitimately cite no FR/NFR/UC). If a *feature*
+request has no requirement backing it, that's a signal to add one — not to infer one
+silently.
 
-## Layout
+## Read before planning anything
 
-| Path | Contents |
-| --- | --- |
-| `dispatch/` | Core framework: registries, `BESDataHandlerInterface`, request/response handlers, containers, catalogs, caching, errors, logging (`BESLog`), debug (`BESDEBUG`), module loading (`BESModuleApp`) |
-| `xmlcommand/` | Parses `<request>` documents into command objects |
-| `ppt/` | PPT socket protocol between OLFS and BES |
-| `server/` | `besdaemon` (supervisor), `beslistener` (`ServerApp`), `besctl`, `hyraxctl` |
-| `standalone/` | `besstandalone`, an in-process BES with no network layer; used by most tests |
-| `cmdln/` | `bescmdln` client |
-| `http/` | Shared HTTP/curl client code, credentials, effective-URL cache |
-| `aws/` | AWS SDK wrapper (built only when the SDK is enabled) |
-| `dap/` | DAP2/4 response handlers built on libdap |
-| `dapreader/` | Module that reads DAP response files directly; used in tests |
-| `modules/` | All standard Hyrax modules, plus `modules/common/` shared test macros |
-| `hello_world/`, `templates/` | Example module and templates for new modules |
-| `conf/` | autoconf macros (`bes.m4`, etc.) |
-| `docs/` | Design docs, plans, and work logs |
-| `pugixml/`, `rapidjson/`, `nlohmann/` | Vendored third-party code. Do not edit. |
+| File / folder | Holds |
+|---|---|
+| `docs/requirements/functional-requirements.md` | What the system must do — `FR-###` |
+| `docs/requirements/non-functional-requirements.md` | Quality attributes & targets — `NFR-###` |
+| `docs/requirements/use-cases.md` | Actor-driven flows — `UC-###` |
+| `docs/constraints/implementation-constraints.md` | Hard boundaries on *how* — `IC-###` |
+| `docs/decisions/DECISIONS.md` | Why past calls were made — `ADR-###` |
+| `docs/bugs/BUG-LOG.md` | Deviations from intended behavior, report through root cause — `BUG-###` |
+| `docs/tasks/TASK-LOG.md` | Scoped maintenance/engineering work not tied to a feature or bug — `TASK-###` |
+| `docs/deep-dives/` | Persisted findings from code investigations, one file per question |
+| `plans/` | Output: one plan file per feature or bug fix, each citing the IDs above |
 
-`modules/hdf4_handler` and `modules/hdf5_handler` are git subtrees (see `subtrees`). Coordinate changes there with the upstream repos.
+Read the requirement and constraint docs **in full** before drafting or revising a
+plan — don't rely on what they said earlier in the session, they may have changed.
+Also check `docs/decisions/DECISIONS.md` for any accepted ADR the design would
+contradict (flag it the way you'd flag an IC tension), and look in `docs/deep-dives/`
+for an existing note on the area before investigating it again.
 
-To learn the architecture, start with `docs/BES_Overview.md`, then read `docs/BES_Framework.md`, `docs/BES_Modules.md`, `docs/BES_Configuration.md`, and `docs/BES_Creating_New_Modules.md`.
+- Ignore `_EXAMPLE_` / `*-EXAMPLE` placeholder entries — they show the format; they
+  are not requirements.
+- Don't plan against a `Deprecated` entry; follow `Superseded by` to its replacement.
+  Call out any `Proposed` entry as not yet confirmed rather than treating it as settled.
 
-### Request flow (short version)
+## ID conventions
 
-`beslistener` / `besstandalone` → `BESModuleApp` loads the modules listed in `BES.modules` → `BESXMLInterface` parses the request into commands → each command fills a `BESDataHandlerInterface` → a `BESResponseHandler` (looked up by action name) builds the response object, calling the `BESRequestHandler` registered for the container's type → a `BESTransmitter` streams the result.
+- IDs are `PREFIX-###`, zero-padded to 3 digits, assigned sequentially, **never reused
+  or renumbered**. If a requirement is dropped, mark it `Status: Superseded by FR-0XX`
+  or `Status: Deprecated` — don't delete the row. History is part of why traceability
+  works.
+- Prefixes: `FR` functional requirement, `NFR` non-functional requirement, `UC` use
+  case, `IC` implementation constraint, `ADR` architecture/design decision, `BUG` a
+  logged deviation from intended behavior, `TASK` a scoped maintenance/engineering
+  task that is neither new capability nor a correction.
+- Every plan phase or major step should cite the ID(s) it satisfies, e.g. `(FR-012,
+  UC-003)`. A step with no citation is either scope creep or an uncaptured
+  requirement — flag it, don't quietly do it.
+- `BUG-###` is a different kind of ID from the rest: it doesn't describe intended
+  behavior, it describes a *violation* of it (against an existing FR/NFR/UC where one
+  exists, or against an undocumented assumption when it doesn't). Don't force a bug
+  into a feature plan's shape — see `plans/_template-bugfix.md`.
+- `TASK-###` is a third kind of ID: neither new capability like an FR/NFR/UC nor a
+  correction like a BUG — scoped engineering work (dependency bumps, removing dead
+  code or stale compile-time directives, retrofitting tests onto code that predates
+  them) that doesn't need requirement backing to be legitimate. Don't force it into
+  a feature or bugfix plan's shape — see `plans/_template-task.md`.
 
-Modules register their handlers in `initialize()` and remove them in `terminate()`.
+## The core discipline: don't invent
 
-## Build (autotools only)
+- If you can't find a requirement backing a feature request, say so and offer to run
+  `/new-requirement` rather than writing a plausible-sounding requirement yourself.
+  A plan built on an invented requirement looks identical to one built on a real one
+  until it's too late to matter.
+- If a field is unknown during an interview (priority, target metric, actor), leave
+  it as `TBD` rather than guessing. A gap is honest; a plausible guess reads as fact
+  later.
+- If a proposed plan would violate an implementation constraint (`IC-###`), **say so
+  explicitly** and ask how to proceed. Don't silently comply with the constraint by
+  redesigning around it without flagging the tension, and don't silently ignore it.
 
-Ignore the top-level `CMakeLists.txt`. It is a relic.
+## Filling in templates and logs
 
-```sh
-# prefix must be set; for this checkout it is normally ../build (as an absolute path)
-autoreconf --force --install --verbose        # fresh checkout only
-./configure --prefix="$prefix" --with-dependencies="$prefix/deps" --enable-developer
-make -j20
-make check
-```
+When you create a plan or log entry from a template: set `Status` to the single
+starting value (`Draft` for plans, `Open` for bug and task log entries) — never copy the `A | B | C`
+option list; set `Created` / dates to today's actual date (run `date +%F` if you
+don't have it — never guess); and leave genuinely unknown fields `TBD`.
 
-- `--enable-developer` turns on debug and assertion behavior. Release builds define `NDEBUG`, which compiles `BESDEBUG` out. When you change assertions or diagnostics, consider both kinds of build.
-- Other configure options: `--enable-asan`, `--enable-coverage`, `--without-cmr`, `--without-ngap`, `--without-s3`, `--with-gdal=`, `--with-aws`.
-- Modules are built only when configure finds their dependencies. Check `modules/configured_features.txt` to see what was enabled.
-- Edit `configure.ac` and `Makefile.am`, not generated `configure`, `Makefile.in`, or `config.h.in`.
+## Custom commands available in this repo
 
-## Testing
+| Command | Does |
+|---|---|
+| `/init-planning` | First-time setup: interviews you and seeds the requirement docs for an existing or new codebase |
+| `/plan-feature <name or description>` | Reads the requirement docs, drafts a phased implementation plan in `plans/`, citing IDs throughout |
+| `/fix-bug <description or BUG-###>` | Logs a bug (or resumes one), investigates root cause read-only, drafts a bugfix plan |
+| `/deep-dive <area or question>` | Read-only investigation of existing code; checks it against the requirement docs and saves findings |
+| `/new-requirement` | Interviews you to add a new FR / NFR / UC / IC entry with the next sequential ID |
+| `/plan-task <description or TASK-###>` | Logs a maintenance/engineering task (or resumes one) and drafts a plan for it |
+| `/trace <ID>` | Reports everywhere an ID is referenced — docs, plans, code — and flags orphaned requirements |
+| `/audit-plan <plan file>` | Checks a plan's ID citations against the requirement docs; reports gaps and coverage, changes nothing |
 
-There are two kinds of tests.
+The `requirements-reviewer` subagent (`.claude/agents/`) reviews the requirement and
+constraint docs for vague, untestable, conflicting, or dangling entries. Use it when
+asked to review or tighten those docs — it reports findings and never edits.
 
-- **Unit tests**: CppUnit, in `*/unit-tests/`. Run them with `make check` in that directory. Most test binaries accept `-d` (debug) and can run a single test by name. See the `main()` in each test file.
-- **Integration tests**: GNU autotest, in `*/tests/` and `bes-autotest/`. Each test is a `.bescmd` XML request run through `besstandalone` and diffed against a baseline. The shared macros are in `modules/common/handler_tests_macros.m4`.
-  - Run all of them: `make check` in the tests directory.
-  - Run one: `./testsuite -k <keyword>` or `./testsuite <N>`. Add `-v` (verbose) or `-d` (keep the test directory).
-  - Regenerate a baseline: `./testsuite --baselines=yes <N>`. This writes `<baseline>.tmp`. Review it before you replace the baseline. Never bulk-regenerate baselines to make failures go away.
-- `make distcheck` is a supported validation path. Run it when you change build, packaging, or install behavior.
-- If parallel `make check -jN` causes failures, rerun serially and say so.
+## Conventions — C++ (Autoconf / Automake / Libtool, Autotest + CppUnit)
 
-## Conventions
+**Stack:** C++14 on Linux and macOS, built with Autoconf, Automake, and Libtool, tested
+with CppUnit (unit tests) and Autotest (integration and baseline tests), all driven by
+`make check`. Compilers/platforms: GCC 9+ and Clang 12+ on Linux; Apple Clang on macOS
+(arm64 + x86_64). Bump past C++14 only after checking every target compiler supports it.
 
-- Match the style already in the file you touch. Do not reformat unrelated code.
-- Errors: throw `BESInternalError`, `BESSyntaxUserError`, `BESNotFoundError`, `BESForbiddenError`, and so on, with `__FILE__, __LINE__`. Libdap `Error`s are translated in `dap/`.
-- Debug output: `BESDEBUG("<context>", ...)`. The context name is usually the module name.
-- Configuration is read through `TheBESKeys`. If you add or change a key, update the `.conf.in` template and say what this changes at runtime.
-- Be conservative with ownership and lifetimes in older pointer-heavy code. Avoid changes that affect the API or ABI (`abi_checker.xml`) unless they are requested.
-- High-risk areas: protocol and response behavior, server startup and configuration, installed layout, packaging, `besd`, and systemd files.
+Detailed rules live in `.claude/rules/build-autotools.md` (`configure.ac`, `Makefile.am`,
+`conf/`, `*.in`) and `.claude/rules/testing.md` (`unit-tests/`, `tests/`, `*.at`,
+baselines); they load when you work on matching files.
 
-## CI
+### Build & test essentials
 
-- `.travis.yml`: autotools build, `make check`, `make distcheck`, coverage, and Docker images (`Dockerfile`, `travis/build-rhel-docker.sh`).
-- `.github/workflows/`: macOS builds (Intel and ARM64).
-- CI uses `--disable-dependency-tracking --with-dependencies=$prefix/deps --enable-developer`. Do not hardcode local paths into CI or Docker files.
+- `make check` from the top of the build tree runs every test; `make distcheck` must
+  pass. A test that `make check` doesn't run doesn't exist.
+- Never commit generated files (`configure`, `Makefile.in`, `config.h`, `testsuite`,
+  `package.m4`, `atlocal`, ...); regenerate with `autoreconf -fiv`.
+- The `-std=` flag and build modes come from configure (`--enable-developer`,
+  `--enable-asan`, `--enable-coverage`). Don't hardcode `-std=` or assign `CPPFLAGS` /
+  `CXXFLAGS` / `LDFLAGS` in a `Makefile.am`.
+- Baselines change only via `./testsuite --baselines=yes`; never hand-edit one.
+- New logic isn't done without a test. A bug fix isn't done without a regression test
+  that fails before the fix and passes after.
+- `clang-format` (`.clang-format` at the repo root) is the formatting source of truth.
 
-## Working rules
+### Language & style
 
-- Write docs, plans, and work logs as Markdown in `docs/`.
-- Say exactly what validation you ran and what you did not run. Name any external prerequisites the work depends on, such as libdap, hyrax-dependencies, AWS, or system packages.
-- Do not make up data. Be concise and critical.
-- Do not revert unrelated changes in a dirty worktree. Do not run destructive git commands unless you are asked to.
+- C++14 only: no `std::optional`, `std::variant`, `std::string_view`,
+  `std::filesystem`, structured bindings, or `if constexpr`. Needing one is an ADR, not
+  a quiet workaround.
+- Errors: BES code throws the `BESError` subclasses (`BESInternalError`,
+  `BESSyntaxUserError`, `BESNotFoundError`, `BESForbiddenError`, ...; `BESError`
+  derives from `std::exception`); libdap code throws `libdap::Error`. Throw by value,
+  catch by `const&`. Never let an exception escape a callback invoked from C (libcurl,
+  libxml2, HDF5, ...) or a thread. Don't use exceptions for routine not-found or
+  end-of-input.
+- New code uses RAII and `std::unique_ptr` for owned memory, `std::string` over
+  `char*`, and no `strcpy` / `sprintf` / `gets`. Existing code and libdap APIs (e.g.
+  `add_var_nocopy`) pass ownership through raw pointers: follow the API's ownership
+  contract and don't rewrite surrounding ownership patterns in passing — that's a
+  `TASK-###`.
+- `<cstdint>` fixed-width types for file and wire formats; never read or write binary
+  data by casting a struct or pointer.
+- Headers are self-contained and never contain `using namespace`.
 
-## Writing Documents
+### Portability (Linux & macOS)
 
-- For all documents you write, use markdown and store them in the `docs` directory
-- For all work, write a log explaining your reasoning unless explicitly told otherwise
-- In the work log, start each new set of entries with a date/time stamp
-- In the work log, include the query/prompt leading to the work
-- For a plan, write the plan to a markdown document unless explicitly told otherwise
+- Standard C++ and POSIX only. Anything available on just one OS (`<endian.h>`,
+  `<malloc.h>`, `strlcpy`, `qsort_r`, `memrchr`, GNU-vs-XSI `strerror_r`, ...) goes
+  behind a small wrapper in one file, with `#if defined(__linux__)` /
+  `#if defined(__APPLE__)` branches (or an Autoconf `HAVE_FOO` check), each exercised by
+  a test.
+- Plain `char` signedness differs across platforms; use `signed char`, `unsigned char`,
+  or `uint8_t` where it matters.
+- No GNU-only compiler extensions (statement expressions, VLAs, bare `__attribute__`).
+- macOS filesystems are usually case-insensitive and Linux's aren't: `#include` paths
+  and file names must match case exactly.
+
+### Goals, not yet enforced
+
+`-Wextra` in developer builds and an opt-in `--enable-werror`; a committed
+`.clang-tidy` that runs clean; a Doxygen comment on every public function in an
+installed header. None of these is in place yet — don't enforce them or add the
+tooling unless asked.
