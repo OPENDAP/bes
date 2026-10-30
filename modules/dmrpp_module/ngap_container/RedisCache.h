@@ -2,8 +2,6 @@
 
 // This file was originally part of bes, A C++ back-end server
 // implementation framework for the OPeNDAP Data Access Protocol.
-// Copied to libdap. This is used to cache responses built from
-// functional CE expressions.
 
 // Copyright (c) 2026 OPeNDAP, Inc
 // Author: Kodi Neumiller <kneumiller@opendap.org>
@@ -32,35 +30,36 @@
 #include <cstdint>
 #include <memory>
 #include <string>
-
-#include <hiredis/hiredis.h>
+#include <sys/types.h>
 
 #include "BESLog.h"
 #include "BESUtil.h"
 
 // Make all the error log messages uniform in one small way. This is taken from
-// FileCache.h and done so that we can switch to exceptions if that seems necessary. kln 09/24/26
-#define ERROR(msg) ERROR_LOG("RedisCache: " + std::string(msg))
-#define INFO(msg) INFO_LOG("RedisCache: " + std::string(msg))
+// FileCache.h and done so that we can switch to exceptions if that seems necessary.
+#define REDIS_ERROR(msg) ERROR_LOG("RedisCache: " + std::string(msg))
+#define REDIS_INFO(msg) INFO_LOG("RedisCache: " + std::string(msg))
+
+struct redisContext;
 
 /* RedisCache is designed to be called in place of FileCache
  * which means some variables and calls may share the same name so that they can be interchangeable */
 class RedisCache {
-private:
     // pathname of the cache directory
     std::string d_cache_dir;
 
-    /// How many bytes can the cache hold before we have to purge?
-    /// A value of zero indicates a cache of unlimited size.
+    // How many bytes can the cache hold before we have to purge?
+    // A value of zero indicates a cache of unlimited size.
     unsigned long long d_max_cache_size_in_bytes = 0;
 
-    // When we purge, how much should we throw away. Set in the ctor to 80% of the max size.
+    // When we purge, how much should we throw away. Set to purge_size passed in from initialize().
     unsigned long long d_purge_size = 0;
 
     // Variables specific to RedisCache
     std::string d_redis_host;
     int d_redis_port = 6379;
     int d_redis_db = 0;
+    pid_t d_redis_pid = -1;
     std::string d_namespace;
     redisContext *d_redis = nullptr;
 
@@ -125,8 +124,6 @@ private:
 
     void release_eviction_lock(const std::string &key);
 
-    static uint64_t get_file_size(int fd);
-
     friend class RedisCacheTest;
 
 public:
@@ -163,42 +160,7 @@ public:
                 d_key(std::move(key)),
                 d_locked(true) {}
 
-                virtual ~Item();
-
-        int get_fd() const {
-            return d_fd;
-        }
-
-        void set_fd(int fd) {
-            d_fd = fd;
-        }
-
-        void set_lock(RedisCache *cache, const std::string &key)
-        {
-            d_cache = cache;
-            d_key = key;
-            d_locked = true;
-        }
-    };
-
-    /* Keeps the Redis write lock until the object goes out of scope.
-     * Once writing completes, metadata such as size and LRU information
-     * can be updated. */
-    class PutItem {
-    private:
-        int d_fd = -1;
-
-        RedisCache *d_cache = nullptr;
-        std::string d_key;
-        bool d_locked = false;
-
-    public:
-        PutItem() = default;
-
-        PutItem(const PutItem &) = delete;
-        PutItem &operator=(const PutItem &) = delete;
-
-        virtual ~PutItem();
+        virtual ~Item();
 
         int get_fd() const {
             return d_fd;
@@ -225,7 +187,7 @@ public:
      * @param redis_db: Redis logical database.
      * @param name_space: Prefix used for all Redis keys.
      * @param size: Maximum cache size in bytes. Zero means unlimited.
-     * @param purge_size: Target cache size after purge.
+     * @param purge_size: Bytes to remove when the cache is purged.
      */
     virtual bool initialize(
             const std::string &cache_dir,
@@ -236,29 +198,18 @@ public:
             long long size,
             long long purge_size);
 
-    // Copy file_name into the cache under key.
-    bool put(const std::string &key, const std::string &file_name);
-
-    // Store the supplied data under key.
+    // Store the supplied data under key
     bool put_data(const std::string &key, const std::string &data);
 
-    // Create a new cache file and return it locked for writing.
-    bool put(const std::string &key, PutItem &item);
-
-    // Get a cache item and hold a Redis-backed shared/read lock
-    // until Item is destroyed.
+    // Get a cache item and hold a Redis-backed shared/read lock until Item is destroyed
     bool get(const std::string &key, Item &item);
 
-    // Delete an item if it is not currently being read/written.
-    bool del(const std::string &key, bool block = false);
-
-    //Remove all cached files and Redis metadata for this namespace.
+    //Remove all cached files and Redis metadata for this namespace
     bool clear();
 
-    //Purge least-recently-used entries until the target size is reached.
+    //Purge least-recently-used entries once the cache is full
     bool purge();
 
-    // Return current Redis-tracked cache size.
     uint64_t size() const {
         return get_cache_size();
     }

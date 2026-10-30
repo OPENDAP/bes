@@ -168,14 +168,14 @@ NgapOwnedContainer::NgapOwnedContainer(const string &sym_name, const string &rea
             TheBESKeys::read_ulong_key(DMRPP_FILE_CACHE_SPACE, NgapOwnedContainer::d_dmrpp_file_cache_purge_size_mb);
 
         // Set up the redis cache if it is enabled. kln 10/27/26
-        #ifdef ENABLE_REDIS_CACHEZ
+        #ifdef ENABLE_REDIS_CACHE
         const std::string redis_host = TheBESKeys::read_string_key("BES.RedisCache.Host", "127.0.0.1");
         const std::string redis_cache_dir = TheBESKeys::read_string_key("BES.RedisCache.Directory", "/mnt/shared/bes-cache");
 
         if (!NgapOwnedContainer::d_dmrpp_redis_cache.initialize(
                 redis_cache_dir,
                 redis_host,
-                6379,
+                TheBESKeys::read_int_key("BES.RedisCache.Port", 6379),
                 0,
                 "ngap-dmrpp",
                 NgapOwnedContainer::d_dmrpp_file_cache_size_mb,
@@ -404,10 +404,10 @@ bool NgapOwnedContainer::get_item_from_dmrpp_cache(string &dmrpp_string) const {
 }
 
 bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string) const {
-    const std::string key = FileCache::hash_key(get_real_name());
-
     // Use Redis Cache if enabled, otherwise default to File Cache put
     #ifdef ENABLE_REDIS_CACHE
+    const std::string key = RedisCache::hash_key(get_real_name());
+
     if (NgapOwnedContainer::d_dmrpp_redis_cache.put_data(key, dmrpp_string)) {
         CACHE_LOG(prolog + "Redis Cache put, DMR++: " + get_real_name() + '\n');
     } else {
@@ -419,6 +419,8 @@ bool NgapOwnedContainer::put_item_in_dmrpp_cache(const std::string &dmrpp_string
         ERROR_LOG(prolog + "Call to RedisCache::purge() failed\n");
     }
     #else
+    const std::string key = FileCache::hash_key(get_real_name());
+
     if (NgapOwnedContainer::d_dmrpp_file_cache.put_data(key, dmrpp_string)) {
         CACHE_LOG(prolog + "File Cache put, DMR++: " + get_real_name() + '\n');
     } else {
