@@ -22,6 +22,7 @@ Priority: `Must` / `Should` / `Could` (MoSCoW). Status: `Proposed` / `Approved` 
 | FR-009 | NGAP container: the s3credentials (TEA) URL is the first `RelatedUrls` entry with `Type` `VIEW RELATED INFORMATION` and a URL that starts with `http://` or `https://` and ends in `s3credentials` | Must | TBD | Implemented |
 | FR-010 | NGAP container: a granule with no https data URL is reported as an error; a missing S3 or s3credentials URL does not fail the request | Must | TBD | Implemented |
 | FR-011 | NGAP container: the DMR++ for a granule is located by appending `.dmrpp` to its selected https data URL (FR-007) and, when present, to its S3 data URL (FR-008) | Must | TBD | Implemented |
+| FR-012 | DMR++ handler: when the chunk layout in a DMR++ would place data outside the variable's value buffer, the handler throws a `BESInternalError` and copies none of that chunk. At minimum this covers (a) a chunk `chunkPositionInArray` beyond the variable's dimension bounds (`insert_chunk_unconstrained`) and (b) a direct-IO chunk whose offset plus size exceeds the variable's buffer (`insert_chunk_unconstrained_dio`) | Should | TBD | Proposed |
 
 <!-- Add new rows via /new-requirement, or by hand — keep the table format. Each
      requirement should be a single testable statement, not a paragraph. If it needs

@@ -44,7 +44,7 @@ actually found in the code, not guessed from symptoms.)*
 ## BUG-001 — NGAP data-URL filter rejects `.xml`/`.dmrpp` anywhere, and the `.dmrpp` trim on the S3 URL uses the wrong length
 
 **Severity:** Medium
-**Status:** Fix Planned
+**Status:** PR
 **Reported:** 2026-10-29
 **Related requirements:** FR-007, FR-008 (the filter rejects URLs that only *contain* `.xml` / `.dmrpp`; the requirements reject only URLs that *end in* them; line 533 would corrupt the FR-008 S3 URL)
 **Fix plan:** `plans/bugfix-ngap-dmrpp-url-filter-plan.md`
@@ -101,7 +101,7 @@ construction.
 ## BUG-002 — `get_urls_from_granules_umm_json_v1_4` crashes or misreports on malformed CMR responses instead of throwing
 
 **Severity:** High
-**Status:** Fix Planned
+**Status:** PR
 **Reported:** 2026-10-29
 **Related requirements:** None directly. No requirement says how a malformed CMR response is
 handled, so this violates the undocumented assumption that malformed upstream input throws a
@@ -184,7 +184,7 @@ inspects the JSON, so the fix belongs entirely in the function and its helpers.
 ## BUG-003 — Function-response cache keeps a partial entry when the server function throws, so repeats of the request get "DDX response document parse failed"
 
 **Severity:** High
-**Status:** Fix Planned
+**Status:** PR
 **Reported:** 2026-10-29
 **Related requirements:** None. The DAP function-response cache has no FR/NFR, so this
 violates the undocumented assumption that a failed request leaves nothing in the cache and
@@ -275,6 +275,185 @@ and its two baselines, and test 61 passes in the distcheck build, as it does in-
 - The directory and its three files arrived in 763ed1c5f (HYRAX-1732), together with the
   `AT_BESCMD_DMRPP_RESPONSE_TEST` line in `testsuite.at`.
 - `Makefile.am` wasn't updated in that commit or later.
+
+---
+
+## BUG-005 — `inflate()` frees the caller's buffer when it grows it, and `filter_chunk()` frees it again when inflate fails (heap corruption)
+
+**Severity:** High
+**Status:** Fix Planned
+**Reported:** 2026-10-30
+**Related requirements:** None. Nothing documents decompression or memory safety in the
+DMR++ handler. The intended behavior is that a bad stream is reported by throwing a
+`BESError`; instead the error path corrupts the heap. Found by
+`docs/deep-dives/dmrpp-parallel-decompression-memory-safety.md` (F1).
+**Fix plan:** `plans/bugfix-inflate-double-free-plan.md`
+
+**Reproduction steps:**
+1. Make a `Chunk` whose read buffer is a zlib stream of `4 * N` bytes with its last
+   8 bytes removed (e.g. `N = 1024`).
+2. Call `chunk->filter_chunk("deflate", N, 1)` on a `--enable-asan` build.
+3. Repeat with `"deflate deflate"`.
+
+**Expected behavior:** `filter_chunk()` throws a `BESError` ("Failed to inflate data
+chunk"), and the heap is not damaged.
+
+**Actual behavior:** ASan reports `attempting double-free`:
+- the first free is in `inflate()`'s growth branch;
+- the second is in `filter_chunk()`'s `catch`.
+
+Without ASan, macOS's allocator usually aborts. In production with compute threads, the
+damaged heap usually crashes some other thread later. This was reproduced on 2026-10-30
+with a standalone copy of the loop and the `catch`. It has not yet been run inside
+`ChunkTest`.
+
+**Root cause:** `inflate(char **destp, …)` (`modules/dmrpp_module/Chunk.cc:321-388`):
+- When `avail_out == 0` with `Z_OK`, it allocates a larger buffer and
+  `delete[]`s the caller's original buffer (`:364-377`).
+- It updates `*destp` only on success (`:382`).
+- If a later zlib call fails, it throws at `:359`, leaving `*destp` pointing at the
+  freed buffer.
+
+`filter_chunk()` then runs `delete[] dest_deflate` in its `catch`: `Chunk.cc:926-929`
+for a single deflate, `:900-904` for multiple. That frees the buffer a second time, and
+the new buffer leaks.
+
+`DmrppArray::inflate_simple()` (`DmrppArray.cc:1848-1937`) has the same stale
+`*destp`. Its linked-block callers have no `catch`, so there it leaks instead of
+double-freeing.
+
+This is not a race between threads; serial mode has it too. Threading only moves the
+crash away from its cause.
+
+---
+
+## BUG-006 — `BESDEBUG` writes to the shared debug stream from several threads without a lock
+
+**Severity:** Low
+**Status:** Fix Planned
+**Reported:** 2026-10-30
+**Related requirements:** None. Nothing documents what the debug log must guarantee.
+Found by `docs/deep-dives/dmrpp-parallel-decompression-memory-safety.md` (F3).
+**Fix plan:** `plans/bugfix-besdebug-thread-unsafe-output-plan.md`
+
+**Reproduction steps:**
+1. Configure with `--enable-developer`, so `NDEBUG` is not defined and `BESDEBUG` is
+   compiled in.
+2. Turn on the `dmrpp:3` debug context, with `d_use_compute_threads=true` (the
+   default).
+3. Run a DMR++ data request for a variable made of many compressed chunks, so several
+   compute threads run at once.
+4. Or, as a unit test: point the debug stream at an `ostringstream` and have 8 threads
+   each write 2,000 tagged `BESDEBUG` lines.
+
+**Expected behavior:** Each debug line is written whole, and the stream stays valid.
+
+**Actual behavior:** Several threads write to the same `std::ostream` at once, which is
+a data race with undefined behavior. Lines get interleaved or garbled, and the stream's
+buffer can be corrupted. This is from reading the code; it has not been observed in a
+log yet.
+
+**Root cause:** `BESDEBUG` (`dispatch/BESDebug.h:66-70`) writes straight to
+`*BESDebug::GetStrm()` without holding a lock. The DMR++ compute threads call it from
+`process_one_chunk*` (`SuperChunk.cc`), `filter_chunk` (`Chunk.cc`) and
+`get_next_future` (`DmrppArray.cc`).
+
+`BESDebug.h:47` declares a `static std::mutex bes_debug_log_mutex`, but nothing uses
+it. Being `static` in a header, each file that includes it gets its own copy anyway.
+
+Production builds define `NDEBUG` (`configure.ac:171`, `:328`), which compiles
+`BESDEBUG` out, so they are not affected.
+
+---
+
+## BUG-007 — The DMR++ compute-thread counter leaks on error paths, and `process_chunks_*_concurrent` can then spin forever
+
+**Severity:** Medium
+**Status:** Fix Planned
+**Reported:** 2026-10-30
+**Related requirements:** None. Nothing documents what should happen when thread
+creation fails. Found by
+`docs/deep-dives/dmrpp-parallel-decompression-memory-safety.md` (F4).
+**Fix plan:** `plans/bugfix-compute-thread-counter-leak-plan.md`
+
+**Reproduction steps:**
+1. Unit test, showing the hang:
+   - set `chunk_processing_thread_counter = DmrppRequestHandler::d_max_compute_threads`,
+     which simulates a leaked count;
+   - call `process_chunks_concurrent()` with one fill-value chunk, running under a
+     5-second watchdog.
+2. System level (Linux), showing the leak:
+   - run a `besstandalone` DMR++ request for a variable made of many chunks under a low
+     `ulimit -u`, so that `std::async` throws `std::system_error`;
+   - then run a second request in the same process.
+
+**Expected behavior:** If a compute thread can't be created, or the request fails, the
+counter goes back to the number of running threads, which is 0 between requests. A
+loop that can't start any thread fails with a `BESError` instead of hanging.
+
+**Actual behavior:**
+- Step 1: `process_chunks_concurrent()` never returns. It busy-loops with no futures,
+  no thread able to start, and chunks left in the queue.
+- Step 2: the count leaked by the first request stays for the life of the
+  `beslistener`. Once it reaches the limit, every later request that uses compute
+  threads hangs the same way.
+
+Step 1 follows from reading the code and has not been run yet. Step 2 also comes from
+reading the code.
+
+**Root cause:** in `modules/dmrpp_module/SuperChunk.cc`:
+- `start_one_chunk_compute_thread` increments the counter *before* `std::async`
+  (`:219-220`), so a throw from `std::async` or `push_back` leaves it raised.
+- The `catch (...)` blocks in all three `process_chunks_*_concurrent` functions
+  (`:340-349`, `:417-426`, `:474-483`) drain the futures without decrementing. They
+  also stop early if a `get()` throws.
+- `get_next_future` resets the counter to 0 only when it is the one that throws
+  (`DmrppArray.cc:134-135`).
+- With the counter at the limit and `futures` empty, the scheduling loops
+  (`:300-339` and its copies) have no way out.
+
+---
+
+## BUG-008 — `DmrppArray::get_dimension()` bounds check is off by one, so `get_dimension(ndims)` reads past the last dimension
+
+**Severity:** Medium
+**Status:** Fix Planned
+**Reported:** 2026-10-30
+**Related requirements:** None. The intended behavior is the function's own guard, which
+is meant to throw `BESInternalError` for an out-of-range index. FR-012 (Proposed),
+malformed chunk-layout validation, depends on this guard working. Found while drafting
+`plans/dmrpp-malformed-chunk-layout-validation-plan.md`.
+**Fix plan:** `plans/bugfix-get-dimension-off-by-one-plan.md`
+
+**Reproduction steps:**
+1. Unit test: build a `DmrppArray` with `N` dimensions (e.g. `append_dim` twice) and
+   call `get_dimension(N)`. Run it on an `--enable-asan` build.
+2. Through the data path: serve a DMR++ for a 1-D chunked variable whose
+   `dmrpp:chunkDimensionSizes` has two values (e.g. `"10 10"`). Then request the
+   variable, unconstrained or with a constraint.
+
+**Expected behavior:** `get_dimension(N)` throws `BESInternalError`. The request fails
+with that error.
+
+**Actual behavior:** The check passes, and the function returns `*(dim_begin() + N)`,
+which is `*dim_end()`. That is an out-of-bounds read and undefined behavior: garbage
+`start`/`stop`/`stride` values feed later offset arithmetic. ASan should report a
+heap-buffer-overflow read. This comes from reading the code. Neither step has been run
+yet.
+
+**Root cause:** `DmrppArray::get_dimension()` (`modules/dmrpp_module/DmrppArray.cc:388-393`)
+checks `i > (dim_end() - dim_begin())`. Valid indices are `0 .. ndims-1`, so the check
+must be `i >=`. It has been this way since `673dab173` (2023-08-22).
+
+How it is reached: the recursive copy functions `insert_chunk_unconstrained` (`:1058`),
+`insert_chunk` (`:2091`), `insert_chunk_serial` (`:2355`),
+`insert_chunk_fixed_size_str` (`:4146`) and
+`insert_chunk_fixed_size_str_unconstrained` (`:4227`) all call `get_dimension(dim)`.
+They recurse until `dim == chunk_shape.size() - 1`, so `dim` follows the rank of the
+*chunk* shape, not the array's. `DmrppCommon::parse_chunk_dimension_sizes()`
+(`DmrppCommon.cc:134`) and `DMZ` (`DMZ.cc:2105-2115`) store `chunkDimensionSizes`
+without comparing its length to the array's rank. A chunk shape with more entries than
+the array has dimensions therefore reaches `get_dimension(ndims)`.
 
 ---
 

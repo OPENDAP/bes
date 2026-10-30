@@ -1,0 +1,18 @@
+;; This buffer is for text that is not saved, and for Lisp evaluation.
+;; To create a file, visit it with ‘C-x C-f’ and enter text in its buffer.
+
+-L/Users/jhrg/src/opendap/hyrax/build/deps/lib -L/opt/homebrew/lib
+ -L/Users/jhrg/src/opendap/hyrax/build/lib
+ /Users/jhrg/src/opendap/hyrax/build/lib/libdapserver.dylib
+ /Users/jhrg/src/opendap/hyrax/build/lib/libdap.dylib
+ /Users/jhrg/src/opendap/hyrax/build/lib/libdapclient.dylib -lpthread
+ -lSTARE /Users/jhrg/src/opendap/hyrax/build/deps/lib/libnetcdf.dylib
+ -lhdf5_hl -lhdf5 -ldl -lxml2 -lgdal
+ -L/opt/homebrew/Cellar/openssl@3/3.6.3/lib -lssl -lcrypto -lzstd
+ -llz4 -L/opt/homebrew/anaconda3/lib -lexpat.1 -ljpeg -ltiff -lgeotiff
+ -lpng -lproj.25.9.5.1 -ljson-c.5.5.0 -lm -lc++ -lcurl  -g -O2 -g3 -O0
+ -Wall -g3 -O0 -Wall -W -Wcast-align -Wno-deprecated -g -O2 -g3 -O0
+ -Wall -Wl,-rpath -Wl,/Users/jhrg/src/opendap/hyrax/build/deps/lib
+ -Wl,-rpath -Wl,@loader_path -Wl,-rpath
+ -Wl,/Users/jhrg/src/opendap/hyrax/build/deps/proj/lib -Wl,-rpath
+ -Wl,@loader_path   
