@@ -1,7 +1,3 @@
-<!-- This file is auto-loaded by Claude Code at the start of every session in this
-     repo. It is a CONTRACT, not a log. If you're an editor here to update it, keep
-     it short — it earns its place by being read every session, not by being complete. -->
-
 # CLAUDE.md — `bes`
 
 **What this project is:** This is the Back End Server for Hyrax, an OPeNDAP data server.
