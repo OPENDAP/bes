@@ -26,9 +26,11 @@
 
 #include <sstream>
 #include <ctime>
+#include <memory>
 
 #include <curl/curl.h>
 #include "rapidjson/document.h"
+#include "rapidjson/error/en.h"
 
 #include "BESNotFoundError.h"
 #include "BESSyntaxUserError.h"
@@ -51,22 +53,78 @@ using namespace std;
 
 namespace ngap {
 
+namespace {
+/// @return True if 's' ends with 'suffix'. std::string::ends_with() is C++20.
+bool ends_with(const string &s, const string &suffix) {
+    return s.size() >= suffix.size() && s.compare(s.size() - suffix.size(), suffix.size(), suffix) == 0;
+}
+
+/**
+ * @brief Get a string member of a umm/RelatedUrls element.
+ * rapidjson only asserts its preconditions, and NDEBUG builds don't check them, so test
+ * them here and throw instead (BUG-002).
+ * @return The value of the member
+ * @exception BESInternalError if 'obj' is not an object or the member is missing or not a string
+ */
+string get_string_member(const rapidjson::Value &obj, const char *name) {
+    if (!obj.IsObject()) {
+        throw BESInternalError("The umm/RelatedUrls element is not an object", __FILE__, __LINE__);
+    }
+    auto mitr = obj.FindMember(name);
+    if (mitr == obj.MemberEnd()) {
+        throw BESInternalError(string("The umm/RelatedUrls element does not contain the ") + name + " object",
+                               __FILE__, __LINE__);
+    }
+    if (!mitr->value.IsString()) {
+        throw BESInternalError(string("The umm/RelatedUrls element's ") + name + " is not a string",
+                               __FILE__, __LINE__);
+    }
+    return mitr->value.GetString();
+}
+
+using curl_easy_handle = std::unique_ptr<CURL, decltype(&curl_easy_cleanup)>;
+
+/// @return A new curl easy handle, used only for curl_easy_escape() and curl_easy_unescape().
+curl_easy_handle make_curl_easy_handle() {
+    curl_easy_handle ceh(curl_easy_init(), &curl_easy_cleanup);
+    if (!ceh) {
+        throw BESInternalError("Could not initialize a curl easy handle.", __FILE__, __LINE__);
+    }
+    return ceh;
+}
+
+/// @return 's' URL-encoded.
+string url_escape(CURL *ceh, const string &s) {
+    std::unique_ptr<char, decltype(&curl_free)> escaped(
+            curl_easy_escape(ceh, s.c_str(), static_cast<int>(s.size())), &curl_free);
+    if (!escaped) {
+        throw BESInternalError("Could not URL-encode '" + s + "'.", __FILE__, __LINE__);
+    }
+    return {escaped.get()};
+}
+
+/// @return 's' URL-decoded.
+string url_unescape(CURL *ceh, const string &s) {
+    int out_len = 0;
+    std::unique_ptr<char, decltype(&curl_free)> unescaped(
+            curl_easy_unescape(ceh, s.c_str(), static_cast<int>(s.size()), &out_len), &curl_free);
+    if (!unescaped) {
+        throw BESInternalError("Could not URL-decode '" + s + "'.", __FILE__, __LINE__);
+    }
+    return {unescaped.get(), static_cast<size_t>(out_len)};
+}
+} // namespace
+
 /**
  * @brief Get the CMR search endpoint URL using information from the BES Keys.
- * This method only reads the BES keys once and caches the results, including
- * the assembled URL.
+ * The BES keys are read on every call.
  * @return The URL used to access CMR.
  */
 string NgapApi::get_cmr_search_endpoint_url() {
-    static string cmr_search_endpoint_url;
-    if (cmr_search_endpoint_url.empty()) {
-        const string cmr_hostname = TheBESKeys::read_string_key(NGAP_CMR_HOSTNAME_KEY, DEFAULT_CMR_ENDPOINT_URL);
-        const string cmr_search_endpoint_path = TheBESKeys::read_string_key(NGAP_CMR_SEARCH_ENDPOINT_PATH_KEY,
-                                                                                 DEFAULT_CMR_SEARCH_ENDPOINT_PATH);
-        cmr_search_endpoint_url = BESUtil::assemblePath(cmr_hostname, cmr_search_endpoint_path);
-    }
-
-    return cmr_search_endpoint_url;
+    const string cmr_hostname = TheBESKeys::read_string_key(NGAP_CMR_HOSTNAME_KEY, DEFAULT_CMR_ENDPOINT_URL);
+    const string cmr_search_endpoint_path = TheBESKeys::read_string_key(NGAP_CMR_SEARCH_ENDPOINT_PATH_KEY,
+                                                                        DEFAULT_CMR_SEARCH_ENDPOINT_PATH);
+    return BESUtil::assemblePath(cmr_hostname, cmr_search_endpoint_path);
 }
 
 /**
@@ -146,38 +204,21 @@ string NgapApi::build_cmr_query_url_old_rpath_format(const string &restified_pat
     string cmr_url = get_cmr_search_endpoint_url() + "?";
     {
         // This easy-handle is only created so we can use the curl_easy_escape() on the token values
-        CURL *ceh = curl_easy_init();
-        char *unescaped_url_content;
-        int unescaped_output_length = 0;
-        char *escaped_url_content;
+        auto ceh = make_curl_easy_handle();
 
         // Add provider
-        unescaped_url_content = curl_easy_unescape(ceh, provider.c_str(), static_cast<int>(provider.size()), &unescaped_output_length);
-        escaped_url_content = curl_easy_escape(ceh, unescaped_url_content, unescaped_output_length);
-        cmr_url += string(CMR_PROVIDER).append("=").append(escaped_url_content).append("&");
-        curl_free(unescaped_url_content);
-        curl_free(escaped_url_content);
+        cmr_url += string(CMR_PROVIDER).append("=").append(url_escape(ceh.get(), url_unescape(ceh.get(), provider))).append("&");
 
-        unescaped_url_content = curl_easy_unescape(ceh, collection.c_str(), static_cast<int>(collection.size()), &unescaped_output_length);
-        escaped_url_content = curl_easy_escape(ceh, unescaped_url_content, unescaped_output_length);
+        const string escaped_collection = url_escape(ceh.get(), url_unescape(ceh.get(), collection));
         if (use_collection_concept_id) {
             // Add collection_concept_id
-            cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(escaped_url_content).append("&");
+            cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(escaped_collection).append("&");
         } else {
             // Add entry_title
-            cmr_url += string(CMR_ENTRY_TITLE).append("=").append(escaped_url_content).append("&");
-
+            cmr_url += string(CMR_ENTRY_TITLE).append("=").append(escaped_collection).append("&");
         }
-        curl_free(unescaped_url_content);
-        curl_free(escaped_url_content);
 
-        unescaped_url_content = curl_easy_unescape(ceh, granule.c_str(), static_cast<int>(granule.size()), &unescaped_output_length);
-        escaped_url_content = curl_easy_escape(ceh, unescaped_url_content, unescaped_output_length);
-        cmr_url += string(CMR_GRANULE_UR).append("=").append(escaped_url_content);
-        curl_free(unescaped_url_content);
-        curl_free(escaped_url_content);
-
-        curl_easy_cleanup(ceh);
+        cmr_url += string(CMR_GRANULE_UR).append("=").append(url_escape(ceh.get(), url_unescape(ceh.get(), granule)));
     }
 
     return cmr_url;
@@ -268,48 +309,27 @@ string NgapApi::build_cmr_query_url(const string &restified_path) {
 
     {
         // This easy-handle is only created so we can use the curl_easy_escape() on the token values
-        CURL *ceh = curl_easy_init();
-        char *escaped_url_content;
+        auto ceh = make_curl_easy_handle();
 
-        escaped_url_content = curl_easy_escape(ceh, collection_name.c_str(), static_cast<int>(collection_name.size()));
-        cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(escaped_url_content).append("&");
-        curl_free(escaped_url_content);
-
-        escaped_url_content = curl_easy_escape(ceh, granule_name.c_str(), static_cast<int>(granule_name.size()));
-        cmr_url += string(CMR_GRANULE_UR).append("=").append(escaped_url_content);
-        curl_free(escaped_url_content);
-
-        curl_easy_cleanup(ceh);
+        cmr_url += string(CMR_COLLECTION_CONCEPT_ID).append("=").append(url_escape(ceh.get(), collection_name)).append("&");
+        cmr_url += string(CMR_GRANULE_UR).append("=").append(url_escape(ceh.get(), granule_name));
     }
 
     return cmr_url;
 }
 
 string get_data_http_url(rapidjson::Value &obj) {
-    auto mitr = obj.FindMember("URL");
-    if (mitr == obj.MemberEnd()) {
-        throw BESInternalError("The umm/RelatedUrls element does not contain the URL object", __FILE__, __LINE__);
-    }
-
-    const rapidjson::Value &r_url = mitr->value;
-
-    mitr = obj.FindMember("Type");
-    if (mitr == obj.MemberEnd()) {
-        throw BESInternalError("The umm/RelatedUrls element does not contain the Type object", __FILE__, __LINE__);
-    }
-
-    const rapidjson::Value &r_type = mitr->value;
+    const string candidate_url = get_string_member(obj, "URL");
+    const string r_type = get_string_member(obj, "Type");
 
     bool noSubtype = obj.FindMember("Subtype") == obj.MemberEnd();
 
-    if ((r_type.GetString() == string(CMR_URL_TYPE_GET_DATA)) && noSubtype) {
+    if ((r_type == CMR_URL_TYPE_GET_DATA) && noSubtype) {
         // Added test that the URL does not end in 'xml' to avoid the LPDAAC .cmr.xml records. jhrg 5/22/24
-        string candidate_url = r_url.GetString();
-
-        // The URL has to start with HTTP/S and cannot end in .xml or .dmrpp. jhrg 6/2/25
+        // The URL has to start with HTTP/S and cannot end in .xml or .dmrpp (FR-007). jhrg 6/2/25
         if ((candidate_url.find("https://") == 0 || candidate_url.find("http://") == 0)
-            && candidate_url.rfind(".xml") == string::npos
-            && candidate_url.rfind(".dmrpp") == string::npos) {
+            && !ends_with(candidate_url, ".xml")
+            && !ends_with(candidate_url, ".dmrpp")) {
             return candidate_url;
         }
     }
@@ -319,29 +339,16 @@ string get_data_http_url(rapidjson::Value &obj) {
 
 
 string get_data_s3_url(rapidjson::Value &obj) {
-    auto mitr = obj.FindMember("URL");
-    if (mitr == obj.MemberEnd()) {
-        throw BESInternalError("The umm/RelatedUrls element does not contain the URL object", __FILE__, __LINE__);
-    }
-
-    const rapidjson::Value &r_url = mitr->value;
-
-    mitr = obj.FindMember("Type");
-    if (mitr == obj.MemberEnd()) {
-        throw BESInternalError("The umm/RelatedUrls element does not contain the Type object", __FILE__, __LINE__);
-    }
-
-    const rapidjson::Value &r_type = mitr->value;
+    const string candidate_url = get_string_member(obj, "URL");
+    const string r_type = get_string_member(obj, "Type");
 
     bool noSubtype = obj.FindMember("Subtype") == obj.MemberEnd();
 
-    if ((r_type.GetString() == string(CMR_URL_TYPE_GET_DATA)) && noSubtype) {
-        string candidate_url = r_url.GetString();
-
-        // The URL has to start with s3:// and cannot end in .xml or .dmrpp
+    if ((r_type == CMR_URL_TYPE_GET_DATA) && noSubtype) {
+        // The URL has to start with s3:// and cannot end in .xml or .dmrpp (FR-008)
         if (candidate_url.find("s3://") == 0
-            && candidate_url.rfind(".xml") == string::npos
-            && candidate_url.rfind(".dmrpp") == string::npos) {
+            && !ends_with(candidate_url, ".xml")
+            && !ends_with(candidate_url, ".dmrpp")) {
             return candidate_url;
         }
     }
@@ -350,29 +357,13 @@ string get_data_s3_url(rapidjson::Value &obj) {
 }
 
 string get_s3credentials_url(rapidjson::Value &obj) {
+    const string candidate_url = get_string_member(obj, "URL");
+    const string r_type = get_string_member(obj, "Type");
 
-    auto mitr = obj.FindMember("URL");
-    if (mitr == obj.MemberEnd()) {
-        throw BESInternalError("The umm/RelatedUrls element does not contain the URL object", __FILE__, __LINE__);
-    }
-
-    const rapidjson::Value &r_url = mitr->value;
-
-    mitr = obj.FindMember("Type");
-    if (mitr == obj.MemberEnd()) {
-        throw BESInternalError("The umm/RelatedUrls element does not contain the Type object", __FILE__, __LINE__);
-    }
-
-    const rapidjson::Value &r_type = mitr->value;
-
-    if (r_type.GetString() == string(CMR_URL_TYPE_GET_S3CREDENTIALS)) {
-        string candidate_url = r_url.GetString();
-        string suffix = "s3credentials";
-        auto expected_suffix_offset = candidate_url.size() - suffix.size();
-
+    if (r_type == CMR_URL_TYPE_GET_S3CREDENTIALS) {
         // The URL has to start with HTTP/S and must end in s3credentials
         if ((candidate_url.find("https://") == 0 || candidate_url.find("http://") == 0)
-            && candidate_url.rfind(suffix) == expected_suffix_offset) {
+            && ends_with(candidate_url, "s3credentials")) {
             return candidate_url;
         }
     }
@@ -405,26 +396,50 @@ string get_s3credentials_url(rapidjson::Value &obj) {
 NgapApi::DataAccessUrls NgapApi::get_urls_from_granules_umm_json_v1_4(const std::string &rest_path,
                                                                       const std::string &cmr_granule_json_string) {
 
+    // rapidjson only asserts its preconditions, and NDEBUG builds don't check them, so each
+    // access below is checked first. A malformed response is an internal error (BUG-002).
     rapidjson::Document cmr_granule_response;
     cmr_granule_response.Parse(cmr_granule_json_string.c_str());
+    if (cmr_granule_response.HasParseError()) {
+        throw BESInternalError(string("The CMR response for '") + rest_path + "' is not valid JSON: "
+                               + rapidjson::GetParseError_En(cmr_granule_response.GetParseError())
+                               + " (offset " + to_string(cmr_granule_response.GetErrorOffset()) + ")",
+                               __FILE__, __LINE__);
+    }
+    if (!cmr_granule_response.IsObject()) {
+        throw BESInternalError(string("The CMR response for '") + rest_path + "' is not a JSON object.",
+                               __FILE__, __LINE__);
+    }
 
-    const rapidjson::Value &val = cmr_granule_response["hits"];
-    int hits = val.GetInt();
+    auto mitr = cmr_granule_response.FindMember("hits");
+    if (mitr == cmr_granule_response.MemberEnd() || !mitr->value.IsInt()) {
+        throw BESInternalError(string("The CMR response for '") + rest_path + "' has no integer 'hits' value.",
+                               __FILE__, __LINE__);
+    }
+    int hits = mitr->value.GetInt();
     if (hits < 1) {
         throw BESNotFoundError(string("The specified path '") + rest_path
                                + "' does not identify a granule in CMR.", __FILE__, __LINE__);
     }
 
-    rapidjson::Value &items = cmr_granule_response["items"];
-    if (!items.IsArray()) {
+    mitr = cmr_granule_response.FindMember("items");
+    if (mitr == cmr_granule_response.MemberEnd() || !mitr->value.IsArray()) {
         throw BESInternalError(string("ERROR! The CMR response did not contain the data URL information: ")
                                + rest_path, __FILE__, __LINE__);
+    }
+    rapidjson::Value &items = mitr->value;
+    if (items.Empty() || !items[0].IsObject()) {
+        throw BESInternalError(string("The CMR response for '") + rest_path + "' has no granule item.",
+                               __FILE__, __LINE__);
     }
 
     // JSON is now vetted so that we know it has an array of one or more 'items'. jhrg 6/2/25
     rapidjson::Value &items_obj = items[0];
-    auto mitr = items_obj.FindMember("umm");
-
+    mitr = items_obj.FindMember("umm");
+    if (mitr == items_obj.MemberEnd() || !mitr->value.IsObject()) {
+        throw BESInternalError(string("The CMR response for '") + rest_path + "' has no umm object.",
+                               __FILE__, __LINE__);
+    }
     rapidjson::Value &umm = mitr->value;
     mitr = umm.FindMember("RelatedUrls");
     if (mitr == umm.MemberEnd()) {
@@ -465,6 +480,23 @@ NgapApi::DataAccessUrls NgapApi::get_urls_from_granules_umm_json_v1_4(const std:
     // If no valid related-URL is found, it's an error.
     throw BESInternalError(string("Failed to locate a data URL for the path: ") + rest_path,
                            __FILE__, __LINE__);
+}
+
+/**
+ * @brief Remove a trailing '.dmrpp' from a data URL, if present.
+ *
+ * This is defensive. Under FR-007/FR-008, get_urls_from_granules_umm_json_v1_4() never
+ * selects a data URL that ends in '.dmrpp', so this should not change the URL. It guards
+ * against a future change to that filter; NgapOwnedContainer appends '.dmrpp' to the data
+ * URLs to locate the DMR++ (FR-011).
+ *
+ * @param url value-result parameter; the URL to trim
+ */
+void NgapApi::strip_dmrpp_suffix(string &url) {
+    const string suffix = ".dmrpp";
+    if (ends_with(url, suffix)) {
+        url.erase(url.size() - suffix.size());
+    }
 }
 
 /**
@@ -522,16 +554,8 @@ NgapApi::DataAccessUrls NgapApi::convert_ngap_resty_path_to_data_access_urls(con
     }
 
     // Check for existing .dmrpp and remove it if found at the end of the url. - kln 6/6/25
-    string suffix = ".dmrpp";
-    if (data_access_url.size() >= suffix.size() &&
-    data_access_url.compare(data_access_url.size() - suffix.size(), suffix.size(), suffix) == 0) {
-        data_access_url.erase(data_access_url.size() - suffix.size());
-    }
-    // ...ditto for the s3 url
-    if (data_s3_url.size() >= suffix.size() &&
-    data_s3_url.compare(data_s3_url.size() - suffix.size(), suffix.size(), suffix) == 0) {
-        data_s3_url.erase(data_access_url.size() - suffix.size());
-    }
+    strip_dmrpp_suffix(data_access_url);
+    strip_dmrpp_suffix(data_s3_url);
 
     BESDEBUG(MODULE, prolog << "END (data_access_url: " << data_access_url << ", data_s3_url: " << data_s3_url << ", tea_endpoint_url: " << tea_endpoint_url << ")" << endl);
 
