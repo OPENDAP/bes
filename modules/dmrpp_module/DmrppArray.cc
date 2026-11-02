@@ -1921,7 +1921,7 @@ unsigned long long DmrppArray::inflate_simple(char **destp, unsigned long long d
                 delete[] outbuf;
                 outbuf = new_outbuf;
                 // The caller's buffer is gone; keep *destp current so a later throw doesn't leave the
-                // caller holding a freed pointer (BUG-005).
+                // caller holding a freed pointer.
                 *destp = outbuf;
 
                 /* Update pointers to buffer for next set of uncompressed data */
