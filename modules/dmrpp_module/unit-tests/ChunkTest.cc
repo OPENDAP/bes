@@ -26,6 +26,7 @@
 
 #include <cstring>
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -116,6 +117,26 @@ static unique_ptr<Chunk> make_chunk(const string &byte_order, const vector<uint8
     memcpy(buf, data.data(), data.size());
     chunk->set_read_buffer(buf, data.size(), data.size(), true);    // the Chunk owns buf
     return chunk;
+}
+
+/// A zlib stream of 'plain_size' bytes that do not compress, with its last 8 bytes removed. Inflating
+/// it into a buffer smaller than 'plain_size' fills (and grows) that buffer before zlib finds the stream
+/// is truncated.
+static vector<uint8_t> truncated_deflate_stream(unsigned long plain_size)
+{
+    vector<uint8_t> plain(plain_size);
+    uint32_t x = 12345;
+    for (auto &b: plain) {
+        x = x * 1103515245 + 12345;
+        b = static_cast<uint8_t>(x >> 16);
+    }
+
+    uLongf compressed_size = compressBound(plain.size());
+    vector<uint8_t> compressed(compressed_size);
+    if (compress(compressed.data(), &compressed_size, plain.data(), plain.size()) != Z_OK)
+        throw std::runtime_error("compress() failed");
+    compressed.resize(compressed_size - 8);
+    return compressed;
 }
 
 static bool buffer_equals(Chunk &chunk, const vector<uint8_t> &expected)
@@ -517,6 +538,23 @@ public:
 
     // ---- failures
 
+    // BUG-005: inflate() grows its output buffer and then fails. The chunk must throw, and the caller
+    // must not free the buffer inflate() already replaced (that was a double free).
+    void filter_chunk_deflate_grow_then_fail_test()
+    {
+        const unsigned long long n = 1024;
+        auto chunk = make_chunk("LE", truncated_deflate_stream(4 * n));
+        chunk->filter_chunk("deflate", n, 1);
+    }
+
+    // BUG-005: the same, with two deflate filters; the first pass fails.
+    void filter_chunk_deflate_deflate_grow_then_fail_test()
+    {
+        const unsigned long long n = 1024;
+        auto chunk = make_chunk("LE", truncated_deflate_stream(4 * n));
+        chunk->filter_chunk("deflate deflate", n, 1);
+    }
+
     // Corrupt data: the stream does not start with a CLEAR code.
     void filter_chunk_lzw_error_test_1()
     {
@@ -818,6 +856,8 @@ public:
     CPPUNIT_TEST(filter_chunk_tiffpred_only_test);
     CPPUNIT_TEST(filter_chunk_tiffpred_deflate_test);
 
+    CPPUNIT_TEST_EXCEPTION(filter_chunk_deflate_grow_then_fail_test, BESError);
+    CPPUNIT_TEST_EXCEPTION(filter_chunk_deflate_deflate_grow_then_fail_test, BESError);
     CPPUNIT_TEST_EXCEPTION(filter_chunk_lzw_error_test_1, BESError);
     CPPUNIT_TEST_EXCEPTION(filter_chunk_lzw_error_test_2, BESError);
     CPPUNIT_TEST_EXCEPTION(filter_chunk_lzw_error_test_3, BESError);

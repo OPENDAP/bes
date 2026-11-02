@@ -24,7 +24,11 @@
 
 #include "config.h"
 
+#include <cstdint>
 #include <memory>
+#include <vector>
+
+#include <zlib.h>
 
 #include <cppunit/TextTestRunner.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -161,10 +165,44 @@ public:
         DBG(cerr << prolog << "END" << endl);
     }
 
+    // BUG-005: inflate_simple() grows the caller's buffer and then fails. After the throw, *destp must
+    // name the one live buffer, so the caller can free it: no double free, no leak.
+    void inflate_simple_grow_then_fail_test() {
+        DBG(cerr << prolog << "BEGIN" << endl);
+
+        // 4096 bytes that do not compress, deflated, with the last 8 bytes of the stream removed.
+        vector<uint8_t> plain(4096);
+        uint32_t x = 12345;
+        for (auto &b: plain) {
+            x = x * 1103515245 + 12345;
+            b = static_cast<uint8_t>(x >> 16);
+        }
+        uLongf compressed_size = compressBound(plain.size());
+        vector<uint8_t> compressed(compressed_size);
+        CPPUNIT_ASSERT(compress(compressed.data(), &compressed_size, plain.data(), plain.size()) == Z_OK);
+        compressed.resize(compressed_size - 8);
+
+        DmrppArray tiat(string("foo"), new libdap::Byte("foo"));
+        const unsigned long long dest_len = 1024;
+        char *dest = new char[dest_len];
+        bool thrown = false;
+        try {
+            tiat.inflate_simple(&dest, dest_len, reinterpret_cast<char *>(compressed.data()), compressed.size());
+        }
+        catch (const BESError &) {
+            thrown = true;
+        }
+        delete[] dest;
+
+        CPPUNIT_ASSERT_MESSAGE("inflate_simple() should throw on a truncated stream", thrown);
+        DBG(cerr << prolog << "END" << endl);
+    }
+
     CPPUNIT_TEST_SUITE( DmrppArrayTest );
 
         CPPUNIT_TEST(read_contiguous_sc_test);
         CPPUNIT_TEST(read_contiguous_test);
+        CPPUNIT_TEST(inflate_simple_grow_then_fail_test);
 
     CPPUNIT_TEST_SUITE_END();
 };

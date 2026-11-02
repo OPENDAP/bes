@@ -1920,6 +1920,9 @@ unsigned long long DmrppArray::inflate_simple(char **destp, unsigned long long d
                 memcpy((void *)new_outbuf, (void *)outbuf, outbuf_size);
                 delete[] outbuf;
                 outbuf = new_outbuf;
+                // The caller's buffer is gone; keep *destp current so a later throw doesn't leave the
+                // caller holding a freed pointer (BUG-005).
+                *destp = outbuf;
 
                 /* Update pointers to buffer for next set of uncompressed data */
                 z_strm.next_out = (unsigned char *)outbuf + z_strm.total_out;
