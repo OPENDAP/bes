@@ -165,7 +165,7 @@ public:
         DBG(cerr << prolog << "END" << endl);
     }
 
-    // BUG-005: inflate_simple() grows the caller's buffer and then fails. After the throw, *destp must
+    // inflate_simple() grows the caller's buffer and then fails. After the throw, *destp must
     // name the one live buffer, so the caller can free it: no double free, no leak.
     void inflate_simple_grow_then_fail_test() {
         DBG(cerr << prolog << "BEGIN" << endl);

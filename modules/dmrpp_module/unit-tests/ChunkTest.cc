@@ -538,7 +538,7 @@ public:
 
     // ---- failures
 
-    // BUG-005: inflate() grows its output buffer and then fails. The chunk must throw, and the caller
+    // inflate() grows its output buffer and then fails. The chunk must throw, and the caller
     // must not free the buffer inflate() already replaced (that was a double free).
     void filter_chunk_deflate_grow_then_fail_test()
     {
@@ -547,7 +547,7 @@ public:
         chunk->filter_chunk("deflate", n, 1);
     }
 
-    // BUG-005: the same, with two deflate filters; the first pass fails.
+    // inflate() the same as above, with two deflate filters; the first pass fails.
     void filter_chunk_deflate_deflate_grow_then_fail_test()
     {
         const unsigned long long n = 1024;
