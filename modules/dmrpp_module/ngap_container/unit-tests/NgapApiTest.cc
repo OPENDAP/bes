@@ -27,6 +27,7 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <vector>
 
 #include <unistd.h>
 #include <libdap/util.h>
@@ -280,6 +281,23 @@ public:
     }
 
     // Test the 'no hits' case
+    // TASK-002: the CMR endpoint is built from the BES keys on every call, not cached.
+    static void cmr_endpoint_reads_keys_each_call() {
+        const string original_host = TheBESKeys::read_string_key(NGAP_CMR_HOSTNAME_KEY, DEFAULT_CMR_ENDPOINT_URL);
+        TheBESKeys::TheKeys()->set_key(NGAP_CMR_HOSTNAME_KEY, "https://cmr.example");
+        try {
+            const string cmr_query_url = NgapApi::build_cmr_query_url("collections/C1-PROV/granules/g.nc");
+            const string expected_prefix = "https://cmr.example/search/granules.umm_json_v1_4?";
+            CPPUNIT_ASSERT_MESSAGE("Expected '" + cmr_query_url + "' to start with '" + expected_prefix + "'",
+                                   cmr_query_url.find(expected_prefix) == 0);
+        }
+        catch (...) {
+            TheBESKeys::TheKeys()->set_key(NGAP_CMR_HOSTNAME_KEY, original_host);
+            throw;
+        }
+        TheBESKeys::TheKeys()->set_key(NGAP_CMR_HOSTNAME_KEY, original_host);
+    }
+
     static void test_get_urls_from_granules_umm_json_v1_4_no_hits() {
         DBG(cerr << prolog << "BEGIN" << endl);
         const string json = bes::read_test_baseline(string(TEST_SRC_DIR) + "/cmr_json_responses/no_hits.json");
@@ -430,49 +448,131 @@ public:
         CPPUNIT_ASSERT_MESSAGE("tea_endpoint_url should be '" + expected_s3credentials + " but was '" + tea_endpoint_url, tea_endpoint_url == expected_s3credentials);
     }
 
+    // BUG-001: '.dmrpp' inside a data URL, but not at its end, must not reject the URL (FR-007, FR-008).
+    static void test_get_urls_from_granules_umm_json_v1_4_dmrpp_not_suffix() {
+        const string json = bes::read_test_baseline(
+            string(TEST_SRC_DIR) + "/cmr_json_responses/data_url_dmrpp_not_suffix.json");
+
+        string data_url, data_s3_url, tea_endpoint_url;
+        tie(data_url, data_s3_url, tea_endpoint_url) = NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", json);
+
+        CPPUNIT_ASSERT_EQUAL(string("https://data.example/granule.dmrpp.nc"), data_url);
+        CPPUNIT_ASSERT_EQUAL(string("s3://bucket/granule.dmrpp.nc"), data_s3_url);
+    }
+
+    // BUG-001: '.xml' inside a data URL, but not at its end, must not reject the URL (FR-007, FR-008).
+    static void test_get_urls_from_granules_umm_json_v1_4_xml_not_suffix() {
+        const string json = bes::read_test_baseline(
+            string(TEST_SRC_DIR) + "/cmr_json_responses/data_url_xml_not_suffix.json");
+
+        string data_url, data_s3_url, tea_endpoint_url;
+        tie(data_url, data_s3_url, tea_endpoint_url) = NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", json);
+
+        CPPUNIT_ASSERT_EQUAL(string("https://data.example/v1.xml.d/granule.nc"), data_url);
+        CPPUNIT_ASSERT_EQUAL(string("s3://bucket/v1.xml.d/granule.nc"), data_s3_url);
+    }
+
+    // BUG-001: data URLs that end in '.dmrpp' or '.xml' are still skipped (FR-007, FR-008).
+    static void test_get_urls_from_granules_umm_json_v1_4_rejected_suffixes() {
+        const string json = bes::read_test_baseline(
+            string(TEST_SRC_DIR) + "/cmr_json_responses/data_url_rejected_suffixes.json");
+
+        string data_url, data_s3_url, tea_endpoint_url;
+        tie(data_url, data_s3_url, tea_endpoint_url) = NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", json);
+
+        CPPUNIT_ASSERT_EQUAL(string("https://data.example/granule.nc"), data_url);
+        CPPUNIT_ASSERT_EQUAL(string("s3://bucket/granule.nc"), data_s3_url);
+    }
+
+    // BUG-002: a malformed CMR response must throw BESInternalError, not crash or report not-found.
+    static void assert_malformed_response_throws(const string &json) {
+        CPPUNIT_ASSERT_THROW_MESSAGE("Malformed CMR response should throw BESInternalError: " + json,
+                                     NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", json),
+                                     BESInternalError);
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_umm_missing_empty_item() {
+        assert_malformed_response_throws("{\"hits\":1,\"items\":[{}]}");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_umm_missing() {
+        assert_malformed_response_throws("{\"hits\":1,\"items\":[{\"meta\":{\"x\":1}}]}");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_umm_not_object() {
+        assert_malformed_response_throws("{\"hits\":1,\"items\":[{\"umm\":3}]}");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_not_json() {
+        assert_malformed_response_throws("<html>503</html>");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_hits_missing() {
+        assert_malformed_response_throws("{\"items\":[{\"umm\":{\"RelatedUrls\":[{\"Type\":\"GET DATA\",\"URL\":\"https://data.example/a.nc\"}]}}]}");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_hits_not_int() {
+        assert_malformed_response_throws("{\"hits\":\"1\",\"items\":[{\"umm\":{\"RelatedUrls\":[{\"Type\":\"GET DATA\",\"URL\":\"https://data.example/a.nc\"}]}}]}");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_items_missing() {
+        assert_malformed_response_throws("{\"hits\":1}");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_items_empty() {
+        assert_malformed_response_throws("{\"hits\":1,\"items\":[]}");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_item_not_object() {
+        assert_malformed_response_throws("{\"hits\":1,\"items\":[3]}");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_type_not_string() {
+        assert_malformed_response_throws("{\"hits\":1,\"items\":[{\"umm\":{\"RelatedUrls\":[{\"Type\":7,\"URL\":\"https://data.example/a.nc\"}]}}]}");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_url_not_string() {
+        assert_malformed_response_throws("{\"hits\":1,\"items\":[{\"umm\":{\"RelatedUrls\":[{\"Type\":\"GET DATA\",\"URL\":null}]}}]}");
+    }
+
+    static void test_get_urls_from_granules_umm_json_v1_4_malformed_related_url_not_object() {
+        assert_malformed_response_throws("{\"hits\":1,\"items\":[{\"umm\":{\"RelatedUrls\":[3]}}]}");
+    }
+
     /**
      * Test urls to make sure an existing ".dmrpp" is removed if found
      * kln 6/6/25
+     * Calls NgapApi::strip_dmrpp_suffix() rather than a copy of its logic (BUG-001).
      */
     void test_dmrpp_is_removed_from_data_url() {
         DBG(cerr << prolog << "BEGIN" << endl);
 
-        string suffix = ".dmrpp";
-
         // Case 1: URL with a .dmrpp suffix that should be removed.
         string url_with_suffix = "https://dmrpp-sit-poc.s3.amazonaws.com/some-file.nc.dmrpp";
-        string expected_url = "https://dmrpp-sit-poc.s3.amazonaws.com/some-file.nc";
-
-        // Apply the same logic as in the function under test
-        if (url_with_suffix.size() >= suffix.size() &&
-            url_with_suffix.compare(url_with_suffix.size() - suffix.size(), suffix.size(), suffix) == 0) {
-            url_with_suffix.erase(url_with_suffix.size() - suffix.size(), suffix.size());
-        }
+        NgapApi::strip_dmrpp_suffix(url_with_suffix);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("The .dmrpp suffix should be removed.",
-                                     expected_url, url_with_suffix);
+                                     string("https://dmrpp-sit-poc.s3.amazonaws.com/some-file.nc"), url_with_suffix);
 
         // Case 2: URL without a .dmrpp suffix, which should not be changed.
         string url_without_suffix = "https://s3.amazonaws.com/bucket/granule.nc";
-        string original_url = url_without_suffix;
-
-        if (url_without_suffix.size() >= suffix.size() &&
-            url_without_suffix.compare(url_without_suffix.size() - suffix.size(), suffix.size(), suffix) == 0) {
-            url_without_suffix.erase(url_without_suffix.size() - suffix.size(), suffix.size());
-        }
+        NgapApi::strip_dmrpp_suffix(url_without_suffix);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("URL without .dmrpp should not be changed.",
-                                     original_url, url_without_suffix);
+                                     string("https://s3.amazonaws.com/bucket/granule.nc"), url_without_suffix);
 
-        // Case 3: URL with '.dmrpp' in the middle. The current 'find' logic will
-        // not remove the first occurrence.
+        // Case 3: URL with '.dmrpp' in the middle, which should not be changed.
         string url_with_middle_dmrpp = "https://my-domain.com/path/file.dmrpp.nc";
-        string expected_middle_no_removal_url = url_with_middle_dmrpp;
-
-        if (url_with_middle_dmrpp.size() >= suffix.size() &&
-            url_with_middle_dmrpp.compare(url_with_middle_dmrpp.size() - suffix.size(), suffix.size(), suffix) == 0) {
-            url_with_middle_dmrpp.erase(url_with_middle_dmrpp.size() - suffix.size(), suffix.size());
-        }
+        NgapApi::strip_dmrpp_suffix(url_with_middle_dmrpp);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("URL with .dmrpp not at the end should not have it removed.",
-                                     expected_middle_no_removal_url, url_with_middle_dmrpp);
+                                     string("https://my-domain.com/path/file.dmrpp.nc"), url_with_middle_dmrpp);
+
+        // Case 4: BUG-001 step 3. Trim the https URL first, then a longer S3 URL; the S3 URL
+        // must be trimmed using its own length. The old code gave 's3://some-bucket/lo'.
+        string data_access_url = "https://data.example/a.nc.dmrpp";
+        string data_s3_url = "s3://some-bucket/long/prefix/a.nc.dmrpp";
+        NgapApi::strip_dmrpp_suffix(data_access_url);
+        NgapApi::strip_dmrpp_suffix(data_s3_url);
+        CPPUNIT_ASSERT_EQUAL(string("https://data.example/a.nc"), data_access_url);
+        CPPUNIT_ASSERT_EQUAL(string("s3://some-bucket/long/prefix/a.nc"), data_s3_url);
 
         DBG(cerr << prolog << "END" << endl);
     }
@@ -480,6 +580,7 @@ public:
     CPPUNIT_TEST_SUITE(NgapApiTest);
 
     CPPUNIT_TEST (resty_path_to_cmr_query_test_01);
+    CPPUNIT_TEST (cmr_endpoint_reads_keys_each_call);
     CPPUNIT_TEST (resty_path_to_cmr_query_test_02);
     CPPUNIT_TEST (resty_path_to_cmr_query_test_03);
     CPPUNIT_TEST (resty_path_to_cmr_query_test_04);
@@ -492,10 +593,26 @@ public:
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_related_urls_not_an_array);
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_no_valid_related_url);
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_related_url_wo_URL);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_related_url_wo_Type);
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_minimal_json);
 
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_lpdaac);
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_podaac);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_dmrpp_not_suffix);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_xml_not_suffix);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_rejected_suffixes);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_umm_missing_empty_item);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_umm_missing);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_umm_not_object);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_not_json);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_hits_missing);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_hits_not_int);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_items_missing);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_items_empty);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_item_not_object);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_type_not_string);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_url_not_string);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_related_url_not_object);
     CPPUNIT_TEST (test_dmrpp_is_removed_from_data_url);
 
     CPPUNIT_TEST_SUITE_END();

@@ -76,59 +76,9 @@ static const string c_cache_name = "/response_cache";
 #define DBG(x) do { if (debug) (x); } while(false);
 
 using namespace libdap;
-#if 0
-const Type requested_type = dods_byte_c;
-const int num_dim = 2;
-const int dim_sz = 3;
-#endif
 
 // Move this into the class when we goto C++-11
 const string d_mds_prefix = "rc"; // used when cleaning the cache, etc.
-
-#if 0
-/**
- * Server function used by the ConstraintEvaluator. This is needed because passing
- * the CE a null expression or one that names an non-existent function is an error.
- *
- * The test harness code must load up the ServerFunctionList instance - see also
- * TestFunction.h
- */
-void TestFunction::function_dap2_test(int argc, libdap::BaseType *argv[], libdap::DDS &, libdap::BaseType **btpp)
-{
-    if (argc != 1) {
-        throw Error(malformed_expr, "test(name) requires one argument.");
-    }
-
-    std::string name = extract_string_argument(argv[0]);
-
-    Array *dest = new Array(name, 0);   // The ctor for Array copies the prototype pointer...
-    BaseTypeFactory btf;
-    dest->add_var_nocopy(btf.NewVariable(requested_type));  // ... so use add_var_nocopy() to add it instead
-
-    vector<int> dims(num_dim, dim_sz);
-    //dims.push_back(3); dims.push_back(3);
-    unsigned long elem = 1;
-    vector<int>::iterator i = dims.begin();
-    while (i != dims.end()) {
-        elem *= *i;
-        dest->append_dim(*i++);
-    }
-
-    // stuff the array with values
-    vector<dods_byte> values(elem);
-    for (unsigned int i = 0; i < elem; ++i) {
-        values[i] = i;
-    }
-
-    dest->set_value(values, elem);
-
-    dest->set_send_p(true);
-    dest->set_read_p(true);
-
-    // return the array
-    *btpp = dest;
-}
-#endif
 
 class FunctionResponseCacheTest: public TestFixture {
 private:
@@ -209,11 +159,7 @@ public:
     {
         DBG(cerr << "ctor_test_1() - BEGIN" << endl);
         TheBESKeys::TheKeys()->set_key(BESDapFunctionResponseCache::PATH_KEY, "");
-#if 0
-        string cacheDir = string(TEST_SRC_DIR) + "/never";
-        string prefix = "rc";
-        long size = 1000;
-#endif
+
         cache = BESDapFunctionResponseCache::get_instance();
         DBG(cerr << "ctor_test_1() - retrieved BESDapFunctionResponseCache instance: " << cache << endl);
 
@@ -268,6 +214,48 @@ public:
     // returns the DDS. The second call reads the value from the cache.
     //
     // Use load_from_cache() (Private interface) to read the data.
+    // BUG-003: A server function that throws must not leave a partial cache entry behind;
+    // repeating the request must give the function's error again, not a DDX parse error.
+    void failed_function_leaves_no_cache_entry()
+    {
+        DBG(cerr << "failed_function_leaves_no_cache_entry() - BEGIN" << endl);
+
+        cache = BESDapFunctionResponseCache::get_instance();
+        CPPUNIT_ASSERT(cache);
+
+        string error_msg_1;
+        string error_msg_2;
+        const string constraint = "test()"; // test() requires one argument, so it throws
+        for (int i = 0; i < 2; ++i) {
+            try {
+                cache->get_or_cache_dataset(test_dds, constraint);
+                CPPUNIT_FAIL("Expected test() with no arguments to throw");
+            }
+            catch (const std::exception &e) {
+                // libdap::Error and BESError both derive from std::exception
+                const string msg = e.what();
+                DBG(cerr << "call " << i << ": " << msg << endl);
+                if (i == 0) 
+                    error_msg_1 = msg;
+                else 
+                    error_msg_2 = msg;
+                CPPUNIT_ASSERT_MESSAGE("Call " + std::to_string(i) + " threw '" + msg
+                                       + "', expected the function's own error",
+                                       msg.find("requires one argument") != string::npos);
+            }
+        }
+
+        string resource_id = cache->get_resource_id(test_dds, constraint);
+        string cache_file_name = cache->get_hash_basename(resource_id) + "_0";
+        CPPUNIT_ASSERT_MESSAGE("No cache file should remain: " + cache_file_name,
+                               access(cache_file_name.c_str(), F_OK) != 0);
+
+        CPPUNIT_ASSERT_MESSAGE("The two error messages should be the same",
+                               error_msg_1.compare(error_msg_2) == 0);
+                               
+        DBG(cerr << "failed_function_leaves_no_cache_entry() - END" << endl);
+    }
+
     void cache_and_read_a_response()
     {
         DBG(cerr << "cache_and_read_a_response() - BEGIN" << endl);
@@ -369,16 +357,15 @@ public:
         DBG(cerr << "cache_and_read_a_response() - END" << endl);
     }
 
-CPPUNIT_TEST_SUITE( FunctionResponseCacheTest );
+    CPPUNIT_TEST_SUITE( FunctionResponseCacheTest );
 
-    //CPPUNIT_TEST(ctor_test_1);
     CPPUNIT_TEST(ctor_test_2);
     CPPUNIT_TEST(cache_a_response);
+    CPPUNIT_TEST(failed_function_leaves_no_cache_entry);
     CPPUNIT_TEST(cache_and_read_a_response);
     CPPUNIT_TEST(cache_and_read_a_response2);
 
-    CPPUNIT_TEST_SUITE_END()
-    ;
+    CPPUNIT_TEST_SUITE_END();
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(FunctionResponseCacheTest);

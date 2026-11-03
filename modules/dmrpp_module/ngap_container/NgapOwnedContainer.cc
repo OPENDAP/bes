@@ -35,6 +35,7 @@
 
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include "BESContextManager.h"
 #include "BESDebug.h"
@@ -522,12 +523,10 @@ void NgapOwnedContainer::dmrpp_read_from_daac_bucket(string &dmrpp_string) const
     // This code may ask CMR and will throw exceptions that mention CMR on error. jhrg 1/24/25
     auto data_access_urls = build_data_urls_to_daac_bucket(get_real_name());
 
-    // Construct `dmrpp_url_str` from the https data url
+    // Construct `dmrpp_url_str` from the https data url. NgapApi never returns a data url
+    // that ends in .dmrpp (FR-007), so always add the extension, as for the s3 url (FR-011).
     string dmrpp_url_str = get<0>(data_access_urls);
-    if (dmrpp_url_str.find(".dmrpp") == std::string::npos) {
-        // Only add the .dmrpp extension if it is not present kln 5/20/25
-        dmrpp_url_str.append(".dmrpp"); // This is the URL to the DMR++ in the DAAC-owned bucket. jhrg 8/9/24
-    }
+    dmrpp_url_str.append(".dmrpp"); // This is the URL to the DMR++ in the DAAC-owned bucket. jhrg 8/9/24
     string dmrpp_s3uri_str(get<1>(data_access_urls));
     if (!dmrpp_s3uri_str.empty()) {
         dmrpp_s3uri_str.append(".dmrpp");
