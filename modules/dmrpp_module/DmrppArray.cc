@@ -1420,6 +1420,8 @@ void DmrppArray::read_chunks_unconstrained() {
 // The direct chunk IO routine of read chunks., mostly copy from the general IO handling routines.
 void DmrppArray::read_chunks_dio_unconstrained() {
 
+
+BES_PROFILE_TIMING("read_buffer_chunks_dio_unconstrained() timing - " + name());
     if (get_chunk_count() < 2)
         throw BESInternalError(string("Expected more than one chunk for variable ") + name(), __FILE__, __LINE__);
 
@@ -1462,6 +1464,8 @@ void DmrppArray::read_chunks_dio_unconstrained() {
 void DmrppArray::read_buffer_chunks_dio_unconstrained()
 {
 
+    
+BES_PROFILE_TIMING("read_buffer_chunks_dio_unconstrained() timing - " + name());
     if (get_chunk_count() < 2)
         throw BESInternalError(string("Expected more than one chunk for variable ") + name(), __FILE__, __LINE__);
 
@@ -3392,7 +3396,7 @@ void DmrppArray::set_up_buffer_chunk() {
 }
 bool DmrppArray::use_buffer_chunk() {
 
-
+BES_PROFILE_TIMING("use_buffer_chunk timing - " + name());
     // We mostly will use the parallel data transfer, now we find the short cut case.
     // If the number of chunks is smaller than the number of parallel threads, just use the super chunk;
     // since one data transfer will be carried for both the buffer chunk and the super chunk cases and
