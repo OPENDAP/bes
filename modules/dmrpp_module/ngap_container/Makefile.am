@@ -21,10 +21,11 @@ libngap_la_SOURCES = $(NGAP_SRC) $(NGAP_HDR)
 libngap_la_LDFLAGS =
 libngap_la_LIBADD = $(LIBADD)
 
-NGAP_SRC = NgapOwnedContainer.cc NgapOwnedContainerStorage.cc  NgapApi.cc NgapServiceChaining.cc
+NGAP_SRC = NgapOwnedContainer.cc NgapOwnedContainerStorage.cc  NgapApi.cc NgapServiceChaining.cc \
+    RedisCache.cc
 
 NGAP_HDR = NgapNames.h NgapOwnedContainer.h NgapOwnedContainerStorage.h \
-    NgapApi.h MemoryCache.h NgapServiceChaining.h
+    NgapApi.h MemoryCache.h NgapServiceChaining.h RedisCache.h
 
 EXTRA_DIST = ngap.conf.in
 
