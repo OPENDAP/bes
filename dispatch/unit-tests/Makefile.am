@@ -35,7 +35,8 @@ reqhandlerT reqlistT resplistT infoT utilT regexT scrubT		\
 checkT servicesT fsT urlT containerT uncompressT uncompressT2			\
 BESCatalogListTest CatalogNodeTest CatalogItemTest \
 ServerAdministratorTest kvp_utils_test \
-RequestTimerTest BESFileLockingCacheTest FileCacheTest
+RequestTimerTest BESFileLockingCacheTest FileCacheTest \
+BESStopWatchTest
 
 # removed cacheT jhrg 1/11/23
 
@@ -85,7 +86,7 @@ EXTRA_DIST = $(CACHE) catalog_test catalog_test_baselines bad_keys1.ini \
 
 DISTCLEANFILES = 
 
-CLEANFILES = *.log *.sum real* test_config.h bes.conf
+CLEANFILES = *.log *.sum real* test_config.h bes.conf stopwatch_timing_test.txt
 
 ############################################
 # This was generating a directory of "." so 
@@ -186,6 +187,8 @@ BESCatalogListTest_SOURCES  = BESCatalogListTest.cc
 ServerAdministratorTest_SOURCES = ServerAdministratorTest.cc
 
 RequestTimerTest_SOURCES = RequestTimerTest.cc
+
+BESStopWatchTest_SOURCES = BESStopWatchTest.cc
 
 BESFileLockingCacheTest_SOURCES = BESFileLockingCacheTest.cc
 
