@@ -45,6 +45,7 @@
 #include <libdap/Array.h>
 #include <libdap/Grid.h>
 #include <libdap/Sequence.h>
+#include <libdap/util.h> 
 
 #include <BESResponseObject.h>
 #include <BESDapResponseBuilder.h>
@@ -502,6 +503,267 @@ void FONcTransform::throw_if_dap4_response_too_big(DMR *dmr, const string &dap4_
     }
 }
 
+/**
+ * @brief Size, in bytes, of one variable that is marked for transmission.
+ *
+ * The size takes the current constraint (subset) into account. With an empty
+ * constraint every variable is marked, so this is also the whole-file size.
+ * String/URL arrays are counted as 2 bytes per element (as in
+ * dap_utils::compute_response_size_and_inv_big_vars()) because width_ll()
+ * returns sizeof(std::string) per element.
+ *
+ * @param var The variable.
+ * @param adjust_for_dio If true and var is an Array whose dio flag is set, an
+ * integer array counts as 1/10 and a float array as 1/5 of its size, an
+ * estimate of the compressed size that direct IO will write. Fields of a
+ * Structure/Sequence are never adjusted: the transform only evaluates direct
+ * IO for group-level arrays.
+ * @return The size in bytes; 0 if the variable is not marked to be sent.
+ */
+uint64_t FONcTransform::dio_var_size(BaseType *var, bool adjust_for_dio) const
+{
+    if (!var->send_p())
+        return 0;
+
+    // Scalar Structure/Sequence: add the sizes of the marked fields.
+    if (var->is_constructor_type()) {
+        uint64_t ctr_size = 0;
+        auto ctr = dynamic_cast<Constructor *>(var);
+        if (ctr) {
+            for (auto field : ctr->variables())
+                // Notice: DIO is not supported for the structure ec.
+                ctr_size += dio_var_size(field, false);
+        }
+        return ctr_size;
+    }
+
+    if (var->type() == dods_array_c) {
+        auto t_a = dynamic_cast<Array *>(var);
+        if (!t_a)
+             throw BESInternalError("Fail to obtain the array pointer in dio_var_size.", __FILE__, __LINE__);
+
+        Type elem_type = t_a->var()->type();
+        uint64_t vsize = 0;
+        if (elem_type == dods_str_c || elem_type == dods_url_c)
+            vsize = 2 * static_cast<uint64_t>(t_a->length_ll());
+        else if (elem_type == dods_structure_c)
+            vsize = dio_array_of_structure_size(t_a);
+        else
+            vsize = static_cast<uint64_t>(t_a->width_ll(true));
+
+        if (adjust_for_dio && t_a->get_dio_flag()) {
+            if (libdap::is_integer_type(elem_type))
+                vsize = vsize / 10;
+            else if (elem_type == dods_float32_c || elem_type == dods_float64_c)
+                vsize = vsize / 5;
+            BESDEBUG(MODULE, prolog << "dio variable " << t_a->FQN() << " adjusted size: " << vsize << " bytes" << endl);
+        }
+        return vsize;
+    }
+
+    return static_cast<uint64_t>(var->width_ll(true));
+}
+
+/**
+ * @brief Size, in bytes, of a marked array of Structure.
+ *
+ * libdap computes this as length_ll() * Structure::width_ll(true), which counts every
+ * String/URL value as sizeof(std::string). Here the element size is the sum of the
+ * marked fields at the first level of the Structure, where:
+ * - a String/URL scalar counts as 2 bytes,
+ * - a String/URL array counts as 2 bytes per element (2 * length_ll()),
+ * - any other field counts as width_ll(true). Deeper levels are not corrected.
+ * The total is the number of selected array elements times that element size.
+ *
+ * @param t_a The array; its element type must be dods_structure_c.
+ * @return The size in bytes.
+ */
+uint64_t FONcTransform::dio_array_of_structure_size(Array *t_a) const
+{
+    auto proto = dynamic_cast<Constructor *>(t_a->var());
+    if (!proto)
+        throw BESInternalError("Fail to obetain the structure pointer in dio_array_of_structure__size.", __FILE__, __LINE__);
+
+    uint64_t elem_size = 0;
+    for (auto field : proto->variables()) {
+        if (!field->send_p())
+            continue;
+
+        Type field_type = field->type();
+        if (field_type == dods_str_c || field_type == dods_url_c) {
+            elem_size += 2;
+        }
+        else if (field_type == dods_array_c && field->var()
+                 && (field->var()->type() == dods_str_c || field->var()->type() == dods_url_c)) {
+            auto field_array = dynamic_cast<Array *>(field);
+            if (!field_array)
+                throw BESInternalError("Fail to obtain the field array pointer in a structure in dio_array_of_structure_size.", __FILE__, __LINE__);
+            elem_size +=  2 * static_cast<uint64_t>(field_array->length_ll());
+        }
+        else {
+            elem_size += static_cast<uint64_t>(field->width_ll(true));
+        }
+    }
+
+    uint64_t vsize = static_cast<uint64_t>(t_a->length_ll()) * elem_size;
+    BESDEBUG(MODULE, prolog << t_a->FQN() << ": " << t_a->length_ll() << " elements x " << elem_size
+                            << " bytes = " << vsize << " bytes (libdap width_ll: " << t_a->width_ll(true) << ")" << endl);
+    return vsize;
+}
+
+
+
+/**
+ * @brief Total size, in bytes, of the marked variables in a group and its child groups.
+ * @param grp The group.
+ * @param adjust_for_dio Passed to dio_var_size().
+ * @return The size in bytes.
+ */
+uint64_t FONcTransform::dio_group_size(D4Group *grp, bool adjust_for_dio) const
+{
+    uint64_t size = 0;
+    for (auto var : grp->variables())
+        size += dio_var_size(var, adjust_for_dio);
+    for (auto child_grp : grp->groups())
+        size += dio_group_size(child_grp, adjust_for_dio);
+    return size;
+}
+
+/**
+ * @brief Apply the subset rules of set_constraint_var_dio_flag() to the arrays of a group and its child groups.
+ *
+ * For each marked group-level Array whose dio flag is set, call set_constraint_var_dio_flag() with the
+ * group's unlimited dimension names, exactly as transform_dap4_no_group() and
+ * transform_dap4_group_internal() do. A subset that cannot use direct IO (stride != 1, start not on a
+ * chunk boundary, partial chunk on a non-unlimited dimension, filled chunks) has its dio flag cleared.
+ * Arrays that are not subset are left unchanged. Repeating the call later in the transform gives the
+ * same result.
+ *
+ * @param grp The group.
+ */
+void FONcTransform::check_constraint_var_dio_flags(D4Group *grp) const
+{
+    vector<string> unlimited_dimnames;
+    obtain_unlimited_dimension_info(grp, unlimited_dimnames);
+
+    for (auto var : grp->variables()) {
+        if (var->send_p() && var->type() == dods_array_c) {
+            auto t_a = dynamic_cast<Array *>(var);
+            if (t_a && t_a->get_dio_flag()) {
+                set_constraint_var_dio_flag(grp, t_a, unlimited_dimnames);
+                BESDEBUG(MODULE, prolog << t_a->FQN() << " dio flag after the subset check: "
+                                        << (t_a->get_dio_flag() ? "true" : "false") << endl);
+            }
+        }
+    }
+
+    for (auto child_grp : grp->groups())
+        check_constraint_var_dio_flags(child_grp);
+}
+
+/**
+ * @brief Build the error message for throw_if_dap4_response_too_big_dio().
+ */
+string FONcTransform::too_big_dio_error_msg(uint64_t max_response_size_bytes, uint64_t total_size_bytes,
+                                            bool dio_adjusted, uint64_t adjusted_size_bytes,
+                                            const string &dap4_ce) const
+{
+    stringstream msg;
+    msg << "Your request was for a (DAP4 data model response) to be encoded as " << _returnAs << ". ";
+    msg << "The response to your specific request will produce a " << total_size_bytes << " byte response";
+    if (dio_adjusted)
+        msg << " (estimated as " << adjusted_size_bytes << " bytes after direct IO compression)";
+    msg << ". On this server the response size is limited to " << max_response_size_bytes << " bytes. ";
+    if (dap4_ce.empty())
+        msg << "I've noticed that no constraint expression accompanied your request. ";
+    else
+        msg << "Your request employed the constraint expression: \"" << dap4_ce << "\" ";
+    msg << "You may reduce the size of the request by choosing just the variable(s) you need and/or by ";
+    msg << "using the DAP index based array sub-setting syntax to additionally limit the amount of data requested.";
+    return msg.str();
+}
+
+
+/**
+ * @brief Throw if the DAP4 response exceeds the BES maximum response size, allowing for direct chunk IO.
+ *
+ * The limit is BES.MaxResponseSize.bytes (or the smaller max_response_size BES context),
+ * from dap_utils::get_max_sizes_bytes(). It is not FONc.RequestMaxSizeKB.
+ *
+ * 1. Add up the sizes of all marked variables (the subset, or the whole file when the
+ *    constraint is empty). If the total is within the limit, return.
+ * 2. If direct IO cannot be used for this response (global dio flag false, or the
+ *    response is not netCDF-4 enhanced model), throw.
+ * 3. Otherwise apply the subset rules of set_constraint_var_dio_flag() to every marked
+ *    array with the dio flag set (check_constraint_var_dio_flags()), so that a subset that
+ *    cannot use direct IO loses its dio flag. Then add up the sizes again, with each Array
+ *    whose dio flag is still set counted at 1/10 (integer types) or 1/5 (float types) of its
+ *    size. If this adjusted total is still over the limit, throw.
+ *
+ * @param dmr The DMR after the constraint has been applied.
+ * @param dap4_ce The DAP4 constraint, used in the error message.
+ */
+void FONcTransform::throw_if_dap4_response_too_big_dio(DMR *dmr, const string &dap4_ce)
+{
+    uint64_t max_response_size_bytes = 0;
+    uint64_t max_var_size_bytes = 0;    // Not used here.
+    dap_utils::get_max_sizes_bytes(max_response_size_bytes, max_var_size_bytes);
+    BESDEBUG(MODULE, prolog << "max_response_size_bytes: " << max_response_size_bytes << endl);
+
+    if (max_response_size_bytes == 0) {
+        BESDEBUG(MODULE, prolog << "No BES maximum response size; nothing to check." << endl);
+        return;
+    }
+
+    uint64_t total_size_bytes = dio_group_size(dmr->root(), false);
+    BESDEBUG(MODULE, prolog << "total_size_bytes: " << total_size_bytes << endl);
+    if (total_size_bytes <= max_response_size_bytes)
+        return;
+
+    // Same conditions used in transform_dap4() to set global_dio_flag.
+    bool dio_possible = (_returnAs == FONC_RETURN_AS_NETCDF4) && !FONcRequestHandler::classic_model
+                        && dmr->get_global_dio_flag();
+    BESDEBUG(MODULE, prolog << "dio_possible: " << (dio_possible ? "true" : "false") << endl);
+    if (!dio_possible) {
+        string err_msg = too_big_dio_error_msg(max_response_size_bytes, total_size_bytes, false, 0, dap4_ce);
+        throw BESSyntaxUserError(err_msg, __FILE__, __LINE__);
+    }
+
+    // Subset case: clear the dio flag of any subset array that cannot use direct IO before
+    // counting it at the reduced size.
+    check_constraint_var_dio_flags(dmr->root());
+
+    uint64_t adjusted_size_bytes = dio_group_size(dmr->root(), true);
+    BESDEBUG(MODULE, prolog << "adjusted_size_bytes: " << adjusted_size_bytes << endl);
+    if (adjusted_size_bytes > max_response_size_bytes) {
+        string err_msg = too_big_dio_error_msg(max_response_size_bytes, total_size_bytes, true,
+                                               adjusted_size_bytes, dap4_ce);
+        throw BESSyntaxUserError(err_msg, __FILE__, __LINE__);
+    }
+}
+
+#if 0
+void FONcTransform::throw_if_dap4_response_too_big_dio(DMR *dmr, const string &dap4_ce)
+{
+    unsigned long long max_response_size_kb = FONcRequestHandler::get_request_max_size_kb();
+    BESDEBUG(MODULE, prolog << "Configured max_request_size_kb: " << max_response_size_kb << endl);
+
+    unsigned long long req_size_kb = dmr->request_size_kb(true);
+    BESDEBUG(MODULE, prolog << "dmr->get_request_size_kb(): " << req_size_kb << endl);
+
+    string return_encoding;
+    set_max_size_and_encoding(max_response_size_kb, return_encoding);
+
+    // set the max request size in kilobytes for testing if the request is too large
+    dmr->set_response_limit_kb(max_response_size_kb);
+
+    if (dmr->too_big()) {
+        string err_msg = too_big_error_msg(4,return_encoding,req_size_kb, max_response_size_kb, dap4_ce);
+        throw BESSyntaxUserError(err_msg,__FILE__,__LINE__);
+    }
+}
+#endif
+
 /** @brief Transforms each of the variables of the DMR to the NetCDF
  * file
  *
@@ -518,6 +780,12 @@ void FONcTransform::transform_dap4() {
     d_dhi->first_container();
 
     BESDapResponseBuilder responseBuilder;
+
+    // global_dio_flag has been retrieved before transform_dap4().
+    // When global_dio_flag is on, we will not ask the responseBuilder to check if the response size is too big.
+    if (global_dio_flag) 
+        responseBuilder.set_ignore_check_too_big(true);
+    
     _dmr = responseBuilder.setup_dap4_intern_data(d_obj, *d_dhi).release();
 
     _dmr->set_response_limit_kb(FONcRequestHandler::get_request_max_size_kb());
@@ -546,7 +814,10 @@ void FONcTransform::transform_dap4() {
                 __LINE__);
     }
 
-    throw_if_dap4_response_too_big(_dmr,responseBuilder.get_dap4ce() );
+    if (!global_dio_flag) 
+        throw_if_dap4_response_too_big(_dmr,responseBuilder.get_dap4ce() );
+    else 
+        throw_if_dap4_response_too_big_dio(_dmr,responseBuilder.get_dap4ce());
 
     BESDapResponseBuilder besDRB;
 
@@ -594,20 +865,6 @@ void FONcTransform::transform_dap4() {
         }
  
 #endif
-    }
-    // Check if direct_io_flag is set for any Array variables. If the global dio flag is false, we don't need to loop through
-    // every variable to check if the direct IO can be applied. 
-    if (FONC_RETURN_AS_NETCDF4 == FONcTransform::_returnAs && false == FONcRequestHandler::classic_model) {
-        global_dio_flag = _dmr->get_global_dio_flag();
-
-#if !NDEBUG
-        if(global_dio_flag) {  
-            BESDEBUG(MODULE, prolog << "global_dio_flag is true" << endl);
-        }
-        else 
-            BESDEBUG(MODULE, prolog << "global_dio_flag is false" << endl);
-#endif
-
     }
 
     // Convert the DMR into an internal format to keep track of
