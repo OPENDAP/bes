@@ -553,9 +553,9 @@ uint64_t FONcTransform::dio_var_size(BaseType *var, bool adjust_for_dio) const
 
         if (adjust_for_dio && t_a->get_dio_flag()) {
             if (libdap::is_integer_type(elem_type))
-                vsize = vsize / 10;
+                vsize = vsize / 20;
             else if (elem_type == dods_float32_c || elem_type == dods_float64_c)
-                vsize = vsize / 5;
+                vsize = vsize / 4;
             BESDEBUG(MODULE, prolog << "dio variable " << t_a->FQN() << " adjusted size: " << vsize << " bytes" << endl);
         }
         return vsize;
