@@ -47,7 +47,6 @@
 
 #include "BESObj.h"
 
-#define COMMAND_TIMING 1
 #define PROFILE_TIMING 1
 
 static const std::string TIMING_LOG_KEY = "timing";
@@ -75,9 +74,10 @@ static const std::string MISSING_LOG_PARAM;
 #define BES_STOPWATCH_START_DHI(module, msg, DHI)
 #endif
 
-// This macro is used specifically to time the execution of a command. It does not depend
-// on the code being built in developer mode. jhrg 11/24/24
-#ifdef COMMAND_TIMING
+// These macros time the execution of a command or a module operation. They are only
+// active in developer (--enable-developer) builds; production builds define NDEBUG and
+// compile them to nothing. TASK-001
+#ifndef NDEBUG
 
 #define BES_MODULE_TIMING(message)                                                                                     \
     BESStopWatch commandTimer;                                                                                         \
