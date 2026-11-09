@@ -672,7 +672,7 @@ string FONcTransform::too_big_dio_error_msg(uint64_t max_response_size_bytes, ui
     msg << "Your request was for a (DAP4 data model response) to be encoded as " << _returnAs << ". ";
     msg << "The response to your specific request will produce a " << total_size_bytes << " byte response";
     if (dio_adjusted)
-        msg << " (estimated as " << adjusted_size_bytes << " bytes after direct IO compression)";
+        msg << " (estimated as " << adjusted_size_bytes << " bytes after direct chunk IO optimization)";
     msg << ". On this server the response size is limited to " << max_response_size_bytes << " bytes. ";
     if (dap4_ce.empty())
         msg << "I've noticed that no constraint expression accompanied your request. ";
@@ -717,12 +717,12 @@ void FONcTransform::throw_if_dap4_response_too_big_dio(DMR *dmr, const string &d
 
     uint64_t total_size_bytes = dio_group_size(dmr->root(), false);
     BESDEBUG(MODULE, prolog << "total_size_bytes: " << total_size_bytes << endl);
+    // This already counts the subset case.
     if (total_size_bytes <= max_response_size_bytes)
         return;
 
-    // Same conditions used in transform_dap4() to set global_dio_flag.
-    bool dio_possible = (_returnAs == FONC_RETURN_AS_NETCDF4) && !FONcRequestHandler::classic_model
-                        && dmr->get_global_dio_flag();
+    // See if the global_dio_flag is set.
+    bool dio_possible = dmr->get_global_dio_flag();
     BESDEBUG(MODULE, prolog << "dio_possible: " << (dio_possible ? "true" : "false") << endl);
     if (!dio_possible) {
         string err_msg = too_big_dio_error_msg(max_response_size_bytes, total_size_bytes, false, 0, dap4_ce);
