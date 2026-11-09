@@ -15,3 +15,5 @@ cache
 /BESFileLockingCacheTest
 /FileCacheTest
 /uncompressT2
+/BESStopWatchTest
+/stopwatch_timing_test.txt

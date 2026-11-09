@@ -1,0 +1,18 @@
+{
+  "hits" : 1,
+  "took" : 1,
+  "items" : [ {
+    "umm" : {
+      "RelatedUrls" : [ {
+        "Type" : "GET DATA",
+        "URL" : "https://data.example/granule.dmrpp.nc"
+      }, {
+        "Type" : "GET DATA",
+        "URL" : "s3://bucket/granule.dmrpp.nc"
+      }, {
+        "Type" : "VIEW RELATED INFORMATION",
+        "URL" : "https://data.example/s3credentials"
+      } ]
+    }
+  } ]
+}
