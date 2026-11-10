@@ -3,7 +3,7 @@
     <getDAP>
         <BESError>
             <Type>3</Type>
-            <Message>Your request was for a (DAP4 data model response) to be encoded as netcdf-4. The response to your specific request will produce a 3072 byte response (estimated as 3072 bytes after direct chunk IO optimization). On this server the response size is limited to 400 bytes. I've noticed that no constraint expression accompanied your request. You may reduce the size of the request by choosing just the variable(s) you need and/or by using the DAP index based array sub-setting syntax to additionally limit the amount of data requested.</Message>
+            <Message>Your request was for a (DAP4 data model response) to be encoded as netcdf-4. The response to your specific request will produce a 3072 byte response (estimated as 3072 bytes after direct chunk IO optimization). On this server the response size is limited to 400 bytes. You may reduce the size of the request by choosing just the variable(s) you need and/or by using the DAP index based array sub-setting syntax to additionally limit the amount of data requested.</Message>
             <Administrator>support@opendap.org</Administrator>
             <Location>
                 removed file

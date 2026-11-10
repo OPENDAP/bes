@@ -668,19 +668,16 @@ string FONcTransform::too_big_dio_error_msg(uint64_t max_response_size_bytes, ui
                                             bool dio_adjusted, uint64_t adjusted_size_bytes,
                                             const string &dap4_ce) const
 {
-    stringstream msg;
-    msg << "Your request was for a (DAP4 data model response) to be encoded as " << _returnAs << ". ";
-    msg << "The response to your specific request will produce a " << total_size_bytes << " byte response";
+    string msg;
+    
+    msg = "Your request was for a (DAP4 data model response) to be encoded as " + _returnAs  + ". ";
+    msg += "The response to your specific request will produce a " + to_string(total_size_bytes) + " byte response";
     if (dio_adjusted)
-        msg << " (estimated as " << adjusted_size_bytes << " bytes after direct chunk IO optimization)";
-    msg << ". On this server the response size is limited to " << max_response_size_bytes << " bytes. ";
-    if (dap4_ce.empty())
-        msg << "I've noticed that no constraint expression accompanied your request. ";
-    else
-        msg << "Your request employed the constraint expression: \"" << dap4_ce << "\" ";
-    msg << "You may reduce the size of the request by choosing just the variable(s) you need and/or by ";
-    msg << "using the DAP index based array sub-setting syntax to additionally limit the amount of data requested.";
-    return msg.str();
+        msg += " (estimated as " + to_string(adjusted_size_bytes) + " bytes after direct chunk IO optimization)";
+    msg += ". On this server the response size is limited to " + to_string(max_response_size_bytes) + " bytes. ";
+    msg += "You may reduce the size of the request by choosing just the variable(s) you need and/or by ";
+    msg += "using the DAP index based array sub-setting syntax to additionally limit the amount of data requested.";
+    return msg;
 }
 
 
@@ -742,27 +739,6 @@ void FONcTransform::throw_if_dap4_response_too_big_dio(DMR *dmr, const string &d
     }
 }
 
-#if 0
-void FONcTransform::throw_if_dap4_response_too_big_dio(DMR *dmr, const string &dap4_ce)
-{
-    unsigned long long max_response_size_kb = FONcRequestHandler::get_request_max_size_kb();
-    BESDEBUG(MODULE, prolog << "Configured max_request_size_kb: " << max_response_size_kb << endl);
-
-    unsigned long long req_size_kb = dmr->request_size_kb(true);
-    BESDEBUG(MODULE, prolog << "dmr->get_request_size_kb(): " << req_size_kb << endl);
-
-    string return_encoding;
-    set_max_size_and_encoding(max_response_size_kb, return_encoding);
-
-    // set the max request size in kilobytes for testing if the request is too large
-    dmr->set_response_limit_kb(max_response_size_kb);
-
-    if (dmr->too_big()) {
-        string err_msg = too_big_error_msg(4,return_encoding,req_size_kb, max_response_size_kb, dap4_ce);
-        throw BESSyntaxUserError(err_msg,__FILE__,__LINE__);
-    }
-}
-#endif
 
 /** @brief Transforms each of the variables of the DMR to the NetCDF
  * file
