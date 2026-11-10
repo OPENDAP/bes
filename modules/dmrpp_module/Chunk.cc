@@ -972,6 +972,11 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
             BESDEBUG(MODULE, prolog << "get_rbuf_size(): " << get_rbuf_size() << endl);
             BESDEBUG(MODULE, prolog << "calc_checksum: " << calc_checksum << endl);
             BESDEBUG(MODULE, prolog << "f_checksum: " << f_checksum << endl);
+            stringstream checksum_msg;
+            checksum_msg <<" get_rbuf_size(): " << get_rbuf_size()
+                         <<" calc_checksum: " << calc_checksum 
+                         <<" f_checksum: " << f_checksum  <<endl;
+            INFO_LOG(checksum_msg.str());
             if (f_checksum != calc_checksum) {
                 throw BESInternalError("Data read from the DMR++ handler did not match the Fletcher32 checksum.",
                                        __FILE__, __LINE__);
