@@ -504,11 +504,13 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_MAX_RESPONSE_SIZE_EXPECTED_FAILURE
     AS_IF([test -n "$baselines" -a x$baselines = xyes],
          [
          AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input],[], [stdout])
+         REMOVE_ERROR_FILE([stdout])
          REMOVE_ERROR_LINE([stdout])
          AT_CHECK([mv stdout $baseline.tmp])
          ],
          [
          AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input],[],  [stdout])
+         REMOVE_ERROR_FILE([stdout])
          REMOVE_ERROR_LINE([stdout])
          AT_CHECK([diff -b -B $baseline stdout])
          AT_XFAIL_IF([test z$2 = zxfail])
