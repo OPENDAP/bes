@@ -619,7 +619,7 @@ uint64_t FONcTransform::dio_array_of_structure_size(Array *t_a) const
  * @param adjust_for_dio Passed to dio_var_size().
  * @return The size in bytes.
  */
-uint64_t FONcTransform::dio_group_size(D4Group *grp, bool adjust_for_dio) const
+uint64_t FONcTransform::dio_group_size(const D4Group *grp, bool adjust_for_dio) const
 {
     uint64_t size = 0;
     for (auto var : grp->variables())
@@ -703,7 +703,7 @@ string FONcTransform::too_big_dio_error_msg(uint64_t max_response_size_bytes, ui
  * @param dmr The DMR after the constraint has been applied.
  * @param dap4_ce The DAP4 constraint, used in the error message.
  */
-void FONcTransform::throw_if_dap4_response_too_big_dio(DMR *dmr, const string &dap4_ce)
+void FONcTransform::throw_if_dap4_response_too_big_dio(DMR *dmr, const string &dap4_ce) const
 {
     uint64_t max_response_size_bytes = 0;
     uint64_t max_var_size_bytes = 0;    // Not used here.

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" reqUUID="SomeUUIDString">
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="data" space="catalog">/data/two_arrays_16x16.h5_no_dio.dmrpp</setContainer>
+    <define name="d">
+	<container name="data" />
+    </define>
+    <get type="dap" definition="d" returnAs="netcdf-4"/>
+</request>

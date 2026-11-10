@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<response reqID="some_unique_value" reqUUID="SomeUUIDString" xmlns="http://xml.opendap.org/ns/bes/1.0#">
+    <getDAP>
+        <BESError>
+            <Type>3</Type>
+            <Message>Your request was for a (DAP4 data model response) to be encoded as netcdf-4. The response to your specific request will produce a 4096 byte response (estimated as 614 bytes after direct chunk IO optimization). On this server the response size is limited to 400 bytes. I've noticed that no constraint expression accompanied your request. You may reduce the size of the request by choosing just the variable(s) you need and/or by using the DAP index based array sub-setting syntax to additionally limit the amount of data requested.</Message>
+            <Administrator>support@opendap.org</Administrator>
+            <Location>
+                <File>FONcTransform.cc</File>
+                removed line
+            </Location>
+        </BESError>
+    </getDAP>
+</response>

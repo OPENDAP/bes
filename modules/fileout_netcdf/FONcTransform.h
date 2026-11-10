@@ -132,10 +132,10 @@ private:
     void close_nc_file();
     void throw_if_dap2_response_too_big(DDS *dds, const string &dap2_ce="");
     void throw_if_dap4_response_too_big(DMR *dmr, const string &dap4_ce="");
-    void throw_if_dap4_response_too_big_dio(DMR *dmr, const string &dap4_ce="");
+    void throw_if_dap4_response_too_big_dio(DMR *dmr, const string &dap4_ce="") const;
     uint64_t dio_var_size(libdap::BaseType *var, bool adjust_for_dio) const;
     uint64_t dio_array_of_structure_size(libdap::Array *t_a) const;
-    uint64_t dio_group_size(libdap::D4Group *grp, bool adjust_for_dio) const;
+    uint64_t dio_group_size(const libdap::D4Group *grp, bool adjust_for_dio) const;
     void check_constraint_var_dio_flags(libdap::D4Group *grp) const;
     std::string too_big_dio_error_msg(uint64_t max_response_size_bytes, uint64_t total_size_bytes,
                                       bool dio_adjusted, uint64_t adjusted_size_bytes, const std::string &dap4_ce) const;
