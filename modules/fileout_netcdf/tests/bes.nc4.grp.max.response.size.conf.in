@@ -103,4 +103,4 @@ H4.EnableDirectDMR=true
 # For the dmrpp tests, keep the original setting by using buffer chunk and sequential data transfer.
 DMRPP.UseBufferChunk= true
 DMRPP.UseParallelTransfers=false
-BES.MaxResponseSize.bytes = 4000
+BES.MaxResponseSize.bytes = 400
