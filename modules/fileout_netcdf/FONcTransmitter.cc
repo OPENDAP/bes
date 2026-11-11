@@ -204,6 +204,11 @@ void FONcTransmitter::send_dap4_data(BESResponseObject *obj, BESDataHandlerInter
         // FONcTransform ft(loaded_dmr, dhi, temp_file.get_name(), dhi.data[RETURN_CMD]);
         FONcTransform ft(obj, &dhi, temp_file_name, dhi.data[RETURN_CMD]);
 
+        // We need to obtain dmr's global_dio_flag and use it in transform_dap4() to customize the
+        // maximum response size limit. 
+        if (FONC_RETURN_AS_NETCDF4 == ft.get_returnAs() && false == FONcRequestHandler::classic_model) 
+             ft.set_global_dio_flag(dmr->get_global_dio_flag());
+
         // Call the transform function for DAP4.
         ft.transform_dap4();
 

@@ -1,0 +1,19 @@
+netcdf test {
+dimensions:
+	dim1 = 16 ;
+	dim2 = 16 ;
+	dim3 = 64 ;
+	dim4 = 16 ;
+variables:
+	float float_data(dim1, dim2) ;
+	ushort uint16_data(dim3, dim4) ;
+
+// global attributes:
+		:build_dmrpp_metadata.created = "removed date-time" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.22.0" ;
+		:build_dmrpp_metadata.bes = "3.22.0" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.21.1" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -f /Users/myang6/Desktop/two_arrays_16x16.h5 -r two_arrays_16x16.h5.dmr -u data/two_arrays_16x16.h5 -M" ;
+		:history = "removed date-timex two_arrays_16x16.h5_no_dio.dmrpp\n" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"two_arrays_16x16.h5_no_dio.dmrpp\"}]}]" ;
+}
