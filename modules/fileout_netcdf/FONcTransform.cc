@@ -665,8 +665,7 @@ void FONcTransform::check_constraint_var_dio_flags(D4Group *grp) const
  * @brief Build the error message for throw_if_dap4_response_too_big_dio().
  */
 string FONcTransform::too_big_dio_error_msg(uint64_t max_response_size_bytes, uint64_t total_size_bytes,
-                                            bool dio_adjusted, uint64_t adjusted_size_bytes,
-                                            const string &dap4_ce) const
+                                            bool dio_adjusted, uint64_t adjusted_size_bytes) const
 {
     string msg;
     
@@ -700,7 +699,7 @@ string FONcTransform::too_big_dio_error_msg(uint64_t max_response_size_bytes, ui
  * @param dmr The DMR after the constraint has been applied.
  * @param dap4_ce The DAP4 constraint, used in the error message.
  */
-void FONcTransform::throw_if_dap4_response_too_big_dio(DMR *dmr, const string &dap4_ce) const
+void FONcTransform::throw_if_dap4_response_too_big_dio(DMR *dmr) const
 {
     uint64_t max_response_size_bytes = 0;
     uint64_t max_var_size_bytes = 0;    // Not used here.
@@ -722,7 +721,7 @@ void FONcTransform::throw_if_dap4_response_too_big_dio(DMR *dmr, const string &d
     bool dio_possible = dmr->get_global_dio_flag();
     BESDEBUG(MODULE, prolog << "dio_possible: " << (dio_possible ? "true" : "false") << endl);
     if (!dio_possible) {
-        string err_msg = too_big_dio_error_msg(max_response_size_bytes, total_size_bytes, false, 0, dap4_ce);
+        string err_msg = too_big_dio_error_msg(max_response_size_bytes, total_size_bytes, false, 0);
         throw BESSyntaxUserError(err_msg, __FILE__, __LINE__);
     }
 
@@ -734,7 +733,7 @@ void FONcTransform::throw_if_dap4_response_too_big_dio(DMR *dmr, const string &d
     BESDEBUG(MODULE, prolog << "adjusted_size_bytes: " << adjusted_size_bytes << endl);
     if (adjusted_size_bytes > max_response_size_bytes) {
         string err_msg = too_big_dio_error_msg(max_response_size_bytes, total_size_bytes, true,
-                                               adjusted_size_bytes, dap4_ce);
+                                               adjusted_size_bytes);
         throw BESSyntaxUserError(err_msg, __FILE__, __LINE__);
     }
 }
@@ -793,7 +792,7 @@ void FONcTransform::transform_dap4() {
     if (!global_dio_flag) 
         throw_if_dap4_response_too_big(_dmr,responseBuilder.get_dap4ce() );
     else 
-        throw_if_dap4_response_too_big_dio(_dmr,responseBuilder.get_dap4ce());
+        throw_if_dap4_response_too_big_dio(_dmr);
 
     BESDapResponseBuilder besDRB;
 
