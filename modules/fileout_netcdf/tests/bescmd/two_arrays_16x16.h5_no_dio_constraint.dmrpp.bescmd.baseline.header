@@ -1,9 +1,9 @@
 netcdf test {
 dimensions:
-	dim1 = 16 ;
-	dim2 = 16 ;
-	dim3 = 64 ;
-	dim4 = 16 ;
+	dim1 = 1 ;
+	dim2 = 2 ;
+	dim3 = 1 ;
+	dim4 = 2 ;
 variables:
 	float float_data(dim1, dim2) ;
 	ushort uint16_data(dim3, dim4) ;
