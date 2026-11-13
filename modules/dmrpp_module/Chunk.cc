@@ -25,6 +25,7 @@
 
 #include <sstream>
 #include <cstring>
+#include <string>
 
 #include <zlib.h>
 #include <curl/curl.h>
@@ -808,6 +809,8 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
 
     chunk_size *= elem_width;
 
+string filter_log = "Filters: "+ filters;
+INFO_LOG(filter_log);
     vector<string> filter_array = BESUtil::split(filters, ' ' );
 
     // We need to check if the filters that include the deflate filters are contiguous.
@@ -818,7 +821,8 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
     unsigned num_deflate = 0;
 
     for (unsigned i = 0; i<filter_array.size(); i++) {
-
+string filter_array_log = "filter index= "+std::to_string(i) + ": " + filter_array[i];
+INFO_LOG(filter_array_log);
         if (filter_array[i] == "deflate") {
             if (is_1st_deflate == true) {
                 cur_deflate_index = i;
