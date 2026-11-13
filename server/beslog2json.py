@@ -610,10 +610,18 @@ def read_from_stdin():
         except EOFError:
             debug("End of input reached. Exiting...")
             break
+        except UnicodeDecodeError as e: # Handle UTF-8 decoding errors. See HYRAX-2326. jhrg 11/13/26
+            msg = (f"{prolog} OUCH! Incompatible input log line {line_count} failed with the "
+                   f"message: \"{str(e)}\"")
+            debug(msg)
+            json_log_record={}
+            processing_error(msg, json_log_record)
+            print(json.dumps(json_log_record, sort_keys=SORT_KEYS))
+            continue
 
-        if not log_line:
-            debug("Unable to read from input(). Exiting...")
-            break
+        if not log_line:    # Handle empty lines gracefully. See HYRAX-2326. jhrg 11/13/26
+            debug(f"Skipping empty line {line_count}")
+            continue
 
         debug(f"Log Line({str(line_count)}): {log_line}")
         try:
@@ -646,8 +654,8 @@ def read_from_file(filename):
             debug(f"log_line: {log_line}")
 
             if not log_line:
-                debug(f"Failed to read line from file: {filename} line_count: {line_count} Exiting...")
-                break
+                debug(f"Skipping empty line {line_count}")
+                continue
 
             try:
                 beslog2json(line_count, log_line)
