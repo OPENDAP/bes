@@ -41,6 +41,16 @@ besdaemon_LDADD = ../ppt/libbes_ppt.la ../xmlcommand/libbes_xml_command.la \
 install-data-local:
 	test -z "$(localstatedir)/run/bes" || $(MKDIR_P) "$(DESTDIR)$(localstatedir)/run/bes"
 
+# Unit tests for beslog2json.py (python3 stdlib unittest). Skipped if python3 is absent.
+EXTRA_DIST = tests/test_beslog2json.py
+
+check-local:
+	@if command -v python3 >/dev/null 2>&1; then \
+		python3 -m unittest discover -s $(srcdir)/tests -v; \
+	else \
+		echo "python3 not found; skipping beslog2json.py tests"; \
+	fi
+
 C4_DIR=./cccc
 .PHONY: cccc
 cccc:	

@@ -18,6 +18,7 @@ merged.txt
 **/unused
 /build
 __pycache__
+/operational_log_data
 
 ## files
 *~
