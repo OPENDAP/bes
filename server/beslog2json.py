@@ -649,6 +649,7 @@ def read_from_file(filename):
         line_count=0
         for log_line in log_file:
             line_count += 1
+            log_line = log_line.rstrip("\r\n")
             debug("-------------------------------------------------------------------------")
             debug(f"line: {line_count}")
             debug(f"log_line: {log_line}")
@@ -678,6 +679,7 @@ NAME
 
 SYNOPSIS
     beslog2json.py [-h][-d][-a][-r value][-i value][-e value][-v value][-t value][-P value][-p value][-f value][-s value]
+    (-v takes a value, like the other record-type options.)
 
 DESCRIPTION
     Reads BES log lines from stdin (default) or from a file 
@@ -767,7 +769,7 @@ beslog2json.py
 ###############################################################################
 # main
 def main(argv):
-    """main(): In which we parse arguments and call functions toread the BES log
+    """main(): In which we parse arguments and call functions to read the BES log
     lines, and write the json. woot."""
 
     global DEBUG_FLAG
@@ -783,7 +785,7 @@ def main(argv):
     input_filename=""
 
     try:
-        opts, args = getopt.getopt(argv, "hadsvr:i:e:t:P:p:f:", ["help", "debug", "all", "sort=", "requests=", "info=", "error=", "verbose=", "timing=", "profiling=", "prefix=", "filename="])
+        opts, args = getopt.getopt(argv, "hads:v:r:i:e:t:P:p:f:", ["help", "debug", "all", "sort=", "requests=", "info=", "error=", "verbose=", "timing=", "profiling=", "prefix=", "filename="])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -834,7 +836,7 @@ def main(argv):
             add_prefix_to_timing_log_keys()
 
         elif opt in ("-v", "--verbose"):
-            TRANSMIT_VERBOSE_LOG = True
+            TRANSMIT_VERBOSE_LOG = not arg.lower().startswith("f")
 
         elif opt in ("-d", "--debug"):
             DEBUG_FLAG = True
