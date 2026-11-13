@@ -807,7 +807,7 @@ def main(argv):
         elif opt in ("-r", "--requests"):
             TRANSMIT_REQUEST_LOG = not arg.lower().startswith("f")
 
-        elif opt in ("-a", "--all"):
+        elif opt in ("-a", "--all"):    # NB: These are all true by default. jhrg 11/13/26
             TRANSMIT_REQUEST_LOG = True
             TRANSMIT_INFO_LOG    = True
             TRANSMIT_ERROR_LOG   = True
@@ -836,7 +836,10 @@ def main(argv):
             add_prefix_to_timing_log_keys()
 
         elif opt in ("-v", "--verbose"):
-            TRANSMIT_VERBOSE_LOG = not arg.lower().startswith("f")
+            # This line does nothing - TRANSMIT_VERBOSE_LOG is True by default. jhrg 11/13/26
+            # I left it like this because there is coupling between this code and entrypoint.sh
+            # in hyrax-docker and I don't want to break our NGAP deployments. 
+            TRANSMIT_VERBOSE_LOG = True 
 
         elif opt in ("-d", "--debug"):
             DEBUG_FLAG = True
