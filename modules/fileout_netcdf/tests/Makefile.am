@@ -4,18 +4,18 @@ AUTOMAKE_OPTIONS = foreign
 noinst_DATA = bes.conf bes.nc4.conf bes.nc4.grp.conf bes.nc4.cfdmr.conf bes.functions.conf \
 bes.size600.conf bes.size50.conf bes.nc4.grp.disable_dio.conf bes.nc4.grp.reduce_dim.conf bes.h4cf.conf \
 bes.nc4.grp.float_write_opt.conf bes.nc4.grp.dmrpp.superchunk.conf bes.nc4.grp.dmrpp.superchunk.p.transfer.conf \
-bes.nc4.grp.p.transfer.conf
+bes.nc4.grp.p.transfer.conf bes.nc4.grp.max.response.size.conf
 
 CLEANFILES = bes.conf bes.nc4.conf bes.nc4.grp.conf bes.nc4.cfdmr.conf bes.functions.conf \
 bes.size600.conf bes.size50.conf bes.nc4.grp.disable_dio.conf bes.nc4.grp.reduce_dim.conf bes.h4cf.conf \
 bes.nc4.grp.float_write_opt.conf bes.nc4.grp.dmrpp.superchunk.conf bes.nc4.grp.dmrpp.superchunk.p.transfer.conf \
-bes.nc4.grp.p.transfer.conf
+bes.nc4.grp.p.transfer.conf bes.nc4.grp.max.response.size.conf
 
 EXTRA_DIST = bescmd $(TESTSUITE).at $(TESTSUITE) $(TESTSUITE_FUNC).at $(TESTSUITE_FUNC) \
 atlocal.in bes.conf.in bes.nc4.conf.in bes.nc4.grp.conf.in bes.nc4.cfdmr.conf.in bes.functions.conf.in \
 package.m4 local_handler_tests_macros.m4 bes.size600.conf.in bes.size50.conf.in bes.nc4.grp.disable_dio.conf.in \
 bes.nc4.grp.reduce_dim.conf.in bes.h4cf.conf.in bes.nc4.grp.float_write_opt.conf.in bes.nc4.grp.dmrpp.superchunk.conf.in \
-bes.nc4.grp.dmrpp.superchunk.p.transfer.conf.in bes.nc4.grp.p.transfer.conf.in
+bes.nc4.grp.dmrpp.superchunk.p.transfer.conf.in bes.nc4.grp.p.transfer.conf.in bes.nc4.grp.max.response.size.conf.in
 
 DISTCLEANFILES = atconfig
 
@@ -54,6 +54,8 @@ bes.nc4.grp.dmrpp.superchunk.conf: $(srcdir)/bes.nc4.grp.dmrpp.superchunk.conf.i
 bes.nc4.grp.dmrpp.superchunk.p.transfer.conf: $(srcdir)/bes.nc4.grp.dmrpp.superchunk.p.transfer.conf.in $(top_srcdir)/configure.ac
 
 bes.nc4.grp.dmrpp.p.transfer.conf: $(srcdir)/bes.nc4.grp.dmrpp.p.transfer.conf.in $(top_srcdir)/configure.ac
+
+bes.nc4.grp.max.response.size.conf: $(srcdir)/bes.nc4.grp.max.response.size.conf.in $(top_srcdir)/configure.ac
 ############## Autotest follows #####################
 
 AUTOM4TE = autom4te

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="two_arrays_multi_chunks_32x16.h5" dmrpp:href="data/two_arrays_multi_chunks_32x16.h5" dmrpp:version="3.22.0">
+    <Float32 name="float_data">
+        <Dim size="32"/>
+        <Dim size="16"/>
+        <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>32 8</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4016" nBytes="402" chunkPositionInArray="[0,0]"/>
+            <dmrpp:chunk offset="4418" nBytes="398" chunkPositionInArray="[0,8]"/>
+        </dmrpp:chunks>
+    </Float32>
+    <UInt16 name="uint16_data">
+        <Dim size="64"/>
+        <Dim size="16"/>
+        <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="0" byteOrder="LE">
+            <dmrpp:chunkDimensionSizes>32 8</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4816" nBytes="151" chunkPositionInArray="[0,0]"/>
+            <dmrpp:chunk offset="4967" nBytes="149" chunkPositionInArray="[0,8]"/>
+            <dmrpp:chunk offset="5116" nBytes="147" chunkPositionInArray="[32,0]"/>
+            <dmrpp:chunk offset="5263" nBytes="155" chunkPositionInArray="[32,8]"/>
+        </dmrpp:chunks>
+    </UInt16>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2026-11-11T19:19:58Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.22.0</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.22.0</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/work/opendap/hyrax-2327/bes/modules/fileout_netcdf/data/two_arrays_multi_chunks_32x16.h5 -r two_arrays_multi_chunks_32x16.h5.dmr -u data/two_arrays_multi_chunks_32x16.h5 -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

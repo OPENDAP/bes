@@ -561,3 +561,15 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/One_chunk_shuf_deflate_fl
 
 # utf-8 dmrpp test
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP(bescmd/utf8_vlen_str.h5.dmrpp.bescmd)
+
+#max response size, we only need to check the ncdump header for the successful responses.
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_MAX_RESPONSE_SIZE_HDR(bescmd/two_arrays_16x16.h5.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_MAX_RESPONSE_SIZE_EXPECTED_FAILURE(bescmd/two_arrays_16x16.h5_no_dio.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_MAX_RESPONSE_SIZE_EXPECTED_FAILURE(bescmd/two_arrays_32x16.h5.dmrpp.bescmd)
+
+#max response size for the subset cases, we only need to check the header for the successful responses.
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_MAX_RESPONSE_SIZE_HDR(bescmd/two_arrays_16x16.h5_no_dio_constraint.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_MAX_RESPONSE_SIZE_HDR(bescmd/two_arrays_multi_chunks_32x16.h5_constraint.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_MAX_RESPONSE_SIZE_EXPECTED_FAILURE(bescmd/two_arrays_16x16.h5_no_dio_constraint2.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_MAX_RESPONSE_SIZE_EXPECTED_FAILURE(bescmd/two_arrays_multi_chunks_32x16.h5_constraint2.dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_MAX_RESPONSE_SIZE_EXPECTED_FAILURE(bescmd/two_arrays_multi_chunks_32x16.h5_constraint3.dmrpp.bescmd)

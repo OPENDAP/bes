@@ -447,6 +447,78 @@ m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_HDR],  [dnl
     AT_CLEANUP
 ])
 
+dnl Check the enhanced netCDF-4 response with the customized maximum response size with dio; 
+dnl we only need to generate the header of the generated netCDF-4 file.
+
+m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_MAX_RESPONSE_SIZE_HDR],  [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([nc4 enhanced binary ncdump])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+    pass=$2
+    repeat=$3
+    bes_conf=bes.nc4.grp.max.response.size.conf
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+         [
+         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
+
+         dnl the header
+         AT_CHECK([ncdump -h test.nc > $baseline.header.tmp])
+         REMOVE_DATE_TIME([$baseline.header.tmp])
+         ],
+         [
+         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input > test.nc])
+         AT_CHECK([ncdump -h test.nc > tmp])
+         REMOVE_DATE_TIME([tmp])
+         AT_CHECK([diff -b -B $baseline.header tmp])
+         AT_XFAIL_IF([test z$2 = zxfail])
+         ])
+
+    AT_CLEANUP
+])
+
+dnl The macro to check the the customized maximum response size with dio when the response size
+dnl exceeds the maximum response size. 
+m4_define([AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_MAX_RESPONSE_SIZE_EXPECTED_FAILURE],  [dnl
+
+    AT_SETUP([$1])
+    AT_KEYWORDS([nc4 enhanced binary ncdump])
+
+    input=$abs_srcdir/$1
+    baseline=$abs_srcdir/$1.baseline
+    pass=$2
+    repeat=$3
+    bes_conf=bes.nc4.grp.max.response.size.conf
+
+    AS_IF([test -n "$repeat" -a x$repeat = xrepeat -o x$repeat = xcached], [repeat="-r 3"])
+
+    AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone $repeat -c $bes_conf -i $1"])
+
+    AS_IF([test -n "$baselines" -a x$baselines = xyes],
+         [
+         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input],[], [stdout])
+         REMOVE_ERROR_FILE([stdout])
+         REMOVE_ERROR_LINE([stdout])
+         AT_CHECK([mv stdout $baseline.tmp])
+         ],
+         [
+         AT_CHECK([besstandalone -c $abs_builddir/$bes_conf -i $input],[],  [stdout])
+         REMOVE_ERROR_FILE([stdout])
+         REMOVE_ERROR_LINE([stdout])
+         AT_CHECK([diff -b -B $baseline stdout])
+         AT_XFAIL_IF([test z$2 = zxfail])
+         ])
+
+    AT_CLEANUP
+])
+
 dnl platform-specific test: on Mac, output will be expected faiure. This is 
 dnl because of different attribute orders by HDF5 library on Mac and on Linux.
 
