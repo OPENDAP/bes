@@ -850,6 +850,8 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
         string filter = *i;
 
         if (filter == "deflate") {
+BESDEBUG(MODULE, prolog << "coming to deflate " << endl);
+INFO_LOG("Coming to deflate ");
 
             // Here we find that the deflate filter is applied twice. 
             // Note: we find one GHRSST file is using the deflate twice, 
@@ -933,6 +935,8 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
             }
         }// end filter is deflate
         else if (filter == "shuffle"){
+            BESDEBUG(MODULE, prolog << "coming to shuffle " << endl);
+INFO_LOG("Coming to shuffle ");
             // The internal buffer is chunk's full size at this point.
             char *dest = new char[get_rbuf_size()];
             try {
@@ -949,6 +953,9 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
             }
         } //end filter is shuffle
         else if (filter == "fletcher32"){
+            BESDEBUG(MODULE, prolog << "coming to fletcher32 " << endl);
+INFO_LOG("Coming to fletcher32 ");
+
             // Compute the fletcher32 checksum and compare to the value of the last four bytes of the chunk.
 #if ACTUALLY_USE_FLETCHER32_CHECKSUM
             // Get the last four bytes of chunk's data (which is a byte array) and treat that as the four-byte
