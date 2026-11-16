@@ -165,6 +165,7 @@ server/beslistener
 server/hyraxctl
 
 standalone/besstandalone
+modules/gdal_module/GeotiffToDmr
 
 xmlcommand/unit-tests/buildT
 xmlcommand/unit-tests/propsT

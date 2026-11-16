@@ -47,7 +47,7 @@ libgdal_module_la_SOURCES = $(GDAL_SRCS) $(GDAL_HDRS)
 libgdal_module_la_LDFLAGS = -avoid-version -module -L$(builddir)/reader -L$(builddir)/writer $(AM_LDFLAGS) $(XML2_LDFLAGS) $(GDAL_LDFLAGS)
 libgdal_module_la_LIBADD = $(LIBADD)
 
-# geotifftodmr: command-line tool that returns the DAP4 DMR for a GeoTIFF by
+# GeotiffToDmr: command-line tool that returns the DAP4 DMR for a GeoTIFF by
 # running besstandalone with this module (see GeotiffToDmr.cc). It does not link
 # against the BES or libdap, only GDAL (to validate inputs). The install
 # locations of besstandalone and the BES modules are compiled in as defaults.

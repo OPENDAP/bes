@@ -80,9 +80,9 @@ enum ExitCode : int {
     kInternal = 4,
 };
 
-struct CustomError : std::runtime_error {
+struct GeoToDMRInternalError : std::runtime_error {
     ExitCode code;
-    CustomError(ExitCode c, const std::string &msg) : std::runtime_error(msg), code(c) {}
+    GeoToDMRInternalError(ExitCode c, const std::string &msg) : std::runtime_error(msg), code(c) {}
 };
 
 // ---------------------------------------------------------------------------
@@ -108,7 +108,7 @@ void log_verbose(const std::string &msg) {
 }
 
 void print_usage(std::ostream &os) {
-    os << "Usage: GeotiffToDmr [CmdArgs] INPUT.tif [INPUT2.tif ...]\n"
+    os << "Usage: GeotiffToDmr [options] INPUT.tif [INPUT2.tif ...]\n"
           "\n"
           "Generate the DAP4 DMR for GeoTIFF files using the OPeNDAP BES GDAL handler.\n"
           "\n"
@@ -138,7 +138,7 @@ void print_usage(std::ostream &os) {
 CmdArgs parse_args(int argc, char **argv) {
     CmdArgs args;
     auto need_value = [&](int &i, const std::string &flag) -> std::string {
-        if (i + 1 >= argc) throw CustomError(kBadInput, "missing value for " + flag);
+        if (i + 1 >= argc) throw GeoToDMRInternalError(kBadInput, "missing value for " + flag);
         return argv[++i];
     };
 
@@ -163,16 +163,16 @@ CmdArgs parse_args(int argc, char **argv) {
         } else if (a == "--key") {
             std::string kv = need_value(i, a);
             if (kv.find('=') == std::string::npos)
-                throw CustomError(kBadInput, "--key expects KEY=VALUE, got: " + kv);
+                throw GeoToDMRInternalError(kBadInput, "--key expects KEY=VALUE, got: " + kv);
             args.extra_keys.push_back(kv);
         } else if (a == "--timeout") {
             std::string v = need_value(i, a);
             try {
                 args.timeout_sec = std::stoi(v);
             } catch (...) {
-                throw CustomError(kBadInput, "invalid --timeout: " + v);
+                throw GeoToDMRInternalError(kBadInput, "invalid --timeout: " + v);
             }
-            if (args.timeout_sec <= 0) throw CustomError(kBadInput, "--timeout must be > 0");
+            if (args.timeout_sec <= 0) throw GeoToDMRInternalError(kBadInput, "--timeout must be > 0");
         } else if (a == "--keep-temp") {
             args.keep_temp = true;
         } else if (a == "-v" || a == "--verbose") {
@@ -180,17 +180,17 @@ CmdArgs parse_args(int argc, char **argv) {
         } else if (a == "--") {
             for (++i; i < argc; ++i) args.inputs.emplace_back(argv[i]);
         } else if (!a.empty() && a[0] == '-' && a != "-") {
-            throw CustomError(kBadInput, "unknown option: " + a);
+            throw GeoToDMRInternalError(kBadInput, "unknown option: " + a);
         } else {
             args.inputs.push_back(a);
         }
     }
 
-    if (args.inputs.empty()) throw CustomError(kBadInput, "no input file given (see --help)");
+    if (args.inputs.empty()) throw GeoToDMRInternalError(kBadInput, "no input file given (see --help)");
     if (!args.output.empty() && args.inputs.size() > 1)
-        throw CustomError(kBadInput, "-o/--output works with a single input; use --out-dir");
+        throw GeoToDMRInternalError(kBadInput, "-o/--output works with a single input; use --out-dir");
     if (!args.output.empty() && !args.out_dir.empty())
-        throw CustomError(kBadInput, "use either -o/--output or --out-dir, not both");
+        throw GeoToDMRInternalError(kBadInput, "use either -o/--output or --out-dir, not both");
 
     if (args.besstandalone.empty()) {
         const char *env = std::getenv("BESSTANDALONE");
@@ -239,7 +239,7 @@ std::string path_absolute(const std::string &p) {
     if (!p.empty() && p[0] == '/') return p;
     char cwd[PATH_MAX];
     if (!::getcwd(cwd, sizeof cwd))
-        throw CustomError(kInternal, std::string("getcwd failed: ") + std::strerror(errno));
+        throw GeoToDMRInternalError(kInternal, std::string("getcwd failed: ") + std::strerror(errno));
     return path_join(cwd, p);
 }
 
@@ -247,7 +247,7 @@ void make_dirs(const std::string &dir) {
     if (dir.empty() || path_exists(dir)) return;
     make_dirs(path_dirname(dir));
     if (::mkdir(dir.c_str(), 0755) != 0 && errno != EEXIST)
-        throw CustomError(kInternal, "cannot create " + dir + ": " + std::strerror(errno));
+        throw GeoToDMRInternalError(kInternal, "cannot create " + dir + ": " + std::strerror(errno));
 }
 
 int nftw_remove(const char *path, const struct stat *, int, struct FTW *) {
@@ -268,9 +268,9 @@ std::string read_file(const std::string &p) {
 
 void write_file(const std::string &p, const std::string &content) {
     std::ofstream out(p, std::ios::binary | std::ios::trunc);
-    if (!out) throw CustomError(kInternal, "cannot write " + p);
+    if (!out) throw GeoToDMRInternalError(kInternal, "cannot write " + p);
     out << content;
-    if (!out) throw CustomError(kInternal, "error writing " + p);
+    if (!out) throw GeoToDMRInternalError(kInternal, "error writing " + p);
 }
 
 std::string xml_escape(const std::string &s) {
@@ -297,10 +297,11 @@ std::string trim(const std::string &s) {
     return s.substr(b, e - b + 1);
 }
 
-// Resolve a program name against PATH (returns empty if not found).
+// Resolve a program name against PATH (returns empty if not found). The
+// result is absolute because the child process chdir()s before exec.
 std::string which(const std::string &prog) {
     if (prog.find('/') != std::string::npos)
-        return (::access(prog.c_str(), X_OK) == 0) ? prog : std::string{};
+        return (::access(prog.c_str(), X_OK) == 0) ? path_absolute(prog) : std::string{};
     const char *path = std::getenv("PATH");
     if (!path) return {};
     std::stringstream ss(path);
@@ -322,7 +323,7 @@ public:
         std::vector<char> buf(tmpl.begin(), tmpl.end());
         buf.push_back('\0');
         if (!::mkdtemp(buf.data()))
-            throw CustomError(kInternal, std::string("mkdtemp failed: ") + std::strerror(errno));
+            throw GeoToDMRInternalError(kInternal, std::string("mkdtemp failed: ") + std::strerror(errno));
         path_ = buf.data();
     }
     ~TempDir() {
@@ -347,42 +348,42 @@ private:
 std::string validate_input(const std::string &input) {
     char resolved[PATH_MAX];
     if (!::realpath(input.c_str(), resolved)) {
-        if (errno == ENOENT) throw CustomError(kBadInput, input + ": no such file");
-        throw CustomError(kBadInput, input + ": " + std::strerror(errno));
+        if (errno == ENOENT) throw GeoToDMRInternalError(kBadInput, input + ": no such file");
+        throw GeoToDMRInternalError(kBadInput, input + ": " + std::strerror(errno));
     }
     std::string p = resolved;
 
     struct stat st;
     if (::stat(p.c_str(), &st) != 0 || !S_ISREG(st.st_mode))
-        throw CustomError(kBadInput, input + ": not a regular file");
-    if (::access(p.c_str(), R_OK) != 0) throw CustomError(kBadInput, input + ": not readable");
+        throw GeoToDMRInternalError(kBadInput, input + ": not a regular file");
+    if (::access(p.c_str(), R_OK) != 0) throw GeoToDMRInternalError(kBadInput, input + ": not readable");
 
     // The BES catalog excludes dot-files by default.
     if (path_basename(p).front() == '.')
-        throw CustomError(kBadInput, input + ": hidden files (leading '.') are not served by the BES");
+        throw GeoToDMRInternalError(kBadInput, input + ": hidden files (leading '.') are not served by the BES");
 
     // The generated TypeMatch maps .tif/.tiff (any case) to the gdal handler.
     std::string ext = path_extension_lower(p);
     if (ext != ".tif" && ext != ".tiff")
-        throw CustomError(kBadInput, input + ": expected a .tif or .tiff file");
+        throw GeoToDMRInternalError(kBadInput, input + ": expected a .tif or .tiff file");
 
     // TIFF magic: "II*\0" / "MM\0*" (classic) or "II+\0" / "MM\0+" (BigTIFF).
     unsigned char m[4] = {0, 0, 0, 0};
     {
         std::ifstream in(p, std::ios::binary);
         in.read(reinterpret_cast<char *>(m), 4);
-        if (in.gcount() != 4) throw CustomError(kBadInput, input + ": file too short to be a TIFF");
+        if (in.gcount() != 4) throw GeoToDMRInternalError(kBadInput, input + ": file too short to be a TIFF");
     }
     bool le = m[0] == 'I' && m[1] == 'I' && (m[2] == 42 || m[2] == 43) && m[3] == 0;
     bool be = m[0] == 'M' && m[1] == 'M' && m[2] == 0 && (m[3] == 42 || m[3] == 43);
-    if (!le && !be) throw CustomError(kBadInput, input + ": not a TIFF file (bad magic bytes)");
+    if (!le && !be) throw GeoToDMRInternalError(kBadInput, input + ": not a TIFF file (bad magic bytes)");
 
 #ifdef GEOTIFFTODMR_WITH_GDAL
     GDALAllRegister();
     CPLPushErrorHandler(CPLQuietErrorHandler);
     GDALDatasetH ds = GDALOpen(p.c_str(), GA_ReadOnly);
     CPLPopErrorHandler();
-    if (!ds) throw CustomError(kBadInput, input + ": GDAL cannot open the file");
+    if (!ds) throw GeoToDMRInternalError(kBadInput, input + ": GDAL cannot open the file");
     std::string driver = GDALGetDriverShortName(GDALGetDatasetDriver(ds));
     double gt[6];
     bool has_gt = GDALGetGeoTransform(ds, gt) == CE_None;
@@ -391,10 +392,10 @@ std::string validate_input(const std::string &input) {
     int bands = GDALGetRasterCount(ds);
     GDALClose(ds);
     if (driver != "GTiff")
-        throw CustomError(kBadInput, input + ": GDAL driver is " + driver + ", expected GTiff");
-    if (bands < 1) throw CustomError(kBadInput, input + ": no raster bands");
+        throw GeoToDMRInternalError(kBadInput, input + ": GDAL driver is " + driver + ", expected GTiff");
+    if (bands < 1) throw GeoToDMRInternalError(kBadInput, input + ": no raster bands");
     if (!has_gt && !has_srs)
-        throw CustomError(kBadInput, input + ": not georeferenced (no geotransform or CRS)");
+        throw GeoToDMRInternalError(kBadInput, input + ": not georeferenced (no geotransform or CRS)");
 #endif
 
     return p;
@@ -407,8 +408,9 @@ std::string find_bes_lib_dir(const CmdArgs &args, const std::string &bes_exe) {
     const std::string gdal_lib = "libgdal_module.so";
     if (!args.bes_lib_dir.empty()) {
         if (!path_exists(path_join(args.bes_lib_dir, gdal_lib)))
-            throw CustomError(kBadInput, "--bes-lib-dir " + args.bes_lib_dir + " has no " + gdal_lib);
-        return args.bes_lib_dir;
+            throw GeoToDMRInternalError(kBadInput, "--bes-lib-dir " + args.bes_lib_dir + " has no " + gdal_lib);
+        // Absolute: the paths go into bes.conf and besstandalone runs in the temp dir.
+        return path_absolute(args.bes_lib_dir);
     }
 
     std::vector<std::string> cands;
@@ -438,7 +440,7 @@ std::string make_bes_conf(const CmdArgs &args, const std::string &tmp, const std
         c << "BES.Include=" << path_absolute(args.bes_conf) << "\n";
     } else {
         if (lib_dir.empty())
-            throw CustomError(kBadInput,
+            throw GeoToDMRInternalError(kBadInput,
                             "cannot find the BES module directory (libgdal_module.so); "
                             "pass --bes-lib-dir or --bes-conf");
         c << "BES.ServerAdministrator=email:admin@localhost\n"
@@ -518,7 +520,7 @@ RunResult run_besstandalone(const std::string &exe, const std::string &conf,
     log_verbose("running: " + exe + " -c " + conf + " -i " + cmd);
 
     pid_t pid = ::fork();
-    if (pid < 0) throw CustomError(kInternal, std::string("fork failed: ") + std::strerror(errno));
+    if (pid < 0) throw GeoToDMRInternalError(kInternal, std::string("fork failed: ") + std::strerror(errno));
 
     if (pid == 0) {
         // Child: own process group so a timeout kills any grandchildren too.
@@ -546,7 +548,7 @@ RunResult run_besstandalone(const std::string &exe, const std::string &conf,
         pid_t w = ::waitpid(pid, &status, WNOHANG);
         if (w == pid) break;
         if (w < 0 && errno != EINTR)
-            throw CustomError(kInternal, std::string("waitpid failed: ") + std::strerror(errno));
+            throw GeoToDMRInternalError(kInternal, std::string("waitpid failed: ") + std::strerror(errno));
         if (std::chrono::steady_clock::now() >= deadline) {
             r.timed_out = true;
             ::kill(-pid, SIGKILL);
@@ -582,12 +584,12 @@ std::string extract_tag(const std::string &xml, const std::string &tag) {
 
 std::string interpret_response(const RunResult &r, const std::string &input, int timeout_sec) {
     if (r.timed_out)
-        throw CustomError(kTimeout, input + ": besstandalone timed out after " +
+        throw GeoToDMRInternalError(kTimeout, input + ": besstandalone timed out after " +
                                       std::to_string(timeout_sec) + " s");
     if (!r.signaled && r.exit_status == 127)
-        throw CustomError(kInternal, "could not execute besstandalone (not installed or not on PATH?)");
+        throw GeoToDMRInternalError(kInternal, "could not execute besstandalone (not installed or not on PATH?)");
     if (!r.signaled && r.exit_status == 126)
-        throw CustomError(kInternal, "could not set up the besstandalone process");
+        throw GeoToDMRInternalError(kInternal, "could not set up the besstandalone process");
 
     const std::string &out = r.out;
 
@@ -614,7 +616,7 @@ std::string interpret_response(const RunResult &r, const std::string &input, int
         if (r.signaled) os << " (besstandalone killed by signal " << r.signal << ")";
         else if (r.exit_status != 0) os << " (exit status " << r.exit_status << ")";
         os << ": " << msg;
-        throw CustomError(kBesError, os.str());
+        throw GeoToDMRInternalError(kBesError, os.str());
     }
 
     if (r.signaled || r.exit_status != 0)
@@ -627,7 +629,7 @@ std::string interpret_response(const RunResult &r, const std::string &input, int
     std::string dmr = out.substr(start);
     size_t end = dmr.rfind("</Dataset>");
     if (end == std::string::npos)
-        throw CustomError(kBesError, input + ": DMR response is truncated (no </Dataset>)");
+        throw GeoToDMRInternalError(kBesError, input + ": DMR response is truncated (no </Dataset>)");
     dmr.resize(end + std::string("</Dataset>").size());
     dmr += '\n';
     return dmr;
@@ -638,7 +640,7 @@ std::string interpret_response(const RunResult &r, const std::string &input, int
 // ---------------------------------------------------------------------------
 std::string output_path_for(const CmdArgs &args, const std::string &input) {
     if (!args.output.empty()) return args.output;
-    std::string name = path_basename(input) + ".dmr";  // Hyrax style: foargs.tif.dmr
+    std::string name = path_basename(input) + ".dmr";  // Hyrax style: foo.tif.dmr
     if (!args.out_dir.empty()) return path_join(args.out_dir, name);
     return path_join(path_dirname(input), name);
 }
@@ -657,7 +659,7 @@ void write_output(const std::string &dest, const std::string &dmr) {
     if (::rename(tmp.c_str(), dest.c_str()) != 0) {
         int e = errno;
         ::remove(tmp.c_str());
-        throw CustomError(kInternal, "cannot write " + dest + ": " + std::strerror(e));
+        throw GeoToDMRInternalError(kInternal, "cannot write " + dest + ": " + std::strerror(e));
     }
 }
 
@@ -688,7 +690,7 @@ int main(int argc, char **argv) {
     CmdArgs args;
     try {
         args = parse_args(argc, argv);
-    } catch (const CustomError &e) {
+    } catch (const GeoToDMRInternalError &e) {
         std::cerr << "GeotiffToDmr: " << e.what() << '\n';
         return e.code;
     }
@@ -703,7 +705,7 @@ int main(int argc, char **argv) {
     std::string lib_dir;
     try {
         lib_dir = find_bes_lib_dir(args, bes_exe);
-    } catch (const CustomError &e) {
+    } catch (const GeoToDMRInternalError &e) {
         std::cerr << "GeotiffToDmr: " << e.what() << '\n';
         return e.code;
     }
@@ -715,7 +717,7 @@ int main(int argc, char **argv) {
         try {
             process_one(args, input, bes_exe, lib_dir);
             ++ok;
-        } catch (const CustomError &e) {
+        } catch (const GeoToDMRInternalError &e) {
             std::cerr << "GeotiffToDmr: " << e.what() << '\n';
             worst = std::max(worst, static_cast<int>(e.code));
         } catch (const std::exception &e) {
