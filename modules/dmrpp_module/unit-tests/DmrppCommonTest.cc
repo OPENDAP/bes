@@ -36,6 +36,7 @@
 
 #include <BESError.h>
 #include <BESDebug.h>
+#include <TheBESKeys.h>
 #include <url_impl.h>
 
 #include "Base64.h"
@@ -88,6 +89,7 @@ public:
     // Called before each test
     void setUp()
     {
+        TheBESKeys::ConfigFile = string(TEST_BUILD_DIR).append("/bes.conf");
         if(debug) cerr << endl;
         if (bes_debug) BESDebug::SetUp("cerr,dmrpp");
     }
@@ -230,6 +232,7 @@ public:
             CPPUNIT_ASSERT(d_dc.d_filters == "deflate");
         }
         catch(BESError &be){
+
             stringstream msg;
             msg << prolog << "Caught BESError! Message: " << be.get_verbose_message();
             cerr << msg.str() << endl;
