@@ -45,6 +45,7 @@
 #include "url_impl.h"
 #include "BESIndent.h"
 #include "BESDebug.h"
+#include "BESLog.h"
 #include "BESUtil.h"
 #include "BESInternalError.h"
 
@@ -116,10 +117,15 @@ void DmrppCommon::set_filter(const string &value) {
             d_filters.append(" fletcher32");
 
         BESUtil::removeLeadingAndTrailingBlanks(d_filters);
+string filter_if_not_has_tiff_filter = "coming to if not_has_tiff_filter - d_filters: " + d_filters;
+INFO_LOG(filter_if_not_has_tiff_filter);
+
     }
     else {
         d_filters = value;
     }
+string filter_log = "DmrppCommon -set_filter- d_filters" + d_filters ;
+INFO_LOG(filter_log);
 }
 
 /**

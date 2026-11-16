@@ -2142,6 +2142,8 @@ static void add_fill_value_information(DmrppCommon *dc, const string &value_stri
 
      for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute()) {
          if (is_eq(attr.name(), "compressionType")) {
+string ctypestr= "DMZ - compressionType: " + string(attr.value());
+INFO_LOG(ctypestr);
              dc(btp)->set_filter(attr.value());
          }
          else if (is_eq(attr.name(), "deflateLevel")) {
