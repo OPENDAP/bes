@@ -610,10 +610,18 @@ def read_from_stdin():
         except EOFError:
             debug("End of input reached. Exiting...")
             break
+        except UnicodeDecodeError as e: # Handle UTF-8 decoding errors. See HYRAX-2326. jhrg 11/13/26
+            msg = (f"{prolog} OUCH! Incompatible input log line {line_count} failed with the "
+                   f"message: \"{str(e)}\"")
+            debug(msg)
+            json_log_record={}
+            processing_error(msg, json_log_record)
+            print(json.dumps(json_log_record, sort_keys=SORT_KEYS))
+            continue
 
-        if not log_line:
-            debug("Unable to read from input(). Exiting...")
-            break
+        if not log_line:    # Handle empty lines gracefully. See HYRAX-2326. jhrg 11/13/26
+            debug(f"Skipping empty line {line_count}")
+            continue
 
         debug(f"Log Line({str(line_count)}): {log_line}")
         try:
@@ -641,13 +649,14 @@ def read_from_file(filename):
         line_count=0
         for log_line in log_file:
             line_count += 1
+            log_line = log_line.rstrip("\r\n")
             debug("-------------------------------------------------------------------------")
             debug(f"line: {line_count}")
             debug(f"log_line: {log_line}")
 
             if not log_line:
-                debug(f"Failed to read line from file: {filename} line_count: {line_count} Exiting...")
-                break
+                debug(f"Skipping empty line {line_count}")
+                continue
 
             try:
                 beslog2json(line_count, log_line)
@@ -670,6 +679,7 @@ NAME
 
 SYNOPSIS
     beslog2json.py [-h][-d][-a][-r value][-i value][-e value][-v value][-t value][-P value][-p value][-f value][-s value]
+    (-v takes a value, like the other record-type options.)
 
 DESCRIPTION
     Reads BES log lines from stdin (default) or from a file 
@@ -759,7 +769,7 @@ beslog2json.py
 ###############################################################################
 # main
 def main(argv):
-    """main(): In which we parse arguments and call functions toread the BES log
+    """main(): In which we parse arguments and call functions to read the BES log
     lines, and write the json. woot."""
 
     global DEBUG_FLAG
@@ -775,7 +785,7 @@ def main(argv):
     input_filename=""
 
     try:
-        opts, args = getopt.getopt(argv, "hadsvr:i:e:t:P:p:f:", ["help", "debug", "all", "sort=", "requests=", "info=", "error=", "verbose=", "timing=", "profiling=", "prefix=", "filename="])
+        opts, args = getopt.getopt(argv, "hads:v:r:i:e:t:P:p:f:", ["help", "debug", "all", "sort=", "requests=", "info=", "error=", "verbose=", "timing=", "profiling=", "prefix=", "filename="])
     except getopt.GetoptError:
         usage()
         sys.exit(2)
@@ -797,7 +807,7 @@ def main(argv):
         elif opt in ("-r", "--requests"):
             TRANSMIT_REQUEST_LOG = not arg.lower().startswith("f")
 
-        elif opt in ("-a", "--all"):
+        elif opt in ("-a", "--all"):    # NB: These are all true by default. jhrg 11/13/26
             TRANSMIT_REQUEST_LOG = True
             TRANSMIT_INFO_LOG    = True
             TRANSMIT_ERROR_LOG   = True
@@ -826,7 +836,10 @@ def main(argv):
             add_prefix_to_timing_log_keys()
 
         elif opt in ("-v", "--verbose"):
-            TRANSMIT_VERBOSE_LOG = True
+            # This line does nothing - TRANSMIT_VERBOSE_LOG is True by default. jhrg 11/13/26
+            # I left it like this because there is coupling between this code and entrypoint.sh
+            # in hyrax-docker and I don't want to break our NGAP deployments. 
+            TRANSMIT_VERBOSE_LOG = True 
 
         elif opt in ("-d", "--debug"):
             DEBUG_FLAG = True
