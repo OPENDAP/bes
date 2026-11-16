@@ -77,6 +77,22 @@ private:
     pugi::xml_document d_xml_doc;
     std::shared_ptr<http::url> d_dataset_elem_href;
 
+    // True when the <Dataset> element has no dmrpp:version attribute (an 'old' DMR++).
+    // Set in process_dataset() and passed to DmrppCommon::set_filter() by process_chunks().
+    //
+    // In the original DMR++ documents, the order of the filters used by the HDF5
+    // library when writing chunks was ignored. This lead to an unfortunate situation
+    // where the nominal order of 'deflate' and 'shuffle' were reversed for most
+    // (all?). But the older dmrpp handler code didn't care since it 'knew' how the
+    // filters should be applied. When we fixed the code to treat the order of the
+    // filters correctly, the old files failed with the new handler code. This flag
+    // tells DmrppCommon::set_filter() that the filter information is being read from
+    // an old DMR++ document and the filter order needs to be corrected. jhrg 11/9/21
+    // This used to be the process-wide static DmrppRequestHandler::
+    // d_emulate_original_filter_order_behavior, which was set but never reset, so one
+    // old DMR++ changed the behavior for every later document. It is now per DMZ.
+    bool d_old_style_dmrpp = false;
+
     // Controls if teh parser will drop variables that have been flagged
     // with a dmrpp:chunks/@fillValue attribute value of "unsupported-*"
     // This is set from TheBESKeys in the DMZ's constructor.
@@ -150,6 +166,9 @@ public:
     explicit DMZ(const std::string &file_name);
 
     virtual ~DMZ() = default;
+
+    /// @brief True if the parsed DMR++ has no dmrpp:version attribute (old-style DMR++)
+    bool is_old_style_dmrpp() const { return d_old_style_dmrpp; }
 
     // This is not virtual because we call it from a ctor
     void parse_xml_doc(const std::string &filename);

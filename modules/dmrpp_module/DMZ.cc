@@ -335,10 +335,11 @@ INFO_LOG("dmrpp_version: " + dmrpp_version);
         // We allow other, unrecognized attributes, so there is no 'else' jhrg 10/20/21
     }
 
-    if (dmrpp_version.empty()) {
+    // Old style DMR++: the filter order must be rebuilt by DmrppCommon::set_filter().
+    // This is per document (per DMZ), not process-wide.
+    d_old_style_dmrpp = dmrpp_version.empty();
+    if (d_old_style_dmrpp) {
 INFO_LOG("dmrpp_version is empty.");
-        // old style DMR++, set enable-kludge flag
-        DmrppRequestHandler::d_emulate_original_filter_order_behavior = true;
     }
     else {
         auto dmrpp = dynamic_cast<DMRpp *>(dmr);
@@ -2146,7 +2147,7 @@ static void add_fill_value_information(DmrppCommon *dc, const string &value_stri
          if (is_eq(attr.name(), "compressionType")) {
 string ctypestr= "DMZ - compressionType: " + string(attr.value());
 INFO_LOG(ctypestr);
-             dc(btp)->set_filter(attr.value());
+             dc(btp)->set_filter(attr.value(), d_old_style_dmrpp);
          }
          else if (is_eq(attr.name(), "deflateLevel")) {
              string def_lev_str = attr.value();

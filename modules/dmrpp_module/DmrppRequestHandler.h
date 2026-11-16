@@ -99,19 +99,6 @@ public:
 
     static bool d_require_chunks;
 
-    // In the original DMR++ documents, the order of the filters used by the HDF5
-    // library when writing chunks was ignored. This lead to an unfortunate situation
-    // where the nominal order of 'deflate' and 'shuffle' were reversed for most
-    // (all?). But the older dmrpp handler code didn't care since it 'knew' how the
-    // filters should be applied. When we fixed the code to treat the order of the
-    // filters correctly, the old files failed with the new handler code. This flag
-    // is used to tell the DmrppCommon code that the filter information is being
-    // read from an old DMR++ document and the filter order needs to be corrected.
-    // This is a kludge, but it seems to work for the data in NGAP PROD as of 11/9/21.
-    // Newer additions will have newer DMR++ docs and those have a new xml attribute
-    // that makes it easy to identify them and not apply this hack. jhrg 11/9/21
-    static bool d_emulate_original_filter_order_behavior;
-
     static bool is_netcdf4_enhanced_response;
     static bool is_netcdf4_classic_response;
     // Leave the following variables in case we need to consider the compression ratio for

@@ -60,17 +60,6 @@ static bool bes_debug = false;
 
 namespace dmrpp {
 
-class emulate_original_filter_order {
-    bool d_saved;
-public:
-    explicit emulate_original_filter_order(bool value) :
-            d_saved(DmrppRequestHandler::d_emulate_original_filter_order_behavior)
-    { DmrppRequestHandler::d_emulate_original_filter_order_behavior = value; }
-
-    ~emulate_original_filter_order()
-    { DmrppRequestHandler::d_emulate_original_filter_order_behavior = d_saved; }
-};
-
 class DmrppCommonTest: public CppUnit::TestFixture {
 private:
     DmrppCommon d_dc;
