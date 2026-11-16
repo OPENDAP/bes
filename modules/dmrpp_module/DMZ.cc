@@ -330,17 +330,14 @@ void DMZ::process_dataset(DMR *dmr, const xml_node &xml_root) {
         }
         else if (is_eq(attr.name(), "dmrpp:version")) {
             dmrpp_version = attr.value();
-INFO_LOG("dmrpp_version: " + dmrpp_version);
         }
         // We allow other, unrecognized attributes, so there is no 'else' jhrg 10/20/21
     }
 
     // Old style DMR++: the filter order must be rebuilt by DmrppCommon::set_filter().
     // This is per document (per DMZ), not process-wide.
-    d_old_style_dmrpp = dmrpp_version.empty();
-    if (d_old_style_dmrpp) {
-INFO_LOG("dmrpp_version is empty.");
-    }
+    if (dmrpp_version.empty()) 
+        d_old_style_dmrpp = true;
     else {
         auto dmrpp = dynamic_cast<DMRpp *>(dmr);
         if (dmrpp) {
@@ -2145,8 +2142,6 @@ static void add_fill_value_information(DmrppCommon *dc, const string &value_stri
 
      for (xml_attribute attr = chunks.first_attribute(); attr; attr = attr.next_attribute()) {
          if (is_eq(attr.name(), "compressionType")) {
-string ctypestr= "DMZ - compressionType: " + string(attr.value());
-INFO_LOG(ctypestr);
              dc(btp)->set_filter(attr.value(), d_old_style_dmrpp);
          }
          else if (is_eq(attr.name(), "deflateLevel")) {

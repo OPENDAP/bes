@@ -809,8 +809,6 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
 
     chunk_size *= elem_width;
 
-string filter_log = "Filters: "+ filters;
-INFO_LOG(filter_log);
     vector<string> filter_array = BESUtil::split(filters, ' ' );
 
     // We need to check if the filters that include the deflate filters are contiguous.
@@ -821,8 +819,6 @@ INFO_LOG(filter_log);
     unsigned num_deflate = 0;
 
     for (unsigned i = 0; i<filter_array.size(); i++) {
-string filter_array_log = "filter index= "+std::to_string(i) + ": " + filter_array[i];
-INFO_LOG(filter_array_log);
         if (filter_array[i] == "deflate") {
             if (is_1st_deflate == true) {
                 cur_deflate_index = i;
@@ -854,8 +850,6 @@ INFO_LOG(filter_array_log);
         string filter = *i;
 
         if (filter == "deflate") {
-BESDEBUG(MODULE, prolog << "coming to deflate " << endl);
-INFO_LOG("Coming to deflate ");
 
             // Here we find that the deflate filter is applied twice. 
             // Note: we find one GHRSST file is using the deflate twice, 
@@ -939,8 +933,6 @@ INFO_LOG("Coming to deflate ");
             }
         }// end filter is deflate
         else if (filter == "shuffle"){
-            BESDEBUG(MODULE, prolog << "coming to shuffle " << endl);
-INFO_LOG("Coming to shuffle ");
             // The internal buffer is chunk's full size at this point.
             char *dest = new char[get_rbuf_size()];
             try {
@@ -957,8 +949,6 @@ INFO_LOG("Coming to shuffle ");
             }
         } //end filter is shuffle
         else if (filter == "fletcher32"){
-            BESDEBUG(MODULE, prolog << "coming to fletcher32 " << endl);
-INFO_LOG("Coming to fletcher32 ");
 
             // Compute the fletcher32 checksum and compare to the value of the last four bytes of the chunk.
 #if ACTUALLY_USE_FLETCHER32_CHECKSUM
@@ -983,11 +973,6 @@ INFO_LOG("Coming to fletcher32 ");
             BESDEBUG(MODULE, prolog << "get_rbuf_size(): " << get_rbuf_size() << endl);
             BESDEBUG(MODULE, prolog << "calc_checksum: " << calc_checksum << endl);
             BESDEBUG(MODULE, prolog << "f_checksum: " << f_checksum << endl);
-            stringstream checksum_msg;
-            checksum_msg <<" get_rbuf_size(): " << get_rbuf_size()
-                         <<" calc_checksum: " << calc_checksum 
-                         <<" f_checksum: " << f_checksum  <<endl;
-            INFO_LOG(checksum_msg.str());
             if (f_checksum != calc_checksum) {
                 throw BESInternalError("Data read from the DMR++ handler did not match the Fletcher32 checksum.",
                                        __FILE__, __LINE__);
