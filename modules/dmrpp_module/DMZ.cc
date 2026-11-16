@@ -330,11 +330,13 @@ void DMZ::process_dataset(DMR *dmr, const xml_node &xml_root) {
         }
         else if (is_eq(attr.name(), "dmrpp:version")) {
             dmrpp_version = attr.value();
+INFO_LOG("dmrpp_version: " + dmrpp_version);
         }
         // We allow other, unrecognized attributes, so there is no 'else' jhrg 10/20/21
     }
 
     if (dmrpp_version.empty()) {
+INFO_LOG("dmrpp_version is empty.");
         // old style DMR++, set enable-kludge flag
         DmrppRequestHandler::d_emulate_original_filter_order_behavior = true;
     }
