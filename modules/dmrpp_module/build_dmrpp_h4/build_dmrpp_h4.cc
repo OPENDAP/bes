@@ -143,6 +143,24 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    // INFO_LOG and friends in the dmrpp code (e.g. DmrppCommon::set_filter()) create the BES log,
+    // which requires BES.LogName. This tool normally runs without a bes.conf, so load the -c file
+    // (if any) now and, when no log name is configured, send the log to /dev/null.
+    try {
+        if (!bes_conf_file_used_to_create_dmr.empty())
+            TheBESKeys::ConfigFile = bes_conf_file_used_to_create_dmr;
+        bool found = false;
+        string log_name;
+        TheBESKeys::TheKeys()->get_value("BES.LogName", log_name, found);
+        if (!found || log_name.empty())
+            TheBESKeys::TheKeys()->set_key("BES.LogName", "/dev/null");
+    }
+    catch (BESError &e) {
+        cerr << "Error setting up the BES configuration: " << e.get_message() << " at " << e.get_file() << ":"
+             << e.get_line() << endl;
+        return EXIT_FAILURE;
+    }
+
     // Check to see if this file is an hdf4 file
     if (h4_file_name.empty()) {
         cerr << endl << "    The HDF4 file name must be provided with -f <h4_file_name> ." << endl;
