@@ -141,6 +141,25 @@ int main(int argc, char *argv[]) {
     }
 
     try {
+
+ // INFO_LOG and friends in the dmrpp code (e.g. DmrppCommon::set_filter()) create the BES log,
+    // which requires BES.LogName. This tool normally runs without a bes.conf, so load the -c file
+    // (if any) now and, when no log name is configured, send the log to /dev/null.
+    try {
+        if (!bes_conf_file_used_to_create_dmr.empty())
+            TheBESKeys::ConfigFile = bes_conf_file_used_to_create_dmr;
+        bool found = false;
+        string log_name;
+        TheBESKeys::TheKeys()->get_value("BES.LogName", log_name, found);
+        if (!found || log_name.empty())
+            TheBESKeys::TheKeys()->set_key("BES.LogName", "/dev/null");
+    }
+    catch (BESError &e) {
+        cerr << "Error setting up the BES configuration: " << e.get_message() << " at " << e.get_file() << ":"
+             << e.get_line() << endl;
+        return EXIT_FAILURE;
+    }
+
         // Check to see if the file is hdf5 compliant
         qc_input_file(h5_file_name);
 

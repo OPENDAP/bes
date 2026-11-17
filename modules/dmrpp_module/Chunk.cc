@@ -25,6 +25,7 @@
 
 #include <sstream>
 #include <cstring>
+#include <string>
 
 #include <zlib.h>
 #include <curl/curl.h>
@@ -818,7 +819,6 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
     unsigned num_deflate = 0;
 
     for (unsigned i = 0; i<filter_array.size(); i++) {
-
         if (filter_array[i] == "deflate") {
             if (is_1st_deflate == true) {
                 cur_deflate_index = i;
@@ -949,6 +949,7 @@ void Chunk::filter_chunk(const string &filters, unsigned long long chunk_size, u
             }
         } //end filter is shuffle
         else if (filter == "fletcher32"){
+
             // Compute the fletcher32 checksum and compare to the value of the last four bytes of the chunk.
 #if ACTUALLY_USE_FLETCHER32_CHECKSUM
             // Get the last four bytes of chunk's data (which is a byte array) and treat that as the four-byte

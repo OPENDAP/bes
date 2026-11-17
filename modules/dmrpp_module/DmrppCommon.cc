@@ -45,6 +45,7 @@
 #include "url_impl.h"
 #include "BESIndent.h"
 #include "BESDebug.h"
+#include "BESLog.h"
 #include "BESUtil.h"
 #include "BESInternalError.h"
 
@@ -99,14 +100,19 @@ void join_threads(pthread_t threads[], unsigned int num_threads)
     }
 }
 
-/// @brief Set the value of the filters property
-void DmrppCommon::set_filter(const string &value) {
-        // SBL: claude recommended guard
-        // The legacy behavior below rebuilds the list from the three HDF5 filter names it knows about.
-        // 'lzw' and 'tiffpred' postdate it (so there is no historical order to emulate), and would be
-        // silently dropped, leaving compressed bytes to be treated as data. Keep such strings verbatim.
-        const bool has_tiff_filter = value.find("lzw") != string::npos || value.find("tiffpred") != string::npos;
-        if (DmrppRequestHandler::d_emulate_original_filter_order_behavior && !has_tiff_filter) {
+/**
+ * @brief Set the value of the filters property
+ * @param value The filter names, space separated, in the order they were applied
+ * @param use_original_filter_order True for an old-style DMR++ (no dmrpp:version); the
+ * filter list is then rebuilt in the fixed order 'shuffle deflate fletcher32'.
+ */
+void DmrppCommon::set_filter(const string &value, bool use_original_filter_order) {
+    // SBL: claude recommended guard
+    // The legacy behavior below rebuilds the list from the three HDF5 filter names it knows about.
+    // 'lzw' and 'tiffpred' postdate it (so there is no historical order to emulate), and would be
+    // silently dropped, leaving compressed bytes to be treated as data. Keep such strings verbatim.
+    const bool has_tiff_filter = value.find("lzw") != string::npos || value.find("tiffpred") != string::npos;
+    if (use_original_filter_order && !has_tiff_filter) {
         d_filters = "";
         if (value.find("shuffle") != string::npos)
             d_filters.append(" shuffle");
@@ -116,6 +122,7 @@ void DmrppCommon::set_filter(const string &value) {
             d_filters.append(" fletcher32");
 
         BESUtil::removeLeadingAndTrailingBlanks(d_filters);
+
     }
     else {
         d_filters = value;
