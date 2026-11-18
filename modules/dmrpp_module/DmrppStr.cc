@@ -65,6 +65,15 @@ DmrppStr::read()
     // string code requires special processing of the data array and requires information
     // about the chunk size to produce correct answers.
 
+    // When an string is empty, the storage size is 0. No dmrpp:chunks will be created.
+    // We just return a space back to make the client work. This is to fix an error due to 
+    // an old-style dmrpp discovered in the production system. 
+    if (get_chunk_count() == 0) {
+        // Old-style dmrpp file,the string is empty. 
+        string dummy_str = " ";
+        set_value(dummy_str);
+        return true;
+    }
     if (get_chunk_count() != 1)
         throw BESInternalError(string("Expected only a single chunk for variable ") + name(), __FILE__, __LINE__);
 
