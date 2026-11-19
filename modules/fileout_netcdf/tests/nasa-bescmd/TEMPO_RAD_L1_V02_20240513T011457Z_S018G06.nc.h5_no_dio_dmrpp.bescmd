@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="TEMPO_RAD_L1_V02_20240513T011457Z_S018G06_nc_h5" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="foo" space="catalog">/data/TEMPO_RAD_L1_V02_20240513T011457Z_S018G06.nc.h5.dmrpp</setContainer>
+    <define name="d">
+    <container name="foo" />
+    </define>
+    <get type="dap" definition="d" returnAs="netcdf-4" />
+</request>

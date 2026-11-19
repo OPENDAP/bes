@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" >
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="c" space="catalog">/data/SWOT_L2_HR_Raster_250m_UTM50V_N_x_x_x_406_023_131F_20230121T040652_20230121T040653_PIA0_01.nc.h5_dio.dmrpp</setContainer>
+    <define name="d">
+	   <container name="c" />
+    </define>
+    <get type="dap" definition="d" returnAs="netcdf-4"/>
+</request>
