@@ -7,7 +7,7 @@
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = reader writer . tests
+SUBDIRS = reader writer . unit-tests tests
 
 # Set the module version here, in the spec file and in configure.ac
 M_NAME=gdal_module
@@ -48,12 +48,13 @@ libgdal_module_la_LDFLAGS = -avoid-version -module -L$(builddir)/reader -L$(buil
 libgdal_module_la_LIBADD = $(LIBADD)
 
 # GeotiffToDmr: command-line tool that returns the DAP4 DMR for a GeoTIFF by
-# running besstandalone with this module (see GeotiffToDmr.cc). It does not link
+# running besstandalone with this module (see GeotiffToDmr.cc; unit tests in
+# unit-tests/, which link GeotiffToDmr-GeotiffToDmr.o). It does not link
 # against the BES or libdap, only GDAL (to validate inputs). The install
 # locations of besstandalone and the BES modules are compiled in as defaults.
 bin_PROGRAMS = GeotiffToDmr
 
-GeotiffToDmr_SOURCES = GeotiffToDmr.cc
+GeotiffToDmr_SOURCES = GeotiffToDmr.cc GeotiffToDmr.h GeotiffToDmrMain.cc
 GeotiffToDmr_CPPFLAGS = $(GDAL_CFLAGS) -DGEOTIFFTODMR_WITH_GDAL \
     -DGEOTIFFTODMR_DEFAULT_BESSTANDALONE=\"$(bindir)/besstandalone\" \
     -DGEOTIFFTODMR_DEFAULT_BES_LIB_DIR=\"$(lib_besdir)\"

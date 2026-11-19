@@ -1,5 +1,8 @@
 // GeotiffToDmr.cc
 //
+// Implementation of the GeotiffToDmr tool (declarations in GeotiffToDmr.h,
+// main() in GeotiffToDmrMain.cc, unit tests in unit-tests/).
+//
 // Generate the DAP4 DMR for a GeoTIFF using the OPeNDAP BES GDAL handler
 // (bes/modules/gdal_module), by driving `besstandalone` (roadmap Option A).
 //
@@ -18,7 +21,7 @@
 //
 // Built by modules/gdal_module/Makefile.am. The code is C++14 (the BES
 // configure script forces --std=c++14) and POSIX-only. Stand-alone build:
-//     g++ -std=c++14 -O2 -o GeotiffToDmr GeotiffToDmr.cc
+//     g++ -std=c++14 -O2 -o GeotiffToDmr GeotiffToDmr.cc GeotiffToDmrMain.cc
 //
 // Compile-time defaults (set by Makefile.am to the install locations):
 //     GEOTIFFTODMR_DEFAULT_BESSTANDALONE  path of besstandalone
@@ -52,6 +55,8 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include "GeotiffToDmr.h"
+
 #ifdef GEOTIFFTODMR_WITH_GDAL
 #include <cpl_error.h>
 #include <gdal.h>
@@ -65,41 +70,9 @@
 #define GEOTIFFTODMR_DEFAULT_BES_LIB_DIR ""
 #endif
 
-namespace {
+namespace geotiff_to_dmr {
 
 const char *const kVersion = "0.1.0";
-
-// ---------------------------------------------------------------------------
-// Exit codes and errors
-// ---------------------------------------------------------------------------
-enum ExitCode : int {
-    kOk = 0,
-    kBadInput = 1,
-    kBesError = 2,
-    kTimeout = 3,
-    kInternal = 4,
-};
-
-struct GeoToDMRInternalError : std::runtime_error {
-    ExitCode code;
-    GeoToDMRInternalError(ExitCode c, const std::string &msg) : std::runtime_error(msg), code(c) {}
-};
-
-// ---------------------------------------------------------------------------
-// CmdArgs
-// ---------------------------------------------------------------------------
-struct CmdArgs {
-    std::vector<std::string> inputs;
-    std::string output;            // -o: single input only; "-" = stdout
-    std::string out_dir;           // -d: one <name>.dmr per input
-    std::string besstandalone;     // path or name on PATH
-    std::string bes_lib_dir;       // dir holding lib*_module.so
-    std::string bes_conf;          // optional base config to BES.Include
-    std::vector<std::string> extra_keys;  // KEY=VALUE lines appended to bes.conf
-    int timeout_sec = 60;
-    bool keep_temp = false;
-    bool verbose = false;
-};
 
 bool g_verbose = false;
 
@@ -250,7 +223,7 @@ void make_dirs(const std::string &dir) {
         throw GeoToDMRInternalError(kInternal, "cannot create " + dir + ": " + std::strerror(errno));
 }
 
-int nftw_remove(const char *path, const struct stat *, int, struct FTW *) {
+static int nftw_remove(const char *path, const struct stat *, int, struct FTW *) {
     return ::remove(path);
 }
 
@@ -315,45 +288,37 @@ std::string which(const std::string &prog) {
 }
 
 // RAII temp directory.
-class TempDir {
-public:
-    explicit TempDir(bool keep) : keep_(keep) {
-        const char *t = std::getenv("TMPDIR");
-        std::string tmpl = path_join((t && *t) ? t : "/tmp", "GeotiffToDmr.XXXXXX");
-        std::vector<char> buf(tmpl.begin(), tmpl.end());
-        buf.push_back('\0');
-        if (!::mkdtemp(buf.data()))
-            throw GeoToDMRInternalError(kInternal, std::string("mkdtemp failed: ") + std::strerror(errno));
-        path_ = buf.data();
-    }
-    ~TempDir() {
-        if (keep_) {
-            std::cerr << "GeotiffToDmr: kept temp files in " << path_ << '\n';
-            return;
-        }
-        remove_tree(path_);
-    }
-    TempDir(const TempDir &) = delete;
-    TempDir &operator=(const TempDir &) = delete;
-    const std::string &path() const { return path_; }
+TempDir::TempDir(bool keep) : keep_(keep) {
+    const char *t = std::getenv("TMPDIR");
+    std::string tmpl = path_join((t && *t) ? t : "/tmp", "GeotiffToDmr.XXXXXX");
+    std::vector<char> buf(tmpl.begin(), tmpl.end());
+    buf.push_back('\0');
+    if (!::mkdtemp(buf.data()))
+        throw GeoToDMRInternalError(kInternal, std::string("mkdtemp failed: ") + std::strerror(errno));
+    path_ = buf.data();
+}
 
-private:
-    std::string path_;
-    bool keep_;
-};
+TempDir::~TempDir() {
+    if (keep_) {
+        std::cerr << "GeotiffToDmr: kept temp files in " << path_ << '\n';
+        return;
+    }
+    remove_tree(path_);
+}
 
 // ---------------------------------------------------------------------------
 // Step 1: input validation
 // ---------------------------------------------------------------------------
 std::string validate_input(const std::string &input) {
     char resolved[PATH_MAX];
+        // Future consideration: do we allow '../' in path in future? SBL & JHRG 11.19.26
     if (!::realpath(input.c_str(), resolved)) {
         if (errno == ENOENT) throw GeoToDMRInternalError(kBadInput, input + ": no such file");
         throw GeoToDMRInternalError(kBadInput, input + ": " + std::strerror(errno));
     }
     std::string p = resolved;
 
-    struct stat st;
+    struct stat st{};
     if (::stat(p.c_str(), &st) != 0 || !S_ISREG(st.st_mode))
         throw GeoToDMRInternalError(kBadInput, input + ": not a regular file");
     if (::access(p.c_str(), R_OK) != 0) throw GeoToDMRInternalError(kBadInput, input + ": not readable");
@@ -363,6 +328,7 @@ std::string validate_input(const std::string &input) {
         throw GeoToDMRInternalError(kBadInput, input + ": hidden files (leading '.') are not served by the BES");
 
     // The generated TypeMatch maps .tif/.tiff (any case) to the gdal handler.
+    // We might want to relax this in the future. SBL & JHRG 11.19.26
     std::string ext = path_extension_lower(p);
     if (ext != ".tif" && ext != ".tiff")
         throw GeoToDMRInternalError(kBadInput, input + ": expected a .tif or .tiff file");
@@ -470,7 +436,8 @@ std::string make_bes_conf(const CmdArgs &args, const std::string &tmp, const std
     c << "BES.LogName=" << path_join(tmp, "bes.log") << "\n"
       << "BES.LogVerbose=no\n"
       << "BES.Catalog.catalog.RootDirectory=" << root << "\n"
-      << "BES.Catalog.catalog.TypeMatch=gdal:.*\\.(tif|TIF|tiff|TIFF|Tif|Tiff)$;\n"
+      // Any capitalisation of .tif/.tiff, matching validate_input().
+      << "BES.Catalog.catalog.TypeMatch=gdal:.*\\.[tT][iI][fF][fF]?$;\n"
       << "BES.FollowSymLinks=Yes\n"
       << "BES.Catalog.catalog.FollowSymLinks=Yes\n";
 
@@ -498,15 +465,6 @@ std::string make_bescmd(const std::string &file_in_root) {
 // ---------------------------------------------------------------------------
 // Step 3: run besstandalone with a timeout
 // ---------------------------------------------------------------------------
-struct RunResult {
-    int exit_status = -1;   // valid if !signaled
-    bool signaled = false;
-    int signal = 0;
-    bool timed_out = false;
-    std::string out;
-    std::string err;
-};
-
 RunResult run_besstandalone(const std::string &exe, const std::string &conf,
                             const std::string &cmd, const std::string &tmp, int timeout_sec) {
     std::string out_path = path_join(tmp, "stdout.txt");
@@ -684,49 +642,4 @@ void process_one(const CmdArgs &args, const std::string &input, const std::strin
     if (dest != "-") log_verbose("wrote " + dest);
 }
 
-}  // namespace
-
-int main(int argc, char **argv) {
-    CmdArgs args;
-    try {
-        args = parse_args(argc, argv);
-    } catch (const GeoToDMRInternalError &e) {
-        std::cerr << "GeotiffToDmr: " << e.what() << '\n';
-        return e.code;
-    }
-    g_verbose = args.verbose;
-
-    std::string bes_exe = which(args.besstandalone);
-    if (bes_exe.empty()) {
-        std::cerr << "GeotiffToDmr: besstandalone not found ('" << args.besstandalone
-                  << "'); install the BES or pass --besstandalone PATH\n";
-        return kInternal;
-    }
-    std::string lib_dir;
-    try {
-        lib_dir = find_bes_lib_dir(args, bes_exe);
-    } catch (const GeoToDMRInternalError &e) {
-        std::cerr << "GeotiffToDmr: " << e.what() << '\n';
-        return e.code;
-    }
-    if (!lib_dir.empty()) log_verbose("BES modules: " + lib_dir);
-
-    int worst = kOk;
-    int ok = 0;
-    for (const auto &input : args.inputs) {
-        try {
-            process_one(args, input, bes_exe, lib_dir);
-            ++ok;
-        } catch (const GeoToDMRInternalError &e) {
-            std::cerr << "GeotiffToDmr: " << e.what() << '\n';
-            worst = std::max(worst, static_cast<int>(e.code));
-        } catch (const std::exception &e) {
-            std::cerr << "GeotiffToDmr: " << input << ": internal error: " << e.what() << '\n';
-            worst = std::max(worst, static_cast<int>(kInternal));
-        }
-    }
-
-    if (args.inputs.size() > 1)
-        std::cerr << "GeotiffToDmr: " << ok << " of " << args.inputs.size() << " files converted\n";
-    return worst;
-}
+}  // namespace geotiff_to_dmr
