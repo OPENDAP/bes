@@ -196,7 +196,7 @@ jobs:
           export BES_BUILD=docker-el8
           echo "# branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
           export DOCKER_NAME="bes_core"
-          export BUILDER_BASE_IMAGE="opendap/rocky8_hyrax_builder:latest"
+          export BUILDER_BASE_IMAGE="opendap/rocky8_hyrax_builder:hiredis"
           export FINAL_BASE_IMAGE="rockylinux:8"
           export DIST=el8
           export OS=rocky8
@@ -230,7 +230,7 @@ jobs:
           echo "BUILDING: $BES_BUILD"
           echo "branch name ${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}"
           export DOCKER_NAME="bes_core"
-          export BUILDER_BASE_IMAGE="opendap/rocky9_hyrax_builder:latest"
+          export BUILDER_BASE_IMAGE="opendap/rocky9_hyrax_builder:hiredis"
           export FINAL_BASE_IMAGE="rockylinux:9"
           export DIST=el9
           export OS=rocky9

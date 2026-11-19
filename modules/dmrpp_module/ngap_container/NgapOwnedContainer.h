@@ -32,6 +32,7 @@
 
 #include "BESContainer.h"
 #include "FileCache.h"
+#include "RedisCache.h"
 #include "MemoryCache.h"
 #include "NgapApi.h"
 
@@ -86,6 +87,9 @@ class NgapOwnedContainer : public BESContainer {
     static std::string d_dmrpp_file_cache_dir;
 
     static FileCache d_dmrpp_file_cache;
+    #ifdef ENABLE_REDIS_CACHE
+    static RedisCache d_dmrpp_redis_cache;
+    #endif
 
     bool get_dmrpp_from_cache_or_remote_source(std::string &dmrpp_string) const;
     static NgapApi::DataAccessUrls extract_s3_data_urls_from_dmrpp(const std::string &dmrpp_string);
