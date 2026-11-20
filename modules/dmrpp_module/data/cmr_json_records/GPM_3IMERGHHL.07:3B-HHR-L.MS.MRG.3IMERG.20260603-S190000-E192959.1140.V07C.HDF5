@@ -1,0 +1,108 @@
+{
+  "collectionConceptId": "C2723754845-GES_DISC",
+  "conceptId": "G4206639800-GES_DISC",
+  "dataCenter": "GES_DISC",
+  "dataGranule": {
+    "dayNightFlag": "Unspecified",
+    "identifiers": [
+      {
+        "identifier": "3B-HHR-L.MS.MRG.3IMERG.20260603-S190000-E192959.1140.V07C.HDF5",
+        "identifierType": "ProducerGranuleId"
+      }
+    ],
+    "productionDateTime": "2026-06-04T10:11:12.000Z",
+    "archiveAndDistributionInformation": [
+      {
+        "name": "Not provided",
+        "size": 7.380728721618652,
+        "sizeUnit": "MB"
+      }
+    ]
+  },
+  "dayNightFlag": "UNSPECIFIED",
+  "granuleSize": 7.380728721618652,
+  "granuleUr": "GPM_3IMERGHHL.07:3B-HHR-L.MS.MRG.3IMERG.20260603-S190000-E192959.1140.V07C.HDF5",
+  "hasAllMetadata": true,
+  "id": "G4206639800-GES_DISC",
+  "measuredParameters": null,
+  "metadataUrls": {
+    "atom": {
+      "title": "ATOM",
+      "href": "https://cmr.earthdata.nasa.gov/search/concepts/G4206639800-GES_DISC.atom"
+    },
+    "echo10": {
+      "title": "ECHO 10",
+      "href": "https://cmr.earthdata.nasa.gov/search/concepts/G4206639800-GES_DISC.echo10"
+    },
+    "iso19115": {
+      "title": "ISO 19115",
+      "href": "https://cmr.earthdata.nasa.gov/search/concepts/G4206639800-GES_DISC.iso19115"
+    },
+    "native": {
+      "title": "Native",
+      "href": "https://cmr.earthdata.nasa.gov/search/concepts/G4206639800-GES_DISC"
+    },
+    "umm_json": {
+      "title": "UMM-G",
+      "href": "https://cmr.earthdata.nasa.gov/search/concepts/G4206639800-GES_DISC.umm_json"
+    }
+  },
+  "onlineAccessFlag": true,
+  "originalFormat": "ECHO10",
+  "providerDates": [
+    {
+      "date": "2026-06-04T10:21:23.000Z",
+      "type": "Insert"
+    },
+    {
+      "date": "2026-06-04T10:21:23.000Z",
+      "type": "Update"
+    }
+  ],
+  "relatedUrls": [
+    {
+      "url": "https://data.gesdisc.earthdata.nasa.gov/data/GPM_L3/GPM_3IMERGHHL.07/2026/154/3B-HHR-L.MS.MRG.3IMERG.20260603-S190000-E192959.1140.V07C.HDF5",
+      "type": "GET DATA",
+      "description": "Download 3B-HHR-L.MS.MRG.3IMERG.20260603-S190000-E192959.1140.V07C.HDF5"
+    },
+    {
+      "url": "s3://gesdisc-cumulus-prod-protected/GPM_L3/GPM_3IMERGHHL.07/2026/154/3B-HHR-L.MS.MRG.3IMERG.20260603-S190000-E192959.1140.V07C.HDF5",
+      "type": "GET DATA VIA DIRECT ACCESS",
+      "description": "This link provides direct download access via S3 to the granule"
+    },
+    {
+      "url": "https://data.gesdisc.earthdata.nasa.gov/s3credentials",
+      "type": "VIEW RELATED INFORMATION",
+      "description": "api endpoint to retrieve temporary credentials valid for same-region direct s3 access"
+    },
+    {
+      "url": "https://opendap.earthdata.nasa.gov/collections/C2723754845-GES_DISC/granules/GPM_3IMERGHHL.07%3A3B-HHR-L.MS.MRG.3IMERG.20260603-S190000-E192959.1140.V07C.HDF5",
+      "type": "USE SERVICE API",
+      "subtype": "OPENDAP DATA",
+      "description": "OPeNDAP request URL"
+    }
+  ],
+  "spatialExtent": {
+    "horizontalSpatialDomain": {
+      "geometry": {
+        "boundingRectangles": [
+          {
+            "westBoundingCoordinate": -180,
+            "eastBoundingCoordinate": 180,
+            "northBoundingCoordinate": 90,
+            "southBoundingCoordinate": -90
+          }
+        ]
+      }
+    }
+  },
+  "temporalExtent": {
+    "rangeDateTime": {
+      "beginningDateTime": "2026-06-03T19:00:00.000Z",
+      "endingDateTime": "2026-06-03T19:29:59.999Z"
+    }
+  },
+  "timeEnd": "2026-06-03T19:29:59.999Z",
+  "timeStart": "2026-06-03T19:00:00.000Z",
+  "title": "GPM_3IMERGHHL.07:3B-HHR-L.MS.MRG.3IMERG.20260603-S190000-E192959.1140.V07C.HDF5"
+}
