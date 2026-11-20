@@ -1,0 +1,2887 @@
+netcdf test {
+
+// global attributes:
+		:Conventions = "CF-1.7" ;
+		:institution = "KNMI/SRON" ;
+		:source = "Sentinel 5 precursor, TROPOMI, space-borne remote sensing, L2" ;
+		:history = "removed date-timeOWN tropnll2dp /opt/s5p/sw/JobOrder.791024491.xml\nremoved date-timex S5P_RPRO_L2__CO_____20180430T001950_20180430T020120_02818_03_020400_20220901T170054.nc.dmrpp\n" ;
+		:summary = "TROPOMI/S5P CO Column 1-Orbit L2 Swath 7.0x7.0km" ;
+		:tracking_id = "ba16dd53-d8e7-4e8f-bb5c-c4b218d1baff" ;
+		:id = "S5P_RPRO_L2__CO_____20180430T001950_20180430T020120_02818_03_020400_20220901T170054" ;
+		:time_reference = "removed date-time" ;
+		:time_reference_days_since_1950 = 24956 ;
+		:time_reference_julian_day = 2458238.5 ;
+		:time_reference_seconds_since_1970 = 1525046400LL ;
+		:time_coverage_start = "removed date-time" ;
+		:time_coverage_end = "removed date-time" ;
+		:time_coverage_duration = "PT3137.325S" ;
+		:time_coverage_resolution = "PT1.080S" ;
+		:orbit = 2818 ;
+		:references = "http://www.tropomi.eu/data-products/carbon-monoxide https://sentinels.copernicus.eu/web/sentinel/technical-guides/sentinel-5p/products-algorithms" ;
+		:processor_version = "2.4.0" ;
+		:keywords_vocabulary = "AGU index terms, http://publications.agu.org/author-resource-center/index-terms/" ;
+		:keywords = "0300 Atmospheric Composition and Structure; 0365 Troposphere, Composition and Chemistry; 1600 Global Change; 1610 Atmosphere" ;
+		:standard_name_vocabulary = "NetCDF Climate and Forecast Metadata Conventions Standard Name Table (v29, 08 July 2015), http://cfconventions.org/standard-names.html" ;
+		:naming_authority = "nl.knmi" ;
+		:cdm_data_type = "Swath" ;
+		:date_created = "removed date-time" ;
+		:creator_name = "The Sentinel 5 Precursor TROPOMI Level 2 products are developed with funding from the European Space Agency (ESA), the Netherlands Space Office (NSO), the Belgian Science Policy Office, the German Aerospace Center (DLR) and the Bayerisches Staatsministerium f\\303\\274r Wirtschaft und Medien, Energie und Technologie (StMWi)." ;
+		:creator_url = "http://www.tropomi.eu https://sentinels.copernicus.eu/web/sentinel/missions/sentinel-5p" ;
+		:creator_email = "EOSupport@Copernicus.esa.int" ;
+		:project = "Sentinel 5 precursor/TROPOMI" ;
+		:geospatial_lat_min = -85.62971f ;
+		:geospatial_lat_max = 89.92215f ;
+		:geospatial_lon_min = -179.9999f ;
+		:geospatial_lon_max = 180.f ;
+		:license = "No conditions apply" ;
+		:platform = "S5P" ;
+		:sensor = "TROPOMI" ;
+		:spatial_resolution = "7.0x7.0 km2" ;
+		:cpp_compiler_version = "g++ (GCC) 4.8.5 20150623 (Red Hat 4.8.5-11)" ;
+		:cpp_compiler_flags = "-g -O2 -fPIC -std=c++11 -W -Wall -Wno-ignored-qualifiers -Wno-write-strings -Wno-unused-variable -Wno-unused-parameter -DTROPNLL2DP" ;
+		:f90_compiler_version = "GNU Fortran (GCC) 4.8.5 20150623 (Red Hat 4.8.5-11)" ;
+		:f90_compiler_flags = "-gdwarf-3 -O2 -fPIC -cpp -ffpe-trap=invalid -fno-range-check -frecursive -fimplicit-none -ffree-line-length-none -DTROPNLL2DP -Wuninitialized -Wtabs" ;
+		:build_date = "removed date-time" ;
+		:revision_control_identifier = "eb97f82fb328" ;
+		:geolocation_grid_from_band = 7 ;
+		:identifier_product_doi = "10.5270/S5P-bj3nry0" ;
+		:identifier_product_doi_authority = "http://dx.doi.org/" ;
+		:algorithm_version = "1.5.0" ;
+		:title = "TROPOMI/S5P CO Column 1-Orbit L2 Swath 7.0x7.0km" ;
+		:product_version = "1.4.0" ;
+		:processing_status = "Nominal" ;
+		:Status_MET_2D = "Nominal" ;
+		:Status_CTM_CO = "Nominal" ;
+		:Status_CTMCH4 = "Nominal" ;
+		:build_dmrpp_metadata.build_dmrpp = "3.21.0-272" ;
+		:build_dmrpp_metadata.bes = "3.21.0-272" ;
+		:build_dmrpp_metadata.libdap = "libdap-3.21.0-70" ;
+		:build_dmrpp_metadata.configuration = "\n# TheBESKeys::get_as_config()\nAllowedHosts=^https?:\\/\\/\nBES.Catalog.catalog.FollowSymLinks=Yes\nBES.Catalog.catalog.RootDirectory=/tmp/tmp7nuqjda5/\nBES.Catalog.catalog.TypeMatch=dmrpp:.*\\.(dmrpp)$;\nBES.Catalog.catalog.TypeMatch+=h5:.*(\\.bz2|\\.gz|\\.Z)?$;\nBES.Data.RootDirectory=/dev/null\nBES.LogName=./bes.log\nBES.UncompressCache.dir=/tmp/hyrax_ux\nBES.UncompressCache.prefix=ux_\nBES.UncompressCache.size=500\nBES.module.cmd=/usr/lib64/bes/libdap_xml_module.so\nBES.module.dap=/usr/lib64/bes/libdap_module.so\nBES.module.dmrpp=/usr/lib64/bes/libdmrpp_module.so\nBES.module.fonc=/usr/lib64/bes/libfonc_module.so\nBES.module.h5=/usr/lib64/bes/libhdf5_module.so\nBES.module.nc=/usr/lib64/bes/libnc_module.so\nBES.modules=dap,cmd,h5,dmrpp,nc,fonc\nFONc.ClassicModel=false\nFONc.NoGlobalAttrs=true\nH5.EnableCF=false\nH5.EnableCheckNameClashing=true\n" ;
+		:build_dmrpp_metadata.invocation = "build_dmrpp -c /tmp/bes_conf_1Rte -f /tmp/tmp7nuqjda5//S5P_RPRO_L2__CO_____20180430T001950_20180430T020120_02818_03_020400_20220901T170054.nc -r /tmp/dmr__3nfL9K -u OPeNDAP_DMRpp_DATA_ACCESS_URL -M" ;
+		:history_json = "[{\"$schema\":\"https://harmony.earthdata.nasa.gov/schemas/history/0.1.0/history-0.1.0.json\",\"date_time\":\"removed date-time\",\"program\":\"hyrax\",\"version\":\"1.16.3\",\"parameters\":[{\"request_url\":\"S5P_RPRO_L2__CO_____20180430T001950_20180430T020120_02818_03_020400_20220901T170054.nc.dmrpp\"}]}]" ;
+
+group: METADATA {
+
+  group: ALGORITHM_SETTINGS {
+
+    // group attributes:
+    		:configuration.version.algorithm = "1.5.0" ;
+    		:configuration.version.framework = "1.2.0" ;
+    		:input.1.band = "7" ;
+    		:input.1.irrType = "L1B_IR_SIR" ;
+    		:input.1.type = "L1B_RA_BD7" ;
+    		:input.2.band = "8" ;
+    		:input.2.irrType = "L1B_IR_SIR" ;
+    		:input.2.type = "L1B_RA_BD8" ;
+    		:input.count = "2" ;
+    		:output.1.band = "7" ;
+    		:output.1.config = "cfg/product/product.CO____.xml" ;
+    		:output.1.type = "L2__CO____" ;
+    		:output.compressionLevel = "3" ;
+    		:output.count = "1" ;
+    		:output.histogram.carbonmonoxide_total_column.range = "0.03, 0.05" ;
+    		:output.useCompression = "true" ;
+    		:output.useFletcher32 = "true" ;
+    		:output.useShuffleFilter = "true" ;
+    		:processing.algorithm = "CO____" ;
+    		:processing.correct_surface_pressure_for_altitude = "false" ;
+    		:processing.destripe_fillvalue_is_contageous = "true" ;
+    		:processing.destripe_min_fraction_valid = "0.6" ;
+    		:processing.groupDem = "DEM_RADIUS_05000" ;
+    		:processing.perform_destriping = "true" ;
+    		:processing.szaMax = "85.0" ;
+    		:processing.szaMin = "0.0" ;
+    		:processing.threadStackSize = "1000000000" ;
+    		:processing.vzaMax = "75.0" ;
+    		:processing.vzaMin = "0.0" ;
+    		:processing.writelog = "2" ;
+    		:qa_value.AAI_warning = "100.0" ;
+    		:qa_value.altitude_consistency_warning = "100.0" ;
+    		:qa_value.bad_rows = "0, 1" ;
+    		:qa_value.bad_rows_modification_percent = "0.0" ;
+    		:qa_value.civilized_cloudy_modification_percent = "70.0" ;
+    		:qa_value.cloud_free_modification_percent = "100.0" ;
+    		:qa_value.cloud_height_civilized_cloudy_upper_limit = "5000.0" ;
+    		:qa_value.cloud_height_cloud_free_upper_limit = "500.0" ;
+    		:qa_value.cloud_warning = "100.0" ;
+    		:qa_value.data_range_warning = "0.0" ;
+    		:qa_value.deconvolution_warning = "0.0" ;
+    		:qa_value.extrapolation_warning = "0.0" ;
+    		:qa_value.input_spectrum_warning = "0.0" ;
+    		:qa_value.interpolation_warning = "100.0" ;
+    		:qa_value.low_cloud_fraction_warning = "100.0" ;
+    		:qa_value.pixel_level_input_data_missing = "100.0" ;
+    		:qa_value.saturation_warning = "100.0" ;
+    		:qa_value.scattering_optical_thickness_swir_limit = "0.5" ;
+    		:qa_value.signal_to_noise_ratio_warning = "100.0" ;
+    		:qa_value.snow_ice_warning = "100.0" ;
+    		:qa_value.so2_volcanic_origin_certain_warning = "100.0" ;
+    		:qa_value.so2_volcanic_origin_likely_warning = "100.0" ;
+    		:qa_value.south_atlantic_anomaly_warning = "100.0" ;
+    		:qa_value.sun_glint_correction = "100.0" ;
+    		:qa_value.sun_glint_warning = "100.0" ;
+    		:qa_value.sza_modification_percent = "0.0" ;
+    		:qa_value.sza_threshold = "80.0" ;
+    		:qa_value.thermal_instability_warning = "40.0" ;
+    		:qa_value.uncivilized_cloudy_modification_percent = "40.0" ;
+    		:qa_value.wavelength_calibration_warning = "0.0" ;
+    		:quality_control.missing_input.max_fraction = "0.25" ;
+    		:quality_control.qa_value.limit = "0.5" ;
+    		:quality_control.success.min_fraction = "0.001" ;
+    		:joborder.processing.threads = "9" ;
+    } // group ALGORITHM_SETTINGS
+
+  group: GRANULE_DESCRIPTION {
+
+    // group attributes:
+    		:GranuleStart = "removed date-time" ;
+    		:GranuleEnd = "removed date-time" ;
+    		:InstrumentName = "TROPOMI" ;
+    		:MissionName = "Sentinel-5 precursor" ;
+    		:MissionShortName = "S5P" ;
+    		:ProcessLevel = "2" ;
+    		:ProcessingCenter = "SENTINEL-5P ionos-s5p" ;
+    		:ProcessingNode = "worker02" ;
+    		:ProcessorVersion = "2.4.0" ;
+    		:ProductFormatVersion = 10400 ;
+    		:ProcessingMode = "Offline" ;
+    		:LongitudeOfDaysideNadirEquatorCrossing = -173.8381f ;
+    		:CollectionIdentifier = "03" ;
+    		:ProductShortName = "L2__CO____" ;
+    } // group GRANULE_DESCRIPTION
+
+  group: QA_STATISTICS {
+    dimensions:
+    	CO_total_vertical_column_pdf_axis = 400 ;
+    	vertices = 2 ;
+    	CO_total_vertical_column_histogram_axis = 100 ;
+    variables:
+    	float carbonmonoxide_total_column_pdf(CO_total_vertical_column_pdf_axis) ;
+    		carbonmonoxide_total_column_pdf:comment = "Probability density function of the CO column in the current granule" ;
+    		carbonmonoxide_total_column_pdf:geolocation_sampling_total = 88966.24f ;
+    		carbonmonoxide_total_column_pdf:_FillValue = 9.96921e+36f ;
+    	float carbonmonoxide_total_column_histogram_axis(CO_total_vertical_column_histogram_axis) ;
+    		carbonmonoxide_total_column_histogram_axis:units = "1" ;
+    		carbonmonoxide_total_column_histogram_axis:comment = "Histogram axis of CO total vertical column" ;
+    		carbonmonoxide_total_column_histogram_axis:long_name = "Histogram of the CO total vertical column" ;
+    		carbonmonoxide_total_column_histogram_axis:bounds = "CO_total_vertical_column_histogram_bounds" ;
+    		carbonmonoxide_total_column_histogram_axis:_FillValue = 9.96921e+36f ;
+    	float carbonmonoxide_total_column_pdf_bounds(CO_total_vertical_column_pdf_axis, vertices) ;
+    		carbonmonoxide_total_column_pdf_bounds:_FillValue = 9.96921e+36f ;
+    	float carbonmonoxide_total_column_histogram_bounds(CO_total_vertical_column_histogram_axis, vertices) ;
+    		carbonmonoxide_total_column_histogram_bounds:_FillValue = 9.96921e+36f ;
+    	int carbonmonoxide_total_column_histogram(CO_total_vertical_column_histogram_axis) ;
+    		carbonmonoxide_total_column_histogram:comment = "Histogram of the CO column in the current granule" ;
+    		carbonmonoxide_total_column_histogram:number_of_overflow_values = 849 ;
+    		carbonmonoxide_total_column_histogram:number_of_underflow_values = 131000 ;
+    		carbonmonoxide_total_column_histogram:_FillValue = -2147483647 ;
+    	float carbonmonoxide_total_column_pdf_axis(CO_total_vertical_column_pdf_axis) ;
+    		carbonmonoxide_total_column_pdf_axis:units = "mol m-2" ;
+    		carbonmonoxide_total_column_pdf_axis:comment = "Probability density function of CO total vertical column" ;
+    		carbonmonoxide_total_column_pdf_axis:long_name = "Probability density function of CO total vertical column" ;
+    		carbonmonoxide_total_column_pdf_axis:bounds = "CO_total_vertical_column_pdf_bounds" ;
+    		carbonmonoxide_total_column_pdf_axis:_FillValue = 9.96921e+36f ;
+
+    // group attributes:
+    		:number_of_groundpixels = 624790 ;
+    		:number_of_processed_pixels = 624790 ;
+    		:number_of_successfully_processed_pixels = 321058 ;
+    		:number_of_rejected_pixels_not_enough_spectrum = 0 ;
+    		:number_of_failed_retrievals = 303732 ;
+    		:number_of_ground_pixels_with_warnings = 326907 ;
+    		:number_of_missing_scanlines = 0 ;
+    		:number_of_radiance_missing_occurrences = 0 ;
+    		:number_of_irradiance_missing_occurrences = 0 ;
+    		:number_of_input_spectrum_missing_occurrences = 0 ;
+    		:number_of_reflectance_range_error_occurrences = 0 ;
+    		:number_of_ler_range_error_occurrences = 93002 ;
+    		:number_of_snr_range_error_occurrences = 0 ;
+    		:number_of_sza_range_error_occurrences = 65961 ;
+    		:number_of_vza_range_error_occurrences = 0 ;
+    		:number_of_lut_range_error_occurrences = 0 ;
+    		:number_of_ozone_range_error_occurrences = 0 ;
+    		:number_of_wavelength_offset_error_occurrences = 0 ;
+    		:number_of_initialization_error_occurrences = 0 ;
+    		:number_of_memory_error_occurrences = 0 ;
+    		:number_of_assertion_error_occurrences = 0 ;
+    		:number_of_io_error_occurrences = 0 ;
+    		:number_of_numerical_error_occurrences = 0 ;
+    		:number_of_lut_error_occurrences = 0 ;
+    		:number_of_ISRF_error_occurrences = 0 ;
+    		:number_of_convergence_error_occurrences = 27227 ;
+    		:number_of_cloud_filter_convergence_error_occurrences = 0 ;
+    		:number_of_max_iteration_convergence_error_occurrences = 0 ;
+    		:number_of_aot_lower_boundary_convergence_error_occurrences = 0 ;
+    		:number_of_other_boundary_convergence_error_occurrences = 0 ;
+    		:number_of_geolocation_error_occurrences = 0 ;
+    		:number_of_ch4_noscat_zero_error_occurrences = 0 ;
+    		:number_of_h2o_noscat_zero_error_occurrences = 0 ;
+    		:number_of_max_optical_thickness_error_occurrences = 0 ;
+    		:number_of_aerosol_boundary_error_occurrences = 0 ;
+    		:number_of_boundary_hit_error_occurrences = 0 ;
+    		:number_of_chi2_error_occurrences = 0 ;
+    		:number_of_svd_error_occurrences = 0 ;
+    		:number_of_dfs_error_occurrences = 0 ;
+    		:number_of_radiative_transfer_error_occurrences = 0 ;
+    		:number_of_optimal_estimation_error_occurrences = 0 ;
+    		:number_of_profile_error_occurrences = 0 ;
+    		:number_of_cloud_error_occurrences = 0 ;
+    		:number_of_model_error_occurrences = 0 ;
+    		:number_of_number_of_input_data_points_too_low_error_occurrences = 0 ;
+    		:number_of_cloud_pressure_spread_too_low_error_occurrences = 0 ;
+    		:number_of_cloud_too_low_level_error_occurrences = 0 ;
+    		:number_of_generic_range_error_occurrences = 0 ;
+    		:number_of_generic_exception_occurrences = 0 ;
+    		:number_of_input_spectrum_alignment_error_occurrences = 0 ;
+    		:number_of_abort_error_occurrences = 0 ;
+    		:number_of_wrong_input_type_error_occurrences = 0 ;
+    		:number_of_wavelength_calibration_error_occurrences = 0 ;
+    		:number_of_coregistration_error_occurrences = 0 ;
+    		:number_of_slant_column_density_error_occurrences = 0 ;
+    		:number_of_airmass_factor_error_occurrences = 0 ;
+    		:number_of_vertical_column_density_error_occurrences = 0 ;
+    		:number_of_signal_to_noise_ratio_error_occurrences = 0 ;
+    		:number_of_configuration_error_occurrences = 0 ;
+    		:number_of_key_error_occurrences = 0 ;
+    		:number_of_saturation_error_occurrences = 0 ;
+    		:number_of_max_num_outlier_exceeded_error_occurrences = 0 ;
+    		:number_of_solar_eclipse_filter_occurrences = 0 ;
+    		:number_of_cloud_filter_occurrences = 117542 ;
+    		:number_of_altitude_consistency_filter_occurrences = 0 ;
+    		:number_of_altitude_roughness_filter_occurrences = 0 ;
+    		:number_of_sun_glint_filter_occurrences = 0 ;
+    		:number_of_mixed_surface_type_filter_occurrences = 0 ;
+    		:number_of_snow_ice_filter_occurrences = 0 ;
+    		:number_of_aai_filter_occurrences = 0 ;
+    		:number_of_cloud_fraction_fresco_filter_occurrences = 0 ;
+    		:number_of_aai_scene_albedo_filter_occurrences = 0 ;
+    		:number_of_small_pixel_radiance_std_filter_occurrences = 0 ;
+    		:number_of_cloud_fraction_viirs_filter_occurrences = 0 ;
+    		:number_of_cirrus_reflectance_viirs_filter_occurrences = 0 ;
+    		:number_of_cf_viirs_swir_ifov_filter_occurrences = 0 ;
+    		:number_of_cf_viirs_swir_ofova_filter_occurrences = 0 ;
+    		:number_of_cf_viirs_swir_ofovb_filter_occurrences = 0 ;
+    		:number_of_cf_viirs_swir_ofovc_filter_occurrences = 0 ;
+    		:number_of_cf_viirs_nir_ifov_filter_occurrences = 0 ;
+    		:number_of_cf_viirs_nir_ofova_filter_occurrences = 0 ;
+    		:number_of_cf_viirs_nir_ofovb_filter_occurrences = 0 ;
+    		:number_of_cf_viirs_nir_ofovc_filter_occurrences = 0 ;
+    		:number_of_refl_cirrus_viirs_swir_filter_occurrences = 0 ;
+    		:number_of_refl_cirrus_viirs_nir_filter_occurrences = 0 ;
+    		:number_of_diff_refl_cirrus_viirs_filter_occurrences = 0 ;
+    		:number_of_ch4_noscat_ratio_filter_occurrences = 0 ;
+    		:number_of_ch4_noscat_ratio_std_filter_occurrences = 0 ;
+    		:number_of_h2o_noscat_ratio_filter_occurrences = 0 ;
+    		:number_of_h2o_noscat_ratio_std_filter_occurrences = 0 ;
+    		:number_of_diff_psurf_fresco_ecmwf_filter_occurrences = 0 ;
+    		:number_of_psurf_fresco_stdv_filter_occurrences = 0 ;
+    		:number_of_ocean_filter_occurrences = 0 ;
+    		:number_of_time_range_filter_occurrences = 0 ;
+    		:number_of_pixel_or_scanline_index_filter_occurrences = 0 ;
+    		:number_of_geographic_region_filter_occurrences = 0 ;
+    		:number_of_input_spectrum_warning_occurrences = 0 ;
+    		:number_of_wavelength_calibration_warning_occurrences = 0 ;
+    		:number_of_extrapolation_warning_occurrences = 0 ;
+    		:number_of_sun_glint_warning_occurrences = 73270 ;
+    		:number_of_south_atlantic_anomaly_warning_occurrences = 0 ;
+    		:number_of_sun_glint_correction_occurrences = 0 ;
+    		:number_of_snow_ice_warning_occurrences = 0 ;
+    		:number_of_cloud_warning_occurrences = 287578 ;
+    		:number_of_AAI_warning_occurrences = 0 ;
+    		:number_of_pixel_level_input_data_missing_occurrences = 0 ;
+    		:number_of_data_range_warning_occurrences = 1302 ;
+    		:number_of_low_cloud_fraction_warning_occurrences = 0 ;
+    		:number_of_altitude_consistency_warning_occurrences = 0 ;
+    		:number_of_signal_to_noise_ratio_warning_occurrences = 0 ;
+    		:number_of_deconvolution_warning_occurrences = 0 ;
+    		:number_of_so2_volcanic_origin_likely_warning_occurrences = 0 ;
+    		:number_of_so2_volcanic_origin_certain_warning_occurrences = 0 ;
+    		:number_of_interpolation_warning_occurrences = 0 ;
+    		:number_of_saturation_warning_occurrences = 0 ;
+    		:number_of_high_sza_warning_occurrences = 0 ;
+    		:number_of_cloud_retrieval_warning_occurrences = 0 ;
+    		:number_of_cloud_inhomogeneity_warning_occurrences = 0 ;
+    		:number_of_thermal_instability_warning_occurrences = 0 ;
+    		:global_processing_warnings = "None" ;
+    		:time_for_algorithm_initialization = 52.510817 ;
+    		:time_for_processing = 5609.216046 ;
+    		:time_per_pixel = 0.135888780519408 ;
+    		:time_standard_deviation_per_pixel = 5.48330626015204e-05 ;
+    } // group QA_STATISTICS
+
+  group: EOP_METADATA {
+
+    // group attributes:
+    		:gml_id = "S5P_RPRO_L2__CO_____20180430T001950_20180430T020120_02818_03_020400_20220901T170054.ID" ;
+    		:objectType = "atm:EarthObservation" ;
+
+    group: om_phenomenonTime {
+
+      // group attributes:
+      		:gml_beginPosition = "removed date-time" ;
+      		:gml_endPosition = "removed date-time" ;
+      		:objectType = "gml:TimePeriod" ;
+      } // group om_phenomenonTime
+
+    group: om_observedProperty {
+
+      // group attributes:
+      		:nilReason = "inapplicable" ;
+      } // group om_observedProperty
+
+    group: om_featureOfInterest {
+
+      // group attributes:
+      		:objectType = "eop:FootPrint" ;
+      		:gml_id = "S5P_RPRO_L2__CO_____20180430T001950_20180430T020120_02818_03_020400_20220901T170054.FP" ;
+
+      group: eop_multiExtentOf {
+
+        // group attributes:
+        		:objectType = "gml:MultiSurface" ;
+
+        group: gml_surfaceMembers {
+
+          // group attributes:
+          		:objectType = "gml:Polygon" ;
+
+          group: gml_exterior {
+
+            // group attributes:
+            		:gml_posList = "67.620964 67.611946 67.63703 69.55126 68.14614 74.102264 68.5702 79.24173 68.82732 84.54143 68.91143 89.92418 68.82053 95.30511 68.5567 100.599785 68.12645 105.73135 67.53919 110.63774 66.80675 115.273964 65.94242 119.61333 64.959984 123.6448 63.87251 127.369934 62.69261 130.79953 61.43183 133.95053 60.100258 136.84285 58.706726 139.49763 57.259327 141.9365 55.76484 144.18027 54.22926 146.24821 52.657223 148.15749 51.053417 149.92455 49.42162 151.56392 47.764915 153.08812 46.086155 154.50897 44.387844 155.83656 42.671867 157.07971 40.940357 158.24681 39.194645 159.34459 37.436264 160.37952 35.666515 161.35732 33.88638 162.28279 32.096977 163.16052 30.298933 163.99423 28.493303 164.78781 26.680645 165.54417 24.86156 166.26624 23.03669 166.95653 21.206472 167.61723 19.371626 168.25095 17.532246 168.85876 15.689066 169.44308 13.842198 170.00496 11.992046 170.54572 10.139046 171.06705 8.283398 171.56969 6.4253807 172.05473 4.5653176 172.5231 2.703328 172.97563 0.8398602 173.41325 -1.0250238 173.83638 -2.8910284 174.24568 -4.7580853 174.64171 -6.625802 175.02501 -8.49417 175.3959 -10.362971 175.75455 -12.231959 176.10158 -14.101047 176.43723 -15.97011 176.76122 -17.838964 177.0742 -19.707424 177.37613 -21.57542 177.6669 -23.442871 177.94643 -25.309486 178.21501 -27.175322 178.47198 -29.040207 178.71727 -30.903973 178.9507 -32.76669 179.17152 -34.628113 179.3794 -36.488113 179.57405 -38.346764 179.75401 -40.203857 179.91888 -42.0593 -179.93239 -43.913048 -179.80164 -45.765015 -179.69028 -47.615005 -179.59972 -49.463036 -179.53285 -51.308964 -179.49208 -53.15262 -179.48085 -54.99391 -179.50325 -56.83267 -179.56421 -58.66859 -179.66959 -60.5015 -179.82741 -62.331112 179.95255 -64.15693 179.6578 -65.97848 179.27176 -67.794945 178.7736 -69.605385 178.13342 -71.40838 177.31218 -73.20199 176.25133 -74.98315 174.86954 -76.74734 173.04066 -78.48728 170.56767 -80.19033 167.12549 -81.834175 162.15256 -83.37502 154.64195 -84.55932 144.7279 -84.76315 147.87727 -85.613716 176.63318 -85.24839 -154.86484 -84.63063 -142.12057 -83.75412 -131.57169 -83.12481 -126.27637 -82.338776 -121.103424 -81.784004 -118.09298 -81.07807 -114.79927 -80.564865 -112.694145 -79.88916 -110.21112 -79.37989 -108.51638 -78.68369 -106.39901 -78.13797 -104.87405 -77.35974 -102.86966 -76.721 -101.35278 -75.76059 -99.25899 -74.92247 -97.59446 -73.56066 -95.17511 -72.24896 -93.139626 -69.77536 -89.954926 -68.61981 -88.70899 -68.17936 -93.82531 -67.58363 -98.71342 -66.84457 -103.329346 -65.97522 -107.64777 -64.98935 -111.65883 -63.90002 -115.36498 -62.719467 -118.77718 -61.459023 -121.91246 -60.12859 -124.79088 -58.73712 -127.433846 -57.29244 -129.8629 -55.801224 -132.09856 -54.268982 -134.15909 -52.700985 -136.06317 -51.101414 -137.826 -49.47397 -139.4622 -47.82187 -140.98438 -46.14774 -142.40369 -44.45406 -143.7305 -42.74294 -144.97392 -41.01621 -146.1417 -39.275246 -147.2405 -37.521683 -148.27737 -35.75662 -149.25725 -33.981266 -150.18544 -32.196404 -151.06596 -30.403013 -151.90314 -28.60187 -152.70035 -26.79358 -153.46068 -24.978943 -154.18709 -23.158375 -154.88208 -21.332386 -155.54778 -19.501566 -156.18658 -17.66624 -156.8001 -15.826865 -157.39008 -13.983808 -157.95796 -12.137402 -158.50531 -10.287876 -159.03322 -8.435685 -159.5429 -6.5810122 -160.03542 -4.724098 -160.51154 -2.8652656 -160.97221 -1.0046209 -161.41823 0.85744154 -161.85027 2.720867 -162.26892 4.585449 -162.67479 6.450932 -163.06828 8.317161 -163.44998 10.184044 -163.81992 12.051425 -164.17899 13.919017 -164.52705 15.786825 -164.86444 17.654627 -165.19142 19.52236 -165.50798 21.389902 -165.81438 23.25707 -166.1106 25.123867 -166.39641 26.990112 -166.6719 28.85577 -166.93706 30.72072 -167.19136 32.584854 -167.43478 34.44814 -167.66664 36.310474 -167.88675 38.171818 -168.09453 40.032066 -168.28879 41.891205 -168.46935 43.74917 -168.63454 45.605835 -168.78322 47.461185 -168.91405 49.31514 -169.02513 51.16768 -169.11421 53.018658 -169.17836 54.868008 -169.21436 56.71562 -169.21837 58.561344 -169.1848 60.40507 -169.10767 62.246506 -168.97876 64.085464 -168.78714 65.92153 -168.51987 67.75424 -168.15805 69.58287 -167.6778 71.406525 -167.04463 73.223724 -166.20952 75.032486 -165.10138 76.82945 -163.60982 78.60936 -161.55782 80.36306 -158.64719 82.073204 -154.33542 83.70465 -147.57275 85.17693 -136.22194 86.29537 -116.46326 86.68074 -86.87543 86.10838 -58.85632 84.89047 -41.199852 83.37371 -31.061022 81.37524 -24.301153 78.885216 -19.707224 78.95246 -18.071928 79.17343 -5.9031534 78.968895 5.3210716 78.69203 11.434472 78.278366 17.71754 77.96226 21.50251 77.54574 25.734262 77.238235 28.478449 76.83192 31.74248 76.52661 33.979298 76.112686 36.772896 75.79223 38.77653 75.34304 41.388664 74.98245 43.342735 74.456 45.99992 74.013565 48.075264 73.33114 51.02843 72.718864 53.44927 71.69066 57.087612 70.66141 60.266293 68.619194 65.48132 67.620964 67.611946 67.620964 67.611946" ;
+            		:objectType = "gml:LinearRing" ;
+            } // group gml_exterior
+          } // group gml_surfaceMembers
+        } // group eop_multiExtentOf
+      } // group om_featureOfInterest
+
+    group: eop_metaDataProperty {
+
+      // group attributes:
+      		:objectType = "eop:EarthObservationMetaData" ;
+      		:eop_acquisitionType = "NOMINAL" ;
+      		:eop_identifier = "S5P_RPRO_L2__CO_____20180430T001950_20180430T020120_02818_03_020400_20220901T170054" ;
+      		:eop_doi = "10.5270/S5P-bj3nry0" ;
+      		:eop_parentIdentifier = "urn:ogc:def:EOP:ESA:SENTINEL.S5P_TROP_L2__CO____" ;
+      		:eop_productType = "S5P_OFFL_CO____" ;
+      		:eop_status = "ACQUIRED" ;
+      		:eop_productQualityStatus = "NOMINAL" ;
+      		:eop_productQualityDegradationTag = "NOT APPLICABLE" ;
+
+      group: eop_processing {
+
+        // group attributes:
+        		:objectType = "eop:ProcessingInformation" ;
+        		:eop_processingCenter = "SENTINEL-5P ionos-s5p" ;
+        		:eop_processingDate = "2022-09-01" ;
+        		:eop_processingLevel = "L2" ;
+        		:eop_processorName = "TROPNLL2DP" ;
+        		:eop_processorVersion = "2.4.0" ;
+        		:eop_nativeProductFormat = "netCDF-4" ;
+        		:eop_processingMode = "OFFL" ;
+        } // group eop_processing
+      } // group eop_metaDataProperty
+
+    group: om_procedure {
+
+      // group attributes:
+      		:gml_id = "S5P_RPRO_L2__CO_____20180430T001950_20180430T020120_02818_03_020400_20220901T170054.EOE" ;
+      		:objectType = "eop:EarthObservationEquipment" ;
+
+      group: eop_instrument {
+
+        // group attributes:
+        		:eop_shortName = "TROPOMI" ;
+        		:objectType = "eop:Instrument" ;
+        } // group eop_instrument
+
+      group: eop_sensor {
+
+        // group attributes:
+        		:eop_sensorType = "ATMOSPHERIC" ;
+        		:objectType = "eop:Sensor" ;
+        } // group eop_sensor
+
+      group: eop_acquisitionParameters {
+
+        // group attributes:
+        		:eop_orbitNumber = 2818 ;
+        		:objectType = "eop:Acquisition" ;
+        } // group eop_acquisitionParameters
+
+      group: eop_platform {
+
+        // group attributes:
+        		:eop_shortName = "Sentinel-5p" ;
+        		:objectType = "eop:Platform" ;
+        } // group eop_platform
+      } // group om_procedure
+    } // group EOP_METADATA
+
+  group: ISO_METADATA {
+
+    // group attributes:
+    		:gmd_dateStamp = "2015-10-16" ;
+    		:gmd_fileIdentifier = "urn:ogc:def:EOP:ESA:SENTINEL.S5P_TROP_L2__CO____" ;
+    		:gmd_hierarchyLevelName = "EO Product Collection" ;
+    		:gmd_metadataStandardName = "ISO 19115-2 Geographic Information - Metadata Part 2 Extensions for imagery and gridded data" ;
+    		:gmd_metadataStandardVersion = "ISO 19115-2:2009(E), S5P profile" ;
+    		:objectType = "gmi:MI_Metadata" ;
+
+    group: gmd_characterSet {
+
+      // group attributes:
+      		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" ;
+      		:codeListValue = "utf8" ;
+      		:objectType = "gmd:MD_CharacterSetCode" ;
+      } // group gmd_characterSet
+
+    group: gmd_hierarchyLevel {
+
+      // group attributes:
+      		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode" ;
+      		:codeListValue = "series" ;
+      		:objectType = "gmd:MD_ScopeCode" ;
+      } // group gmd_hierarchyLevel
+
+    group: gmd_language {
+
+      // group attributes:
+      		:codeList = "http://www.loc.gov/standards/iso639-2/" ;
+      		:codeListValue = "eng" ;
+      		:objectType = "gmd:LanguageCode" ;
+      } // group gmd_language
+
+    group: gmd_identificationInfo {
+
+      // group attributes:
+      		:gmd_abstract = "Carbon monoxide column with a spatial resolution of 7.0x7.0 km2 observed at about 13:30 local solar time from spectra measured by TROPOMI" ;
+      		:gmd_credit = "The Sentinel 5 Precursor TROPOMI Level 2 products are developed with funding from the European Space Agency (ESA), the Netherlands Space Office (NSO), the Belgian Science Policy Office, the German Aerospace Center (DLR) and the Bayerisches Staatsministerium f\\303\\274r Wirtschaft und Medien, Energie und Technologie (StMWi)." ;
+      		:gmd_language = "eng" ;
+      		:gmd_topicCategory = "climatologyMeteorologyAtmosphere" ;
+      		:objectType = "gmd:MD_DataIdentification" ;
+
+      group: gmd_pointOfContact {
+
+        // group attributes:
+        		:gmd_organisationName = "Copernicus Space Component Data Access System,  ESA, Services Coordinated Interface" ;
+        		:objectType = "gmd:CI_ResponsibleParty" ;
+
+        group: gmd_contactInfo {
+
+          // group attributes:
+          		:objectType = "gmd:CI_Contact" ;
+
+          group: gmd_address {
+
+            // group attributes:
+            		:gmd_electronicMailAddress = "EOSupport@copernicus.esa.int" ;
+            		:objectType = "gmd:CI_Address" ;
+            } // group gmd_address
+          } // group gmd_contactInfo
+
+        group: gmd_role {
+
+          // group attributes:
+          		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" ;
+          		:codeListValue = "distributor" ;
+          		:objectType = "gmd:CI_RoleCode" ;
+          } // group gmd_role
+        } // group gmd_pointOfContact
+
+      group: gmd_descriptiveKeywords_1 {
+
+        // group attributes:
+        		:gmd_keyword_1 = "Atmospheric conditions" ;
+        		:objectType = "gmd:MD_Keywords" ;
+
+        group: gmd_type {
+
+          // group attributes:
+          		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_KeywordTypeCode" ;
+          		:codeListValue = "theme" ;
+          		:objectType = "gmd:MD_KeywordTypeCode" ;
+          } // group gmd_type
+
+        group: gmd_thesaurusName {
+
+          // group attributes:
+          		:gmd_title = "GEMET - INSPIRE themes, version 1.0" ;
+          		:objectType = "gmd:CI_Citation" ;
+
+          group: gmd_date {
+
+            // group attributes:
+            		:gmd_date = "2008-06-01" ;
+            		:objectType = "gmd:CI_Date" ;
+
+            group: gmd_dateType {
+
+              // group attributes:
+              		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+              		:codeListValue = "publication" ;
+              		:objectType = "gmd:CI_DateTypeCode" ;
+              } // group gmd_dateType
+            } // group gmd_date
+          } // group gmd_thesaurusName
+        } // group gmd_descriptiveKeywords_1
+
+      group: gmd_descriptiveKeywords_2 {
+
+        // group attributes:
+        		:gmd_keyword_1 = "atmosphere_mole_content_of_carbon_monoxide" ;
+        		:objectType = "gmd:MD_Keywords" ;
+
+        group: gmd_thesaurusName {
+
+          // group attributes:
+          		:gmd_title = "CF Standard Name Table v65" ;
+          		:xlink_href = "http://cfconventions.org/standard-names.html" ;
+          		:objectType = "gmd:CI_Citation" ;
+
+          group: gmd_date {
+
+            // group attributes:
+            		:gmd_date = "2019-04-09" ;
+            		:objectType = "gmd:CI_Date" ;
+
+            group: gmd_dateType {
+
+              // group attributes:
+              		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+              		:codeListValue = "publication" ;
+              		:objectType = "gmd:CI_DateTypeCode" ;
+              } // group gmd_dateType
+            } // group gmd_date
+          } // group gmd_thesaurusName
+        } // group gmd_descriptiveKeywords_2
+
+      group: gmd_resourceConstraints {
+
+        // group attributes:
+        		:gmd_useLimitation = "no conditions apply" ;
+        		:objectType = "gmd:MD_LegalConstraints" ;
+
+        group: gmd_accessConstraints {
+
+          // group attributes:
+          		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_RestrictionCode" ;
+          		:codeListValue = "copyright" ;
+          		:objectType = "gmd:MD_RestrictionCode" ;
+          } // group gmd_accessConstraints
+        } // group gmd_resourceConstraints
+
+      group: gmd_spatialRepresentationType {
+
+        // group attributes:
+        		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_SpatialRepresentationTypeCode" ;
+        		:codeListValue = "grid" ;
+        		:objectType = "gmd:MD_SpatialRepresentationTypeCode" ;
+        } // group gmd_spatialRepresentationType
+
+      group: gmd_characterSet {
+
+        // group attributes:
+        		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_CharacterSetCode" ;
+        		:codeListValue = "utf8" ;
+        		:objectType = "gmd:MD_CharacterSetCode" ;
+        } // group gmd_characterSet
+
+      group: gmd_citation {
+
+        // group attributes:
+        		:gmd_title = "TROPOMI/S5P CO Column 1-Orbit L2 Swath 7.0x7.0km" ;
+        		:objectType = "gmd:CI_Citation" ;
+
+        group: gmd_date {
+
+          // group attributes:
+          		:gmd_date = "2022-09-01" ;
+          		:objectType = "gmd:CI_Date" ;
+
+          group: gmd_dateType {
+
+            // group attributes:
+            		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+            		:codeListValue = "creation" ;
+            		:objectType = "gmd:CI_DateTypeCode" ;
+            } // group gmd_dateType
+          } // group gmd_date
+
+        group: gmd_identifier {
+
+          // group attributes:
+          		:gmd_code = "urn:ogc:def:EOP:ESA:SENTINEL.S5P_TROP_L2__CO____" ;
+          		:objectType = "gmd:MD_Identifier" ;
+          } // group gmd_identifier
+        } // group gmd_citation
+
+      group: gmd_extent {
+
+        // group attributes:
+        		:objectType = "gmd:EX_Extent" ;
+
+        group: gmd_geographicElement {
+
+          // group attributes:
+          		:gmd_eastBoundLongitude = 180.f ;
+          		:gmd_northBoundLatitude = 89.92215f ;
+          		:gmd_southBoundLatitude = -85.62971f ;
+          		:gmd_westBoundLongitude = -179.9999f ;
+          		:gmd_extentTypeCode = "true" ;
+          		:objectType = "gmd:EX_GeographicBoundingBox" ;
+          } // group gmd_geographicElement
+
+        group: gmd_temporalElement {
+
+          // group attributes:
+          		:objectType = "gmd:EX_TemporalExtent" ;
+
+          group: gmd_extent {
+
+            // group attributes:
+            		:gml_beginPosition = "removed date-time" ;
+            		:gml_endPosition = "removed date-time" ;
+            		:objectType = "gml:TimePeriod" ;
+            } // group gmd_extent
+          } // group gmd_temporalElement
+        } // group gmd_extent
+      } // group gmd_identificationInfo
+
+    group: gmd_dataQualityInfo {
+
+      // group attributes:
+      		:objectType = "gmd:DQ_DataQuality" ;
+
+      group: gmd_scope {
+
+        // group attributes:
+        		:objectType = "gmd:DQ_Scope" ;
+
+        group: gmd_level {
+
+          // group attributes:
+          		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#MD_ScopeCode" ;
+          		:codeListValue = "dataset" ;
+          		:objectType = "gmd:MD_ScopeCode" ;
+          } // group gmd_level
+        } // group gmd_scope
+
+      group: gmd_report {
+
+        // group attributes:
+        		:objectType = "gmd:DQ_DomainConsistency" ;
+
+        group: gmd_result {
+
+          // group attributes:
+          		:objectType = "gmd:DQ_ConformanceResult" ;
+          		:gmd_pass = "true" ;
+          		:gmd_explanation = "INSPIRE Data specification for orthoimagery is not yet officially published so conformity has not yet been evaluated" ;
+
+          group: gmd_specification {
+
+            // group attributes:
+            		:objectType = "gmd:CI_Citation" ;
+            		:gmd_title = "INSPIRE Data Specification on Orthoimagery - Guidelines, version 3.0rc3" ;
+
+            group: gmd_date {
+
+              // group attributes:
+              		:gmd_date = "2013-02-04" ;
+              		:objectType = "gmd:CI_Date" ;
+
+              group: gmd_dateType {
+
+                // group attributes:
+                		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                		:codeListValue = "publication" ;
+                		:objectType = "gmd:CI_DateTypeCode" ;
+                } // group gmd_dateType
+              } // group gmd_date
+            } // group gmd_specification
+          } // group gmd_result
+        } // group gmd_report
+
+      group: gmd_lineage {
+
+        // group attributes:
+        		:objectType = "gmd:LI_Lineage" ;
+        		:gmd_statement = "L2 CO____ dataset produced by SENTINEL-5P ionos-s5p from the S5P/TROPOMI L1B product" ;
+
+        group: gmd_processStep {
+
+          // group attributes:
+          		:objectType = "gmi:LE_ProcessStep" ;
+          		:gmd_description = "Processing of L1b to L2 CO____ data for orbit 2818 using the KNMI/SRON processor version 2.4.0" ;
+
+          group: gmd_source_7 {
+
+            // group attributes:
+            		:objectType = "gmi:LE_Source" ;
+            		:gmd_description = "Processor CFG_CO___F configuration file" ;
+
+            group: gmi_processedLevel {
+
+              // group attributes:
+              		:gmd_code = "N/A" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi_processedLevel
+
+            group: gmd_sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd_title {
+
+                // group attributes:
+                		:gco_characterString = "Processor CFG_CO___F configuration file" ;
+                } // group gmd_title
+
+              group: gmd_alternateTitle_1 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_CFG_CO___F_00000000T000000_99999999T999999_20210129T000000.cfg" ;
+                } // group gmd_alternateTitle_1
+
+              group: gmd_date {
+
+                // group attributes:
+                		:gmd_date = "removed date-time" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd_dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_7
+
+          group: gmd_source_12 {
+
+            // group attributes:
+            		:objectType = "gmi:LE_Source" ;
+            		:gmd_description = "Auxiliary REF_DEM___ reference data" ;
+
+            group: gmi_processedLevel {
+
+              // group attributes:
+              		:gmd_code = "N/A" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi_processedLevel
+
+            group: gmd_sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd_title {
+
+                // group attributes:
+                		:gco_characterString = "Auxiliary REF_DEM___ reference data" ;
+                } // group gmd_title
+
+              group: gmd_alternateTitle_1 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_REF_DEM____20180301T000000_99999999T999999_20190228T090000.nc" ;
+                } // group gmd_alternateTitle_1
+
+              group: gmd_date {
+
+                // group attributes:
+                		:gmd_date = "removed date-time" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd_dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_12
+
+          group: gmd_source_2 {
+
+            // group attributes:
+            		:objectType = "gmi:LE_Source" ;
+            		:gmd_description = "Auxiliary CTM AUX_CTM_CO model input data" ;
+
+            group: gmi_processedLevel {
+
+              // group attributes:
+              		:gmd_code = "N/A" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi_processedLevel
+
+            group: gmd_sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd_title {
+
+                // group attributes:
+                		:gco_characterString = "Auxiliary CTM AUX_CTM_CO model input data" ;
+                } // group gmd_title
+
+              group: gmd_alternateTitle_1 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_AUX_CTM_CO_20171001T000000_20181001T000000_20170925T120000.nc" ;
+                } // group gmd_alternateTitle_1
+
+              group: gmd_date {
+
+                // group attributes:
+                		:gmd_date = "removed date-time" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd_dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_2
+
+          group: gmd_source_4 {
+
+            // group attributes:
+            		:objectType = "gmi:LE_Source" ;
+            		:gmd_description = "Auxiliary ECMWF AUX_MET_2D Meteorological forecast data" ;
+
+            group: gmi_processedLevel {
+
+              // group attributes:
+              		:gmd_code = "L4" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi_processedLevel
+
+            group: gmd_sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd_title {
+
+                // group attributes:
+                		:gco_characterString = "Auxiliary ECMWF AUX_MET_2D Meteorological forecast data" ;
+                } // group gmd_title
+
+              group: gmd_alternateTitle_1 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OFFL_AUX_MET_2D_20180429T150000_20180430T000000_20180429T120000.nc" ;
+                } // group gmd_alternateTitle_1
+
+              group: gmd_alternateTitle_2 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OFFL_AUX_MET_2D_20180430T030000_20180430T120000_20180430T000000.nc" ;
+                } // group gmd_alternateTitle_2
+
+              group: gmd_date {
+
+                // group attributes:
+                		:gmd_date = "removed date-time" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd_dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_4
+
+          group: gmd_source_6 {
+
+            // group attributes:
+            		:objectType = "gmi:LE_Source" ;
+            		:gmd_description = "Auxiliary ECMWF AUX_MET_TP Meteorological forecast data" ;
+
+            group: gmi_processedLevel {
+
+              // group attributes:
+              		:gmd_code = "L4" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi_processedLevel
+
+            group: gmd_sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd_title {
+
+                // group attributes:
+                		:gco_characterString = "Auxiliary ECMWF AUX_MET_TP Meteorological forecast data" ;
+                } // group gmd_title
+
+              group: gmd_alternateTitle_1 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OFFL_AUX_MET_TP_20180429T150000_20180430T000000_20180429T120000.nc" ;
+                } // group gmd_alternateTitle_1
+
+              group: gmd_alternateTitle_2 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OFFL_AUX_MET_TP_20180430T030000_20180430T120000_20180430T000000.nc" ;
+                } // group gmd_alternateTitle_2
+
+              group: gmd_date {
+
+                // group attributes:
+                		:gmd_date = "removed date-time" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd_dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_6
+
+          group: gmd_source_13 {
+
+            // group attributes:
+            		:objectType = "gmi:LE_Source" ;
+            		:gmd_description = "Auxiliary REF_SOLAR_ reference data" ;
+
+            group: gmi_processedLevel {
+
+              // group attributes:
+              		:gmd_code = "N/A" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi_processedLevel
+
+            group: gmd_sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd_title {
+
+                // group attributes:
+                		:gco_characterString = "Auxiliary REF_SOLAR_ reference data" ;
+                } // group gmd_title
+
+              group: gmd_alternateTitle_1 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_REF_SOLAR__00000000T000000_99999999T999999_20210107T132455.nc" ;
+                } // group gmd_alternateTitle_1
+
+              group: gmd_date {
+
+                // group attributes:
+                		:gmd_date = "removed date-time" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd_dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_13
+
+          group: gmd_source_1 {
+
+            // group attributes:
+            		:objectType = "gmi:LE_Source" ;
+            		:gmd_description = "Auxiliary CTM AUX_CTMCH4 model input data" ;
+
+            group: gmi_processedLevel {
+
+              // group attributes:
+              		:gmd_code = "N/A" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi_processedLevel
+
+            group: gmd_sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd_title {
+
+                // group attributes:
+                		:gco_characterString = "Auxiliary CTM AUX_CTMCH4 model input data" ;
+                } // group gmd_title
+
+              group: gmd_alternateTitle_1 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_AUX_CTMCH4_20180430T000000_20180501T000000_20170925T120000.nc" ;
+                } // group gmd_alternateTitle_1
+
+              group: gmd_date {
+
+                // group attributes:
+                		:gmd_date = "removed date-time" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd_dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_1
+
+          group: gmd_source_11 {
+
+            // group attributes:
+            		:objectType = "gmi:LE_Source" ;
+            		:gmd_description = "TROPOMI L1B L1B_RA_BD8 radiance product" ;
+
+            group: gmi_processedLevel {
+
+              // group attributes:
+              		:gmd_code = "L1B" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi_processedLevel
+
+            group: gmd_sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd_title {
+
+                // group attributes:
+                		:gco_characterString = "TROPOMI L1B L1B_RA_BD8 radiance product" ;
+                } // group gmd_title
+
+              group: gmd_alternateTitle_1 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_RPRO_L1B_RA_BD8_20180430T001950_20180430T020120_02818_03_020100_20220630T164522.nc" ;
+                } // group gmd_alternateTitle_1
+
+              group: gmd_date {
+
+                // group attributes:
+                		:gmd_date = "removed date-time" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd_dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_11
+
+          group: gmd_source_9 {
+
+            // group attributes:
+            		:objectType = "gmi:LE_Source" ;
+            		:gmd_description = "TROPOMI L1B L1B_IR_SIR irradiance product" ;
+
+            group: gmi_processedLevel {
+
+              // group attributes:
+              		:gmd_code = "L1B" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi_processedLevel
+
+            group: gmd_sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd_title {
+
+                // group attributes:
+                		:gco_characterString = "TROPOMI L1B L1B_IR_SIR irradiance product" ;
+                } // group gmd_title
+
+              group: gmd_alternateTitle_1 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_RPRO_L1B_IR_SIR_20180430T001950_20180430T020120_02818_03_020100_20220630T164522.nc" ;
+                } // group gmd_alternateTitle_1
+
+              group: gmd_date {
+
+                // group attributes:
+                		:gmd_date = "removed date-time" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd_dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_9
+
+          group: gmi_output {
+
+            // group attributes:
+            		:gmd_description = "TROPOMI/S5P CO Column 1-Orbit L2 Swath 7.0x7.0km" ;
+            		:objectType = "gmi:LE_Source" ;
+
+            group: gmd_sourceCitation {
+
+              // group attributes:
+              		:gmd_title = "S5P_RPRO_L2__CO_____20180430T001950_20180430T020120_02818_03_020400_20220901T170054" ;
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd_date {
+
+                // group attributes:
+                		:gmd_date = "2022-09-01" ;
+                		:objectType = "gmd:CI_DateTime" ;
+
+                group: gmd_dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd_dateType
+                } // group gmd_date
+
+              group: gmd_identifier {
+
+                // group attributes:
+                		:gmd_code = "L2__CO____" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmd_identifier
+              } // group gmd_sourceCitation
+
+            group: gmi_processedLevel {
+
+              // group attributes:
+              		:gmd_code = "L2" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi_processedLevel
+            } // group gmi_output
+
+          group: gmi_report {
+
+            // group attributes:
+            		:gmi_description = "Sentinel 5-precursor TROPOMI L1b processed to L2 data using the KNMI/SRON L2 CO____ processor" ;
+            		:gmi_fileType = "netCDF-4" ;
+            		:gmi_name = "S5P_RPRO_L2__CO_____20180430T001950_20180430T020120_02818_03_020400_20220901T170054.nc" ;
+            		:objectType = "gmi:LE_ProcessStepReport" ;
+            } // group gmi_report
+
+          group: gmd_source_10 {
+
+            // group attributes:
+            		:objectType = "gmi:LE_Source" ;
+            		:gmd_description = "TROPOMI L1B L1B_RA_BD7 radiance product" ;
+
+            group: gmi_processedLevel {
+
+              // group attributes:
+              		:gmd_code = "L1B" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi_processedLevel
+
+            group: gmd_sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd_title {
+
+                // group attributes:
+                		:gco_characterString = "TROPOMI L1B L1B_RA_BD7 radiance product" ;
+                } // group gmd_title
+
+              group: gmd_alternateTitle_1 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_RPRO_L1B_RA_BD7_20180430T001950_20180430T020120_02818_03_020100_20220630T164522.nc" ;
+                } // group gmd_alternateTitle_1
+
+              group: gmd_date {
+
+                // group attributes:
+                		:gmd_date = "removed date-time" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd_dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_10
+
+          group: gmi_processingInformation {
+
+            // group attributes:
+            		:objectType = "gmi:LE_Processing" ;
+
+            group: gmi_softwareReference {
+
+              // group attributes:
+              		:gmd_title = "TROPNLL2DP processor" ;
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd_date {
+
+                // group attributes:
+                		:gmd_date = "removed date-time" ;
+                		:objectType = "gmd:CI_DateTime" ;
+
+                group: gmd_dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmi_softwareReference
+
+            group: gmi_documentation_1 {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+              		:gmd_title = "Algorithm Theoretical Baseline Document for Sentinel-5 Precursor Carbon Monoxide Total Column Retrieval; SRON-S5P-LEV2-RP-002; release 1.0" ;
+              		:doi = "N/A" ;
+
+              group: gmd_date {
+
+                // group attributes:
+                		:gmd_date = "2015-11-30" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd_dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "revision" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmi_documentation_1
+
+            group: gmi_documentation_2 {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+              		:gmd_title = "Sentinel-5 precursor/TROPOMI Level 2 Product User Manual Carbon Monoxide; SRON-S5P-LEV2-MA-002; release 1.0" ;
+              		:doi = "N/A" ;
+
+              group: gmd_date {
+
+                // group attributes:
+                		:gmd_date = "2015-11-30" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd_dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "revision" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmi_documentation_2
+
+            group: gmi_identifier {
+
+              // group attributes:
+              		:gmd_code = "KNMI/SRON L2 CO____ processor, version 2.4.0" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi_identifier
+            } // group gmi_processingInformation
+
+          group: gmd_source_3 {
+
+            // group attributes:
+            		:objectType = "gmi:LE_Source" ;
+            		:gmd_description = "Auxiliary AUX_ISRF__ reference data" ;
+
+            group: gmi_processedLevel {
+
+              // group attributes:
+              		:gmd_code = "N/A" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi_processedLevel
+
+            group: gmd_sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd_title {
+
+                // group attributes:
+                		:gco_characterString = "Auxiliary AUX_ISRF__ reference data" ;
+                } // group gmd_title
+
+              group: gmd_alternateTitle_1 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_AUX_ISRF___00000000T000000_99999999T999999_20210107T103220.nc" ;
+                } // group gmd_alternateTitle_1
+
+              group: gmd_date {
+
+                // group attributes:
+                		:gmd_date = "removed date-time" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd_dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_3
+
+          group: gmd_source_14 {
+
+            // group attributes:
+            		:objectType = "gmi:LE_Source" ;
+            		:gmd_description = "Auxiliary REF_XS__CO reference data" ;
+
+            group: gmi_processedLevel {
+
+              // group attributes:
+              		:gmd_code = "N/A" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi_processedLevel
+
+            group: gmd_sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd_title {
+
+                // group attributes:
+                		:gco_characterString = "Auxiliary REF_XS__CO reference data" ;
+                } // group gmd_title
+
+              group: gmd_alternateTitle_1 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_REF_XS__CO_00000000T000000_99999999T999999_20200622T085639.nc" ;
+                } // group gmd_alternateTitle_1
+
+              group: gmd_date {
+
+                // group attributes:
+                		:gmd_date = "removed date-time" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd_dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_14
+
+          group: gmd_source_8 {
+
+            // group attributes:
+            		:objectType = "gmi:LE_Source" ;
+            		:gmd_description = "Processor CFG_CO____ configuration file" ;
+
+            group: gmi_processedLevel {
+
+              // group attributes:
+              		:gmd_code = "N/A" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi_processedLevel
+
+            group: gmd_sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd_title {
+
+                // group attributes:
+                		:gco_characterString = "Processor CFG_CO____ configuration file" ;
+                } // group gmd_title
+
+              group: gmd_alternateTitle_1 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OPER_CFG_CO_____00000000T000000_99999999T999999_20220225T000000.cfg" ;
+                } // group gmd_alternateTitle_1
+
+              group: gmd_date {
+
+                // group attributes:
+                		:gmd_date = "removed date-time" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd_dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_8
+
+          group: gmd_source_5 {
+
+            // group attributes:
+            		:objectType = "gmi:LE_Source" ;
+            		:gmd_description = "Auxiliary ECMWF AUX_MET_QP Meteorological forecast data" ;
+
+            group: gmi_processedLevel {
+
+              // group attributes:
+              		:gmd_code = "L4" ;
+              		:objectType = "gmd:MD_Identifier" ;
+              } // group gmi_processedLevel
+
+            group: gmd_sourceCitation {
+
+              // group attributes:
+              		:objectType = "gmd:CI_Citation" ;
+
+              group: gmd_title {
+
+                // group attributes:
+                		:gco_characterString = "Auxiliary ECMWF AUX_MET_QP Meteorological forecast data" ;
+                } // group gmd_title
+
+              group: gmd_alternateTitle_1 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OFFL_AUX_MET_QP_20180429T150000_20180430T000000_20180429T120000.nc" ;
+                } // group gmd_alternateTitle_1
+
+              group: gmd_alternateTitle_2 {
+
+                // group attributes:
+                		:gmx_FileName = "S5P_OFFL_AUX_MET_QP_20180430T030000_20180430T120000_20180430T000000.nc" ;
+                } // group gmd_alternateTitle_2
+
+              group: gmd_date {
+
+                // group attributes:
+                		:gmd_date = "removed date-time" ;
+                		:objectType = "gmd:CI_Date" ;
+
+                group: gmd_dateType {
+
+                  // group attributes:
+                  		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                  		:codeListValue = "creation" ;
+                  		:objectType = "gmd:CI_DateTypeCode" ;
+                  } // group gmd_dateType
+                } // group gmd_date
+              } // group gmd_sourceCitation
+            } // group gmd_source_5
+          } // group gmd_processStep
+        } // group gmd_lineage
+      } // group gmd_dataQualityInfo
+
+    group: gmi_acquisitionInformation {
+
+      // group attributes:
+      		:objectType = "gmi:MI_AcquisitionInformation" ;
+
+      group: gmi_platform {
+
+        // group attributes:
+        		:gmi_description = "Sentinel 5 Precursor" ;
+        		:objectType = "gmi:MI_Platform" ;
+
+        group: gmi_instrument {
+
+          // group attributes:
+          		:objectType = "gmi:MI_Instrument" ;
+          		:gmi_type = "UV-VIS-NIR-SWIR imaging spectrometer" ;
+
+          group: gmi_identifier {
+
+            // group attributes:
+            		:gmd_code = "TROPOMI" ;
+            		:gmd_codeSpace = "http://www.esa.int/" ;
+            		:objectType = "gmd:RS_Identifier" ;
+            } // group gmi_identifier
+          } // group gmi_instrument
+
+        group: gmi_identifier {
+
+          // group attributes:
+          		:gmd_code = "S5P" ;
+          		:gmd_codeSpace = "http://www.esa.int/" ;
+          		:objectType = "gmd:RS_Identifier" ;
+          } // group gmi_identifier
+        } // group gmi_platform
+      } // group gmi_acquisitionInformation
+
+    group: gmd_contact {
+
+      // group attributes:
+      		:gmd_organisationName = "Copernicus Space Component Data Access System,  ESA, Services Coordinated Interface" ;
+      		:objectType = "gmd:CI_ResponsibleParty" ;
+
+      group: gmd_contactInfo {
+
+        // group attributes:
+        		:objectType = "gmd:CI_Contact" ;
+
+        group: gmd_address {
+
+          // group attributes:
+          		:gmd_electronicMailAddress = "EOSupport@copernicus.esa.int" ;
+          		:objectType = "gmd:CI_Address" ;
+          } // group gmd_address
+        } // group gmd_contactInfo
+
+      group: gmd_role {
+
+        // group attributes:
+        		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_RoleCode" ;
+        		:codeListValue = "pointOfContact" ;
+        		:objectType = "gmd:CI_RoleCode" ;
+        } // group gmd_role
+      } // group gmd_contact
+    } // group ISO_METADATA
+
+  group: ESA_METADATA {
+
+    group: earth_explorer_header {
+
+      // group attributes:
+      		:objectType = "Earth_Explorer_Header" ;
+
+      group: variable_header {
+
+        // group attributes:
+        		:objectType = "Variable_Header" ;
+
+        group: subsystem_information {
+
+          // group attributes:
+          		:objectType = "subsystem_information" ;
+
+          group: subsystem_0 {
+
+            // group attributes:
+            		:Authors = "J.M.J. Aan de Brugh, J. Landgraf" ;
+            		:Email = "J.M.J.Aan.de.brugh@sron.nl, J.Landgraf@sron.nl" ;
+            		:Institution = "SRON Netherlands institute for Space Research" ;
+            		:Name = "SICOR" ;
+            		:Reference = "Landgraf, J., et al., Algorithm Theoretical Baseline Document for Sentinel-5 Precursor: Carbon Monoxide Total Column Retrieval, SRON-S5P-LEV2-RP-002, SRON Netherlands Institute for Space Research, 2015" ;
+            		:Version = "7.4.1" ;
+            		:VersionDate = "2016-03-10" ;
+            } // group subsystem_0
+
+          group: subsystem_1 {
+
+            // group attributes:
+            		:Authors = "J.M.J. Aan de Brugh, J. Landgraf" ;
+            		:Email = "J.M.J.Aan.de.brugh@sron.nl, J.Landgraf@sron.nl" ;
+            		:Institution = "SRON Netherlands Institute for Space Research" ;
+            		:Name = "TS-Lintran" ;
+            		:Reference = "Landgraf, J., et al., Algorithm Theoretical Baseline Document for Sentinel-5 Precursor: Carbon Monoxide Total Column Retrieval, SRON-S5P-LEV2-RP-002, SRON Netherlands Institute for Space Research, 2015" ;
+            		:Version = "1.0" ;
+            		:VersionDate = "2015-06-12" ;
+            } // group subsystem_1
+          } // group subsystem_information
+
+        group: gmd_lineage {
+
+          // group attributes:
+          		:objectType = "gmd:LI_Lineage" ;
+          		:gmd_statement = "L2 CO____ dataset produced by SENTINEL-5P ionos-s5p from the S5P/TROPOMI L1B product" ;
+
+          group: gmd_processStep {
+
+            // group attributes:
+            		:objectType = "gmi:LE_ProcessStep" ;
+            		:gmd_description = "Processing of L1b to L2 CO____ data for orbit 2818 using the KNMI/SRON processor version 2.4.0" ;
+
+            group: gmd_source_7 {
+
+              // group attributes:
+              		:objectType = "gmi:LE_Source" ;
+              		:gmd_description = "Processor CFG_CO___F configuration file" ;
+
+              group: gmi_processedLevel {
+
+                // group attributes:
+                		:gmd_code = "N/A" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi_processedLevel
+
+              group: gmd_sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd_title {
+
+                  // group attributes:
+                  		:gco_characterString = "Processor CFG_CO___F configuration file" ;
+                  } // group gmd_title
+
+                group: gmd_alternateTitle_1 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_CFG_CO___F_00000000T000000_99999999T999999_20210129T000000.cfg" ;
+                  } // group gmd_alternateTitle_1
+
+                group: gmd_date {
+
+                  // group attributes:
+                  		:gmd_date = "removed date-time" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd_dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_7
+
+            group: gmd_source_12 {
+
+              // group attributes:
+              		:objectType = "gmi:LE_Source" ;
+              		:gmd_description = "Auxiliary REF_DEM___ reference data" ;
+
+              group: gmi_processedLevel {
+
+                // group attributes:
+                		:gmd_code = "N/A" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi_processedLevel
+
+              group: gmd_sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd_title {
+
+                  // group attributes:
+                  		:gco_characterString = "Auxiliary REF_DEM___ reference data" ;
+                  } // group gmd_title
+
+                group: gmd_alternateTitle_1 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_REF_DEM____20180301T000000_99999999T999999_20190228T090000.nc" ;
+                  } // group gmd_alternateTitle_1
+
+                group: gmd_date {
+
+                  // group attributes:
+                  		:gmd_date = "removed date-time" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd_dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_12
+
+            group: gmd_source_2 {
+
+              // group attributes:
+              		:objectType = "gmi:LE_Source" ;
+              		:gmd_description = "Auxiliary CTM AUX_CTM_CO model input data" ;
+
+              group: gmi_processedLevel {
+
+                // group attributes:
+                		:gmd_code = "N/A" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi_processedLevel
+
+              group: gmd_sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd_title {
+
+                  // group attributes:
+                  		:gco_characterString = "Auxiliary CTM AUX_CTM_CO model input data" ;
+                  } // group gmd_title
+
+                group: gmd_alternateTitle_1 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_AUX_CTM_CO_20171001T000000_20181001T000000_20170925T120000.nc" ;
+                  } // group gmd_alternateTitle_1
+
+                group: gmd_date {
+
+                  // group attributes:
+                  		:gmd_date = "removed date-time" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd_dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_2
+
+            group: gmd_source_4 {
+
+              // group attributes:
+              		:objectType = "gmi:LE_Source" ;
+              		:gmd_description = "Auxiliary ECMWF AUX_MET_2D Meteorological forecast data" ;
+
+              group: gmi_processedLevel {
+
+                // group attributes:
+                		:gmd_code = "L4" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi_processedLevel
+
+              group: gmd_sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd_title {
+
+                  // group attributes:
+                  		:gco_characterString = "Auxiliary ECMWF AUX_MET_2D Meteorological forecast data" ;
+                  } // group gmd_title
+
+                group: gmd_alternateTitle_1 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OFFL_AUX_MET_2D_20180429T150000_20180430T000000_20180429T120000.nc" ;
+                  } // group gmd_alternateTitle_1
+
+                group: gmd_alternateTitle_2 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OFFL_AUX_MET_2D_20180430T030000_20180430T120000_20180430T000000.nc" ;
+                  } // group gmd_alternateTitle_2
+
+                group: gmd_date {
+
+                  // group attributes:
+                  		:gmd_date = "removed date-time" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd_dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_4
+
+            group: gmd_source_6 {
+
+              // group attributes:
+              		:objectType = "gmi:LE_Source" ;
+              		:gmd_description = "Auxiliary ECMWF AUX_MET_TP Meteorological forecast data" ;
+
+              group: gmi_processedLevel {
+
+                // group attributes:
+                		:gmd_code = "L4" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi_processedLevel
+
+              group: gmd_sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd_title {
+
+                  // group attributes:
+                  		:gco_characterString = "Auxiliary ECMWF AUX_MET_TP Meteorological forecast data" ;
+                  } // group gmd_title
+
+                group: gmd_alternateTitle_1 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OFFL_AUX_MET_TP_20180429T150000_20180430T000000_20180429T120000.nc" ;
+                  } // group gmd_alternateTitle_1
+
+                group: gmd_alternateTitle_2 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OFFL_AUX_MET_TP_20180430T030000_20180430T120000_20180430T000000.nc" ;
+                  } // group gmd_alternateTitle_2
+
+                group: gmd_date {
+
+                  // group attributes:
+                  		:gmd_date = "removed date-time" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd_dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_6
+
+            group: gmd_source_13 {
+
+              // group attributes:
+              		:objectType = "gmi:LE_Source" ;
+              		:gmd_description = "Auxiliary REF_SOLAR_ reference data" ;
+
+              group: gmi_processedLevel {
+
+                // group attributes:
+                		:gmd_code = "N/A" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi_processedLevel
+
+              group: gmd_sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd_title {
+
+                  // group attributes:
+                  		:gco_characterString = "Auxiliary REF_SOLAR_ reference data" ;
+                  } // group gmd_title
+
+                group: gmd_alternateTitle_1 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_REF_SOLAR__00000000T000000_99999999T999999_20210107T132455.nc" ;
+                  } // group gmd_alternateTitle_1
+
+                group: gmd_date {
+
+                  // group attributes:
+                  		:gmd_date = "removed date-time" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd_dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_13
+
+            group: gmd_source_1 {
+
+              // group attributes:
+              		:objectType = "gmi:LE_Source" ;
+              		:gmd_description = "Auxiliary CTM AUX_CTMCH4 model input data" ;
+
+              group: gmi_processedLevel {
+
+                // group attributes:
+                		:gmd_code = "N/A" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi_processedLevel
+
+              group: gmd_sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd_title {
+
+                  // group attributes:
+                  		:gco_characterString = "Auxiliary CTM AUX_CTMCH4 model input data" ;
+                  } // group gmd_title
+
+                group: gmd_alternateTitle_1 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_AUX_CTMCH4_20180430T000000_20180501T000000_20170925T120000.nc" ;
+                  } // group gmd_alternateTitle_1
+
+                group: gmd_date {
+
+                  // group attributes:
+                  		:gmd_date = "removed date-time" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd_dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_1
+
+            group: gmd_source_11 {
+
+              // group attributes:
+              		:objectType = "gmi:LE_Source" ;
+              		:gmd_description = "TROPOMI L1B L1B_RA_BD8 radiance product" ;
+
+              group: gmi_processedLevel {
+
+                // group attributes:
+                		:gmd_code = "L1B" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi_processedLevel
+
+              group: gmd_sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd_title {
+
+                  // group attributes:
+                  		:gco_characterString = "TROPOMI L1B L1B_RA_BD8 radiance product" ;
+                  } // group gmd_title
+
+                group: gmd_alternateTitle_1 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_RPRO_L1B_RA_BD8_20180430T001950_20180430T020120_02818_03_020100_20220630T164522.nc" ;
+                  } // group gmd_alternateTitle_1
+
+                group: gmd_date {
+
+                  // group attributes:
+                  		:gmd_date = "removed date-time" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd_dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_11
+
+            group: gmd_source_9 {
+
+              // group attributes:
+              		:objectType = "gmi:LE_Source" ;
+              		:gmd_description = "TROPOMI L1B L1B_IR_SIR irradiance product" ;
+
+              group: gmi_processedLevel {
+
+                // group attributes:
+                		:gmd_code = "L1B" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi_processedLevel
+
+              group: gmd_sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd_title {
+
+                  // group attributes:
+                  		:gco_characterString = "TROPOMI L1B L1B_IR_SIR irradiance product" ;
+                  } // group gmd_title
+
+                group: gmd_alternateTitle_1 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_RPRO_L1B_IR_SIR_20180430T001950_20180430T020120_02818_03_020100_20220630T164522.nc" ;
+                  } // group gmd_alternateTitle_1
+
+                group: gmd_date {
+
+                  // group attributes:
+                  		:gmd_date = "removed date-time" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd_dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_9
+
+            group: gmi_output {
+
+              // group attributes:
+              		:gmd_description = "TROPOMI/S5P CO Column 1-Orbit L2 Swath 7.0x7.0km" ;
+              		:objectType = "gmi:LE_Source" ;
+
+              group: gmd_sourceCitation {
+
+                // group attributes:
+                		:gmd_title = "S5P_RPRO_L2__CO_____20180430T001950_20180430T020120_02818_03_020400_20220901T170054" ;
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd_date {
+
+                  // group attributes:
+                  		:gmd_date = "2022-09-01" ;
+                  		:objectType = "gmd:CI_DateTime" ;
+
+                  group: gmd_dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd_dateType
+                  } // group gmd_date
+
+                group: gmd_identifier {
+
+                  // group attributes:
+                  		:gmd_code = "L2__CO____" ;
+                  		:objectType = "gmd:MD_Identifier" ;
+                  } // group gmd_identifier
+                } // group gmd_sourceCitation
+
+              group: gmi_processedLevel {
+
+                // group attributes:
+                		:gmd_code = "L2" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi_processedLevel
+              } // group gmi_output
+
+            group: gmi_report {
+
+              // group attributes:
+              		:gmi_description = "Sentinel 5-precursor TROPOMI L1b processed to L2 data using the KNMI/SRON L2 CO____ processor" ;
+              		:gmi_fileType = "netCDF-4" ;
+              		:gmi_name = "S5P_RPRO_L2__CO_____20180430T001950_20180430T020120_02818_03_020400_20220901T170054.nc" ;
+              		:objectType = "gmi:LE_ProcessStepReport" ;
+              } // group gmi_report
+
+            group: gmd_source_10 {
+
+              // group attributes:
+              		:objectType = "gmi:LE_Source" ;
+              		:gmd_description = "TROPOMI L1B L1B_RA_BD7 radiance product" ;
+
+              group: gmi_processedLevel {
+
+                // group attributes:
+                		:gmd_code = "L1B" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi_processedLevel
+
+              group: gmd_sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd_title {
+
+                  // group attributes:
+                  		:gco_characterString = "TROPOMI L1B L1B_RA_BD7 radiance product" ;
+                  } // group gmd_title
+
+                group: gmd_alternateTitle_1 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_RPRO_L1B_RA_BD7_20180430T001950_20180430T020120_02818_03_020100_20220630T164522.nc" ;
+                  } // group gmd_alternateTitle_1
+
+                group: gmd_date {
+
+                  // group attributes:
+                  		:gmd_date = "removed date-time" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd_dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_10
+
+            group: gmi_processingInformation {
+
+              // group attributes:
+              		:objectType = "gmi:LE_Processing" ;
+
+              group: gmi_softwareReference {
+
+                // group attributes:
+                		:gmd_title = "TROPNLL2DP processor" ;
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd_date {
+
+                  // group attributes:
+                  		:gmd_date = "removed date-time" ;
+                  		:objectType = "gmd:CI_DateTime" ;
+
+                  group: gmd_dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmi_softwareReference
+
+              group: gmi_documentation_1 {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+                		:gmd_title = "Algorithm Theoretical Baseline Document for Sentinel-5 Precursor Carbon Monoxide Total Column Retrieval; SRON-S5P-LEV2-RP-002; release 1.0" ;
+
+                group: gmd_date {
+
+                  // group attributes:
+                  		:gmd_date = "2015-11-30" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd_dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "revision" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmi_documentation_1
+
+              group: gmi_documentation_2 {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+                		:gmd_title = "Sentinel-5 precursor/TROPOMI Level 2 Product User Manual Carbon Monoxide; SRON-S5P-LEV2-MA-002; release 1.0" ;
+
+                group: gmd_date {
+
+                  // group attributes:
+                  		:gmd_date = "2015-11-30" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd_dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "revision" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmi_documentation_2
+
+              group: gmi_identifier {
+
+                // group attributes:
+                		:gmd_code = "KNMI/SRON L2 CO____ processor, version 2.4.0" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi_identifier
+              } // group gmi_processingInformation
+
+            group: gmd_source_3 {
+
+              // group attributes:
+              		:objectType = "gmi:LE_Source" ;
+              		:gmd_description = "Auxiliary AUX_ISRF__ reference data" ;
+
+              group: gmi_processedLevel {
+
+                // group attributes:
+                		:gmd_code = "N/A" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi_processedLevel
+
+              group: gmd_sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd_title {
+
+                  // group attributes:
+                  		:gco_characterString = "Auxiliary AUX_ISRF__ reference data" ;
+                  } // group gmd_title
+
+                group: gmd_alternateTitle_1 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_AUX_ISRF___00000000T000000_99999999T999999_20210107T103220.nc" ;
+                  } // group gmd_alternateTitle_1
+
+                group: gmd_date {
+
+                  // group attributes:
+                  		:gmd_date = "removed date-time" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd_dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_3
+
+            group: gmd_source_14 {
+
+              // group attributes:
+              		:objectType = "gmi:LE_Source" ;
+              		:gmd_description = "Auxiliary REF_XS__CO reference data" ;
+
+              group: gmi_processedLevel {
+
+                // group attributes:
+                		:gmd_code = "N/A" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi_processedLevel
+
+              group: gmd_sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd_title {
+
+                  // group attributes:
+                  		:gco_characterString = "Auxiliary REF_XS__CO reference data" ;
+                  } // group gmd_title
+
+                group: gmd_alternateTitle_1 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_REF_XS__CO_00000000T000000_99999999T999999_20200622T085639.nc" ;
+                  } // group gmd_alternateTitle_1
+
+                group: gmd_date {
+
+                  // group attributes:
+                  		:gmd_date = "removed date-time" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd_dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_14
+
+            group: gmd_source_8 {
+
+              // group attributes:
+              		:objectType = "gmi:LE_Source" ;
+              		:gmd_description = "Processor CFG_CO____ configuration file" ;
+
+              group: gmi_processedLevel {
+
+                // group attributes:
+                		:gmd_code = "N/A" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi_processedLevel
+
+              group: gmd_sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd_title {
+
+                  // group attributes:
+                  		:gco_characterString = "Processor CFG_CO____ configuration file" ;
+                  } // group gmd_title
+
+                group: gmd_alternateTitle_1 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OPER_CFG_CO_____00000000T000000_99999999T999999_20220225T000000.cfg" ;
+                  } // group gmd_alternateTitle_1
+
+                group: gmd_date {
+
+                  // group attributes:
+                  		:gmd_date = "removed date-time" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd_dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_8
+
+            group: gmd_source_5 {
+
+              // group attributes:
+              		:objectType = "gmi:LE_Source" ;
+              		:gmd_description = "Auxiliary ECMWF AUX_MET_QP Meteorological forecast data" ;
+
+              group: gmi_processedLevel {
+
+                // group attributes:
+                		:gmd_code = "L4" ;
+                		:objectType = "gmd:MD_Identifier" ;
+                } // group gmi_processedLevel
+
+              group: gmd_sourceCitation {
+
+                // group attributes:
+                		:objectType = "gmd:CI_Citation" ;
+
+                group: gmd_title {
+
+                  // group attributes:
+                  		:gco_characterString = "Auxiliary ECMWF AUX_MET_QP Meteorological forecast data" ;
+                  } // group gmd_title
+
+                group: gmd_alternateTitle_1 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OFFL_AUX_MET_QP_20180429T150000_20180430T000000_20180429T120000.nc" ;
+                  } // group gmd_alternateTitle_1
+
+                group: gmd_alternateTitle_2 {
+
+                  // group attributes:
+                  		:gmx_FileName = "S5P_OFFL_AUX_MET_QP_20180430T030000_20180430T120000_20180430T000000.nc" ;
+                  } // group gmd_alternateTitle_2
+
+                group: gmd_date {
+
+                  // group attributes:
+                  		:gmd_date = "removed date-time" ;
+                  		:objectType = "gmd:CI_Date" ;
+
+                  group: gmd_dateType {
+
+                    // group attributes:
+                    		:codeList = "http://www.isotc211.org/2005/resources/Codelist/gmxCodelists.xml#CI_DateTypeCode" ;
+                    		:codeListValue = "creation" ;
+                    		:objectType = "gmd:CI_DateTypeCode" ;
+                    } // group gmd_dateType
+                  } // group gmd_date
+                } // group gmd_sourceCitation
+              } // group gmd_source_5
+            } // group gmd_processStep
+          } // group gmd_lineage
+        } // group variable_header
+
+      group: fixed_header {
+
+        // group attributes:
+        		:objectType = "Fixed_Header" ;
+        		:File_Name = "S5P_RPRO_L2__CO_____20180430T001950_20180430T020120_02818_03_020400_20220901T170054" ;
+        		:File_Description = "Carbon monoxide column with a spatial resolution of 7.0x7.0 km2 observed at about 13:30 local solar time from spectra measured by TROPOMI" ;
+        		:Notes = "" ;
+        		:Mission = "S5P" ;
+        		:File_Class = "RPRO" ;
+        		:File_Type = "L2__CO____" ;
+        		:File_Version = 1 ;
+
+        group: validity_period {
+
+          // group attributes:
+          		:objectType = "Validity_Period" ;
+          		:Validity_Start = "UTC=removed date-time" ;
+          		:Validity_Stop = "UTC=removed date-time" ;
+          } // group validity_period
+
+        group: source {
+
+          // group attributes:
+          		:objectType = "Source" ;
+          		:System = "SENTINEL-5P ionos-s5p" ;
+          		:Creator = "TROPNLL2DP" ;
+          		:Creator_Version = "2.4.0" ;
+          		:Creation_Date = "UTC=removed date-time" ;
+          } // group source
+        } // group fixed_header
+      } // group earth_explorer_header
+    } // group ESA_METADATA
+  } // group METADATA
+
+group: PRODUCT {
+  dimensions:
+  	time = 1 ;
+  	scanline = 2906 ;
+  	ground_pixel = 215 ;
+  	layer = 50 ;
+  	corner = 4 ;
+  	time_utc_len1 = 28 ;
+  variables:
+  	int ground_pixel(ground_pixel) ;
+  		ground_pixel:units = "1" ;
+  		ground_pixel:axis = "X" ;
+  		ground_pixel:long_name = "across-track dimension index" ;
+  		ground_pixel:comment = "This coordinate variable defines the indices across track, from west to east; index starts at 0" ;
+  		ground_pixel:_FillValue = -2147483647 ;
+  	int time(time) ;
+  		time:units = "seconds since removed date-time" ;
+  		time:standard_name = "time" ;
+  		time:axis = "T" ;
+  		time:long_name = "reference time for the measurements" ;
+  		time:comment = "The time in this variable corresponds to the time in the time_reference global attribute" ;
+  		time:_FillValue = -2147483647 ;
+  	float layer(layer) ;
+  		layer:units = "m" ;
+  		layer:standard_name = "height" ;
+  		layer:long_name = "Height above topographic surface" ;
+  		layer:axis = "Z" ;
+  		layer:_FillValue = 9.96921e+36f ;
+  	float longitude(time, scanline, ground_pixel) ;
+  		longitude:long_name = "pixel center longitude" ;
+  		longitude:units = "degrees_east" ;
+  		longitude:standard_name = "longitude" ;
+  		longitude:valid_min = -180.f ;
+  		longitude:valid_max = 180.f ;
+  		longitude:bounds = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/longitude_bounds" ;
+  		longitude:_FillValue = 9.96921e+36f ;
+  	float latitude(time, scanline, ground_pixel) ;
+  		latitude:long_name = "pixel center latitude" ;
+  		latitude:units = "degrees_north" ;
+  		latitude:standard_name = "latitude" ;
+  		latitude:valid_min = -90.f ;
+  		latitude:valid_max = 90.f ;
+  		latitude:bounds = "/PRODUCT/SUPPORT_DATA/GEOLOCATIONS/latitude_bounds" ;
+  		latitude:_FillValue = 9.96921e+36f ;
+  	int corner(corner) ;
+  		corner:units = "1" ;
+  		corner:long_name = "pixel corner index" ;
+  		corner:comment = "This coordinate variable defines the indices for the pixel corners; index starts at 0 (counter-clockwise, starting from south-western corner of the pixel in ascending part of the orbit)" ;
+  		corner:_FillValue = -2147483647 ;
+  	int scanline(scanline) ;
+  		scanline:units = "1" ;
+  		scanline:axis = "Y" ;
+  		scanline:long_name = "along-track dimension index" ;
+  		scanline:comment = "This coordinate variable defines the indices along track; index starts at 0" ;
+  		scanline:_FillValue = -2147483647 ;
+  	ubyte qa_value(time, scanline, ground_pixel) ;
+  		qa_value:units = "1" ;
+  		qa_value:scale_factor = 0.01f ;
+  		qa_value:add_offset = 0.f ;
+  		qa_value:valid_min = 0UB ;
+  		qa_value:valid_max = 100UB ;
+  		qa_value:long_name = "data quality value" ;
+  		qa_value:comment = "A continuous quality descriptor, varying between 0 (no data) and 1 (full quality data). Recommend to ignore data with qa_value < 0.5" ;
+  		qa_value:coordinates = "longitude latitude" ;
+  		qa_value:_FillValue = 255UB ;
+  	float carbonmonoxide_total_column(time, scanline, ground_pixel) ;
+  		carbonmonoxide_total_column:units = "mol m-2" ;
+  		carbonmonoxide_total_column:standard_name = "atmosphere_mole_content_of_carbon_monoxide" ;
+  		carbonmonoxide_total_column:long_name = "Vertically integrated CO column" ;
+  		carbonmonoxide_total_column:coordinates = "longitude latitude" ;
+  		carbonmonoxide_total_column:ancillary_variables = "carbonmonoxide_total_column_precision" ;
+  		carbonmonoxide_total_column:multiplication_factor_to_convert_to_molecules_percm2 = 6.022141e+19f ;
+  		carbonmonoxide_total_column:_FillValue = 9.96921e+36f ;
+  	int delta_time(time, scanline) ;
+  		delta_time:long_name = "offset of start time of measurement relative to time_reference" ;
+  		delta_time:units = "milliseconds since removed date-time" ;
+  		delta_time:_FillValue = -2147483647 ;
+  	float carbonmonoxide_total_column_corrected(time, scanline, ground_pixel) ;
+  		carbonmonoxide_total_column_corrected:units = "mol m-2" ;
+  		carbonmonoxide_total_column_corrected:standard_name = "atmosphere_mole_content_of_carbon_monoxide" ;
+  		carbonmonoxide_total_column_corrected:long_name = "carbonmonoxide_total_column - carbonmonoxide_total_column_stripe_offset" ;
+  		carbonmonoxide_total_column_corrected:coordinates = "longitude latitude" ;
+  		carbonmonoxide_total_column_corrected:ancillary_variables = "carbonmonoxide_total_column_precision carbonmonoxide_total_column_stripe_offset" ;
+  		carbonmonoxide_total_column_corrected:multiplication_factor_to_convert_to_molecules_percm2 = 6.022141e+19f ;
+  		carbonmonoxide_total_column_corrected:_FillValue = 9.96921e+36f ;
+  	char time_utc(time, scanline, time_utc_len1) ;
+  		time_utc:long_name = "Time of observation as ISO 8601 date-time string" ;
+  		time_utc:_FillValue = "" ;
+  		time_utc:Orig_FillValue = "" ;
+  	float carbonmonoxide_total_column_precision(time, scanline, ground_pixel) ;
+  		carbonmonoxide_total_column_precision:units = "mol m-2" ;
+  		carbonmonoxide_total_column_precision:standard_name = "atmosphere_mole_content_of_carbon_monoxide standard_error" ;
+  		carbonmonoxide_total_column_precision:long_name = "Standard error of the vertically integrated CO column" ;
+  		carbonmonoxide_total_column_precision:coordinates = "longitude latitude" ;
+  		carbonmonoxide_total_column_precision:multiplication_factor_to_convert_to_molecules_percm2 = 6.022141e+19f ;
+  		carbonmonoxide_total_column_precision:_FillValue = 9.96921e+36f ;
+
+  group: SUPPORT_DATA {
+
+    group: GEOLOCATIONS {
+      variables:
+      	float satellite_altitude(time, scanline) ;
+      		satellite_altitude:long_name = "satellite altitude" ;
+      		satellite_altitude:units = "m" ;
+      		satellite_altitude:comment = "The altitude of the satellite with respect to the geodetic sub satellite point on the WGS84 reference ellipsoid" ;
+      		satellite_altitude:valid_min = 700000.f ;
+      		satellite_altitude:valid_max = 900000.f ;
+      		satellite_altitude:_FillValue = 9.96921e+36f ;
+      	float satellite_longitude(time, scanline) ;
+      		satellite_longitude:long_name = "satellite_longitude" ;
+      		satellite_longitude:units = "degrees_east" ;
+      		satellite_longitude:comment = "Longitude of the geodetic sub satellite point on the WGS84 reference ellipsoid" ;
+      		satellite_longitude:valid_min = -180.f ;
+      		satellite_longitude:valid_max = 180.f ;
+      		satellite_longitude:_FillValue = 9.96921e+36f ;
+      	float solar_azimuth_angle(time, scanline, ground_pixel) ;
+      		solar_azimuth_angle:long_name = "solar azimuth angle" ;
+      		solar_azimuth_angle:standard_name = "solar_azimuth_angle" ;
+      		solar_azimuth_angle:units = "degree" ;
+      		solar_azimuth_angle:valid_min = -180.f ;
+      		solar_azimuth_angle:valid_max = 180.f ;
+      		solar_azimuth_angle:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		solar_azimuth_angle:comment = "Solar azimuth angle at the ground pixel location on the reference ellipsoid. Angle is measured clockwise from the North (East = 90, South = +/-180, West = -90)" ;
+      		solar_azimuth_angle:_FillValue = 9.96921e+36f ;
+      	float solar_zenith_angle(time, scanline, ground_pixel) ;
+      		solar_zenith_angle:long_name = "solar zenith angle" ;
+      		solar_zenith_angle:standard_name = "solar_zenith_angle" ;
+      		solar_zenith_angle:units = "degree" ;
+      		solar_zenith_angle:valid_min = 0.f ;
+      		solar_zenith_angle:valid_max = 180.f ;
+      		solar_zenith_angle:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		solar_zenith_angle:comment = "Solar zenith angle at the ground pixel location on the reference ellipsoid. Angle is measured away from the vertical" ;
+      		solar_zenith_angle:_FillValue = 9.96921e+36f ;
+      	float longitude_bounds(time, scanline, ground_pixel, corner) ;
+      		longitude_bounds:_FillValue = 9.96921e+36f ;
+      	ubyte geolocation_flags(time, scanline, ground_pixel) ;
+      		geolocation_flags:_FillValue = 255UB ;
+      		geolocation_flags:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		geolocation_flags:flag_masks = 0UB, 1UB, 2UB, 4UB, 8UB, 16UB, 32UB, 128UB ;
+      		geolocation_flags:flag_meanings = "no_error solar_eclipse sun_glint_possible descending night geo_boundary_crossing spacecraft_manoeuvre geolocation_error" ;
+      		geolocation_flags:flag_values = 0UB, 1UB, 2UB, 4UB, 8UB, 16UB, 32UB, 128UB ;
+      		geolocation_flags:long_name = "geolocation flags" ;
+      		geolocation_flags:max_val = 254UB ;
+      		geolocation_flags:min_val = 0UB ;
+      		geolocation_flags:units = "1" ;
+      	float satellite_orbit_phase(time, scanline) ;
+      		satellite_orbit_phase:long_name = "fractional satellite orbit phase" ;
+      		satellite_orbit_phase:units = "1" ;
+      		satellite_orbit_phase:comment = "Relative offset [0.0, ..., 1.0] of the measurement in the orbit" ;
+      		satellite_orbit_phase:valid_min = -0.02f ;
+      		satellite_orbit_phase:valid_max = 1.02f ;
+      		satellite_orbit_phase:_FillValue = 9.96921e+36f ;
+      	float viewing_zenith_angle(time, scanline, ground_pixel) ;
+      		viewing_zenith_angle:long_name = "viewing zenith angle" ;
+      		viewing_zenith_angle:standard_name = "viewing_zenith_angle" ;
+      		viewing_zenith_angle:units = "degree" ;
+      		viewing_zenith_angle:valid_min = 0.f ;
+      		viewing_zenith_angle:valid_max = 180.f ;
+      		viewing_zenith_angle:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		viewing_zenith_angle:comment = "Zenith angle of the satellite at the ground pixel location on the reference ellipsoid. Angle is measured away from the vertical" ;
+      		viewing_zenith_angle:_FillValue = 9.96921e+36f ;
+      	float latitude_bounds(time, scanline, ground_pixel, corner) ;
+      		latitude_bounds:_FillValue = 9.96921e+36f ;
+      	float viewing_azimuth_angle(time, scanline, ground_pixel) ;
+      		viewing_azimuth_angle:long_name = "viewing azimuth angle" ;
+      		viewing_azimuth_angle:standard_name = "viewing_azimuth_angle" ;
+      		viewing_azimuth_angle:units = "degree" ;
+      		viewing_azimuth_angle:valid_min = -180.f ;
+      		viewing_azimuth_angle:valid_max = 180.f ;
+      		viewing_azimuth_angle:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		viewing_azimuth_angle:comment = "Satellite azimuth angle at the ground pixel location on the reference ellipsoid. Angle is measured clockwise from the North (East = 90, South = +/-180, West = -90)" ;
+      		viewing_azimuth_angle:_FillValue = 9.96921e+36f ;
+      	float satellite_latitude(time, scanline) ;
+      		satellite_latitude:long_name = "sub satellite latitude" ;
+      		satellite_latitude:units = "degrees_north" ;
+      		satellite_latitude:comment = "Latitude of the geodetic sub satellite point on the WGS84 reference ellipsoid" ;
+      		satellite_latitude:valid_min = -90.f ;
+      		satellite_latitude:valid_max = 90.f ;
+      		satellite_latitude:_FillValue = 9.96921e+36f ;
+      } // group GEOLOCATIONS
+
+    group: DETAILED_RESULTS {
+      variables:
+      	float semiheavy_water_total_column(time, scanline, ground_pixel) ;
+      		semiheavy_water_total_column:units = "mol m-2" ;
+      		semiheavy_water_total_column:proposed_standard_name = "atmosphere_mole_content_of_water_vapor_containing_2H" ;
+      		semiheavy_water_total_column:long_name = "Vertically integrated HDO column" ;
+      		semiheavy_water_total_column:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		semiheavy_water_total_column:ancillary_variables = "semiheavy_water_total_column_precision" ;
+      		semiheavy_water_total_column:multiplication_factor_to_convert_to_molecules_percm2 = 6.022141e+19f ;
+      		semiheavy_water_total_column:_FillValue = 9.96921e+36f ;
+      	float methane_strong_twoband_total_column(time, scanline, ground_pixel) ;
+      		methane_strong_twoband_total_column:units = "mol m-2" ;
+      		methane_strong_twoband_total_column:standard_name = "atmosphere_mole_content_of_methane" ;
+      		methane_strong_twoband_total_column:long_name = "Vertically integrated CH4 column from strong band" ;
+      		methane_strong_twoband_total_column:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		methane_strong_twoband_total_column:multiplication_factor_to_convert_to_molecules_percm2 = 6.022141e+19f ;
+      		methane_strong_twoband_total_column:_FillValue = 9.96921e+36f ;
+      	float height_scattering_layer(time, scanline, ground_pixel) ;
+      		height_scattering_layer:units = "m" ;
+      		height_scattering_layer:long_name = "Scattering layer height above the topographic surface" ;
+      		height_scattering_layer:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		height_scattering_layer:_FillValue = 9.96921e+36f ;
+      	float pressure_levels(time, scanline, ground_pixel, layer) ;
+      		pressure_levels:positive = "down" ;
+      		pressure_levels:units = "Pa" ;
+      		pressure_levels:standard_name = "air_pressure" ;
+      		pressure_levels:long_name = "Pressure at bottom of layer" ;
+      		pressure_levels:_FillValue = 9.96921e+36f ;
+      	float methane_weak_twoband_total_column(time, scanline, ground_pixel) ;
+      		methane_weak_twoband_total_column:units = "mol m-2" ;
+      		methane_weak_twoband_total_column:standard_name = "atmosphere_mole_content_of_methane" ;
+      		methane_weak_twoband_total_column:long_name = "Vertically integrated CH4 column from weak band" ;
+      		methane_weak_twoband_total_column:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		methane_weak_twoband_total_column:multiplication_factor_to_convert_to_molecules_percm2 = 6.022141e+19f ;
+      		methane_weak_twoband_total_column:_FillValue = 9.96921e+36f ;
+      	float water_weak_twoband_total_column(time, scanline, ground_pixel) ;
+      		water_weak_twoband_total_column:units = "mol m-2" ;
+      		water_weak_twoband_total_column:standard_name = "atmosphere_mole_content_of_water_vapor" ;
+      		water_weak_twoband_total_column:long_name = "Vertically integrated H2O column from weak band" ;
+      		water_weak_twoband_total_column:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		water_weak_twoband_total_column:multiplication_factor_to_convert_to_molecules_percm2 = 6.022141e+19f ;
+      		water_weak_twoband_total_column:_FillValue = 9.96921e+36f ;
+      	float surface_albedo_2335(time, scanline, ground_pixel) ;
+      		surface_albedo_2335:units = "1" ;
+      		surface_albedo_2335:standard_name = "surface_albedo" ;
+      		surface_albedo_2335:radiation_wavelength = 2335.f ;
+      		surface_albedo_2335:long_name = "Surface albedo at 2335 nm" ;
+      		surface_albedo_2335:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		surface_albedo_2335:_FillValue = 9.96921e+36f ;
+      	ushort number_of_spectral_points_in_retrieval(time, scanline, ground_pixel) ;
+      		number_of_spectral_points_in_retrieval:long_name = "Number of spectral points used in the retrieval" ;
+      		number_of_spectral_points_in_retrieval:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		number_of_spectral_points_in_retrieval:_FillValue = 65535US ;
+      	float water_total_column_precision(time, scanline, ground_pixel) ;
+      		water_total_column_precision:units = "mol m-2" ;
+      		water_total_column_precision:standard_name = "atmosphere_mole_content_of_water_vapor standard_error" ;
+      		water_total_column_precision:long_name = "Precision of vertically integrated H2O column" ;
+      		water_total_column_precision:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		water_total_column_precision:multiplication_factor_to_convert_to_molecules_percm2 = 6.022141e+19f ;
+      		water_total_column_precision:_FillValue = 9.96921e+36f ;
+      	uint processing_quality_flags(time, scanline, ground_pixel) ;
+      		processing_quality_flags:long_name = "Processing quality flags" ;
+      		processing_quality_flags:comment = "Flags indicating conditions that affect quality of the retrieval." ;
+      		processing_quality_flags:flag_meanings = "success radiance_missing irradiance_missing input_spectrum_missing reflectance_range_error ler_range_error snr_range_error sza_range_error vza_range_error lut_range_error ozone_range_error wavelength_offset_error initialization_error memory_error assertion_error io_error numerical_error lut_error ISRF_error convergence_error cloud_filter_convergence_error max_iteration_convergence_error aot_lower_boundary_convergence_error other_boundary_convergence_error geolocation_error ch4_noscat_zero_error h2o_noscat_zero_error max_optical_thickness_error aerosol_boundary_error boundary_hit_error chi2_error svd_error dfs_error radiative_transfer_error optimal_estimation_error profile_error cloud_error model_error number_of_input_data_points_too_low_error cloud_pressure_spread_too_low_error cloud_too_low_level_error generic_range_error generic_exception input_spectrum_alignment_error abort_error wrong_input_type_error wavelength_calibration_error coregistration_error slant_column_density_error airmass_factor_error vertical_column_density_error signal_to_noise_ratio_error configuration_error key_error saturation_error max_num_outlier_exceeded_error solar_eclipse_filter cloud_filter altitude_consistency_filter altitude_roughness_filter sun_glint_filter mixed_surface_type_filter snow_ice_filter aai_filter cloud_fraction_fresco_filter aai_scene_albedo_filter small_pixel_radiance_std_filter cloud_fraction_viirs_filter cirrus_reflectance_viirs_filter cf_viirs_swir_ifov_filter cf_viirs_swir_ofova_filter cf_viirs_swir_ofovb_filter cf_viirs_swir_ofovc_filter cf_viirs_nir_ifov_filter cf_viirs_nir_ofova_filter cf_viirs_nir_ofovb_filter cf_viirs_nir_ofovc_filter refl_cirrus_viirs_swir_filter refl_cirrus_viirs_nir_filter diff_refl_cirrus_viirs_filter ch4_noscat_ratio_filter ch4_noscat_ratio_std_filter h2o_noscat_ratio_filter h2o_noscat_ratio_std_filter diff_psurf_fresco_ecmwf_filter psurf_fresco_stdv_filter ocean_filter time_range_filter pixel_or_scanline_index_filter geographic_region_filter input_spectrum_warning wavelength_calibration_warning extrapolation_warning sun_glint_warning south_atlantic_anomaly_warning sun_glint_correction snow_ice_warning cloud_warning AAI_warning pixel_level_input_data_missing data_range_warning low_cloud_fraction_warning altitude_consistency_warning signal_to_noise_ratio_warning deconvolution_warning so2_volcanic_origin_likely_warning so2_volcanic_origin_certain_warning interpolation_warning saturation_warning high_sza_warning cloud_retrieval_warning cloud_inhomogeneity_warning thermal_instability_warning" ;
+      		processing_quality_flags:flag_masks = 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 255U, 256U, 512U, 1024U, 2048U, 4096U, 8192U, 16384U, 32768U, 65536U, 131072U, 262144U, 524288U, 1048576U, 2097152U, 4194304U, 8388608U, 16777216U, 33554432U, 67108864U, 134217728U, 268435456U, 536870912U, 1073741824U ;
+      		processing_quality_flags:flag_values = 0U, 1U, 2U, 3U, 4U, 5U, 6U, 7U, 8U, 9U, 10U, 11U, 12U, 13U, 14U, 15U, 16U, 17U, 18U, 19U, 20U, 21U, 22U, 23U, 24U, 25U, 26U, 27U, 28U, 29U, 30U, 31U, 32U, 33U, 34U, 35U, 36U, 37U, 38U, 39U, 40U, 41U, 42U, 43U, 44U, 45U, 46U, 47U, 48U, 49U, 50U, 51U, 52U, 53U, 54U, 55U, 64U, 65U, 66U, 67U, 68U, 69U, 70U, 71U, 72U, 73U, 74U, 75U, 76U, 77U, 78U, 79U, 80U, 81U, 82U, 83U, 84U, 85U, 86U, 87U, 88U, 89U, 90U, 91U, 92U, 93U, 94U, 95U, 96U, 97U, 256U, 512U, 1024U, 2048U, 4096U, 8192U, 16384U, 32768U, 65536U, 131072U, 262144U, 524288U, 1048576U, 2097152U, 4194304U, 8388608U, 16777216U, 33554432U, 67108864U, 134217728U, 268435456U, 536870912U, 1073741824U ;
+      		processing_quality_flags:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		processing_quality_flags:_FillValue = 4294967295U ;
+      	int number_of_iterations(time, scanline, ground_pixel) ;
+      		number_of_iterations:long_name = "number of iterations" ;
+      		number_of_iterations:units = "1" ;
+      		number_of_iterations:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		number_of_iterations:_FillValue = -2147483647 ;
+      	float surface_albedo_2325(time, scanline, ground_pixel) ;
+      		surface_albedo_2325:units = "1" ;
+      		surface_albedo_2325:standard_name = "surface_albedo" ;
+      		surface_albedo_2325:radiation_wavelength = 2325.f ;
+      		surface_albedo_2325:long_name = "Surface albedo at 2325 nm" ;
+      		surface_albedo_2325:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		surface_albedo_2325:_FillValue = 9.96921e+36f ;
+      	float semiheavy_water_total_column_precision(time, scanline, ground_pixel) ;
+      		semiheavy_water_total_column_precision:units = "mol m-2" ;
+      		semiheavy_water_total_column_precision:proposed_standard_name = "atmosphere_mole_content_of_water_vapor_containing_2H standard_error" ;
+      		semiheavy_water_total_column_precision:long_name = "Precision of the vertically integrated HDO column" ;
+      		semiheavy_water_total_column_precision:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		semiheavy_water_total_column_precision:multiplication_factor_to_convert_to_molecules_percm2 = 6.022141e+19f ;
+      		semiheavy_water_total_column_precision:_FillValue = 9.96921e+36f ;
+      	float water_strong_twoband_total_column(time, scanline, ground_pixel) ;
+      		water_strong_twoband_total_column:units = "mol m-2" ;
+      		water_strong_twoband_total_column:standard_name = "atmosphere_mole_content_of_water_vapor" ;
+      		water_strong_twoband_total_column:long_name = "Vertically integrated H2O column from strong band" ;
+      		water_strong_twoband_total_column:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		water_strong_twoband_total_column:multiplication_factor_to_convert_to_molecules_percm2 = 6.022141e+19f ;
+      		water_strong_twoband_total_column:_FillValue = 9.96921e+36f ;
+      	float chi_square(time, scanline, ground_pixel) ;
+      		chi_square:units = "1" ;
+      		chi_square:long_name = "chi squared of fit residuals" ;
+      		chi_square:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		chi_square:_FillValue = 9.96921e+36f ;
+      	float carbonmonoxide_total_column_stripe_offset(time, ground_pixel) ;
+      		carbonmonoxide_total_column_stripe_offset:units = "mol m-2" ;
+      		carbonmonoxide_total_column_stripe_offset:long_name = "Stripe offset as applied to the carbonmonoxide_total_column_corrected variable" ;
+      		carbonmonoxide_total_column_stripe_offset:_FillValue = 9.96921e+36f ;
+      	float scattering_optical_thickness_SWIR(time, scanline, ground_pixel) ;
+      		scattering_optical_thickness_SWIR:units = "1" ;
+      		scattering_optical_thickness_SWIR:long_name = "Scattering optical depth at 2330 nm wavelength" ;
+      		scattering_optical_thickness_SWIR:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		scattering_optical_thickness_SWIR:_FillValue = 9.96921e+36f ;
+      	float degrees_of_freedom(time, scanline, ground_pixel) ;
+      		degrees_of_freedom:units = "1" ;
+      		degrees_of_freedom:long_name = "degrees of freedom for signal" ;
+      		degrees_of_freedom:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		degrees_of_freedom:_FillValue = 9.96921e+36f ;
+      	float wavelength_calibration_offset(time, scanline, ground_pixel) ;
+      		wavelength_calibration_offset:units = "nm" ;
+      		wavelength_calibration_offset:long_name = "Spectral offset" ;
+      		wavelength_calibration_offset:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		wavelength_calibration_offset:_FillValue = 9.96921e+36f ;
+      	float methane_total_column_prefit(time, scanline, ground_pixel) ;
+      		methane_total_column_prefit:units = "mol m-2" ;
+      		methane_total_column_prefit:standard_name = "atmosphere_mole_content_of_methane" ;
+      		methane_total_column_prefit:long_name = "Vertically integrated CH4 column from pre-fit" ;
+      		methane_total_column_prefit:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		methane_total_column_prefit:multiplication_factor_to_convert_to_molecules_percm2 = 6.022141e+19f ;
+      		methane_total_column_prefit:_FillValue = 9.96921e+36f ;
+      	float water_total_column(time, scanline, ground_pixel) ;
+      		water_total_column:units = "mol m-2" ;
+      		water_total_column:standard_name = "atmosphere_mole_content_of_water_vapor" ;
+      		water_total_column:long_name = "Vertically integrated H2O column" ;
+      		water_total_column:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		water_total_column:ancillary_variables = "water_total_column_precision" ;
+      		water_total_column:multiplication_factor_to_convert_to_molecules_percm2 = 6.022141e+19f ;
+      		water_total_column:_FillValue = 9.96921e+36f ;
+      	float column_averaging_kernel(time, scanline, ground_pixel, layer) ;
+      		column_averaging_kernel:units = "1" ;
+      		column_averaging_kernel:long_name = "CO column averaging kernel" ;
+      		column_averaging_kernel:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		column_averaging_kernel:_FillValue = 9.96921e+36f ;
+      } // group DETAILED_RESULTS
+
+    group: INPUT_DATA {
+      variables:
+      	float surface_pressure(time, scanline, ground_pixel) ;
+      		surface_pressure:units = "Pa" ;
+      		surface_pressure:standard_name = "surface_air_pressure" ;
+      		surface_pressure:long_name = "surface_air_pressure" ;
+      		surface_pressure:source = "" ;
+      		surface_pressure:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		surface_pressure:_FillValue = 9.96921e+36f ;
+      	float surface_altitude(time, scanline, ground_pixel) ;
+      		surface_altitude:long_name = "Surface altitude" ;
+      		surface_altitude:standard_name = "surface_altitude" ;
+      		surface_altitude:units = "m" ;
+      		surface_altitude:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		surface_altitude:source = "http://topotools.cr.usgs.gov/gmted_viewer/" ;
+      		surface_altitude:comment = "The mean of the sub-pixels of the surface altitudewithin the approximate field of view, based on the GMTED2010 surface elevation database" ;
+      		surface_altitude:_FillValue = 9.96921e+36f ;
+      	float eastward_wind(time, scanline, ground_pixel) ;
+      		eastward_wind:standard_name = "eastward_wind" ;
+      		eastward_wind:long_name = "Eastward wind from ECMWF at 10 meter height level" ;
+      		eastward_wind:units = "m s-1" ;
+      		eastward_wind:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		eastward_wind:ancillary_variables = "northward_wind" ;
+      		eastward_wind:_FillValue = 9.96921e+36f ;
+      	ubyte surface_classification(time, scanline, ground_pixel) ;
+      		surface_classification:long_name = "Land-water mask and surface classification based on a static database" ;
+      		surface_classification:comment = "Flag indicating land/water and further surface classifications for the ground pixel" ;
+      		surface_classification:source = "USGS (https://lta.cr.usgs.gov/GLCC) and NASA SDP toolkit (http://newsroom.gsfc.nasa.gov/sdptoolkit/toolkit.html)" ;
+      		surface_classification:flag_meanings = "land water some_water coast value_covers_majority_of_pixel water+shallow_ocean water+shallow_inland_water water+ocean_coastline-lake_shoreline water+intermittent_water water+deep_inland_water water+continental_shelf_ocean water+deep_ocean land+urban_and_built-up_land land+dryland_cropland_and_pasture land+irrigated_cropland_and_pasture land+mixed_dryland-irrigated_cropland_and_pasture land+cropland-grassland_mosaic land+cropland-woodland_mosaic land+grassland land+shrubland land+mixed_shrubland-grassland land+savanna land+deciduous_broadleaf_forest land+deciduous_needleleaf_forest land+evergreen_broadleaf_forest land+evergreen_needleleaf_forest land+mixed_forest land+herbaceous_wetland land+wooded_wetland land+barren_or_sparsely_vegetated land+herbaceous_tundra land+wooded_tundra land+mixed_tundra land+bare_ground_tundra land+snow_or_ice" ;
+      		surface_classification:flag_values = 0UB, 1UB, 2UB, 3UB, 4UB, 9UB, 17UB, 25UB, 33UB, 41UB, 49UB, 57UB, 8UB, 16UB, 24UB, 32UB, 40UB, 48UB, 56UB, 64UB, 72UB, 80UB, 88UB, 96UB, 104UB, 112UB, 120UB, 128UB, 136UB, 144UB, 152UB, 160UB, 168UB, 176UB, 184UB ;
+      		surface_classification:flag_masks = 3UB, 3UB, 3UB, 3UB, 4UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB, 249UB ;
+      		surface_classification:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		surface_classification:_FillValue = 255UB ;
+      	float surface_altitude_precision(time, scanline, ground_pixel) ;
+      		surface_altitude_precision:long_name = "surface altitude precision" ;
+      		surface_altitude_precision:standard_name = "surface_altitude standard_error" ;
+      		surface_altitude_precision:units = "m" ;
+      		surface_altitude_precision:standard_error_multiplier = 1.f ;
+      		surface_altitude_precision:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		surface_altitude_precision:source = "http://topotools.cr.usgs.gov/gmted_viewer/" ;
+      		surface_altitude_precision:comment = "The standard deviation of sub-pixels used in calculating the mean surface altitude, based on the GMTED2010 surface elevation database" ;
+      		surface_altitude_precision:_FillValue = 9.96921e+36f ;
+      	float carbonmonoxide_profile_apriori(time, scanline, ground_pixel, layer) ;
+      		carbonmonoxide_profile_apriori:units = "mol m-2" ;
+      		carbonmonoxide_profile_apriori:long_name = "CO a priori profile" ;
+      		carbonmonoxide_profile_apriori:standard_name = "mole_fraction_of_carbon_monoxide_in_air" ;
+      		carbonmonoxide_profile_apriori:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		carbonmonoxide_profile_apriori:_FillValue = 9.96921e+36f ;
+      	short instrument_configuration_version(time, scanline) ;
+      		instrument_configuration_version:long_name = "IcVersion" ;
+      		instrument_configuration_version:comment = "Version of the instrument_configuration_identifier" ;
+      		instrument_configuration_version:_FillValue = -32767s ;
+      	float scaled_small_pixel_variance(time, scanline, ground_pixel) ;
+      		scaled_small_pixel_variance:long_name = "scaled small pixel variance" ;
+      		scaled_small_pixel_variance:units = "1" ;
+      		scaled_small_pixel_variance:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		scaled_small_pixel_variance:comment = "The scaled variance of the reflectances of the small pixels" ;
+      		scaled_small_pixel_variance:radiation_wavelength = 2315.f ;
+      		scaled_small_pixel_variance:_FillValue = 9.96921e+36f ;
+      	float northward_wind(time, scanline, ground_pixel) ;
+      		northward_wind:standard_name = "northward_wind" ;
+      		northward_wind:long_name = "Northward wind from ECMWF at 10 meter height level" ;
+      		northward_wind:units = "m s-1" ;
+      		northward_wind:coordinates = "/PRODUCT/longitude /PRODUCT/latitude" ;
+      		northward_wind:ancillary_variables = "eastward_wind" ;
+      		northward_wind:_FillValue = 9.96921e+36f ;
+      	int instrument_configuration_identifier(time, scanline) ;
+      		instrument_configuration_identifier:long_name = "IcID" ;
+      		instrument_configuration_identifier:comment = "The Instrument Configuration ID defines the type of measurement and its purpose. The number of instrument configuration IDs will increase over the mission as new types of measurements are created and used" ;
+      		instrument_configuration_identifier:_FillValue = -2147483647 ;
+      } // group INPUT_DATA
+    } // group SUPPORT_DATA
+  } // group PRODUCT
+}

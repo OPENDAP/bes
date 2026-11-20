@@ -49,3 +49,12 @@ AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/test_b
 #  big array size test - input from DMRPP files
 AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_CFDMR_HDR(nasa-bescmd-h5cfdmr/test_ba_grp_dim_whole.cf.dmrpp.bescmd)
 
+# no_dio tests: deflate-compressed DMR++ files with direct IO disabled (bes.nc4.grp.disable_dio.conf)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_DISABLE_DIO_HDR(nasa-bescmd/PACE_OCI.20251111T135258.L1B.V3.nc_no_dio_dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_DISABLE_DIO_HDR(nasa-bescmd/TEMPO_RAD_L1_V02_20240513T011457Z_S018G06.nc.h5_no_dio_dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_DISABLE_DIO_HDR(nasa-bescmd/big_1d_shuf.h5_no_dio_dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_DISABLE_DIO_HDR(nasa-bescmd/d_dset_4d.h5_no_dio_dmrpp.bescmd)
+
+# The following test consumes too much memory, so turn it off for the time being.
+#AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_DISABLE_DIO_HDR(nasa-bescmd/daymet_v4_daily_na_prcp_2010.nc.h5_no_dio_dmrpp.bescmd)
+AT_BESCMD_NETCDF_RESPONSE_TEST_NC4_ENHANCED_GRP_DISABLE_DIO_HDR(nasa-bescmd/test_ba_grp_dim_whole.h5.deflev_no_dio_dmrpp.bescmd)
