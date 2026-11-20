@@ -909,6 +909,25 @@ AS_IF([test -n "$with_gdal_prefix" -a $with_gdal_prefix = no],
 
 AM_CONDITIONAL([BUILD_GDAL], [test $GDAL_FOUND -eq 1])
 
+dnl GDAL link flags for programs (GeotiffToDmr and its unit tests). On macOS,
+dnl gdal-config --dep-libs can name a framework by its path, for example
+dnl .../MacOSX.sdk/System/Library/Frameworks/OpenCL.framework. libtool drops
+dnl such words when it links a library, so libgdal_module.la links, but it
+dnl passes them to ld when it links a program, and ld cannot read a framework
+dnl directory ("file cannot be mmap()ed"). Rewrite each framework path as
+dnl -framework <name>, which libtool and ld handle. Everything else is copied
+dnl as is; on Linux this is the same as GDAL_LDFLAGS.
+GDAL_PROG_LDFLAGS=""
+set -f
+for bes_gdal_word in $GDAL_LDFLAGS; do
+    case $bes_gdal_word in
+        */*.framework) bes_gdal_word="-framework `basename $bes_gdal_word .framework`" ;;
+    esac
+    GDAL_PROG_LDFLAGS="$GDAL_PROG_LDFLAGS $bes_gdal_word"
+done
+set +f
+AC_SUBST([GDAL_PROG_LDFLAGS])
+
 dnl Only look for the openjpeg2000 library if GDAL was found
 
 AM_COND_IF([BUILD_GDAL], [

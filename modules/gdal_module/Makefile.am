@@ -59,7 +59,7 @@ GeotiffToDmr_CPPFLAGS = $(GDAL_CFLAGS) -DGEOTIFFTODMR_WITH_GDAL \
     -DGEOTIFFTODMR_DEFAULT_BESSTANDALONE=\"$(bindir)/besstandalone\" \
     -DGEOTIFFTODMR_DEFAULT_BES_LIB_DIR=\"$(lib_besdir)\"
 GeotiffToDmr_LDFLAGS = $(AM_LDFLAGS) $(XML2_LDFLAGS)
-GeotiffToDmr_LDADD = $(GDAL_LDFLAGS)
+GeotiffToDmr_LDADD = $(GDAL_PROG_LDFLAGS)
 
 moduledir = $(sysconfdir)/bes/modules
 module_DATA = gdal.conf

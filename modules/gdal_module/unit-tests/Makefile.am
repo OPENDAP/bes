@@ -16,7 +16,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/modules/gdal_module -I$(top_srcdir)/modules/common
 -I$(top_srcdir)/dispatch $(DAP_CFLAGS) \
 -DGEOTIFFTODMR_DEFAULT_BES_LIB_DIR=\"$(lib_besdir)\"
 
-LIBADD = $(BES_DISPATCH_LIB) $(GDAL_LDFLAGS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
+LIBADD = $(BES_DISPATCH_LIB) $(GDAL_PROG_LDFLAGS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 
 if CPPUNIT
 AM_CPPFLAGS += $(CPPUNIT_CFLAGS)
