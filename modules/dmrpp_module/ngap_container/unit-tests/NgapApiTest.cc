@@ -484,6 +484,72 @@ public:
         CPPUNIT_ASSERT_EQUAL(string("s3://bucket/granule.nc"), data_s3_url);
     }
 
+    // BUG-005: LP DAAC lists browse images (BROWSE.*.jpg) as 'GET DATA' ahead of the real .hdf
+    // file; they must be skipped (FR-012, FR-013). Canned granules.umm_json_v1_4 response for
+    // C1748066515-LPCLOUD, fetched 2026-11-20.
+    static void test_get_urls_from_granules_umm_json_v1_4_lpdaac_browse_images() {
+        const string json = bes::read_test_baseline(
+            string(TEST_SRC_DIR) + "/cmr_json_responses/MOD13Q1.A2016257.h27v06.061.2021358013828.json");
+
+        string data_url, data_s3_url, tea_endpoint_url;
+        tie(data_url, data_s3_url, tea_endpoint_url) = NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", json);
+
+        CPPUNIT_ASSERT_EQUAL(string("https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/MOD13Q1.061/"
+                                    "MOD13Q1.A2016257.h27v06.061.2021358013828/"
+                                    "MOD13Q1.A2016257.h27v06.061.2021358013828.hdf"), data_url);
+        CPPUNIT_ASSERT_EQUAL(string("s3://lp-prod-protected/MOD13Q1.061/MOD13Q1.A2016257.h27v06.061.2021358013828/"
+                                    "MOD13Q1.A2016257.h27v06.061.2021358013828.hdf"), data_s3_url);
+        CPPUNIT_ASSERT_EQUAL(string("https://data.lpdaac.earthdatacloud.nasa.gov/s3credentials"), tea_endpoint_url);
+    }
+
+    // BUG-005: a well-formed record (GES DISC, C2723754845-GES_DISC, fetched 2026-11-20) still works.
+    static void test_get_urls_from_granules_umm_json_v1_4_gesdisc() {
+        const string json = bes::read_test_baseline(
+            string(TEST_SRC_DIR)
+            + "/cmr_json_responses/3B-HHR-L.MS.MRG.3IMERG.20260603-S190000-E192959.1140.V07C.HDF5.json");
+
+        string data_url, data_s3_url, tea_endpoint_url;
+        tie(data_url, data_s3_url, tea_endpoint_url) = NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", json);
+
+        CPPUNIT_ASSERT_EQUAL(string("https://data.gesdisc.earthdata.nasa.gov/data/GPM_L3/GPM_3IMERGHHL.07/2026/154/"
+                                    "3B-HHR-L.MS.MRG.3IMERG.20260603-S190000-E192959.1140.V07C.HDF5"), data_url);
+        CPPUNIT_ASSERT_EQUAL(string("s3://gesdisc-cumulus-prod-protected/GPM_L3/GPM_3IMERGHHL.07/2026/154/"
+                                    "3B-HHR-L.MS.MRG.3IMERG.20260603-S190000-E192959.1140.V07C.HDF5"), data_s3_url);
+        CPPUNIT_ASSERT_EQUAL(string("https://data.gesdisc.earthdata.nasa.gov/s3credentials"), tea_endpoint_url);
+    }
+
+    // BUG-005: every excluded suffix, in any case, is skipped for both schemes (FR-012, FR-013).
+    static void test_get_urls_from_granules_umm_json_v1_4_browse_image_suffixes() {
+        const string json = bes::read_test_baseline(
+            string(TEST_SRC_DIR) + "/cmr_json_responses/data_url_browse_image_suffixes.json");
+
+        string data_url, data_s3_url, tea_endpoint_url;
+        tie(data_url, data_s3_url, tea_endpoint_url) = NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", json);
+
+        CPPUNIT_ASSERT_EQUAL(string("https://data.example/granule.nc"), data_url);
+        CPPUNIT_ASSERT_EQUAL(string("s3://bucket/granule.nc"), data_s3_url);
+    }
+
+    // BUG-005: GeoTIFF is real data; .tif/.TIFF are not excluded (FR-012, FR-013).
+    static void test_get_urls_from_granules_umm_json_v1_4_tif_accepted() {
+        const string json = bes::read_test_baseline(
+            string(TEST_SRC_DIR) + "/cmr_json_responses/data_url_tif_accepted.json");
+
+        string data_url, data_s3_url, tea_endpoint_url;
+        tie(data_url, data_s3_url, tea_endpoint_url) = NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", json);
+
+        CPPUNIT_ASSERT_EQUAL(string("https://data.example/granule.tif"), data_url);
+        CPPUNIT_ASSERT_EQUAL(string("s3://bucket/granule.TIFF"), data_s3_url);
+    }
+
+    // BUG-005: if the only https 'GET DATA' URL is a browse image, there is no data URL (FR-010).
+    static void test_get_urls_from_granules_umm_json_v1_4_only_browse_image() {
+        const string json = bes::read_test_baseline(
+            string(TEST_SRC_DIR) + "/cmr_json_responses/data_url_only_browse_image.json");
+
+        CPPUNIT_ASSERT_THROW(NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", json), BESInternalError);
+    }
+
     // BUG-002: a malformed CMR response must throw BESInternalError, not crash or report not-found.
     static void assert_malformed_response_throws(const string &json) {
         CPPUNIT_ASSERT_THROW_MESSAGE("Malformed CMR response should throw BESInternalError: " + json,
@@ -601,6 +667,11 @@ public:
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_dmrpp_not_suffix);
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_xml_not_suffix);
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_rejected_suffixes);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_lpdaac_browse_images);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_gesdisc);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_browse_image_suffixes);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_tif_accepted);
+    CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_only_browse_image);
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_umm_missing_empty_item);
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_umm_missing);
     CPPUNIT_TEST (test_get_urls_from_granules_umm_json_v1_4_malformed_umm_not_object);

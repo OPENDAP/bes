@@ -17,11 +17,13 @@ Priority: `Must` / `Should` / `Could` (MoSCoW). Status: `Proposed` / `Approved` 
 | FR-004 | NGAP container: a percent-encoded legacy REST path produces the same CMR query as its unencoded form (values are not double-encoded) | Must | TBD | Implemented |
 | FR-005 | NGAP container: a REST path that matches none of the forms in FR-001–FR-003 is rejected with a syntax (user) error | Should | TBD | Implemented |
 | FR-006 | NGAP container: a CMR response with zero hits for the REST path is reported as a not-found error | Must | TBD | Implemented |
-| FR-007 | NGAP container: the https data URL is the first `RelatedUrls` entry with `Type` `GET DATA`, no `Subtype`, and a URL that starts with `http://` or `https://` and does not end in `.xml` or `.dmrpp` | Must | TBD | Approved |
-| FR-008 | NGAP container: the S3 data URL is the first `RelatedUrls` entry with `Type` `GET DATA`, no `Subtype`, and a URL that starts with `s3://` and does not end in `.xml` or `.dmrpp` | Must | TBD | Approved |
+| FR-007 | NGAP container: the https data URL is the first `RelatedUrls` entry with `Type` `GET DATA`, no `Subtype`, and a URL that starts with `http://` or `https://` and does not end in `.xml` or `.dmrpp` | Must | TBD | Superseded by FR-012 |
+| FR-008 | NGAP container: the S3 data URL is the first `RelatedUrls` entry with `Type` `GET DATA`, no `Subtype`, and a URL that starts with `s3://` and does not end in `.xml` or `.dmrpp` | Must | TBD | Superseded by FR-013 |
 | FR-009 | NGAP container: the s3credentials (TEA) URL is the first `RelatedUrls` entry with `Type` `VIEW RELATED INFORMATION` and a URL that starts with `http://` or `https://` and ends in `s3credentials` | Must | TBD | Implemented |
 | FR-010 | NGAP container: a granule with no https data URL is reported as an error; a missing S3 or s3credentials URL does not fail the request | Must | TBD | Implemented |
 | FR-011 | NGAP container: the DMR++ for a granule is located by appending `.dmrpp` to its selected https data URL (FR-007) and, when present, to its S3 data URL (FR-008) | Must | TBD | Implemented |
+| FR-012 | NGAP container: the https data URL is the first `RelatedUrls` entry with `Type` `GET DATA`, no `Subtype`, and a URL that starts with `http://` or `https://` and does not end, compared case-insensitively, in `.xml`, `.dmrpp`, `.jpg`, `.jpeg`, `.png`, or `.gif` (BUG-005) | Must | TBD | Implemented |
+| FR-013 | NGAP container: the S3 data URL is the first `RelatedUrls` entry with `Type` `GET DATA`, no `Subtype`, and a URL that starts with `s3://` and does not end, compared case-insensitively, in `.xml`, `.dmrpp`, `.jpg`, `.jpeg`, `.png`, or `.gif` (BUG-005) | Must | TBD | Implemented |
 
 <!-- Add new rows via /new-requirement, or by hand — keep the table format. Each
      requirement should be a single testable statement, not a paragraph. If it needs

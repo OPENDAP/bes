@@ -1,0 +1,84 @@
+{
+  "hits" : 1,
+  "took" : 25,
+  "items" : [ {
+    "meta" : {
+      "concept-type" : "granule",
+      "concept-id" : "G4206639800-GES_DISC",
+      "revision-id" : 1,
+      "native-id" : "GPM_3IMERGHHL.07:3B-HHR-L.MS.MRG.3IMERG.20260603-S190000-E192959.1140.V07C.HDF5",
+      "collection-concept-id" : "C2723754845-GES_DISC",
+      "provider-id" : "GES_DISC",
+      "format" : "application/echo10+xml",
+      "revision-date" : "2026-06-04T13:18:39.288Z"
+    },
+    "umm" : {
+      "RelatedUrls" : [ {
+        "URL" : "https://data.gesdisc.earthdata.nasa.gov/data/GPM_L3/GPM_3IMERGHHL.07/2026/154/3B-HHR-L.MS.MRG.3IMERG.20260603-S190000-E192959.1140.V07C.HDF5",
+        "Type" : "GET DATA",
+        "Description" : "Download 3B-HHR-L.MS.MRG.3IMERG.20260603-S190000-E192959.1140.V07C.HDF5",
+        "Format" : "Not provided"
+      }, {
+        "URL" : "s3://gesdisc-cumulus-prod-protected/GPM_L3/GPM_3IMERGHHL.07/2026/154/3B-HHR-L.MS.MRG.3IMERG.20260603-S190000-E192959.1140.V07C.HDF5",
+        "Type" : "GET DATA",
+        "Description" : "This link provides direct download access via S3 to the granule",
+        "Format" : "Not provided"
+      }, {
+        "URL" : "https://data.gesdisc.earthdata.nasa.gov/s3credentials",
+        "Type" : "VIEW RELATED INFORMATION",
+        "Description" : "api endpoint to retrieve temporary credentials valid for same-region direct s3 access",
+        "Format" : "Not provided"
+      }, {
+        "URL" : "https://opendap.earthdata.nasa.gov/collections/C2723754845-GES_DISC/granules/GPM_3IMERGHHL.07%3A3B-HHR-L.MS.MRG.3IMERG.20260603-S190000-E192959.1140.V07C.HDF5",
+        "Type" : "USE SERVICE API",
+        "Subtype" : "OPENDAP DATA",
+        "Description" : "OPeNDAP request URL",
+        "Format" : "Not provided"
+      } ],
+      "SpatialExtent" : {
+        "HorizontalSpatialDomain" : {
+          "Geometry" : {
+            "BoundingRectangles" : [ {
+              "WestBoundingCoordinate" : -180.0,
+              "EastBoundingCoordinate" : 180.0,
+              "NorthBoundingCoordinate" : 90.0,
+              "SouthBoundingCoordinate" : -90.0
+            } ]
+          }
+        }
+      },
+      "ProviderDates" : [ {
+        "Date" : "2026-06-04T10:21:23.000Z",
+        "Type" : "Insert"
+      }, {
+        "Date" : "2026-06-04T10:21:23.000Z",
+        "Type" : "Update"
+      } ],
+      "CollectionReference" : {
+        "ShortName" : "GPM_3IMERGHHL",
+        "Version" : "07"
+      },
+      "DataGranule" : {
+        "DayNightFlag" : "Unspecified",
+        "Identifiers" : [ {
+          "Identifier" : "3B-HHR-L.MS.MRG.3IMERG.20260603-S190000-E192959.1140.V07C.HDF5",
+          "IdentifierType" : "ProducerGranuleId"
+        } ],
+        "ProductionDateTime" : "2026-06-04T10:11:12.000Z",
+        "ArchiveAndDistributionInformation" : [ {
+          "Name" : "Not provided",
+          "Size" : 7.380728721618652,
+          "SizeUnit" : "MB",
+          "Format" : "Not provided"
+        } ]
+      },
+      "TemporalExtent" : {
+        "RangeDateTime" : {
+          "BeginningDateTime" : "2026-06-03T19:00:00.000Z",
+          "EndingDateTime" : "2026-06-03T19:29:59.999Z"
+        }
+      },
+      "GranuleUR" : "GPM_3IMERGHHL.07:3B-HHR-L.MS.MRG.3IMERG.20260603-S190000-E192959.1140.V07C.HDF5"
+    }
+  } ]
+}
