@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" dapVersion="4.0" dmrVersion="removed" name="DIGEST_Example_2.20120926112517.tif">
+    <Dimension name="northing" size="1024"/>
+    <Dimension name="easting" size="1024"/>
+    <Float64 name="northing">
+        <Dim name="/northing"/>
+    </Float64>
+    <Float64 name="easting">
+        <Dim name="/easting"/>
+    </Float64>
+    <Byte name="band_1">
+        <Dim name="/northing"/>
+        <Dim name="/easting"/>
+        <Attribute name="missing_value" type="Float64">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="PhotometricInterpretation" type="String">
+            <Value>Red</Value>
+        </Attribute>
+        <Map name="/northing"/>
+        <Map name="/easting"/>
+    </Byte>
+    <Byte name="band_2">
+        <Dim name="/northing"/>
+        <Dim name="/easting"/>
+        <Attribute name="missing_value" type="Float64">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="PhotometricInterpretation" type="String">
+            <Value>Green</Value>
+        </Attribute>
+        <Map name="/northing"/>
+        <Map name="/easting"/>
+    </Byte>
+    <Byte name="band_3">
+        <Dim name="/northing"/>
+        <Dim name="/easting"/>
+        <Attribute name="missing_value" type="Float64">
+            <Value>0</Value>
+        </Attribute>
+        <Attribute name="PhotometricInterpretation" type="String">
+            <Value>Blue</Value>
+        </Attribute>
+        <Map name="/northing"/>
+        <Map name="/easting"/>
+    </Byte>
+    <Attribute name="GLOBAL" type="Container">
+        <Attribute name="Northernmost_Northing" type="Float64">
+            <Value>-20.30846</Value>
+        </Attribute>
+        <Attribute name="Southernmost_Northing" type="Float64">
+            <Value>-20.326892</Value>
+        </Attribute>
+        <Attribute name="Easternmost_Easting" type="Float64">
+            <Value>118.59356</Value>
+        </Attribute>
+        <Attribute name="Westernmost_Easting" type="Float64">
+            <Value>118.575128</Value>
+        </Attribute>
+        <Attribute name="GeoTransform" type="String">
+            <Value>118.575128 1.800000000000239e-05 0 -20.30846 0 -1.800000000000239e-05</Value>
+        </Attribute>
+        <Attribute name="Metadata" type="Container">
+            <Attribute name="&lt;headers&gt;&lt;field name" type="String">
+                <Value>&quot;CLEVEL&quot; value=&quot;03&quot; /&gt;&lt;field name=&quot;ENCRYP&quot; value=&quot;0&quot; /&gt;&lt;field name=&quot;FBKGC&quot; value=&quot;0,127,  0&quot; /&gt;&lt;field name=&quot;FDT&quot; value=&quot;20100202130356&quot; /&gt;&lt;field name=&quot;FHDR&quot; value=&quot;NITF02.10&quot; /&gt;&lt;field name=&quot;FSCATP&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSCAUT&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSCLAS&quot; value=&quot;U&quot; /&gt;&lt;field name=&quot;FSCLSY&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSCLTX&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSCODE&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSCOP&quot; value=&quot;00000&quot; /&gt;&lt;field name=&quot;FSCPYS&quot; value=&quot;00000&quot; /&gt;&lt;field name=&quot;FSCRSN&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSCTLH&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSCTLN&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSDCDT&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSDCTP&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSDCXM&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSDG&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSDGDT&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSREL&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSSRDT&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FTITLE&quot; value=&quot;Free Text&quot; /&gt;&lt;field name=&quot;ONAME&quot; value=&quot;Free Text&quot; /&gt;&lt;field name=&quot;OPHONE&quot; value=&quot;Free Text&quot; /&gt;&lt;field name=&quot;OSTAID&quot; value=&quot;Free Text&quot; /&gt;&lt;field name=&quot;STYPE&quot; value=&quot;BF01&quot; /&gt;&lt;/headers&gt;&lt;subheaders&gt;&lt;field name=&quot;ABPP&quot; value=&quot;08&quot; /&gt;&lt;field name=&quot;CCS_COLUMN&quot; value=&quot;0&quot; /&gt;&lt;field name=&quot;CCS_ROW&quot; value=&quot;0&quot; /&gt;&lt;field name=&quot;IALVL&quot; value=&quot;0&quot; /&gt;&lt;field name=&quot;IC&quot; value=&quot;NC&quot; /&gt;&lt;field name=&quot;ICAT&quot; value=&quot;VIS&quot; /&gt;&lt;field name=&quot;ICORDS&quot; value=&quot;G&quot; /&gt;&lt;field name=&quot;IDATIM&quot; value=&quot;20091118022743&quot; /&gt;&lt;field name=&quot;IDLVL&quot; value=&quot;1&quot; /&gt;&lt;field name=&quot;IGEOLO&quot; value=&quot;201830S1183431E201831S1183537E201938S1183536E201936S1183430E&quot; /&gt;&lt;field name=&quot;IID1&quot; value=&quot;Free Text&quot; /&gt;&lt;field name=&quot;IID2&quot; value=&quot;Free Text&quot; /&gt;&lt;field name=&quot;ILOC_COLUMN&quot; value=&quot;0&quot; /&gt;&lt;field name=&quot;ILOC_ROW&quot; value=&quot;0&quot; /&gt;&lt;field name=&quot;IMAG&quot; value=&quot;1.0&quot; /&gt;&lt;field name=&quot;IMODE&quot; value=&quot;B&quot; /&gt;&lt;field name=&quot;IREP&quot; value=&quot;RGB&quot; /&gt;&lt;field name=&quot;ISCATP&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISCAUT&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISCLAS&quot; value=&quot;U&quot; /&gt;&lt;field name=&quot;ISCLSY&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISCLTX&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISCODE&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISCRSN&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISCTLH&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISCTLN&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISDCDT&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISDCTP&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISDCXM&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISDG&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISDGDT&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISORCE&quot; value=&quot;Free Text&quot; /&gt;&lt;field name=&quot;ISREL&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISSRDT&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;PJUST&quot; value=&quot;R&quot; /&gt;&lt;field name=&quot;PVTYPE&quot; value=&quot;INT&quot; /&gt;&lt;field name=&quot;TGTID&quot; value=&quot;Free Text&quot; /&gt;&lt;/subheaders&gt;&lt;tres&gt;
+  &lt;tre name=&quot;GEOPSB&quot; location=&quot;file&quot;&gt;
+    &lt;field name=&quot;TYP&quot; value=&quot;GEO&quot; /&gt;
+    &lt;field name=&quot;UNI&quot; value=&quot;DEG&quot; /&gt;
+    &lt;field name=&quot;DAG&quot; value=&quot;World Geodetic System 1984&quot; /&gt;
+    &lt;field name=&quot;DCD&quot; value=&quot;WGE&quot; /&gt;
+    &lt;field name=&quot;ELL&quot; value=&quot;World Geodetic System 1984&quot; /&gt;
+    &lt;field name=&quot;ELC&quot; value=&quot;WE&quot; /&gt;
+    &lt;field name=&quot;DVR&quot; value=&quot;&quot; /&gt;
+    &lt;field name=&quot;VDCDVR&quot; value=&quot;&quot; /&gt;
+    &lt;field name=&quot;SDA&quot; value=&quot;&quot; /&gt;
+    &lt;field name=&quot;VDCSDA&quot; value=&quot;&quot; /&gt;
+    &lt;field name=&quot;ZOR&quot; value=&quot;000000000000000&quot; /&gt;
+    &lt;field name=&quot;GRD&quot; value=&quot;&quot; /&gt;
+    &lt;field name=&quot;GRN&quot; value=&quot;&quot; /&gt;
+    &lt;field name=&quot;ZNA&quot; value=&quot;0000&quot; /&gt;
+  &lt;/tre&gt;
+  &lt;tre name=&quot;GEOLOB&quot; location=&quot;image&quot;&gt;
+    &lt;field name=&quot;ARV&quot; value=&quot;020000000&quot; /&gt;
+    &lt;field name=&quot;BRV&quot; value=&quot;020000000&quot; /&gt;
+    &lt;field name=&quot;LSO&quot; value=&quot;+118.5751280000&quot; /&gt;
+    &lt;field name=&quot;PSO&quot; value=&quot;-020.3084600000&quot; /&gt;
+  &lt;/tre&gt;
+&lt;/tres&gt;
+</Value>
+            </Attribute>
+            <Attribute name="EOMetadataContents" type="String">
+                <Value>&lt;wcseo:RectifiedDataset gml:id=&quot;DIGEST_Example_2.20120926112517.tif&quot; xmlns:eop=&quot;http://www.opengis.net/eop/2.0&quot; xmlns:gml=&quot;http://www.opengis.net/gml/3.2&quot; xmlns:gmlcov=&quot;http://www.opengis.net/gmlcov/1.0&quot; xmlns:om=&quot;http://www.opengis.net/om/2.0&quot; xmlns:ows=&quot;http://www.opengis.net/ows/2.0&quot; xmlns:swe=&quot;http://www.opengis.net/swe/2.0&quot; xmlns:wcseo=&quot;http://www.opengis.net/wcseo/1.0&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.opengis.net/wcseo/1.0 http://schemas.opengis.net/wcseo/1.0/wcsEOAll.xsd&quot;&gt;
+  &lt;gml:boundedBy&gt;
+    &lt;gml:Envelope axisLabels=&quot;lon lat&quot; srsDimension=&quot;2&quot; srsName=&quot;http://www.opengis.net/def/crs/EPSG/0/4326&quot; uomLabels=&quot;deg deg&quot;&gt;
+      &lt;gml:lowerCorner&gt;118.575 -20.3269&lt;/gml:lowerCorner&gt;
+      &lt;gml:upperCorner&gt;118.594 -20.3085&lt;/gml:upperCorner&gt;
+    &lt;/gml:Envelope&gt;
+  &lt;/gml:boundedBy&gt;
+  &lt;gml:domainSet&gt;
+    &lt;gml:RectifiedGrid dimension=&quot;2&quot; gml:id=&quot;DIGEST_Example_2.20120926112517.tif_grid&quot; &gt;
+      &lt;gml:limits&gt;
+        &lt;gml:GridEnvelope&gt;
+          &lt;gml:low&gt;0 0&lt;/gml:low&gt;
+          &lt;gml:high&gt;1023 1023&lt;/gml:high&gt;
+        &lt;/gml:GridEnvelope&gt;
+      &lt;/gml:limits&gt;
+      &lt;gml:axisLabels&gt;lon lat&lt;/gml:axisLabels&gt;
+      &lt;gml:origin&gt;
+        &lt;gml:Point gml:id=&quot;DIGEST_Example_2.20120926112517.tif_grid_origin&quot; srsName=&quot;http://www.opengis.net/def/crs/EPSG/0/4326&quot;&gt;
+          &lt;gml:pos&gt;118.575 -20.3085&lt;/gml:pos&gt;
+        &lt;/gml:Point&gt;
+      &lt;/gml:origin&gt;
+      &lt;gml:offsetVector srsName=&quot;http://www.opengis.net/def/crs/EPSG/0/4326&quot;&gt;1.8e-05 0.0&lt;/gml:offsetVector&gt;
+      &lt;gml:offsetVector srsName=&quot;http://www.opengis.net/def/crs/EPSG/0/4326&quot;&gt;0.0 -1.8e-05&lt;/gml:offsetVector&gt;
+    &lt;/gml:RectifiedGrid&gt;
+  &lt;/gml:domainSet&gt;
+  &lt;gml:rangeSet&gt;
+    &lt;gml:File&gt;
+      &lt;gml:rangeParameters xlink:arcrole=&quot;fileReference&quot; xlink:role=&quot;Content-Type: image/tiff&quot; /&gt;
+      &lt;gml:fileReference&gt;http://129.174.131.8/ows9-wcs-dataDIGEST_Example_2.20120926112517.tif&lt;/gml:fileReference&gt;
+      &lt;gml:fileStructure/&gt;
+      &lt;gml:mimeType&gt;Content-Type: image/tiff&lt;/gml:mimeType&gt;
+    &lt;/gml:File&gt;
+  &lt;/gml:rangeSet&gt;
+  &lt;gmlcov:rangeType&gt;
+    &lt;swe:DataRecord&gt;
+    &lt;/swe:DataRecord&gt;
+  &lt;/gmlcov:rangeType&gt;
+  &lt;gmlcov:metadata&gt;
+	    &lt;headers&gt;&lt;field name=&quot;CLEVEL&quot; value=&quot;03&quot; /&gt;&lt;field name=&quot;ENCRYP&quot; value=&quot;0&quot; /&gt;&lt;field name=&quot;FBKGC&quot; value=&quot;0,127,  0&quot; /&gt;&lt;field name=&quot;FDT&quot; value=&quot;20100202130356&quot; /&gt;&lt;field name=&quot;FHDR&quot; value=&quot;NITF02.10&quot; /&gt;&lt;field name=&quot;FSCATP&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSCAUT&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSCLAS&quot; value=&quot;U&quot; /&gt;&lt;field name=&quot;FSCLSY&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSCLTX&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSCODE&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSCOP&quot; value=&quot;00000&quot; /&gt;&lt;field name=&quot;FSCPYS&quot; value=&quot;00000&quot; /&gt;&lt;field name=&quot;FSCRSN&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSCTLH&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSCTLN&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSDCDT&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSDCTP&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSDCXM&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSDG&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSDGDT&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSREL&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FSSRDT&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;FTITLE&quot; value=&quot;Free Text&quot; /&gt;&lt;field name=&quot;ONAME&quot; value=&quot;Free Text&quot; /&gt;&lt;field name=&quot;OPHONE&quot; value=&quot;Free Text&quot; /&gt;&lt;field name=&quot;OSTAID&quot; value=&quot;Free Text&quot; /&gt;&lt;field name=&quot;STYPE&quot; value=&quot;BF01&quot; /&gt;&lt;/headers&gt;&lt;subheaders&gt;&lt;field name=&quot;ABPP&quot; value=&quot;08&quot; /&gt;&lt;field name=&quot;CCS_COLUMN&quot; value=&quot;0&quot; /&gt;&lt;field name=&quot;CCS_ROW&quot; value=&quot;0&quot; /&gt;&lt;field name=&quot;IALVL&quot; value=&quot;0&quot; /&gt;&lt;field name=&quot;IC&quot; value=&quot;NC&quot; /&gt;&lt;field name=&quot;ICAT&quot; value=&quot;VIS&quot; /&gt;&lt;field name=&quot;ICORDS&quot; value=&quot;G&quot; /&gt;&lt;field name=&quot;IDATIM&quot; value=&quot;20091118022743&quot; /&gt;&lt;field name=&quot;IDLVL&quot; value=&quot;1&quot; /&gt;&lt;field name=&quot;IGEOLO&quot; value=&quot;201830S1183431E201831S1183537E201938S1183536E201936S1183430E&quot; /&gt;&lt;field name=&quot;IID1&quot; value=&quot;Free Text&quot; /&gt;&lt;field name=&quot;IID2&quot; value=&quot;Free Text&quot; /&gt;&lt;field name=&quot;ILOC_COLUMN&quot; value=&quot;0&quot; /&gt;&lt;field name=&quot;ILOC_ROW&quot; value=&quot;0&quot; /&gt;&lt;field name=&quot;IMAG&quot; value=&quot;1.0&quot; /&gt;&lt;field name=&quot;IMODE&quot; value=&quot;B&quot; /&gt;&lt;field name=&quot;IREP&quot; value=&quot;RGB&quot; /&gt;&lt;field name=&quot;ISCATP&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISCAUT&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISCLAS&quot; value=&quot;U&quot; /&gt;&lt;field name=&quot;ISCLSY&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISCLTX&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISCODE&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISCRSN&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISCTLH&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISCTLN&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISDCDT&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISDCTP&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISDCXM&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISDG&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISDGDT&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISORCE&quot; value=&quot;Free Text&quot; /&gt;&lt;field name=&quot;ISREL&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;ISSRDT&quot; value=&quot;&quot; /&gt;&lt;field name=&quot;PJUST&quot; value=&quot;R&quot; /&gt;&lt;field name=&quot;PVTYPE&quot; value=&quot;INT&quot; /&gt;&lt;field name=&quot;TGTID&quot; value=&quot;Free Text&quot; /&gt;&lt;/subheaders&gt;&lt;tres&gt;
+  &lt;tre name=&quot;GEOPSB&quot; location=&quot;file&quot;&gt;
+    &lt;field name=&quot;TYP&quot; value=&quot;GEO&quot; /&gt;
+    &lt;field name=&quot;UNI&quot; value=&quot;DEG&quot; /&gt;
+    &lt;field name=&quot;DAG&quot; value=&quot;World Geodetic System 1984&quot; /&gt;
+    &lt;field name=&quot;DCD&quot; value=&quot;WGE&quot; /&gt;
+    &lt;field name=&quot;ELL&quot; value=&quot;World Geodetic System 1984&quot; /&gt;
+    &lt;field name=&quot;ELC&quot; value=&quot;WE&quot; /&gt;
+    &lt;field name=&quot;DVR&quot; value=&quot;&quot; /&gt;
+    &lt;field name=&quot;VDCDVR&quot; value=&quot;&quot; /&gt;
+    &lt;field name=&quot;SDA&quot; value=&quot;&quot; /&gt;
+    &lt;field name=&quot;VDCSDA&quot; value=&quot;&quot; /&gt;
+    &lt;field name=&quot;ZOR&quot; value=&quot;000000000000000&quot; /&gt;
+    &lt;field name=&quot;GRD&quot; value=&quot;&quot; /&gt;
+    &lt;field name=&quot;GRN&quot; value=&quot;&quot; /&gt;
+    &lt;field name=&quot;ZNA&quot; value=&quot;0000&quot; /&gt;
+  &lt;/tre&gt;
+  &lt;tre name=&quot;GEOLOB&quot; location=&quot;image&quot;&gt;
+    &lt;field name=&quot;ARV&quot; value=&quot;020000000&quot; /&gt;
+    &lt;field name=&quot;BRV&quot; value=&quot;020000000&quot; /&gt;
+    &lt;field name=&quot;LSO&quot; value=&quot;+118.5751280000&quot; /&gt;
+    &lt;field name=&quot;PSO&quot; value=&quot;-020.3084600000&quot; /&gt;
+  &lt;/tre&gt;
+&lt;/tres&gt;
+
+    &lt;wcseo:lineage&gt;
+      &lt;wcseo:referenceGetCoverage&gt;
+        &lt;ows:Reference xlink:href=&quot;http://129.174.131.8/cgi-bin/ows9/gmuwcs?service=WCS%26version=2.0%26request=GetCoverage%26coverageid=NITF:%22/home/yshao/ows9/jpip/data/NITF_Sample_Data/Files/DIGEST_Example_2.ntf%22:Data%26format=image/tiff&quot;/&gt;
+      &lt;/wcseo:referenceGetCoverage&gt;
+      &lt;gml:timePosition&gt;2012-09-26T11:25:17Z&lt;/gml:timePosition&gt;
+    &lt;/wcseo:lineage&gt;
+  &lt;/gmlcov:metadata&gt;
+&lt;/wcseo:RectifiedDataset&gt;
+</Value>
+            </Attribute>
+            <Attribute name="Product_Description" type="String">
+                <Value>The data was created by WCS from NITF data.</Value>
+            </Attribute>
+            <Attribute name="AREA_OR_POINT" type="String">
+                <Value>Area</Value>
+            </Attribute>
+        </Attribute>
+        <Attribute name="spatial_ref" type="String">
+            <Value>GEOGCS[&quot;WGS 84&quot;,DATUM[&quot;WGS_1984&quot;,SPHEROID[&quot;WGS 84&quot;,6378137,298.257223563,AUTHORITY[&quot;EPSG&quot;,&quot;7030&quot;]],AUTHORITY[&quot;EPSG&quot;,&quot;6326&quot;]],PRIMEM[&quot;Greenwich&quot;,0,AUTHORITY[&quot;EPSG&quot;,&quot;8901&quot;]],UNIT[&quot;degree&quot;,0.0174532925199433,AUTHORITY[&quot;EPSG&quot;,&quot;9122&quot;]],AXIS[&quot;Latitude&quot;,NORTH],AXIS[&quot;Longitude&quot;,EAST],AUTHORITY[&quot;EPSG&quot;,&quot;4326&quot;]]</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>
