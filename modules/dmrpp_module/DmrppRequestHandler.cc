@@ -135,9 +135,6 @@ namespace dmrpp
     // We could make this a run-time option if needed. jhrg 11/4/21
     bool DmrppRequestHandler::d_require_chunks = false;
 
-    // See the comment in the header for more about this kludge. jhrg 11/9/21
-    bool DmrppRequestHandler::d_emulate_original_filter_order_behavior = false;
-
     bool DmrppRequestHandler::is_netcdf4_enhanced_response = false;
     bool DmrppRequestHandler::is_netcdf4_classic_response = false;
 

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<request reqID="some_unique_value" reqUUID="SomeUUIDString">
+    <setContext name="dap_format">dap4</setContext>
+    <setContainer name="data" space="catalog">/data/two_arrays_multi_chunks_32x16.h5.dmrpp</setContainer>
+    <define name="d">
+	<container name="data" >
+           <dap4constraint>uint16_data[1:1:32][0:1:7]</dap4constraint>
+        </container>
+    </define>
+    <get type="dap" definition="d" returnAs="netcdf-4"/>
+</request>

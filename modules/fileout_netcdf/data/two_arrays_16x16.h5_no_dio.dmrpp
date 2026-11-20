@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" xmlns:dmrpp="http://xml.opendap.org/dap/dmrpp/1.0.0#" dapVersion="4.0" dmrVersion="1.0" name="two_arrays_16x16.h5" dmrpp:href="data/two_arrays_16x16.h5" dmrpp:version="3.22.0">
+    <Float32 name="float_data">
+        <Dim size="16"/>
+        <Dim size="16"/>
+        <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="0" byteOrder="LE" DIO="off">
+            <dmrpp:chunkDimensionSizes>16 16</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4509" nBytes="419" chunkPositionInArray="[0,0]"/>
+        </dmrpp:chunks>
+    </Float32>
+    <UInt16 name="uint16_data">
+        <Dim size="64"/>
+        <Dim size="16"/>
+        <dmrpp:chunks compressionType="deflate" deflateLevel="1" fillValue="0" byteOrder="LE" DIO="off">
+            <dmrpp:chunkDimensionSizes>64 16</dmrpp:chunkDimensionSizes>
+            <dmrpp:chunk offset="4016" nBytes="493" chunkPositionInArray="[0,0]"/>
+        </dmrpp:chunks>
+    </UInt16>
+    <Attribute name="build_dmrpp_metadata" type="Container">
+        <Attribute name="created" type="String">
+            <Value>2026-11-09T21:51:10Z</Value>
+        </Attribute>
+        <Attribute name="build_dmrpp" type="String">
+            <Value>3.22.0</Value>
+        </Attribute>
+        <Attribute name="bes" type="String">
+            <Value>3.22.0</Value>
+        </Attribute>
+        <Attribute name="libdap" type="String">
+            <Value>libdap-3.21.1</Value>
+        </Attribute>
+        <Attribute name="invocation" type="String">
+            <Value>build_dmrpp -f /Users/myang6/Desktop/two_arrays_16x16.h5 -r two_arrays_16x16.h5.dmr -u data/two_arrays_16x16.h5 -M</Value>
+        </Attribute>
+    </Attribute>
+</Dataset>

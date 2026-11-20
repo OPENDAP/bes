@@ -10,7 +10,7 @@ ACLOCAL_AMFLAGS = -I conf
 M_NAME=s3_reader
 
 # Set the module version
-M_VER=0.9.8
+M_VER=0.9.9
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_srcdir)/dap -I$(top_srcdir)/xmlcommand -I$(top_srcdir)/http $(DAP_CFLAGS)
 LIBADD = $(BES_DISPATCH_LIB) $(BES_HTTP_LIB) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)

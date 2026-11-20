@@ -1,0 +1,10 @@
+// test_config.h.in: paths for GeotiffToDmrTest. Makefile.am builds
+// test_config.h from this file with absolute paths that contain no '../'.
+
+#ifndef E_test_config_h
+#define E_test_config_h
+
+#define TEST_SRC_DIR "@abs_srcdir@"
+#define TEST_BUILD_DIR "@abs_builddir@"
+
+#endif // E_test_config_h

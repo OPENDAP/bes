@@ -1,5 +1,17 @@
 <!-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -->
 
+# News for 3.22.1 (November 12, 2026)
+
+## BES Updates
+
+* Repaired double free bug in the use of XMLWriter.
+* Improved max response size analysis so that different values can be found for
+data that can utilize direct i/o and data that cannot. 
+* Reduces the logging of timing information unless specifically compiled to do so.
+* Improved chunk analysis so that correct chunk processing algorithms are utilized.
+* Improved the handling of special characters like  " " in variable names.
+
+
 ---
 
 # News for 3.22.0 (July 23, 2026)

@@ -9,7 +9,7 @@
 
 For specific information about the BES, see the file [_NEWS_](./NEWS.md) for a summary of
 new features, important updates, and version-specific release notes. See
-[_ChangeLog_](./ChangeLog) for a complete listing of changes/fixes since the previous release.
+[_ChangeLog_](ChangeLog.md) for a complete listing of changes/fixes since the previous release.
 
 ## Introduction
 The Back-end Server (BES) for Hyrax is a unix daemon that builds DAP2 and DAP4 response
@@ -22,13 +22,13 @@ In addition to the DAP2/4 protocols, the BES can package responses to queries fo
 a number of well-known binary file types, including NetCDF3/4, GeoTIFF, ASCII/CSV and
 JPEG2000.
 
-All of the functionality specific to DAP or particular types of data is implemented using
+All the functionality specific to DAP or particular types of data is implemented using
 a group of 'plugin modules.' These modules isolate the operations for specific kinds of
 daa from the BES software itself. Each kind of data that can be read is accessed using 
 a different module and each response other than the DAP2/4 responses is returned its own
 module.
 
-The BES does not contain (much) software that implements the DAP2/4 protocols. Instead it
+The BES does not contain (much) software that implements the DAP2/4 protocols. Instead, it
 uses the libdap4 library for that. See https://github.com/opendap/libdap4.
 
 The BES does not implement the WEB API for DAP2/4, instead the OLFS (OPeNDAP Lightweight Front-end Server)

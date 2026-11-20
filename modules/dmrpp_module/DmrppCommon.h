@@ -180,7 +180,7 @@ public:
         return d_filters;
     }
 
-    void set_filter(const std::string &value);
+    void set_filter(const std::string &value, bool use_original_filter_order = false);
 
     const std::vector<unsigned int> & get_deflate_levels() const { return deflate_levels;}
     void set_deflate_levels(const std::vector<unsigned int>& def_levels) {

@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Update the handler version numbers in the configure.ac, Makefile.am,
-# NEWS.md and update the ChangeLog with the git log info for each of the
+# NEWS.md and update the ChangeLog.md with the git log info for each of the
 # bes modules given on the command line.
 #
 # This script automates rote updates when little has changed in a
