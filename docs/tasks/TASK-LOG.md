@@ -139,6 +139,46 @@ three real-world fixtures; most FR-007–FR-010 clauses have no test of their ow
 
 ---
 
+## TASK-004 — Make dmrpp_module tests and tools relink when `libngap` or `libmodules_common` changes
+
+**Category:** Build & Tooling
+**Status:** Plan Ready
+**Created:** 2026-11-21
+**Related requirements/constraints:** None in `docs/requirements/` or `docs/constraints/`.
+This follows the `.claude/rules/build-autotools.md` rule "Link through Libtool `.la` files"
+and the CLAUDE.md rule that `make check` is the source of truth for test results.
+**Plan:** `plans/task-dmrpp-lib-relink-deps-plan.md`
+
+**Scope:** Replace these five in-tree `-L<dir> -l<lib>` links with the library's `.la`
+path, so that automake lists the library in the target's `_DEPENDENCIES`:
+1. `modules/dmrpp_module/ngap_container/unit-tests/Makefile.am`, `LIBADD`:
+   `-L$(top_builddir)/modules/common -lmodules_common`
+2. `modules/dmrpp_module/ngap_container/unit-tests/Makefile.am`, `LIBADD`:
+   `-L$(builddir)/../ -lngap`
+3. `modules/dmrpp_module/unit-tests/Makefile.am`, `LIBADD`:
+   `-L$(top_builddir)/modules/common -lmodules_common`
+4. `modules/dmrpp_module/Makefile.am`, `build_dmrpp_LDADD`:
+   `-L$(builddir)/ngap_container -lngap`
+5. `modules/dmrpp_module/build_dmrpp_h4/Makefile.am`, `build_dmrpp_h4_LDADD`:
+   `-L$(builddir)/../ngap_container -lngap`
+
+It excludes:
+- `libdmrpp_module_la_LIBADD` in `modules/dmrpp_module/Makefile.am`, which links `-lngap`,
+  `-ltest-types`, and `-Ldmrpp_transmitter -ldmrpp_return_as` into the installed module.
+  Changing how a convenience library goes into an installed library carries a different risk.
+- `modules/fileout_netcdf/data/build_test_data/Makefile.am` (`-ldap_module`).
+- The commented-out line in `modules/functions/stare/Makefile.am`, and anything under
+  `retired/`.
+- Other link-line cleanup in the same files, e.g. the `.libs/libdap_module.a` paths.
+
+**Motivation:** Found during BUG-005 on 2026-11-20. After `libngap.a` was rebuilt,
+`make check` reran a stale `NgapApiTest` binary and reported failures against code that
+had already been fixed. The binary had to be deleted to get a real result. The generated
+`NgapApiTest_DEPENDENCIES` lists `libdap_module.a` and `libbes_aws.la`, which are linked
+by path, but not `libngap` or `libmodules_common`, which are linked with `-L/-l`.
+
+---
+
 <!-- Add new tasks via /plan-task, or by hand — keep the section format: metadata
      lines, then Scope / Motivation. Unlike a bug, a task doesn't need a symptom or
      reproduction — it needs a clear boundary of what's included and what isn't,
