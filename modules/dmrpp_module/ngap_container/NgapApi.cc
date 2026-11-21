@@ -65,8 +65,8 @@ bool ends_with(const string &s, const string &suffix) {
  * @brief Is this 'GET DATA' URL something other than the granule's data file?
  *
  * CMR records list sidecar files as 'GET DATA' too: LP DAAC's '.cmr.xml' metadata, DMR++
- * files, and browse images (BUG-005). Reject URLs that end in any of those suffixes, ignoring
- * case (FR-012, FR-013). '.tif' and '.tiff' are deliberately absent; GeoTIFF is data.
+ * files, and browse images (HYRAX-2333). Reject URLs that end in any of those suffixes, ignoring
+ * case. '.tif' and '.tiff' are deliberately absent; GeoTIFF is data.
  *
  * @param url The candidate data URL
  * @return True if the URL should be skipped
@@ -85,7 +85,7 @@ bool is_excluded_data_url(const string &url) {
 /**
  * @brief Get a string member of a umm/RelatedUrls element.
  * rapidjson only asserts its preconditions, and NDEBUG builds don't check them, so test
- * them here and throw instead (BUG-002).
+ * them here and throw instead.
  * @return The value of the member
  * @exception BESInternalError if 'obj' is not an object or the member is missing or not a string
  */

@@ -101,7 +101,7 @@ construction.
 ## BUG-002 — `get_urls_from_granules_umm_json_v1_4` crashes or misreports on malformed CMR responses instead of throwing
 
 **Severity:** High
-**Status:** Fix Planned
+**Status:** Fixed
 **Reported:** 2026-10-29
 **Related requirements:** None directly. No requirement says how a malformed CMR response is
 handled, so this violates the undocumented assumption that malformed upstream input throws a
