@@ -1,0 +1,54 @@
+{
+  "hits" : 1,
+  "took" : 1,
+  "items" : [ {
+    "umm" : {
+      "RelatedUrls" : [ {
+        "Type" : "GET DATA",
+        "URL" : "https://data.example/BROWSE.granule.1.jpg"
+      }, {
+        "Type" : "GET DATA",
+        "URL" : "https://data.example/BROWSE.granule.2.JPG"
+      }, {
+        "Type" : "GET DATA",
+        "URL" : "https://data.example/BROWSE.granule.3.jpeg"
+      }, {
+        "Type" : "GET DATA",
+        "URL" : "https://data.example/BROWSE.granule.4.png"
+      }, {
+        "Type" : "GET DATA",
+        "URL" : "https://data.example/BROWSE.granule.5.gif"
+      }, {
+        "Type" : "GET DATA",
+        "URL" : "https://data.example/granule.cmr.XML"
+      }, {
+        "Type" : "GET DATA",
+        "URL" : "https://data.example/granule.nc.DMRPP"
+      }, {
+        "Type" : "GET DATA",
+        "URL" : "s3://bucket/BROWSE.granule.1.Jpg"
+      }, {
+        "Type" : "GET DATA",
+        "URL" : "s3://bucket/BROWSE.granule.4.PNG"
+      }, {
+        "Type" : "GET DATA",
+        "URL" : "s3://bucket/BROWSE.granule.5.GIF"
+      }, {
+        "Type" : "GET DATA",
+        "URL" : "s3://bucket/BROWSE.granule.3.JPEG"
+      }, {
+        "Type" : "GET DATA",
+        "URL" : "s3://bucket/granule.cmr.Xml"
+      }, {
+        "Type" : "GET DATA",
+        "URL" : "https://data.example/granule.nc"
+      }, {
+        "Type" : "GET DATA",
+        "URL" : "s3://bucket/granule.nc"
+      }, {
+        "Type" : "VIEW RELATED INFORMATION",
+        "URL" : "https://data.example/s3credentials"
+      } ]
+    }
+  } ]
+}

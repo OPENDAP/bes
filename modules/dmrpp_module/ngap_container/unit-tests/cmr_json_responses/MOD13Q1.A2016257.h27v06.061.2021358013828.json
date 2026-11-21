@@ -1,0 +1,386 @@
+{
+  "hits" : 1,
+  "took" : 37,
+  "items" : [ {
+    "meta" : {
+      "concept-type" : "granule",
+      "concept-id" : "G2194372565-LPCLOUD",
+      "revision-id" : 2,
+      "native-id" : "MOD13Q1.A2016257.h27v06.061.2021358013828",
+      "collection-concept-id" : "C1748066515-LPCLOUD",
+      "provider-id" : "LPCLOUD",
+      "format" : "application/echo10+xml",
+      "revision-date" : "2025-07-05T10:53:44.239Z"
+    },
+    "umm" : {
+      "TemporalExtent" : {
+        "RangeDateTime" : {
+          "BeginningDateTime" : "2016-09-13T00:00:00.000Z",
+          "EndingDateTime" : "2016-09-28T23:59:59.000Z"
+        }
+      },
+      "GranuleUR" : "MOD13Q1.A2016257.h27v06.061.2021358013828",
+      "AdditionalAttributes" : [ {
+        "Name" : "QAPERCENTGOODQUALITY",
+        "Values" : [ "24" ]
+      }, {
+        "Name" : "QAPERCENTOTHERQUALITY",
+        "Values" : [ "76" ]
+      }, {
+        "Name" : "QAPERCENTNOTPRODUCEDCLOUD",
+        "Values" : [ "0" ]
+      }, {
+        "Name" : "QAPERCENTNOTPRODUCEDOTHER",
+        "Values" : [ "0" ]
+      }, {
+        "Name" : "NDVI250M16DAYQCLASSPERCENTAGE",
+        "Values" : [ "0" ]
+      }, {
+        "Name" : "EVI250M16DAYQCLASSPERCENTAGE",
+        "Values" : [ "0" ]
+      }, {
+        "Name" : "HORIZONTALTILENUMBER",
+        "Values" : [ "27" ]
+      }, {
+        "Name" : "VERTICALTILENUMBER",
+        "Values" : [ "06" ]
+      }, {
+        "Name" : "TileID",
+        "Values" : [ "51027006" ]
+      }, {
+        "Name" : "INPUTPRODUCTRESOLUTION",
+        "Values" : [ "Product input resolution 250m" ]
+      }, {
+        "Name" : "identifier_product_doi",
+        "Values" : [ "10.5067/MODIS/MOD13Q1.061" ]
+      }, {
+        "Name" : "identifier_product_doi_authority",
+        "Values" : [ "http://dx.doi.org" ]
+      } ],
+      "MeasuredParameters" : [ {
+        "ParameterName" : "250m 16 days NDVI",
+        "QAStats" : {
+          "QAPercentMissingData" : 0.0,
+          "QAPercentOutOfBoundsData" : 0.0,
+          "QAPercentInterpolatedData" : 100.0,
+          "QAPercentCloudCover" : 28.0
+        },
+        "QAFlags" : {
+          "AutomaticQualityFlag" : "Passed",
+          "AutomaticQualityFlagExplanation" : "No automatic quality assessment is performed in the PGE",
+          "OperationalQualityFlag" : "Passed",
+          "OperationalQualityFlagExplanation" : "Passed",
+          "ScienceQualityFlag" : "Not Investigated",
+          "ScienceQualityFlagExplanation" : "See https://landweb.modaps.eosdis.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&ver=C6 for the product Science Quality status."
+        }
+      }, {
+        "ParameterName" : "250m 16 days EVI",
+        "QAStats" : {
+          "QAPercentMissingData" : 0.0,
+          "QAPercentOutOfBoundsData" : 0.0,
+          "QAPercentInterpolatedData" : 100.0,
+          "QAPercentCloudCover" : 28.0
+        },
+        "QAFlags" : {
+          "AutomaticQualityFlag" : "Passed",
+          "AutomaticQualityFlagExplanation" : "No automatic quality assessment is performed in the PGE",
+          "ScienceQualityFlag" : "Not Investigated",
+          "ScienceQualityFlagExplanation" : "See https://landweb.modaps.eosdis.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&ver=C6 for the product Science Quality status."
+        }
+      }, {
+        "ParameterName" : "250m 16 days VI Quality",
+        "QAStats" : {
+          "QAPercentMissingData" : 0.0,
+          "QAPercentOutOfBoundsData" : 0.0,
+          "QAPercentInterpolatedData" : 100.0,
+          "QAPercentCloudCover" : 28.0
+        },
+        "QAFlags" : {
+          "AutomaticQualityFlag" : "Passed",
+          "AutomaticQualityFlagExplanation" : "No automatic quality assessment is performed in the PGE",
+          "ScienceQualityFlag" : "Not Investigated",
+          "ScienceQualityFlagExplanation" : "See https://landweb.modaps.eosdis.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&ver=C6 for the product Science Quality status."
+        }
+      }, {
+        "ParameterName" : "250m 16 days red reflectance",
+        "QAStats" : {
+          "QAPercentMissingData" : 0.0,
+          "QAPercentOutOfBoundsData" : 0.0,
+          "QAPercentInterpolatedData" : 100.0,
+          "QAPercentCloudCover" : 28.0
+        },
+        "QAFlags" : {
+          "AutomaticQualityFlag" : "Passed",
+          "AutomaticQualityFlagExplanation" : "No automatic quality assessment is performed in the PGE",
+          "ScienceQualityFlag" : "Not Investigated",
+          "ScienceQualityFlagExplanation" : "See https://landweb.modaps.eosdis.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&ver=C6 for the product Science Quality status."
+        }
+      }, {
+        "ParameterName" : "250m 16 days NIR reflectance",
+        "QAStats" : {
+          "QAPercentMissingData" : 0.0,
+          "QAPercentOutOfBoundsData" : 0.0,
+          "QAPercentInterpolatedData" : 100.0,
+          "QAPercentCloudCover" : 28.0
+        },
+        "QAFlags" : {
+          "AutomaticQualityFlag" : "Passed",
+          "AutomaticQualityFlagExplanation" : "No automatic quality assessment is performed in the PGE",
+          "ScienceQualityFlag" : "Not Investigated",
+          "ScienceQualityFlagExplanation" : "See https://landweb.modaps.eosdis.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&ver=C6 for the product Science Quality status."
+        }
+      }, {
+        "ParameterName" : "250m 16 days blue reflectance",
+        "QAStats" : {
+          "QAPercentMissingData" : 0.0,
+          "QAPercentOutOfBoundsData" : 0.0,
+          "QAPercentInterpolatedData" : 100.0,
+          "QAPercentCloudCover" : 28.0
+        },
+        "QAFlags" : {
+          "AutomaticQualityFlag" : "Passed",
+          "AutomaticQualityFlagExplanation" : "No automatic quality assessment is performed in the PGE",
+          "ScienceQualityFlag" : "Not Investigated",
+          "ScienceQualityFlagExplanation" : "See https://landweb.modaps.eosdis.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&ver=C6 for the product Science Quality status."
+        }
+      }, {
+        "ParameterName" : "250m 16 days MIR reflectance",
+        "QAStats" : {
+          "QAPercentMissingData" : 0.0,
+          "QAPercentOutOfBoundsData" : 0.0,
+          "QAPercentInterpolatedData" : 100.0,
+          "QAPercentCloudCover" : 28.0
+        },
+        "QAFlags" : {
+          "AutomaticQualityFlag" : "Passed",
+          "AutomaticQualityFlagExplanation" : "No automatic quality assessment is performed in the PGE",
+          "ScienceQualityFlag" : "Not Investigated",
+          "ScienceQualityFlagExplanation" : "See https://landweb.modaps.eosdis.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&ver=C6 for the product Science Quality status."
+        }
+      }, {
+        "ParameterName" : "250m 16 days view zenith angle",
+        "QAStats" : {
+          "QAPercentMissingData" : 0.0,
+          "QAPercentOutOfBoundsData" : 0.0,
+          "QAPercentInterpolatedData" : 100.0,
+          "QAPercentCloudCover" : 28.0
+        },
+        "QAFlags" : {
+          "AutomaticQualityFlag" : "Passed",
+          "AutomaticQualityFlagExplanation" : "No automatic quality assessment is performed in the PGE",
+          "ScienceQualityFlag" : "Not Investigated",
+          "ScienceQualityFlagExplanation" : "See https://landweb.modaps.eosdis.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&ver=C6 for the product Science Quality status."
+        }
+      }, {
+        "ParameterName" : "250m 16 days sun zenith angle",
+        "QAStats" : {
+          "QAPercentMissingData" : 0.0,
+          "QAPercentOutOfBoundsData" : 0.0,
+          "QAPercentInterpolatedData" : 100.0,
+          "QAPercentCloudCover" : 28.0
+        },
+        "QAFlags" : {
+          "AutomaticQualityFlag" : "Passed",
+          "AutomaticQualityFlagExplanation" : "No automatic quality assessment is performed in the PGE",
+          "ScienceQualityFlag" : "Not Investigated",
+          "ScienceQualityFlagExplanation" : "See https://landweb.modaps.eosdis.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&ver=C6 for the product Science Quality status."
+        }
+      }, {
+        "ParameterName" : "250m 16 days relative azimuth angle",
+        "QAStats" : {
+          "QAPercentMissingData" : 0.0,
+          "QAPercentOutOfBoundsData" : 0.0,
+          "QAPercentInterpolatedData" : 100.0,
+          "QAPercentCloudCover" : 28.0
+        },
+        "QAFlags" : {
+          "AutomaticQualityFlag" : "Passed",
+          "AutomaticQualityFlagExplanation" : "No automatic quality assessment is performed in the PGE",
+          "ScienceQualityFlag" : "Not Investigated",
+          "ScienceQualityFlagExplanation" : "See https://landweb.modaps.eosdis.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&ver=C6 for the product Science Quality status."
+        }
+      }, {
+        "ParameterName" : "250m 16 days composite day of the year",
+        "QAStats" : {
+          "QAPercentMissingData" : 0.0,
+          "QAPercentOutOfBoundsData" : 0.0,
+          "QAPercentInterpolatedData" : 100.0,
+          "QAPercentCloudCover" : 28.0
+        },
+        "QAFlags" : {
+          "AutomaticQualityFlag" : "Passed",
+          "AutomaticQualityFlagExplanation" : "No automatic quality assessment is performed in the PGE",
+          "ScienceQualityFlag" : "Not Investigated",
+          "ScienceQualityFlagExplanation" : "See https://landweb.modaps.eosdis.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&ver=C6 for the product Science Quality status."
+        }
+      }, {
+        "ParameterName" : "250m 16 days pixel reliability",
+        "QAStats" : {
+          "QAPercentMissingData" : 0.0,
+          "QAPercentOutOfBoundsData" : 0.0,
+          "QAPercentInterpolatedData" : 100.0,
+          "QAPercentCloudCover" : 28.0
+        },
+        "QAFlags" : {
+          "AutomaticQualityFlag" : "Passed",
+          "AutomaticQualityFlagExplanation" : "No automatic quality assessment is performed in the PGE",
+          "ScienceQualityFlag" : "Not Investigated",
+          "ScienceQualityFlagExplanation" : "See https://landweb.modaps.eosdis.nasa.gov/cgi-bin/QA_WWW/qaFlagPage.cgi?sat=terra&ver=C6 for the product Science Quality status."
+        }
+      } ],
+      "SpatialExtent" : {
+        "HorizontalSpatialDomain" : {
+          "Geometry" : {
+            "GPolygons" : [ {
+              "Boundary" : {
+                "Points" : [ {
+                  "Longitude" : 106.409464531738,
+                  "Latitude" : 19.8899188128276
+                }, {
+                  "Longitude" : 115.487234811553,
+                  "Latitude" : 29.9991519298196
+                }, {
+                  "Longitude" : 103.574382723969,
+                  "Latitude" : 30.0493729677169
+                }, {
+                  "Longitude" : 95.4446675146841,
+                  "Latitude" : 19.9380822583069
+                }, {
+                  "Longitude" : 106.409464531738,
+                  "Latitude" : 19.8899188128276
+                } ]
+              }
+            } ]
+          }
+        }
+      },
+      "ProviderDates" : [ {
+        "Date" : "2021-12-24T03:56:31.015Z",
+        "Type" : "Insert"
+      }, {
+        "Date" : "2021-12-24T03:57:14.579Z",
+        "Type" : "Update"
+      } ],
+      "CollectionReference" : {
+        "ShortName" : "MOD13Q1",
+        "Version" : "061"
+      },
+      "PGEVersionClass" : {
+        "PGEVersion" : "6.1.0"
+      },
+      "RelatedUrls" : [ {
+        "URL" : "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-public/MOD13Q1.061/MOD13Q1.A2016257.h27v06.061.2021358013828/BROWSE.MOD13Q1.A2016257.h27v06.061.2021358013829.1.jpg",
+        "Type" : "GET DATA",
+        "Description" : "Download BROWSE.MOD13Q1.A2016257.h27v06.061.2021358013829.1.jpg",
+        "Format" : "Not provided"
+      }, {
+        "URL" : "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/MOD13Q1.061/MOD13Q1.A2016257.h27v06.061.2021358013828/MOD13Q1.A2016257.h27v06.061.2021358013828.cmr.xml",
+        "Type" : "GET DATA",
+        "Description" : "Download MOD13Q1.A2016257.h27v06.061.2021358013828.cmr.xml",
+        "Format" : "Not provided"
+      }, {
+        "URL" : "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-public/MOD13Q1.061/MOD13Q1.A2016257.h27v06.061.2021358013828/BROWSE.MOD13Q1.A2016257.h27v06.061.2021358013829.2.jpg",
+        "Type" : "GET DATA",
+        "Description" : "Download BROWSE.MOD13Q1.A2016257.h27v06.061.2021358013829.2.jpg",
+        "Format" : "Not provided"
+      }, {
+        "URL" : "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/MOD13Q1.061/MOD13Q1.A2016257.h27v06.061.2021358013828/MOD13Q1.A2016257.h27v06.061.2021358013828.hdf",
+        "Type" : "GET DATA",
+        "Description" : "Download MOD13Q1.A2016257.h27v06.061.2021358013828.hdf",
+        "Format" : "Not provided"
+      }, {
+        "URL" : "s3://lp-prod-public/MOD13Q1.061/MOD13Q1.A2016257.h27v06.061.2021358013828/BROWSE.MOD13Q1.A2016257.h27v06.061.2021358013829.1.jpg",
+        "Type" : "GET DATA",
+        "Description" : "This link provides direct download access via S3 to the granule",
+        "Format" : "Not provided"
+      }, {
+        "URL" : "s3://lp-prod-protected/MOD13Q1.061/MOD13Q1.A2016257.h27v06.061.2021358013828/MOD13Q1.A2016257.h27v06.061.2021358013828.cmr.xml",
+        "Type" : "GET DATA",
+        "Description" : "This link provides direct download access via S3 to the granule",
+        "Format" : "Not provided"
+      }, {
+        "URL" : "s3://lp-prod-public/MOD13Q1.061/MOD13Q1.A2016257.h27v06.061.2021358013828/BROWSE.MOD13Q1.A2016257.h27v06.061.2021358013829.2.jpg",
+        "Type" : "GET DATA",
+        "Description" : "This link provides direct download access via S3 to the granule",
+        "Format" : "Not provided"
+      }, {
+        "URL" : "s3://lp-prod-protected/MOD13Q1.061/MOD13Q1.A2016257.h27v06.061.2021358013828/MOD13Q1.A2016257.h27v06.061.2021358013828.hdf",
+        "Type" : "GET DATA",
+        "Description" : "This link provides direct download access via S3 to the granule",
+        "Format" : "Not provided"
+      }, {
+        "URL" : "https://doi.org/10.5067/MODIS/MOD13Q1.061",
+        "Type" : "VIEW RELATED INFORMATION",
+        "Description" : "The Landing Page for this file may be accessed directly from this link",
+        "MimeType" : "text/html",
+        "Format" : "Not provided"
+      }, {
+        "URL" : "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/MOD13Q1.061/MOD13Q1.A2016257.h27v06.061.2021358013828/MOD13Q1.A2016257.h27v06.061.2021358013828.cmr.xml",
+        "Type" : "VIEW RELATED INFORMATION",
+        "Description" : "Download MOD13Q1.A2016257.h27v06.061.2021358013828.cmr.xml",
+        "Format" : "Not provided"
+      }, {
+        "URL" : "s3://lp-prod-protected/MOD13Q1.061/MOD13Q1.A2016257.h27v06.061.2021358013828/MOD13Q1.A2016257.h27v06.061.2021358013828.cmr.xml",
+        "Type" : "VIEW RELATED INFORMATION",
+        "Description" : "This link provides direct download access via S3 to the granule",
+        "Format" : "Not provided"
+      }, {
+        "URL" : "https://opendap.earthdata.nasa.gov/collections/C1748066515-LPCLOUD/granules/MOD13Q1.A2016257.h27v06.061.2021358013828",
+        "Type" : "USE SERVICE API",
+        "Subtype" : "OPENDAP DATA",
+        "Description" : "OPeNDAP request URL",
+        "Format" : "Not provided"
+      }, {
+        "URL" : "https://data.lpdaac.earthdatacloud.nasa.gov/s3credentials",
+        "Type" : "VIEW RELATED INFORMATION",
+        "Description" : "api endpoint to retrieve temporary credentials valid for same-region direct s3 access",
+        "Format" : "Not provided"
+      }, {
+        "URL" : "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-public/MOD13Q1.061/MOD13Q1.A2016257.h27v06.061.2021358013828/BROWSE.MOD13Q1.A2016257.h27v06.061.2021358013829.1.jpg",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Description" : "Download BROWSE.MOD13Q1.A2016257.h27v06.061.2021358013829.1.jpg",
+        "Format" : "Not provided"
+      }, {
+        "URL" : "s3://lp-prod-public/MOD13Q1.061/MOD13Q1.A2016257.h27v06.061.2021358013828/BROWSE.MOD13Q1.A2016257.h27v06.061.2021358013829.1.jpg",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Description" : "This link provides direct download access via S3 to the granule",
+        "Format" : "Not provided"
+      }, {
+        "URL" : "https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-public/MOD13Q1.061/MOD13Q1.A2016257.h27v06.061.2021358013828/BROWSE.MOD13Q1.A2016257.h27v06.061.2021358013829.2.jpg",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Description" : "Download BROWSE.MOD13Q1.A2016257.h27v06.061.2021358013829.2.jpg",
+        "Format" : "Not provided"
+      }, {
+        "URL" : "s3://lp-prod-public/MOD13Q1.061/MOD13Q1.A2016257.h27v06.061.2021358013828/BROWSE.MOD13Q1.A2016257.h27v06.061.2021358013829.2.jpg",
+        "Type" : "GET RELATED VISUALIZATION",
+        "Description" : "This link provides direct download access via S3 to the granule",
+        "Format" : "Not provided"
+      } ],
+      "CloudCover" : 28.0,
+      "Projects" : [ {
+        "ShortName" : "Not provided",
+        "Campaigns" : [ "TERRA" ]
+      } ],
+      "DataGranule" : {
+        "DayNightFlag" : "Both",
+        "Identifiers" : [ {
+          "Identifier" : "MOD13Q1.A2016257.h27v06.061.2021358013828",
+          "IdentifierType" : "ProducerGranuleId"
+        } ],
+        "ProductionDateTime" : "2021-12-24T06:38:28.000Z",
+        "ArchiveAndDistributionInformation" : [ {
+          "Name" : "Not provided",
+          "Size" : 245.51,
+          "SizeUnit" : "MB",
+          "Format" : "Not provided"
+        } ]
+      },
+      "Platforms" : [ {
+        "ShortName" : "Terra",
+        "Instruments" : [ {
+          "ShortName" : "MODIS"
+        } ]
+      } ]
+    }
+  } ]
+}
