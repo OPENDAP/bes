@@ -14,7 +14,7 @@ AM_CPPFLAGS = $(H5_CPPFLAGS) -I$(top_srcdir) -I$(top_srcdir)/dispatch -I$(top_sr
 
 # Added -lz for ubuntu
 LIBADD = $(BES_DISPATCH_LIB) $(top_builddir)/dap/.libs/libdap_module.a $(BES_HTTP_LIB) \
-    -L$(top_builddir)/modules/common -lmodules_common $(H5_LDFLAGS) \
+    $(top_builddir)/modules/common/libmodules_common.la $(H5_LDFLAGS) \
 	$(top_builddir)/aws/libbes_aws.la $(aws_libs) \
     $(H5_LIBS) $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS) $(OPENSSL_LIBS) $(XML2_LIBS) -lz
 

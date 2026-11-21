@@ -1,7 +1,7 @@
 # Task Plan: Make dmrpp_module tests and tools relink when `libngap` or `libmodules_common` changes
 
 **Task:** TASK-004
-**Status:** Draft
+**Status:** In Progress
 **Created:** 2026-11-21
 
 ## Summary
@@ -154,3 +154,45 @@ and record it here before going further.
 - You chose the scope (dmrpp_module tests and tools, 5 links), the category (Build &
   Tooling), the approach (link the `.la` path), and the branch `jhrg/dmrpp-lib-relink-deps`.
 - Logged TASK-004 in `docs/tasks/TASK-LOG.md` (Plan Ready) and drafted this plan.
+
+### 2026-11-21 11:22 MST — Implemented; distcheck running
+
+**Prompt:**
+
+> implement TASK-004 fix and mark them In Progress
+
+- **Status.** Set TASK-004 (`docs/tasks/TASK-LOG.md`) and this plan to `In Progress`. Work is on
+  branch `jhrg/fix-dmrpp-test-linkage`, which you created in place of
+  `jhrg/dmrpp-lib-relink-deps`.
+- **Approach step 1 (baseline).** Deleted and relinked all 17 affected programs with `make V=1`,
+  and saved the link commands:
+  - the 4 ngap tests
+  - the 10 dmrpp unit-test programs, plus `pugi_xml_test`
+  - `build_dmrpp` and `build_dmrpp_h4`
+- **Approach step 2.** Made the five edits in the Scope table. The completeness `grep` now
+  finds only the out-of-scope `libdmrpp_module_la_LIBADD` (`modules/dmrpp_module/Makefile.am:68`).
+- **Approach step 3.** make's rebuild rules reran automake for the four `Makefile.in` files.
+  Expanding each target's `_DEPENDENCIES` now shows:
+  - `libngap.la` for the 4 ngap tests, `build_dmrpp`, and `build_dmrpp_h4`
+  - `libmodules_common.la` for the 4 ngap tests and the 10 dmrpp unit tests
+  - `pugi_xml_test` never used `LIBADD`; it's unchanged
+- **Approach step 4.** In every expanded `libtool: link:` command, the only difference is that
+  the `-L<dir>` flag is gone and the archive path is relative instead of absolute. The same
+  `.a` stays in the same position, and no library was added or removed.
+- **Verification 1 (relink).**
+  - After touching `ngap_container/NgapApi.cc` and rebuilding `libngap.a`, all 6 `libngap`
+    dependents relinked.
+  - After touching `common/read_test_baseline.cc` and rebuilding `libmodules_common.a`, all 14
+    `libmodules_common` dependents relinked.
+- **Verification 2.** `make check -j8` in `modules/dmrpp_module` exits 0.
+- **Left.**
+  - Verification 3: `make distcheck` is running. The `dmrpp` directory from BUG-004 is now in
+    `cmdln/tests` `EXTRA_DIST`, so it shouldn't stop there.
+  - Verification 4: the Linux build (CI); this run was macOS only.
+  - Setting TASK-004 to `Done` (your call).
+
+### 2026-11-21 11:34 MST — Verification 3: distcheck passed
+
+`make -j8 distcheck` on macOS exited 0 and produced `bes-3.22.1.tar.gz`, with no `FAIL:` or
+`ERROR:` lines in the log. Left: verification 4 (the Linux build in CI), and setting TASK-004
+to `Done` (your call).

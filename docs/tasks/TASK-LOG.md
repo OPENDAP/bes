@@ -142,7 +142,7 @@ three real-world fixtures; most FR-007–FR-010 clauses have no test of their ow
 ## TASK-004 — Make dmrpp_module tests and tools relink when `libngap` or `libmodules_common` changes
 
 **Category:** Build & Tooling
-**Status:** Plan Ready
+**Status:** In Progress
 **Created:** 2026-11-21
 **Related requirements/constraints:** None in `docs/requirements/` or `docs/constraints/`.
 This follows the `.claude/rules/build-autotools.md` rule "Link through Libtool `.la` files"
