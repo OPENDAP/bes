@@ -101,7 +101,7 @@ construction.
 ## BUG-002 — `get_urls_from_granules_umm_json_v1_4` crashes or misreports on malformed CMR responses instead of throwing
 
 **Severity:** High
-**Status:** Fix Planned
+**Status:** Fixed
 **Reported:** 2026-10-29
 **Related requirements:** None directly. No requirement says how a malformed CMR response is
 handled, so this violates the undocumented assumption that malformed upstream input throws a
@@ -275,6 +275,62 @@ and its two baselines, and test 61 passes in the distcheck build, as it does in-
 - The directory and its three files arrived in 763ed1c5f (HYRAX-1732), together with the
   `AT_BESCMD_DMRPP_RESPONSE_TEST` line in `testsuite.at`.
 - `Makefile.am` wasn't updated in that commit or later.
+
+---
+
+## BUG-005 — NGAP selects a browse image (`.jpg`) listed as `GET DATA` as the granule's data URL, so the DMR++ lookup fails
+
+**Severity:** High
+**Status:** Fixed
+**Reported:** 2026-11-20
+**Related requirements:** FR-007, FR-008, FR-011. The code does what FR-007/FR-008 say. Those
+requirements reject only URLs ending in `.xml` or `.dmrpp`, so they don't cover browse images
+that a DAAC wrongly lists as `GET DATA`. The gap is in the requirements, not just the code. The
+fix supersedes FR-007/FR-008 with new FRs (decided 2026-11-20).
+**Fix plan:** `plans/bugfix-ngap-browse-image-data-url-plan.md`
+
+**Reproduction steps:**
+1. Fetch the UMM-G v1.4 CMR record for LP DAAC granule
+   `MOD13Q1.A2016257.h27v06.061.2021358013828` (collection `C1748066515-LPCLOUD`):
+   `curl -o mod13.json 'https://cmr.earthdata.nasa.gov/search/granules.umm_json_v1_4?pretty=true&collection_concept_id=C1748066515-LPCLOUD&granule_ur=MOD13Q1.A2016257.h27v06.061.2021358013828'`
+2. In `NgapApiTest`, call `NgapApi::get_urls_from_granules_umm_json_v1_4("placeholder", json)`
+   with that file's contents.
+3. Read the returned https data URL and S3 data URL.
+4. End to end (not run this session): request
+   `/collections/C1748066515-LPCLOUD/granules/MOD13Q1.A2016257.h27v06.061.2021358013828.dmr`
+   from an NGAP Hyrax.
+
+**Expected behavior:**
+- https data URL:
+  `https://data.lpdaac.earthdatacloud.nasa.gov/lp-prod-protected/MOD13Q1.061/MOD13Q1.A2016257.h27v06.061.2021358013828/MOD13Q1.A2016257.h27v06.061.2021358013828.hdf`
+- S3 data URL:
+  `s3://lp-prod-protected/MOD13Q1.061/MOD13Q1.A2016257.h27v06.061.2021358013828/MOD13Q1.A2016257.h27v06.061.2021358013828.hdf`
+- The DMR++ is looked up at `<that URL>.dmrpp` (FR-011).
+
+**Actual behavior:**
+- The https data URL is `.../lp-prod-public/.../BROWSE.MOD13Q1.A2016257.h27v06.061.2021358013829.1.jpg`.
+  The S3 data URL is the matching `s3://lp-prod-public/.../BROWSE...1.jpg`.
+- `NgapOwnedContainer` then asks for `BROWSE...1.jpg.dmrpp`. That doesn't exist, so the request
+  fails. As reported; the exact error text wasn't captured this session.
+
+**Root cause:** Line numbers are as of commit 8419070c0.
+- `get_data_http_url` (`NgapApi.cc:321-338`) and `get_data_s3_url` (`NgapApi.cc:341-357`)
+  accept the first `RelatedUrls` entry that meets all of these:
+  - `Type == "GET DATA"`
+  - no `Subtype`
+  - the right scheme
+  - the URL doesn't end in `.xml` or `.dmrpp`
+- In this record (checked against the live CMR response on 2026-11-20), the first `GET DATA`
+  entries are `BROWSE...1.jpg` (https) and `BROWSE...1.jpg` (s3). They pass every test, so the
+  loop in `get_urls_from_granules_umm_json_v1_4` (`NgapApi.cc:459-472`) picks them. The real
+  `.hdf` entries are never looked at.
+- The `.cmr.xml` entries are already skipped correctly by the `.xml` rule.
+- The browse entries carry no `MimeType` or `Subtype`. The only thing that tells them apart from
+  data is the file extension. They are also listed a second time as `GET RELATED VISUALIZATION`.
+- `NgapOwnedContainer.cc:527-532` then appends `.dmrpp` to the selected URLs (FR-011).
+- Checked and not affected: well-formed records such as GES DISC
+  `GPM_3IMERGHHL.07:3B-HHR-L...V07C.HDF5` list only the data file as `GET DATA`, and the
+  existing ECOSTRESS (LP DAAC) and CYGNSS (PO.DAAC) fixtures contain no browse URLs.
 
 ---
 

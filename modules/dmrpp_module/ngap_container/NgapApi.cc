@@ -27,6 +27,8 @@
 #include <sstream>
 #include <ctime>
 #include <memory>
+#include <algorithm>
+#include <cctype>
 
 #include <curl/curl.h>
 #include "rapidjson/document.h"
@@ -60,9 +62,30 @@ bool ends_with(const string &s, const string &suffix) {
 }
 
 /**
+ * @brief Is this 'GET DATA' URL something other than the granule's data file?
+ *
+ * CMR records list sidecar files as 'GET DATA' too: LP DAAC's '.cmr.xml' metadata, DMR++
+ * files, and browse images (HYRAX-2333). Reject URLs that end in any of those suffixes, ignoring
+ * case. '.tif' and '.tiff' are deliberately absent; GeoTIFF is data.
+ *
+ * @param url The candidate data URL
+ * @return True if the URL should be skipped
+ */
+bool is_excluded_data_url(const string &url) {
+    static const char *const excluded_suffixes[] = {".xml", ".dmrpp", ".jpg", ".jpeg", ".png", ".gif"};
+
+    string lower_url = url;
+    transform(lower_url.begin(), lower_url.end(), lower_url.begin(),
+              [](unsigned char c) { return static_cast<char>(tolower(c)); });
+
+    return any_of(begin(excluded_suffixes), end(excluded_suffixes),
+                  [&lower_url](const char *suffix) { return ends_with(lower_url, suffix); });
+}
+
+/**
  * @brief Get a string member of a umm/RelatedUrls element.
  * rapidjson only asserts its preconditions, and NDEBUG builds don't check them, so test
- * them here and throw instead (BUG-002).
+ * them here and throw instead.
  * @return The value of the member
  * @exception BESInternalError if 'obj' is not an object or the member is missing or not a string
  */
@@ -325,11 +348,9 @@ string get_data_http_url(rapidjson::Value &obj) {
     bool noSubtype = obj.FindMember("Subtype") == obj.MemberEnd();
 
     if ((r_type == CMR_URL_TYPE_GET_DATA) && noSubtype) {
-        // Added test that the URL does not end in 'xml' to avoid the LPDAAC .cmr.xml records. jhrg 5/22/24
-        // The URL has to start with HTTP/S and cannot end in .xml or .dmrpp (FR-007). jhrg 6/2/25
+        // The URL has to start with HTTP/S and cannot end in an excluded suffix (FR-012).
         if ((candidate_url.find("https://") == 0 || candidate_url.find("http://") == 0)
-            && !ends_with(candidate_url, ".xml")
-            && !ends_with(candidate_url, ".dmrpp")) {
+            && !is_excluded_data_url(candidate_url)) {
             return candidate_url;
         }
     }
@@ -345,10 +366,8 @@ string get_data_s3_url(rapidjson::Value &obj) {
     bool noSubtype = obj.FindMember("Subtype") == obj.MemberEnd();
 
     if ((r_type == CMR_URL_TYPE_GET_DATA) && noSubtype) {
-        // The URL has to start with s3:// and cannot end in .xml or .dmrpp (FR-008)
-        if (candidate_url.find("s3://") == 0
-            && !ends_with(candidate_url, ".xml")
-            && !ends_with(candidate_url, ".dmrpp")) {
+        // The URL has to start with s3:// and cannot end in an excluded suffix (FR-013).
+        if (candidate_url.find("s3://") == 0 && !is_excluded_data_url(candidate_url)) {
             return candidate_url;
         }
     }
@@ -381,11 +400,12 @@ string get_s3credentials_url(rapidjson::Value &obj) {
  *
  * @note This method uses heuristics to get each url for the granule from the CMR UMM-G JSON.
  *  For each url, the process it follows is look in the RelatedUrls array for an entry with the following contstraints:
- *  - For the `GET DATA` URL, a TYPE of Type 'GET DATA' with a URL that uses the https:// protocol 
- *    where that URL does not end in 'xml'. 
- *    The latter characteristic was added for records added by LPDAAC. jhrg 5/22/24
- *  - For the `GET DATA` S3 URL, a TYPE of Type 'GET DATA' with a URL that uses the s3:// protocol 
- *    where that URL does not end in 'xml'. 
+ *  - For the `GET DATA` URL, a TYPE of Type 'GET DATA' with a URL that uses the https:// protocol
+ *    where that URL does not end, ignoring case, in '.xml', '.dmrpp', '.jpg', '.jpeg', '.png'
+ *    or '.gif' (FR-012). Those are LP DAAC '.cmr.xml' records, DMR++ files, and browse images
+ *    that some records list as 'GET DATA' (BUG-005).
+ *  - For the `GET DATA` S3 URL, a TYPE of Type 'GET DATA' with a URL that uses the s3:// protocol
+ *    and the same excluded suffixes (FR-013).
  *  - For the `GET DATA` S3 URL, a TYPE of Type 'VIEW RELATED INFORMATION' with a URL that uses the https:// protocol 
  *    where that URL ends in 's3credentials'. 
  *
@@ -485,7 +505,7 @@ NgapApi::DataAccessUrls NgapApi::get_urls_from_granules_umm_json_v1_4(const std:
 /**
  * @brief Remove a trailing '.dmrpp' from a data URL, if present.
  *
- * This is defensive. Under FR-007/FR-008, get_urls_from_granules_umm_json_v1_4() never
+ * This is defensive. Under FR-012/FR-013, get_urls_from_granules_umm_json_v1_4() never
  * selects a data URL that ends in '.dmrpp', so this should not change the URL. It guards
  * against a future change to that filter; NgapOwnedContainer appends '.dmrpp' to the data
  * URLs to locate the DMR++ (FR-011).
