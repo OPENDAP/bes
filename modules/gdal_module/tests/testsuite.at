@@ -93,7 +93,14 @@ m4_include([GeotiffToDmr_macros.m4])
 # return the same document (cea.tif is a pattern baseline; see gdal/README).
 AT_GEOTIFFTODMR_RESPONSE_PATTERN_TEST([data/cea.tif], [gdal/cea.tif.dmr.bescmd.baseline], [pass])
 AT_GEOTIFFTODMR_RESPONSE_TEST([data/UTM2GTIF.TIF], [gdal/UTM2GTIF.TIF.dmr.bescmd.baseline], [pass])
-AT_GEOTIFFTODMR_RESPONSE_TEST([data/SP27GTIF.TIF], [GeotiffToDmr/SP27GTIF.TIF.dmr.baseline], [pass])
+# TEMPORARY: expected to fail on macOS. In the macOS CI build GeotiffToDmr
+# crashes (SIGSEGV) when GDAL looks up this file's State Plane CRS
+# (EPSG:26771) in PROJ's database; the other test files don't need that
+# lookup. Suspected cause: GDAL from the hyrax-dependencies tarball and
+# Homebrew's libgeotiff use two different PROJ libraries. Change [xfail-macos]
+# back to [pass] once that is fixed; until then a pass on macOS fails the
+# testsuite as an unexpected pass, as a reminder.
+AT_GEOTIFFTODMR_RESPONSE_TEST([data/SP27GTIF.TIF], [GeotiffToDmr/SP27GTIF.TIF.dmr.baseline], [xfail-macos])
 AT_GEOTIFFTODMR_RESPONSE_TEST([data/DIGEST_Example_2.20120926112517.tif], [GeotiffToDmr/DIGEST_Example_2.20120926112517.tif.dmr.baseline], [pass])
 
 # Same file through besstandalone and through GeotiffToDmr: identical DMRs.

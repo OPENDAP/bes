@@ -40,7 +40,18 @@ m4_define([GEOTIFFTODMR_MAKE_PLAIN_TIFF], [dnl
     AT_CHECK([printf '\111\111\052\000\010\000\000\000\011\000\000\001\003\000\001\000\000\000\001\000\000\000\001\001\003\000\001\000\000\000\001\000\000\000\002\001\003\000\001\000\000\000\010\000\000\000\003\001\003\000\001\000\000\000\001\000\000\000\006\001\003\000\001\000\000\000\001\000\000\000\021\001\004\000\001\000\000\000\172\000\000\000\025\001\003\000\001\000\000\000\001\000\000\000\026\001\003\000\001\000\000\000\001\000\000\000\027\001\004\000\001\000\000\000\001\000\000\000\000\000\000\000\007' > $1])
 ])
 
-# AT_GEOTIFFTODMR_RESPONSE_TEST(<input>, <baseline>, [pass|xfail])
+# _AT_GEOTIFFTODMR_XFAIL(<pass|xfail|xfail-macos>)
+#
+# The last argument of the test macros below: 'pass' (expected to pass),
+# 'xfail' (expected to fail everywhere) or 'xfail-macos' (expected to fail
+# only on macOS, where 'uname -s' prints Darwin). An expected failure that
+# passes is reported as an unexpected pass and fails the testsuite, so a
+# fixed problem shows up as soon as it is fixed.
+m4_define([_AT_GEOTIFFTODMR_XFAIL], [dnl
+    AT_XFAIL_IF([test z$1 = zxfail || { test z$1 = zxfail-macos && test "`uname -s`" = Darwin; }])
+])
+
+# AT_GEOTIFFTODMR_RESPONSE_TEST(<input>, <baseline>, [pass|xfail|xfail-macos])
 #
 # Run 'GeotiffToDmr -o - <input>' and diff the DMR against <baseline>. The
 # baseline can be one of the handler's own gdal/*.dmr.bescmd.baseline files:
@@ -53,7 +64,7 @@ m4_define([AT_GEOTIFFTODMR_RESPONSE_TEST], [dnl
     _AT_GEOTIFFTODMR_VARS
     input=$abs_top_srcdir/modules/gdal_module/$1
     baseline=$abs_srcdir/$2
-    AT_XFAIL_IF([test z$3 = zxfail])
+    _AT_GEOTIFFTODMR_XFAIL([$3])
 
     AS_IF([test -z "$at_verbose"], [echo "COMMAND: GeotiffToDmr -o - $1"])
 
@@ -72,7 +83,7 @@ m4_define([AT_GEOTIFFTODMR_RESPONSE_TEST], [dnl
     AT_CLEANUP
 ])
 
-# AT_GEOTIFFTODMR_RESPONSE_PATTERN_TEST(<input>, <baseline>, [pass|xfail])
+# AT_GEOTIFFTODMR_RESPONSE_PATTERN_TEST(<input>, <baseline>, [pass|xfail|xfail-macos])
 #
 # Like AT_GEOTIFFTODMR_RESPONSE_TEST, but every line of <baseline> is a grep
 # pattern (see gdal/README: spatial_ref floats vary with the GDAL version).
@@ -84,7 +95,7 @@ m4_define([AT_GEOTIFFTODMR_RESPONSE_PATTERN_TEST], [dnl
     _AT_GEOTIFFTODMR_VARS
     input=$abs_top_srcdir/modules/gdal_module/$1
     baseline=$abs_srcdir/$2
-    AT_XFAIL_IF([test z$3 = zxfail])
+    _AT_GEOTIFFTODMR_XFAIL([$3])
 
     AS_IF([test -z "$at_verbose"], [echo "COMMAND: GeotiffToDmr -o - $1"])
 
@@ -101,7 +112,7 @@ m4_define([AT_GEOTIFFTODMR_RESPONSE_PATTERN_TEST], [dnl
     AT_CLEANUP
 ])
 
-# AT_GEOTIFFTODMR_BESCMD_COMPARE_TEST(<bescmd>, <input>, [pass|xfail])
+# AT_GEOTIFFTODMR_BESCMD_COMPARE_TEST(<bescmd>, <input>, [pass|xfail|xfail-macos])
 #
 # Run besstandalone on <bescmd> and GeotiffToDmr on <input> (the same file) and
 # require identical DMRs. Needs no baseline, so it keeps passing when a GDAL
@@ -114,7 +125,7 @@ m4_define([AT_GEOTIFFTODMR_BESCMD_COMPARE_TEST], [dnl
     _AT_GEOTIFFTODMR_VARS
     bescmd=$abs_srcdir/$1
     input=$abs_top_srcdir/modules/gdal_module/$2
-    AT_XFAIL_IF([test z$3 = zxfail])
+    _AT_GEOTIFFTODMR_XFAIL([$3])
 
     AS_IF([test -z "$at_verbose"], [echo "COMMAND: besstandalone -i $1; GeotiffToDmr -o - $2"])
 
