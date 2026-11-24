@@ -272,6 +272,51 @@ void BESLog::set_request_id(const std::string &id) {
     BESDEBUG(MODULE, "request_id: " << request_id << endl);
 }
 
+/**
+ * @brief Make a value safe to use as a single log field.
+ *
+ * Carriage returns and newlines become spaces, and any occurrence of the field
+ * delimiter (BESLog::mark) is replaced with "|&amp;|" so the value cannot add fields.
+ * @param value The value to clean
+ * @return The cleaned value, or "-" if value is empty.
+ */
+std::string BESLog::sanitize_log_field(const std::string &value) {
+    if (value.empty())
+        return "-";
+
+    string clean(value);
+    BESUtil::remove_crlf(clean);
+
+    const string replacement = "|&amp;|";
+    size_t pos = 0;
+    while ((pos = clean.find(mark, pos)) != string::npos) {
+        clean.replace(pos, mark.size(), replacement);
+        pos += replacement.size();
+    }
+
+    return clean;
+}
+
+/**
+ * @brief Build the message part of an 'error' record.
+ *
+ * The result is msg + mark + url + mark + ce. Trailing newlines are removed from msg
+ * so the URL and CE fields stay on the same line as the message. The url and ce values
+ * are passed through sanitize_log_field().
+ * @param msg The error message
+ * @param url The URL path of the current request
+ * @param ce The constraint expression of the current request
+ * @return The fields to write after the record type.
+ */
+std::string BESLog::error_record_fields(const std::string &msg, const std::string &url, const std::string &ce) {
+    string fields(msg);
+    while (!fields.empty() && (fields.back() == '\n' || fields.back() == '\r'))
+        fields.pop_back();
+
+    fields.append(mark).append(sanitize_log_field(url)).append(mark).append(sanitize_log_field(ce));
+    return fields;
+}
+
 BESLog *BESLog::TheLog() {
     if (d_instance == nullptr) {
         d_instance = new BESLog;

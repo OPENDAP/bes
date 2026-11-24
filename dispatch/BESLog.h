@@ -167,6 +167,12 @@ private:
     const char *VERBOSE_LOG_TYPE_KEY = "verbose";
     const char *TIMING_LOG_TYPE_KEY = "timing";
 
+    // URL path and constraint expression of the current request, appended to 'error' records.
+    // Declared after the existing data members so their offsets (and so the class layout seen
+    // by code compiled against older versions of this header) do not change. HYRAX-2334
+    std::string d_request_url{"-"};
+    std::string d_request_ce{"-"};
+
 protected:
     BESLog();
 
@@ -228,8 +234,13 @@ public:
 
     /**
      * @brief Writes error msg to the log stream.
+     *
+     * The URL path and constraint expression of the current request (see set_request_url()
+     * and set_request_ce()) are appended to the record as two additional fields.
      */
-    void error(const std::string &msg) const { log_record(ERROR_LOG_TYPE_KEY, msg); }
+    void error(const std::string &msg) const {
+        log_record(ERROR_LOG_TYPE_KEY, error_record_fields(msg, d_request_url, d_request_ce));
+    }
 
     /**
      * @brief Writes verbose msg to the log stream, if verbose logging is enabled.
@@ -284,6 +295,23 @@ public:
 
     void set_request_id(const std::string &id);
     std::string get_request_id() const { return request_id; }
+
+    /** @brief Sets the URL path of the current request (cached in BESLog) for 'error' records. */
+    void set_request_url(const std::string &url) { d_request_url = sanitize_log_field(url); }
+    std::string get_request_url() const { return d_request_url; }
+
+    /** @brief Sets the constraint expression of the current request (cached in BESLog) for 'error' records. */
+    void set_request_ce(const std::string &ce) { d_request_ce = sanitize_log_field(ce); }
+    std::string get_request_ce() const { return d_request_ce; }
+
+    /** @brief Resets the cached URL path and constraint expression to "-". Call at the start of each request. */
+    void reset_request_url_and_ce() {
+        d_request_url = "-";
+        d_request_ce = "-";
+    }
+
+    static std::string sanitize_log_field(const std::string &value);
+    static std::string error_record_fields(const std::string &msg, const std::string &url, const std::string &ce);
 
     void dump(std::ostream &strm) const override;
 

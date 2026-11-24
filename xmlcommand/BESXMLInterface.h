@@ -76,6 +76,13 @@ public:
 
     ~BESXMLInterface() override;
 
+    // Hack: To get the URL and CE for the error message (HYRAX-2334) we use
+    // information sent by the OLFS. This is actually a feature of the OLFS
+    // that is set with an option which is generally on for Hyrax, but can be
+    // turned off (I think). Thus, this is a maybe subtle point of coupling
+    // between the olfs and bes. jhrg 11/24/26
+    static std::string olfs_log_url_path(const std::string &olfs_log_line);
+
     void dump(std::ostream &strm) const override;
 };
 

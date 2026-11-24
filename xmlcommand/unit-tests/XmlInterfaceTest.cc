@@ -114,12 +114,34 @@ public:
 
         DBG(cerr << prolog << "END\n");
     }
+    // TASK-005: url-path is the 8th field of the olfsLog context value.
+    void olfs_log_url_path_test() {
+        const string olfs_log = "0:0:0:0:0:0:0:1|&|curl/7.64.1|&|-|&|-|&|1624627728945|&|10|&|HTTP-GET"
+                                "|&|/opendap/hyrax/hj/coads_climatology.nc.dap.nc4|&|dap4.ce=SST";
+        CPPUNIT_ASSERT_EQUAL(string("/opendap/hyrax/hj/coads_climatology.nc.dap.nc4"),
+                             BESXMLInterface::olfs_log_url_path(olfs_log));
+    }
+
+    void olfs_log_url_path_last_field_test() {
+        const string olfs_log = "ip|&|ua|&|-|&|-|&|1|&|10|&|HTTP-GET|&|/opendap/x.nc.dmr";
+        CPPUNIT_ASSERT_EQUAL(string("/opendap/x.nc.dmr"), BESXMLInterface::olfs_log_url_path(olfs_log));
+    }
+
+    void olfs_log_url_path_short_test() {
+        CPPUNIT_ASSERT_EQUAL(string(""), BESXMLInterface::olfs_log_url_path("ip|&|ua|&|-|&|-|&|1|&|10|&|HTTP-GET"));
+        CPPUNIT_ASSERT_EQUAL(string(""), BESXMLInterface::olfs_log_url_path("not an olfs log line"));
+        CPPUNIT_ASSERT_EQUAL(string(""), BESXMLInterface::olfs_log_url_path(""));
+    }
+
 /*##################################################################################################*/
 /* TESTS BEGIN */
 
     CPPUNIT_TEST_SUITE(XmlInterfaceTest);
 
     CPPUNIT_TEST(xml_cmd_test_0);
+    CPPUNIT_TEST(olfs_log_url_path_test);
+    CPPUNIT_TEST(olfs_log_url_path_last_field_test);
+    CPPUNIT_TEST(olfs_log_url_path_short_test);
 
     CPPUNIT_TEST_SUITE_END();
 };
