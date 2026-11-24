@@ -5,3 +5,7 @@
 /DmrppUtilTest
 /CredentialsManagerTest
 /mds_ledger.txt
+/build_dmrpp_util_test
+/lzw_util_test
+/pugi_xml_test
+/vlsa_util_test
