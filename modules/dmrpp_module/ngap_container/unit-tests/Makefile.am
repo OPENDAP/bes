@@ -6,7 +6,8 @@ AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/modules/common \
     -I$(top_srcdir)/modules/dmrpp_module/ngap_container -I$(top_srcdir)/aws -I$(top_srcdir)/dispatch \
     -I$(top_srcdir)/dap -I$(top_srcdir)/http $(DAP_CFLAGS)
 
-LIBADD = -L$(top_builddir)/modules/common -lmodules_common -L$(builddir)/../ -lngap \
+LIBADD = $(top_builddir)/modules/common/libmodules_common.la \
+    $(top_builddir)/modules/dmrpp_module/ngap_container/libngap.la \
     $(BES_DISPATCH_LIB) $(top_builddir)/dap/.libs/libdap_module.a $(BES_HTTP_LIB) \
     $(DAP_SERVER_LIBS) $(DAP_CLIENT_LIBS)
 

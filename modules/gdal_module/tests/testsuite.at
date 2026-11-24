@@ -80,3 +80,154 @@ AT_BESCMD_GDAL_BINARY_FILE_RESPONSE_TEST([gdal/function_result_unwrap_tif.bescmd
 # AT_BESCMD_GDAL_BINARY_FILE_RESPONSE_TEST([gdal/coads_climatology.nc.2.bescmd], [info], [xfail])
 
 # AT_BESCMD_GDAL_BINARY_FILE_RESPONSE_TEST([gdal/function_result_unwrap_jp2.bescmd], [info], [xfail])
+
+# ----------------------------------------------------------------------------
+# GeotiffToDmr: the command-line tool built in ../ (GeotiffToDmr.cc) that returns the
+# DMR for a GeoTIFF by running besstandalone with this module. Macros are in
+# GeotiffToDmr_macros.m4; new baselines are in GeotiffToDmr/. Exit codes: 0 ok,
+# 1 bad input/usage, 2 BES error, 3 timeout, 4 internal.
+
+m4_include([GeotiffToDmr_macros.m4])
+
+# DMR responses. Where the handler already has a DMR baseline, GeotiffToDmr must
+# return the same document (cea.tif is a pattern baseline; see gdal/README).
+AT_GEOTIFFTODMR_RESPONSE_PATTERN_TEST([data/cea.tif], [gdal/cea.tif.dmr.bescmd.baseline], [pass])
+AT_GEOTIFFTODMR_RESPONSE_TEST([data/UTM2GTIF.TIF], [gdal/UTM2GTIF.TIF.dmr.bescmd.baseline], [pass])
+# TEMPORARY: expected to fail on macOS. In the macOS CI build GeotiffToDmr
+# crashes (SIGSEGV) when GDAL looks up this file's State Plane CRS
+# (EPSG:26771) in PROJ's database; the other test files don't need that
+# lookup. Suspected cause: GDAL from the hyrax-dependencies tarball and
+# Homebrew's libgeotiff use two different PROJ libraries. Change [xfail-macos]
+# back to [pass] once that is fixed; until then a pass on macOS fails the
+# testsuite as an unexpected pass, as a reminder.
+AT_GEOTIFFTODMR_RESPONSE_TEST([data/SP27GTIF.TIF], [GeotiffToDmr/SP27GTIF.TIF.dmr.baseline], [xfail-macos])
+AT_GEOTIFFTODMR_RESPONSE_TEST([data/DIGEST_Example_2.20120926112517.tif], [GeotiffToDmr/DIGEST_Example_2.20120926112517.tif.dmr.baseline], [pass])
+
+# Same file through besstandalone and through GeotiffToDmr: identical DMRs.
+AT_GEOTIFFTODMR_BESCMD_COMPARE_TEST([gdal/cea.tif.dmr.bescmd], [data/cea.tif], [pass])
+AT_GEOTIFFTODMR_BESCMD_COMPARE_TEST([gdal/UTM2GTIF.TIF.dmr.bescmd], [data/UTM2GTIF.TIF], [pass])
+
+# Where the DMR goes, batch mode, and temp-file handling
+AT_GEOTIFFTODMR_OUTPUT_TEST([default is <input>.dmr next to the input],
+    [GEOTIFFTODMR_COPY_DATA([cea.tif])],
+    [$gtd_bes cea.tif], [0], [cea.tif.dmr],
+    [AT_CHECK([$GeotiffToDmr $gtd_bes -o - cea.tif > from_stdout])
+     AT_CHECK([diff cea.tif.dmr from_stdout])])
+
+AT_GEOTIFFTODMR_OUTPUT_TEST([-o creates missing parent directories],
+    [GEOTIFFTODMR_COPY_DATA([cea.tif])],
+    [$gtd_bes -o out/sub/cea.dmr cea.tif], [0], [out/sub/cea.dmr])
+
+AT_GEOTIFFTODMR_OUTPUT_TEST([--out-dir converts several files],
+    [GEOTIFFTODMR_COPY_DATA([cea.tif]) GEOTIFFTODMR_COPY_DATA([UTM2GTIF.TIF])],
+    [$gtd_bes --out-dir out cea.tif UTM2GTIF.TIF], [0], [out/cea.tif.dmr],
+    [AT_CHECK([grep -F -e 'name="UTM2GTIF.TIF"' out/UTM2GTIF.TIF.dmr], [0], [ignore])
+     AT_CHECK([grep -F -e '2 of 2 files converted' stderr], [0], [ignore])])
+
+AT_GEOTIFFTODMR_OUTPUT_TEST([batch keeps going after a bad file and exits 1],
+    [GEOTIFFTODMR_COPY_DATA([cea.tif])],
+    [$gtd_bes --out-dir out missing.tif cea.tif], [1], [out/cea.tif.dmr],
+    [AT_CHECK([grep -F -e 'missing.tif: no such file' stderr], [0], [ignore])
+     AT_CHECK([grep -F -e '1 of 2 files converted' stderr], [0], [ignore])])
+
+AT_GEOTIFFTODMR_OUTPUT_TEST([an existing DMR is replaced, no .tmp file left],
+    [GEOTIFFTODMR_COPY_DATA([cea.tif])
+     AT_CHECK([echo stale > cea.tif.dmr])],
+    [$gtd_bes cea.tif], [0], [cea.tif.dmr],
+    [AT_CHECK([grep -F -e stale cea.tif.dmr], [1])
+     AT_CHECK([ls | grep -F -e '.tmp.'], [1])])
+
+AT_GEOTIFFTODMR_OUTPUT_TEST([temp files are removed after a run],
+    [GEOTIFFTODMR_COPY_DATA([cea.tif])
+     AT_CHECK([mkdir tmp])
+     TMPDIR=`pwd`/tmp; export TMPDIR],
+    [$gtd_bes cea.tif], [0], [cea.tif.dmr],
+    [AT_CHECK([test -z "`ls -A tmp`"])])
+
+AT_GEOTIFFTODMR_ERROR_TEST([temp files are removed after a BES error],
+    [GEOTIFFTODMR_COPY_DATA([cea.tif])
+     AT_CHECK([mkdir tmp])
+     TMPDIR=`pwd`/tmp; export TMPDIR],
+    [$gtd_bes --key 'BES.Catalog.catalog.TypeMatch=nc:.*\.nc$;' cea.tif], [2], [BES did not return a DMR],
+    [AT_CHECK([test -z "`ls -A tmp`"])
+     AT_CHECK([test ! -e cea.tif.dmr])])
+
+AT_GEOTIFFTODMR_OUTPUT_TEST([--keep-temp keeps the generated bes.conf and command],
+    [GEOTIFFTODMR_COPY_DATA([cea.tif])
+     AT_CHECK([mkdir tmp])
+     TMPDIR=`pwd`/tmp; export TMPDIR],
+    [$gtd_bes --keep-temp cea.tif], [0], [cea.tif.dmr],
+    [AT_CHECK([grep -F -e 'kept temp files in' stderr], [0], [ignore])
+     AT_CHECK([grep -F -e "BES.Catalog.catalog.RootDirectory=`pwd -P`" tmp/GeotiffToDmr.*/bes.conf], [0], [ignore])
+     AT_CHECK([grep -F -e '/cea.tif</bes:setContainer>' tmp/GeotiffToDmr.*/get_dmr.bescmd], [0], [ignore])
+     AT_CHECK([grep -F -e '<bes:get type="dmr"' tmp/GeotiffToDmr.*/get_dmr.bescmd], [0], [ignore])])
+
+# Without --bes-conf GeotiffToDmr writes a complete bes.conf that loads the
+# modules from --bes-lib-dir (the installed layout). Gather the three
+# modules built in this tree into one directory to exercise that path.
+AT_GEOTIFFTODMR_OUTPUT_TEST([--bes-lib-dir: generated bes.conf gives the same DMR],
+    [GEOTIFFTODMR_COPY_DATA([cea.tif])
+     AT_CHECK([mkdir lib && ln -s $abs_top_builddir/dap/.libs/libdap_module.so $abs_top_builddir/xmlcommand/.libs/libdap_xml_module.so $abs_top_builddir/modules/gdal_module/.libs/libgdal_module.so lib/])],
+    [--besstandalone $abs_top_builddir/standalone/besstandalone --bes-lib-dir lib -o libdir.dmr cea.tif], [0], [libdir.dmr],
+    [AT_CHECK([$GeotiffToDmr $gtd_bes -o besconf.dmr cea.tif])
+     AT_CHECK([diff libdir.dmr besconf.dmr])])
+
+# Usage
+AT_GEOTIFFTODMR_STDOUT_TEST([--help], [--help], [0], [Usage: GeotiffToDmr])
+AT_GEOTIFFTODMR_STDOUT_TEST([--version], [--version], [0], [GeotiffToDmr 0.1.0])
+
+AT_GEOTIFFTODMR_ERROR_TEST([no input file], [], [], [1], [no input file given])
+AT_GEOTIFFTODMR_ERROR_TEST([unknown option], [], [--bogus cea.tif], [1], [unknown option: --bogus])
+AT_GEOTIFFTODMR_ERROR_TEST([option without its value], [], [cea.tif -o], [1], [missing value for -o])
+AT_GEOTIFFTODMR_ERROR_TEST([-o with two inputs], [], [-o x.dmr a.tif b.tif], [1], [-o/--output works with a single input])
+AT_GEOTIFFTODMR_ERROR_TEST([-o with --out-dir], [], [-o x.dmr -d out a.tif], [1], [use either -o/--output or --out-dir])
+AT_GEOTIFFTODMR_ERROR_TEST([--timeout 0], [], [--timeout 0 a.tif], [1], [--timeout must be > 0])
+AT_GEOTIFFTODMR_ERROR_TEST([--timeout not a number], [], [--timeout abc a.tif], [1], [invalid --timeout: abc])
+AT_GEOTIFFTODMR_ERROR_TEST([--key without =], [], [--key BES.LogVerbose a.tif], [1], [--key expects KEY=VALUE])
+
+# Bad input files (exit 1). The BES is never run for these.
+AT_GEOTIFFTODMR_ERROR_TEST([missing file], [], [$gtd_bes nosuch.tif], [1], [nosuch.tif: no such file])
+AT_GEOTIFFTODMR_ERROR_TEST([directory], [AT_CHECK([mkdir dir.tif])], [$gtd_bes dir.tif], [1], [not a regular file])
+AT_GEOTIFFTODMR_ERROR_TEST([wrong extension], [GEOTIFFTODMR_COPY_DATA([cea.tif], [cea.png])], [$gtd_bes cea.png], [1], [expected a .tif or .tiff file])
+AT_GEOTIFFTODMR_ERROR_TEST([not a TIFF], [AT_CHECK([echo hello > fake.tif])], [$gtd_bes fake.tif], [1], [not a TIFF file (bad magic bytes)])
+AT_GEOTIFFTODMR_ERROR_TEST([truncated TIFF], [AT_CHECK([printf II > short.tif])], [$gtd_bes short.tif], [1], [file too short to be a TIFF])
+AT_GEOTIFFTODMR_ERROR_TEST([hidden file], [GEOTIFFTODMR_COPY_DATA([cea.tif], [.hidden.tif])], [$gtd_bes .hidden.tif], [1], [hidden files])
+AT_GEOTIFFTODMR_ERROR_TEST([TIFF with no georeference], [GEOTIFFTODMR_MAKE_PLAIN_TIFF([plain.tif])], [$gtd_bes plain.tif], [1], [not georeferenced])
+AT_GEOTIFFTODMR_ERROR_TEST([unreadable file],
+    [AT_SKIP_IF([test "`id -u`" = 0])
+     GEOTIFFTODMR_COPY_DATA([cea.tif])
+     AT_CHECK([chmod 000 cea.tif])],
+    [$gtd_bes cea.tif], [1], [not readable])
+
+# BES problems
+AT_GEOTIFFTODMR_ERROR_TEST([besstandalone not found], [GEOTIFFTODMR_COPY_DATA([cea.tif])],
+    [--besstandalone ./nosuch-besstandalone cea.tif], [4], [besstandalone not found])
+AT_GEOTIFFTODMR_ERROR_TEST([--bes-lib-dir without the gdal module], [GEOTIFFTODMR_COPY_DATA([cea.tif])],
+    [--besstandalone $abs_top_builddir/standalone/besstandalone --bes-lib-dir . cea.tif], [1], [has no libgdal_module.so])
+AT_GEOTIFFTODMR_ERROR_TEST([BES error response (no handler for .tif)], [GEOTIFFTODMR_COPY_DATA([cea.tif])],
+    [$gtd_bes --key 'BES.Catalog.catalog.TypeMatch=nc:.*\.nc$;' cea.tif], [2], [cea.tif: BES did not return a DMR])
+
+# These use a stand-in besstandalone script to produce responses the real one
+# rarely does. The relative --besstandalone path also checks that it is made
+# absolute before GeotiffToDmr changes into its temp directory.
+AT_GEOTIFFTODMR_ERROR_TEST([response that is not a DMR],
+    [GEOTIFFTODMR_COPY_DATA([cea.tif])
+     AT_DATA([fake-bes], [[#!/bin/sh
+echo "something went wrong"
+]])
+     AT_CHECK([chmod +x fake-bes])],
+    [--besstandalone ./fake-bes --bes-conf $abs_builddir/$bes_conf cea.tif], [2], [BES did not return a DMR: something went wrong])
+AT_GEOTIFFTODMR_ERROR_TEST([truncated DMR],
+    [GEOTIFFTODMR_COPY_DATA([cea.tif])
+     AT_DATA([fake-bes], [[#!/bin/sh
+echo '<Dataset xmlns="http://xml.opendap.org/ns/DAP/4.0#" name="cea.tif">'
+]])
+     AT_CHECK([chmod +x fake-bes])],
+    [--besstandalone ./fake-bes --bes-conf $abs_builddir/$bes_conf cea.tif], [2], [DMR response is truncated])
+AT_GEOTIFFTODMR_ERROR_TEST([besstandalone hangs],
+    [GEOTIFFTODMR_COPY_DATA([cea.tif])
+     AT_DATA([fake-bes], [[#!/bin/sh
+sleep 30
+]])
+     AT_CHECK([chmod +x fake-bes])],
+    [--besstandalone ./fake-bes --bes-conf $abs_builddir/$bes_conf --timeout 1 cea.tif], [3], [timed out after 1 s])
