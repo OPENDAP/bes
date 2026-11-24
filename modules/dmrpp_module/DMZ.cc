@@ -1010,6 +1010,9 @@ void DMZ::set_up_direct_io_flag_phase_2(D4Group * grp, BaseType *btp) {
     if (dc(btp)->is_disable_dio())
         return;
 
+    // Comment out the following code by not turning off the direct chunk IO for the filter pipeline that
+    // ends with the fletcher32 filter.
+#if 0
     // We find a special case related to the use of fletcher32 filter and the deflate filter.
     // If the fletcher32 is the last filter, we cannot do the direct IO.
     
@@ -1030,6 +1033,7 @@ void DMZ::set_up_direct_io_flag_phase_2(D4Group * grp, BaseType *btp) {
     }
     if (has_fletcher32_last_with_deflate)
         return;
+#endif
 
     // Now we need to read the first child of dmrpp:chunks to obtain the chunk sizes.
     vector<unsigned long long> chunk_dim_sizes;
