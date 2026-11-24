@@ -398,6 +398,13 @@ void NgapOwnedContainer::filter_response(const map<string, string, std::less<>> 
 
 /**
  * Build the content filters if needed
+ *
+ * The filters replace the template hrefs a DAAC's DMR++ may contain with URLs built from
+ * the granule's data URLs (HYRAX-2338, jhrg, 11/24/26):
+ * - OPeNDAP_DMRpp_DATA_ACCESS_URL with the data URL;
+ * - OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL (get_dmrpp -M/-m) with the data URL + '.missing';
+ * - OPeNDAP_DMRpp_SC_DATA_ACCESS_URL (gen_dmrpp_side_car) with the data URL + '_mvs.h5'.
+ *
  * @note If the filters are built, clear the content_filters value/result parameter first.
  * @param content_filters Value-result parameter
  * @return True if the filters were built, false otherwise
@@ -413,25 +420,26 @@ bool NgapOwnedContainer::get_daac_content_filters(const NgapApi::DataAccessUrls 
     if (NgapOwnedContainer::d_inject_data_url) {
         const string href = R"(href=")";
         const string trusted_url_hack = R"(dmrpp:trust="true")";
-        const string data_access_url_key = href + DATA_ACCESS_URL_KEY + "\"";
-        const string missing_data_access_url_key = href + MISSING_DATA_ACCESS_URL_KEY + "\"";
 
         /*
-        Desired output string:
-        dmrpp:href=\"<data_url>\" dmrpp:s3=\"<data_s3_url>\" dmrpp:s3credentials=\"<tea_endpoint_url>\"
+        Desired output string, where <suffix> is empty for the data file itself:
+        href=\"<data_url><suffix>\" dmrpp:s3=\"<data_s3_url><suffix>\" dmrpp:s3credentials=\"<tea_endpoint_url>\"
         dmrpp:trust=\"true\"
         */
-        string data_access_urls("href=\"" + data_url + "\" dmrpp:s3=\"" + data_s3_url + "\" dmrpp:s3credentials=\"" +
-                                tea_endpoint_url + "\" " + trusted_url_hack);
-
-        // Same as above, but with a special suffix on each data url
-        string missing_data_access_urls("href=\"" + data_url + "_mvs.h5\" dmrpp:s3=\"" + data_s3_url +
-                                        "_mvs.h5\" dmrpp:s3credentials=\"" + tea_endpoint_url + "\" " +
-                                        trusted_url_hack);
+        auto access_urls = [&](const string &suffix) {
+            // An empty S3 URL stays empty; there's no S3 object to name.
+            const string s3_url = data_s3_url.empty() ? "" : data_s3_url + suffix;
+            return href + data_url + suffix + "\" dmrpp:s3=\"" + s3_url + "\" dmrpp:s3credentials=\"" +
+                   tea_endpoint_url + "\" " + trusted_url_hack;
+        };
 
         content_filters.clear();
-        content_filters.insert(pair<string, string>(data_access_url_key, data_access_urls));
-        content_filters.insert(pair<string, string>(missing_data_access_url_key, missing_data_access_urls));
+        // The granule's data file.
+        content_filters.emplace(href + DATA_ACCESS_URL_KEY + "\"", access_urls(""));
+        // Sidecar files that hold 'missing' variables. Both conventions are in use in DAAC
+        // holdings, so both must be replaced.  HYRAX-2338, jhrg 11/24/26
+        content_filters.emplace(href + MISSING_DATA_ACCESS_URL_KEY + "\"", access_urls(MISSING_DATA_ACCESS_URL_SUFFIX));
+        content_filters.emplace(href + SIDECAR_DATA_ACCESS_URL_KEY + "\"", access_urls(SIDECAR_DATA_ACCESS_URL_SUFFIX));
         return true;
     }
 
