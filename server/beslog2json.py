@@ -40,7 +40,9 @@
 # 1601642669|&|2122|&|timing|&|TimingFields
 # 1601642669|&|2122|&|verbose|&|MessageField
 # 1601642679|&|2122|&|info|&|MessageField
-# 1601642679|&|2122|&|error|&|MessageField
+# 1601642679|&|2122|&|error|&|MessageField|&|UrlPathField|&|CeField
+#
+# Error records written before HYRAX-2334 end after MessageField; those are still accepted.
 #
 import sys
 import json
@@ -332,6 +334,23 @@ def error_log_to_json(log_fields, json_log_record):
     """
     Ingests a BES error log record
 
+    Error Log Record
+
+    Field#: key-name
+    ------:--------------------
+         0: time
+         1: instance-id
+         2: pid
+         3: request-id
+         4: type of log record
+         5: message
+     -2 (6): url-path   (since HYRAX-2334)
+     -1 (7): ce         (since HYRAX-2334)
+
+    The url-path and ce fields are read from the end of the record so that a message
+    containing the field delimiter is still split correctly. Records with only six
+    fields (written before HYRAX-2334) produce just the message.
+
     Args:
         log_fields: The BES log line, parsed into fields, to process
         json_log_record: The dictionary to populate with the json log fields.
@@ -342,7 +361,12 @@ def error_log_to_json(log_fields, json_log_record):
     debug("Processing ERROR_MESSAGE_TYPE")
     send_it = False
     if TRANSMIT_ERROR_LOG:
-        json_log_record[MESSAGE_KEY] = log_fields[5]
+        if len(log_fields) >= 8:
+            json_log_record[MESSAGE_KEY]  = bes_log_field_delimiter.join(log_fields[5:-2])
+            json_log_record[URL_PATH_KEY] = log_fields[-2]
+            json_log_record[CE_KEY]       = log_fields[-1]
+        else:
+            json_log_record[MESSAGE_KEY] = bes_log_field_delimiter.join(log_fields[5:])
         send_it = True
     else:
         debug(f"TRANSMIT_ERROR_LOG: {eord(TRANSMIT_ERROR_LOG)}")

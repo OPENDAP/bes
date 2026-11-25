@@ -27,11 +27,14 @@
 #include <cstring>
 #include <iostream>
 
-#include "BESError.h"
+#include "BESContextManager.h"
+#include "BESDataHandlerInterface.h"
 #include "BESDebug.h"
+#include "BESError.h"
+#include "BESFileContainer.h"
 #include "BESUtil.h"
-#include "TheBESKeys.h"
 #include "BESXMLInterface.h"
+#include "TheBESKeys.h"
 
 #include "test_config.h"
 
@@ -114,12 +117,140 @@ public:
 
         DBG(cerr << prolog << "END\n");
     }
+    // TASK-005: url-path is the 8th field of the olfsLog context value.
+    void olfs_log_url_path_test() {
+        const string olfs_log = "0:0:0:0:0:0:0:1|&|curl/7.64.1|&|-|&|-|&|1624627728945|&|10|&|HTTP-GET"
+                                "|&|/opendap/hyrax/hj/coads_climatology.nc.dap.nc4|&|dap4.ce=SST";
+        CPPUNIT_ASSERT_EQUAL(string("/opendap/hyrax/hj/coads_climatology.nc.dap.nc4"),
+                             BESXMLInterface::olfs_log_url_path(olfs_log));
+    }
+
+    void olfs_log_url_path_last_field_test() {
+        const string olfs_log = "ip|&|ua|&|-|&|-|&|1|&|10|&|HTTP-GET|&|/opendap/x.nc.dmr";
+        CPPUNIT_ASSERT_EQUAL(string("/opendap/x.nc.dmr"), BESXMLInterface::olfs_log_url_path(olfs_log));
+    }
+
+    void olfs_log_url_path_short_test() {
+        CPPUNIT_ASSERT_EQUAL(string(""), BESXMLInterface::olfs_log_url_path("ip|&|ua|&|-|&|-|&|1|&|10|&|HTTP-GET"));
+        CPPUNIT_ASSERT_EQUAL(string(""), BESXMLInterface::olfs_log_url_path("not an olfs log line"));
+        CPPUNIT_ASSERT_EQUAL(string(""), BESXMLInterface::olfs_log_url_path(""));
+    }
+
+    // log_the_command() caches the request's URL path and CE in BESLog for 'error'
+    // records. These helpers run it for a get command with one container and return what
+    // was cached. The test owns the container; the DHI does not delete its containers.
+    static void run_log_the_command(const string &action, const string &dap2_ce, const string &dap4_ce,
+                                    const string &dap4_function) {
+        ostringstream oss;
+        BESXMLInterface bxi("", &oss);
+        unique_ptr<BESFileContainer> c(new BESFileContainer("c", "/data/fnoc1.nc", "nc"));
+        c->set_constraint(dap2_ce);
+        c->set_dap4_constraint(dap4_ce);
+        c->set_dap4_function(dap4_function);
+
+        bxi.d_dhi_ptr->action = action;
+        bxi.d_dhi_ptr->containers.push_back(c.get());
+
+        BESLog::TheLog()->reset_request_url_and_ce();
+        bxi.log_the_command();
+        bxi.d_dhi_ptr->containers.clear();
+    }
+
+    static string logged_ce(const string &dap2_ce, const string &dap4_ce = "", const string &dap4_function = "") {
+        run_log_the_command("get.dods", dap2_ce, dap4_ce, dap4_function);
+        return BESLog::TheLog()->get_request_ce();
+    }
+
+    static string logged_url() {
+        run_log_the_command("get.dods", "", "", "");
+        return BESLog::TheLog()->get_request_url();
+    }
+
+    static void clear_url_contexts() {
+        BESContextManager::TheManager()->unset_context("olfsLog");
+        BESContextManager::TheManager()->unset_context("xml:base");
+    }
+
+    void log_ce_dap2_projection_test() { CPPUNIT_ASSERT_EQUAL(string("u[0:1],v"), logged_ce("u[0:1],v")); }
+
+    void log_ce_dap2_selection_test() {
+        CPPUNIT_ASSERT_EQUAL(string("u,v&u>3&v<\"abc\""), logged_ce("u,v&u>3&v<\"abc\""));
+    }
+
+    void log_ce_dap2_function_test() {
+        CPPUNIT_ASSERT_EQUAL(string("geogrid(SST,62,206,56,210)"), logged_ce("geogrid(SST,62,206,56,210)"));
+    }
+
+    // When a container has both, the DAP2 CE is logged, matching the 'request' record.
+    void log_ce_dap2_preferred_over_dap4_test() {
+        CPPUNIT_ASSERT_EQUAL(string("u[0:1]"), logged_ce("u[0:1]", "/u[0:1]", "f(u)"));
+    }
+
+    void log_ce_dap4_test() {
+        CPPUNIT_ASSERT_EQUAL(string("/SST[0:1][2:3];/lat"), logged_ce("", "/SST[0:1][2:3];/lat"));
+    }
+
+    void log_ce_dap4_with_function_test() {
+        CPPUNIT_ASSERT_EQUAL(string("/SST dap4.function=linear_scale(SST)"),
+                             logged_ce("", "/SST", "linear_scale(SST)"));
+    }
+
+    void log_ce_dap4_function_only_test() {
+        CPPUNIT_ASSERT_EQUAL(string("dap4.function=version()"), logged_ce("", "", "version()"));
+    }
+
+    void log_ce_none_test() { CPPUNIT_ASSERT_EQUAL(string("-"), logged_ce("")); }
+
+    // Only get commands set the URL and CE (LOG_ONLY_GET_COMMANDS).
+    void log_ce_not_get_command_test() {
+        run_log_the_command("show.catalog", "u[0:1]", "", "");
+        CPPUNIT_ASSERT_EQUAL(string("-"), BESLog::TheLog()->get_request_ce());
+    }
+
+    void log_url_from_olfs_log_test() {
+        clear_url_contexts();
+        BESContextManager::TheManager()->set_context(
+            "olfsLog", "ip|&|ua|&|-|&|-|&|1|&|10|&|HTTP-GET|&|/opendap/data/nc/fnoc1.nc.dods|&|u[0:1]");
+        BESContextManager::TheManager()->set_context("xml:base", "http://localhost:8080/opendap/data/nc/fnoc1.nc");
+        const string url = logged_url();
+        clear_url_contexts();
+        CPPUNIT_ASSERT_EQUAL(string("/opendap/data/nc/fnoc1.nc.dods"), url);
+    }
+
+    void log_url_from_xml_base_test() {
+        clear_url_contexts();
+        BESContextManager::TheManager()->set_context("xml:base", "http://localhost:8080/opendap/data/nc/fnoc1.nc");
+        const string url = logged_url();
+        clear_url_contexts();
+        CPPUNIT_ASSERT_EQUAL(string("http://localhost:8080/opendap/data/nc/fnoc1.nc"), url);
+    }
+
+    void log_url_none_test() {
+        clear_url_contexts();
+        CPPUNIT_ASSERT_EQUAL(string("-"), logged_url());
+    }
+
 /*##################################################################################################*/
 /* TESTS BEGIN */
 
     CPPUNIT_TEST_SUITE(XmlInterfaceTest);
 
     CPPUNIT_TEST(xml_cmd_test_0);
+    CPPUNIT_TEST(olfs_log_url_path_test);
+    CPPUNIT_TEST(olfs_log_url_path_last_field_test);
+    CPPUNIT_TEST(olfs_log_url_path_short_test);
+    CPPUNIT_TEST(log_ce_dap2_projection_test);
+    CPPUNIT_TEST(log_ce_dap2_selection_test);
+    CPPUNIT_TEST(log_ce_dap2_function_test);
+    CPPUNIT_TEST(log_ce_dap2_preferred_over_dap4_test);
+    CPPUNIT_TEST(log_ce_dap4_test);
+    CPPUNIT_TEST(log_ce_dap4_with_function_test);
+    CPPUNIT_TEST(log_ce_dap4_function_only_test);
+    CPPUNIT_TEST(log_ce_none_test);
+    CPPUNIT_TEST(log_ce_not_get_command_test);
+    CPPUNIT_TEST(log_url_from_olfs_log_test);
+    CPPUNIT_TEST(log_url_from_xml_base_test);
+    CPPUNIT_TEST(log_url_none_test);
 
     CPPUNIT_TEST_SUITE_END();
 };

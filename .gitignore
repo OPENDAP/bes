@@ -18,7 +18,10 @@ merged.txt
 **/unused
 /build
 __pycache__
-/operational_log_data
+
+docs/
+plans/
+CLAUDE.md
 
 ## files
 *~

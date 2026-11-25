@@ -80,6 +80,10 @@ void BESXMLInterface::build_data_request_plan()
     BESDEBUG(BES_XML, prolog << "BEGIN #####################################################" << endl);
     BESDEBUG(BES_XML, prolog << "Building request plan for xml document: " << endl << d_xml_document << endl);
 
+    // A beslistener handles many requests. Clear the previous request's URL and CE so that
+    // errors logged before log_the_command() runs are not tagged with them.
+    BESLog::TheLog()->reset_request_url_and_ce();
+
     // I do not know why, but uncommenting this macro breaks some tests
     // on Linux but not OSX (CentOS 6, Ubuntu 12 versus OSX 10.11) by
     // causing some XML elements in DMR responses to be twiddled in the
@@ -283,6 +287,29 @@ void BESXMLInterface::build_data_request_plan()
 }
 
 /**
+ * @brief Get the url-path field from the value of the OLFS 'olfsLog' context.
+ *
+ * The olfsLog fields, separated by BESLog::mark, are: client-ip, user-agent,
+ * session-id, user-id, olfs-start-time, request-id, http-verb, url-path, query-string.
+ * @param olfs_log_line The value of the olfsLog context
+ * @return The url-path field, or an empty string if the line has too few fields.
+ */
+string BESXMLInterface::olfs_log_url_path(const string &olfs_log_line) {
+    const size_t url_path_index = 7;
+
+    size_t start = 0;
+    for (size_t i = 0; i < url_path_index; ++i) {
+        start = olfs_log_line.find(BESLog::mark, start);
+        if (start == string::npos)
+            return "";
+        start += BESLog::mark.size();
+    }
+
+    const size_t end = olfs_log_line.find(BESLog::mark, start);
+    return olfs_log_line.substr(start, end == string::npos ? string::npos : end - start);
+}
+
+/**
  * @brief Log information about the command
  */
 void BESXMLInterface::log_the_command()
@@ -316,6 +343,18 @@ void BESXMLInterface::log_the_command()
         if (!d_dhi_ptr->data[RETURN_CMD].empty())
             new_log_info.append(log_delim).append(d_dhi_ptr->data[RETURN_CMD]);
 
+        // Cache the URL path and CE in BESLog so that 'error' records written while this
+        // request runs include them. Prefer the OLFS url-path (it matches the 'request'
+        // record); fall back to the xml:base context. HYRAX-2334
+        string request_url = found ? olfs_log_url_path(olfs_log_line) : "";
+        if (request_url.empty()) {
+            bool xml_base_found = false;
+            request_url = BESContextManager::TheManager()->get_context("xml:base", xml_base_found);
+        }
+        BESLog::TheLog()->set_request_url(request_url);
+
+        string request_ce;
+
         // Assume this is DAP and thus there is at most one container. Log a warning if that's
         // not true. jhrg 11/14/17
         auto const *c = *(d_dhi_ptr->containers.begin());
@@ -324,12 +363,23 @@ void BESXMLInterface::log_the_command()
 
             if (!c->get_constraint().empty()) {
                 new_log_info.append(log_delim).append(c->get_constraint());
+                request_ce = c->get_constraint();
             }
             else {
                 if (!c->get_dap4_constraint().empty()) new_log_info.append(log_delim).append(c->get_dap4_constraint());
                 if (!c->get_dap4_function().empty()) new_log_info.append(log_delim).append(c->get_dap4_function());
+
+                // In the error record, the DAP4 function (if any) follows the DAP4 CE.
+                request_ce = c->get_dap4_constraint();
+                if (!c->get_dap4_function().empty()) {
+                    if (!request_ce.empty())
+                        request_ce.append(" ");
+                    request_ce.append("dap4.function=").append(c->get_dap4_function());
+                }
             }
         }
+
+        BESLog::TheLog()->set_request_ce(request_ce);
 
         REQUEST_LOG(new_log_info);
 

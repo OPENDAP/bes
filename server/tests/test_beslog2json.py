@@ -118,6 +118,31 @@ class TestMessageRecords(Base):
         self.assertEqual(recs[0]["request-id"], "rid")
         self.assertEqual(recs[0]["instance-id"], "inst")
 
+    # TASK-005 (HYRAX-2334): error records end with url-path and ce fields.
+    def test_error_with_url_and_ce(self):
+        line = D.join(["1601642679", "inst", "2122", "rid", "error", "boom", "/opendap/x.nc.dap", "dap4.ce=/u"])
+        (rec,), _ = self.run_stdin(line)
+        self.assertEqual(rec["type"], "error")
+        self.assertEqual(rec["message"], "boom")
+        self.assertEqual(rec["url-path"], "/opendap/x.nc.dap")
+        self.assertEqual(rec["ce"], "dap4.ce=/u")
+
+    def test_error_with_dash_url_and_ce(self):
+        (rec,), _ = self.run_stdin(simple_line("error", D.join(["boom", "-", "-"])))
+        self.assertEqual((rec["message"], rec["url-path"], rec["ce"]), ("boom", "-", "-"))
+
+    def test_error_message_containing_delimiter(self):
+        (rec,), _ = self.run_stdin(simple_line("error", D.join(["a", "b", "/opendap/x.nc.dmr", "-"])))
+        self.assertEqual(rec["message"], "a" + D + "b")
+        self.assertEqual(rec["url-path"], "/opendap/x.nc.dmr")
+        self.assertEqual(rec["ce"], "-")
+
+    def test_legacy_error_record(self):
+        (rec,), _ = self.run_stdin(simple_line("error", "boom"))
+        self.assertEqual(rec["message"], "boom")
+        self.assertNotIn("url-path", rec)
+        self.assertNotIn("ce", rec)
+
     def test_each_type_can_be_disabled(self):
         for rtype, flag in (("info", "TRANSMIT_INFO_LOG"), ("error", "TRANSMIT_ERROR_LOG")):
             with self.subTest(rtype=rtype):
@@ -261,6 +286,13 @@ class TestPrefixAndSorting(Base):
         self.assertTrue(all(k.startswith("besd-") for k in timing), timing.keys())
         self.assertEqual(timing["besd-elapsed-us"], 4)
         self.assertEqual(timing["besd-timer-name"], "Command timing: foo")
+
+    def test_prefix_applied_to_error_keys(self):
+        (err,), _ = self.run_main_with_prefix("besd", simple_line("error", D.join(["boom", "/opendap/x.nc.dap", "u"])))
+        self.assertTrue(all(k.startswith("besd-") for k in err), err.keys())
+        self.assertEqual(err["besd-message"], "boom")
+        self.assertEqual(err["besd-url-path"], "/opendap/x.nc.dap")
+        self.assertEqual(err["besd-ce"], "u")
 
     def run_main_with_prefix(self, prefix, *lines):
         recs, _ = self.run_main(["-p", prefix, "-t", "true"], "".join(l + "\n" for l in lines))
