@@ -1010,7 +1010,7 @@ void DMZ::set_up_direct_io_flag_phase_2(D4Group * grp, BaseType *btp) {
     if (dc(btp)->is_disable_dio())
         return;
 
-    // Comment out the following code by not turning off the direct chunk IO for the filter pipeline that
+    // By removing this code we enable direct chunk IO when the filter pipeline 
     // ends with the fletcher32 filter.
 #if 0
     // We find a special case related to the use of fletcher32 filter and the deflate filter.
