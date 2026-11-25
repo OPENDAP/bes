@@ -1011,7 +1011,7 @@ void DMZ::set_up_direct_io_flag_phase_2(D4Group * grp, BaseType *btp) {
         return;
 
     // By removing this code we enable direct chunk IO when the filter pipeline 
-    // ends with the fletcher32 filter.
+    // ends with the fletcher32 filter. This was made possible by a change in the netCDF library.
 #if 0
     // We find a special case related to the use of fletcher32 filter and the deflate filter.
     // If the fletcher32 is the last filter, we cannot do the direct IO.
