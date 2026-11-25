@@ -546,7 +546,7 @@ public:
         map<string, string, std::less<>> content_filters;
         CPPUNIT_ASSERT_MESSAGE("The content filters should be created from the urls",
                                NgapOwnedContainer::get_daac_content_filters(data_urls, content_filters));
-        CPPUNIT_ASSERT_MESSAGE("Two content filters should have been created", content_filters.size() == 2);
+        CPPUNIT_ASSERT_MESSAGE("Three content filters should have been created", content_filters.size() == 3);
 
         // Test that filters are applied correctly
         NgapOwnedContainer::filter_response(content_filters, dmrpp_string);
@@ -581,6 +581,78 @@ public:
         CPPUNIT_ASSERT_MESSAGE("All data urls should be in the DMR++ string; did not find `" + expected_str +
                                    "` in:\n" + dmrpp_string,
                                dmrpp_string.find(expected_str) != string::npos);
+    }
+
+    // A DMR++ fragment with the three template hrefs a DAAC DMR++ may contain: the dataset
+    // href and chunk hrefs for variables held in each of the two kinds of sidecar file.
+    const string template_dmrpp = R"(<Dataset dmrpp:href="OPeNDAP_DMRpp_DATA_ACCESS_URL" dmrpp:version="3.21.1">)"
+                                  R"(<dmrpp:chunk offset="0" nBytes="8" href="OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL"/>)"
+                                  R"(<dmrpp:chunk offset="8" nBytes="8" href="OPeNDAP_DMRpp_SC_DATA_ACCESS_URL"/>)"
+                                  R"(</Dataset>)";
+                                  
+    // The next three functions are helpers for the five tests that follow. jhrg 11/24/26
+    void apply_daac_filters(const NgapApi::DataAccessUrls &data_urls, string &dmrpp) {
+        map<string, string, std::less<>> content_filters;
+        CPPUNIT_ASSERT_MESSAGE("The content filters should be created from the urls",
+                               NgapOwnedContainer::get_daac_content_filters(data_urls, content_filters));
+        NgapOwnedContainer::filter_response(content_filters, dmrpp);
+    }
+
+    void assert_contains(const string &dmrpp, const string &expected) {
+        CPPUNIT_ASSERT_MESSAGE("Did not find `" + expected + "` in:\n" + dmrpp, dmrpp.find(expected) != string::npos);
+    }
+
+    void assert_lacks(const string &dmrpp, const string &unexpected) {
+        CPPUNIT_ASSERT_MESSAGE("Found `" + unexpected + "` in:\n" + dmrpp, dmrpp.find(unexpected) == string::npos);
+    }
+
+    void test_get_daac_content_filters_not_built_when_injection_disabled() {
+        TEST_NAME;
+        NgapOwnedContainer::d_inject_data_url = false;
+        NgapApi::DataAccessUrls data_urls("foo", "bar", "bat");
+        map<string, string, std::less<>> content_filters;
+        bool built = NgapOwnedContainer::get_daac_content_filters(data_urls, content_filters);
+        NgapOwnedContainer::d_inject_data_url = true;
+        CPPUNIT_ASSERT_MESSAGE("No filters should be built when NGAP.inject_data_urls is false", !built);
+        CPPUNIT_ASSERT_MESSAGE("No filters should be built when NGAP.inject_data_urls is false", content_filters.empty());
+    }
+
+    void test_filter_response_replaces_data_access_url() {
+        TEST_NAME;
+        string dmrpp = template_dmrpp;
+        apply_daac_filters(NgapApi::DataAccessUrls("https://daac/g.h5", "s3://bucket/g.h5", "https://daac/s3credentials"), dmrpp);
+        assert_contains(dmrpp, R"(dmrpp:href="https://daac/g.h5" dmrpp:s3="s3://bucket/g.h5" )"
+                               R"(dmrpp:s3credentials="https://daac/s3credentials" dmrpp:trust="true" dmrpp:version)");
+        assert_lacks(dmrpp, "OPeNDAP_DMRpp_DATA_ACCESS_URL");
+    }
+
+    // Regression test for BUG-006: DMR++ files built by 'get_dmrpp -M/-m' hold chunk hrefs of
+    // OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL, which the NGAP container stopped replacing, so
+    // Hyrax read them as local paths and rejected them.
+    void test_filter_response_replaces_missing_data_access_url() {
+        TEST_NAME;
+        string dmrpp = template_dmrpp;
+        apply_daac_filters(NgapApi::DataAccessUrls("https://daac/g.h5", "s3://bucket/g.h5", "https://daac/s3credentials"), dmrpp);
+        assert_contains(dmrpp, R"(nBytes="8" href="https://daac/g.h5.missing" dmrpp:s3="s3://bucket/g.h5.missing" )"
+                               R"(dmrpp:s3credentials="https://daac/s3credentials" dmrpp:trust="true"/>)");
+        assert_lacks(dmrpp, "OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL");
+    }
+
+    void test_filter_response_replaces_sidecar_data_access_url() {
+        TEST_NAME;
+        string dmrpp = template_dmrpp;
+        apply_daac_filters(NgapApi::DataAccessUrls("https://daac/g.h5", "s3://bucket/g.h5", "https://daac/s3credentials"), dmrpp);
+        assert_contains(dmrpp, R"(nBytes="8" href="https://daac/g.h5_mvs.h5" dmrpp:s3="s3://bucket/g.h5_mvs.h5" )"
+                               R"(dmrpp:s3credentials="https://daac/s3credentials" dmrpp:trust="true"/>)");
+        assert_lacks(dmrpp, "OPeNDAP_DMRpp_SC_DATA_ACCESS_URL");
+    }
+
+    void test_filter_response_replaces_missing_data_access_url_with_empty_s3_urls() {
+        TEST_NAME;
+        string dmrpp = template_dmrpp;
+        apply_daac_filters(NgapApi::DataAccessUrls("https://daac/g.h5", "", ""), dmrpp);
+        assert_contains(dmrpp, R"(href="https://daac/g.h5.missing" dmrpp:s3="" dmrpp:s3credentials="" dmrpp:trust="true"/>)");
+        assert_lacks(dmrpp, "OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL");
     }
 
     CPPUNIT_TEST_SUITE(NgapOwnedContainerTest);
@@ -620,6 +692,11 @@ public:
 
     CPPUNIT_TEST(test_filter_response_injects_s3_data_urls);
     CPPUNIT_TEST(test_filter_response_injects_s3_data_urls_even_if_empty);
+    CPPUNIT_TEST(test_get_daac_content_filters_not_built_when_injection_disabled);
+    CPPUNIT_TEST(test_filter_response_replaces_data_access_url);
+    CPPUNIT_TEST(test_filter_response_replaces_missing_data_access_url);
+    CPPUNIT_TEST(test_filter_response_replaces_sidecar_data_access_url);
+    CPPUNIT_TEST(test_filter_response_replaces_missing_data_access_url_with_empty_s3_urls);
 
     CPPUNIT_TEST_SUITE_END();
 };

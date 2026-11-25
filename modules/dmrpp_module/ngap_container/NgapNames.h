@@ -33,8 +33,22 @@
 constexpr static auto NGAP_CACHE = "cache";
 constexpr static auto NGAP_NAME = "ngap";
 
+// Template strings that a DAAC's DMR++ may hold in place of real URLs. NGAP Hyrax replaces
+// each with a URL built from the granule's data URL (see NgapOwnedContainer::get_daac_content_filters()).
+// The dataset href (and any chunk href) for the granule itself.
 constexpr static auto DATA_ACCESS_URL_KEY = "OPeNDAP_DMRpp_DATA_ACCESS_URL";
-constexpr static auto MISSING_DATA_ACCESS_URL_KEY = "OPeNDAP_DMRpp_SC_DATA_ACCESS_URL";
+
+// These two are here because in June of 2025, we changed the name to better represent what
+// the extra file contained. The old name is supported (HYRAX-2338) because as of 11/2026,
+// old DMR++ files still exist and accesses are failing. jhrg 11/24/26
+// Chunk hrefs for 'missing' variables added by 'get_dmrpp -M/-m'; data in '<data file>.missing'.
+constexpr static auto MISSING_DATA_ACCESS_URL_KEY = "OPeNDAP_DMRpp_MISSING_DATA_ACCESS_URL";
+constexpr static auto MISSING_DATA_ACCESS_URL_SUFFIX = ".missing";
+// Chunk hrefs for variables added by 'gen_dmrpp_side_car'; data in '<data file>_mvs.h5'.
+constexpr static auto SIDECAR_DATA_ACCESS_URL_KEY = "OPeNDAP_DMRpp_SC_DATA_ACCESS_URL";
+constexpr static auto SIDECAR_DATA_ACCESS_URL_SUFFIX = "_mvs.h5";
+
+
 constexpr static auto NGAP_INJECT_DATA_URL_KEY = "NGAP.inject_data_urls";
 constexpr static auto NGAP_CMR_HOSTNAME_KEY = "NGAP.cmr_host_url";
 constexpr static auto NGAP_CMR_SEARCH_ENDPOINT_PATH_KEY = "NGAP.cmr_search_endpoint_path";
