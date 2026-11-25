@@ -142,6 +142,22 @@ public:
         CPPUNIT_ASSERT_EQUAL(string("boom|&|-|&|-"), BESLog::error_record_fields("boom\r\n\n", "", ""));
     }
 
+    void test_error_record_fields_embedded_newlines() {
+        CPPUNIT_ASSERT_EQUAL(string("a b  c d|&|-|&|-"), BESLog::error_record_fields("a\nb\r\nc\rd\n", "", ""));
+    }
+
+    void test_error_log_embedded_newline_is_one_line() {
+        BESLog::TheLog()->set_request_url("/opendap/x.nc.dap");
+        BESLog::TheLog()->set_request_ce("u");
+        // Shaped like the CurlUtils message: curl::error_message() ends with '\n' and more text follows.
+        ERROR_LOG("error_marker_3 cURL_message: Couldn't resolve host name (code: 6)\n CURLINFO_EFFECTIVE_URL: x");
+
+        const string line = find_line("error_marker_3");
+        DBG(cerr << prolog << "line: " << line << endl);
+        CPPUNIT_ASSERT_MESSAGE(line, ends_with(line, "(code: 6)  CURLINFO_EFFECTIVE_URL: x|&|/opendap/x.nc.dap|&|u"));
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(line, size_t(8), split(line).size());
+    }
+
     void test_error_record_fields_sanitizes() {
         CPPUNIT_ASSERT_EQUAL(string("boom|&|/a b|&|x|&amp;|y"),
                              BESLog::error_record_fields("boom", "/a\nb", "x|&|y"));
@@ -201,6 +217,8 @@ public:
     CPPUNIT_TEST(test_error_record_fields);
     CPPUNIT_TEST(test_error_record_fields_empty);
     CPPUNIT_TEST(test_error_record_fields_trailing_newline);
+    CPPUNIT_TEST(test_error_record_fields_embedded_newlines);
+    CPPUNIT_TEST(test_error_log_embedded_newline_is_one_line);
     CPPUNIT_TEST(test_error_record_fields_sanitizes);
     CPPUNIT_TEST(test_setters);
     CPPUNIT_TEST(test_error_log_has_url_and_ce);

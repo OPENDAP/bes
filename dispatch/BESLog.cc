@@ -300,9 +300,10 @@ std::string BESLog::sanitize_log_field(const std::string &value) {
 /**
  * @brief Build the message part of an 'error' record.
  *
- * The result is msg + mark + url + mark + ce. Trailing newlines are removed from msg
- * so the URL and CE fields stay on the same line as the message. The url and ce values
- * are passed through sanitize_log_field().
+ * The result is msg + mark + url + mark + ce. Trailing newlines are removed from msg,
+ * and any other carriage returns or newlines in it become spaces, so each error record
+ * is exactly one line and the URL and CE fields stay on it. The url and ce values are
+ * passed through sanitize_log_field().
  * @param msg The error message
  * @param url The URL path of the current request
  * @param ce The constraint expression of the current request
@@ -312,6 +313,7 @@ std::string BESLog::error_record_fields(const std::string &msg, const std::strin
     string fields(msg);
     while (!fields.empty() && (fields.back() == '\n' || fields.back() == '\r'))
         fields.pop_back();
+    BESUtil::remove_crlf(fields); // e.g., curl::error_message() ends with '\n' and callers append to it
 
     fields.append(mark).append(sanitize_log_field(url)).append(mark).append(sanitize_log_field(ce));
     return fields;

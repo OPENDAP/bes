@@ -106,7 +106,7 @@
  * Logging can also be suspended and resumed using so named methods.
  *
  * A log record is synonymous with a log line.
- * Log fields are seperated by BESLog::mark (currently "|&|")
+ * Log fields are separated by BESLog::mark (currently "|&|")
  *
  * All log records have a "prolog" which consists of:
  * <pre>
